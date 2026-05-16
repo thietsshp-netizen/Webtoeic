@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
     if (summary) {
       return NextResponse.json({
         total,
-        groups: filteredGroups.map(g => ({
+        groups: filteredGroups.map((g: any) => ({
           id: g.id,
           questionIds: g.questions.map((q: any) => q.id)
         }))
@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
     // 3. Fetch progress if logged in
     let progress = {};
     if (session?.user?.id && chunk.length > 0) {
-      const questionIds = chunk.flatMap(g => g.questions.map((q: any) => q.id));
+      const questionIds = chunk.flatMap((g: any) => g.questions.map((q: any) => q.id));
       const attempts = await prisma.questionAttempt.findMany({
         where: {
           userId: session.user.id,
