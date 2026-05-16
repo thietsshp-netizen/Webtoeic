@@ -27,9 +27,9 @@ export default async function TestPart7Page() {
   return (
     <AdminEditProvider>
       <div className="w-full h-screen">
-        <ToeicPart7Player 
-          data={groups} 
-          isReviewMode={true} 
+        <ToeicPart7Player
+          data={groups}
+          isReviewMode={true}
         />
       </div>
     </AdminEditProvider>
