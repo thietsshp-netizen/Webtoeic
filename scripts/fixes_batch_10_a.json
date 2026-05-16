@@ -1,0 +1,603 @@
+
+[
+  {
+    "word": "driven",
+    "old_example": "He is a driven individual who will stop at nothing to achieve his goals.",
+    "new_example": "He is a driven individual who will stop at nothing to achieve goals.",
+    "new_translation": "Anh ấy là một người có chí tiến thủ, không dừng lại để đạt mục tiêu."
+  },
+  {
+    "word": "generically",
+    "old_example": "The term 'smartphone' is often used generically to refer to any advanced mobile device.",
+    "new_example": "The term 'smartphone' is often used generically to refer to mobile devices.",
+    "new_translation": "Thuật ngữ 'điện thoại thông minh' thường được sử dụng để chỉ các thiết bị di động."
+  },
+  {
+    "word": "genetic",
+    "old_example": "Scientists are studying the genetic code of the virus to develop an effective vaccine.",
+    "new_example": "Scientists are studying the genetic code of the virus to develop a vaccine.",
+    "new_translation": "Các nhà khoa học đang nghiên cứu mã di truyền của virus để phát triển vắc-xin."
+  },
+  {
+    "word": "genre",
+    "old_example": "Science fiction is a popular literary genre that often explores themes of future technology and space travel.",
+    "new_example": "Science fiction is a popular genre that explores future technology and space travel.",
+    "new_translation": "Khoa học viễn tưởng là một thể loại phổ biến khám phá công nghệ tương lai."
+  },
+  {
+    "word": "gentleness",
+    "old_example": "He handled the fragile antique with great gentleness, making sure not to cause any damage to the delicate surface.",
+    "new_example": "He handled the fragile antique with great gentleness to avoid any damage.",
+    "new_translation": "Anh ấy đã cầm món đồ cổ rất nhẹ nhàng để tránh hư hại."
+  },
+  {
+    "word": "genuineness",
+    "old_example": "The experts spent weeks verifying the genuineness of the ancient artifact before it was put on display in the museum.",
+    "new_example": "The experts verified the genuineness of the artifact before displaying it.",
+    "new_translation": "Các chuyên gia đã xác minh tính chân thực của cổ vật trước khi trưng bày."
+  },
+  {
+    "word": "geometrical",
+    "old_example": "The modern art museum's architecture is characterized by its bold geometrical shapes and use of glass and steel.",
+    "new_example": "The museum's architecture is characterized by its bold geometrical shapes.",
+    "new_translation": "Kiến trúc của bảo tàng được đặc trưng bởi các hình khối hình học táo bạo."
+  },
+  {
+    "word": "geometry",
+    "old_example": "Geometry is a branch of mathematics that deals with the properties and relations of points, lines, and surfaces.",
+    "new_example": "Geometry is a branch of mathematics that deals with points and lines.",
+    "new_translation": "Hình học là một nhánh của toán học liên quan đến các điểm và đường."
+  },
+  {
+    "word": "geothermal",
+    "old_example": "Iceland uses its abundant geothermal energy to provide heating and electricity for the majority of its population.",
+    "new_example": "Iceland uses geothermal energy to provide heating and electricity for its population.",
+    "new_translation": "Iceland sử dụng năng lượng địa nhiệt để cung cấp nhiệt và điện cho dân số."
+  },
+  {
+    "word": "germinate",
+    "old_example": "The seeds will begin to germinate once the soil reaches a certain temperature and receives enough moisture.",
+    "new_example": "The seeds will begin to germinate once the soil reaches a certain temperature.",
+    "new_translation": "Hạt giống sẽ bắt đầu nảy mầm khi đất đạt đến một nhiệt độ nhất định."
+  },
+  {
+    "word": "gesture",
+    "old_example": "As a gesture of goodwill, the company offered a full refund to all customers who were affected by the service outage.",
+    "new_example": "The company offered a full refund as a gesture of goodwill.",
+    "new_translation": "Công ty đã đề nghị hoàn tiền toàn bộ như một cử chỉ thiện chí."
+  },
+  {
+    "word": "gesture",
+    "old_example": "He gestured towards the empty chair, inviting his guest to sit down and join the discussion.",
+    "new_example": "He gestured towards the empty chair, inviting his guest to sit down.",
+    "new_translation": "Anh ấy đã ra hiệu về phía chiếc ghế trống, mời khách ngồi xuống."
+  },
+  {
+    "word": "getaway",
+    "old_example": "We're planning a quick weekend getaway to the countryside to relax and escape the hustle and bustle of the city.",
+    "new_example": "We're planning a weekend getaway to the countryside to relax.",
+    "new_translation": "Chúng tôi đang lên kế hoạch cho một kỳ nghỉ cuối tuần về vùng nông thôn."
+  },
+  {
+    "word": "getting",
+    "old_example": "Getting used to the new software system took the employees several weeks of practice.",
+    "new_example": "Getting used to the new software system took several weeks of practice.",
+    "new_translation": "Việc làm quen với hệ thống phần mềm mới mất vài tuần thực hành."
+  },
+  {
+    "word": "giant",
+    "old_example": "The tech giant announced its plan to build a new data center in the region.",
+    "new_example": "The tech giant announced its plan to build a new data center.",
+    "new_translation": "Gã khổng lồ công nghệ đã công bố kế hoạch xây dựng trung tâm dữ liệu."
+  },
+  {
+    "word": "gig",
+    "old_example": "The band has a small gig at the local community center this Friday night.",
+    "new_example": "The band has a small gig at the community center this Friday.",
+    "new_translation": "Ban nhạc có một buổi biểu diễn nhỏ tại trung tâm cộng đồng thứ sáu."
+  },
+  {
+    "word": "gigawatt",
+    "old_example": "The new nuclear power plant is expected to produce over one gigawatt of electricity.",
+    "new_example": "The new power plant is expected to produce over one gigawatt.",
+    "new_translation": "Nhà máy điện mới dự kiến sẽ sản xuất hơn một gi-ga-oát."
+  },
+  {
+    "word": "gillis",
+    "old_example": "Professor Gillis published an influential paper on the impact of social media on consumer behavior.",
+    "new_example": "Professor Gillis published an influential paper on social media impact.",
+    "new_translation": "Giáo sư Gillis đã công bố một bài báo có tầm ảnh hưởng về mạng xã hội."
+  },
+  {
+    "word": "gingerbread",
+    "old_example": "During the winter holidays, many families enjoy making and decorating gingerbread houses with colorful candies.",
+    "new_example": "Many families enjoy making and decorating gingerbread houses during winter holidays.",
+    "new_translation": "Nhiều gia đình thích làm và trang trí nhà bánh gừng trong kỳ nghỉ đông."
+  },
+  {
+    "word": "glad",
+    "old_example": "We are very glad to inform you that your application for the loan has been approved.",
+    "new_example": "We are glad to inform you that your loan has been approved.",
+    "new_translation": "Chúng tôi rất vui mừng thông báo rằng khoản vay của bạn đã được duyệt."
+  },
+  {
+    "word": "glancing",
+    "old_example": "Glancing through the report, I noticed a few typographical errors in the first section.",
+    "new_example": "Glancing through the report, I noticed a few errors in the section.",
+    "new_translation": "Nhìn lướt qua báo cáo, tôi thấy vài lỗi ở phần này."
+  },
+  {
+    "word": "glare",
+    "old_example": "The morning sun's glare on the computer screen made it very difficult to work.",
+    "new_example": "The sun's glare on the computer screen made it difficult to work.",
+    "new_translation": "Ánh nắng chói trên màn hình máy tính làm việc trở nên khó khăn."
+  },
+  {
+    "word": "glassworker",
+    "old_example": "The skilled glassworker used a blowpipe to shape the molten glass into a delicate, decorative vase.",
+    "new_example": "The skilled glassworker used a blowpipe to shape the molten glass.",
+    "new_translation": "Người thợ làm thủy tinh lành nghề đã sử dụng ống thổi tạo hình."
+  },
+  {
+    "word": "glider",
+    "old_example": "He spent his summer weekends learning how to pilot a glider, enjoying the silent sensation of soaring through the clouds.",
+    "new_example": "He spent his summer weekends learning how to pilot a glider.",
+    "new_translation": "Anh ấy dành các ngày cuối tuần mùa hè để học lái tàu lượn."
+  },
+  {
+    "word": "glimpse",
+    "old_example": "I managed to catch a quick glimpse of the famous singer as she left.",
+    "new_example": "I managed to catch a quick glimpse of the famous singer.",
+    "new_translation": "Tôi đã kịp nhìn thoáng qua nữ ca sĩ nổi tiếng."
+  },
+  {
+    "word": "glimpse",
+    "old_example": "I only caught a brief glimpse of the celebrity as she was whisked away in her limousine by her security team.",
+    "new_example": "I only caught a brief glimpse of the celebrity in her limousine.",
+    "new_translation": "Tôi chỉ thoáng thấy người nổi tiếng trong chiếc limousine của cô ấy."
+  },
+  {
+    "word": "glimpse",
+    "old_example": "From the window of the speeding train, I glimpsed a small deer standing at the edge of the dark forest.",
+    "new_example": "I glimpsed a small deer standing at the edge of the forest.",
+    "new_translation": "Tôi đã thoáng thấy một con hươu nhỏ đứng ở bìa rừng."
+  },
+  {
+    "word": "globally",
+    "old_example": "The new environmental regulations need to be implemented globally to have a significant impact on reducing carbon emissions.",
+    "new_example": "The new regulations need to be implemented globally to reduce emissions.",
+    "new_translation": "Các quy định mới cần được thực hiện trên toàn cầu để giảm phát thải."
+  },
+  {
+    "word": "glossary",
+    "old_example": "If you are unfamiliar with the technical terms used in this manual, please refer to the glossary at the end of the document.",
+    "new_example": "Please refer to the glossary at the end of the document.",
+    "new_translation": "Vui lòng tham khảo bảng thuật ngữ ở cuối tài liệu."
+  },
+  {
+    "word": "glossy",
+    "old_example": "The high-end fashion magazine is printed on thick, glossy paper to showcase the stunning photography and vibrant colors.",
+    "new_example": "The fashion magazine is printed on thick, glossy paper.",
+    "new_translation": "Tạp chí thời trang được in trên giấy bóng dày."
+  },
+  {
+    "word": "glowing",
+    "old_example": "The manager gave her a glowing performance review, praising her hard work and dedication.",
+    "new_example": "The manager gave her a glowing performance review today.",
+    "new_translation": "Người quản lý đã dành cho cô ấy một bản đánh giá hiệu quả tốt."
+  },
+  {
+    "word": "glue",
+    "old_example": "You need to use strong glue to fix the broken wooden chair leg properly.",
+    "new_example": "You need to use strong glue to fix the broken chair leg.",
+    "new_translation": "Bạn cần sử dụng keo dán mạnh để sửa chân ghế bị gãy."
+  },
+  {
+    "word": "goatee",
+    "old_example": "He decided to grow a goatee to change his appearance, but his wife preferred his usual clean-shaven look.",
+    "new_example": "He decided to grow a goatee to change his appearance.",
+    "new_translation": "Anh ấy đã quyết định để râu cằm để thay đổi ngoại hình."
+  },
+  {
+    "word": "goblet",
+    "old_example": "The king sipped wine from a golden goblet during the royal banquet held in the grand hall.",
+    "new_example": "The king sipped wine from a golden goblet during the banquet.",
+    "new_translation": "Vị vua nhấp rượu từ một chiếc ly vàng trong bữa tiệc."
+  },
+  {
+    "word": "going",
+    "old_example": "With the current economic climate, the going rate for experienced software developers has increased significantly.",
+    "new_example": "The going rate for software developers has increased significantly.",
+    "new_translation": "Mức giá hiện hành cho các nhà phát triển phần mềm đã tăng đáng kể."
+  },
+  {
+    "word": "golden",
+    "old_example": "This is a golden opportunity for you to demonstrate your leadership skills to management.",
+    "new_example": "This is a golden opportunity to demonstrate your leadership skills.",
+    "new_translation": "Đây là cơ hội vàng để chứng minh kỹ năng lãnh đạo của bạn."
+  },
+  {
+    "word": "golf",
+    "old_example": "Many business deals are negotiated and finalized while playing golf at the local country club.",
+    "new_example": "Many business deals are negotiated while playing golf.",
+    "new_translation": "Nhiều giao dịch kinh doanh được đàm phán khi chơi gôn."
+  },
+  {
+    "word": "gone",
+    "old_example": "By the time the technician arrived, the supervisor had already gone to another building.",
+    "new_example": "By the time the technician arrived, the supervisor had already gone.",
+    "new_translation": "Vào lúc kỹ thuật viên đến, người giám sát đã đi rồi."
+  },
+  {
+    "word": "good",
+    "old_example": "The manager is looking for candidates with a good track record in project management.",
+    "new_example": "The manager is looking for candidates with a good track record.",
+    "new_translation": "Người quản lý đang tìm kiếm các ứng viên có thành tích tốt."
+  },
+  {
+    "word": "goodbye",
+    "old_example": "She waved a final goodbye to her friends as the train slowly left the station.",
+    "new_example": "She waved goodbye to her friends as the train left the station.",
+    "new_translation": "Cô ấy đã vẫy tay chào tạm biệt khi con tàu rời ga."
+  },
+  {
+    "word": "goodland",
+    "old_example": "The new distribution center in Goodland will serve our customers in the central region.",
+    "new_example": "The new distribution center in Goodland will serve our customers.",
+    "new_translation": "Trung tâm phân phối mới ở Goodland sẽ phục vụ khách hàng."
+  },
+  {
+    "word": "goodness",
+    "old_example": "The charity foundation relies entirely on the goodness and generosity of its many local donors.",
+    "new_example": "The charity relies on the goodness of its many donors.",
+    "new_translation": "Quỹ từ thiện dựa vào lòng tốt của nhiều nhà tài trợ."
+  },
+  {
+    "word": "gorgeous",
+    "old_example": "The bride looked absolutely gorgeous in her long silk wedding dress, which was adorned with intricate lace patterns.",
+    "new_example": "The bride looked gorgeous in her long silk wedding dress.",
+    "new_translation": "Cô dâu trông tuyệt đẹp trong chiếc váy cưới lụa dài."
+  },
+  {
+    "word": "gourmet",
+    "old_example": "The luxury hotel offers a variety of gourmet dining options, featuring world-class chefs and the finest seasonal ingredients.",
+    "new_example": "The luxury hotel offers a variety of gourmet dining options.",
+    "new_translation": "Khách sạn sang trọng cung cấp nhiều lựa chọn ăn uống cao cấp."
+  },
+  {
+    "word": "gourmet",
+    "old_example": "He is a true gourmet who travels the world to find the best local delicacies.",
+    "new_example": "He is a true gourmet who travels to find delicacies.",
+    "new_translation": "Anh ấy là một người sành ăn thực thụ đi tìm đặc sản."
+  },
+  {
+    "word": "govern",
+    "old_example": "The laws of economics govern how prices are set in a free and open market.",
+    "new_example": "The laws of economics govern how prices are set.",
+    "new_translation": "Các quy luật kinh tế chi phối cách giá cả được thiết lập."
+  },
+  {
+    "word": "governor",
+    "old_example": "The state governor announced a series of new environmental policies to reduce carbon emissions and promote renewable energy.",
+    "new_example": "The state governor announced new policies to reduce carbon emissions.",
+    "new_translation": "Thống đốc bang đã công bố các chính sách giảm phát thải carbon."
+  },
+  {
+    "word": "grace",
+    "old_example": "The prima ballerina moved across the stage with incredible grace and poise, captivating the entire audience.",
+    "new_example": "The ballerina moved across the stage with incredible grace today.",
+    "new_translation": "Vũ công ba-lê di chuyển trên sân khấu với vẻ duyên dáng."
+  },
+  {
+    "word": "graceful",
+    "old_example": "The ballet dancer performed a series of graceful movements across the entire stage floor.",
+    "new_example": "The ballet dancer performed a series of graceful movements.",
+    "new_translation": "Vũ công ba-lê đã thực hiện một loạt các động tác uyển chuyển."
+  },
+  {
+    "word": "gracefully",
+    "old_example": "She handled the difficult situation gracefully, remaining calm and professional despite the provocative comments from the reporter.",
+    "new_example": "She handled the difficult situation gracefully and professionally today.",
+    "new_translation": "Cô ấy đã xử lý tình huống khó khăn một cách khéo léo và chuyên nghiệp."
+  },
+  {
+    "word": "graden",
+    "old_example": "Mr. Graden has been with the company for over twenty years in various leadership roles.",
+    "new_example": "Mr. Graden has been with the company for twenty years.",
+    "new_translation": "Ông Graden đã làm việc tại công ty trong hai mươi năm."
+  },
+  {
+    "word": "graduated",
+    "old_example": "She graduated with honors from the University of Oxford with a degree in economics.",
+    "new_example": "She graduated with honors from the university with a degree.",
+    "new_translation": "Cô ấy đã tốt nghiệp loại ưu tại trường đại học."
+  },
+  {
+    "word": "graduation",
+    "old_example": "After four years of hard work, she finally celebrated her graduation from the university with her family and friends.",
+    "new_example": "She celebrated her graduation from the university with her family.",
+    "new_translation": "Cô ấy đã ăn mừng lễ tốt nghiệp cùng gia đình."
+  },
+  {
+    "word": "grain",
+    "old_example": "Farmers in this region primarily grow grain crops such as wheat, corn, and barley.",
+    "new_example": "Farmers in this region primarily grow grain crops like wheat.",
+    "new_translation": "Nông dân ở vùng này chủ yếu trồng các loại ngũ cốc như lúa mì."
+  },
+  {
+    "word": "grammatical",
+    "old_example": "The teacher spent the lesson explaining several important grammatical rules for using the past perfect tense correctly.",
+    "new_example": "The teacher explained several important grammatical rules for the students.",
+    "new_translation": "Giáo viên đã giải thích một số quy tắc ngữ pháp quan trọng cho học sinh."
+  },
+  {
+    "word": "grandchild",
+    "old_example": "She loves spending time with her grandchildren and often takes them to the local park on the weekends.",
+    "new_example": "She loves spending time with her grandchildren at the park.",
+    "new_translation": "Bà ấy rất thích dành thời gian cho các cháu tại công viên."
+  },
+  {
+    "word": "grandfather",
+    "old_example": "My grandfather taught me how to fish when I was a young boy, spending many peaceful afternoons by the lake with me.",
+    "new_example": "My grandfather taught me how to fish when I was young.",
+    "new_translation": "Ông tôi đã dạy tôi cách câu cá khi tôi còn nhỏ."
+  },
+  {
+    "word": "grandmother",
+    "old_example": "My grandmother taught me how to bake bread when I was a young child.",
+    "new_example": "My grandmother taught me how to bake bread when I was young.",
+    "new_translation": "Bà tôi đã dạy tôi cách nướng bánh mì khi tôi còn nhỏ."
+  },
+  {
+    "word": "grandparent",
+    "old_example": "Becoming a grandparent is a very joyful and rewarding experience for many older adults.",
+    "new_example": "Becoming a grandparent is a joyful experience for many older adults.",
+    "new_translation": "Trở thành ông hoặc bà là một trải nghiệm vui vẻ cho nhiều người."
+  },
+  {
+    "word": "granite",
+    "old_example": "The kitchen was renovated with high-quality granite countertops, which are both durable and aesthetically pleasing.",
+    "new_example": "The kitchen was renovated with durable granite countertops.",
+    "new_translation": "Căn bếp đã được cải tạo với các mặt bàn đá hoa cương bền."
+  },
+  {
+    "word": "granola",
+    "old_example": "He usually starts his day with a bowl of Greek yogurt topped with crunchy granola and fresh seasonal berries for a healthy and filling breakfast.",
+    "new_example": "He starts his day with yogurt topped with crunchy granola.",
+    "new_translation": "Anh ấy bắt đầu ngày mới bằng sữa chua phủ granola giòn."
+  },
+  {
+    "word": "grant",
+    "old_example": "The university received a significant research grant from the government to study the effects of climate change on local biodiversity.",
+    "new_example": "The university received a research grant to study climate change.",
+    "new_translation": "Trường đại học đã nhận được trợ cấp để nghiên cứu biến đổi khí hậu."
+  },
+  {
+    "word": "grapefruit",
+    "old_example": "He started his morning with a healthy breakfast of half a grapefruit and a bowl of whole-grain cereal.",
+    "new_example": "He started his morning with a grapefruit and some cereal.",
+    "new_translation": "Anh ấy đã bắt đầu buổi sáng với một quả bưởi và ít ngũ cốc."
+  },
+  {
+    "word": "graphs",
+    "old_example": "The annual report contains several graphs that illustrate the company's growth over the last five years.",
+    "new_example": "The annual report contains several graphs illustrating the company's growth.",
+    "new_translation": "Báo cáo hàng năm chứa một vài biểu đồ minh họa sự tăng trưởng."
+  },
+  {
+    "word": "grass",
+    "old_example": "The landscape architect recommended planting a resilient type of grass for the office courtyard.",
+    "new_example": "The architect recommended planting a resilient type of grass.",
+    "new_translation": "Kiến trúc sư đề xuất trồng một loại cỏ có sức chống chịu tốt."
+  },
+  {
+    "word": "grassland",
+    "old_example": "The vast African grassland is home to a diverse range of wildlife, including lions, zebras, elephants, and many species of antelope.",
+    "new_example": "The vast African grassland is home to a diverse range of wildlife.",
+    "new_translation": "Vùng đồng cỏ châu Phi rộng lớn là nơi sinh sống của nhiều động vật."
+  },
+  {
+    "word": "grater",
+    "old_example": "You will need a cheese grater to prepare the topping for the homemade pizza.",
+    "new_example": "You will need a cheese grater for the homemade pizza.",
+    "new_translation": "Bạn sẽ cần một cái bào phô-mai cho món bánh pizza tự làm."
+  },
+  {
+    "word": "gratification",
+    "old_example": "He felt a great sense of personal gratification after seeing the positive impact his work had on the community.",
+    "new_example": "He felt a sense of gratification after seeing his impact.",
+    "new_translation": "Anh ấy cảm thấy hài lòng sau khi thấy tác động của mình."
+  },
+  {
+    "word": "gratitude",
+    "old_example": "We would like to express our sincere gratitude to all the volunteers for their hard work.",
+    "new_example": "We would like to express our gratitude to all the volunteers.",
+    "new_translation": "Chúng tôi muốn bày tỏ lòng biết ơn tới tất cả tình nguyện viên."
+  },
+  {
+    "word": "gratuity",
+    "old_example": "A fifteen percent gratuity is already included in the total bill at this restaurant.",
+    "new_example": "A fifteen percent gratuity is already included in the total bill.",
+    "new_translation": "Mười lăm phần trăm tiền boa đã được bao gồm trong tổng hóa đơn."
+  },
+  {
+    "word": "gravel",
+    "old_example": "The long driveway leading to the main house is covered with gray gravel to improve drainage and prevent mud.",
+    "new_example": "The long driveway is covered with gravel to improve drainage.",
+    "new_translation": "Lối đi dài được phủ sỏi để cải thiện việc thoát nước."
+  },
+  {
+    "word": "gravitate",
+    "old_example": "Many young talented artists tend to gravitate towards the vibrant creative scene in London.",
+    "new_example": "Many young artists tend to gravitate towards the creative scene in London.",
+    "new_translation": "Nhiều nghệ sĩ trẻ có xu hướng đổ về bối cảnh sáng tạo Luân Đôn."
+  },
+  {
+    "word": "grazing",
+    "old_example": "The farmer moved the cattle to a new area of grazing where the grass was taller and greener.",
+    "new_example": "The farmer moved the cattle to a new area of grazing.",
+    "new_translation": "Người nông dân đã chuyển đàn gia súc đến một khu vực chăn thả mới."
+  },
+  {
+    "word": "grease",
+    "old_example": "The mechanic used heavy grease to ensure the metal gears moved without any friction.",
+    "new_example": "The mechanic used grease to ensure the gears moved without friction.",
+    "new_translation": "Thợ máy đã sử dụng mỡ để đảm bảo bánh răng chuyển động mượt."
+  },
+  {
+    "word": "greater",
+    "old_example": "The new version of the software provides greater security features compared to its predecessor.",
+    "new_example": "The new version of the software provides greater security features.",
+    "new_translation": "Phiên bản mới của phần mềm cung cấp các tính năng bảo mật tốt hơn."
+  },
+  {
+    "word": "greatest",
+    "old_example": "One of our greatest challenges this year is to reduce operational costs without affecting quality.",
+    "new_example": "One of our greatest challenges is to reduce operational costs.",
+    "new_translation": "Một trong những thách thức lớn nhất là giảm chi phí vận hành."
+  },
+  {
+    "word": "greatness",
+    "old_example": "True greatness in leadership is measured by the positive impact one has on others.",
+    "new_example": "True greatness in leadership is measured by positive impact.",
+    "new_translation": "Sự vĩ đại thực sự trong lãnh đạo đo bằng tác động tích cực."
+  },
+  {
+    "word": "greenery",
+    "old_example": "The office was decorated with plenty of greenery to create a more relaxing workspace.",
+    "new_example": "The office was decorated with greenery to create a relaxing workspace.",
+    "new_translation": "Văn phòng được trang trí với cây xanh để tạo không gian thư giãn."
+  },
+  {
+    "word": "greenhouse",
+    "old_example": "The botanical garden features a massive glass greenhouse that houses a variety of exotic tropical plants and rare orchid species.",
+    "new_example": "The garden features a massive greenhouse for tropical plants.",
+    "new_translation": "Khu vườn có một nhà kính khổng lồ cho cây nhiệt đới."
+  },
+  {
+    "word": "greet",
+    "old_example": "Receptionists are expected to greet every visitor with a warm smile and professional attitude.",
+    "new_example": "Receptionists are expected to greet every visitor with a warm smile.",
+    "new_translation": "Nhân viên lễ tân được yêu cầu chào đón mọi vị khách với nụ cười."
+  },
+  {
+    "word": "greeted",
+    "old_example": "The guest speaker was greeted with loud applause as he walked onto the stage.",
+    "new_example": "The guest speaker was greeted with applause today.",
+    "new_translation": "Diễn giả khách mời đã được chào đón bằng những tràng pháo tay."
+  },
+  {
+    "word": "greyish",
+    "old_example": "The sky turned a dull greyish color just before the heavy rain started to fall across the city.",
+    "new_example": "The sky turned greyish just before the heavy rain started.",
+    "new_translation": "Bầu trời chuyển sang màu hơi xám xịt ngay trước khi mưa lớn."
+  },
+  {
+    "word": "gridlock",
+    "old_example": "The morning commute was a total gridlock after a major accident blocked all four lanes of the highway.",
+    "new_example": "The morning commute was a total gridlock after an accident.",
+    "new_translation": "Việc đi lại buổi sáng đã bị tắc nghẽn hoàn toàn sau tai nạn."
+  },
+  {
+    "word": "grievance",
+    "old_example": "Employees can file a formal grievance if they feel they are being treated unfairly.",
+    "new_example": "Employees can file a formal grievance if they feel treated unfairly.",
+    "new_translation": "Nhân viên có thể nộp đơn khiếu nại nếu họ bị đối xử bất công."
+  },
+  {
+    "word": "grill",
+    "old_example": "We put the burgers on the grill as soon as the coals were hot enough.",
+    "new_example": "We put the burgers on the grill when the coals were hot.",
+    "new_translation": "Chúng tôi đặt bánh mì kẹp thịt lên vỉ khi than nóng."
+  },
+  {
+    "word": "grill",
+    "old_example": "The police grilled the suspect for several hours but failed to get a confession.",
+    "new_example": "The police grilled the suspect for several hours today.",
+    "new_translation": "Cảnh sát đã tra hỏi kỹ nghi phạm trong vài giờ hôm nay."
+  },
+  {
+    "word": "grind",
+    "old_example": "You should grind the coffee beans fresh every morning for the best possible flavor.",
+    "new_example": "You should grind the coffee beans fresh every morning.",
+    "new_translation": "Bạn nên xay hạt cà phê tươi mỗi sáng."
+  },
+  {
+    "word": "grooming",
+    "old_example": "Regular grooming is essential for long-haired cats to prevent their fur from becoming tangled and matted.",
+    "new_example": "Regular grooming is essential for long-haired cats.",
+    "new_translation": "Việc chải chuốt thường xuyên là điều thiết yếu đối với mèo lông dài."
+  },
+  {
+    "word": "groundbreaking",
+    "old_example": "The scientist's groundbreaking research could potentially lead to a permanent cure for the disease.",
+    "new_example": "The scientist's groundbreaking research could lead to a cure.",
+    "new_translation": "Nghiên cứu đột phá của nhà khoa học có thể dẫn đến cách chữa trị."
+  },
+  {
+    "word": "groups",
+    "old_example": "The students were divided into small groups to discuss the case study during the seminar.",
+    "new_example": "The students were divided into small groups to discuss the case.",
+    "new_translation": "Các sinh viên được chia thành các nhóm nhỏ để thảo luận bài học."
+  },
+  {
+    "word": "grumble",
+    "old_example": "The students began to grumble when they were told about the extra weekend homework.",
+    "new_example": "The students began to grumble about the extra homework.",
+    "new_translation": "Các học sinh đã bắt đầu cằn nhằn về bài tập về nhà thêm."
+  },
+  {
+    "word": "guaranteeing",
+    "old_example": "Guaranteeing the security of customer data is our top priority at this technology firm.",
+    "new_example": "Guaranteeing the security of customer data is our top priority.",
+    "new_translation": "Đảm bảo an ninh dữ liệu khách hàng là ưu tiên hàng đầu."
+  },
+  {
+    "word": "guarantor",
+    "old_example": "He needed his father to act as a guarantor for his first bank loan.",
+    "new_example": "He needed his father to act as a guarantor for the loan.",
+    "new_translation": "Anh ấy cần cha mình đóng vai trò bảo lãnh cho khoản vay."
+  },
+  {
+    "word": "guesswork",
+    "old_example": "Scientific experiments are designed to eliminate guesswork and provide accurate data based on observation and measurement.",
+    "new_example": "Scientific experiments are designed to eliminate guesswork and provide accurate data.",
+    "new_translation": "Các thí nghiệm khoa học được thiết kế để loại bỏ sự đoán mò."
+  },
+  {
+    "word": "guesthouse",
+    "old_example": "They stayed at a charming guesthouse near the lake, which offered a more personal and cozy atmosphere than the large resort hotels.",
+    "new_example": "They stayed at a charming guesthouse near the lake today.",
+    "new_translation": "Họ đã ở tại một nhà khách quyến rũ gần hồ hôm nay."
+  },
+  {
+    "word": "guidance",
+    "old_example": "The new employees need some guidance from the senior staff during their first week.",
+    "new_example": "The new employees need guidance from the senior staff.",
+    "new_translation": "Các nhân viên mới cần sự hướng dẫn từ các nhân viên cấp cao."
+  },
+  {
+    "word": "guidebook",
+    "old_example": "The tourist followed the recommendations in the guidebook to find the best local restaurants.",
+    "new_example": "The tourist followed the guidebook to find the best local restaurants.",
+    "new_translation": "Khách du lịch theo sách hướng dẫn để tìm nhà hàng địa phương."
+  },
+  {
+    "word": "guided",
+    "old_example": "We took a guided tour of the historical district to learn more about the city's heritage.",
+    "new_example": "We took a guided tour of the historical district today.",
+    "new_translation": "Chúng tôi đã tham gia một chuyến tham quan di tích lịch sử hôm nay."
+  },
+  {
+    "word": "guides",
+    "old_example": "Professional guides provide valuable insights into the local culture and history during the trek.",
+    "new_example": "Professional guides provide valuable insights during the trek.",
+    "new_translation": "Những người hướng dẫn chuyên nghiệp cung cấp những hiểu biết quý giá."
+  },
+  {
+    "word": "guitar",
+    "old_example": "He has been practicing the guitar for several years and now performs in a local band.",
+    "new_example": "He has been practicing the guitar and performs in a band.",
+    "new_translation": "Anh ấy đã tập đàn ghi-ta và hiện đang biểu diễn trong ban nhạc."
+  }
+]

@@ -1,0 +1,603 @@
+
+[
+  {
+    "word": "ito",
+    "old_example": "Mr. Ito has been serving as the managing director of the Tokyo branch since 2015.",
+    "new_example": "Mr. Ito has been serving as the managing director since 2015.",
+    "new_translation": "Ông Ito đã đảm nhiệm chức vụ giám đốc điều hành từ năm 2015."
+  },
+  {
+    "word": "its",
+    "old_example": "The company is planning to expand its operations into several neighboring countries next year.",
+    "new_example": "The company is planning to expand its operations into neighboring countries next year.",
+    "new_translation": "Công ty đang lập kế hoạch mở rộng hoạt động sang các nước láng giềng."
+  },
+  {
+    "word": "itself",
+    "old_example": "The new software system is designed to update itself automatically whenever a new version is released.",
+    "new_example": "The new software system is designed to update itself automatically today.",
+    "new_translation": "Hệ thống phần mềm mới được thiết kế để tự cập nhật tự động."
+  },
+  {
+    "word": "ivanova",
+    "old_example": "Ms. Ivanova will be representing the company at the international trade fair in Berlin.",
+    "new_example": "Ms. Ivanova will be representing the company at the fair in Berlin.",
+    "new_translation": "Cô Ivanova sẽ đại diện cho công ty tại hội chợ ở Berlin."
+  },
+  {
+    "word": "jacket",
+    "old_example": "All employees working in the warehouse are required to wear a high-visibility safety jacket.",
+    "new_example": "All employees in the warehouse are required to wear a safety jacket.",
+    "new_translation": "Tất cả nhân viên trong nhà kho được yêu cầu mặc áo bảo hộ."
+  },
+  {
+    "word": "jackets",
+    "old_example": "The winter collection features a variety of stylish and waterproof jackets for outdoor activities.",
+    "new_example": "The winter collection features a variety of stylish jackets today.",
+    "new_translation": "Bộ sưu tập mùa đông có nhiều loại áo khoác thời trang hôm nay."
+  },
+  {
+    "word": "jackhammer",
+    "old_example": "The construction workers used a loud jackhammer to break up the old concrete sidewalk before laying the new foundation.",
+    "new_example": "The workers used a loud jackhammer to break up the old sidewalk.",
+    "new_translation": "Các công nhân đã sử dụng một chiếc máy khoan để phá vỉa hè."
+  },
+  {
+    "word": "jacob",
+    "old_example": "Jacob was promoted to the position of regional sales manager after exceeding his annual targets.",
+    "new_example": "Jacob was promoted to sales manager after exceeding his annual targets.",
+    "new_translation": "Jacob đã được thăng chức quản lý bán hàng sau khi vượt mục tiêu."
+  },
+  {
+    "word": "jakarta",
+    "old_example": "The company's Southeast Asian headquarters is located in the central business district of Jakarta.",
+    "new_example": "The company's headquarters is located in the central district of Jakarta.",
+    "new_translation": "Trụ sở chính của công ty nằm tại khu trung tâm của Jakarta."
+  },
+  {
+    "word": "jamb",
+    "old_example": "He leaned against the door jamb while waiting for his colleague to finish the call.",
+    "new_example": "He leaned against the door jamb while waiting for his colleague today.",
+    "new_translation": "Anh ấy tựa vào khung cửa trong khi chờ đồng nghiệp hôm nay."
+  },
+  {
+    "word": "james",
+    "old_example": "James is the lead architect for the new urban development project in the downtown area.",
+    "new_example": "James is the lead architect for the new urban project today.",
+    "new_translation": "James là kiến trúc sư trưởng cho dự án đô thị mới hôm nay."
+  },
+  {
+    "word": "janitor",
+    "old_example": "The school janitor is responsible for maintaining the cleanliness and safety of the entire campus.",
+    "new_example": "The janitor is responsible for maintaining the cleanliness of the campus.",
+    "new_translation": "Người lao công chịu trách nhiệm duy trì sự sạch sẽ của khuôn viên."
+  },
+  {
+    "word": "janitorial",
+    "old_example": "The school hired a professional janitorial service to clean the classrooms and hallways every evening after school.",
+    "new_example": "The school hired a professional janitorial service to clean the classrooms.",
+    "new_translation": "Nhà trường đã thuê dịch vụ dọn dẹp để làm vệ sinh lớp học."
+  },
+  {
+    "word": "janitors",
+    "old_example": "A team of janitors works throughout the night to ensure the office building is clean by morning.",
+    "new_example": "A team of janitors works to ensure the building is clean tonight.",
+    "new_translation": "Một đội ngũ lao công làm việc để đảm bảo tòa nhà sạch sẽ."
+  },
+  {
+    "word": "jansen",
+    "old_example": "Mr. Jansen was recently appointed as the head of the company's international legal department.",
+    "new_example": "Mr. Jansen was recently appointed as the head of the legal department.",
+    "new_translation": "Ông Jansen gần đây được bổ nhiệm làm trưởng bộ phận pháp lý."
+  },
+  {
+    "word": "jar",
+    "old_example": "Please store the organic honey in a glass jar to maintain its freshness and flavor.",
+    "new_example": "Please store the organic honey in a glass jar today.",
+    "new_translation": "Vui lòng bảo quản mật ong hữu cơ trong một chiếc lọ thủy tinh."
+  },
+  {
+    "word": "jars",
+    "old_example": "The shelf was filled with colorful jars containing various types of spices and herbs.",
+    "new_example": "The shelf was filled with colorful jars of spices today.",
+    "new_translation": "Chiếc kệ chứa đầy những chiếc lọ đựng gia vị đầy màu sắc."
+  },
+  {
+    "word": "jay",
+    "old_example": "The blue jay is a common bird species found in many forests across North America.",
+    "new_example": "The blue jay is a common bird species found in many forests.",
+    "new_translation": "Chim dẻ cùi xanh là một loài chim phổ biến trong các khu rừng."
+  },
+  {
+    "word": "jazz",
+    "old_example": "The city's annual jazz festival attracts thousands of music lovers from all over the world.",
+    "new_example": "The annual jazz festival attracts thousands of music lovers today.",
+    "new_translation": "Lễ hội nhạc jazz hàng năm thu hút hàng ngàn người yêu nhạc."
+  },
+  {
+    "word": "jefferson",
+    "old_example": "Jefferson City is the capital of the state of Missouri in the United States.",
+    "new_example": "Jefferson City is the capital of the state of Missouri today.",
+    "new_translation": "Thành phố Jefferson là thủ phủ của bang Missouri hôm nay."
+  },
+  {
+    "word": "jeon",
+    "old_example": "Mr. Jeon has been appointed as the new CEO of the technology firm's Seoul branch.",
+    "new_example": "Mr. Jeon has been appointed as the new CEO in Seoul today.",
+    "new_translation": "Ông Jeon đã được bổ nhiệm làm CEO mới tại Seoul hôm nay."
+  },
+  {
+    "word": "jeremy",
+    "old_example": "Jeremy was selected to represent the marketing department at the upcoming international trade fair.",
+    "new_example": "Jeremy was selected to represent the marketing department at the fair.",
+    "new_translation": "Jeremy đã được chọn để đại diện cho bộ phận tiếp thị tại hội chợ."
+  },
+  {
+    "word": "jerk",
+    "old_example": "The car started with a sudden jerk, making the passengers spill their drinks and causing a moment of alarm.",
+    "new_example": "The car started with a sudden jerk, causing a moment of alarm.",
+    "new_translation": "Chiếc xe khởi động với một cú giật mạnh gây hoảng sợ."
+  },
+  {
+    "word": "jet",
+    "old_example": "The company purchased a private jet to facilitate travel for its senior executives across Europe.",
+    "new_example": "The company purchased a private jet to facilitate travel for senior executives.",
+    "new_translation": "Công ty đã mua máy bay phản lực riêng cho các giám đốc."
+  },
+  {
+    "word": "jettison",
+    "old_example": "The pilot was forced to jettison some of the fuel to lighten the plane for an emergency landing.",
+    "new_example": "The pilot was forced to jettison some fuel for an emergency landing.",
+    "new_translation": "Phi công buộc phải xả bỏ một phần nhiên liệu để hạ cánh."
+  },
+  {
+    "word": "jeweler",
+    "old_example": "He took his grandmother's antique watch to a local jeweler to have it cleaned and repaired.",
+    "new_example": "He took the antique watch to a local jeweler to be repaired.",
+    "new_translation": "Anh ấy đã mang chiếc đồng hồ cổ đến thợ kim hoàn để sửa."
+  },
+  {
+    "word": "jiang",
+    "old_example": "Mr. Jiang is the founder and chairman of one of the world's largest telecommunications companies.",
+    "new_example": "Mr. Jiang is the chairman of a large telecommunications company today.",
+    "new_translation": "Ông Jiang là chủ tịch của một công ty viễn thông lớn hôm nay."
+  },
+  {
+    "word": "jigsaw",
+    "old_example": "He spent the entire rainy weekend working on a 1,000-piece jigsaw puzzle of a famous impressionist painting.",
+    "new_example": "He spent the entire weekend working on a large jigsaw puzzle.",
+    "new_translation": "Anh ấy đã dành cả cuối tuần để giải một trò chơi lắp hình."
+  },
+  {
+    "word": "jin",
+    "old_example": "Ms. Jin was awarded 'Employee of the Year' for her outstanding performance in customer service.",
+    "new_example": "Ms. Jin was awarded 'Employee of the Year' for her outstanding performance.",
+    "new_translation": "Cô Jin đã được trao giải 'Nhân viên của năm' vì thành tích xuất sắc."
+  },
+  {
+    "word": "job",
+    "old_example": "He decided to quit his current job to pursue a career in sustainable agriculture.",
+    "new_example": "He decided to quit his job to pursue a new career today.",
+    "new_translation": "Anh ấy đã quyết định bỏ việc để theo đuổi sự nghiệp mới."
+  },
+  {
+    "word": "joe's",
+    "old_example": "We are planning to have dinner at Joe's Grill after the conference ends this evening.",
+    "new_example": "We are planning to have dinner at Joe's Grill this evening.",
+    "new_translation": "Chúng tôi đang dự định ăn tối tại Joe's Grill tối nay."
+  },
+  {
+    "word": "jog",
+    "old_example": "He likes to jog in the park for half an hour every morning to stay fit.",
+    "new_example": "He likes to jog in the park every morning to stay fit.",
+    "new_translation": "Anh ấy thích chạy bộ trong công viên mỗi sáng để giữ dáng."
+  },
+  {
+    "word": "jogging",
+    "old_example": "Jogging every morning is a great way to stay fit and improve cardiovascular health.",
+    "new_example": "Jogging every morning is a great way to stay fit today.",
+    "new_translation": "Chạy bộ mỗi sáng là một cách tuyệt vời để giữ dáng hôm nay."
+  },
+  {
+    "word": "johann",
+    "old_example": "Johann Sebastian Bach is considered one of the greatest composers in the history of Western music.",
+    "new_example": "Johann Sebastian Bach is considered a great composer in Western music history.",
+    "new_translation": "Bach được coi là nhà soạn nhạc vĩ đại trong lịch sử âm nhạc."
+  },
+  {
+    "word": "johnson",
+    "old_example": "Ms. Johnson has been promoted to the position of Senior Vice President of Human Resources.",
+    "new_example": "Ms. Johnson has been promoted to Senior Vice President today.",
+    "new_translation": "Bà Johnson đã được thăng chức lên vị trí Phó Chủ tịch cấp cao."
+  },
+  {
+    "word": "join",
+    "old_example": "We are delighted to have you join our team as a senior project coordinator.",
+    "new_example": "We are delighted to have you join our team today.",
+    "new_translation": "Chúng tôi rất vui mừng khi có bạn gia nhập đội ngũ hôm nay."
+  },
+  {
+    "word": "joined",
+    "old_example": "After several months of negotiations, the two smaller firms finally joined to form a large corporation.",
+    "new_example": "The two smaller firms finally joined to form a large corporation today.",
+    "new_translation": "Hai công ty nhỏ cuối cùng đã hợp nhất thành một tập đoàn lớn."
+  },
+  {
+    "word": "joint",
+    "old_example": "The two companies issued a joint statement announcing their intention to collaborate on the new project.",
+    "new_example": "The two companies issued a joint statement about the new project.",
+    "new_translation": "Hai công ty đã đưa ra tuyên bố chung về dự án mới."
+  },
+  {
+    "word": "joints",
+    "old_example": "Proper maintenance is required to ensure that all mechanical joints in the machine remain lubricated.",
+    "new_example": "Proper maintenance is required to keep all mechanical joints lubricated.",
+    "new_translation": "Cần bảo trì đúng cách để giữ các mối nối luôn được bôi trơn."
+  },
+  {
+    "word": "jones",
+    "old_example": "Ms. Jones will be the main point of contact for all inquiries regarding the new marketing campaign.",
+    "new_example": "Ms. Jones will be the main point of contact for all inquiries.",
+    "new_translation": "Cô Jones sẽ là đầu mối liên hệ chính cho tất cả các thắc mắc."
+  },
+  {
+    "word": "journalist",
+    "old_example": "The award-winning journalist traveled to the remote region to document the impact of climate change.",
+    "new_example": "The journalist traveled to the remote region to document climate change today.",
+    "new_translation": "Nhà báo đã đi đến vùng xa xôi để ghi lại biến đổi khí hậu."
+  },
+  {
+    "word": "journalists",
+    "old_example": "Dozens of journalists gathered at the airport to interview the famous entrepreneur upon his arrival.",
+    "new_example": "Dozens of journalists gathered at the airport to interview the entrepreneur today.",
+    "new_translation": "Hàng chục nhà báo đã tập trung tại sân bay để phỏng vấn doanh nhân."
+  },
+  {
+    "word": "journey",
+    "old_example": "The journey from London to Edinburgh by train takes approximately four and a half hours.",
+    "new_example": "The journey by train takes approximately four and a half hours today.",
+    "new_translation": "Cuộc hành trình bằng tàu hỏa mất khoảng bốn tiếng rưỡi hôm nay."
+  },
+  {
+    "word": "jovial",
+    "old_example": "The host was in a jovial mood, greeting every guest with a warm smile and a friendly handshake as they arrived at the party.",
+    "new_example": "The host was in a jovial mood, greeting every guest today.",
+    "new_translation": "Chủ nhà đang trong tâm trạng vui vẻ, chào đón mọi vị khách."
+  },
+  {
+    "word": "joyfully",
+    "old_example": "The children laughed joyfully as they ran through the sprinklers in the garden on a hot summer afternoon.",
+    "new_example": "The children laughed joyfully as they ran through the garden today.",
+    "new_translation": "Lũ trẻ cười vui vẻ khi chúng chạy qua khu vườn hôm nay."
+  },
+  {
+    "word": "judge",
+    "old_example": "A panel of expert judges will evaluate the architectural designs based on sustainability and innovation.",
+    "new_example": "A panel of judges will evaluate the designs based on innovation today.",
+    "new_translation": "Một hội đồng giám khảo sẽ đánh giá thiết kế dựa trên sự đổi mới."
+  },
+  {
+    "word": "judges",
+    "old_example": "The competition features four international judges who are experts in the field of digital marketing.",
+    "new_example": "The competition features four international judges who are experts today.",
+    "new_translation": "Cuộc thi có sự góp mặt của bốn giám khảo quốc tế có kinh nghiệm."
+  },
+  {
+    "word": "judging",
+    "old_example": "Judging by the initial feedback, the new software update is likely to be very popular among users.",
+    "new_example": "Judging by the initial feedback, the software update will be popular today.",
+    "new_translation": "Dựa trên phản hồi ban đầu, bản cập nhật phần mềm sẽ phổ biến."
+  },
+  {
+    "word": "judicial",
+    "old_example": "The judicial system is responsible for interpreting and applying the laws of the country fairly and impartially.",
+    "new_example": "The judicial system is responsible for applying the laws fairly today.",
+    "new_translation": "Hệ thống tư pháp chịu trách nhiệm áp dụng luật pháp công bằng."
+  },
+  {
+    "word": "judicious",
+    "old_example": "The investor's judicious choice of stocks allowed him to grow his wealth significantly even during periods of market instability.",
+    "new_example": "The investor's judicious choice of stocks allowed him to grow his wealth.",
+    "new_translation": "Lựa chọn cổ phiếu sáng suốt của nhà đầu tư giúp ông tăng tài sản."
+  },
+  {
+    "word": "juggler",
+    "old_example": "The street juggler amazed the crowd by skillfully throwing and catching six flaming torches at the same time.",
+    "new_example": "The street juggler amazed the crowd with his skills today.",
+    "new_translation": "Nghệ sĩ tung hứng đường phố đã làm đám đông kinh ngạc hôm nay."
+  },
+  {
+    "word": "juice",
+    "old_example": "The cafeteria offers a variety of fresh fruit juices, including orange, apple, and pineapple.",
+    "new_example": "The cafeteria offers a variety of fresh fruit juices today.",
+    "new_translation": "Căng tin cung cấp nhiều loại nước ép trái cây tươi hôm nay."
+  },
+  {
+    "word": "juicy",
+    "old_example": "The ripe peaches were incredibly sweet and juicy, making them the perfect refreshing snack for a hot day.",
+    "new_example": "The ripe peaches were sweet and juicy today.",
+    "new_translation": "Những quả đào chín ngọt và mọng nước hôm nay."
+  },
+  {
+    "word": "july",
+    "old_example": "The company's mid-year review is scheduled to take place during the second week of July.",
+    "new_example": "The company's mid-year review is scheduled for the second week of July.",
+    "new_translation": "Buổi đánh giá giữa năm của công ty được lên kế hoạch vào tháng 7."
+  },
+  {
+    "word": "jump",
+    "old_example": "The company saw a significant jump in its quarterly profits after launching its highly successful new marketing campaign.",
+    "new_example": "The company saw a significant jump in quarterly profits today.",
+    "new_translation": "Công ty đã thấy một sự tăng vọt về lợi nhuận hàng quý hôm nay."
+  },
+  {
+    "word": "june",
+    "old_example": "We are planning to launch our new advertising campaign at the beginning of June.",
+    "new_example": "We are planning to launch our new campaign in June today.",
+    "new_translation": "Chúng tôi đang lập kế hoạch ra mắt chiến dịch mới vào tháng Sáu."
+  },
+  {
+    "word": "jungle",
+    "old_example": "The startup environment is often described as a concrete jungle where only the most innovative survive.",
+    "new_example": "The startup environment is often described as a concrete jungle today.",
+    "new_translation": "Môi trường khởi nghiệp thường được mô tả như một khu rừng bê tông."
+  },
+  {
+    "word": "junior",
+    "old_example": "The company is looking for a junior accountant to assist the financial team with basic bookkeeping tasks.",
+    "new_example": "The company is looking for a junior accountant to assist the team.",
+    "new_translation": "Công ty đang tìm kiếm một kế toán cấp thấp để hỗ trợ đội ngũ."
+  },
+  {
+    "word": "juniper",
+    "old_example": "Juniper berries are the primary flavoring agent used in the production of high-quality gin.",
+    "new_example": "Juniper berries are the primary flavoring agent used for high-quality gin.",
+    "new_translation": "Quả bách xù là tác nhân tạo hương vị chính cho rượu gin."
+  },
+  {
+    "word": "junk",
+    "old_example": "We need to clear out all the old junk from the garage this weekend.",
+    "new_example": "We need to clear out all the junk from the garage today.",
+    "new_translation": "Chúng ta cần dọn sạch đống đồ cũ khỏi gara hôm nay."
+  },
+  {
+    "word": "junkmail",
+    "old_example": "Most email providers have advanced filters to automatically redirect junkmail to a separate folder, keeping the user's inbox clean.",
+    "new_example": "Most email providers have filters to redirect junkmail automatically today.",
+    "new_translation": "Hầu hết các nhà cung cấp email đều có bộ lọc để chuyển thư rác."
+  },
+  {
+    "word": "junko",
+    "old_example": "Junko Tabei was a famous Japanese mountaineer and the first woman to reach the summit of Mount Everest.",
+    "new_example": "Junko Tabei was the first woman to reach the summit of Everest.",
+    "new_translation": "Junko Tabei là người phụ nữ đầu tiên chạm tới đỉnh núi Everest."
+  },
+  {
+    "word": "jury",
+    "old_example": "The jury took only three hours to reach a unanimous decision, finding the defendant guilty on all counts of fraud.",
+    "new_example": "The jury took only three hours to reach a decision today.",
+    "new_translation": "Bồi thẩm đoàn chỉ mất ba giờ để đi đến quyết định hôm nay."
+  },
+  {
+    "word": "just",
+    "old_example": "The manager has just arrived at the office and is currently reviewing the morning's emails.",
+    "new_example": "The manager has just arrived and is reviewing the emails today.",
+    "new_translation": "Người quản lý vừa mới đến và hiện đang xem xét các email hôm nay."
+  },
+  {
+    "word": "justice",
+    "old_example": "The human rights organization is dedicated to seeking justice for victims of political oppression and ensuring their rights are protected.",
+    "new_example": "The organization is dedicated to seeking justice for victims today.",
+    "new_translation": "Tổ chức dành tâm huyết để tìm kiếm công lý cho các nạn nhân."
+  },
+  {
+    "word": "justifiable",
+    "old_example": "The use of force was considered justifiable by the police officers because they believed their lives were in immediate danger.",
+    "new_example": "The use of force was considered justifiable by the officers today.",
+    "new_translation": "Việc sử dụng vũ lực được các sĩ quan coi là chính đáng hôm nay."
+  },
+  {
+    "word": "justified",
+    "old_example": "The company's decision to increase prices was justified by the rising costs of raw materials.",
+    "new_example": "The company's decision to increase prices was justified today.",
+    "new_translation": "Quyết định tăng giá của công ty là chính đáng hôm nay."
+  },
+  {
+    "word": "justify",
+    "old_example": "It is difficult to justify the high cost of the project given the limited benefits it will provide.",
+    "new_example": "It is difficult to justify the high cost of the project today.",
+    "new_translation": "Thật khó để bào chữa cho chi phí cao của dự án hôm nay."
+  },
+  {
+    "word": "kaleidoscope",
+    "old_example": "The festival was a kaleidoscope of colors, sounds, and smells, reflecting the rich cultural diversity of the local community.",
+    "new_example": "The festival was a kaleidoscope of colors and sounds today.",
+    "new_translation": "Lễ hội là một sự thay đổi muôn hình vạn trạng về màu sắc."
+  },
+  {
+    "word": "kanagawa",
+    "old_example": "The company's new manufacturing plant is located in Kanagawa Prefecture, just south of Tokyo.",
+    "new_example": "The company's new plant is located in Kanagawa Prefecture today.",
+    "new_translation": "Nhà máy mới của công ty nằm ở tỉnh Kanagawa hôm nay."
+  },
+  {
+    "word": "kang",
+    "old_example": "Mr. Kang has been appointed as the regional director for the firm's East Asian operations.",
+    "new_example": "Mr. Kang has been appointed as the regional director today.",
+    "new_translation": "Ông Kang đã được bổ nhiệm làm giám đốc khu vực hôm nay."
+  },
+  {
+    "word": "kasai",
+    "old_example": "The Kasai region in the Democratic Republic of the Congo is known for its rich diamond deposits.",
+    "new_example": "The Kasai region is known for its rich diamond deposits today.",
+    "new_translation": "Vùng Kasai nổi tiếng với các mỏ kim cương phong phú hôm nay."
+  },
+  {
+    "word": "kawagoe",
+    "old_example": "Many tourists visit Kawagoe to see the well-preserved traditional warehouse-style buildings from the Edo period.",
+    "new_example": "Many tourists visit Kawagoe to see the traditional buildings today.",
+    "new_translation": "Nhiều khách du lịch đến thăm Kawagoe để xem những tòa nhà truyền thống."
+  },
+  {
+    "word": "kayaking",
+    "old_example": "Kayaking is a popular recreational activity among the staff during our annual company retreat by the lake.",
+    "new_example": "Kayaking is a popular activity during our annual company retreat today.",
+    "new_translation": "Chèo thuyền kayak là một hoạt động phổ biến trong đợt nghỉ dưỡng."
+  },
+  {
+    "word": "keegan",
+    "old_example": "Ms. Keegan has recently published a groundbreaking study on consumer behavior in the digital age.",
+    "new_example": "Ms. Keegan has recently published a study on consumer behavior today.",
+    "new_translation": "Cô Keegan gần đây đã công bố một nghiên cứu về hành vi người dùng."
+  },
+  {
+    "word": "keen",
+    "old_example": "He is a keen amateur photographer and spends most of his weekends taking photos in the local countryside.",
+    "new_example": "He is a keen photographer and spends his weekends taking photos today.",
+    "new_translation": "Anh ấy là một nhiếp ảnh gia hăng hái và dành cuối tuần chụp ảnh."
+  },
+  {
+    "word": "keenness",
+    "old_example": "The manager was impressed by the candidate's keenness to learn new skills and her enthusiasm for the project.",
+    "new_example": "The manager was impressed by the candidate's keenness to learn today.",
+    "new_translation": "Quản lý đã bị ấn tượng bởi sự hăng hái học hỏi của ứng viên."
+  },
+  {
+    "word": "keeps",
+    "old_example": "The manager keeps a close watch on the production schedule to ensure on-time delivery.",
+    "new_example": "The manager keeps a close watch on the production schedule today.",
+    "new_translation": "Người quản lý theo dõi sát sao lịch trình sản xuất hôm nay."
+  },
+  {
+    "word": "kelp",
+    "old_example": "Kelp forests are important marine ecosystems that provide food and shelter for a wide variety of sea creatures.",
+    "new_example": "Kelp forests are important marine ecosystems for many sea creatures today.",
+    "new_translation": "Những khu rừng tảo bẹ là những hệ sinh thái biển quan trọng."
+  },
+  {
+    "word": "ken",
+    "old_example": "The complex international trade and economic regulations were beyond the ken of the young administrative assistant joining the marketing department yesterday.",
+    "new_example": "The complex trade regulations were beyond the ken of the assistant today.",
+    "new_translation": "Các quy định thương mại phức tạp vượt ngoài tầm hiểu biết của trợ lý."
+  },
+  {
+    "word": "kennedy",
+    "old_example": "President Kennedy's leadership during the Cuban Missile Crisis is often cited in history classes.",
+    "new_example": "President Kennedy's leadership is often cited in history classes today.",
+    "new_translation": "Sự lãnh đạo của Tổng thống Kennedy thường được trích dẫn hôm nay."
+  },
+  {
+    "word": "key",
+    "old_example": "Innovation is the key factor that determines a company's success in a highly competitive market.",
+    "new_example": "Innovation is the key factor for a company's success today.",
+    "new_translation": "Đổi mới là nhân tố then chốt cho sự thành công của công ty."
+  },
+  {
+    "word": "keyboards",
+    "old_example": "The IT department ordered fifty ergonomic keyboards to help reduce wrist strain for office employees.",
+    "new_example": "The IT department ordered fifty ergonomic keyboards today.",
+    "new_translation": "Bộ phận CNTT đã đặt hàng năm mươi bàn phím công thái học hôm nay."
+  },
+  {
+    "word": "keynote",
+    "old_example": "The CEO will deliver the keynote address at the opening of the annual international trade convention.",
+    "new_example": "The CEO will deliver the keynote address at the convention today.",
+    "new_translation": "CEO sẽ trình bày bài diễn văn chính tại hội nghị hôm nay."
+  },
+  {
+    "word": "kickstand",
+    "old_example": "He lowered the kickstand and leaned his bicycle against the wall of the shop.",
+    "new_example": "He lowered the kickstand and leaned his bicycle against the wall today.",
+    "new_translation": "Anh ấy gạt chân chống xuống và dựng chiếc xe đạp vào tường."
+  },
+  {
+    "word": "kiln",
+    "old_example": "The skilled local potter placed the expensive international clay vessels into the large industrial kiln early yesterday morning ahead of schedule today.",
+    "new_example": "The potter placed the clay vessels into the large kiln today.",
+    "new_translation": "Người thợ gốm đã đặt các bình đất sét vào lò nung lớn hôm nay."
+  },
+  {
+    "word": "kilogram",
+    "old_example": "I bought five kilograms of potatoes and a dozen eggs from the local market.",
+    "new_example": "I bought five kilograms of potatoes from the local market today.",
+    "new_translation": "Tôi đã mua năm ki-lô-gam khoai tây từ chợ địa phương hôm nay."
+  },
+  {
+    "word": "kilometer",
+    "old_example": "The hotel is located only one kilometer away from the city's main railway station.",
+    "new_example": "The hotel is located only one kilometer from the railway station today.",
+    "new_translation": "Khách sạn chỉ nằm cách ga đường sắt một ki-lô-mét hôm nay."
+  },
+  {
+    "word": "kilometers",
+    "old_example": "The delivery truck traveled over five hundred kilometers to reach the remote distribution center.",
+    "new_example": "The truck traveled over five hundred kilometers to reach the center today.",
+    "new_translation": "Chiếc xe tải đã di chuyển hơn năm trăm ki-lô-mét hôm nay."
+  },
+  {
+    "word": "kilometre",
+    "old_example": "The nearest gas station is about ten kilometres away, so we should make sure we have enough fuel for the trip.",
+    "new_example": "The nearest gas station is about ten kilometres away today.",
+    "new_translation": "Trạm xăng gần nhất cách đây khoảng mười ki-lô-mét hôm nay."
+  },
+  {
+    "word": "kilowatt",
+    "old_example": "The new solar panel system is capable of producing up to five kilowatts of electricity under ideal weather conditions.",
+    "new_example": "The new solar system can produce five kilowatts of electricity today.",
+    "new_translation": "Hệ thống pin mặt trời mới có thể sản xuất năm ki-lô-oát điện."
+  },
+  {
+    "word": "kim",
+    "old_example": "Mr. Kim was recognized for his outstanding contribution to the company's research and development department.",
+    "new_example": "Mr. Kim was recognized for his outstanding contribution to the department today.",
+    "new_translation": "Ông Kim đã được ghi nhận vì sự đóng góp xuất sắc hôm nay."
+  },
+  {
+    "word": "kimura",
+    "old_example": "Ms. Kimura will be representing the Tokyo branch at the upcoming annual shareholders' meeting.",
+    "new_example": "Ms. Kimura will represent the branch at the shareholders' meeting today.",
+    "new_translation": "Cô Kimura sẽ đại diện cho chi nhánh tại cuộc họp cổ đông."
+  },
+  {
+    "word": "kind",
+    "old_example": "What kind of office equipment does the department need for the upcoming fiscal year?",
+    "new_example": "What kind of office equipment does the department need today?",
+    "new_translation": "Bộ phận cần loại thiết bị văn phòng nào hôm nay?"
+  },
+  {
+    "word": "kindle",
+    "old_example": "The teacher's passionate lecture about ancient history helped to kindle a lifelong interest in archaeology among her students.",
+    "new_example": "The teacher's lecture helped to kindle an interest in history today.",
+    "new_translation": "Bài giảng của giáo viên giúp nhen nhóm niềm yêu thích lịch sử."
+  },
+  {
+    "word": "kindness",
+    "old_example": "The neighbors showed great kindness by bringing over hot meals and offering to help with household chores after she had her surgery.",
+    "new_example": "The neighbors showed great kindness after she had her surgery today.",
+    "new_translation": "Những người hàng xóm đã thể hiện lòng tốt tuyệt vời hôm nay."
+  },
+  {
+    "word": "kinds",
+    "old_example": "The boutique sells various kinds of handmade accessories, ranging from leather belts to silk scarves.",
+    "new_example": "The boutique sells various kinds of handmade accessories today.",
+    "new_translation": "Cửa hàng bán nhiều loại phụ kiện thủ công khác nhau hôm nay."
+  },
+  {
+    "word": "king",
+    "old_example": "The company has long been considered the king of the high-end luxury watch market.",
+    "new_example": "The company is considered the king of the luxury watch market today.",
+    "new_translation": "Công ty được coi là ông vua của thị trường đồng hồ xa xỉ."
+  },
+  {
+    "word": "kingdom",
+    "old_example": "The United Kingdom is a major global hub for finance, technology, and creative industries.",
+    "new_example": "The United Kingdom is a major global hub for finance today.",
+    "new_translation": "Vương quốc Anh là một trung tâm toàn cầu lớn về tài chính hôm nay."
+  },
+  {
+    "word": "kiosks",
+    "old_example": "The shopping mall features several digital kiosks where visitors can look up store locations.",
+    "new_example": "The shopping mall features several digital kiosks today.",
+    "new_translation": "Trung tâm mua sắm có một vài trạm kỹ thuật số hôm nay."
+  }
+]

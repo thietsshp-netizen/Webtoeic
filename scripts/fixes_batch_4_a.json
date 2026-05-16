@@ -1,0 +1,765 @@
+
+[
+  {
+    "word": "bargain",
+    "old_example": "You can often find a great bargain at the local market if you are willing to negotiate.",
+    "new_example": "You can find a great bargain at the market if you negotiate.",
+    "new_translation": "Bạn có thể tìm thấy món hời tại chợ nếu bạn mặc cả."
+  },
+  {
+    "word": "bargaining",
+    "old_example": "The union is currently involved in collective bargaining with the company regarding the new international employee contracts.",
+    "new_example": "The union is involved in bargaining with the company regarding new contracts.",
+    "new_translation": "Công đoàn đang tham gia thương lượng với công ty về các hợp đồng mới."
+  },
+  {
+    "word": "bark",
+    "old_example": "The dog's loud bark woke up all the neighbors in the middle of the night.",
+    "new_example": "The dog's loud bark woke up all the neighbors last night.",
+    "new_translation": "Tiếng sủa lớn của con chó đã làm thức giấc hàng xóm đêm qua."
+  },
+  {
+    "word": "barn",
+    "old_example": "The farmer stores large amounts of high-quality animal feed in the big red wooden barn.",
+    "new_example": "The farmer stores animal feed in the big red wooden barn.",
+    "new_translation": "Người nông dân cất trữ thức ăn chăn nuôi trong kho gỗ màu đỏ."
+  },
+  {
+    "word": "barometer",
+    "old_example": "Many experts view the stock market as a key barometer of the country's overall economic health.",
+    "new_example": "Experts view the stock market as a barometer of economic health.",
+    "new_translation": "Các chuyên gia coi thị trường chứng khoán là phong vũ biểu kinh tế."
+  },
+  {
+    "word": "baron",
+    "old_example": "The wealthy business baron donated several million dollars to various international charity organizations this year.",
+    "new_example": "The wealthy business baron donated several million dollars to charity this year.",
+    "new_translation": "Ông trùm kinh doanh giàu có đã quyên góp vài triệu đô la năm nay."
+  },
+  {
+    "word": "barracks",
+    "old_example": "The soldiers returned to their barracks after completing a long and difficult military training exercise today.",
+    "new_example": "The soldiers returned to their barracks after completing the training exercise.",
+    "new_translation": "Các binh sĩ đã trở về doanh trại sau khi hoàn thành diễn tập."
+  },
+  {
+    "word": "barrage",
+    "old_example": "The company faced a barrage of difficult questions from reporters during the international press conference.",
+    "new_example": "The company faced a barrage of difficult questions from reporters during the conference.",
+    "new_translation": "Công ty đối mặt với một loạt câu hỏi khó từ các phóng viên."
+  },
+  {
+    "word": "barrel",
+    "old_example": "The winery stores its premium red wine in large oak barrels to enhance the overall flavor and aroma.",
+    "new_example": "The winery stores its red wine in large oak barrels.",
+    "new_translation": "Xưởng rượu lưu trữ rượu vang đỏ trong các thùng sồi lớn."
+  },
+  {
+    "word": "barren",
+    "old_example": "The region consists of barren land with very little vegetation and low annual rainfall throughout the year.",
+    "new_example": "The region consists of barren land with very little vegetation.",
+    "new_translation": "Khu vực này gồm vùng đất cằn cỗi với rất ít thực vật."
+  },
+  {
+    "word": "barrier",
+    "old_example": "Language differences can often be a major barrier to effective international communication and business cooperation.",
+    "new_example": "Language differences can be a major barrier to international communication.",
+    "new_translation": "Sự khác biệt ngôn ngữ có thể là rào cản lớn trong giao tiếp."
+  },
+  {
+    "word": "barriers",
+    "old_example": "The government is working to reduce international trade barriers to encourage global investment and economic growth.",
+    "new_example": "The government is working to reduce international trade barriers.",
+    "new_translation": "Chính phủ đang nỗ lực giảm bớt rào cản thương mại quốc tế."
+  },
+  {
+    "word": "barter",
+    "old_example": "The ancient tribes used to barter goods like silk and spices instead of using a traditional currency system.",
+    "new_example": "The ancient tribes used to barter goods instead of using currency.",
+    "new_translation": "Các bộ lạc cổ đại từng đổi hàng hóa thay vì dùng tiền."
+  },
+  {
+    "word": "base",
+    "old_example": "The company decided to establish its main production base in a region with lower operational costs.",
+    "new_example": "The company established its production base in a region with lower costs.",
+    "new_translation": "Công ty đặt cơ sở sản xuất tại khu vực có chi phí thấp."
+  },
+  {
+    "word": "basement",
+    "old_example": "We store several boxes of old international business documents in the basement of the office building.",
+    "new_example": "We store several boxes of documents in the basement of the building.",
+    "new_translation": "Chúng tôi lưu trữ vài thùng tài liệu trong tầng hầm tòa nhà."
+  },
+  {
+    "word": "bases",
+    "old_example": "The international corporation operates several production bases in different countries across the global market.",
+    "new_example": "The corporation operates several production bases in different countries.",
+    "new_translation": "Tập đoàn vận hành một vài căn cứ sản xuất tại các quốc gia."
+  },
+  {
+    "word": "basically",
+    "old_example": "The manager's job is basically to oversee and coordinate all the company's international marketing and sales operations.",
+    "new_example": "The manager's job is basically to oversee marketing and sales operations.",
+    "new_translation": "Công việc của quản lý cơ bản là giám sát hoạt động bán hàng."
+  },
+  {
+    "word": "basis",
+    "old_example": "The department conducts performance reviews for all employees on a regular monthly and annual basis.",
+    "new_example": "The department conducts performance reviews for all employees on a monthly basis.",
+    "new_translation": "Bộ phận thực hiện đánh giá năng lực cho nhân viên hàng tháng."
+  },
+  {
+    "word": "basket",
+    "old_example": "The local market offers a wide variety of fresh organic fruit and vegetables in small wicker baskets today.",
+    "new_example": "The market offers organic fruit and vegetables in small wicker baskets.",
+    "new_translation": "Chợ cung cấp trái cây và rau hữu cơ trong những chiếc giỏ mây."
+  },
+  {
+    "word": "batch",
+    "old_example": "The quality control team identified several technical issues with the latest batch of international electronic products.",
+    "new_example": "The team identified several issues with the latest batch of products.",
+    "new_translation": "Đội ngũ đã xác định vài lỗi ở lô hàng sản phẩm mới nhất."
+  },
+  {
+    "word": "batches",
+    "old_example": "The pharmaceutical company is testing several different batches of the new international vaccine for safety.",
+    "new_example": "The company is testing several batches of the new vaccine for safety.",
+    "new_translation": "Công ty đang kiểm tra vài lô vắc-xin mới để đảm bảo an toàn."
+  },
+  {
+    "word": "bathe",
+    "old_example": "The young mother decided to bathe her baby in a small plastic tub with warm water.",
+    "new_example": "The mother decided to bathe her baby in a small plastic tub.",
+    "new_translation": "Người mẹ quyết định tắm cho em bé trong một chiếc chậu nhựa nhỏ."
+  },
+  {
+    "word": "bathtub",
+    "old_example": "The luxury hotel room features a large marble bathtub with a beautiful view of the city center harbor.",
+    "new_example": "The hotel room features a marble bathtub with a view of the harbor.",
+    "new_translation": "Phòng khách sạn có bồn tắm đá cẩm thạch với tầm nhìn hướng cảng."
+  },
+  {
+    "word": "batteries",
+    "old_example": "Please ensure that you dispose of old batteries properly at the local designated recycling center.",
+    "new_example": "Please dispose of old batteries properly at the recycling center.",
+    "new_translation": "Vui lòng vứt bỏ pin cũ đúng cách tại trung tâm tái chế."
+  },
+  {
+    "word": "battery",
+    "old_example": "The modern laptop features a high-capacity battery that can last for over twelve hours of use.",
+    "new_example": "The modern laptop features a battery that lasts over twelve hours.",
+    "new_translation": "Máy tính xách tay hiện đại có pin sử dụng được trên mười hai giờ."
+  },
+  {
+    "word": "battle",
+    "old_example": "The two companies are currently in a fierce legal battle over several international patent rights.",
+    "new_example": "The two companies are in a legal battle over several patent rights.",
+    "new_translation": "Hai công ty đang trong cuộc chiến pháp lý về quyền sáng chế."
+  },
+  {
+    "word": "bay",
+    "old_example": "The international hotel offers several luxury suites with stunning views of the city's main bay area.",
+    "new_example": "The hotel offers luxury suites with stunning views of the bay.",
+    "new_translation": "Khách sạn có các dãy phòng sang trọng nhìn ra vịnh."
+  },
+  {
+    "word": "be",
+    "old_example": "The international technology conference will be held at the city's main exhibition hall next month.",
+    "new_example": "The technology conference will be held at the exhibition hall next month.",
+    "new_translation": "Hội nghị công nghệ sẽ được tổ chức tại sảnh triển lãm tháng tới."
+  },
+  {
+    "word": "beach",
+    "old_example": "The small coastal town is famous for its beautiful sandy beach and clear blue ocean waters.",
+    "new_example": "The coastal town is famous for its beautiful sandy beach.",
+    "new_translation": "Thị trấn ven biển nổi tiếng với bãi biển cát đẹp."
+  },
+  {
+    "word": "beachgoer",
+    "old_example": "Local authorities reminded beachgoers to stay within the designated swimming areas and to clean up their trash before leaving.",
+    "new_example": "Authorities reminded beachgoers to stay within the designated swimming areas.",
+    "new_translation": "Chính quyền nhắc nhở người đi biển ở lại trong khu vực bơi quy định."
+  },
+  {
+    "word": "beachwear",
+    "old_example": "The store offers a wide selection of stylish beachwear, including swimsuits, sun hats, and flip-flops for the summer season.",
+    "new_example": "The store offers a wide selection of stylish beachwear for the summer.",
+    "new_translation": "Cửa hàng cung cấp nhiều loại đồ đi biển sành điệu cho mùa hè."
+  },
+  {
+    "word": "beam",
+    "old_example": "A narrow beam of sunlight shone through the window and illuminated the dusty office early this morning.",
+    "new_example": "A beam of sunlight shone through the window and illuminated the office.",
+    "new_translation": "Một tia nắng chiếu qua cửa sổ và làm bừng sáng văn phòng."
+  },
+  {
+    "word": "beams",
+    "old_example": "The ceiling is supported by several large wooden beams that reflect the building's historic architectural style.",
+    "new_example": "The ceiling is supported by several large wooden beams.",
+    "new_translation": "Trần nhà được nâng đỡ bởi vài rầm gỗ lớn."
+  },
+  {
+    "word": "bear",
+    "old_example": "The manager had to bear the responsibility for the failure of the international marketing project last month.",
+    "new_example": "The manager had to bear the responsibility for the project's failure.",
+    "new_translation": "Quản lý đã phải chịu trách nhiệm về thất bại của dự án."
+  },
+  {
+    "word": "beard",
+    "old_example": "He decided to grow a thick beard during his long international backpacking trip across Southeast Asia.",
+    "new_example": "He decided to grow a thick beard during his backpacking trip.",
+    "new_translation": "Anh ấy đã quyết định để râu dày trong chuyến du lịch bụi."
+  },
+  {
+    "word": "bearer",
+    "old_example": "I am sorry to be the bearer of bad news regarding the international project's sudden cancellation.",
+    "new_example": "I am sorry to be the bearer of bad news regarding the cancellation.",
+    "new_translation": "Tôi rất tiếc khi phải là người đưa tin xấu về việc hủy bỏ."
+  },
+  {
+    "word": "bearing",
+    "old_example": "The CEO's professional bearing and confidence commanded respect from everyone at the international business meeting.",
+    "new_example": "The CEO's professional bearing and confidence commanded respect from everyone.",
+    "new_translation": "Phong thái chuyên nghiệp và sự tự tin của CEO khiến mọi người nể phục."
+  },
+  {
+    "word": "beat",
+    "old_example": "The underdog team managed to beat the heavy favorites in the international football championship final yesterday.",
+    "new_example": "The underdog team managed to beat the favorites in the final yesterday.",
+    "new_translation": "Đội bị đánh giá thấp đã thắng được đội mạnh trong trận chung kết."
+  },
+  {
+    "word": "beautiful",
+    "old_example": "The hotel features a beautiful garden where guests can relax and enjoy the fresh local air.",
+    "new_example": "The hotel features a beautiful garden where guests can relax.",
+    "new_translation": "Khách sạn có một khu vườn đẹp nơi khách có thể thư giãn."
+  },
+  {
+    "word": "beautifully",
+    "old_example": "The old office building was beautifully restored and converted into several modern luxury apartment suites.",
+    "new_example": "The old building was beautifully restored and converted into modern apartments.",
+    "new_translation": "Tòa nhà cũ đã được phục hồi đẹp đẽ và chuyển thành căn hộ."
+  },
+  {
+    "word": "beautify",
+    "old_example": "The city council has launched a new project to beautify the downtown area by planting more trees and flowers.",
+    "new_example": "The council launched a project to beautify the area by planting trees.",
+    "new_translation": "Hội đồng khởi xướng dự án làm đẹp khu vực bằng cách trồng cây."
+  },
+  {
+    "word": "became",
+    "old_example": "He became the manager of the international sales department after only three years with the company.",
+    "new_example": "He became the sales manager after only three years with the company.",
+    "new_translation": "Anh ấy trở thành quản lý bán hàng chỉ sau ba năm tại công ty."
+  },
+  {
+    "word": "because",
+    "old_example": "The meeting was canceled because several international partners were unable to attend due to flight delays.",
+    "new_example": "The meeting was canceled because several partners were unable to attend.",
+    "new_translation": "Cuộc họp bị hủy vì một vài đối tác không thể tham dự."
+  },
+  {
+    "word": "become",
+    "old_example": "Our goal is to become the leading provider of international financial management software in the global market.",
+    "new_example": "Our goal is to become the leading provider of financial software.",
+    "new_translation": "Mục tiêu của chúng tôi là trở thành nhà cung cấp phần mềm tài chính."
+  },
+  {
+    "word": "becoming",
+    "old_example": "Digital marketing is becoming an increasingly important part of our overall international business strategy this year.",
+    "new_example": "Digital marketing is becoming an increasingly important part of our strategy.",
+    "new_translation": "Tiếp thị kỹ thuật số đang trở thành phần quan trọng trong chiến lược."
+  },
+  {
+    "word": "bed",
+    "old_example": "The hotel room features a large comfortable bed and a private balcony with stunning city views.",
+    "new_example": "The hotel room features a comfortable bed and a private balcony.",
+    "new_translation": "Phòng khách sạn có một chiếc giường thoải mái và ban công riêng."
+  },
+  {
+    "word": "bedlam",
+    "old_example": "It was absolute bedlam in the store on the first day of the sale.",
+    "new_example": "It was absolute bedlam in the store on the first day.",
+    "new_translation": "Đã có một sự hỗn loạn tuyệt đối trong cửa hàng ngày đầu tiên."
+  },
+  {
+    "word": "bedroom",
+    "old_example": "The new luxury apartment includes two spacious bedrooms and a modern kitchen with high-end appliances.",
+    "new_example": "The new apartment includes two spacious bedrooms and a modern kitchen.",
+    "new_translation": "Căn hộ mới bao gồm hai phòng ngủ rộng rãi và bếp hiện đại."
+  },
+  {
+    "word": "beds",
+    "old_example": "The local hospital is currently in need of more beds to accommodate the increasing number of patients.",
+    "new_example": "The hospital is in need of more beds for the patients.",
+    "new_translation": "Bệnh viện đang cần thêm giường cho các bệnh nhân."
+  },
+  {
+    "word": "beef",
+    "old_example": "The country exports high-quality organic beef to several major international markets in Asia and Europe.",
+    "new_example": "The country exports high-quality organic beef to major international markets.",
+    "new_translation": "Đất nước xuất khẩu thịt bò hữu cơ sang các thị trường quốc tế."
+  },
+  {
+    "word": "beehive",
+    "old_example": "The office was a beehive of activity as the staff worked tirelessly to finalize the report before the project deadline.",
+    "new_example": "The office was a beehive of activity before the project deadline.",
+    "new_translation": "Văn phòng rất bận rộn trước khi đến hạn chót dự án."
+  },
+  {
+    "word": "been",
+    "old_example": "She has been the manager of the international marketing department for over five successful years.",
+    "new_example": "She has been the marketing manager for over five successful years.",
+    "new_translation": "Cô ấy đã là quản lý tiếp thị trong hơn năm năm thành công."
+  },
+  {
+    "word": "before",
+    "old_example": "Please ensure that you finish all your tasks before you leave the office this afternoon.",
+    "new_example": "Please ensure that you finish all tasks before leaving the office.",
+    "new_translation": "Vui lòng đảm bảo bạn hoàn thành mọi việc trước khi rời văn phòng."
+  },
+  {
+    "word": "began",
+    "old_example": "The company began its international expansion project early last year and has already seen significant growth.",
+    "new_example": "The company began its expansion project last year and saw growth.",
+    "new_translation": "Công ty bắt đầu dự án mở rộng năm ngoái và đã có tăng trưởng."
+  },
+  {
+    "word": "begin",
+    "old_example": "The international trade fair is scheduled to begin early tomorrow morning at the city's main exhibition center.",
+    "new_example": "The trade fair is scheduled to begin tomorrow morning at the center.",
+    "new_translation": "Hội chợ thương mại được lên lịch bắt đầu vào sáng mai tại trung tâm."
+  },
+  {
+    "word": "beginning",
+    "old_example": "The international economy is finally beginning to show signs of recovery from the long and difficult recession.",
+    "new_example": "The international economy is beginning to show signs of recovery.",
+    "new_translation": "Nền kinh tế quốc tế bắt đầu có những dấu hiệu phục hồi."
+  },
+  {
+    "word": "begins",
+    "old_example": "If the meeting begins on time, we should be able to finish all the tasks by noon.",
+    "new_example": "If the meeting begins on time, we can finish by noon.",
+    "new_translation": "Nếu cuộc họp bắt đầu đúng giờ, chúng ta có thể xong trước buổi trưa."
+  },
+  {
+    "word": "behalf",
+    "old_example": "On behalf of the entire company, I would like to welcome you to our international team.",
+    "new_example": "On behalf of the company, I welcome you to our team.",
+    "new_translation": "Thay mặt công ty, tôi chào mừng bạn gia nhập đội ngũ."
+  },
+  {
+    "word": "behavior",
+    "old_example": "The marketing department uses advanced analytics to track customer behavior across our international social media platforms.",
+    "new_example": "The department uses analytics to track customer behavior on social media.",
+    "new_translation": "Bộ phận dùng hệ thống phân tích để theo dõi hành vi khách hàng."
+  },
+  {
+    "word": "behind",
+    "old_example": "The company's new regional headquarters is located behind the city's main international train station.",
+    "new_example": "The company's new headquarters is located behind the train station.",
+    "new_translation": "Trụ sở mới của công ty nằm phía sau ga tàu hỏa."
+  },
+  {
+    "word": "beige",
+    "old_example": "The walls of the living room were painted a soft beige color to create a calm and neutral backdrop for the colorful artwork.",
+    "new_example": "The living room walls were painted a soft beige color.",
+    "new_translation": "Các bức tường phòng khách được sơn màu be nhẹ nhàng."
+  },
+  {
+    "word": "being",
+    "old_example": "Being a successful international manager requires a great deal of patience, cultural sensitivity, and effective communication skills.",
+    "new_example": "Being a successful manager requires patience and effective communication skills.",
+    "new_translation": "Là quản lý thành công đòi hỏi sự kiên nhẫn và kỹ năng liên lạc."
+  },
+  {
+    "word": "belief",
+    "old_example": "It is her firm belief that honesty and integrity are essential for maintaining professional business relationships.",
+    "new_example": "She believes that honesty and integrity are essential for business relationships.",
+    "new_translation": "Cô tin rằng sự trung thực và chính trực là thiết yếu cho kinh doanh."
+  },
+  {
+    "word": "believe",
+    "old_example": "I firmly believe that the new international marketing campaign will lead to a significant increase in sales.",
+    "new_example": "I believe that the new marketing campaign will increase sales.",
+    "new_translation": "Tôi tin rằng chiến dịch tiếp thị mới sẽ làm tăng doanh số."
+  },
+  {
+    "word": "believes",
+    "old_example": "The CEO believes that the company's future success depends on its ability to expand into international markets.",
+    "new_example": "The CEO believes that success depends on expanding into international markets.",
+    "new_translation": "CEO tin rằng thành công phụ thuộc vào việc mở rộng ra quốc tế."
+  },
+  {
+    "word": "belong",
+    "old_example": "Please ensure that you return all the tools to the shelf where they belong after you finish.",
+    "new_example": "Please return all tools to the shelf after you finish.",
+    "new_translation": "Vui lòng trả lại tất cả công cụ về kệ sau khi hoàn thành."
+  },
+  {
+    "word": "belonging",
+    "old_example": "A sense of belonging and community is essential for maintaining a positive and productive working environment.",
+    "new_example": "A sense of belonging is essential for a productive working environment.",
+    "new_translation": "Cảm giác thuộc về là thiết yếu cho môi trường làm việc hiệu quả."
+  },
+  {
+    "word": "belongings",
+    "old_example": "Please ensure that you take all your personal belongings with you before you leave the train.",
+    "new_example": "Please take all your personal belongings before you leave the train.",
+    "new_translation": "Vui lòng mang theo đồ dùng cá nhân trước khi rời tàu."
+  },
+  {
+    "word": "beloved",
+    "old_example": "The famous international singer was beloved by millions of fans from all around the world for years.",
+    "new_example": "The famous singer was beloved by millions of fans for years.",
+    "new_translation": "Ca sĩ nổi tiếng đã được hàng triệu người hâm mộ yêu mến."
+  },
+  {
+    "word": "below",
+    "old_example": "Please refer to the diagram shown below for more information about the new system's technical architecture.",
+    "new_example": "Please refer to the diagram below for more information about the system.",
+    "new_translation": "Vui lòng xem sơ đồ dưới đây để biết thêm thông tin hệ thống."
+  },
+  {
+    "word": "belt",
+    "old_example": "The mechanic had to replace the broken fan belt of the engine before the car could travel.",
+    "new_example": "The mechanic had to replace the broken fan belt of the engine.",
+    "new_translation": "Thợ máy đã phải thay thế dây curoa quạt bị hỏng."
+  },
+  {
+    "word": "benchmark",
+    "old_example": "The company's new software tool has become the industry benchmark for international financial management and reporting.",
+    "new_example": "The new software has become the industry benchmark for financial reporting.",
+    "new_translation": "Phần mềm mới đã trở thành tiêu chuẩn ngành cho báo cáo tài chính."
+  },
+  {
+    "word": "bend",
+    "old_example": "The road ahead has a sharp bend, so please drive carefully and reduce your speed immediately.",
+    "new_example": "The road ahead has a sharp bend, so please drive carefully.",
+    "new_translation": "Con đường phía trước có một khúc cua gắt, hãy lái xe cẩn thận."
+  },
+  {
+    "word": "beneath",
+    "old_example": "The researchers discovered several ancient artifacts buried deep beneath the surface of the old city center.",
+    "new_example": "Researchers discovered several artifacts buried beneath the surface of the city.",
+    "new_translation": "Các nhà nghiên cứu khám phá ra vài cổ vật chôn dưới lòng thành phố."
+  },
+  {
+    "word": "benefactor",
+    "old_example": "The wealthy business baron is a major benefactor to several international charity organizations and local schools.",
+    "new_example": "The business baron is a benefactor to several charities and schools.",
+    "new_translation": "Ông trùm kinh doanh là nhà hảo tâm cho vài tổ chức và trường học."
+  },
+  {
+    "word": "beneficent",
+    "old_example": "The company's beneficent policies have significantly improved the lives and working conditions of its international employees.",
+    "new_example": "The company's beneficent policies improved the working conditions of its employees.",
+    "new_translation": "Các chính sách nhân từ của công ty đã cải thiện điều kiện làm việc."
+  },
+  {
+    "word": "beneficial",
+    "old_example": "The new international partnership agreement is expected to be highly beneficial for both of the participating corporations.",
+    "new_example": "The new partnership is expected to be beneficial for both corporations.",
+    "new_translation": "Thỏa thuận hợp tác mới dự kiến sẽ mang lại lợi ích cho hai bên."
+  },
+  {
+    "word": "beneficiary",
+    "old_example": "She was named as the sole beneficiary of her late uncle's large international estate and business.",
+    "new_example": "She was named as the sole beneficiary of her late uncle's estate.",
+    "new_translation": "Cô được chỉ định là người thụ hưởng duy nhất cho tài sản của chú."
+  },
+  {
+    "word": "benefit",
+    "old_example": "The company decided to offer an attractive benefits package to recruit top international talent in technology.",
+    "new_example": "The company offered an attractive benefits package to recruit top talent.",
+    "new_translation": "Công ty đưa ra gói phúc lợi hấp dẫn để tuyển dụng tài năng."
+  },
+  {
+    "word": "benefits",
+    "old_example": "The new health insurance plan offers several key benefits for all international employees and their families.",
+    "new_example": "The new insurance plan offers key benefits for all international employees.",
+    "new_translation": "Kế hoạch bảo hiểm mới mang lại lợi ích cho nhân viên quốc tế."
+  },
+  {
+    "word": "benevolence",
+    "old_example": "The CEO is known for his benevolence and has donated several million dollars to various charities.",
+    "new_example": "The CEO is known for his benevolence and has donated millions.",
+    "new_translation": "CEO nổi tiếng với lòng nhân từ và đã quyên góp hàng triệu đô."
+  },
+  {
+    "word": "benevolent",
+    "old_example": "The organization is a benevolent society that provides support and resources for international students in need.",
+    "new_example": "The organization provides support and resources for international students in need.",
+    "new_translation": "Tổ chức này cung cấp hỗ trợ cho sinh viên quốc tế gặp khó khăn."
+  },
+  {
+    "word": "benign",
+    "old_example": "The doctor assured the patient that the tumor was benign and did not pose a threat.",
+    "new_example": "The doctor assured the patient that the tumor was benign.",
+    "new_translation": "Bác sĩ cam đoan với bệnh nhân rằng khối u lành tính."
+  },
+  {
+    "word": "bent",
+    "old_example": "The old metal gate was bent and damaged during the heavy storm that hit last week.",
+    "new_example": "The old metal gate was bent during the heavy storm last week.",
+    "new_translation": "Cổng kim loại cũ bị cong trong trận bão tuần trước."
+  },
+  {
+    "word": "bequeath",
+    "old_example": "He decided to bequeath his large international art collection to the city's main public museum.",
+    "new_example": "He decided to bequeath his art collection to the public museum.",
+    "new_translation": "Anh quyết định để lại bộ sưu tập nghệ thuật cho bảo tàng."
+  },
+  {
+    "word": "bequest",
+    "old_example": "The university received a large bequest from a former student to fund new international research scholarships.",
+    "new_example": "The university received a large bequest to fund new research scholarships.",
+    "new_translation": "Trường đại học nhận được khoản thừa kế để tài trợ học bổng nghiên cứu."
+  },
+  {
+    "word": "berate",
+    "old_example": "The manager was criticized for his tendency to publicly berate employees for minor professional mistakes.",
+    "new_example": "The manager was criticized for his tendency to publicly berate employees.",
+    "new_translation": "Quản lý bị chỉ trích vì xu hướng công khai mắng mỏ nhân viên."
+  },
+  {
+    "word": "bereavement",
+    "old_example": "The company offers a week of paid bereavement leave for employees who have lost a family member.",
+    "new_example": "The company offers paid bereavement leave for employees who lost family members.",
+    "new_translation": "Công ty cung cấp nghỉ tang có lương cho nhân viên mất người thân."
+  },
+  {
+    "word": "berry",
+    "old_example": "The local farm produces several types of high-quality organic berries for sale in international markets.",
+    "new_example": "The farm produces high-quality organic berries for sale in international markets.",
+    "new_translation": "Trang trại sản xuất quả mọng hữu cơ để bán tại các thị trường."
+  },
+  {
+    "word": "berth",
+    "old_example": "The ship arrived at its designated berth in the international harbor early yesterday morning.",
+    "new_example": "The ship arrived at its designated berth in the harbor yesterday.",
+    "new_translation": "Con tàu đã đến nơi neo đậu chỉ định tại cảng hôm qua."
+  },
+  {
+    "word": "beseech",
+    "old_example": "The villagers decided to beseech the local authorities for more help and support after the flood.",
+    "new_example": "The villagers decided to beseech the authorities for help after the flood.",
+    "new_translation": "Các dân làng đã quyết định van nài chính quyền hỗ trợ sau lũ lụt."
+  },
+  {
+    "word": "beset",
+    "old_example": "The international expansion project was unfortunately beset by several unexpected technical and financial difficulties.",
+    "new_example": "The expansion project was unfortunately beset by technical and financial difficulties.",
+    "new_translation": "Dự án mở rộng thật không may đã gặp khó khăn kỹ thuật."
+  },
+  {
+    "word": "beside",
+    "old_example": "The new office building is located right beside the city's main international technology park.",
+    "new_example": "The new office building is located beside the technology park.",
+    "new_translation": "Tòa nhà văn phòng mới nằm ngay cạnh khu công nghệ."
+  },
+  {
+    "word": "besides",
+    "old_example": "Besides his salary, the manager receives several additional benefits, including a company car and bonuses.",
+    "new_example": "Besides his salary, the manager receives additional benefits and bonuses.",
+    "new_translation": "Ngoài lương, quản lý còn nhận được thêm phúc lợi và thưởng."
+  },
+  {
+    "word": "besides",
+    "old_example": "I don't really want to go to the party; besides, I have too much work to do.",
+    "new_example": "I don't want to go to the party; besides, I have work.",
+    "new_translation": "Tôi không muốn đi dự tiệc; vả lại tôi còn có việc."
+  },
+  {
+    "word": "besiege",
+    "old_example": "Reporters continued to besiege the company's headquarters after the news of the sudden merger broke yesterday.",
+    "new_example": "Reporters continued to besiege the headquarters after the merger news broke.",
+    "new_translation": "Phóng viên tiếp tục bao vây trụ sở sau khi tin sáp nhập nổ ra."
+  },
+  {
+    "word": "best",
+    "old_example": "Our goal is to provide the best possible customer service to all our international clients.",
+    "new_example": "Our goal is to provide the best service to all our clients.",
+    "new_translation": "Mục tiêu của chúng tôi là cung cấp dịch vụ tốt nhất cho khách hàng."
+  },
+  {
+    "word": "bestial",
+    "old_example": "The detective was horrified by the bestial nature of the crimes committed by the suspect.",
+    "new_example": "The detective was horrified by the bestial nature of the crimes.",
+    "new_translation": "Thám tử đã kinh hãi trước bản chất dã man của những tội ác."
+  },
+  {
+    "word": "bestow",
+    "old_example": "The university decided to bestow an honorary degree upon the famous international human rights activist.",
+    "new_example": "The university decided to bestow an honorary degree upon the famous activist.",
+    "new_translation": "Trường đại học đã quyết định trao bằng danh dự cho nhà hoạt động."
+  },
+  {
+    "word": "bet",
+    "old_example": "I'll bet that the new international marketing campaign will lead to a significant increase in sales.",
+    "new_example": "I'll bet the new marketing campaign will significantly increase sales.",
+    "new_translation": "Tôi cá là chiến dịch tiếp thị mới sẽ làm tăng mạnh doanh số."
+  },
+  {
+    "word": "better",
+    "old_example": "The company is working to provide better working conditions for all its international employees.",
+    "new_example": "The company is working to provide better conditions for its employees.",
+    "new_translation": "Công ty đang nỗ lực cung cấp các điều kiện tốt hơn cho nhân viên."
+  },
+  {
+    "word": "betterment",
+    "old_example": "The non-profit organization is dedicated to the betterment of the local community through its various education and health programs.",
+    "new_example": "The organization is dedicated to the betterment of the local community.",
+    "new_translation": "Tổ chức được dành cho việc cải thiện cộng đồng địa phương."
+  },
+  {
+    "word": "betting",
+    "old_example": "The government has introduced new regulations to control online betting and prevent underage gambling.",
+    "new_example": "The government introduced new regulations to control online betting.",
+    "new_translation": "Chính phủ đã đưa ra các quy định để kiểm soát cá cược trực tuyến."
+  },
+  {
+    "word": "between",
+    "old_example": "The meeting will take place between ten o'clock and noon in the international conference room.",
+    "new_example": "The meeting will take place between ten o'clock and noon.",
+    "new_translation": "Cuộc họp sẽ diễn ra trong khoảng từ mười giờ đến trưa."
+  },
+  {
+    "word": "beverage",
+    "old_example": "The flight attendants will serve a variety of complimentary hot and cold beverages during the flight.",
+    "new_example": "The flight attendants will serve hot and cold beverages during the flight.",
+    "new_translation": "Tiếp viên sẽ phục vụ đồ uống nóng và lạnh trong chuyến bay."
+  },
+  {
+    "word": "beverages",
+    "old_example": "The company exports several types of high-quality organic beverages to major international markets every year.",
+    "new_example": "The company exports organic beverages to major international markets every year.",
+    "new_translation": "Công ty xuất khẩu đồ uống hữu cơ sang các thị trường quốc tế."
+  },
+  {
+    "word": "bewildered",
+    "old_example": "The customers were bewildered by the sudden and unexpected changes to the company's international website.",
+    "new_example": "Customers were bewildered by the sudden changes to the company's website.",
+    "new_translation": "Khách hàng bàng hoàng trước những thay đổi đột ngột trên trang web."
+  },
+  {
+    "word": "bewildering",
+    "old_example": "The complex technical issues managed to create a bewildering situation for the entire international software team.",
+    "new_example": "Technical issues managed to create a bewildering situation for the software team.",
+    "new_translation": "Vấn đề kỹ thuật đã tạo ra một tình huống gây bối rối cho nhóm."
+  },
+  {
+    "word": "beyond",
+    "old_example": "The success of the new international marketing campaign was truly beyond everyone's initial expectations.",
+    "new_example": "The success of the new campaign was beyond everyone's initial expectations.",
+    "new_translation": "Thành công của chiến dịch mới vượt ngoài mong đợi ban đầu."
+  },
+  {
+    "word": "bias",
+    "old_example": "The researcher is working to ensure that there is no bias in the international survey results.",
+    "new_example": "The researcher is working to ensure there is no bias in results.",
+    "new_translation": "Nhà nghiên cứu đang làm việc để đảm bảo không có sự thiên vị."
+  },
+  {
+    "word": "biased",
+    "old_example": "Many experts criticized the report for being biased and failing to consider different international perspectives.",
+    "new_example": "Experts criticized the report for being biased and failing different perspectives.",
+    "new_translation": "Các chuyên gia chỉ trích báo cáo vì sự thiên vị và thiếu khách quan."
+  },
+  {
+    "word": "bibliography",
+    "old_example": "Please ensure that you include a detailed bibliography at the end of your international research report.",
+    "new_example": "Please include a detailed bibliography at the end of your report.",
+    "new_translation": "Vui lòng bao gồm một thư mục tài liệu ở cuối báo cáo."
+  },
+  {
+    "word": "bicyclist",
+    "old_example": "The city recently installed several new bike lanes to provide a safer environment for bicyclists commuting to work in the downtown area.",
+    "new_example": "The city installed new bike lanes for bicyclists in the downtown area.",
+    "new_translation": "Thành phố lắp đặt làn xe đạp mới cho người đi xe đạp ở trung tâm."
+  },
+  {
+    "word": "bid",
+    "old_example": "The company submitted a competitive bid for the new international construction project in Southeast Asia.",
+    "new_example": "The company submitted a competitive bid for the new construction project.",
+    "new_translation": "Công ty đã nộp một bản đấu thầu cạnh tranh cho dự án xây dựng."
+  },
+  {
+    "word": "bidding",
+    "old_example": "The company is currently bidding for several major international construction and infrastructure projects this year.",
+    "new_example": "The company is currently bidding for several major construction projects this year.",
+    "new_translation": "Công ty hiện đang đấu thầu vài dự án xây dựng lớn trong năm nay."
+  },
+  {
+    "word": "big",
+    "old_example": "The company's new regional headquarters is located in a big office building in the city center.",
+    "new_example": "The company's new headquarters is located in a big office building.",
+    "new_translation": "Trụ sở mới của công ty nằm trong một tòa nhà văn phòng lớn."
+  },
+  {
+    "word": "bike",
+    "old_example": "He usually rides his bike to the office every morning to save time and stay fit.",
+    "new_example": "He usually rides his bike to the office to save time.",
+    "new_translation": "Anh ấy thường đi xe đạp đến văn phòng để tiết kiệm thời gian."
+  },
+  {
+    "word": "bilateral",
+    "old_example": "The two countries signed a bilateral trade agreement to encourage international investment and economic cooperation.",
+    "new_example": "The two countries signed a bilateral trade agreement to encourage investment.",
+    "new_translation": "Hai nước đã ký thỏa thuận thương mại song phương để khuyến khích đầu tư."
+  },
+  {
+    "word": "bill",
+    "old_example": "Please ensure that you pay the electricity bill before the end of the month to avoid fees.",
+    "new_example": "Please pay the electricity bill before the end of the month.",
+    "new_translation": "Vui lòng thanh toán hóa đơn điện trước cuối tháng."
+  },
+  {
+    "word": "billing",
+    "old_example": "Please contact the billing department if you have any questions regarding your recent international transaction.",
+    "new_example": "Please contact the billing department if you have questions regarding your transaction.",
+    "new_translation": "Vui lòng liên hệ bộ phận thanh toán nếu bạn có thắc mắc."
+  },
+  {
+    "word": "billion",
+    "old_example": "The international corporation's annual revenue reached over five billion dollars for the first time last year.",
+    "new_example": "The corporation's annual revenue reached over five billion dollars last year.",
+    "new_translation": "Doanh thu hàng năm của tập đoàn đạt trên năm tỷ đô la năm ngoái."
+  },
+  {
+    "word": "bind",
+    "old_example": "He's in a bit of a bind because he promised to be in two places at once.",
+    "new_example": "He's in a bind because he promised to be in two places.",
+    "new_translation": "Anh ấy gặp khó khăn vì đã hứa có mặt ở hai nơi."
+  },
+  {
+    "word": "binding",
+    "old_example": "The merger agreement is legally binding and cannot be changed without the consent of both parties.",
+    "new_example": "The merger agreement is legally binding and cannot be changed.",
+    "new_translation": "Thỏa thuận sáp nhập có tính ràng buộc pháp lý và không thể thay đổi."
+  },
+  {
+    "word": "binge",
+    "old_example": "He went on a binging spree and watched the entire series in one weekend.",
+    "new_example": "He watched the entire series in one weekend.",
+    "new_translation": "Anh ấy đã xem hết cả bộ phim trong một cuối tuần."
+  },
+  {
+    "word": "binoculars",
+    "old_example": "We brought a pair of high-powered binoculars to get a better view of the rare birds in the forest.",
+    "new_example": "We brought a pair of binoculars to see the birds in the forest.",
+    "new_translation": "Chúng tôi mang theo ống nhòm để nhìn chim trong rừng."
+  },
+  {
+    "word": "binoculars",
+    "old_example": "He used a pair of binoculars to get a better view of the birds.",
+    "new_example": "He used a pair of binoculars to see the birds better.",
+    "new_translation": "Anh ấy đã sử dụng ống nhòm để quan sát lũ chim rõ hơn."
+  },
+  {
+    "word": "biographer",
+    "old_example": "The famous biographer spent several years researching the private letters and diaries of the late president for his upcoming book.",
+    "new_example": "The biographer spent several years researching the diaries for his new book.",
+    "new_translation": "Người viết tiểu sử đã dành vài năm nghiên cứu nhật ký cho sách mới."
+  }
+]

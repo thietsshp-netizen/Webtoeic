@@ -1,0 +1,753 @@
+"use client";
+
+import { useState, useEffect, useMemo, useRef, useCallback, memo } from "react";
+import { FlagIcon, TrophyIcon, ClockIcon, InformationCircleIcon } from "@heroicons/react/24/solid";
+import { ChevronsLeftRight, HelpCircle, Languages } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import confetti from 'canvas-confetti';
+
+const formatTime = (seconds: number) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+};
+
+// Map màu cho highlight bằng chứng
+const getEvidenceColor = (colorStr: string) => {
+  const map: Record<string, { text: string; bg: string; border: string; lightBg: string; hexBorder: string; hexBg: string; hexText: string }> = {
+    yellow: { text: "text-amber-700", bg: "bg-amber-200", border: "border-amber-300", lightBg: "bg-amber-50", hexBorder: "#fbbf24", hexBg: "#fde68a", hexText: "#92400e" },
+    cyan: { text: "text-cyan-700", bg: "bg-cyan-200", border: "border-cyan-300", lightBg: "bg-cyan-50", hexBorder: "#22d3ee", hexBg: "#a5f3fc", hexText: "#155e75" },
+    emerald: { text: "text-emerald-700", bg: "bg-emerald-200", border: "border-emerald-300", lightBg: "bg-emerald-50", hexBorder: "#34d399", hexBg: "#a7f3d0", hexText: "#065f46" },
+    magenta: { text: "text-fuchsia-700", bg: "bg-fuchsia-200", border: "border-fuchsia-300", lightBg: "bg-fuchsia-50", hexBorder: "#e879f9", hexBg: "#f5d0fe", hexText: "#86198f" },
+    orange: { text: "text-orange-700", bg: "bg-orange-200", border: "border-orange-300", lightBg: "bg-orange-50", hexBorder: "#fb923c", hexBg: "#fed7aa", hexText: "#9a3412" },
+    default: { text: "text-slate-700", bg: "bg-slate-200", border: "border-slate-300", lightBg: "bg-slate-50", hexBorder: "#94a3b8", hexBg: "#e2e8f0", hexText: "#1e293b" }
+  };
+  return map[colorStr] || map.default;
+};
+
+// Hàm chuẩn hóa dữ liệu Metadata & Explanation phòng hờ các bảng AI cũ
+const parseQuestionData = (q: any) => {
+  let meta = q.metadata || {};
+  if (typeof meta === 'string') { try { meta = JSON.parse(meta); } catch(e){} }
+  
+  let expObj: any = {};
+  if (typeof q.explanation === 'string') { try { expObj = JSON.parse(q.explanation); } catch(e){} }
+  else if (typeof q.explanation === 'object') { expObj = q.explanation || {}; }
+
+  const sids = meta.evidence_sids || expObj.evidence_sids || [];
+  return {
+    evidenceSids: Array.isArray(sids) ? sids : [],
+    highlightColor: meta.highlight_color || expObj.highlight_color || "yellow",
+    type: meta.type || 'Detail',
+    optionsVn: meta.options_vn || {},
+    questionTextVn: meta.questionText_vn || '',
+    wrongExp: expObj.wrong || {},
+    whyCorrect: expObj.why_correct || ''
+  };
+};
+
+const PassageHTMLRenderer = memo(({ 
+  html, 
+  onSentenceClick, 
+  onSentenceHover,
+  evidenceMap,
+  reviewMode
+}: { 
+  html: string, 
+  onSentenceClick?: (sid: string) => void,
+  onSentenceHover?: (sid: string | null, e?: MouseEvent, rect?: DOMRect) => void,
+  evidenceMap?: Record<string, string>,
+  reviewMode: boolean
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Dùng Refs để giữ tham chiếu callback mới nhất mà không cần thêm vào dependency
+  const hoverCbRef = useRef(onSentenceHover);
+  const clickCbRef = useRef(onSentenceClick);
+  useEffect(() => { hoverCbRef.current = onSentenceHover; }, [onSentenceHover]);
+  useEffect(() => { clickCbRef.current = onSentenceClick; }, [onSentenceClick]);
+
+  // 1. Quản lý sự kiện bằng Event Delegation (Chỉ chạy 1 lần khi render HTML mới)
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest('[data-sid]');
+      if (target) {
+        const rect = target.getBoundingClientRect();
+        hoverCbRef.current?.(target.getAttribute('data-sid'), e, rect);
+      }
+    };
+    const handleMouseOut = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest('[data-sid]');
+      if (target) {
+        hoverCbRef.current?.(null, e);
+      }
+    };
+    const handleClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest('[data-sid]');
+      if (target) {
+        clickCbRef.current?.(target.getAttribute('data-sid')!);
+      }
+    };
+
+    el.addEventListener('mouseover', handleMouseOver);
+    el.addEventListener('mouseout', handleMouseOut);
+    el.addEventListener('click', handleClick);
+
+    return () => {
+      el.removeEventListener('mouseover', handleMouseOver);
+      el.removeEventListener('mouseout', handleMouseOut);
+      el.removeEventListener('click', handleClick);
+    };
+  }, [html]);
+
+  // 2. Tạo CSS động cho highlight để đảm bảo tính ổn định khi React Re-render
+  const dynamicStyles = useMemo(() => {
+    if (!reviewMode || !evidenceMap) return "";
+    let css = "";
+    Object.entries(evidenceMap).forEach(([sid, colorStr]) => {
+      const colors = getEvidenceColor(colorStr);
+      const normalizedSid = sid.replace(/^p\d+-/, '');
+      const selector = `[data-sid="${sid}"], [data-sid="${normalizedSid}"]`;
+      
+      css += `
+        .toeic-passage-content ${selector} {
+          background-color: ${colors.hexBg} !important;
+          color: ${colors.hexText} !important;
+          box-shadow: inset 0 0 0 2px ${colors.hexBorder} !important;
+          border-radius: 4px !important;
+          padding: 2px 4px !important;
+          font-weight: 700 !important;
+          transition: all 0.2s ease !important;
+        }
+      `;
+    });
+    return css;
+  }, [evidenceMap, reviewMode]);
+
+  return (
+    <div className="relative">
+      {dynamicStyles && <style dangerouslySetInnerHTML={{ __html: dynamicStyles }} />}
+      <div 
+        ref={containerRef}
+        className="toeic-passage-content prose prose-slate max-w-none text-[17px] leading-relaxed"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+      <style jsx global>{`
+        .toeic-passage-content {
+          user-select: text !important;
+          -webkit-user-select: text !important;
+        }
+        .toeic-passage-content [data-sid] {
+          cursor: text !important; 
+          transition: all 0.2s ease;
+        }
+        .toeic-passage-content [data-sid]:hover {
+          background-color: rgba(0,0,0,0.04);
+        }
+      `}</style>
+    </div>
+  );
+});
+PassageHTMLRenderer.displayName = "PassageHTMLRenderer";
+
+interface ToeicPart7PlayerProps {
+  data: any[];
+  lessonId?: string;
+  initialProgress?: Record<string, any>;
+  courseId?: string;
+  nextLessonId?: string;
+  onFinish?: (results: any) => void;
+  isReviewMode?: boolean;
+  isSubmitted?: boolean;
+}
+
+export default function ToeicPart7Player({
+  data: rawData,
+  lessonId,
+  initialProgress = {},
+  courseId,
+  nextLessonId,
+  onFinish,
+  isReviewMode = false,
+  isSubmitted = false,
+}: ToeicPart7PlayerProps) {
+  
+  const data = useMemo(() => {
+    return [...rawData].sort((a, b) => {
+      const aMin = Math.min(...(a.questions || []).map((q: any) => q.questionNo || 999));
+      const bMin = Math.min(...(b.questions || []).map((q: any) => q.questionNo || 999));
+      return aMin - bMin;
+    });
+  }, [rawData]);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, string>>(() => {
+    let acc: any = {};
+    Object.keys(initialProgress).forEach(k => {
+      if (initialProgress[k].userAnswer) acc[k] = initialProgress[k].userAnswer;
+    });
+    return acc;
+  });
+  const [flags, setFlags] = useState<Record<string, boolean>>(() => {
+    let acc: any = {};
+    Object.keys(initialProgress).forEach(k => {
+      acc[k] = initialProgress[k].isFlagged;
+    });
+    return acc;
+  });
+  const [showExplainGroups, setShowExplainGroups] = useState<Record<string, boolean>>({});
+
+  const [time, setTime] = useState(0);
+  const [reviewMode, setReviewMode] = useState(isReviewMode || isSubmitted);
+  const [showCompletion, setShowCompletion] = useState(false);
+  const [isSubmittedInternal, setIsSubmittedInternal] = useState(isSubmitted);
+  const [testScore, setTestScore] = useState({ correct: 0, total: 0, incorrect: 0, unanswered: 0 });
+
+  // Tooltip Translation 
+  const [tooltip, setTooltip] = useState<{sid: string, text: string, x: number, y: number, rect?: DOMRect} | null>(null);
+
+  // V/H Resizer
+  const [vSplitWidth, setVSplitWidth] = useState(55); 
+  const [hSplitHeight, setHSplitHeight] = useState(50); // Mặc định 50%
+  const [isResizingV, setIsResizingV] = useState(false);
+  const [isResizingH, setIsResizingH] = useState(false);
+  const [showSplitPassage, setShowSplitPassage] = useState(false);
+
+  const mainContainerRef = useRef<HTMLDivElement>(null);
+  const leftColRef = useRef<HTMLDivElement>(null);
+
+  const currentGroup = data[currentIndex] || { questions: [], metadata: {} };
+  const passages = useMemo(() => {
+    if (!currentGroup.passageText) return [];
+    if (typeof currentGroup.passageText === 'object') return currentGroup.passageText;
+    try {
+      return JSON.parse(currentGroup.passageText);
+    } catch { return []; }
+  }, [currentGroup.passageText]);
+
+  const questions = currentGroup.questions || [];
+  const isRevealed = reviewMode || !!showExplainGroups[currentGroup.id];
+
+  // Handle Resizers
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isResizingV && mainContainerRef.current) {
+        const rect = mainContainerRef.current.getBoundingClientRect();
+        const width = Math.max(30, Math.min(70, ((e.clientX - rect.left) / rect.width) * 100));
+        setVSplitWidth(width);
+      }
+      if (isResizingH && leftColRef.current) {
+        const rect = leftColRef.current.getBoundingClientRect();
+        const height = Math.max(20, Math.min(80, ((e.clientY - rect.top) / rect.height) * 100));
+        setHSplitHeight(height);
+      }
+    };
+    const handleMouseUp = () => { 
+      setIsResizingV(false); 
+      setIsResizingH(false);
+    };
+    if (isResizingV || isResizingH) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizingV, isResizingH]);
+
+
+  // Map bằng chứng để highlight (Chuẩn hóa)
+  const evidenceMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    questions.forEach((q: any) => {
+      const parsed = parseQuestionData(q);
+      parsed.evidenceSids.forEach((sid: string) => {
+        // Lưu cả SID gốc và SID đã chuẩn hóa (bỏ tiền tố pX-)
+        map[sid] = parsed.highlightColor;
+        const normalized = sid.replace(/^p\d+-/, '');
+        if (normalized !== sid) map[normalized] = parsed.highlightColor;
+      });
+    });
+    return map;
+  }, [questions]);
+
+
+  // Map bản dịch tổng hợp
+  const translationMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    passages.forEach((p: any) => {
+      if (p.translation_map) {
+        Object.assign(map, p.translation_map);
+      }
+    });
+    return map;
+  }, [passages]);
+
+  // Khôi phục trạng thái từ localStorage
+  // Timer
+  useEffect(() => {
+    if (reviewMode || showCompletion) return;
+    const timer = setInterval(() => setTime(prev => prev + 1), 1000);
+    return () => clearInterval(timer);
+  }, [reviewMode, showCompletion]);
+
+
+  // Callback hover xử lý tập trung
+  const handleSentenceHover = useCallback((sid: string | null, e: MouseEvent | undefined, rect: DOMRect | undefined) => {
+    if (!isRevealed || !sid || !e || !rect) {
+      setTooltip(null);
+      return;
+    }
+    const normalizedSid = sid.replace(/^p\d+-/, '');
+    const txt = translationMap[sid] || translationMap[normalizedSid];
+    
+    // Hiện SID chẩn đoán nếu thiếu dữ liệu
+    const displayTxt = txt || `(Chưa có bản dịch cho: ${sid})`;
+    
+    setTooltip({ sid, text: displayTxt, x: e.clientX, y: e.clientY, rect });
+  }, [translationMap, isRevealed]);
+
+
+  const handleFinishTest = async () => {
+    if (!window.confirm("Bạn có chắc chắn muốn nộp bài?")) return;
+
+    // Tính điểm
+    let correct = 0;
+    const allQuestions = data.flatMap(g => g.questions);
+    allQuestions.forEach(q => {
+      if (answers[q.id] === q.correctAnswer) correct++;
+    });
+    setTestScore({
+      correct,
+      total: allQuestions.length,
+      incorrect: allQuestions.length - correct,
+      unanswered: allQuestions.length - Object.keys(answers).length
+    });
+
+    setIsSubmittedInternal(true);
+    setReviewMode(true);
+    setShowCompletion(true);
+    confetti({ particleCount: 150, spread: 80, origin: { y: 0.3 } });
+    if (onFinish) onFinish(answers);
+  };
+
+  const handleSelect = (questionId: string, option: string) => {
+    if (reviewMode || isSubmittedInternal) return;
+    setAnswers(prev => ({ ...prev, [questionId]: option }));
+  };
+
+  const handleToggleFlag = (questionId: string) => {
+    const newFlag = !flags[questionId];
+    setFlags(prev => ({ ...prev, [questionId]: newFlag }));
+  };
+
+  const handleRetake = () => {
+    if (!window.confirm("Bạn có chắc chắn muốn làm lại từ đầu?")) return;
+    setAnswers({});
+    setFlags({});
+    setTime(0);
+    setIsSubmittedInternal(false);
+    setReviewMode(false);
+    setShowCompletion(false);
+    setShowExplainGroups({});
+  };
+
+
+  if (showCompletion) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-slate-50 p-6">
+        <div className="w-full max-w-2xl bg-white rounded-3xl p-12 text-center shadow-2xl border border-slate-100">
+          <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+            <TrophyIcon className="w-10 h-10 text-emerald-600" />
+          </div>
+          <h2 className="text-3xl font-bold text-slate-800 mb-6 uppercase tracking-tight">Hoàn thành Part 7!</h2>
+          <div className="grid grid-cols-2 gap-4 mb-8">
+             <div className="bg-slate-50 p-4 rounded-2xl">
+                <div className="text-slate-500 text-xs font-bold uppercase mb-1">Thời gian</div>
+                <div className="text-2xl font-bold text-slate-800">{formatTime(time)}</div>
+             </div>
+             <div className="bg-emerald-50 p-4 rounded-2xl">
+                <div className="text-emerald-500 text-xs font-bold uppercase mb-1">Trạng thái</div>
+                <div className="text-2xl font-bold text-emerald-600">Đã nộp</div>
+             </div>
+          </div>
+          <div className="flex gap-4 justify-center">
+            <button onClick={() => setShowCompletion(false)} className="px-8 py-4 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-900 transition shadow-lg shadow-slate-200">XEM LỜI GIẢI</button>
+            <a href={`/learn/${courseId}`} className="px-8 py-4 rounded-xl bg-white border-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition">QUAY LẠI</a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-full bg-white relative" ref={mainContainerRef}>
+      {/* Header Bar */}
+      <div className="h-14 border-b border-slate-200 flex items-center justify-between px-6 bg-white shrink-0 z-10">
+        <div className="flex items-center gap-4">
+          <div className="flex flex-col">
+            <h1 className="font-bold text-slate-800 text-sm tracking-tight uppercase">
+              {currentGroup.metadata?.intro_text || "Part 7: Reading Comprehension"}
+            </h1>
+
+            {reviewMode && currentGroup.metadata?.intro_text_vn && (
+              <p className="text-[10px] text-slate-400 font-medium italic -mt-0.5">
+                {currentGroup.metadata?.intro_text_vn}
+              </p>
+            )}
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setShowSplitPassage(!showSplitPassage)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase tracking-wider transition-all border ${showSplitPassage ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+          >
+            <ChevronsLeftRight className="w-3.5 h-3.5 rotate-90" />
+            {showSplitPassage ? 'Đóng chế độ chia' : 'Xem 2 đoạn'}
+          </button>
+          
+          {(!isSubmittedInternal && !isReviewMode) && (
+            <button 
+              onClick={() => setShowExplainGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }))}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-[11px] uppercase tracking-widest transition-all mr-2 ${showExplainGroups[currentGroup.id] ? 'bg-slate-800 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+            >
+              <InformationCircleIcon className="w-4 h-4" />
+              {showExplainGroups[currentGroup.id] ? 'Ẩn đáp án' : 'Hiện đáp án'}
+            </button>
+          )}
+        </div>
+      </div>
+
+
+      {/* Main Content Area */}
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Tooltip Translation Strip (Safer Positioning & Contrast) */}
+        {tooltip && tooltip.rect && (
+          <div 
+            className="fixed z-[100] pointer-events-none px-4 py-1.5 bg-slate-900/60 backdrop-blur-md text-white text-[14px] font-semibold rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.3)] leading-relaxed border border-white/20 transition-all duration-300"
+            style={{ 
+              left: Math.max(20, Math.min(tooltip.rect.left, window.innerWidth - (tooltip.rect.width + 40))),
+              top: tooltip.rect.top + tooltip.rect.height + 4, // Hiện ở PHÍA DƯỚI câu để không che dòng trước
+              minWidth: Math.min(400, tooltip.rect.width),
+              maxWidth: '700px',
+              opacity: 1
+            }}
+          >
+            {tooltip.text}
+          </div>
+        )}
+
+        {/* Left Column: Passages */}
+        <div 
+          ref={leftColRef}
+          className="flex flex-col border-r border-slate-200 relative bg-slate-50/30"
+          style={{ width: `${vSplitWidth}%` }}
+        >
+          {/* Passage Area */}
+          <div className="flex-1 flex flex-col overflow-hidden relative">
+            {/* Top View */}
+            <div 
+              className="overflow-y-auto p-8 bg-white border-b border-slate-100 scrollbar-thin"
+              style={{ height: showSplitPassage ? `${hSplitHeight}%` : '100%' }}
+            >
+              <div className="max-w-3xl mx-auto space-y-12">
+                {passages.map((p: any, idx: number) => (
+                  <div key={idx} className="relative">
+                    <div className="flex items-center gap-2 mb-4 text-[10px] font-black tracking-widest text-slate-300 uppercase">
+                       <span>PASSAGE {idx + 1}</span>
+                       <div className="h-px flex-1 bg-slate-100" />
+                       <span className="text-slate-400">{p.category}</span>
+                    </div>
+                    <PassageHTMLRenderer 
+                      html={p.html_content} 
+                      reviewMode={isRevealed}
+                      evidenceMap={evidenceMap}
+                      onSentenceHover={handleSentenceHover}
+                    />
+                  </div>
+                ))}
+                <div className="h-20" />
+              </div>
+            </div>
+
+            {/* Horizontal Splitter Handle */}
+            {showSplitPassage && (
+              <div 
+                className="h-1.5 bg-slate-100 hover:bg-blue-300 cursor-row-resize z-30 flex items-center justify-center transition-colors group"
+                onMouseDown={() => setIsResizingH(true)}
+              >
+                <div className="w-12 h-1 bg-slate-200 rounded-full group-hover:bg-blue-400" />
+              </div>
+            )}
+
+            {/* Bottom View (Optional Split) */}
+            {showSplitPassage && (
+              <div className="overflow-y-auto p-8 bg-slate-50/50 flex-1 scrollbar-thin">
+                <div className="max-w-3xl mx-auto space-y-12">
+                  <div className="px-4 py-2 bg-slate-800 text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-full w-max mx-auto mb-10 shadow-lg select-none">
+                    View Second Area
+                  </div>
+                  {passages.map((p: any, idx: number) => (
+                    <div key={idx} className="relative opacity-90 hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-2 mb-4 text-[10px] font-black tracking-widest text-slate-300 uppercase">
+                         <span>PASSAGE {idx + 1}</span>
+                         <div className="h-px flex-1 bg-slate-100" />
+                      </div>
+                      <PassageHTMLRenderer 
+                        html={p.html_content} 
+                        reviewMode={isRevealed}
+                        evidenceMap={evidenceMap}
+                        onSentenceHover={handleSentenceHover}
+                      />
+                    </div>
+                  ))}
+                  <div className="h-20" />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Vertical Splitter Handle */}
+          <div 
+            className="absolute -right-1 top-0 bottom-0 w-2 cursor-col-resize z-20 group"
+            onMouseDown={() => setIsResizingV(true)}
+          >
+            <div className="w-1 h-full mx-auto bg-transparent group-hover:bg-blue-400 transition-colors duration-300 active:bg-blue-600" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white border border-slate-200 rounded-full p-1 shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
+              <ChevronsLeftRight className="w-3 h-3 text-slate-500" />
+            </div>
+          </div>
+        </div>
+
+        {/* Center Column: Questions */}
+        <div className="flex-1 overflow-y-auto p-10 bg-white xl:mr-56">
+          <div className="max-w-2xl mx-auto pb-20">
+            
+            {questions.map((q: any, idx: number) => {
+              const parsed = parseQuestionData(q);
+              const qBorderColor = (isRevealed && evidenceMap[parsed.evidenceSids[0]]) ? getEvidenceColor(parsed.highlightColor).hexBorder : 'transparent';
+
+              return (
+              <div 
+                key={q.id} 
+                className={`mb-12 p-6 rounded-[32px] border-2 transition-all ${isRevealed ? 'bg-slate-50' : 'bg-white'}`}
+                style={{ borderColor: qBorderColor }}
+              >
+                <div className="flex items-start gap-4 mb-6">
+                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 font-black text-sm ${isRevealed ? getEvidenceColor(parsed.highlightColor).bg + ' ' + getEvidenceColor(parsed.highlightColor).text : 'bg-slate-100 text-slate-800'}`}>
+                    {q.questionNo}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-slate-800 leading-snug mb-2">{q.questionText}</h3>
+                    {isRevealed && parsed.questionTextVn && <p className="text-sm text-slate-500 italic mb-2">{parsed.questionTextVn}</p>}
+                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      <HelpCircle className="w-3 h-3" /> {parsed.type}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {!isRevealed && (
+                      <button 
+                        onClick={() => handleToggleFlag(q.id)}
+                        className={`p-2 rounded-xl transition-colors ${flags[q.id] ? 'bg-amber-50 text-amber-500' : 'text-slate-300 hover:bg-slate-50'}`}
+                        title="Gắn cờ xem lại"
+                      >
+                        <FlagIcon className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {['A', 'B', 'C', 'D'].map((opt) => {
+                    const isCorrect = opt === q.correctAnswer;
+                    const isSelected = answers[q.id] === opt;
+                    const optionText = q[`option${opt}`];
+                    const optionVn = parsed.optionsVn?.[opt];
+                    
+                    let style = "border-slate-200 hover:border-slate-300 bg-white";
+                    if (isSelected && !isRevealed) style = "border-blue-500 bg-blue-50/50 shadow-sm ring-1 ring-blue-500";
+                    
+                    if (isRevealed) {
+                      if (isCorrect) style = `${getEvidenceColor(parsed.highlightColor).bg} border-2 ${getEvidenceColor(parsed.highlightColor).border} shadow-sm`;
+                      else if (isSelected) style = "bg-red-50 border-red-200 opacity-80 cursor-default";
+                      else style = "bg-white border-slate-100 opacity-40 cursor-default";
+                    }
+
+                    return (
+                      <div key={opt}>
+                        <button
+                          onClick={() => handleSelect(q.id, opt)}
+                          disabled={isRevealed}
+                          className={`w-full text-left p-4 rounded-2xl border transition-all flex items-center gap-4 group ${style}`}
+                        >
+                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 transition-colors ${isSelected && !isRevealed ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'}`}>
+                            {opt}
+                          </div>
+                          <div className="flex-1">
+                            <div className={`text-[15px] font-medium ${isCorrect && isRevealed ? 'text-slate-900 font-bold' : 'text-slate-700'}`}>{optionText}</div>
+                            {isRevealed && optionVn && <div className="text-xs text-slate-400 mt-1">{optionVn}</div>}
+                          </div>
+                        </button>
+                        {isRevealed && parsed.wrongExp[opt] && !isCorrect && (
+                          <div className="ml-16 mt-2 mb-4 p-3 bg-red-50 text-red-600 text-[13.5px] leading-relaxed rounded-xl border border-red-100 animate-in slide-in-from-top-1">
+                             <span className="font-bold uppercase text-[10px] tracking-widest mr-2 opacity-70">Vì sao sai?</span>
+                             <span dangerouslySetInnerHTML={{ __html: parsed.wrongExp[opt] }} />
+                          </div>
+                        )}
+                        {isRevealed && isCorrect && parsed.whyCorrect && (
+                          <div className="ml-16 mt-2 mb-4 p-3 bg-emerald-50 text-emerald-700 text-[13.5px] leading-relaxed rounded-xl border border-emerald-100 animate-in slide-in-from-top-1">
+                             <span className="font-bold uppercase text-[10px] tracking-widest mr-2 opacity-70">Vì sao đúng?</span>
+                             <span dangerouslySetInnerHTML={{ __html: parsed.whyCorrect }} />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )})}
+            {/* End of Questions */}
+          </div>
+
+          {/* Navigation Footer */}
+          <div className="sticky bottom-6 left-1/2 -translate-x-1/2 flex items-center justify-between bg-white shadow-2xl shadow-slate-200/50 border border-slate-200 rounded-[20px] overflow-hidden p-1.5 w-max mx-auto z-10">
+             <button 
+               disabled={currentIndex === 0}
+               onClick={() => setCurrentIndex(prev => prev - 1)}
+               className="px-6 py-2.5 rounded-2xl text-[11px] font-bold tracking-widest uppercase transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 active:scale-95 text-slate-600"
+             >
+               Lùi
+             </button>
+             <div className="px-6 text-[13px] font-black text-slate-800">
+               {currentIndex + 1} / {data.length}
+             </div>
+             <button 
+               disabled={currentIndex === data.length - 1}
+               onClick={() => setCurrentIndex(prev => prev + 1)}
+               className="px-6 py-2.5 rounded-2xl text-[11px] font-bold tracking-widest uppercase transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-blue-100 text-blue-700 hover:bg-blue-200 active:scale-95"
+             >
+               Tiếp
+             </button>
+          </div>
+        </div>
+
+        {/* Right Column: Floating Sidebar */}
+        <div className="hidden xl:block absolute top-4 right-4 z-40 w-48 font-sans">
+          <div className="bg-white rounded-2xl shadow-xl border border-blue-100 overflow-hidden">
+             
+             <div className="bg-slate-50 p-4 text-center border-b border-blue-100">
+               <div className="flex justify-between text-[11px] font-black text-slate-600 uppercase tracking-widest mb-2">
+                 <span>Tiến độ</span>
+                 <span className="text-slate-800">{Object.keys(answers).length}/{questions.length}</span>
+               </div>
+               <div className="flex items-center justify-center gap-2 font-mono font-black text-slate-800 text-lg tracking-tight">
+                 <ClockIcon className="w-5 h-5 text-slate-800" /> {formatTime(time)}
+               </div>
+             </div>
+             
+             <div className="p-3 max-h-[300px] overflow-y-auto grid grid-cols-4 gap-1.5 scrollbar-thin">
+                {questions.map((q: any) => {
+                  const isSelected = !!answers[q.id];
+                  const isCorrect = answers[q.id] === q.correctAnswer;
+                  const isCurrent = currentIndex === data.findIndex(g => g.id === q.groupId);
+                  
+                  let style = "bg-white border-slate-200 text-slate-600 hover:bg-slate-50";
+                  if (isSelected && !reviewMode) style = "bg-blue-600 border-blue-600 text-white shadow-sm";
+                  if (isCurrent && !reviewMode) style += " ring-2 ring-slate-800 ring-offset-1 z-10 scale-105";
+                  
+                  if (reviewMode) {
+                    if (isCorrect) style = `${getEvidenceColor(q.metadata?.highlight_color).bg} border-2 ${getEvidenceColor(q.metadata?.highlight_color).border} ${getEvidenceColor(q.metadata?.highlight_color).text} shadow-sm font-black`;
+                    else if (isSelected) style = "bg-red-50 border-red-200 text-red-600 font-bold opacity-80";
+                    else style = "bg-slate-50 border-slate-100 text-slate-400";
+                  }
+
+                  return (
+                    <button
+                      key={q.id}
+                      title={`Câu ${q.questionNo}`}
+                      className={`h-11 rounded-xl border-2 flex items-center justify-center text-[13px] font-bold transition-all relative ${style}`}
+                    >
+                      {q.questionNo}
+                      {flags[q.id] && !reviewMode && <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-amber-400 rounded-full border-2 border-white shadow-sm" />}
+                    </button>
+                  );
+                })}
+             </div>
+
+             <div className="p-4 pt-1 mt-1">
+                {!isSubmittedInternal ? (
+                  <button
+                    onClick={handleFinishTest}
+                    className="w-full py-3.5 rounded-xl bg-blue-600 text-white font-bold text-[13px] shadow-lg shadow-blue-100 hover:bg-blue-700 transition active:scale-95 uppercase"
+                  >
+                    NỘP BÀI
+                  </button>
+                ) : (
+                  <button 
+                    onClick={handleRetake}
+                    className="w-full py-3.5 rounded-xl bg-slate-800 text-white font-bold text-[13px] shadow-lg hover:bg-slate-900 transition active:scale-95 uppercase"
+                  >
+                    LÀM LẠI BÀI
+                  </button>
+                )}
+             </div>
+
+             {reviewMode && (
+               <div className="bg-blue-600 p-4 text-white text-center relative overflow-hidden">
+                  <div className="relative">
+                    <div className="text-[9px] font-black uppercase tracking-widest opacity-80 mb-1">Kết quả</div>
+                    <div className="text-2xl font-black mb-2">{Math.round((testScore.correct / testScore.total) * 100)}%</div>
+                    <div className="h-1.5 w-full bg-blue-400 rounded-full overflow-hidden">
+                       <div className="h-full bg-white rounded-full" style={{ width: `${(testScore.correct / testScore.total) * 100}%` }} />
+                    </div>
+                  </div>
+               </div>
+             )}
+          </div>
+        </div>
+      </div>
+
+
+      {/* Inline Styles for Passage Content */}
+      <style jsx global>{`
+        .toeic-passage-content span[data-sid] {
+           position: relative;
+        }
+        .toeic-passage-content span[data-sid]:not(.ring-1):not(.ring-2):hover {
+           background-color: #f1f5f9; /* bg-slate-100 */
+        }
+        .toeic-passage-content table {
+          width: 100% !important;
+          border-collapse: collapse !important;
+          margin: 1.5rem 0 !important;
+          font-size: 15px !important;
+          border: 1px solid #e2e8f0 !important;
+        }
+        .toeic-passage-content th, .toeic-passage-content td {
+          border: 1px solid #e2e8f0 !important;
+          padding: 12px 16px !important;
+          text-align: left !important;
+        }
+        .toeic-passage-content th {
+          background-color: #f8fafc !important;
+          font-weight: 800 !important;
+          color: #1e293b !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.05em !important;
+          font-size: 12px !important;
+        }
+        .toeic-passage-content center {
+          display: block;
+          text-align: center;
+          margin-bottom: 1.5rem;
+        }
+      `}</style>
+    </div>
+  );
+}
+

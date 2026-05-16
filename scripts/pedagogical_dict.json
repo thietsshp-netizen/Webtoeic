@@ -1,0 +1,466 @@
+{
+  "ETS2024_TEST_01_32_34": {
+    "questions": [
+      {
+        "vi": "Người phụ nữ đề cập đến sự kiện nào?",
+        "why_correct": "Người nam và nữ thảo luận về việc tổ chức 'annual company picnic' (buổi dã ngoại thường niên của công ty), đáp án là **D**."
+      },
+      {
+        "vi": "Người phụ nữ yêu cầu điều gì?",
+        "why_correct": "Sau khi khen món bánh đào ngon, cô ấy hỏi 'sharing the recipe' (chia sẻ công thức), đáp án là **B**."
+      },
+      {
+        "vi": "Người đàn ông khuyên nên làm gì?",
+        "why_correct": "Người nam nói rằng có một video hướng dẫn trên web và khuyên 'I recommend you watch it first' (xem nó trước), đáp án là **B**."
+      }
+    ]
+  },
+  "ETS2024_TEST_01_35_37": {
+    "questions": [
+      {
+        "vi": "Các diễn giả có khả năng nhất làm việc ở bộ phận nào?",
+        "why_correct": "Hội thoại nhắc đến 'expense reports' (báo cáo chi phí) và 'reimbursement forms' (phiếu hoàn tiền), đặc thù của bộ phận **Kế toán (A)**."
+      },
+      {
+        "vi": "Người phụ nữ đề cập đến vấn đề gì?",
+        "why_correct": "Cô ấy nói về một hóa đơn khách sạn 'isn't on the list' của các cơ sở được duyệt, tức là **vi phạm chính sách (C)**."
+      },
+      {
+        "vi": "Người đàn ông nói ông ấy sẽ làm gì?",
+        "why_correct": "Người nam đề cập việc 'approve the expense this one time', tức là **ủy quyền hoàn trả chi phí (B)**."
+      }
+    ]
+  },
+  "ETS2024_TEST_01_38_40": {
+    "questions": [
+      {
+        "vi": "Các diễn giả có khả năng nhất làm việc trong ngành nào?",
+        "why_correct": "Hội thoại nhắc đến 'cargo ship' (tàu chở hàng) và 'harbor' (cảng), khẳng định họ làm trong ngành **Vận tải biển (A)**."
+      },
+      {
+        "vi": "Lý do cho sự chậm trễ là gì?",
+        "why_correct": "Người phụ nữ nói 'fog over the harbor' (sương mù bao phủ cảng) và 'until the weather improves', tức là do **thời tiết xấu (C)**."
+      },
+      {
+        "vi": "Người đàn ông nói ông ấy sẽ làm gì?",
+        "why_correct": "Ông ấy nói 'call the port authority' (gọi cho ban quản lý cảng), đáp án là **Thực hiện cuộc gọi (D)**."
+      }
+    ]
+  },
+  "ETS2024_TEST_01_41_43": {
+    "questions": [
+      {
+        "vi": "Tại sao người phụ nữ lại ở nhà hàng?",
+        "why_correct": "Cô ấy nói 'I've made a reservation to meet with some clients', đáp án là **C**."
+      },
+      {
+        "vi": "Ý của người phụ nữ là gì khi nói 'trời rất nóng hôm nay'?",
+        "why_correct": "Cô ấy vốn yêu cầu ngồi ở sân thượng (terrace) nhưng vì nóng nên muốn đổi vào trong, đáp án là **D**."
+      },
+      {
+        "vi": "Người đàn ông nói gì về nhà để xe?",
+        "why_correct": "Ông ấy nói 'customers can park for free in the garage across the street', đáp án là **A**."
+      }
+    ]
+  },
+  "ETS2024_TEST_01_44_46": {
+    "questions": [
+      {
+        "vi": "Người phụ nữ có khả năng nhất làm việc ở đâu?",
+        "why_correct": "Cô ấy nói về việc 'store will be busy' và 'sale on laptop computers', chứng tỏ làm tại **cửa hàng điện tử (C)**."
+      },
+      {
+        "vi": "Murat hỏi về điều gì?",
+        "why_correct": "Anh ấy hỏi 'where can I put our demonstration table?', tức là **vị trí đặt máy móc (D)**."
+      },
+      {
+        "vi": "Người phụ nữ gợi ý làm gì?",
+        "why_correct": "Cô ấy bảo 'put those [brochures] out for people to take', tức là **trưng bày tài liệu (B)**."
+      }
+    ]
+  },
+  "ETS2024_TEST_01_47_49": {
+    "questions": [
+      {
+        "vi": "Họ làm việc trong ngành công nghiệp nào?",
+        "why_correct": "Họ thảo luận về bánh ngọt, bánh nướng và bánh quy, khẳng định ngành **Sản xuất thực phẩm (B)**."
+      },
+      {
+        "vi": "Thách thức kinh doanh nào đang được thảo luận?",
+        "why_correct": "Người phụ nữ nói 'public wants healthier products', tức là **thay đổi trong sở thích người tiêu dùng (C)**."
+      },
+      {
+        "vi": "Người đàn ông nói ông ấy sẽ làm gì?",
+        "why_correct": "Ông ấy nói 'do some investigation to find out more', tức là **nghiên cứu thêm thông tin (A)**."
+      }
+    ]
+  },
+  "ETS2024_TEST_01_50_52": {
+    "questions": [
+      {
+        "vi": "Tại sao người đàn ông lại gọi điện?",
+        "why_correct": "Ông ấy hỏi 'if you'd have time to work on a project', tức là **đề nghị một nhiệm vụ công việc (C)**."
+      },
+      {
+        "vi": "Khách hàng muốn thực hiện việc gì?",
+        "why_correct": "Người nam nói khách hàng muốn 'creating a marketing campaign', đáp án là **D**."
+      },
+      {
+        "vi": "Người phụ nữ yêu cầu người đàn ông gửi cái gì?",
+        "why_correct": "Cô ấy nói 'send me a detailed description of the work', tức là **mô tả dự án (A)**."
+      }
+    ]
+  },
+  "ETS2024_TEST_01_53_55": {
+    "questions": [
+      {
+        "vi": "Người phụ nữ đề cập đến vấn đề gì?",
+        "why_correct": "Cô ấy báo xe tải số 5 'got a flat tire' (xẹp lốp), đáp án là **A**."
+      },
+      {
+        "vi": "Họ có khả năng nhất làm việc ở đâu?",
+        "why_correct": "Hội thoại nhắc đến 'catering jobs' và 'preparing lunch for performers', đáp án là **Công ty cung cấp dịch vụ ăn uống (B)**."
+      },
+      {
+        "vi": "Người đàn ông sẽ làm gì tiếp theo?",
+        "why_correct": "Ông ấy nói 'I can help with that' (giúp chuyển thức ăn ra bãi đậu xe), đáp án là **Phụ giúp một công việc (D)**."
+      }
+    ]
+  },
+  "ETS2024_TEST_01_56_58": {
+    "questions": [
+      {
+        "vi": "Sự kiện nào đang diễn ra?",
+        "why_correct": "Người nói chào mừng 'to our bank's annual meeting', đáp án là **D**."
+      },
+      {
+        "vi": "Mục đích của việc cải tạo là gì?",
+        "why_correct": "Họ nói muốn 'modernize our space' và 'improve the customer experience', đáp án là **B**."
+      },
+      {
+        "vi": "Điều gì sẽ xảy ra vào cuối cuộc họp?",
+        "why_correct": "Người nói nhắc đến 'complimentary lunch' (bữa trưa miễn phí), đáp án là **A**."
+      }
+    ]
+  },
+  "ETS2024_TEST_01_59_61": {
+    "questions": [
+      {
+        "vi": "Người nói là ai?",
+        "why_correct": "Họ được giới thiệu là 'our new store manager', đáp án là **B**."
+      },
+      {
+        "vi": "Điểm mới của cửa hàng là gì?",
+        "why_correct": "Họ nhắc đến 'self-checkout stations' (trạm tự thanh toán), đáp án là **C**."
+      },
+      {
+        "vi": "Người nghe được khuyên làm gì?",
+        "why_correct": "Người nói bảo 'Please sign the sheet' để đăng ký ca làm việc, đáp án là **A**."
+      }
+    ]
+  },
+  "ETS2024_TEST_02_32_34": {
+    "questions": [
+      {
+        "vi": "Mục đích của cuộc gọi là gì?",
+        "why_correct": "Người nam nói 'I'm calling about the apartment for rent', đáp án là **A**."
+      },
+      {
+        "vi": "Người phụ nữ đề cập đến vấn đề gì?",
+        "why_correct": "Cô ấy nhắc đến 'the elevator is being repaired', tức là **thiết bị bị hỏng (C)**."
+      },
+      {
+        "vi": "Người nam nói ông ấy sẽ làm gì?",
+        "why_correct": "Ông ấy nói 'I'll come by at four o'clock' để xem căn hộ, đáp án là **B**."
+      }
+    ]
+  },
+  "ETS2024_TEST_02_35_37": {
+    "questions": [
+      {
+        "vi": "Người nam quan tâm đến việc gì?",
+        "why_correct": "Ông ấy nói 'I'm here to schedule some personal training sessions', đáp án là **Tại một trung tâm thể hình (B)**."
+      },
+      {
+        "vi": "Người nam cần cung cấp thông tin gì?",
+        "why_correct": "Người nữ bảo 'I'll also need you to sign for a membership', đáp án là **Đăng ký thành viên (A)**."
+      },
+      {
+        "vi": "Người phụ nữ đề nghị làm gì?",
+        "why_correct": "Cô ấy nói 'let me show you around our facility', tức là **dẫn đi tham quan (C)**."
+      }
+    ]
+  },
+  "ETS2024_TEST_02_38_40": {
+    "questions": [
+      {
+        "vi": "Hai người phụ nữ có khả năng nhất làm nghề gì?",
+        "why_correct": "Hội thoại nhắc đến 'flight the first thing in the morning' và 'boarding passes', đáp án là **Phi công (D)**."
+      },
+      {
+        "vi": "Lý do cho sự chậm trễ là gì?",
+        "why_correct": "Người nam đề cập 'technical issue with the engine', đáp án là **Vấn đề kỹ thuật (B)**."
+      },
+      {
+        "vi": "Người nam sẽ làm gì tiếp theo?",
+        "why_correct": "Ông ấy nói 'I'll go check on the progress', tức là **kiểm tra tình hình (A)**."
+      }
+    ]
+  },
+  "ETS2024_TEST_02_41_43": {
+    "questions": [
+      {
+        "vi": "Sự kiện nào đang được tổ chức?",
+        "why_correct": "Họ nhắc đến 'opening of our new branch', đáp án là **Khai trương chi nhánh (C)**."
+      },
+      {
+        "vi": "Người phụ nữ yêu cầu người nam làm gì?",
+        "why_correct": "Cô ấy bảo 'Please double-check the guest list', đáp án là **B**."
+      },
+      {
+        "vi": "Người nam nói ông ấy sẽ làm gì?",
+        "why_correct": "Ông ấy nói 'I'll call the florist' để đặt hoa, đáp án là **D**."
+      }
+    ]
+  },
+  "ETS2024_TEST_02_44_46": {
+    "questions": [
+      {
+        "vi": "Họ đang gặp vấn đề gì?",
+        "why_correct": "Người phụ nữ nói 'the printer is jamming again', tức là **máy in bị kẹt (A)**."
+      },
+      {
+        "vi": "Người nam gợi ý giải pháp nào?",
+        "why_correct": "Ông ấy bảo 'We should order a newer model', đáp án là **Mua thiết bị mới (C)**."
+      },
+      {
+        "vi": "Người nghe sẽ làm gì vào buổi chiều?",
+        "why_correct": "Người nữ nhắc đến 'training session at two', đáp án là **Tham gia buổi đào tạo (B)**."
+      }
+    ]
+  },
+  "ETS2026_TEST_04_32_34": {
+    "questions": [
+      {
+        "vi": "Người đàn ông làm nghề gì?",
+        "why_correct": "Anh ấy nói về việc 'revising the contract for the new property', chứng tỏ là **Luật sư hoặc Môi giới (A)**."
+      },
+      {
+        "vi": "Người phụ nữ lo lắng về điều gì?",
+        "why_correct": "Cô ấy nói 'The deadline is very tight', tức là **Thời gian hạn hẹp (C)**."
+      },
+      {
+        "vi": "Người đàn ông hứa hẹn điều gì?",
+        "why_correct": "Anh ấy nói 'I'll have it ready by Friday', đáp án là **Hoàn thành đúng hạn (B)**."
+      }
+    ]
+  },
+  "ETS2026_TEST_04_38_40": {
+    "questions": [
+      {
+        "vi": "Theo người nam, Pelicon sản xuất cái gì?",
+        "why_correct": "Người nam giới thiệu Pelicon là 'local producer of beauty products', tương ứng với **Mỹ phẩm (B)**."
+      },
+      {
+        "vi": "Người nữ lo lắng về điều gì?",
+        "why_correct": "Cô ấy bày tỏ 'I’m worried that we don’t produce enough lanolin', tức là **không làm đủ sản phẩm (D)**."
+      },
+      {
+        "vi": "Tại sao người nam khuyên nên đọc email?",
+        "why_correct": "Anh ấy giải thích hợp đồng hiện tại sắp hết hạn và Pelicon là cơ hội mới, tức là **xem xét một đề xuất kinh doanh (A)**."
+      }
+    ]
+  },
+  "ETS2026_TEST_04_56_58": {
+    "questions": [
+      {
+        "vi": "Hai người phụ nữ sở hữu loại hình kinh doanh nào?",
+        "why_correct": "Hội thoại nhắc đến việc họ sản xuất trang phục thể dục và tìm người đại diện, khẳng định đây là một **công ty quần áo (C)**."
+      },
+      {
+        "vi": "Người đàn ông nói gì về truyền hình?",
+        "why_correct": "Ông ấy phân tích hiện nay có nhiều nền tảng số hiệu quả hơn, chỉ ra rằng **truyền hình không còn là lựa chọn duy nhất (D)**."
+      },
+      {
+        "vi": "Saskia Hoffman là một lựa chọn tốt vì điều gì?",
+        "why_correct": "Ông ấy nhấn mạnh Saskia có hàng triệu người theo dõi trên mạng xã hội chuyên về thể hình, chứng tỏ cô ấy **rất nổi tiếng (D)**."
+      }
+    ]
+  },
+  "ETS2026_TEST_04_59_61": {
+    "questions": [
+      {
+        "vi": "Cửa hàng của người phụ nữ là gì?",
+        "why_correct": "Người phụ nữ nói rõ 'I need some floor mats for my hair salon', xác nhận địa điểm là **tiệm làm tóc (A)**."
+      },
+      {
+        "vi": "Tại sao người phụ nữ lại hài lòng với một sản phẩm?",
+        "why_correct": "Cô ấy khen ngợi những tấm thảm này giúp nhân viên không bị mỏi chân khi đứng cả ngày, tức là vì **sự thoải mái (B)**."
+      },
+      {
+        "vi": "Người phụ nữ có ý gì khi nói 'those are quite large'?",
+        "why_correct": "Sau khi nghe báo giá $200 cho mỗi tấm thảm, cô ấy nói vậy để ám chỉ rằng **giá đó là hợp lý (A)** vì kích thước thảm lớn."
+      }
+    ]
+  },
+  "ETS2026_TEST_04_71_73": {
+    "questions": [
+      {
+        "vi": "Người nói làm việc trong lĩnh vực nào?",
+        "why_correct": "Thông báo dành cho khách hàng của 'Casella Transit' về việc bảo trì đường ray và tàu hỏa, xác nhận ngành **Giao thông vận tải (B)**."
+      },
+      {
+        "vi": "Người nghe có thể nhận thông báo về điều gì?",
+        "why_correct": "Người nói nhắc đến việc cài ứng dụng để 'receive notifications regarding delays', tức là **chậm trễ lịch trình (D)**."
+      },
+      {
+        "vi": "Làm thế nào để giảm chi phí đi lại?",
+        "why_correct": "Người nói khuyên 'Purchase your e-ticket through the mobile app' để tránh phí in vé tại quầy, tức là **mua vé điện tử (A)**."
+      }
+    ]
+  },
+  "ETS2026_TEST_04_89_91": {
+    "questions": [
+      {
+        "vi": "Điểm mới của sự kiện năm nay là gì?",
+        "why_correct": "Người nói hào hứng thông báo 'we're streaming this event live... for the very first time', nghĩa là **phát trực tiếp (D)**."
+      },
+      {
+        "vi": "Tại sao bà Alabi lại được vinh danh?",
+        "why_correct": "Bà được nhắc đến là người đã 'founded the I-Beat music label in 1996', nghĩa là bà đã **thành lập một hãng thu âm (C)**."
+      },
+      {
+        "vi": "Điều gì sẽ xảy ra sau khi bà Alabi nhận giải?",
+        "why_correct": "Văn bản cho biết 'some of her most famous clients will perform', tức là có **các nhạc sĩ biểu diễn (C)**."
+      }
+    ]
+  },
+  "ETS2026_TEST_04_98_100": {
+    "questions": [
+      {
+        "vi": "Loại sự kiện nào được tổ chức tối nay?",
+        "why_correct": "Người nói nêu rõ đây là 'dinner party to celebrate the retirement', tức là **tiệc nghỉ hưu (C)**."
+      },
+      {
+        "vi": "Kota sẽ chịu trách nhiệm nhiệm vụ nào?",
+        "why_correct": "Người nói bảo 'Kota's covering for Amanda', mà công việc của Amanda là 'hang the decorations', đáp án là **Treo đồ trang trí (B)**."
+      },
+      {
+        "vi": "Người nói phải làm gì vào buổi trưa?",
+        "why_correct": "Cô ấy nói 'I have a meeting with a potential client at noon', tức là **tham dự một cuộc họp (D)**."
+      }
+    ]
+  },
+  "ETS2024_TEST_03_32_34": {
+    "questions": [
+      {
+        "vi": "Người nói làm việc có khả năng nhất ở đâu?",
+        "why_correct": "Người nam nhắc đến việc 'ordering supplies for the dental clinic', xác nhận địa điểm là **phòng khám nha khoa (B)**."
+      },
+      {
+        "vi": "Người phụ nữ đề cập đến vấn đề gì?",
+        "why_correct": "Cô ấy báo rằng mặt hàng 'blue surgical gloves' đang hết hàng ('out of stock'), đáp án là **A**."
+      },
+      {
+        "vi": "Người nam nói anh ấy sẽ làm gì?",
+        "why_correct": "Ông ấy nói 'I'll check with our regular supplier', đáp án là **B**."
+      }
+    ]
+  },
+  "ETS2024_TEST_04_32_34": {
+    "questions": [
+      {
+        "vi": "Họ đang thảo luận về dự án nào?",
+        "why_correct": "Hội thoại nhắc đến 'the upcoming charity auction', đáp án là **Buổi đấu giá từ thiện (C)**."
+      },
+      {
+        "vi": "Vấn đề kỹ thuật là gì?",
+        "why_correct": "Người nữ nói 'the online bidding system crashed', đáp án là **Hệ thống gặp sự cố (D)**."
+      },
+      {
+        "vi": "Người nam đề nghị làm gì?",
+        "why_correct": "Ông ấy nói 'I'll call the IT guy' để sửa lỗi, đáp án là **D**."
+      }
+    ]
+  },
+  "ETS2024_TEST_04_35_37": {
+    "questions": [
+      {
+        "vi": "Họ làm việc ở đâu?",
+        "why_correct": "Họ thảo luận về 'library book, magazine, or newspaper', khẳng định làm tại **Thư viện (B)**."
+      },
+      {
+        "vi": "Tại sao người nam lại ở đó?",
+        "why_correct": "Anh ấy nhận được 'e-mail this morning' báo có sách cần lấy, đáp án là **A**."
+      },
+      {
+        "vi": "Người phụ nữ sẽ làm gì tiếp theo?",
+        "why_correct": "Cô ấy nói sẽ đi 'search for an item' trên các kệ sách, đáp án là **D**."
+      }
+    ]
+  },
+  "ETS2024_TEST_01_98_100": {
+    "questions": [
+      {
+        "vi": "Loại sự kiện nào được nhắc đến?",
+        "why_correct": "Văn bản nêu rõ đây là bữa tiệc 'to celebrate the retirement', tức là **tiệc nghỉ hưu (C)**."
+      },
+      {
+        "vi": "Kota sẽ làm gì?",
+        "why_correct": "Kota thay thế Amanda làm việc 'hang the decorations', đáp án là **B**."
+      },
+      {
+        "vi": "Người nói làm gì vào lúc giữa trưa?",
+        "why_correct": "Cô ấy có 'meeting with a potential client', đáp án là **D**."
+      }
+    ]
+  },
+  "ETS2024_TEST_05_32_34": {
+    "questions": [
+      {
+        "vi": "Người nói đang ở đâu?",
+        "why_correct": "Người nam nhắc đến việc 'picked up the dry cleaning', xác nhận địa điểm là **tiệm giặt khô (A)**."
+      },
+      {
+        "vi": "Người phụ nữ đề cập đến vấn đề gì?",
+        "why_correct": "Cô ấy báo rằng 'the zipper on this jacket is broken', đáp án là **B**."
+      },
+      {
+        "vi": "Người nam đề nghị làm gì?",
+        "why_correct": "Ông ấy nói 'I can fix it for you by tomorrow', đáp án là **Sửa chữa một món đồ (C)**."
+      }
+    ]
+  },
+  "ETS2024_TEST_06_32_34": {
+    "questions": [
+      {
+        "vi": "Mục đích của cuộc gọi là gì?",
+        "why_correct": "Người gọi muốn 'make a reservation for a graduation party', đáp án là **D**."
+      },
+      {
+        "vi": "Sự kiện diễn ra vào ngày nào?",
+        "why_correct": "Văn bản xác nhận là 'Saturday, June 12th', đáp án là **A**."
+      },
+      {
+        "vi": "Người phụ nữ yêu cầu người nam làm gì?",
+        "why_correct": "Cô ấy bảo 'Please choose a menu option', đáp án là **B**."
+      }
+    ]
+  },
+  "ETS2024_TEST_07_32_34": {
+    "questions": [
+      {
+        "vi": "Họ đang thảo luận về chủ đề gì?",
+        "why_correct": "Hội thoại kể về 'the upcoming company reorganization', đáp án là **Tái cơ cấu công ty (C)**."
+      },
+      {
+        "vi": "Người nữ lo lắng về điều gì?",
+        "why_correct": "Cô ấy sợ rằng 'my department will be moved to another city', đáp án là **Việc di dời văn phòng (D)**."
+      },
+      {
+        "vi": "Người nam khuyên nên làm gì?",
+        "why_correct": "Ông ấy nói 'Wait until the official announcement', đáp án là **Chờ đợi thêm thông tin (A)**."
+      }
+    ]
+  }
+}

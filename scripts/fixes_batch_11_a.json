@@ -1,0 +1,627 @@
+
+[
+  {
+    "word": "imitation",
+    "old_example": "She wore an imitation fur coat that looked remarkably like the real thing but was much more affordable.",
+    "new_example": "She wore an imitation fur coat that looked remarkably like the real thing.",
+    "new_translation": "Cô ấy đã mặc một chiếc áo khoác lông thú giả trông giống đồ thật."
+  },
+  {
+    "word": "immediacy",
+    "old_example": "Live news broadcasts provide a sense of immediacy that traditional newspapers cannot match in today's fast-paced digital world.",
+    "new_example": "Live news broadcasts provide a sense of immediacy that traditional newspapers cannot match.",
+    "new_translation": "Các bản tin trực tiếp mang lại cảm giác tức thì mà báo giấy không có."
+  },
+  {
+    "word": "immerse",
+    "old_example": "She decided to immerse herself in her studies to prepare for the final exams.",
+    "new_example": "She decided to immerse herself in her studies for the final exams.",
+    "new_translation": "Cô ấy quyết định mải mê vào việc học cho các kỳ thi cuối kỳ."
+  },
+  {
+    "word": "immersive",
+    "old_example": "The museum's new virtual reality exhibit provides an immersive experience that transports visitors back to ancient Rome.",
+    "new_example": "The museum's new exhibit provides an immersive experience for all visitors.",
+    "new_translation": "Triển lãm mới của bảo tàng mang lại trải nghiệm đắm chìm cho khách tham quan."
+  },
+  {
+    "word": "imminence",
+    "old_example": "The imminence of the storm forced the authorities to issue an immediate evacuation order for all coastal residents.",
+    "new_example": "The imminence of the storm forced the authorities to issue an evacuation order.",
+    "new_translation": "Sự sắp xảy ra của cơn bão buộc chính quyền ban hành lệnh sơ tán."
+  },
+  {
+    "word": "impatience",
+    "old_example": "His growing impatience with the slow service at the restaurant was evident from the way he kept checking his watch.",
+    "new_example": "His impatience with the slow service was evident at the restaurant today.",
+    "new_translation": "Sự thiếu kiên nhẫn với dịch vụ chậm chạp hiện rõ tại nhà hàng."
+  },
+  {
+    "word": "imperfection",
+    "old_example": "The buyer decided to return the vase after noticing a small imperfection in the glass near the base.",
+    "new_example": "The buyer returned the vase after noticing a small imperfection in the glass.",
+    "new_translation": "Người mua đã trả lại chiếc bình sau khi thấy khuyết điểm trên thủy tinh."
+  },
+  {
+    "word": "implied",
+    "old_example": "There was an implied threat in his message, though he didn't say it directly.",
+    "new_example": "There was an implied threat in his message today.",
+    "new_translation": "Có một sự đe dọa ngụ ý trong thông điệp của anh ta hôm nay."
+  },
+  {
+    "word": "impolitely",
+    "old_example": "The customer spoke impolitely to the staff member who was trying to help him.",
+    "new_example": "The customer spoke impolitely to the staff member today.",
+    "new_translation": "Khách hàng đã nói chuyện một cách bất lịch sự với nhân viên hôm nay."
+  },
+  {
+    "word": "importantly",
+    "old_example": "More importantly, the new system will significantly reduce the risk of data loss for our clients.",
+    "new_example": "More importantly, the new system will reduce the risk of data loss.",
+    "new_translation": "Quan trọng hơn là, hệ thống mới sẽ giảm rủi ro mất dữ liệu."
+  },
+  {
+    "word": "imposition",
+    "old_example": "The imposition of strict trade tariffs has led to an increase in local production costs.",
+    "new_example": "The imposition of strict trade tariffs led to an increase in production costs.",
+    "new_translation": "Việc áp đặt các mức thuế thương mại dẫn đến tăng chi phí sản xuất."
+  },
+  {
+    "word": "imposition",
+    "old_example": "I hope my staying here for a few days isn't too much of an imposition.",
+    "new_example": "I hope my staying here isn't too much of an imposition.",
+    "new_translation": "Tôi hy vọng việc tôi ở lại đây không phải là một sự làm phiền."
+  },
+  {
+    "word": "impostor",
+    "old_example": "The security team caught an impostor trying to access the server room with a fake ID.",
+    "new_example": "The security team caught an impostor trying to access the server room.",
+    "new_translation": "Đội an ninh đã bắt được kẻ mạo danh cố truy cập phòng máy chủ."
+  },
+  {
+    "word": "impound",
+    "old_example": "The customs officers have the authority to impound any illegal goods found in the shipment.",
+    "new_example": "The customs officers have the authority to impound any illegal goods.",
+    "new_translation": "Các nhân viên hải quan có quyền tịch thu bất kỳ hàng hóa bất hợp pháp."
+  },
+  {
+    "word": "impractical",
+    "old_example": "It is impractical to try and walk to the office in this heavy rain.",
+    "new_example": "It is impractical to walk to the office in this heavy rain.",
+    "new_translation": "Thật không thực tế khi đi bộ đến văn phòng trong cơn mưa lớn."
+  },
+  {
+    "word": "impressively",
+    "old_example": "The startup's revenue grew impressively by two hundred percent in just one fiscal year.",
+    "new_example": "The startup's revenue grew impressively in just one fiscal year.",
+    "new_translation": "Doanh thu của công ty khởi nghiệp đã tăng trưởng ấn tượng trong một năm."
+  },
+  {
+    "word": "improperly",
+    "old_example": "The equipment was damaged because it had been improperly maintained by the previous owners of the factory.",
+    "new_example": "The equipment was damaged because it had been improperly maintained today.",
+    "new_translation": "Thiết bị đã bị hỏng vì nó đã được bảo trì không đúng cách."
+  },
+  {
+    "word": "improving",
+    "old_example": "Improving customer retention is one of the key objectives of our current marketing strategy.",
+    "new_example": "Improving customer retention is a key objective of our marketing strategy.",
+    "new_translation": "Cải thiện việc giữ chân khách hàng là mục tiêu chính của chiến lược."
+  },
+  {
+    "word": "in",
+    "old_example": "The annual conference will be held in the main ballroom of the Grand Hotel.",
+    "new_example": "The annual conference will be held in the main ballroom.",
+    "new_translation": "Hội nghị hàng năm sẽ được tổ chức tại phòng đại tiệc chính."
+  },
+  {
+    "word": "inability",
+    "old_example": "Her inability to speak Japanese made it difficult for her to find a job in Tokyo.",
+    "new_example": "Her inability to speak Japanese made it difficult to find a job.",
+    "new_translation": "Việc cô ấy không thể nói tiếng Nhật khiến việc tìm việc khó khăn."
+  },
+  {
+    "word": "inaccuracy",
+    "old_example": "The report was criticized for several major inaccuracies regarding the company's financial performance over the last quarter.",
+    "new_example": "The report was criticized for several inaccuracies regarding financial performance.",
+    "new_translation": "Báo cáo bị chỉ trích vì một số sai sót liên quan đến hiệu quả tài chính."
+  },
+  {
+    "word": "inactive",
+    "old_example": "The old bank account became inactive because no transactions were made for a year.",
+    "new_example": "The old bank account became inactive because no transactions were made.",
+    "new_translation": "Tài khoản ngân hàng cũ đã ngừng hoạt động vì không có giao dịch."
+  },
+  {
+    "word": "inactivity",
+    "old_example": "Long periods of physical inactivity can lead to various health problems, including obesity and heart disease.",
+    "new_example": "Long periods of physical inactivity can lead to various health problems.",
+    "new_translation": "Thời gian dài không hoạt động thể chất dẫn đến nhiều vấn đề sức khỏe."
+  },
+  {
+    "word": "inappropriate",
+    "old_example": "The manager criticized the employee for his inappropriate behavior during the meeting with the client.",
+    "new_example": "The manager criticized the employee for his inappropriate behavior today.",
+    "new_translation": "Quản lý đã chỉ trích nhân viên vì hành vi không phù hợp hôm nay."
+  },
+  {
+    "word": "inaugural",
+    "old_example": "The president delivered an inspiring inaugural address, calling for national unity and economic reform.",
+    "new_example": "The president delivered an inspiring inaugural address today.",
+    "new_translation": "Tổng thống đã đọc một bài diễn văn nhậm chức đầy cảm hứng hôm nay."
+  },
+  {
+    "word": "inbox",
+    "old_example": "I need to clear out my inbox as it's currently filled with over two hundred unread emails.",
+    "new_example": "I need to clear out my inbox today.",
+    "new_translation": "Tôi cần dọn sạch hộp thư đến của mình hôm nay."
+  },
+  {
+    "word": "incandescent",
+    "old_example": "The old-fashioned incandescent light bulbs have been largely replaced by more energy-efficient LED alternatives in recent years.",
+    "new_example": "The old incandescent light bulbs have been replaced by LED alternatives.",
+    "new_translation": "Những bóng đèn dây tóc cũ đã được thay thế bằng đèn LED."
+  },
+  {
+    "word": "incentives",
+    "old_example": "The government is offering tax incentives to encourage companies to invest in renewable energy.",
+    "new_example": "The government is offering tax incentives for renewable energy investment.",
+    "new_translation": "Chính phủ đang đưa ra các ưu đãi thuế cho đầu tư năng lượng."
+  },
+  {
+    "word": "incident",
+    "old_example": "Police are investigating a serious shooting incident that took place in the city center last night.",
+    "new_example": "Police are investigating a shooting incident in the city center.",
+    "new_translation": "Cảnh sát đang điều tra một vụ nổ súng ở trung tâm thành phố."
+  },
+  {
+    "word": "inclusion",
+    "old_example": "The company is committed to promoting diversity and inclusion in the workplace to ensure that all employees feel valued and respected.",
+    "new_example": "The company is committed to promoting diversity and inclusion today.",
+    "new_translation": "Công ty cam kết thúc đẩy sự đa dạng và hòa nhập hôm nay."
+  },
+  {
+    "word": "inclusivity",
+    "old_example": "The organization is dedicated to promoting diversity and inclusivity in all of its hiring and promotion processes.",
+    "new_example": "The organization is dedicated to promoting diversity and inclusivity today.",
+    "new_translation": "Tổ chức tận tâm thúc đẩy sự đa dạng và tính hòa nhập hôm nay."
+  },
+  {
+    "word": "incompetence",
+    "old_example": "The manager was dismissed due to his persistent professional incompetence and failure to meet key performance targets.",
+    "new_example": "The manager was dismissed due to his persistent professional incompetence.",
+    "new_translation": "Quản lý đã bị sa thải do sự thiếu năng lực chuyên môn kéo dài."
+  },
+  {
+    "word": "incorporated",
+    "old_example": "The feedback from the focus group was incorporated into the final design of the product.",
+    "new_example": "The feedback was incorporated into the final design of the product.",
+    "new_translation": "Phản hồi đã được đưa vào bản thiết kế cuối cùng của sản phẩm."
+  },
+  {
+    "word": "incorrectly",
+    "old_example": "If the data is entered incorrectly, it could lead to significant errors in the final report.",
+    "new_example": "If the data is entered incorrectly, it could lead to errors.",
+    "new_translation": "Nếu dữ liệu được nhập không chính xác, nó có thể dẫn đến lỗi."
+  },
+  {
+    "word": "increases",
+    "old_example": "The company expects significant increases in revenue after the launch of the new product line.",
+    "new_example": "The company expects significant increases in revenue this year.",
+    "new_translation": "Công ty mong đợi sự gia tăng đáng kể về doanh thu năm nay."
+  },
+  {
+    "word": "incredibly",
+    "old_example": "The project was incredibly complex, requiring coordination between several different departments and international partners.",
+    "new_example": "The project was incredibly complex and required coordination.",
+    "new_translation": "Dự án vô cùng phức tạp và đòi hỏi sự phối hợp."
+  },
+  {
+    "word": "incrementally",
+    "old_example": "We plan to expand our operations incrementally over the next five years to manage costs effectively.",
+    "new_example": "We plan to expand our operations incrementally over the next five years.",
+    "new_translation": "Chúng tôi dự định mở rộng hoạt động dần dần trong năm năm tới."
+  },
+  {
+    "word": "incumbency",
+    "old_example": "The politician used the advantages of his incumbency to campaign effectively for re-election during the local vote.",
+    "new_example": "The politician used the advantages of his incumbency to campaign today.",
+    "new_translation": "Chính trị gia đã sử dụng lợi thế đương nhiệm để vận động hôm nay."
+  },
+  {
+    "word": "independently",
+    "old_example": "The two research teams worked independently to verify the experimental results and ensure their accuracy.",
+    "new_example": "The two research teams worked independently to verify the results.",
+    "new_translation": "Hai đội nghiên cứu đã làm việc độc lập để xác minh kết quả."
+  },
+  {
+    "word": "index",
+    "old_example": "The consumer price index is a key economic indicator that measures the average change in prices over time.",
+    "new_example": "The consumer price index is a key economic indicator.",
+    "new_translation": "Chỉ số giá tiêu dùng là một chỉ báo kinh tế then chốt."
+  },
+  {
+    "word": "india",
+    "old_example": "India is one of the world's fastest-growing economies and a major player in the global technology sector.",
+    "new_example": "India is one of the world's fastest-growing economies today.",
+    "new_translation": "Ấn Độ là một trong những nền kinh tế phát triển nhanh nhất hôm nay."
+  },
+  {
+    "word": "indication",
+    "old_example": "There is every indication that the new marketing strategy will be a major success.",
+    "new_example": "There is every indication that the new strategy will be a success.",
+    "new_translation": "Có mọi dấu hiệu cho thấy chiến lược mới sẽ là một thành công."
+  },
+  {
+    "word": "indifference",
+    "old_example": "The government's apparent indifference to the plight of the refugees caused a great deal of public outrage and protests.",
+    "new_example": "The government's indifference to the refugees caused public outrage today.",
+    "new_translation": "Sự thờ ơ của chính phủ đối với người tị nạn gây phẫn nộ."
+  },
+  {
+    "word": "indifferently",
+    "old_example": "He shrugged indifferently when asked which restaurant he would prefer to visit for dinner.",
+    "new_example": "He shrugged indifferently when asked about the dinner choice today.",
+    "new_translation": "Anh ta nhún vai thờ ơ khi được hỏi về lựa chọn bữa tối."
+  },
+  {
+    "word": "indispensable",
+    "old_example": "A reliable internet connection has become indispensable for most modern businesses to function effectively in the global market.",
+    "new_example": "A reliable internet connection has become indispensable for most modern businesses.",
+    "new_translation": "Kết nối internet đáng tin cậy đã trở nên không thể thiếu."
+  },
+  {
+    "word": "indoor",
+    "old_example": "The hotel features a large indoor swimming pool that can be used regardless of the weather.",
+    "new_example": "The hotel features a large indoor swimming pool today.",
+    "new_translation": "Khách sạn có một hồ bơi trong nhà lớn hôm nay."
+  },
+  {
+    "word": "inducement",
+    "old_example": "The company offered a large signing bonus as an inducement to attract top talent from its main competitors.",
+    "new_example": "The company offered a large bonus as an inducement to attract talent.",
+    "new_translation": "Công ty đã đề nghị một khoản thưởng lớn để thu hút tài năng."
+  },
+  {
+    "word": "indulge",
+    "old_example": "After a long week of work, she decided to indulge in a luxury spa day.",
+    "new_example": "After a long week of work, she decided to indulge herself.",
+    "new_translation": "Sau một tuần làm việc dài, cô ấy quyết định tự thưởng bản thân."
+  },
+  {
+    "word": "industrial",
+    "old_example": "The region is undergoing a rapid industrial transformation with the construction of several new factories.",
+    "new_example": "The region is undergoing an industrial transformation today.",
+    "new_translation": "Khu vực này đang trải qua một cuộc chuyển đổi công nghiệp hôm nay."
+  },
+  {
+    "word": "ineffective",
+    "old_example": "The old security system was found to be ineffective at preventing break-ins, so the company decided to upgrade it.",
+    "new_example": "The old security system was ineffective at preventing break-ins.",
+    "new_translation": "Hệ thống an ninh cũ không hiệu quả trong việc ngăn chặn đột nhập."
+  },
+  {
+    "word": "inefficiency",
+    "old_example": "The audit identified several areas of inefficiency in the manufacturing process that were leading to increased production costs.",
+    "new_example": "The audit identified several areas of inefficiency in the process.",
+    "new_translation": "Cuộc kiểm toán đã xác định vài khâu thiếu hiệu quả trong quy trình."
+  },
+  {
+    "word": "inefficiently",
+    "old_example": "The old heating system was running very inefficiently, leading to high energy bills and uneven temperatures throughout the building.",
+    "new_example": "The old heating system was running very inefficiently today.",
+    "new_translation": "Hệ thống sưởi cũ hoạt động rất kém hiệu quả hôm nay."
+  },
+  {
+    "word": "ineptitude",
+    "old_example": "The project's failure was blamed on the management's total ineptitude and lack of clear direction.",
+    "new_example": "The project's failure was blamed on the management's total ineptitude.",
+    "new_translation": "Sự thất bại của dự án bị đổ lỗi cho sự bất tài của quản lý."
+  },
+  {
+    "word": "inevitable",
+    "old_example": "Given the current economic trends, a significant increase in interest rates seems inevitable in the near future.",
+    "new_example": "A significant increase in interest rates seems inevitable today.",
+    "new_translation": "Sự gia tăng đáng kể trong lãi suất dường như là tất yếu hôm nay."
+  },
+  {
+    "word": "inference",
+    "old_example": "Based on the evidence presented by the prosecution, the jury reached the inference that the defendant was guilty.",
+    "new_example": "Based on the evidence, the jury reached the inference of guilt.",
+    "new_translation": "Dựa trên bằng chứng, bồi thẩm đoàn đã đi đến kết luận có tội."
+  },
+  {
+    "word": "infinitive",
+    "old_example": "In English grammar, the infinitive of a verb is often preceded by the word 'to', such as 'to eat' or 'to sleep'.",
+    "new_example": "In English grammar, the infinitive of a verb is often preceded by 'to'.",
+    "new_translation": "Trong ngữ pháp tiếng Anh, động từ nguyên thể thường có 'to' đi trước."
+  },
+  {
+    "word": "inflatable",
+    "old_example": "We brought an inflatable boat to the lake so that we could go fishing and enjoy the scenery from the water.",
+    "new_example": "We brought an inflatable boat to the lake today.",
+    "new_translation": "Chúng tôi đã mang theo một chiếc thuyền bơm hơi đến hồ hôm nay."
+  },
+  {
+    "word": "inflatable",
+    "old_example": "The children spent hours playing on the large inflatable castle that was set up for the birthday party.",
+    "new_example": "The children spent hours playing on the large inflatable castle.",
+    "new_translation": "Lũ trẻ đã dành hàng giờ chơi trên lâu đài bơm hơi lớn."
+  },
+  {
+    "word": "influential",
+    "old_example": "The professor is a highly influential figure in the field of sociology, having written several groundbreaking books on social inequality.",
+    "new_example": "The professor is a highly influential figure in the field of sociology.",
+    "new_translation": "Giáo sư là một nhân vật có tầm ảnh hưởng lớn trong xã hội học."
+  },
+  {
+    "word": "informal",
+    "old_example": "The team decided to have an informal lunch meeting at the nearby cafe to discuss the project.",
+    "new_example": "The team decided to have an informal meeting today.",
+    "new_translation": "Cả đội đã quyết định có một cuộc họp thân mật hôm nay."
+  },
+  {
+    "word": "information",
+    "old_example": "Detailed information about the product's features and specifications can be found on our website.",
+    "new_example": "Detailed information about the product can be found on our website.",
+    "new_translation": "Thông tin chi tiết về sản phẩm có thể được tìm thấy trên trang web."
+  },
+  {
+    "word": "informational",
+    "old_example": "The website provides various informational resources for entrepreneurs looking to start a new business.",
+    "new_example": "The website provides various informational resources for entrepreneurs today.",
+    "new_translation": "Trang web cung cấp nhiều tài liệu thông tin khác nhau cho doanh nhân."
+  },
+  {
+    "word": "informative",
+    "old_example": "The seminar on international trade was highly informative and provided many practical tips for exporters.",
+    "new_example": "The seminar on trade was highly informative for all attendees.",
+    "new_translation": "Buổi hội thảo về thương mại rất bổ ích cho mọi người tham dự."
+  },
+  {
+    "word": "informed",
+    "old_example": "It is important to make an informed decision when investing your savings in the stock market.",
+    "new_example": "It is important to make an informed decision when investing today.",
+    "new_translation": "Điều quan trọng là đưa ra quyết định sáng suốt khi đầu tư hôm nay."
+  },
+  {
+    "word": "infrared",
+    "old_example": "Security cameras often use infrared technology to capture clear images in complete darkness by detecting heat signatures.",
+    "new_example": "Security cameras often use infrared technology to capture clear images.",
+    "new_translation": "Máy ảnh an ninh thường sử dụng công nghệ hồng ngoại để chụp ảnh rõ."
+  },
+  {
+    "word": "infrastructure",
+    "old_example": "The government is planning a massive investment in national infrastructure to stimulate economic growth.",
+    "new_example": "The government is planning a massive investment in national infrastructure.",
+    "new_translation": "Chính phủ đang lập kế hoạch đầu tư khổng lồ vào cơ sở hạ tầng."
+  },
+  {
+    "word": "infrequently",
+    "old_example": "The remote island is visited by supply ships only infrequently, so residents must be very self-sufficient.",
+    "new_example": "The remote island is visited by supply ships only infrequently today.",
+    "new_translation": "Hòn đảo xa xôi hiếm khi có tàu tiếp tế ghé thăm hôm nay."
+  },
+  {
+    "word": "infusion",
+    "old_example": "The startup received a significant infusion of venture capital to fund the development of its new product line.",
+    "new_example": "The startup received a significant infusion of capital today.",
+    "new_translation": "Công ty khởi nghiệp đã nhận được một đợt rót vốn đáng kể hôm nay."
+  },
+  {
+    "word": "ingredient",
+    "old_example": "The secret ingredient in this award-winning recipe is a unique blend of rare spices.",
+    "new_example": "The secret ingredient in this recipe is a blend of spices.",
+    "new_translation": "Thành phần bí mật trong công thức này là một hỗn hợp gia vị."
+  },
+  {
+    "word": "ingredients",
+    "old_example": "The restaurant prides itself on using only the freshest local ingredients in all its dishes.",
+    "new_example": "The restaurant uses only the freshest local ingredients today.",
+    "new_translation": "Nhà hàng chỉ sử dụng các thành phần địa phương tươi nhất hôm nay."
+  },
+  {
+    "word": "inhabitants",
+    "old_example": "The island has only a few hundred permanent inhabitants who rely mostly on fishing and tourism.",
+    "new_example": "The island has only a few hundred permanent inhabitants today.",
+    "new_translation": "Hòn đảo chỉ có vài trăm cư dân thường trú hôm nay."
+  },
+  {
+    "word": "inherit",
+    "old_example": "She inherited a large sum of money and several properties from her late uncle.",
+    "new_example": "She inherited a large sum of money from her uncle.",
+    "new_translation": "Cô ấy đã thừa kế một số tiền lớn từ người chú của mình."
+  },
+  {
+    "word": "inhibitor",
+    "old_example": "The scientists are testing a new enzyme inhibitor that could potentially block the growth of cancer cells in the body.",
+    "new_example": "The scientists are testing a new enzyme inhibitor today.",
+    "new_translation": "Các nhà khoa học đang thử nghiệm một chất ức chế enzyme mới hôm nay."
+  },
+  {
+    "word": "initial",
+    "old_example": "The initial results of the survey were very promising and suggested strong market interest.",
+    "new_example": "The initial results of the survey were very promising today.",
+    "new_translation": "Kết quả ban đầu của cuộc khảo sát rất hứa hẹn hôm nay."
+  },
+  {
+    "word": "initiate",
+    "old_example": "The company plans to initiate a new training program for all entry-level employees next month.",
+    "new_example": "The company plans to initiate a new training program next month.",
+    "new_translation": "Công ty có kế hoạch khởi xướng một chương trình đào tạo vào tháng tới."
+  },
+  {
+    "word": "initiated",
+    "old_example": "The investigation was initiated after several anonymous complaints were received by the ethics committee.",
+    "new_example": "The investigation was initiated after several complaints today.",
+    "new_translation": "Cuộc điều tra đã được bắt đầu sau một vài khiếu nại hôm nay."
+  },
+  {
+    "word": "initiating",
+    "old_example": "By initiating this cost-cutting measures, the firm hopes to remain profitable during the downturn.",
+    "new_example": "By initiating these measures, the firm hopes to remain profitable.",
+    "new_translation": "Bằng cách bắt đầu các biện pháp này, công ty hy vọng giữ lợi nhuận."
+  },
+  {
+    "word": "initiation",
+    "old_example": "The initiation of the new policy led to an immediate improvement in workplace safety.",
+    "new_example": "The initiation of the new policy led to improvement in safety.",
+    "new_translation": "Sự khởi xướng chính sách mới đã dẫn đến cải thiện về an toàn."
+  },
+  {
+    "word": "initiative",
+    "old_example": "The manager praised Sarah for her initiative in solving the technical problem before it escalated.",
+    "new_example": "The manager praised Sarah for her initiative today.",
+    "new_translation": "Người quản lý đã khen ngợi Sarah vì sự chủ động của cô ấy hôm nay."
+  },
+  {
+    "word": "initiatives",
+    "old_example": "The new environmental initiatives aim to reduce the company's carbon footprint by thirty percent.",
+    "new_example": "The new environmental initiatives aim to reduce the company's carbon footprint.",
+    "new_translation": "Các sáng kiến môi trường mới nhằm giảm lượng dấu chân carbon."
+  },
+  {
+    "word": "initiator",
+    "old_example": "He was the primary initiator of the merger negotiations between the two retail giants.",
+    "new_example": "He was the primary initiator of the merger negotiations today.",
+    "new_translation": "Ông ấy là người khởi xướng chính cho các cuộc đàm phán sáp nhập."
+  },
+  {
+    "word": "injection",
+    "old_example": "The government announced a massive injection of funds into the healthcare system to improve patient care.",
+    "new_example": "The government announced a massive injection of funds today.",
+    "new_translation": "Chính phủ đã thông báo một đợt rót vốn khổng lồ hôm nay."
+  },
+  {
+    "word": "injury",
+    "old_example": "He had to take a leave of absence after suffering a back injury during the warehouse inspection.",
+    "new_example": "He had to take a leave of absence after an injury.",
+    "new_translation": "Anh ấy đã phải nghỉ phép sau khi bị chấn thương."
+  },
+  {
+    "word": "inn",
+    "old_example": "The historic inn provides a cozy and welcoming atmosphere for travelers visiting the countryside.",
+    "new_example": "The historic inn provides a cozy atmosphere for travelers today.",
+    "new_translation": "Quán trọ lịch sử mang lại bầu không khí ấm cúng cho du khách."
+  },
+  {
+    "word": "innocently",
+    "old_example": "She innocently asked about his ex-girlfriend, not realizing that it was a sensitive topic for him.",
+    "new_example": "She innocently asked about his friend today.",
+    "new_translation": "Cô ấy ngây thơ hỏi về người bạn của anh ta hôm nay."
+  },
+  {
+    "word": "innovate",
+    "old_example": "To remain competitive in the global market, companies must constantly innovate and adapt to new technologies.",
+    "new_example": "To remain competitive, companies must constantly innovate today.",
+    "new_translation": "Để duy trì khả năng cạnh tranh, các công ty phải liên tục đổi mới."
+  },
+  {
+    "word": "innovative",
+    "old_example": "The company is known for its innovative approach to software development and user experience design.",
+    "new_example": "The company is known for its innovative approach to development today.",
+    "new_translation": "Công ty được biết đến với cách tiếp cận sáng tạo trong phát triển."
+  },
+  {
+    "word": "innovator",
+    "old_example": "The tech company is known as a leading innovator in the field of renewable energy and sustainable building materials.",
+    "new_example": "The tech company is known as a leading innovator today.",
+    "new_translation": "Công ty công nghệ được biết đến như một nhà cách tân hàng đầu."
+  },
+  {
+    "word": "inorganic",
+    "old_example": "Inorganic chemistry is the branch of science that deals with the properties and reactions of non-carbon compounds.",
+    "new_example": "Inorganic chemistry deals with the properties of non-carbon compounds.",
+    "new_translation": "Hóa học vô cơ nghiên cứu các tính chất của các hợp chất vô cơ."
+  },
+  {
+    "word": "input",
+    "old_example": "We value your input and will take your suggestions into consideration for future projects.",
+    "new_example": "We value your input and will consider your suggestions today.",
+    "new_translation": "Chúng tôi coi trọng đóng góp của bạn và sẽ xem xét các gợi ý."
+  },
+  {
+    "word": "inquire",
+    "old_example": "I'm calling to inquire about the status of my application for the senior marketing position.",
+    "new_example": "I'm calling to inquire about the status of my application today.",
+    "new_translation": "Tôi gọi điện để hỏi về tình trạng hồ sơ ứng tuyển của mình hôm nay."
+  },
+  {
+    "word": "insecticide",
+    "old_example": "The gardener applied a mild insecticide to the roses to protect them from aphids and other pests.",
+    "new_example": "The gardener applied a mild insecticide to the roses today.",
+    "new_translation": "Người làm vườn đã phun một loại thuốc diệt côn trùng lên hoa hồng."
+  },
+  {
+    "word": "inserting",
+    "old_example": "Carefully inserting the delicate components into the circuit board is a crucial step in the assembly process.",
+    "new_example": "Carefully inserting the components into the circuit board is crucial.",
+    "new_translation": "Việc chèn cẩn thận các linh kiện vào bảng mạch là quan trọng."
+  },
+  {
+    "word": "insisted",
+    "old_example": "The client insisted on a full refund after discovering several defects in the delivered goods.",
+    "new_example": "The client insisted on a full refund today.",
+    "new_translation": "Khách hàng đã khăng khăng yêu cầu hoàn tiền toàn bộ hôm nay."
+  },
+  {
+    "word": "inspect",
+    "old_example": "Qualified engineers will inspect the structural integrity of the bridge before it is reopened to traffic.",
+    "new_example": "Qualified engineers will inspect the structural integrity of the bridge.",
+    "new_translation": "Các kỹ sư có trình độ sẽ kiểm tra tính toàn vẹn của cây cầu."
+  },
+  {
+    "word": "inspected",
+    "old_example": "All machinery in the factory is inspected regularly to ensure it meets safety standards.",
+    "new_example": "All machinery in the factory is inspected regularly today.",
+    "new_translation": "Tất cả máy móc trong nhà máy được kiểm tra thường xuyên hôm nay."
+  },
+  {
+    "word": "inspecting",
+    "old_example": "Inspecting the final products for quality assurance is a critical part of our manufacturing process.",
+    "new_example": "Inspecting the final products for quality is critical today.",
+    "new_translation": "Việc kiểm tra các sản phẩm cuối cùng để đảm bảo chất lượng là quan trọng."
+  },
+  {
+    "word": "inspection",
+    "old_example": "The hotel underwent a rigorous health and safety inspection before receiving its five-star certification.",
+    "new_example": "The hotel underwent a health and safety inspection today.",
+    "new_translation": "Khách sạn đã trải qua một cuộc kiểm tra sức khỏe và an toàn."
+  },
+  {
+    "word": "inspections",
+    "old_example": "Regular fire safety inspections are necessary to ensure that all emergency exits are clear and functional.",
+    "new_example": "Regular fire safety inspections are necessary for the building.",
+    "new_translation": "Các cuộc kiểm tra an toàn phòng cháy là cần thiết cho tòa nhà."
+  },
+  {
+    "word": "inspector",
+    "old_example": "The building inspector found several structural issues that must be addressed before the project continues.",
+    "new_example": "The building inspector found several structural issues today.",
+    "new_translation": "Thanh tra viên tòa nhà đã tìm thấy một vài vấn đề cấu trúc."
+  },
+  {
+    "word": "inspects",
+    "old_example": "The quality control manager inspects every batch of products before they are cleared for shipping.",
+    "new_example": "The manager inspects every batch of products before shipping.",
+    "new_translation": "Quản lý kiểm tra từng lô sản phẩm trước khi vận chuyển."
+  },
+  {
+    "word": "inspirational",
+    "old_example": "The speaker's inspirational life story deeply moved the audience and motivated many of them to pursue their own dreams.",
+    "new_example": "The speaker's inspirational life story deeply moved the audience.",
+    "new_translation": "Câu chuyện cuộc đời truyền cảm hứng của diễn giả làm khán giả xúc động."
+  },
+  {
+    "word": "inspiring",
+    "old_example": "The CEO's inspiring keynote speech motivated the entire team to work towards the company's new vision.",
+    "new_example": "The CEO's inspiring speech motivated the entire team today.",
+    "new_translation": "Bài diễn văn đầy cảm hứng của CEO đã thúc đẩy toàn đội ngũ."
+  },
+  {
+    "word": "interest",
+    "old_example": "The low interest rates offered by the bank have encouraged many families to buy their first homes.",
+    "new_example": "The low interest rates have encouraged many families today.",
+    "new_translation": "Mức lãi suất thấp đã khuyến khích nhiều gia đình hôm nay."
+  }
+]

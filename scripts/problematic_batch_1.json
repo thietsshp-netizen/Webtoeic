@@ -1,0 +1,702 @@
+[
+  {
+    "word": "abolish",
+    "example": "The government decided to abolish the old tax system and introduce a simpler one.",
+    "translation": "Chính phủ đã quyết định bãi bỏ hệ thống thuế cũ và đưa ra một hệ thống đơn giản hơn.",
+    "part_of_speech": "Verb",
+    "definition": "Bãi bỏ/Hủy bỏ (luật lệ/hệ thống/tổ chức)"
+  },
+  {
+    "word": "abortion",
+    "example": "The sudden withdrawal of funding led to the immediate abortion of the deep-sea exploration project.",
+    "translation": "Sự rút vốn đột ngột đã dẫn đến việc chấm dứt (thất bại) ngay lập tức dự án thám hiểm biển sâu.",
+    "part_of_speech": "Noun",
+    "definition": "Sự phá thai/Sự nạo thai/Sự thất bại sớm (của một dự án/kế hoạch)"
+  },
+  {
+    "word": "abrasive",
+    "example": "His abrasive management style often managed to upset many of the company's junior employees.",
+    "translation": "Phong cách quản lý thô lỗ của anh ấy thường làm phật lòng nhiều nhân viên cấp dưới của công ty.",
+    "part_of_speech": "Adjective/Noun",
+    "definition": "Làm trầy xước/Có tính mài mòn/Thô lỗ (nghĩa bóng)/Chất mài mòn (n)"
+  },
+  {
+    "word": "abstraction",
+    "example": "To many students, higher mathematics seems like a collection of difficult and meaningless abstractions.",
+    "translation": "Đối với nhiều sinh viên, toán học cao cấp dường như là một tập hợp các ý tưởng trừu tượng khó hiểu và vô nghĩa.",
+    "part_of_speech": "Noun",
+    "definition": "Sự trừu tượng/Ý tưởng trừu tượng/Sự tách rời/Sự lơ đãng"
+  },
+  {
+    "word": "abundance",
+    "example": "There is an abundance of natural resources in this region, including oil and timber.",
+    "translation": "Có một sự dồi dào tài nguyên thiên nhiên ở vùng này, bao gồm cả dầu mỏ và gỗ.",
+    "part_of_speech": "Noun",
+    "definition": "Sự phong phú/Sự dồi dào/Sự nhiều vô kể"
+  },
+  {
+    "word": "acceptability",
+    "example": "The social acceptability of the new policy was questioned by many local community leaders.",
+    "translation": "Tính chất có thể chấp nhận được về mặt xã hội của chính sách mới đã bị nhiều lãnh đạo cộng đồng địa phương nghi ngờ.",
+    "part_of_speech": "Noun",
+    "definition": "Tính chất có thể chấp nhận được/Sự thừa nhận/Sự tán thành"
+  },
+  {
+    "word": "accommodative",
+    "example": "The central bank maintained an accommodative monetary policy to support economic recovery and job creation.",
+    "translation": "Ngân hàng trung ương đã duy trì một chính sách tiền tệ nới lỏng (hỗ trợ) để thúc đẩy phục hồi kinh tế và tạo việc làm.",
+    "part_of_speech": "Adjective",
+    "definition": "Sẵn lòng giúp đỡ/Dễ dãi/Thích nghi/Nới lỏng (chính sách tiền tệ)"
+  },
+  {
+    "word": "accredit",
+    "example": "The institution was finally managed to be accredited by the national educational board yesterday.",
+    "translation": "Cơ sở này cuối cùng đã được hội đồng giáo dục quốc gia cấp phép vào hôm qua.",
+    "part_of_speech": "Verb",
+    "definition": "Cấp phép/Ủy quyền/Công nhận/Gán cho"
+  },
+  {
+    "word": "accumulate",
+    "example": "If you don't clean your house regularly, dust will quickly accumulate on all the surfaces.",
+    "translation": "Nếu bạn không dọn dẹp nhà cửa thường xuyên, bụi bẩn sẽ nhanh chóng tích tụ trên mọi bề mặt.",
+    "part_of_speech": "Verb",
+    "definition": "Tích lũy/Gom góp/Lũy kế"
+  },
+  {
+    "word": "acidity",
+    "example": "The expert noted that the high acidity of the wine paired perfectly with seafood.",
+    "translation": "Chuyên gia lưu ý rằng độ axit cao của rượu kết hợp hoàn hảo với hải sản.",
+    "part_of_speech": "Noun",
+    "definition": "Tính axit/Độ axit/Sự chua"
+  },
+  {
+    "word": "activities",
+    "example": "The company organizes several team-building activities every year to improve collaboration among international employees.",
+    "translation": "Công ty tổ chức vài hoạt động (activities) xây dựng đội ngũ hàng năm để cải thiện sự cộng tác giữa các nhân viên quốc tế.",
+    "part_of_speech": "Noun (plural)",
+    "definition": "Các hoạt động; Các hành động"
+  },
+  {
+    "word": "add",
+    "example": "The company plans to add 50 new jobs by the end of the year.",
+    "translation": "Công ty dự định thêm 50 việc làm mới vào cuối năm nay.",
+    "part_of_speech": "Verb",
+    "definition": "Thêm vào/Cộng vào"
+  },
+  {
+    "word": "additive",
+    "example": "The government has introduced stricter regulations on the use of chemical additives in food products.",
+    "translation": "Chính phủ đã đưa ra các quy định nghiêm ngặt hơn về việc sử dụng các chất phụ gia hóa học trong các sản phẩm thực phẩm.",
+    "part_of_speech": "Noun",
+    "definition": "Chất phụ gia"
+  },
+  {
+    "word": "adem",
+    "example": "Mr. Adem is the regional manager responsible for our operations in several European countries.",
+    "translation": "Ông Adem (Adem) là quản lý khu vực chịu trách nhiệm về các hoạt động của chúng tôi tại vài quốc gia Châu Âu.",
+    "part_of_speech": "Proper Noun (Name)",
+    "definition": "Tên riêng hoặc họ người (Adem)"
+  },
+  {
+    "word": "adherence",
+    "example": "Strict adherence to safety guidelines is essential to prevent accidents in the chemical laboratory.",
+    "translation": "Việc tuân thủ nghiêm ngặt các hướng dẫn an toàn là điều thiết yếu để ngăn ngừa tai nạn trong phòng thí nghiệm hóa chất.",
+    "part_of_speech": "Noun",
+    "definition": "Sự tuân thủ/Sự trung thành (với một ý tưởng/nhóm)/Sự bám dính"
+  },
+  {
+    "word": "admirable",
+    "example": "The marketing team's commitment to delivering high-quality international campaigns within tight deadlines is truly admirable.",
+    "translation": "Sự cam kết của đội ngũ tiếp thị trong việc cung cấp các chiến dịch quốc tế chất lượng cao trong thời hạn chặt chẽ là thực sự đáng ngưỡng mộ (admirable).",
+    "part_of_speech": "Adjective",
+    "definition": "Đáng ngưỡng mộ; Đáng khâm phục; Tuyệt vời"
+  },
+  {
+    "word": "admirably",
+    "example": "She handled the difficult situation admirably and earned the respect of her entire team.",
+    "translation": "Cô ấy đã xử lý tình huống khó khăn một cách đáng ngưỡng mộ và nhận được sự tôn trọng của toàn đội.",
+    "part_of_speech": "Adverb",
+    "definition": "Một cách đáng ngưỡng mộ/Một cách tuyệt vời"
+  },
+  {
+    "word": "adolescence",
+    "example": "Adolescence is a time of major physical and emotional changes for most young individuals.",
+    "translation": "Thời thiếu niên là thời kỳ của những thay đổi lớn về thể chất và cảm xúc đối với hầu hết các cá nhân trẻ.",
+    "part_of_speech": "Noun",
+    "definition": "Thời thiếu niên/Giai đoạn dậy thì"
+  },
+  {
+    "word": "adorable",
+    "example": "Everyone thought the new baby was absolutely adorable in his tiny blue knitted sweater.",
+    "translation": "Mọi người đều nghĩ em bé mới sinh tuyệt đối đáng yêu trong chiếc áo len đan màu xanh tí hon.",
+    "part_of_speech": "Adjective",
+    "definition": "Đáng yêu/Dễ thương/Đáng kính mến"
+  },
+  {
+    "word": "adulthood",
+    "example": "Transitioning from adolescence to adulthood can be a challenging period for many young people.",
+    "translation": "Chuyển giao từ thời thiếu niên sang tuổi trưởng thành có thể là một giai đoạn đầy thử thách đối với nhiều người trẻ.",
+    "part_of_speech": "Noun",
+    "definition": "Tuổi trưởng thành"
+  },
+  {
+    "word": "advertisements",
+    "example": "The company has increased its annual budget for international advertisements in several major financial publications.",
+    "translation": "Công ty đã tăng ngân sách hàng năm cho các quảng cáo (advertisements) quốc tế trên vài ấn phẩm tài chính lớn.",
+    "part_of_speech": "Noun (plural)",
+    "definition": "Các quảng cáo; Các mẩu rao vặt"
+  },
+  {
+    "word": "advertiser",
+    "example": "The magazine attracts a wide range of advertisers from the fashion and beauty industries.",
+    "translation": "Tạp chí thu hút nhiều nhà quảng cáo từ các ngành công nghiệp thời trang và làm đẹp.",
+    "part_of_speech": "Noun",
+    "definition": "Nhà quảng cáo/Người đăng tin quảng cáo"
+  },
+  {
+    "word": "aesthetic",
+    "example": "The new office design is not only functional but also has a strong aesthetic appeal.",
+    "translation": "Thiết kế văn phòng mới không chỉ có công năng mà còn có sức hút thẩm mỹ mạnh mẽ.",
+    "part_of_speech": "Adjective",
+    "definition": "Thuộc về thẩm mỹ/Có tính thẩm mỹ"
+  },
+  {
+    "word": "affiliation",
+    "example": "The research institute maintains a close affiliation with several leading universities to foster academic collaboration.",
+    "translation": "Viện nghiên cứu duy trì một mối liên kết chặt chẽ với vài trường đại học hàng đầu để thúc đẩy hợp tác học thuật.",
+    "part_of_speech": "Noun",
+    "definition": "Sự liên kết/Sự sáp nhập/Mối quan hệ chính trị/đảng phái/chi nhánh"
+  },
+  {
+    "word": "affiliations",
+    "example": "The university has several international research affiliations with leading technology corporations in Europe and Asia.",
+    "translation": "Trường đại học có vài mối liên kết (affiliations) nghiên cứu quốc tế với các tập đoàn công nghệ hàng đầu ở Châu Âu và Châu Á.",
+    "part_of_speech": "Noun (plural)",
+    "definition": "Các sự gia nhập; Các mối liên kết/liên minh (giữa các tổ chức); Các chi nhánh"
+  },
+  {
+    "word": "affordably",
+    "example": "The new restaurant aims to provide high-quality organic meals affordably for the local community.",
+    "translation": "Nhà hàng mới nhằm mục đích cung cấp các bữa ăn hữu cơ chất lượng cao với giá cả phải chăng cho cộng đồng địa phương.",
+    "part_of_speech": "Adverb",
+    "definition": "Một cách hợp túi tiền/Giá cả phải chăng"
+  },
+  {
+    "word": "agritourism",
+    "example": "Agritourism has become a very popular way for city families to experience farm life.",
+    "translation": "Du lịch nông nghiệp đã trở thành một cách rất phổ biến để các gia đình thành phố trải nghiệm cuộc sống nông trại.",
+    "part_of_speech": "Noun",
+    "definition": "Du lịch nông nghiệp"
+  },
+  {
+    "word": "airborne",
+    "example": "Health officials warned that the new virus could potentially become airborne in crowded spaces.",
+    "translation": "Các quan chức y tế cảnh báo rằng virus mới có khả năng lây truyền qua không khí trong không gian đông đúc.",
+    "part_of_speech": "Adjective",
+    "definition": "Ở trên không/Bay trên không/Lây truyền qua đường hàng không"
+  },
+  {
+    "word": "airfare",
+    "example": "A significant portion of the travel budget was spent on round-trip airfare to London.",
+    "translation": "Một phần đáng kể ngân sách du lịch đã được chi cho giá vé máy bay khứ hồi đi Luân Đôn.",
+    "part_of_speech": "Noun",
+    "definition": "Giá vé máy bay"
+  },
+  {
+    "word": "airfreight",
+    "example": "The company decided to use airfreight to ensure the urgent shipment arrived on time.",
+    "translation": "Công ty đã quyết định sử dụng vận tải hàng không để đảm bảo chuyến hàng khẩn cấp đến đúng giờ.",
+    "part_of_speech": "Noun/Verb",
+    "definition": "Hàng vận chuyển bằng đường hàng không/Gửi bằng đường hàng không (v)"
+  },
+  {
+    "word": "airy",
+    "example": "The new living room is very bright and airy, with large windows overlooking the garden.",
+    "translation": "Phòng khách mới rất sáng và thoáng khí, với những cửa sổ lớn nhìn ra vườn.",
+    "part_of_speech": "Adjective",
+    "definition": "Thoáng khí/Hào hứng/Nhẹ nhàng/Hư ảo"
+  },
+  {
+    "word": "alden",
+    "example": "Mr. Alden is the regional director responsible for our expanding operations in the Asia-Pacific region.",
+    "translation": "Ông Alden (Alden) là giám đốc khu vực chịu trách nhiệm về các hoạt động đang mở rộng của chúng tôi tại khu vực Châu Á - Thái Bình Dương.",
+    "part_of_speech": "Proper Noun (Name)",
+    "definition": "Tên riêng hoặc họ người phổ biến (Alden)"
+  },
+  {
+    "word": "alignments",
+    "example": "Strategic alignments between international corporations are becoming increasingly common in the global technology sector.",
+    "translation": "Những sự liên kết (alignments) chiến lược giữa các tập đoàn quốc tế đang ngày càng trở nên phổ biến trong lĩnh vực công nghệ toàn cầu.",
+    "part_of_speech": "Noun (plural)",
+    "definition": "Sự liên kết/sắp hàng; (Nghĩa bóng) Sự điều chỉnh cho phù hợp; Các liên minh (chính trị/kinh tế)"
+  },
+  {
+    "word": "alive",
+    "example": "The city center really comes alive at night when the neon lights turn on.",
+    "translation": "Trung tâm thành phố thực sự trở nên sống động vào ban đêm khi đèn neon bật sáng.",
+    "part_of_speech": "Adjective",
+    "definition": "Sống/Còn sống/Sống động/Nhộn nhịp"
+  },
+  {
+    "word": "allergen",
+    "example": "Dust and pollen are common allergens that can cause breathing problems for some people.",
+    "translation": "Bụi và phấn hoa là những chất gây dị ứng phổ biến có thể gây ra các vấn đề về hô hấp cho một số người.",
+    "part_of_speech": "Noun",
+    "definition": "Chất gây dị ứng"
+  },
+  {
+    "word": "allure",
+    "example": "The allure of high profits managed to attract many new investors to the startup.",
+    "translation": "Sức hấp dẫn của lợi nhuận cao đã thu hút nhiều nhà đầu tư mới đến với công ty khởi nghiệp.",
+    "part_of_speech": "Noun/Verb",
+    "definition": "Sức hấp dẫn/Sự quyến rũ/Lôi cuốn (v)/Mê hoặc (v)"
+  },
+  {
+    "word": "almond",
+    "example": "Almonds are a healthy snack as they are rich in vitamins, minerals, and healthy fats.",
+    "translation": "Hạnh nhân là một món ăn nhẹ lành mạnh vì chúng giàu vitamin, khoáng chất và chất béo lành mạnh.",
+    "part_of_speech": "Noun",
+    "definition": "Hạnh nhân"
+  },
+  {
+    "word": "aloud",
+    "example": "The teacher asked the student to read the short poem aloud to the class.",
+    "translation": "Giáo viên đã yêu cầu học sinh đọc to bài thơ ngắn cho cả lớp nghe.",
+    "part_of_speech": "Adverb",
+    "definition": "To tiếng/Thành tiếng/Oanh oanh"
+  },
+  {
+    "word": "aluminum",
+    "example": "Aluminum is widely used in the aerospace industry because it is both lightweight and strong.",
+    "translation": "Nhôm được sử dụng rộng rãi trong ngành công nghiệp hàng không vũ trụ vì nó vừa nhẹ vừa bền.",
+    "part_of_speech": "Noun",
+    "definition": "Nhôm"
+  },
+  {
+    "word": "alumna",
+    "example": "She is a proud alumna of the university and often donates to its scholarship fund.",
+    "translation": "Cô ấy là một nữ cựu sinh viên tự hào của trường đại học và thường quyên góp cho quỹ học bổng của trường.",
+    "part_of_speech": "Noun",
+    "definition": "Nữ cựu sinh viên"
+  },
+  {
+    "word": "alumni",
+    "example": "The university's alumni association organizes regular networking events and fundraising campaigns for current students.",
+    "translation": "Hội cựu sinh viên của trường đại học tổ chức các sự kiện kết nối thường xuyên và các chiến dịch gây quỹ cho sinh viên hiện tại.",
+    "part_of_speech": "Noun",
+    "definition": "Cựu sinh viên/Cựu học sinh (số nhiều)"
+  },
+  {
+    "word": "alumnus",
+    "example": "He is a distinguished alumnus of the college and often gives guest lectures there.",
+    "translation": "Ông ấy là một nam cựu sinh viên kiệt xuất của trường cao đẳng và thường xuyên có các bài giảng khách mời ở đó.",
+    "part_of_speech": "Noun",
+    "definition": "Nam cựu sinh viên"
+  },
+  {
+    "word": "amber",
+    "example": "The necklace featured a large piece of ancient amber with an insect trapped inside.",
+    "translation": "Chiếc vòng cổ có một mảnh hổ phách cổ đại lớn với một con côn trùng bị kẹt bên trong.",
+    "part_of_speech": "Noun/Adjective",
+    "definition": "Hổ phách/Màu vàng hổ phách"
+  },
+  {
+    "word": "ambiance",
+    "example": "The soft lighting and jazz music created a very romantic ambiance in the restaurant.",
+    "translation": "Ánh sáng dịu nhẹ và nhạc jazz đã tạo ra một bầu không khí rất lãng mạn trong nhà hàng.",
+    "part_of_speech": "Noun",
+    "definition": "Bầu không khí/Môi trường xung quanh (thường nói về một địa điểm)"
+  },
+  {
+    "word": "ambitious",
+    "example": "The company has set an ambitious goal to increase sales by fifty percent this year.",
+    "translation": "Công ty đã đặt ra một mục tiêu đầy tham vọng là tăng doanh số bán hàng lên năm mươi phần trăm trong năm nay.",
+    "part_of_speech": "Adjective",
+    "definition": "Có hoài bão/Có khát vọng/Đầy tham vọng"
+  },
+  {
+    "word": "amenities",
+    "example": "The hotel offers a wide range of amenities, including a swimming pool and a gym.",
+    "translation": "Khách sạn cung cấp nhiều loại tiện nghi, bao gồm hồ bơi và phòng tập gym.",
+    "part_of_speech": "Noun",
+    "definition": "Các tiện nghi/Cơ sở vật chất (khách sạn/khu dân cư)"
+  },
+  {
+    "word": "amina",
+    "example": "Ms. Amina is the senior human resources manager leading the new international employee recruitment initiative.",
+    "translation": "Cô Amina (Amina) là quản lý nhân sự cao cấp đang lãnh đạo sáng kiến tuyển dụng nhân viên quốc tế mới.",
+    "part_of_speech": "Proper Noun (Name)",
+    "definition": "Tên riêng nữ giới phổ biến (Amina)"
+  },
+  {
+    "word": "amplify",
+    "example": "The company uses social media to amplify its marketing messages and reach a wider audience.",
+    "translation": "Công ty sử dụng phương tiện truyền thông xã hội để tăng cường các thông điệp tiếp thị và tiếp cận lượng khán giả rộng hơn.",
+    "part_of_speech": "Verb",
+    "definition": "Phóng đại/Mở rộng/Làm tăng thêm (âm thanh/chi tiết)"
+  },
+  {
+    "word": "ana",
+    "example": "Ana is the regional sales director responsible for managing our international partnerships in Western Europe.",
+    "translation": "Ana (Ana) là giám đốc bán hàng khu vực chịu trách nhiệm quản lý các quan hệ đối tác quốc tế của chúng tôi tại Tây Âu.",
+    "part_of_speech": "Proper Noun (Name)",
+    "definition": "Tên riêng nữ giới phổ biến (Ana)"
+  },
+  {
+    "word": "anchor",
+    "example": "The captain ordered the crew to drop the anchor as the ship approached the small tropical harbor.",
+    "translation": "Thuyền trưởng đã ra lệnh cho thủy thủ đoàn thả neo khi con tàu tiếp cận bến cảng nhiệt đới.",
+    "part_of_speech": "Noun/Verb",
+    "definition": "Cái mỏ neo/Người đọc chương trình chính/Thả neo (v)/Níu chặt (v)"
+  },
+  {
+    "word": "angle",
+    "example": "The photographer tried several different angles to capture the building in the best possible light.",
+    "translation": "Nhiếp ảnh gia đã thử vài góc chụp khác nhau để ghi lại hình ảnh tòa nhà trong điều kiện ánh sáng tốt nhất có thể.",
+    "part_of_speech": "Noun",
+    "definition": "Góc/Góc nhìn/Khía cạnh/Quan điểm"
+  },
+  {
+    "word": "annexation",
+    "example": "The annexation of the small territory by the neighboring country led to significant international political tension.",
+    "translation": "Việc sáp nhập lãnh thổ nhỏ của quốc gia láng giềng đã dẫn đến căng thẳng chính trị quốc tế.",
+    "part_of_speech": "Noun",
+    "definition": "Sự thôn tính/Sự sáp nhập (lãnh thổ)/Sự phụ thêm"
+  },
+  {
+    "word": "anonymously",
+    "example": "The wealthy businessman donated several million dollars to the local charity organization anonymously yesterday afternoon.",
+    "translation": "Nhà kinh doanh giàu có đã ẩn danh quyên góp vài triệu đô la cho tổ chức từ thiện chiều qua.",
+    "part_of_speech": "Adverb",
+    "definition": "Một cách ẩn danh/Nặc danh"
+  },
+  {
+    "word": "answerable",
+    "example": "The project manager is directly answerable to the CEO for any delays or issues.",
+    "translation": "Người quản lý dự án chịu trách nhiệm trực tiếp trước Giám đốc điều hành về bất kỳ sự chậm trễ hoặc vấn đề nào.",
+    "part_of_speech": "Adjective",
+    "definition": "Chịu trách nhiệm/Có thể trả lời được"
+  },
+  {
+    "word": "antibiotic",
+    "example": "The doctor prescribed a course of antibiotics to treat the patient's severe bacterial infection.",
+    "translation": "Bác sĩ đã kê một đợt thuốc kháng sinh để điều trị tình trạng nhiễm trùng vi khuẩn nghiêm trọng của bệnh nhân.",
+    "part_of_speech": "Noun/Adjective",
+    "definition": "Thuốc kháng sinh/Có tính kháng sinh"
+  },
+  {
+    "word": "anticipate",
+    "example": "We anticipate that the new product will be very successful in the international market.",
+    "translation": "Chúng tôi dự đoán rằng sản phẩm mới sẽ rất thành công trên thị trường quốc tế.",
+    "part_of_speech": "Verb",
+    "definition": "Dự đoán/Mong đợi/Lường trước"
+  },
+  {
+    "word": "antivirus",
+    "example": "It is essential to update your antivirus software regularly to protect your computer from malware.",
+    "translation": "Việc cập nhật phần mềm diệt virus thường xuyên là thiết yếu để bảo vệ máy tính khỏi mã độc.",
+    "part_of_speech": "Noun/Adjective",
+    "definition": "Phần mềm diệt vi-rút/Thuộc về diệt vi-rút"
+  },
+  {
+    "word": "anxious",
+    "example": "Parents are often anxious about their children's safety when they start going to school alone.",
+    "translation": "Cha mẹ thường lo lắng về sự an toàn của con cái khi chúng bắt đầu tự đi học một mình.",
+    "part_of_speech": "Adjective",
+    "definition": "Lo lắng/Bồn chồn/Háo hức/Khát khao (anxious for/to do)"
+  },
+  {
+    "word": "anymore",
+    "example": "She doesn't work at the bank anymore; she started her own consulting business last year.",
+    "translation": "Cô ấy không còn làm việc ở ngân hàng nữa; cô ấy đã bắt đầu kinh doanh tư vấn riêng vào năm ngoái.",
+    "part_of_speech": "Adverb",
+    "definition": "Nữa (thường dùng trong câu phủ định/nghi vấn - no longer/any longer)"
+  },
+  {
+    "word": "anyway",
+    "example": "It was raining heavily outside, but we decided to go for a walk anyway.",
+    "translation": "Trời bên ngoài đang mưa to, nhưng dù sao thì chúng tôi cũng quyết định đi dạo.",
+    "part_of_speech": "Adverb",
+    "definition": "Dù sao đi nữa/Thế nào cũng được"
+  },
+  {
+    "word": "apartment",
+    "example": "He moved into a small apartment in the city center to be closer to work.",
+    "translation": "Anh ấy đã chuyển vào một căn hộ nhỏ ở trung tâm thành phố để gần nơi làm việc hơn.",
+    "part_of_speech": "Noun",
+    "definition": "Căn hộ"
+  },
+  {
+    "word": "apartments",
+    "example": "The new residential development includes several luxury apartments with stunning views of the city.",
+    "translation": "Khu dân cư mới bao gồm một vài căn hộ sang trọng với tầm nhìn tuyệt đẹp ra thành phố.",
+    "part_of_speech": "Noun",
+    "definition": "Các căn hộ (số nhiều)"
+  },
+  {
+    "word": "apathetic",
+    "example": "Many voters felt apathetic about the upcoming election due to the lack of clear political choices.",
+    "translation": "Nhiều cử tri cảm thấy thờ ơ với cuộc bầu cử sắp tới do thiếu các lựa chọn chính trị rõ ràng.",
+    "part_of_speech": "Adjective",
+    "definition": "Thờ ơ/Lãnh đạm/Không quan tâm"
+  },
+  {
+    "word": "aperture",
+    "example": "Adjusting the camera's aperture controls the amount of light that enters the lens during a shot.",
+    "translation": "Điều chỉnh khẩu độ máy ảnh giúp kiểm soát lượng ánh sáng đi vào ống kính khi chụp.",
+    "part_of_speech": "Noun",
+    "definition": "Lỗ hổng/Khe hở/Khẩu độ (trong nhiếp ảnh)"
+  },
+  {
+    "word": "apologetic",
+    "example": "The customer service representative was very apologetic about the delay in processing the customer's refund.",
+    "translation": "Đại diện dịch vụ khách hàng đã rất biết lỗi (tạ lỗi) về sự chậm trễ trong việc xử lý khoản hoàn tiền cho khách hàng.",
+    "part_of_speech": "Adjective",
+    "definition": "Biết lỗi/Xin lỗi/Có tính cách tạ lỗi"
+  },
+  {
+    "word": "apparatus",
+    "example": "The laboratory is equipped with the latest scientific apparatus for conducting complex chemical experiments.",
+    "translation": "Phòng thí nghiệm được trang bị các thiết bị khoa học mới nhất để thực hiện thí nghiệm hóa học.",
+    "part_of_speech": "Noun",
+    "definition": "Thiết bị/Dụng cụ/Bộ máy (tổ chức/chính trị)"
+  },
+  {
+    "word": "apparent",
+    "example": "It became apparent that the new marketing strategy was not achieving the expected international sales targets.",
+    "translation": "Rõ ràng là chiến lược tiếp thị mới đã không đạt được các mục tiêu doanh số quốc tế kỳ vọng.",
+    "part_of_speech": "Adjective",
+    "definition": "Rõ ràng/Hiển nhiên/Bề ngoài (có vẻ như)"
+  },
+  {
+    "word": "apparently",
+    "example": "Apparently, the new marketing campaign has already led to a significant increase in sales.",
+    "translation": "Hình như chiến dịch tiếp thị mới đã dẫn đến sự gia tăng đáng kể về doanh số.",
+    "part_of_speech": "Adverb",
+    "definition": "Hình như/Có vẻ như/Rõ ràng là (theo như người ta nói/thấy)"
+  },
+  {
+    "word": "appearance",
+    "example": "The famous author made a rare public appearance at the international book fair yesterday.",
+    "translation": "Tác giả nổi tiếng đã có một lần xuất hiện công khai hiếm hoi tại hội chợ sách hôm qua.",
+    "part_of_speech": "Noun",
+    "definition": "Diện mạo/Vẻ bề ngoài/Sự xuất hiện"
+  },
+  {
+    "word": "appearances",
+    "example": "The politician made several public appearances during the final week of the election campaign.",
+    "translation": "Chính trị gia đã có một vài lần xuất hiện công khai trong tuần cuối của chiến dịch.",
+    "part_of_speech": "Noun",
+    "definition": "Vẻ bề ngoài/Các lần xuất hiện (số nhiều)"
+  },
+  {
+    "word": "appears",
+    "example": "It appears that the international economy is finally beginning to recover from the recession.",
+    "translation": "Có vẻ như nền kinh tế quốc tế cuối cùng cũng bắt đầu phục hồi sau suy thoái.",
+    "part_of_speech": "Verb",
+    "definition": "Dường như/Xuất hiện (ngôi thứ 3 số ít)"
+  },
+  {
+    "word": "appendage",
+    "example": "The small robot features a specialized mechanical appendage designed for handling delicate electronic components and materials.",
+    "translation": "Robot nhỏ có một bộ phận phụ cơ khí chuyên dụng dùng để xử lý các linh kiện điện tử tinh xảo.",
+    "part_of_speech": "Noun",
+    "definition": "Phần phụ/Vật phụ thuộc/Chi (sinh học)"
+  },
+  {
+    "word": "appendix",
+    "example": "The detailed financial reports can be found in the appendix of the annual document.",
+    "translation": "Các báo cáo tài chính chi tiết có thể được tìm thấy trong phụ lục của tài liệu.",
+    "part_of_speech": "Noun",
+    "definition": "Phụ lục (trong sách)/Ruột thừa (y học)"
+  },
+  {
+    "word": "applause",
+    "example": "The speaker received a standing ovation and loud applause after his inspiring keynote address.",
+    "translation": "Diễn giả đã nhận được sự tung hô và tràng pháo tay lớn sau bài phát biểu đầy cảm hứng.",
+    "part_of_speech": "Noun",
+    "definition": "Tiếng vỗ tay; Sự tán thưởng"
+  },
+  {
+    "word": "apples",
+    "example": "We bought a large bag of organic apples from the local farmer's market yesterday.",
+    "translation": "Hôm qua chúng tôi đã mua một túi táo hữu cơ lớn từ chợ nông sản địa phương.",
+    "part_of_speech": "Noun (plural)",
+    "definition": "Các quả táo"
+  },
+  {
+    "word": "applicable",
+    "example": "Please fill in the form and attach all the applicable documents for your application.",
+    "translation": "Vui lòng điền vào mẫu và đính kèm tất cả các tài liệu phù hợp cho đơn đăng ký.",
+    "part_of_speech": "Adjective",
+    "definition": "Có thể áp dụng được/Thích hợp/Xác đáng"
+  },
+  {
+    "word": "applicant",
+    "example": "The successful applicant will be notified of the decision by the end of next week.",
+    "translation": "Ứng viên thành công sẽ được thông báo về quyết định vào cuối tuần tới.",
+    "part_of_speech": "Noun",
+    "definition": "Người nộp đơn/Ứng viên (xin việc/xin học)"
+  },
+  {
+    "word": "applicants",
+    "example": "There were over five hundred applicants for the senior manager position in our department.",
+    "translation": "Đã có hơn năm trăm ứng viên cho vị trí quản lý cấp cao trong bộ phận của chúng tôi.",
+    "part_of_speech": "Noun",
+    "definition": "Các ứng viên/Những người nộp đơn (số nhiều)"
+  },
+  {
+    "word": "applies",
+    "example": "The new company policy regarding remote work applies to all employees in every department.",
+    "translation": "Chính sách mới của công ty về làm việc từ xa áp dụng cho mọi nhân viên ở mọi bộ phận.",
+    "part_of_speech": "Verb",
+    "definition": "Áp dụng/Nộp đơn (ngôi thứ 3 số ít)"
+  },
+  {
+    "word": "applying",
+    "example": "Applying for a visa can be a long and complicated process for some international travelers.",
+    "translation": "Xin thị thực có thể là một quá trình dài và phức tạp đối với một số khách quốc tế.",
+    "part_of_speech": "Verb-ing",
+    "definition": "Việc nộp đơn/Đang áp dụng"
+  },
+  {
+    "word": "appointing",
+    "example": "The board is considering appointing a new CEO by the end of the month.",
+    "translation": "Hội đồng quản trị đang xem xét việc bổ nhiệm một Giám đốc điều hành mới vào cuối tháng này.",
+    "part_of_speech": "Verb-ing",
+    "definition": "Việc bổ nhiệm; Đang bổ nhiệm (vào một chức vụ)"
+  },
+  {
+    "word": "appointment",
+    "example": "I have an appointment with the senior financial consultant at three o'clock tomorrow afternoon.",
+    "translation": "Tôi có một cuộc hẹn với tư vấn tài chính cấp cao vào lúc ba giờ chiều mai.",
+    "part_of_speech": "Noun",
+    "definition": "Cuộc hẹn (với bác sĩ/khách hàng)/Sự bổ nhiệm"
+  },
+  {
+    "word": "appraisal",
+    "example": "The manager conducted an annual performance appraisal for every employee in the marketing department.",
+    "translation": "Quản lý đã thực hiện đánh giá năng lực hàng năm cho mọi nhân viên trong bộ phận tiếp thị.",
+    "part_of_speech": "Noun",
+    "definition": "Sự thẩm định/Sự đánh giá (giá trị/năng lực)"
+  },
+  {
+    "word": "appraise",
+    "example": "The expert was hired to appraise the value of the rare international jewelry collection.",
+    "translation": "Chuyên gia đã được thuê để thẩm định giá trị của bộ sưu tập trang sức quốc tế hiếm.",
+    "part_of_speech": "Verb",
+    "definition": "Thẩm định/Đánh giá (giá trị/năng lực)/Định giá"
+  },
+  {
+    "word": "appraiser",
+    "example": "The professional appraiser estimated the market value of the estate to be several million dollars.",
+    "translation": "Người thẩm định chuyên nghiệp ước tính giá trị thị trường của trang điền là vài triệu đô la.",
+    "part_of_speech": "Noun",
+    "definition": "Người định giá/Người đánh giá (giá trị tài sản/hiệu suất)"
+  },
+  {
+    "word": "appreciable",
+    "example": "The new marketing strategy led to an appreciable increase in sales throughout the region.",
+    "translation": "Chiến lược tiếp thị mới đã dẫn đến sự gia tăng đáng kể về doanh số trong khu vực.",
+    "part_of_speech": "Adjective",
+    "definition": "Đáng kể/Có thể đánh giá được"
+  },
+  {
+    "word": "appreciably",
+    "example": "The temperature in the office has dropped appreciably since the air conditioning was repaired.",
+    "translation": "Nhiệt độ trong văn phòng đã giảm đáng kể kể từ khi điều hòa được sửa chữa.",
+    "part_of_speech": "Adverb",
+    "definition": "Một cách đáng kể/Có thể thấy rõ"
+  },
+  {
+    "word": "appreciate",
+    "example": "We deeply appreciate your help and support during this difficult transition period for our company.",
+    "translation": "Chúng tôi chân thành cảm kích sự giúp đỡ và hỗ trợ của bạn trong giai đoạn chuyển đổi này.",
+    "part_of_speech": "Verb",
+    "definition": "Cảm kích/Biết ơn/Đánh giá cao"
+  },
+  {
+    "word": "appreciated",
+    "example": "Your hard work and dedication to the project are highly appreciated by the entire team.",
+    "translation": "Sự chăm chỉ và cống hiến của bạn cho dự án được cả nhóm đánh giá cao.",
+    "part_of_speech": "Verb-ed/Adjective",
+    "definition": "Được đánh giá cao/Đã tăng giá"
+  },
+  {
+    "word": "appreciation",
+    "example": "The company held a special dinner in appreciation of the employees' hard work this year.",
+    "translation": "Công ty đã tổ chức một bữa tối đặc biệt để cảm ơn sự làm việc chăm chỉ của nhân viên.",
+    "part_of_speech": "Noun",
+    "definition": "Sự cảm kích/Sự biết ơn/Sự tăng giá"
+  },
+  {
+    "word": "appreciative",
+    "example": "The manager was highly appreciative of the team's hard work during the successful international product launch.",
+    "translation": "Quản lý đã rất cảm kích trước sự chăm chỉ của nhóm trong đợt ra mắt sản phẩm quốc tế.",
+    "part_of_speech": "Adjective",
+    "definition": "Biết ơn/Biết thưởng thức/Biết đánh giá cao"
+  },
+  {
+    "word": "apprentice",
+    "example": "He started his career as an apprentice at a local carpentry workshop ten years ago.",
+    "translation": "Anh ấy bắt đầu sự nghiệp của mình như một người học việc tại xưởng mộc cách đây 10 năm.",
+    "part_of_speech": "Noun",
+    "definition": "Người học việc/Thực tập sinh"
+  },
+  {
+    "word": "approach",
+    "example": "The company decided to adopt a more aggressive approach to marketing in the international sector.",
+    "translation": "Công ty đã quyết định áp dụng một cách tiếp cận quyết liệt hơn đối với tiếp thị quốc tế.",
+    "part_of_speech": "Noun",
+    "definition": "Cách tiếp cận/Phương pháp/Lối vào"
+  },
+  {
+    "word": "approaching",
+    "example": "The deadline for the international expansion project is approaching rapidly, so we must work faster.",
+    "translation": "Thời hạn cho dự án mở rộng quốc tế đang đến gần nhanh chóng, nên chúng ta phải làm nhanh hơn.",
+    "part_of_speech": "Verb-ing/Adjective",
+    "definition": "Đang đến gần/Sắp tới"
+  },
+  {
+    "word": "appropriately",
+    "example": "Please ensure that you are dressed appropriately for the formal international business dinner tonight.",
+    "translation": "Vui lòng đảm bảo rằng bạn ăn mặc phù hợp cho bữa tối kinh doanh quốc tế tối nay.",
+    "part_of_speech": "Adverb",
+    "definition": "Một cách thích hợp/Phù hợp"
+  },
+  {
+    "word": "appropriateness",
+    "example": "The committee discussed the appropriateness of the new marketing campaign for our target audience.",
+    "translation": "Ủy ban đã thảo luận về tính phù hợp của chiến dịch tiếp thị mới đối với khán giả mục tiêu.",
+    "part_of_speech": "Noun",
+    "definition": "Sự phù hợp/Sự thích đáng"
+  },
+  {
+    "word": "approval",
+    "example": "The board of directors gave its official approval for the new international expansion plan.",
+    "translation": "Hội đồng quản trị đã đưa ra sự chấp thuận chính thức cho kế hoạch mở rộng quốc tế mới.",
+    "part_of_speech": "Noun",
+    "definition": "Sự chấp thuận/Sự phê duyệt/Sự tán thành"
+  },
+  {
+    "word": "approvals",
+    "example": "The project cannot proceed until we have received all the necessary government approvals and permits.",
+    "translation": "Dự án không thể tiến hành cho đến khi chúng ta nhận được tất cả các phê duyệt từ chính phủ.",
+    "part_of_speech": "Noun",
+    "definition": "Các sự chấp thuận/Các phê duyệt (số nhiều)"
+  },
+  {
+    "word": "approve",
+    "example": "The board of directors is expected to approve the new annual budget this afternoon.",
+    "translation": "Hội đồng quản trị dự kiến sẽ phê duyệt ngân sách hàng năm mới vào chiều nay.",
+    "part_of_speech": "Verb",
+    "definition": "Chấp thuận/Phê duyệt/Tán thành"
+  },
+  {
+    "word": "approved",
+    "example": "The new international marketing strategy was officially approved by the board of directors yesterday.",
+    "translation": "Chiến lược tiếp thị quốc tế mới đã chính thức được hội đồng quản trị phê duyệt hôm qua.",
+    "part_of_speech": "Adjective",
+    "definition": "Đã được phê duyệt/Đã được chấp thuận"
+  }
+]

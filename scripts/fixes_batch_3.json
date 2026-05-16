@@ -1,0 +1,597 @@
+
+[
+  {
+    "word": "auditor",
+    "old_example": "The professional auditor identified several areas for improvement in the company's financial reporting system.",
+    "new_example": "The professional auditor identified several areas for improvement in the reporting system.",
+    "new_translation": "Kiểm toán viên chuyên nghiệp đã xác định vài mặt cần cải thiện trong hệ thống."
+  },
+  {
+    "word": "audits",
+    "old_example": "The department conducts regular audits to ensure that all safety procedures are followed strictly.",
+    "new_example": "The department conducts regular audits to ensure that all safety procedures are followed.",
+    "new_translation": "Bộ phận thực hiện kiểm toán thường xuyên để đảm bảo quy trình an toàn."
+  },
+  {
+    "word": "augment",
+    "old_example": "The company plans to augment its workforce by hiring several new international software developers.",
+    "new_example": "The company plans to augment its workforce by hiring new software developers.",
+    "new_translation": "Công ty có kế hoạch gia tăng nhân lực bằng cách thuê lập trình viên mới."
+  },
+  {
+    "word": "augmentation",
+    "old_example": "The augmentation of the budget allowed the research team to purchase new scientific equipment.",
+    "new_example": "The augmentation of the budget allowed the team to purchase new equipment.",
+    "new_translation": "Sự gia tăng ngân sách đã cho phép nhóm mua thêm thiết bị mới."
+  },
+  {
+    "word": "August",
+    "old_example": "The international marketing conference is scheduled to take place in Singapore late next August.",
+    "new_example": "The marketing conference is scheduled to take place in Singapore next August.",
+    "new_translation": "Hội nghị tiếp thị được lên lịch diễn ra tại Singapore vào tháng Tám tới."
+  },
+  {
+    "word": "aunt",
+    "old_example": "My aunt works as a senior manager for a major international corporation in New York.",
+    "new_example": "My aunt works as a manager for a major corporation in New York.",
+    "new_translation": "Dì tôi làm quản lý cho một tập đoàn lớn tại New York."
+  },
+  {
+    "word": "authenticity",
+    "old_example": "The expert was hired to verify the authenticity of the rare international painting collection.",
+    "new_example": "The expert was hired to verify the authenticity of the painting collection.",
+    "new_translation": "Chuyên gia đã được thuê để xác minh tính xác thực của bộ sưu tập tranh."
+  },
+  {
+    "word": "author",
+    "old_example": "The famous international author will be signing copies of her new book tomorrow afternoon.",
+    "new_example": "The famous author will be signing copies of her new book tomorrow.",
+    "new_translation": "Tác giả nổi tiếng sẽ ký tặng sách mới của mình vào ngày mai."
+  },
+  {
+    "word": "authoritarian",
+    "old_example": "Many employees found the new CEO's authoritarian management style to be very difficult to handle.",
+    "new_example": "Many employees found the CEO's authoritarian management style difficult to handle.",
+    "new_translation": "Nhiều nhân viên thấy phong cách quản lý độc đoán của CEO khó thích ứng."
+  },
+  {
+    "word": "authorities",
+    "old_example": "The local authorities are working to improve the city's public transportation system for residents.",
+    "new_example": "Local authorities are working to improve the city's public transportation system.",
+    "new_translation": "Chính quyền địa phương đang nỗ lực cải thiện hệ thống giao thông công cộng."
+  },
+  {
+    "word": "authority",
+    "old_example": "The manager has the authority to approve all international business travel requests for the department.",
+    "new_example": "The manager has the authority to approve all business travel requests.",
+    "new_translation": "Quản lý có thẩm quyền phê duyệt mọi yêu cầu công tác."
+  },
+  {
+    "word": "authorization",
+    "old_example": "You must obtain written authorization from the manager before accessing the company's secure files.",
+    "new_example": "You must obtain written authorization before accessing the company's secure files.",
+    "new_translation": "Bạn phải có sự cho phép bằng văn bản trước khi truy cập tệp bảo mật."
+  },
+  {
+    "word": "autobiographical",
+    "old_example": "The author's new novel contains several autobiographical elements from his early life in Europe.",
+    "new_example": "The author's new novel contains several autobiographical elements from his life.",
+    "new_translation": "Cuốn tiểu thuyết mới của tác giả chứa vài yếu tố tự truyện từ cuộc đời ông."
+  },
+  {
+    "word": "automation",
+    "old_example": "The introduction of factory automation led to a significant increase in production and efficiency.",
+    "new_example": "The introduction of factory automation led to a significant increase in production.",
+    "new_translation": "Việc đưa tự động hóa vào nhà máy đã dẫn đến sự gia tăng sản lượng."
+  },
+  {
+    "word": "automobile",
+    "old_example": "The international automobile manufacturer is planning to launch several new electric vehicle models next year.",
+    "new_example": "The automobile manufacturer is planning to launch new electric models next year.",
+    "new_translation": "Nhà sản xuất ô tô đang lên kế hoạch tung ra mẫu xe điện mới."
+  },
+  {
+    "word": "availability",
+    "old_example": "Please check the availability of the international conference room for our meeting next Wednesday.",
+    "new_example": "Please check the availability of the conference room for our meeting.",
+    "new_translation": "Vui lòng kiểm tra tình trạng trống của phòng họp cho cuộc họp."
+  },
+  {
+    "word": "available",
+    "old_example": "The new international product line will be available in all major stores next month.",
+    "new_example": "The new product line will be available in major stores next month.",
+    "new_translation": "Dòng sản phẩm mới sẽ có sẵn tại các cửa hàng lớn vào tháng tới."
+  },
+  {
+    "word": "avenue",
+    "old_example": "The company's new regional headquarters is located on a busy avenue in the city center.",
+    "new_example": "The company's new headquarters is located on a busy avenue.",
+    "new_translation": "Trụ sở mới của công ty nằm trên một đại lộ bận rộn."
+  },
+  {
+    "word": "averaging",
+    "old_example": "The team is currently averaging ten new international sales per day throughout this month.",
+    "new_example": "The team is currently averaging ten new sales per day this month.",
+    "new_translation": "Nhóm hiện đạt trung bình mười đơn hàng mới mỗi ngày trong tháng này."
+  },
+  {
+    "word": "aversion",
+    "old_example": "He has a strong aversion to public speaking and prefers to work behind the scenes.",
+    "new_example": "He has a strong aversion to public speaking and prefers desk work.",
+    "new_translation": "Anh ấy có ác cảm với việc nói trước công chúng và thích làm tại bàn."
+  },
+  {
+    "word": "aviation",
+    "old_example": "The international aviation industry has grown significantly in recent years due to increased global travel.",
+    "new_example": "The aviation industry has grown significantly due to increased global travel.",
+    "new_translation": "Ngành hàng không đã tăng trưởng đáng kể do nhu cầu du lịch toàn cầu tăng."
+  },
+  {
+    "word": "avocado",
+    "old_example": "The chef prepared a healthy salad using fresh avocado, local tomatoes, and Mediterranean olive oil.",
+    "new_example": "The chef prepared a healthy salad using fresh avocado and tomatoes.",
+    "new_translation": "Đầu bếp đã chuẩn bị một món salad tốt cho sức khỏe bằng bơ tươi."
+  },
+  {
+    "word": "avoid",
+    "old_example": "Please avoid traveling during the rush hour to save time and reduce stress during commuting.",
+    "new_example": "Please avoid traveling during the rush hour to save time.",
+    "new_translation": "Vui lòng tránh đi lại trong giờ cao điểm để tiết kiệm thời gian."
+  },
+  {
+    "word": "avoidable",
+    "old_example": "The recent technical failure in the system was completely avoidable with better regular maintenance.",
+    "new_example": "The technical failure in the system was avoidable with regular maintenance.",
+    "new_translation": "Lỗi kỹ thuật trong hệ thống có thể tránh được nếu được bảo trì thường xuyên."
+  },
+  {
+    "word": "avoidance",
+    "old_example": "The company is committed to the avoidance of any professional misconduct and ethical violations.",
+    "new_example": "The company is committed to the avoidance of any professional misconduct.",
+    "new_translation": "Công ty cam kết tránh bất kỳ hành vi sai trái chuyên nghiệp nào."
+  },
+  {
+    "word": "avoided",
+    "old_example": "The potential conflict was avoided after a long and successful negotiation between the two parties.",
+    "new_example": "The potential conflict was avoided after a long negotiation between the parties.",
+    "new_translation": "Xung đột tiềm tàng đã được tránh khỏi sau một cuộc thương lượng dài."
+  },
+  {
+    "word": "avoiding",
+    "old_example": "Avoiding unnecessary business expenses is essential for maintaining the company's financial health and stability.",
+    "new_example": "Avoiding unnecessary expenses is essential for maintaining the company's financial health.",
+    "new_translation": "Tránh các chi phí không cần thiết là thiết yếu để duy trì sức khỏe tài chính."
+  },
+  {
+    "word": "avoids",
+    "old_example": "The CEO usually avoids public appearances and prefers to communicate with employees through internal emails.",
+    "new_example": "The CEO usually avoids public appearances and prefers internal emails.",
+    "new_translation": "CEO thường tránh xuất hiện công khai và thích dùng email nội bộ."
+  },
+  {
+    "word": "await",
+    "old_example": "We eagerly await the final results of the international marketing campaign launched last week.",
+    "new_example": "We eagerly await the final results of the marketing campaign.",
+    "new_translation": "Chúng tôi đang háo hức chờ đợi kết quả cuối cùng của chiến dịch tiếp thị."
+  },
+  {
+    "word": "awaited",
+    "old_example": "The long-awaited international technology conference will finally take place in London early next month.",
+    "new_example": "The long-awaited technology conference will finally take place next month.",
+    "new_translation": "Hội nghị công nghệ được mong đợi từ lâu cuối cùng sẽ diễn ra vào tháng tới."
+  },
+  {
+    "word": "awaiting",
+    "old_example": "The department is currently awaiting the manager's final approval for the new international project.",
+    "new_example": "The department is currently awaiting the manager's approval for the new project.",
+    "new_translation": "Bộ phận hiện đang chờ sự phê duyệt của quản lý cho dự án mới."
+  },
+  {
+    "word": "awaits",
+    "old_example": "A challenging but rewarding career awaits the successful applicant in our international development department.",
+    "new_example": "A challenging but rewarding career awaits the successful applicant.",
+    "new_translation": "Một sự nghiệp đầy thử thách nhưng xứng đáng đang chờ ứng viên thành công."
+  },
+  {
+    "word": "awake",
+    "old_example": "He stayed awake all night to finish the important international project before the morning deadline.",
+    "new_example": "He stayed awake all night to finish the project before the deadline.",
+    "new_translation": "Anh ấy đã thức cả đêm để hoàn thành dự án trước thời hạn."
+  },
+  {
+    "word": "award",
+    "old_example": "The company received a prestigious international award for its innovative financial management software solutions.",
+    "new_example": "The company received a prestigious award for its innovative software solutions.",
+    "new_translation": "Công ty đã nhận được một giải thưởng uy tín cho các giải pháp phần mềm."
+  },
+  {
+    "word": "awarded",
+    "old_example": "She was awarded the international scholarship for her outstanding academic achievements in computer science.",
+    "new_example": "She was awarded a scholarship for her outstanding achievements in computer science.",
+    "new_translation": "Cô đã được trao học bổng vì những thành tích xuất sắc trong ngành máy tính."
+  },
+  {
+    "word": "awards",
+    "old_example": "The department has won several prestigious international awards for its excellence in customer service.",
+    "new_example": "The department has won several prestigious awards for its excellence.",
+    "new_translation": "Bộ phận đã giành được vài giải thưởng uy tín cho sự xuất sắc của mình."
+  },
+  {
+    "word": "aware",
+    "old_example": "We are aware of the technical issues and are working to resolve them immediately.",
+    "new_example": "We are aware of the technical issues and will resolve them immediately.",
+    "new_translation": "Chúng tôi đã biết về các vấn đề kỹ thuật và sẽ giải quyết chúng ngay."
+  },
+  {
+    "word": "awareness",
+    "old_example": "The marketing campaign is designed to increase international brand awareness and attract new customers.",
+    "new_example": "The campaign is designed to increase brand awareness and attract customers.",
+    "new_translation": "Chiến dịch được thiết kế để tăng nhận diện thương hiệu và thu hút khách."
+  },
+  {
+    "word": "awesome",
+    "old_example": "The view from the top floor of the new international hotel is truly awesome.",
+    "new_example": "The view from the top floor of the new hotel is awesome.",
+    "new_translation": "Tầm nhìn từ tầng thượng của khách sạn mới thật sự rất tuyệt vời."
+  },
+  {
+    "word": "awfully",
+    "old_example": "The weather was awfully cold during the international trade fair held in London last January.",
+    "new_example": "The weather was awfully cold during the trade fair in London.",
+    "new_translation": "Thời tiết đã cực kỳ lạnh trong suốt hội chợ thương mại tại London."
+  },
+  {
+    "word": "awhile",
+    "old_example": "Please wait awhile in the reception area while the manager finishes her international conference call this morning.",
+    "new_example": "Please wait awhile in the reception area for the manager.",
+    "new_translation": "Vui lòng đợi một lát tại khu vực tiếp tân để gặp quản lý."
+  },
+  {
+    "word": "awkward",
+    "old_example": "There was an awkward silence after the manager announced the sudden and unexpected layoffs.",
+    "new_example": "There was an awkward silence after the manager announced the sudden layoffs.",
+    "new_translation": "Đã có một sự im lặng ngượng ngùng sau khi quản lý thông báo sa thải."
+  },
+  {
+    "word": "awkwardly",
+    "old_example": "The young intern stood awkwardly in the hallway during the first day of his internship.",
+    "new_example": "The young intern stood awkwardly in the hallway on his first day.",
+    "new_translation": "Cậu thực tập sinh đứng ngượng nghịu ở hành lang trong ngày đầu tiên."
+  },
+  {
+    "word": "awkwardness",
+    "old_example": "There was a moment of obvious awkwardness when the two international partners disagreed during the business meeting.",
+    "new_example": "There was a moment of awkwardness when the partners disagreed.",
+    "new_translation": "Đã có một khoảnh khắc lúng túng khi các đối tác bất đồng."
+  },
+  {
+    "word": "axe",
+    "old_example": "The company has decided to axe 200 jobs as part of a restructuring plan.",
+    "new_example": "The company has decided to axe 200 jobs during the restructuring.",
+    "new_translation": "Công ty đã quyết định cắt giảm 200 vị trí trong đợt tái cơ cấu."
+  },
+  {
+    "word": "axis",
+    "old_example": "The earth rotates on its axis once every twenty-four hours, causing day and night.",
+    "new_example": "The earth rotates on its axis once every twenty-four hours.",
+    "new_translation": "Trái đất tự quay quanh trục của nó mỗi hai mươi bốn giờ."
+  },
+  {
+    "word": "axle",
+    "old_example": "The mechanic had to repair the broken axle of the truck before it could travel again safely today.",
+    "new_example": "The mechanic had to repair the broken axle of the truck today.",
+    "new_translation": "Thợ máy đã phải sửa chữa trục bánh xe bị gãy hôm nay."
+  },
+  {
+    "word": "azure",
+    "old_example": "The vacationers spent the entire afternoon swimming in the azure waters of the Mediterranean Sea.",
+    "new_example": "The vacationers spent the afternoon swimming in the azure waters.",
+    "new_translation": "Những người đi nghỉ mát đã dành cả buổi chiều bơi lội trong làn nước xanh."
+  },
+  {
+    "word": "baby",
+    "old_example": "The company is launching a new line of organic baby products in the international market.",
+    "new_example": "The company is launching a new line of organic baby products.",
+    "new_translation": "Công ty đang tung ra một dòng sản phẩm hữu cơ cho trẻ em."
+  },
+  {
+    "word": "bachelor",
+    "old_example": "He recently earned a bachelor's degree in computer science from a prestigious international university.",
+    "new_example": "He recently earned a bachelor's degree from a prestigious university.",
+    "new_translation": "Anh ấy mới nhận được bằng cử nhân từ một trường đại học uy tín."
+  },
+  {
+    "word": "back",
+    "old_example": "The manager will be back in the office early next Monday after his vacation.",
+    "new_example": "The manager will be back in the office next Monday.",
+    "new_translation": "Quản lý sẽ quay lại văn phòng vào thứ Hai tới."
+  },
+  {
+    "word": "backer",
+    "old_example": "The young entrepreneur is looking for a wealthy financial backer to fund his ambitious international technology project.",
+    "new_example": "The entrepreneur is looking for a backer to fund his project.",
+    "new_translation": "Doanh nhân đang tìm kiếm một nhà tài trợ để góp vốn cho dự án."
+  },
+  {
+    "word": "background",
+    "old_example": "The ideal candidate should have a strong background in international marketing and software development.",
+    "new_example": "The ideal candidate should have a strong background in marketing.",
+    "new_translation": "Ứng viên lý tưởng nên có nền tảng vững chắc về tiếp thị."
+  },
+  {
+    "word": "backgrounds",
+    "old_example": "Our international team consists of professionals from diverse cultural and educational backgrounds and experiences.",
+    "new_example": "Our team consists of professionals from diverse cultural and educational backgrounds.",
+    "new_translation": "Đội ngũ của chúng tôi gồm các chuyên gia từ nhiều nền tảng văn hóa."
+  },
+  {
+    "word": "backing",
+    "old_example": "The new international project has the full financial backing of several major global corporations.",
+    "new_example": "The new project has the full financial backing of several corporations.",
+    "new_translation": "Dự án mới có sự hỗ trợ tài chính đầy đủ của một vài tập đoàn."
+  },
+  {
+    "word": "backlog",
+    "old_example": "The department is working hard to clear the backlog of international customer orders today.",
+    "new_example": "The department is working hard to clear the backlog of orders today.",
+    "new_translation": "Bộ phận đang nỗ lực giải quyết tình trạng tồn đọng đơn hàng hôm nay."
+  },
+  {
+    "word": "backseat",
+    "old_example": "He decided to take a backseat in the company and let his children manage it.",
+    "new_example": "He decided to take a backseat and let his children manage the company.",
+    "new_translation": "Ông ấy đã quyết định lui về và để các con quản lý công ty."
+  },
+  {
+    "word": "backup",
+    "old_example": "Please ensure that you create a daily backup of all important international business documents.",
+    "new_example": "Please ensure that you create a daily backup of all important documents.",
+    "new_translation": "Vui lòng đảm bảo rằng bạn tạo bản sao lưu hàng ngày cho các tài liệu."
+  },
+  {
+    "word": "backyard",
+    "old_example": "We decided to host a small party in the backyard to celebrate our successful international product launch.",
+    "new_example": "We decided to host a small party in the backyard.",
+    "new_translation": "Chúng tôi quyết định tổ chức một bữa tiệc nhỏ ở sân sau."
+  },
+  {
+    "word": "bad",
+    "old_example": "The bad weather caused several delays for international flights at the city's main airport.",
+    "new_example": "The bad weather caused several delays for international flights.",
+    "new_translation": "Thời tiết xấu đã gây ra một vài sự chậm trễ cho các chuyến bay."
+  },
+  {
+    "word": "badge",
+    "old_example": "Please wear your identification badge at all times while you are inside the company headquarters.",
+    "new_example": "Please wear your identification badge at all times inside the headquarters.",
+    "new_translation": "Vui lòng đeo thẻ định danh mọi lúc khi ở trong trụ sở."
+  },
+  {
+    "word": "badly",
+    "old_example": "The old office building was badly damaged during the heavy storm that hit last week.",
+    "new_example": "The office building was badly damaged during the heavy storm last week.",
+    "new_translation": "Tòa nhà văn phòng đã bị hư hại nặng nề trong trận bão tuần trước."
+  },
+  {
+    "word": "baffle",
+    "old_example": "The complex technical failure managed to baffle several experienced international software engineers for days.",
+    "new_example": "The technical failure managed to baffle several experienced engineers for days.",
+    "new_translation": "Lỗi kỹ thuật đã làm lúng túng vài kỹ sư giàu kinh nghiệm."
+  },
+  {
+    "word": "baggage",
+    "old_example": "The flight attendants assisted the passengers with storing their baggage in the overhead compartments.",
+    "new_example": "The flight attendants assisted the passengers with storing their baggage.",
+    "new_translation": "Tiếp viên hàng không đã hỗ trợ hành khách cất hành lý."
+  },
+  {
+    "word": "bags",
+    "old_example": "The store provides reusable shopping bags to help reduce plastic waste and protect the environment.",
+    "new_example": "The store provides reusable bags to help reduce plastic waste.",
+    "new_translation": "Cửa hàng cung cấp túi tái sử dụng để giúp giảm rác thải nhựa."
+  },
+  {
+    "word": "baker",
+    "old_example": "Mr. Baker is the lead financial analyst who will be presenting the annual budget report.",
+    "new_example": "Mr. Baker will be presenting the annual budget report today.",
+    "new_translation": "Ông Baker sẽ trình bày báo cáo ngân sách hàng năm vào hôm nay."
+  },
+  {
+    "word": "bakery",
+    "old_example": "The local bakery is famous for its fresh international pastries and high-quality organic bread.",
+    "new_example": "The local bakery is famous for its fresh pastries and organic bread.",
+    "new_translation": "Tiệm bánh địa phương nổi tiếng với bánh ngọt và bánh mì hữu cơ."
+  },
+  {
+    "word": "bakeshop",
+    "old_example": "The local bakeshop is famous for its delicious croissants and fresh artisanal sourdough bread.",
+    "new_example": "The bakeshop is famous for its delicious croissants and fresh bread.",
+    "new_translation": "Tiệm bánh địa phương nổi tiếng với bánh sừng bò và bánh mì tươi."
+  },
+  {
+    "word": "balance",
+    "old_example": "Please check your bank account balance before making any large international wire transfer payments.",
+    "new_example": "Please check your bank account balance before making any payments.",
+    "new_translation": "Vui lòng kiểm tra số dư tài khoản ngân hàng trước khi thanh toán."
+  },
+  {
+    "word": "balanced",
+    "old_example": "The manager gave a balanced review of the team's performance throughout the international project period.",
+    "new_example": "The manager gave a balanced review of the team's performance.",
+    "new_translation": "Quản lý đã đưa ra một đánh giá cân bằng về năng lực của nhóm."
+  },
+  {
+    "word": "balancing",
+    "old_example": "Balancing the annual international budget requires a great deal of careful planning and coordination.",
+    "new_example": "Balancing the annual budget requires careful planning and coordination.",
+    "new_translation": "Việc cân đối ngân sách hàng năm đòi hỏi kế hoạch và điều phối cẩn thận."
+  },
+  {
+    "word": "balcony",
+    "old_example": "The new luxury apartment features a large balcony with stunning views of the entire city.",
+    "new_example": "The new apartment features a large balcony with stunning views.",
+    "new_translation": "Căn hộ mới có một ban công lớn với tầm nhìn tuyệt đẹp."
+  },
+  {
+    "word": "ball",
+    "old_example": "The children enjoyed playing with a large colorful ball in the local park early yesterday afternoon after school.",
+    "new_example": "The children enjoyed playing with a large colorful ball in the park.",
+    "new_translation": "Lũ trẻ đã thích thú chơi với một quả bóng màu lớn trong công viên."
+  },
+  {
+    "word": "ballet",
+    "old_example": "She has practiced ballet since childhood and hopes to join a professional dance company soon.",
+    "new_example": "She has practiced ballet since childhood and hopes to join a dance company.",
+    "new_translation": "Cô đã tập ba-lê từ nhỏ và hy vọng được gia nhập một đoàn múa."
+  },
+  {
+    "word": "balloon",
+    "old_example": "The company's marketing campaign features a large hot air balloon floating over the city center.",
+    "new_example": "The marketing campaign features a large hot air balloon over the city.",
+    "new_translation": "Chiến dịch tiếp thị có một khinh khí cầu lớn trên thành phố."
+  },
+  {
+    "word": "ballot",
+    "old_example": "The committee members cast their secret ballots to elect the new head of the department.",
+    "new_example": "The committee members cast their secret ballots to elect the new head.",
+    "new_translation": "Các thành viên ủy ban đã bỏ phiếu kín để bầu ra người đứng đầu mới."
+  },
+  {
+    "word": "ballpark",
+    "old_example": "Can you give me a ballpark figure for the total cost of the renovation?",
+    "new_example": "Can you give me a ballpark figure for the renovation cost?",
+    "new_translation": "Bạn có thể cho tôi một con số xấp xỉ về chi phí cải tạo không?"
+  },
+  {
+    "word": "bamboo",
+    "old_example": "The new office furniture is made from sustainable bamboo to reflect the company's environmental commitment.",
+    "new_example": "The new office furniture is made from sustainable bamboo.",
+    "new_translation": "Nội thất văn phòng mới được làm từ tre bền vững."
+  },
+  {
+    "word": "ban",
+    "old_example": "The government decided to ban the use of certain harmful chemicals in all international products.",
+    "new_example": "The government decided to ban the use of certain harmful chemicals.",
+    "new_translation": "Chính phủ quyết định cấm sử dụng một số hóa chất độc hại."
+  },
+  {
+    "word": "banana",
+    "old_example": "The country exports high-quality organic bananas to several major international markets in North America.",
+    "new_example": "The country exports high-quality organic bananas to international markets.",
+    "new_translation": "Đất nước xuất khẩu chuối hữu cơ sang các thị trường quốc tế."
+  },
+  {
+    "word": "bananas",
+    "old_example": "We bought a large bunch of fresh bananas from the local market early this morning.",
+    "new_example": "We bought a large bunch of fresh bananas this morning.",
+    "new_translation": "Chúng tôi đã mua một nải chuối tươi lớn vào sáng nay."
+  },
+  {
+    "word": "band",
+    "old_example": "The company hired a famous international band to perform at the annual employee appreciation dinner.",
+    "new_example": "The company hired a famous band to perform at the annual dinner.",
+    "new_translation": "Công ty đã thuê một ban nhạc nổi tiếng biểu diễn tại bữa tối hàng năm."
+  },
+  {
+    "word": "bandwidth",
+    "old_example": "The new fiber optic internet connection provides much higher bandwidth for all our international communications.",
+    "new_example": "The new internet connection provides much higher bandwidth for our communications.",
+    "new_translation": "Kết nối internet mới cung cấp băng thông cao hơn cho liên lạc."
+  },
+  {
+    "word": "bang",
+    "old_example": "There was a loud bang from the engine room shortly before the entire system failed.",
+    "new_example": "There was a loud bang from the engine room before the failure.",
+    "new_translation": "Đã có một tiếng nổ lớn từ phòng máy trước khi bị hỏng."
+  },
+  {
+    "word": "banish",
+    "old_example": "The marketing director is working to banish all outdated advertising strategies from the company's campaigns.",
+    "new_example": "The director is working to banish all outdated advertising strategies.",
+    "new_translation": "Giám đốc đang nỗ lực loại bỏ mọi chiến lược quảng cáo lỗi thời."
+  },
+  {
+    "word": "bank",
+    "old_example": "The company plans to open a new account at a major international bank next month.",
+    "new_example": "The company plans to open a new account at a major bank.",
+    "new_translation": "Công ty có kế hoạch mở tài khoản mới tại một ngân hàng lớn."
+  },
+  {
+    "word": "banker",
+    "old_example": "The professional investment banker provided expert advice on the company's international expansion and merger plan.",
+    "new_example": "The investment banker provided advice on the company's expansion plan.",
+    "new_translation": "Nhà ngân hàng đầu tư đã đưa ra lời khuyên về kế hoạch mở rộng."
+  },
+  {
+    "word": "banking",
+    "old_example": "She has several years of professional experience in the international banking and financial services sector.",
+    "new_example": "She has several years of experience in the international banking sector.",
+    "new_translation": "Cô có vài năm kinh nghiệm trong ngành ngân hàng quốc tế."
+  },
+  {
+    "word": "bankrupt",
+    "old_example": "The small local business unfortunately went bankrupt after several months of extremely low international sales.",
+    "new_example": "The small business went bankrupt after several months of low sales.",
+    "new_translation": "Doanh nghiệp nhỏ đã phá sản sau vài tháng doanh số thấp."
+  },
+  {
+    "word": "bankruptcy",
+    "old_example": "Several international corporations were forced to file for bankruptcy due to the global economic crisis.",
+    "new_example": "Several international corporations were forced to file for bankruptcy.",
+    "new_translation": "Vài tập đoàn quốc tế đã buộc phải nộp đơn phá sản."
+  },
+  {
+    "word": "banner",
+    "old_example": "A large promotional banner was displayed outside the exhibition hall during the international trade fair.",
+    "new_example": "A large promotional banner was displayed outside the exhibition hall.",
+    "new_translation": "Một biểu ngữ quảng cáo lớn được treo bên ngoài sảnh triển lãm."
+  },
+  {
+    "word": "banquet",
+    "old_example": "The company held a grand banquet to celebrate its tenth anniversary in the international technology sector.",
+    "new_example": "The company held a banquet to celebrate its tenth anniversary.",
+    "new_translation": "Công ty đã tổ chức một bữa tiệc để kỷ niệm mười năm thành lập."
+  },
+  {
+    "word": "baptize",
+    "old_example": "The young couple decided to baptize their new baby at the local historic stone church.",
+    "new_example": "The young couple decided to baptize their new baby at the church.",
+    "new_translation": "Cặp đôi trẻ quyết định rửa tội cho con của họ tại nhà thờ."
+  },
+  {
+    "word": "bar",
+    "old_example": "The international hotel features a rooftop bar with stunning views of the entire city skyline.",
+    "new_example": "The hotel features a rooftop bar with stunning views of the city.",
+    "new_translation": "Khách sạn có một quầy bar trên sân thượng với tầm nhìn tuyệt đẹp."
+  },
+  {
+    "word": "barber",
+    "old_example": "He goes to the local barber every three weeks for a professional haircut and shave.",
+    "new_example": "He goes to the local barber every three weeks for a haircut.",
+    "new_translation": "Anh ấy đến tiệm cắt tóc địa phương mỗi ba tuần để cắt tóc."
+  },
+  {
+    "word": "barbershop",
+    "old_example": "He goes to the local barbershop every three weeks for a haircut and a shave.",
+    "new_example": "He goes to the barbershop every three weeks for a haircut.",
+    "new_translation": "Anh ấy đến tiệm cắt tóc ba tuần một lần để cắt tóc."
+  },
+  {
+    "word": "barely",
+    "old_example": "The speaker's voice was barely audible over the loud noise from the nearby construction site.",
+    "new_example": "The speaker's voice was barely audible over the loud noise.",
+    "new_translation": "Giọng của diễn giả hầu như không thể nghe thấy do tiếng ồn lớn."
+  },
+  {
+    "word": "bargain",
+    "old_example": "The manager managed to secure a good bargain on the new office furniture from a local supplier.",
+    "new_example": "The manager secured a good bargain on the new office furniture.",
+    "new_translation": "Quản lý đã thương lượng được giá hời cho đồ nội thất văn phòng."
+  },
+  {
+    "word": "bargained",
+    "old_example": "He got more than he bargained for when he agreed to the new role.",
+    "new_example": "He got more than he bargained for in the new role.",
+    "new_translation": "Anh ấy đã nhận được nhiều hơn kỳ vọng trong vai trò mới."
+  }
+]

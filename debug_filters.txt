@@ -1,0 +1,4 @@
+{
+  "selectionMode": "question",
+  "questionType": "Context"
+}

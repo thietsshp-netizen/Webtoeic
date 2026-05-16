@@ -1,26 +1,135 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
+/* ====================================================
+   DESIGN TOKENS - hoctoeic
+   ==================================================== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand colors */
+  --brand-blue:    #1d4ed8;
+  --brand-indigo:  #4338ca;
+  --brand-dark:    #0f172a;
+
+  /* Semantic */
+  --background:    #ffffff;
+  --foreground:    #0f172a;
+  --muted:         #64748b;
+  --border:        #e2e8f0;
+
+  /* Font */
+  --font-sans: var(--font-inter), 'Inter', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
+/* ====================================================
+   BASE RESET
+   ==================================================== */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ====================================================
+   TYPOGRAPHY SCALE - nhất quán toàn app
+   ==================================================== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+/* ====================================================
+   SELECTION COLOR
+   ==================================================== */
+::selection {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* ====================================================
+   SCROLLBAR (visible)
+   ==================================================== */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; border: 2px solid #f1f5f9; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* ====================================================
+   VIDEO / IFRAME trong nội dung bài học
+   ==================================================== */
+.ql-editor iframe:not([srcdoc]),
+.prose iframe:not([srcdoc]),
+.client-viewer iframe:not([srcdoc]) {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16 / 9 !important;
+  display: block !important;
+  margin: 1.5rem auto !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05) !important;
+  position: relative !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+.ql-editor iframe[srcdoc],
+.prose iframe[srcdoc],
+.client-viewer iframe[srcdoc] {
+  width: 100% !important;
+  height: 800px !important;
+  aspect-ratio: auto !important;
+  border: none !important;
+  display: block !important;
+  margin: 1.5rem 0 !important;
+  border-radius: 2rem !important;
+}
+
+.prose :where(iframe):not(:where([class~="not-prose"] *)) {
+  margin: 0 !important;
+  max-width: 100% !important;
+}
+
+/* ====================================================
+   ANIMATION UTILITIES
+   ==================================================== */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in  { animation: fade-in  0.4s ease both; }
+.animate-slide-up { animation: slide-up 0.5s ease both; }
+
+@keyframes pulse-blue {
+  0% { background-color: transparent; }
+  50% { background-color: rgba(59, 130, 246, 0.1); box-shadow: 0 0 30px rgba(59, 130, 246, 0.2); }
+  100% { background-color: transparent; }
+}
+
+.animate-pulse-blue {
+  animation: pulse-blue 1.5s ease-in-out 2;
 }

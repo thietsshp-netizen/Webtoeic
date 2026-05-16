@@ -1,0 +1,603 @@
+
+[
+  {
+    "word": "deal",
+    "old_example": "The negotiator managed to secure a favorable deal for the company during the trade talks.",
+    "new_example": "The negotiator secured a favorable deal for the company.",
+    "new_translation": "Nhà thương lượng đã giành được thỏa thuận có lợi cho công ty."
+  },
+  {
+    "word": "dealer",
+    "old_example": "The professional car dealer provided expert advice on the new international electric vehicle models.",
+    "new_example": "The car dealer provided advice on the new electric models.",
+    "new_translation": "Đại lý xe hơi đã đưa ra lời khuyên về các mẫu xe điện mới."
+  },
+  {
+    "word": "dealing",
+    "old_example": "Dealing with international customers requires a great deal of patience and effective communication skills.",
+    "new_example": "Dealing with international customers requires a great deal of patience.",
+    "new_translation": "Làm việc với khách hàng quốc tế đòi hỏi sự kiên nhẫn lớn."
+  },
+  {
+    "word": "dean",
+    "old_example": "The dean of the university will be presenting the annual international scholarship awards today.",
+    "new_example": "The dean of the university will present the scholarship awards today.",
+    "new_translation": "Trưởng khoa của trường đại học sẽ trao giải thưởng học bổng hôm nay."
+  },
+  {
+    "word": "debate",
+    "old_example": "The politicians had a fierce debate regarding the government's new international trade policies yesterday.",
+    "new_example": "The politicians had a fierce debate regarding the new trade policies.",
+    "new_translation": "Các chính trị gia tranh luận gay gắt về chính sách thương mại mới."
+  },
+  {
+    "word": "debenture",
+    "old_example": "The company decided to issue a new debenture to raise capital for its expansion project.",
+    "new_example": "The company decided to issue a new debenture to raise capital.",
+    "new_translation": "Công ty đã quyết định phát hành một trái khoán mới để huy động vốn."
+  },
+  {
+    "word": "debt",
+    "old_example": "The small local business unfortunately struggled to pay off its large international debt recently.",
+    "new_example": "The small business struggled to pay off its large debt.",
+    "new_translation": "Doanh nghiệp nhỏ gặp khó khăn khi trả khoản nợ lớn."
+  },
+  {
+    "word": "debtor",
+    "old_example": "The company is working to collect outstanding payments from every debtor in the international market.",
+    "new_example": "The company is working to collect payments from every debtor.",
+    "new_translation": "Công ty đang nỗ lực thu hồi thanh toán từ mọi con nợ."
+  },
+  {
+    "word": "debut",
+    "old_example": "The famous international singer made her debut performance at the city's main concert hall.",
+    "new_example": "The famous singer made her debut performance at the concert hall.",
+    "new_translation": "Nữ ca sĩ nổi tiếng đã có màn trình diễn ra mắt tại phòng hòa nhạc."
+  },
+  {
+    "word": "debut",
+    "old_example": "The company plans to debut its new smartphone at the trade show next month.",
+    "new_example": "The company plans to debut its new smartphone next month.",
+    "new_translation": "Công ty có kế hoạch ra mắt chiếc điện thoại mới vào tháng tới."
+  },
+  {
+    "word": "decade",
+    "old_example": "The company has seen significant international growth and expansion over the past successful decade.",
+    "new_example": "The company has seen significant growth over the past decade.",
+    "new_translation": "Công ty đã đạt mức tăng trưởng mạnh mẽ trong thập kỷ qua."
+  },
+  {
+    "word": "decadent",
+    "old_example": "The luxury hotel features a decadent dessert menu with several expensive international chocolate items.",
+    "new_example": "The hotel features a decadent dessert menu with expensive chocolate.",
+    "new_translation": "Khách sạn có thực đơn tráng miệng xa hoa với sô-cô-la đắt tiền."
+  },
+  {
+    "word": "decaf",
+    "old_example": "I usually switch to decaf in the late afternoon to ensure caffeine doesn't interfere with my sleep.",
+    "new_example": "I switch to decaf in the afternoon to sleep better.",
+    "new_translation": "Tôi chuyển sang cà phê không caffeine vào buổi chiều để ngủ ngon hơn."
+  },
+  {
+    "word": "decal",
+    "old_example": "He put a small decal of his favorite band on the back window of his car today.",
+    "new_example": "He put a decal of his favorite band on his car.",
+    "new_translation": "Anh ấy đã dán biểu tượng ban nhạc yêu thích lên xe."
+  },
+  {
+    "word": "decay",
+    "old_example": "The ancient wooden structure began to decay after years of exposure to the elements.",
+    "new_example": "The wooden structure began to decay after years of exposure.",
+    "new_translation": "Cấu trúc gỗ bắt đầu bị mục nát sau nhiều năm tiếp xúc."
+  },
+  {
+    "word": "decay",
+    "old_example": "The old wooden bridge has started to decay after years of exposure to the elements.",
+    "new_example": "The old wooden bridge has started to decay.",
+    "new_translation": "Cây cầu gỗ cũ đã bắt đầu mục nát."
+  },
+  {
+    "word": "deceased",
+    "old_example": "The lawyer was hired to manage the large international estate of the recently deceased businessman.",
+    "new_example": "The lawyer was hired to manage the estate of the deceased businessman.",
+    "new_translation": "Luật sư được thuê quản lý tài sản của nhà kinh doanh đã khuất."
+  },
+  {
+    "word": "deceit",
+    "old_example": "The company was accused of using deceit to win the international construction contract last year.",
+    "new_example": "The company was accused of using deceit to win the contract.",
+    "new_translation": "Công ty bị cáo buộc đã dùng mưu kế lừa gạt để thắng thầu."
+  },
+  {
+    "word": "deceive",
+    "old_example": "The marketing campaign was criticized for trying to deceive international consumers about the product's features.",
+    "new_example": "The campaign was criticized for trying to deceive consumers.",
+    "new_translation": "Chiến dịch tiếp thị bị chỉ trích vì cố lừa dối người tiêu dùng."
+  },
+  {
+    "word": "decency",
+    "old_example": "He had the decency to apologize for the mistakes he made during the international marketing project.",
+    "new_example": "He had the decency to apologize for his mistakes.",
+    "new_translation": "Anh ấy đã có lòng tự trọng để xin lỗi về lỗi lầm của mình."
+  },
+  {
+    "word": "decent",
+    "old_example": "The manager provided a decent review of the team's performance during the international project.",
+    "new_example": "The manager provided a decent review of the team's performance.",
+    "new_translation": "Quản lý đưa ra đánh giá khá tốt về năng lực của nhóm."
+  },
+  {
+    "word": "deception",
+    "old_example": "The professional investigator managed to uncover a complex scheme of international corporate fraud and deception.",
+    "new_example": "The investigator uncovered a complex scheme of corporate deception.",
+    "new_translation": "Điều tra viên đã khám phá ra một âm mưu lừa đảo công ty."
+  },
+  {
+    "word": "deceptive",
+    "old_example": "The marketing department was warned about using deceptive advertising strategies for its international campaigns.",
+    "new_example": "The department was warned about using deceptive advertising strategies.",
+    "new_translation": "Bộ phận tiếp thị bị cảnh báo về chiến lược quảng cáo lừa dối."
+  },
+  {
+    "word": "decide",
+    "old_example": "The board of directors will decide on the new international expansion plan this afternoon.",
+    "new_example": "The board will decide on the new expansion plan this afternoon.",
+    "new_translation": "Hội đồng sẽ quyết định về kế hoạch mở rộng vào chiều nay."
+  },
+  {
+    "word": "decided",
+    "old_example": "The company officially decided to launch its new international product line early next month.",
+    "new_example": "The company decided to launch its new product line next month.",
+    "new_translation": "Công ty đã quyết định tung ra dòng sản phẩm mới vào tháng tới."
+  },
+  {
+    "word": "deciding",
+    "old_example": "Deciding on the finalized budget for the international project is our top priority today.",
+    "new_example": "Deciding on the budget for the project is our priority.",
+    "new_translation": "Quyết định ngân sách cho dự án là ưu tiên của chúng tôi."
+  },
+  {
+    "word": "decipher",
+    "old_example": "The researchers managed to decipher the ancient code after several weeks of intensive international study.",
+    "new_example": "The researchers managed to decipher the ancient code.",
+    "new_translation": "Các nhà nghiên cứu đã giải mã được mật mã cổ."
+  },
+  {
+    "word": "decision",
+    "old_example": "The board of directors made a final decision regarding the company's international expansion plan yesterday.",
+    "new_example": "The board made a decision regarding the expansion plan yesterday.",
+    "new_translation": "Hội đồng quản trị đưa ra quyết định về kế hoạch mở rộng hôm qua."
+  },
+  {
+    "word": "decisions",
+    "old_example": "The manager is responsible for making all the important decisions regarding international sales and operations.",
+    "new_example": "The manager is responsible for making all important decisions.",
+    "new_translation": "Quản lý chịu trách nhiệm đưa ra mọi quyết định quan trọng."
+  },
+  {
+    "word": "decisive",
+    "old_example": "The CEO took decisive action to resolve the technical issues affecting the international software application.",
+    "new_example": "The CEO took decisive action to resolve the technical issues.",
+    "new_translation": "CEO đã hành động quyết liệt để giải quyết lỗi kỹ thuật."
+  },
+  {
+    "word": "deck",
+    "old_example": "The luxury cruise ship features a large sun deck where international passengers can relax comfortably.",
+    "new_example": "The cruise ship features a large sun deck for passengers.",
+    "new_translation": "Tàu du lịch có sàn tắm nắng lớn cho hành khách."
+  },
+  {
+    "word": "declaration",
+    "old_example": "The government issued an official declaration regarding its new international trade and economic policies yesterday.",
+    "new_example": "The government issued a declaration regarding new trade policies yesterday.",
+    "new_translation": "Chính phủ đã ra tuyên bố về chính sách thương mại mới hôm qua."
+  },
+  {
+    "word": "declare",
+    "old_example": "International travelers must declare all luxury goods at the customs desk upon arrival at the airport.",
+    "new_example": "Travelers must declare all luxury goods at the customs desk.",
+    "new_translation": "Hành khách phải khai báo mọi hàng hóa xa xỉ tại quầy hải quan."
+  },
+  {
+    "word": "declared",
+    "old_example": "The company officially declared its intention to expand into the international market early last year.",
+    "new_example": "The company declared its intention to expand into the international market.",
+    "new_translation": "Công ty đã tuyên bố ý định mở rộng ra thị trường quốc tế."
+  },
+  {
+    "word": "decline",
+    "old_example": "The company's international sales began to decline significantly due to the sudden global economic recession.",
+    "new_example": "The company's international sales began to decline due to the recession.",
+    "new_translation": "Doanh số quốc tế của công ty bắt đầu sụt giảm do suy thoái."
+  },
+  {
+    "word": "declined",
+    "old_example": "The manager declined to comment on the rumors of a potential merger with an international competitor.",
+    "new_example": "The manager declined to comment on the rumors of a merger.",
+    "new_translation": "Quản lý đã từ chối bình luận về tin đồn sáp nhập."
+  },
+  {
+    "word": "decode",
+    "old_example": "The researchers managed to decode the ancient message after several weeks of intensive international study.",
+    "new_example": "The researchers managed to decode the ancient message.",
+    "new_translation": "Các nhà nghiên cứu đã giải mã được thông điệp cổ."
+  },
+  {
+    "word": "decompose",
+    "old_example": "Organic materials will naturally decompose over time and turn into nutrient-rich soil for the local farm.",
+    "new_example": "Organic materials will naturally decompose over time.",
+    "new_translation": "Các vật liệu hữu cơ sẽ tự nhiên phân hủy theo thời gian."
+  },
+  {
+    "word": "decor",
+    "old_example": "The local restaurant is famous for its delicious food and modern minimalist interior decor and atmosphere.",
+    "new_example": "The restaurant is famous for its modern interior decor.",
+    "new_translation": "Nhà hàng nổi tiếng với phong cách trang trí nội thất hiện đại."
+  },
+  {
+    "word": "decoration",
+    "old_example": "The hotel staff is busy with the holiday decoration of the international conference hall tonight.",
+    "new_example": "The staff is busy with the holiday decoration tonight.",
+    "new_translation": "Nhân viên đang bận rộn trang trí ngày lễ tối nay."
+  },
+  {
+    "word": "decorations",
+    "old_example": "The hotel features several beautiful international holiday decorations throughout the lobby and dining areas today.",
+    "new_example": "The hotel features beautiful holiday decorations throughout the lobby.",
+    "new_translation": "Khách sạn trưng bày đồ trang trí ngày lễ đẹp mắt khắp sảnh."
+  },
+  {
+    "word": "decorative",
+    "old_example": "The office building features several decorative architectural elements that reflect its unique historic style today.",
+    "new_example": "The building features several decorative elements that reflect its style.",
+    "new_translation": "Tòa nhà có vài yếu tố trang trí phản ánh phong cách của nó."
+  },
+  {
+    "word": "decorator",
+    "old_example": "The professional interior decorator was hired to renovate the company's new regional headquarters last month.",
+    "new_example": "The interior decorator was hired to renovate the headquarters.",
+    "new_translation": "Nhà trang trí nội thất được thuê để cải tạo trụ sở."
+  },
+  {
+    "word": "decrease",
+    "old_example": "The company experienced a significant decrease in international sales due to the global economic recession.",
+    "new_example": "The company experienced a significant decrease in international sales.",
+    "new_translation": "Công ty đã trải qua sự sụt giảm mạnh doanh số quốc tế."
+  },
+  {
+    "word": "decreased",
+    "old_example": "The cost of international shipping has decreased significantly since the company switched to a new provider.",
+    "new_example": "The cost of shipping has decreased since switching to a new provider.",
+    "new_translation": "Phí vận chuyển đã giảm kể từ khi chuyển sang nhà cung cấp mới."
+  },
+  {
+    "word": "decreasing",
+    "old_example": "The company is working to reverse the trend of decreasing international market share and revenue lately.",
+    "new_example": "The company is working to reverse the trend of decreasing market share.",
+    "new_translation": "Công ty đang nỗ lực xoay chuyển xu hướng sụt giảm thị phần."
+  },
+  {
+    "word": "decree",
+    "old_example": "The government issued a new decree regarding international trade and economic policies early this morning.",
+    "new_example": "The government issued a new decree regarding trade policies this morning.",
+    "new_translation": "Chính phủ ban hành một nghị định mới về chính sách thương mại."
+  },
+  {
+    "word": "dedicate",
+    "old_example": "The manager decided to dedicate several hours every day to overseeing the new international project.",
+    "new_example": "The manager decided to dedicate several hours to the project.",
+    "new_translation": "Quản lý quyết định dành vài giờ cho dự án."
+  },
+  {
+    "word": "dedicated",
+    "old_example": "She is a dedicated professional who has spent several years working in the international technology sector.",
+    "new_example": "She is a dedicated professional working in the technology sector.",
+    "new_translation": "Cô là một chuyên gia tận tụy làm việc trong ngành công nghệ."
+  },
+  {
+    "word": "dedication",
+    "old_example": "The entire team praised her hard work and dedication to the successful international marketing project launch.",
+    "new_example": "The team praised her dedication to the marketing project.",
+    "new_translation": "Nhóm đã khen ngợi sự tận tụy của cô cho dự án tiếp thị."
+  },
+  {
+    "word": "deduce",
+    "old_example": "The researchers were able to deduce the cause of the technical failure after several intensive studies.",
+    "new_example": "The researchers were able to deduce the cause of the failure.",
+    "new_translation": "Các nhà nghiên cứu đã có thể suy luận ra nguyên nhân thất bại."
+  },
+  {
+    "word": "deduct",
+    "old_example": "The accounting department will deduct all applicable taxes from your monthly international salary and bonuses.",
+    "new_example": "The accounting department will deduct all applicable taxes from your salary.",
+    "new_translation": "Bộ phận kế toán sẽ khấu trừ mọi loại thuế từ lương của bạn."
+  },
+  {
+    "word": "deductible",
+    "old_example": "Please note that certain business expenses are tax-deductible under the current international and local laws.",
+    "new_example": "Please note that certain business expenses are tax-deductible.",
+    "new_translation": "Lưu ý rằng một số chi phí kinh doanh được khấu trừ thuế."
+  },
+  {
+    "word": "deduction",
+    "old_example": "The employee was surprised by the sudden and unexpected deduction from his monthly international salary today.",
+    "new_example": "The employee was surprised by the sudden deduction from his salary.",
+    "new_translation": "Nhân viên đã bất ngờ trước khoản khấu trừ đột ngột từ tiền lương."
+  },
+  {
+    "word": "deed",
+    "old_example": "The wealthy businessman was praised for his good deed in donating money to the local school.",
+    "new_example": "The wealthy businessman was praised for his good deed.",
+    "new_translation": "Nhà kinh doanh giàu có được khen ngợi vì hành động tốt đẹp."
+  },
+  {
+    "word": "deem",
+    "old_example": "The manager will deem the project successful if all the international sales targets are met this year.",
+    "new_example": "The manager will deem the project successful if targets are met.",
+    "new_translation": "Quản lý sẽ coi dự án thành công nếu đạt được các chỉ tiêu."
+  },
+  {
+    "word": "deep",
+    "old_example": "The researchers discovered several ancient artifacts buried deep beneath the surface of the old city center.",
+    "new_example": "Researchers discovered ancient artifacts buried deep beneath the surface.",
+    "new_translation": "Nhà nghiên cứu khám phá ra cổ vật bị chôn sâu dưới bề mặt."
+  },
+  {
+    "word": "deepen",
+    "old_example": "The company's goal is to deepen its presence in the international market through new strategic partnership agreements.",
+    "new_example": "The company's goal is to deepen its presence in the market.",
+    "new_translation": "Mục tiêu của công ty là thâm nhập sâu hơn vào thị trường."
+  },
+  {
+    "word": "deeply",
+    "old_example": "We deeply appreciate your help and support during this difficult transition period for our international team.",
+    "new_example": "We deeply appreciate your help during this difficult period.",
+    "new_translation": "Chúng tôi chân thành cảm kích sự giúp đỡ của bạn lúc khó khăn."
+  },
+  {
+    "word": "deface",
+    "old_example": "Unauthorized personnel are strictly prohibited from trying to deface or damage any company property and equipment.",
+    "new_example": "Unauthorized personnel are prohibited from trying to deface company property.",
+    "new_translation": "Nhân viên không được quyền cấm làm hư hại tài sản công ty."
+  },
+  {
+    "word": "defamation",
+    "old_example": "The politician decided to sue the newspaper for defamation after it published several false international reports.",
+    "new_example": "The politician decided to sue the newspaper for defamation.",
+    "new_translation": "Chính trị gia đã quyết định kiện tờ báo vì tội phỉ báng."
+  },
+  {
+    "word": "default",
+    "old_example": "The small local business unfortunately manage managed to default on its large international loan recently.",
+    "new_example": "The small business unfortunately managed to default on its loan.",
+    "new_translation": "Doanh nghiệp nhỏ thật không may đã không trả được khoản vay."
+  },
+  {
+    "word": "defeat",
+    "old_example": "The underdog team managed to defeat the heavy favorites in the international basketball championship final yesterday.",
+    "new_example": "The underdog team managed to defeat the favorites in the final.",
+    "new_translation": "Đội yếu hơn đã thắng được đội mạnh hơn trong trận chung kết."
+  },
+  {
+    "word": "defect",
+    "old_example": "The quality control checker identified a major technical defect in the new batch of international products.",
+    "new_example": "The checker identified a technical defect in the new batch.",
+    "new_translation": "Người kiểm tra xác định lỗi kỹ thuật trong lô hàng mới."
+  },
+  {
+    "word": "defective",
+    "old_example": "Please return any defective international products to the store immediately for a full refund or exchange.",
+    "new_example": "Please return any defective products to the store for a refund.",
+    "new_translation": "Vui lòng trả lại sản phẩm lỗi cho cửa hàng để được hoàn tiền."
+  },
+  {
+    "word": "defects",
+    "old_example": "The department is working hard to eliminate all technical defects and improve overall international product quality.",
+    "new_example": "The department is working to eliminate all technical defects.",
+    "new_translation": "Bộ phận đang nỗ lực loại bỏ mọi lỗi kỹ thuật."
+  },
+  {
+    "word": "defence",
+    "old_example": "The lawyer presented a strong argument in defence of his client during the international trade trial.",
+    "new_example": "The lawyer presented a strong argument in defence of his client.",
+    "new_translation": "Luật sư đã trình bày lập luận mạnh mẽ để bảo vệ thân chủ."
+  },
+  {
+    "word": "defend",
+    "old_example": "The negotiator manage managed to defend his company's interests during the difficult international trade talks recently.",
+    "new_example": "The negotiator managed to defend his company's interests.",
+    "new_translation": "Nhà thương lượng đã bảo vệ được lợi ích công ty mình."
+  },
+  {
+    "word": "defendant",
+    "old_example": "The defendant was accused of corporate fraud and international money laundering after a long police investigation.",
+    "new_example": "The defendant was accused of corporate fraud after a police investigation.",
+    "new_translation": "Bị cáo bị cáo buộc gian lận sau một cuộc điều tra của cảnh sát."
+  },
+  {
+    "word": "defensible",
+    "old_example": "The manager's decision to cancel the international project was defensible given the current global economic uncertainty.",
+    "new_example": "The decision to cancel the project was defensible given the uncertainty.",
+    "new_translation": "Quyết định hủy dự án là có thể giải thích được lúc bất ổn."
+  },
+  {
+    "word": "defensive",
+    "old_example": "The company decided to adopt a more defensive marketing strategy in the international sector this year.",
+    "new_example": "The company adopted a more defensive marketing strategy this year.",
+    "new_translation": "Công ty áp dụng chiến lược tiếp thị phòng thủ hơn năm nay."
+  },
+  {
+    "word": "defer",
+    "old_example": "The board of directors decided to defer the decision regarding the international merger until next month.",
+    "new_example": "The board decided to defer the decision until next month.",
+    "new_translation": "Hội đồng quản trị quyết định hoãn quyết định cho đến tháng sau."
+  },
+  {
+    "word": "deference",
+    "old_example": "The young intern showed great deference to the senior international partners during the business meeting yesterday.",
+    "new_example": "The intern showed great deference to the senior partners.",
+    "new_translation": "Cậu thực tập sinh đã thể hiện sự tôn trọng với đối tác cao cấp."
+  },
+  {
+    "word": "deferential",
+    "old_example": "The administrative assistant was very deferential when speaking to the CEO about the international expansion project.",
+    "new_example": "The assistant was very deferential when speaking to the CEO.",
+    "new_translation": "Trợ lý hành chính đã rất cung kính khi thưa chuyện với CEO."
+  },
+  {
+    "word": "deficiency",
+    "old_example": "The audit identified a major deficiency in the company's internal financial management and reporting system.",
+    "new_example": "The audit identified a major deficiency in the financial system.",
+    "new_translation": "Cuộc kiểm toán xác định một sự thiếu hụt lớn trong hệ thống."
+  },
+  {
+    "word": "deficit",
+    "old_example": "The country's international trade deficit has grown significantly over the past successful financial decade recently.",
+    "new_example": "The country's trade deficit has grown significantly over the past decade.",
+    "new_translation": "Thâm hụt thương mại của đất nước đã tăng mạnh trong thập kỷ qua."
+  },
+  {
+    "word": "definable",
+    "old_example": "Success is not always easily definable, as it can mean very different things to different people.",
+    "new_example": "Success is not always easily definable for everyone.",
+    "new_translation": "Thành công không phải lúc nào cũng dễ dàng định nghĩa cho mọi người."
+  },
+  {
+    "word": "define",
+    "old_example": "Please define the key terms used in the international marketing report to ensure clarity and understanding.",
+    "new_example": "Please define the key terms used in the marketing report.",
+    "new_translation": "Vui lòng định nghĩa các thuật ngữ then chốt dùng trong báo cáo."
+  },
+  {
+    "word": "defined",
+    "old_example": "The roles and responsibilities of each team member are clearly defined in the international project plan.",
+    "new_example": "Roles and responsibilities are clearly defined in the project plan.",
+    "new_translation": "Vai trò và trách nhiệm được định nghĩa rõ ràng trong kế hoạch."
+  },
+  {
+    "word": "definite",
+    "old_example": "There is a definite need for improved international communication and coordination between our regional departments.",
+    "new_example": "There is a definite need for improved communication between our departments.",
+    "new_translation": "Rõ ràng là có nhu cầu cải thiện liên lạc giữa các bộ phận."
+  },
+  {
+    "word": "definitely",
+    "old_example": "I will definitely attend the international technology conference in Singapore early next December morning morning.",
+    "new_example": "I will definitely attend the technology conference in Singapore next month.",
+    "new_translation": "Tôi chắc chắn sẽ tham dự hội nghị công nghệ tại Singapore tháng tới."
+  },
+  {
+    "word": "definition",
+    "old_example": "The manager provided a clear definition of the company's long-term vision for future international expansion.",
+    "new_example": "The manager provided a clear definition of the company's vision.",
+    "new_translation": "Quản lý đã đưa ra một định nghĩa rõ ràng về tầm nhìn công ty."
+  },
+  {
+    "word": "deflate",
+    "old_example": "The news of the sudden international project cancellation managed to deflate the team's overall morale today.",
+    "new_example": "The news of the project cancellation managed to deflate morale.",
+    "new_translation": "Tin tức về việc hủy bỏ dự án đã làm suy giảm tinh thần."
+  },
+  {
+    "word": "deflation",
+    "old_example": "The country is currently experiencing a period of economic deflation that is affecting international trade and investment.",
+    "new_example": "The country is experiencing a period of economic deflation.",
+    "new_translation": "Đất nước hiện đang trải qua thời kỳ giảm phát kinh tế."
+  },
+  {
+    "word": "deflect",
+    "old_example": "The CEO tried to deflect the difficult questions from reporters during the international press conference yesterday.",
+    "new_example": "The CEO tried to deflect difficult questions from reporters yesterday.",
+    "new_translation": "CEO đã cố né tránh các câu hỏi khó từ phóng viên hôm qua."
+  },
+  {
+    "word": "deforestation",
+    "old_example": "International organizations are working to combat global deforestation and protect the world's ancient tropical rain forests.",
+    "new_example": "Organizations are working to combat deforestation and protect the forests.",
+    "new_translation": "Các tổ chức nỗ lực chống phá rừng và bảo vệ các khu rừng."
+  },
+  {
+    "word": "deform",
+    "old_example": "The high temperature manage managed to deform the plastic components of the international shipping container yesterday.",
+    "new_example": "The high temperature managed to deform the plastic components.",
+    "new_translation": "Nhiệt độ cao đã làm biến dạng các thành phần nhựa."
+  },
+  {
+    "word": "deformity",
+    "old_example": "The patient was born with a minor physical deformity that required several international medical treatments and surgeries.",
+    "new_example": "The patient was born with a deformity that required surgery.",
+    "new_translation": "Bệnh nhân sinh ra với một dị tật cần phải phẫu thuật."
+  },
+  {
+    "word": "defraud",
+    "old_example": "The suspects were accused of trying to defraud several major international corporations of millions of dollars.",
+    "new_example": "The suspects were accused of trying to defraud several corporations.",
+    "new_translation": "Các nghi phạm bị cáo buộc cố gắng lừa gạt vài tập đoàn."
+  },
+  {
+    "word": "defray",
+    "old_example": "The company offered a special allowance to help defray the employees' international travel and accommodation expenses.",
+    "new_example": "The company offered an allowance to help defray travel expenses.",
+    "new_translation": "Công ty đã đưa ra khoản phụ cấp giúp chi trả phí đi lại."
+  },
+  {
+    "word": "deftly",
+    "old_example": "The skilled negotiator deftly handled the difficult international trade talks and secured a favorable deal today.",
+    "new_example": "The negotiator deftly handled the trade talks and secured a deal.",
+    "new_translation": "Nhà thương lượng đã khéo léo xử lý đàm phán và giành thỏa thuận."
+  },
+  {
+    "word": "defunct",
+    "old_example": "The old office building formerly belonged to a now defunct international shipping and logistics corporation recently.",
+    "new_example": "The building formerly belonged to a now defunct corporation.",
+    "new_translation": "Tòa nhà trước đây thuộc về một tập đoàn hiện đã ngưng hoạt động."
+  },
+  {
+    "word": "defuse",
+    "old_example": "The manager managed to defuse the potential conflict between the two international project team members today.",
+    "new_example": "The manager managed to defuse the potential conflict between team members.",
+    "new_translation": "Quản lý đã xoa dịu được xung đột tiềm tàng giữa các thành viên."
+  },
+  {
+    "word": "defy",
+    "old_example": "Many international startups manage to defy the current economic trends and achieve significant growth and success.",
+    "new_example": "Many startups manage to defy economic trends and achieve success.",
+    "new_translation": "Nhiều công ty khởi nghiệp thách thức xu hướng kinh tế để thành công."
+  },
+  {
+    "word": "degradation",
+    "old_example": "International organizations are working to prevent the further degradation of the global environment and natural resources.",
+    "new_example": "Organizations are working to prevent the further degradation of the environment.",
+    "new_translation": "Các tổ chức nỗ lực ngăn chặn sự suy thoái thêm của môi trường."
+  },
+  {
+    "word": "degrade",
+    "old_example": "Certain chemical substances will naturally degrade over time and lose their overall effectiveness and potency today.",
+    "new_example": "Certain chemical substances will naturally degrade over time.",
+    "new_translation": "Một số hóa chất sẽ tự nhiên bị phân hủy theo thời gian."
+  },
+  {
+    "word": "degree",
+    "old_example": "She recently earned a master's degree in international marketing and finance from a prestigious global university.",
+    "new_example": "She recently earned a master's degree from a prestigious university.",
+    "new_translation": "Cô mới nhận bằng thạc sĩ từ một trường đại học uy tín."
+  },
+  {
+    "word": "degrees",
+    "old_example": "The position requires candidates to have a university degree in engineering or a related field.",
+    "new_example": "The position requires candidates to have a university degree in engineering.",
+    "new_translation": "Vị trí này yêu cầu ứng viên có bằng đại học ngành kỹ thuật."
+  },
+  {
+    "word": "dehydrate",
+    "old_example": "Please remember to drink plenty of water to avoid trying to dehydrate during the long international flight.",
+    "new_example": "Please drink plenty of water to avoid dehydration during the flight.",
+    "new_translation": "Vui lòng uống nhiều nước để tránh mất nước trong chuyến bay."
+  },
+  {
+    "word": "dehydration",
+    "old_example": "The traveler suffered from severe dehydration after spending several days trekking in the hot tropical jungle recently.",
+    "new_example": "The traveler suffered from dehydration after trekking in the jungle.",
+    "new_translation": "Người du hành bị mất nước sau khi thám hiểm trong rừng."
+  }
+]

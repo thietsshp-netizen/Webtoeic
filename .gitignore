@@ -39,3 +39,34 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
+
+# Python virtual environment
+venv/
+venv_stable/
+.venv/
+__pycache__/
+*.pyc
+
+# Data files (Excel, Large JSONL)
+*.xlsx
+*.jsonl
+/TuDien/
+/Part 1/
+/Part 2/
+/Part 3_4/
+/Part 3_4 - create timestamp/
+/Part 5/
+/Part 6/
+/Part 7/
+/ToeicVocab/
+
+# Temporary / Output files
+output.json
+output2.json
+full_report.txt
+todo_fixes.json
+batch_14.json
+/tmp/
+/scratch/

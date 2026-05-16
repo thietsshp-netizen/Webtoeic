@@ -1,0 +1,603 @@
+
+[
+  {
+    "word": "drive",
+    "old_example": "Please drive carefully on the narrow and slippery coastal road early tomorrow morning ahead of the international technology conference today.",
+    "new_example": "Please drive carefully on the narrow and slippery coastal road.",
+    "new_translation": "Vui lòng lái xe cẩn thận trên con đường ven biển hẹp và trơn trượt."
+  },
+  {
+    "word": "driven",
+    "old_example": "He is a very driven individual who will stop at nothing to achieve his career goals.",
+    "new_example": "He is a driven individual who will stop at nothing to achieve his goals.",
+    "new_translation": "Anh ấy là một người có chí tiến thủ, không dừng lại để đạt mục tiêu."
+  },
+  {
+    "word": "driver",
+    "old_example": "The professional international truck driver ensured that the fragile shipment was delivered safely to the regional warehouse yesterday morning recently.",
+    "new_example": "The truck driver ensured the fragile shipment was delivered safely to the warehouse.",
+    "new_translation": "Tài xế xe tải đảm bảo lô hàng dễ vỡ được giao an toàn đến kho."
+  },
+  {
+    "word": "driverless",
+    "old_example": "The city is testing a new fleet of driverless shuttle buses for public transportation.",
+    "new_example": "The city is testing a fleet of driverless buses for public transportation.",
+    "new_translation": "Thành phố đang thử nghiệm đội xe buýt không người lái cho giao thông công cộng."
+  },
+  {
+    "word": "drivers",
+    "old_example": "A team of professional international drivers is responsible for transporting the guests from the city airport to their luxury hotels today.",
+    "new_example": "A team of drivers is responsible for transporting guests from the airport.",
+    "new_translation": "Một đội ngũ tài xế chịu trách nhiệm đưa đón khách từ sân bay."
+  },
+  {
+    "word": "drivetrain",
+    "old_example": "The new electric SUV features an advanced drivetrain that provides excellent power and acceleration while maintaining high energy efficiency.",
+    "new_example": "The new electric SUV features an advanced drivetrain for high efficiency.",
+    "new_translation": "Chiếc SUV điện mới có hệ thống truyền động tiên tiến mang lại hiệu suất cao."
+  },
+  {
+    "word": "driving",
+    "old_example": "Driving in an unfamiliar international city requires a great deal of careful concentration and effective navigation skills globally recently today.",
+    "new_example": "Driving in an unfamiliar city requires concentration and navigation skills.",
+    "new_translation": "Lái xe tại một thành phố lạ đòi hỏi sự tập trung và kỹ năng định vị."
+  },
+  {
+    "word": "drone",
+    "old_example": "The delivery company is exploring the use of drones to transport packages to remote areas.",
+    "new_example": "The company is exploring the use of drones to transport packages.",
+    "new_translation": "Công ty đang khám phá việc sử dụng máy bay không người lái để vận chuyển bưu kiện."
+  },
+  {
+    "word": "drone",
+    "old_example": "The speaker continued to drone on about the history of the company for over an hour.",
+    "new_example": "The speaker continued to drone on about the history of the company.",
+    "new_translation": "Diễn giả tiếp tục nói giọng đều đều về lịch sử của công ty."
+  },
+  {
+    "word": "drone",
+    "old_example": "The company is exploring the use of a drone for quick delivery of small packages in urban areas.",
+    "new_example": "The company is using drones for quick delivery in urban areas.",
+    "new_translation": "Công ty đang sử dụng máy bay không người lái để giao hàng nhanh."
+  },
+  {
+    "word": "drop",
+    "old_example": "The company experienced a significant drop in international sales and revenue due to the global economic recession last calendar year recently.",
+    "new_example": "The company experienced a significant drop in sales due to the recession.",
+    "new_translation": "Công ty đã trải qua sự sụt giảm mạnh doanh số do suy thoái."
+  },
+  {
+    "word": "dropped",
+    "old_example": "The cost of international shipping dropped significantly after the company switched to a more efficient and reliable logistics provider recently today.",
+    "new_example": "Shipping costs dropped significantly after switching to a more efficient provider.",
+    "new_translation": "Phí vận chuyển đã giảm mạnh sau khi chuyển sang nhà cung cấp hiệu quả hơn."
+  },
+  {
+    "word": "drops",
+    "old_example": "As the temperature drops, the automated system will adjust the heating to maintain a comfortable office environment for everyone globally today.",
+    "new_example": "As the temperature drops, the system will adjust the heating.",
+    "new_translation": "Khi nhiệt độ giảm, hệ thống sẽ điều chỉnh sưởi."
+  },
+  {
+    "word": "drought",
+    "old_example": "The region experienced a severe period of drought that manage managed to destroy many local organic farm crops early yesterday afternoon.",
+    "new_example": "The region experienced a severe drought that destroyed many crops.",
+    "new_translation": "Khu vực đã trải qua đợt hạn hán nghiêm trọng tàn phá nhiều vụ mùa."
+  },
+  {
+    "word": "drove",
+    "old_example": "He drove the company car to the international technology conference in Singapore early yesterday morning ahead of the original scheduled time today.",
+    "new_example": "He drove the company car to the technology conference in Singapore.",
+    "new_translation": "Anh ấy đã lái xe công ty đến hội nghị công nghệ tại Singapore."
+  },
+  {
+    "word": "drown",
+    "old_example": "The sudden and unexpected flood manage managed to drown several local farm animals in the coastal region early yesterday afternoon recently today.",
+    "new_example": "The unexpected flood managed to drown several farm animals.",
+    "new_translation": "Trận lũ lụt bất ngờ đã làm chết đuối vài con vật nuôi trang trại."
+  },
+  {
+    "word": "drudgery",
+    "old_example": "The introduction of factory automation managed to eliminate much of the daily international production drudgery and improved overall efficiency globally recently today.",
+    "new_example": "Automation managed to eliminate much of the daily production drudgery.",
+    "new_translation": "Tự động hóa đã loại bỏ phần lớn công việc sản xuất nặng nhọc hằng ngày."
+  },
+  {
+    "word": "drug",
+    "old_example": "The international pharmaceutical company is testing a new type of heart drug for safety and overall effectiveness globally recently today.",
+    "new_example": "The company is testing a new heart drug for safety.",
+    "new_translation": "Công ty đang kiểm tra độ an toàn của một loại thuốc tim mới."
+  },
+  {
+    "word": "drummer",
+    "old_example": "The band is currently looking for a new drummer who can provide a steady rhythm and has experience playing live concerts.",
+    "new_example": "The band is looking for a new drummer with live concert experience.",
+    "new_translation": "Ban nhạc hiện đang tìm kiếm một tay trống mới có kinh nghiệm biểu diễn."
+  },
+  {
+    "word": "drying",
+    "old_example": "Drying flowers is a simple way to preserve their beauty for a long time.",
+    "new_example": "Drying flowers is a simple way to preserve their beauty.",
+    "new_translation": "Làm khô hoa là một cách đơn giản để bảo quản vẻ đẹp của chúng."
+  },
+  {
+    "word": "dual",
+    "old_example": "She was recently granted dual international citizenship after living and working in several different countries globally recently today.",
+    "new_example": "She was recently granted dual citizenship after living in several countries.",
+    "new_translation": "Cô mới được cấp quốc tịch kép sau khi sống ở vài quốc gia."
+  },
+  {
+    "word": "dubious",
+    "old_example": "The manager remained dubious about the international partners' ability to meet the final project deadline early next Monday morning recently today.",
+    "new_example": "The manager remained dubious about the partners' ability to meet the deadline.",
+    "new_translation": "Quản lý vẫn nghi ngờ khả năng đáp ứng thời hạn của đối tác."
+  },
+  {
+    "word": "ductwork",
+    "old_example": "The building's HVAC system requires a major overhaul, including the replacement of all the old and leaking ductwork.",
+    "new_example": "The HVAC system requires an overhaul, including the replacement of all ductwork.",
+    "new_translation": "Hệ thống HVAC yêu cầu đại tu, bao gồm thay thế toàn bộ ống dẫn."
+  },
+  {
+    "word": "due",
+    "old_example": "The international shipment is due to arrive at the regional warehouse early tomorrow morning ahead of the original scheduled time today.",
+    "new_example": "The shipment is due to arrive at the warehouse tomorrow morning.",
+    "new_translation": "Lô hàng dự kiến sẽ đến kho vào sáng mai."
+  },
+  {
+    "word": "dues",
+    "old_example": "Please ensure that you pay your annual international professional membership dues before the end of this successful calendar month recently today.",
+    "new_example": "Please pay your annual membership dues before the end of the month.",
+    "new_translation": "Vui lòng thanh toán phí thành viên hàng năm trước cuối tháng."
+  },
+  {
+    "word": "dug",
+    "old_example": "The archaeologists dug a large pit to uncover the remains of the ancient temple.",
+    "new_example": "The archaeologists dug a large pit to uncover the ancient temple.",
+    "new_translation": "Các nhà khảo cổ đã đào một cái hố lớn để tìm ra ngôi đền cổ."
+  },
+  {
+    "word": "dull",
+    "old_example": "The international marketing meeting was long and dull, and many departmental members felt that it was a waste of time yesterday morning.",
+    "new_example": "The marketing meeting was long and dull, and felt like a waste.",
+    "new_translation": "Cuộc họp tiếp thị dài và tẻ nhạt, và thấy thật lãng phí."
+  },
+  {
+    "word": "duly",
+    "old_example": "The board of directors was duly informed about the company's future international expansion and growth plan during the meeting yesterday afternoon.",
+    "new_example": "The board was duly informed about the company's expansion plan.",
+    "new_translation": "Hội đồng quản trị đã được thông báo đầy đủ về kế hoạch mở rộng."
+  },
+  {
+    "word": "dump",
+    "old_example": "The company was criticized for trying to dump its industrial waste in the local coastal region early yesterday morning recently today.",
+    "new_example": "The company was criticized for trying to dump waste in the coastal region.",
+    "new_translation": "Công ty bị chỉ trích vì cố tình đổ rác thải ra vùng ven biển."
+  },
+  {
+    "word": "dumpling",
+    "old_example": "For dinner, they enjoyed a variety of steamed and fried dumplings filled with pork, shrimp, and seasoned vegetables.",
+    "new_example": "For dinner, they enjoyed a variety of steamed and fried dumplings.",
+    "new_translation": "Cho bữa tối, họ đã thưởng thức nhiều loại sủi cảo hấp và chiên."
+  },
+  {
+    "word": "dumpster",
+    "old_example": "The construction workers placed all the debris from the renovation project into a large metal dumpster.",
+    "new_example": "The workers placed all the debris into a large metal dumpster.",
+    "new_translation": "Các công nhân đã để tất cả đống đổ nát vào một chiếc thùng rác lớn."
+  },
+  {
+    "word": "duplicate",
+    "old_example": "Please ensure that you do not create a duplicate record for the same international customer in the company's database system today.",
+    "new_example": "Please ensure you do not create a duplicate record in the database.",
+    "new_translation": "Vui lòng đảm bảo bạn không tạo hồ sơ trùng lặp trong cơ sở dữ liệu."
+  },
+  {
+    "word": "durability",
+    "old_example": "The company's new international product line features a high level of durability and professional quality globally recently today.",
+    "new_example": "The company's new product line features a high level of durability.",
+    "new_translation": "Dòng sản phẩm mới của công ty có độ bền cao."
+  },
+  {
+    "word": "escort",
+    "old_example": "The foreign minister was accompanied by a military escort during his official visit to the conflict zone.",
+    "new_example": "The foreign minister was accompanied by a military escort during his visit.",
+    "new_translation": "Bộ trưởng ngoại giao được tháp tùng bởi đội hộ tống trong chuyến thăm."
+  },
+  {
+    "word": "escort",
+    "old_example": "Security guards will escort visitors to the designated meeting rooms throughout the office building.",
+    "new_example": "Security guards will escort visitors to the designated meeting rooms.",
+    "new_translation": "Nhân viên an ninh sẽ hộ tống khách đến các phòng họp chỉ định."
+  },
+  {
+    "word": "espinosa",
+    "old_example": "Ms. Espinosa has been appointed as the new director of the international relations department.",
+    "new_example": "Ms. Espinosa was appointed as the new director of the department.",
+    "new_translation": "Bà Espinosa đã được bổ nhiệm làm giám đốc mới của bộ phận."
+  },
+  {
+    "word": "essay",
+    "old_example": "Students were asked to write a 1,000-word essay on the causes of the economic crisis.",
+    "new_example": "Students were asked to write an essay on the economic crisis.",
+    "new_translation": "Các sinh viên được yêu cầu viết bài tiểu luận về khủng hoảng kinh tế."
+  },
+  {
+    "word": "esteem",
+    "old_example": "He is held in high esteem by his colleagues for his honesty and professional integrity.",
+    "new_example": "He is held in high esteem by his colleagues for his honesty.",
+    "new_translation": "Anh ấy được các đồng nghiệp vô cùng kính trọng vì sự trung thực."
+  },
+  {
+    "word": "esteem",
+    "old_example": "I esteem it an honor to be invited to speak at such a prestigious international conference.",
+    "new_example": "I esteem it an honor to speak at this prestigious conference.",
+    "new_translation": "Tôi coi việc phát biểu tại hội nghị uy tín này là một vinh dự."
+  },
+  {
+    "word": "estimator",
+    "old_example": "The construction company sent a professional estimator to the site to calculate the potential costs of the new bridge project.",
+    "new_example": "The company sent an estimator to calculate the costs of the project.",
+    "new_translation": "Công ty đã gửi một chuyên gia định giá để tính toán chi phí dự án."
+  },
+  {
+    "word": "etch",
+    "old_example": "The artist used a special acid to etch complex floral patterns onto the surface of the copper plate before applying the ink for printing.",
+    "new_example": "The artist used acid to etch floral patterns onto the copper plate.",
+    "new_translation": "Nghệ sĩ đã sử dụng axit để khắc hoa văn lên tấm đồng."
+  },
+  {
+    "word": "eternally",
+    "old_example": "I am eternally grateful for all the support and guidance you have given me over the years.",
+    "new_example": "I am eternally grateful for all the support you have given me.",
+    "new_translation": "Tôi vĩnh viễn biết ơn vì sự ủng hộ mà bạn đã dành cho tôi."
+  },
+  {
+    "word": "ethnic",
+    "old_example": "The city's vibrant food scene features a wide variety of ethnic restaurants, ranging from traditional Ethiopian stews to authentic Vietnamese street food.",
+    "new_example": "The city's food scene features a wide variety of ethnic restaurants.",
+    "new_translation": "Nền ẩm thực thành phố có nhiều nhà hàng dân tộc đa dạng."
+  },
+  {
+    "word": "europe",
+    "old_example": "The company is planning to expand its market share in Europe over the next two years.",
+    "new_example": "The company plans to expand its market share in Europe soon.",
+    "new_translation": "Công ty có kế hoạch mở rộng thị phần tại Châu Âu sớm."
+  },
+  {
+    "word": "evacuation",
+    "old_example": "The sudden fire alarm triggered an immediate evacuation of the entire office building, with hundreds of employees gathering at the designated meeting point.",
+    "new_example": "The fire alarm triggered an immediate evacuation of the entire office building.",
+    "new_translation": "Chuông báo cháy đã kích hoạt cuộc sơ tán ngay lập tức toàn tòa nhà."
+  },
+  {
+    "word": "evade",
+    "old_example": "The politician was accused of trying to evade the journalist's difficult questions by talking about unrelated achievements of the current government.",
+    "new_example": "The politician was accused of trying to evade the journalist's difficult questions.",
+    "new_translation": "Chính trị gia bị buộc tội cố gắng lẩn tránh các câu hỏi khó."
+  },
+  {
+    "word": "evaluated",
+    "old_example": "The property was evaluated by an independent appraiser before it was put up for sale.",
+    "new_example": "The property was evaluated by an appraiser before being put for sale.",
+    "new_translation": "Bất động sản đã được đánh giá bởi giám định viên trước khi bán."
+  },
+  {
+    "word": "evaluative",
+    "old_example": "The committee used an evaluative framework to assess the long-term environmental and social impacts of the proposed construction project.",
+    "new_example": "The committee used an evaluative framework to assess the construction project.",
+    "new_translation": "Ủy ban đã sử dụng một khung đánh giá để thẩm định dự án xây dựng."
+  },
+  {
+    "word": "evaluator",
+    "old_example": "The external evaluator provided a detailed report on the effectiveness of the training program.",
+    "new_example": "The evaluator provided a detailed report on the effectiveness of the program.",
+    "new_translation": "Người đánh giá cung cấp báo cáo chi tiết về hiệu quả của chương trình."
+  },
+  {
+    "word": "eventful",
+    "old_example": "It was a very eventful year for the company, which saw the launch of three new products and a successful expansion into the Asian market.",
+    "new_example": "It was an eventful year with the launch of three new products.",
+    "new_translation": "Đó là một năm đầy sự kiện với việc ra mắt ba sản phẩm mới."
+  },
+  {
+    "word": "eventfully",
+    "old_example": "The journey progressed eventfully, with several unexpected delays and interesting encounters along the rural mountain paths.",
+    "new_example": "The journey progressed eventfully with several unexpected delays.",
+    "new_translation": "Hành trình đã diễn ra đầy biến cố với nhiều sự chậm trễ bất ngờ."
+  },
+  {
+    "word": "eventuality",
+    "old_example": "The emergency response plan has been carefully designed to cover every possible eventuality, from natural disasters to technological failures.",
+    "new_example": "The emergency plan covers every possible eventuality, from disasters to failures.",
+    "new_translation": "Kế hoạch khẩn cấp bao quát mọi tình huống, từ thảm họa đến sự cố."
+  },
+  {
+    "word": "everlasting",
+    "old_example": "The beautiful monument was built as a symbol of the nation's everlasting gratitude to the soldiers who fought for its independence.",
+    "new_example": "The monument was built as a symbol of the nation's everlasting gratitude.",
+    "new_translation": "Đài tưởng niệm được xây dựng như biểu tượng cho lòng biết ơn vĩnh cửu."
+  },
+  {
+    "word": "everybody",
+    "old_example": "Everybody was impressed by the creativity and hard work shown by the marketing team.",
+    "new_example": "Everybody was impressed by the creativity of the marketing team.",
+    "new_translation": "Mọi người đều bị ấn tượng bởi sự sáng tạo của đội ngũ tiếp thị."
+  },
+  {
+    "word": "everyone",
+    "old_example": "Everyone should familiarize themselves with the new safety procedures by the end of the week.",
+    "new_example": "Everyone should learn the new safety procedures by the end of the week.",
+    "new_translation": "Mọi người nên tìm hiểu quy trình an toàn mới trước cuối tuần."
+  },
+  {
+    "word": "evict",
+    "old_example": "The landlord decided to evict the tenants after they failed to pay rent for three consecutive months.",
+    "new_example": "The landlord decided to evict the tenants after they failed to pay.",
+    "new_translation": "Chủ nhà đã quyết định đuổi người thuê sau khi họ không trả tiền."
+  },
+  {
+    "word": "evolutionary",
+    "old_example": "Biologists study the evolutionary history of different species to understand how they have adapted to changing environments over millions of years.",
+    "new_example": "Biologists study how different species have adapted to changing environments.",
+    "new_translation": "Các nhà sinh vật học nghiên cứu cách các loài thích nghi với môi trường."
+  },
+  {
+    "word": "evolve",
+    "old_example": "The small startup has evolved into a multi-million dollar corporation over the last decade.",
+    "new_example": "The small startup has evolved into a large corporation over the decade.",
+    "new_translation": "Công ty khởi nghiệp nhỏ đã phát triển thành tập đoàn lớn trong thập kỷ."
+  },
+  {
+    "word": "exactness",
+    "old_example": "The scientist's work was praised for its extreme exactness and attention to every minute detail.",
+    "new_example": "The scientist's work was praised for its extreme exactness and attention.",
+    "new_translation": "Công trình của nhà khoa học được khen ngợi vì sự chính xác cực độ."
+  },
+  {
+    "word": "exaggeratedly",
+    "old_example": "The comedian walked exaggeratedly across the stage, mimicking the pompous gait of the local politician he was parodying.",
+    "new_example": "The comedian walked exaggeratedly across the stage, mimicking the politician.",
+    "new_translation": "Diễn viên hài bước đi cường điệu trên sân khấu để bắt chước chính khách."
+  },
+  {
+    "word": "exaggeration",
+    "old_example": "It would be an exaggeration to say that the new software has completely solved all of our communication problems, but it has certainly helped.",
+    "new_example": "It is an exaggeration to say the software solved all problems.",
+    "new_translation": "Thật là phóng đại nếu nói phần mềm đã giải quyết mọi vấn đề."
+  },
+  {
+    "word": "examine",
+    "old_example": "The technician needs to examine the equipment to find the cause of the failure.",
+    "new_example": "The technician needs to examine the equipment to find the failure cause.",
+    "new_translation": "Kỹ thuật viên cần kiểm tra thiết bị để tìm nguyên nhân sự cố."
+  },
+  {
+    "word": "excavated",
+    "old_example": "The ancient artifacts were carefully excavated from the site by a team of archaeologists.",
+    "new_example": "The ancient artifacts were carefully excavated by a team of archaeologists.",
+    "new_translation": "Các hiện vật cổ đại đã được đội ngũ khảo cổ học khai quật cẩn thận."
+  },
+  {
+    "word": "excavation",
+    "old_example": "The archaeological excavation revealed several ancient artifacts that provided new insights into the past lives.",
+    "new_example": "The archaeological excavation revealed several ancient artifacts providing new insights.",
+    "new_translation": "Cuộc khai quật khảo cổ đã tiết lộ một vài cổ vật mang lại cái nhìn mới."
+  },
+  {
+    "word": "excerpt",
+    "old_example": "The author read a brief excerpt from her new novel during the book launch event, leaving the audience eager to read the full story.",
+    "new_example": "The author read a brief excerpt from her new novel today.",
+    "new_translation": "Tác giả đã đọc một đoạn trích ngắn từ tiểu thuyết mới hôm nay."
+  },
+  {
+    "word": "excitedly",
+    "old_example": "The children talked excitedly about their upcoming school field trip to the science museum and the planetarium.",
+    "new_example": "The children talked excitedly about their upcoming school field trip.",
+    "new_translation": "Lũ trẻ đã nói chuyện phấn khích về chuyến tham quan sắp tới."
+  },
+  {
+    "word": "excitement",
+    "old_example": "There was a lot of excitement in the office when the company announced the year-end bonus.",
+    "new_example": "There was a lot of excitement when the company announced the bonus.",
+    "new_translation": "Có rất nhiều sự phấn khích khi công ty công bố tiền thưởng."
+  },
+  {
+    "word": "excluded",
+    "old_example": "Taxes and service charges are often excluded from the listed prices on the menu.",
+    "new_example": "Taxes and service charges are often excluded from the menu prices.",
+    "new_translation": "Thuế và phí dịch vụ thường không bao gồm trong giá thực đơn."
+  },
+  {
+    "word": "exclusion",
+    "old_example": "The student faced exclusion from school for a week due to his repeated bad behavior.",
+    "new_example": "The student faced exclusion from school due to his bad behavior.",
+    "new_translation": "Học sinh bị đuổi học do hành vi xấu của mình."
+  },
+  {
+    "word": "exclusivity",
+    "old_example": "The luxury brand maintains its image of exclusivity by limiting the number of stores worldwide.",
+    "new_example": "The luxury brand maintains exclusivity by limiting the number of stores.",
+    "new_translation": "Thương hiệu xa xỉ duy trì sự độc quyền bằng cách giới hạn cửa hàng."
+  },
+  {
+    "word": "execution",
+    "old_example": "The successful execution of the complex marketing plan required close coordination between the creative, sales, and logistics departments.",
+    "new_example": "The successful execution of the plan required close coordination between departments.",
+    "new_translation": "Việc thực hiện thành công kế hoạch đòi hỏi sự phối hợp giữa các bộ phận."
+  },
+  {
+    "word": "exertion",
+    "old_example": "After several hours of intense physical exertion during the marathon, the runner was exhausted and required immediate hydration and rest.",
+    "new_example": "After several hours of physical exertion, the runner was exhausted.",
+    "new_translation": "Sau vài giờ gắng sức về thể chất, vận động viên đã kiệt sức."
+  },
+  {
+    "word": "exhibitors",
+    "old_example": "More than two hundred exhibitors from around the world are expected to participate in the technology fair.",
+    "new_example": "More than two hundred exhibitors are expected to participate in the fair.",
+    "new_translation": "Hơn hai trăm đơn vị triển lãm dự kiến sẽ tham gia hội chợ."
+  },
+  {
+    "word": "existence",
+    "old_example": "The small company has managed to maintain its existence for over fifty years by adapting quickly to changing market trends and customer needs.",
+    "new_example": "The company has managed to maintain its existence for fifty years.",
+    "new_translation": "Công ty đã xoay xở để duy trì sự tồn tại trong năm mươi năm."
+  },
+  {
+    "word": "expanse",
+    "old_example": "The hotel room offers a spectacular view of the vast expanse of the Pacific Ocean.",
+    "new_example": "The hotel room offers a spectacular view of the Pacific Ocean.",
+    "new_translation": "Phòng khách sạn mang lại tầm nhìn ngoạn mục ra Thái Bình Dương."
+  },
+  {
+    "word": "expansiveness",
+    "old_example": "The manager's natural expansiveness and warm personality made him very popular among the employees and helped to build a positive working environment.",
+    "new_example": "The manager's natural expansiveness and warm personality helped the environment.",
+    "new_translation": "Sự cởi mở và tính cách ấm áp của quản lý giúp ích cho môi trường."
+  },
+  {
+    "word": "expectation",
+    "old_example": "The new marketing campaign exceeded all expectations, resulting in a 40% increase in sales within the first two months of its launch.",
+    "new_example": "The new marketing campaign exceeded all expectations and increased sales.",
+    "new_translation": "Chiến dịch tiếp thị mới đã vượt qua mọi mong đợi và tăng doanh số."
+  },
+  {
+    "word": "expedition",
+    "old_example": "The scientific expedition to the Antarctic aimed to study the effects of climate change on the ice caps.",
+    "new_example": "The scientific expedition aimed to study climate change on the ice caps.",
+    "new_translation": "Cuộc thám hiểm khoa học nhằm nghiên cứu biến đổi khí hậu ở các chỏm băng."
+  },
+  {
+    "word": "expenses",
+    "old_example": "Employees should submit their travel expenses for reimbursement by the end of the month.",
+    "new_example": "Employees should submit their travel expenses by the end of the month.",
+    "new_translation": "Nhân viên nên nộp các chi phí đi lại vào cuối tháng."
+  },
+  {
+    "word": "experimental",
+    "old_example": "The scientists are currently testing an experimental drug that could potentially cure the disease.",
+    "new_example": "The scientists are currently testing an experimental drug for the disease.",
+    "new_translation": "Các nhà khoa học hiện đang thử nghiệm một loại thuốc cho căn bệnh này."
+  },
+  {
+    "word": "experts",
+    "old_example": "Financial experts predict that the economy will continue to grow steadily throughout the year.",
+    "new_example": "Financial experts predict the economy will continue to grow steadily.",
+    "new_translation": "Các chuyên gia tài chính dự đoán kinh tế sẽ tiếp tục tăng trưởng ổn định."
+  },
+  {
+    "word": "expired",
+    "old_example": "Your driver's license has expired and needs to be renewed as soon as possible.",
+    "new_example": "Your driver's license has expired and needs to be renewed soon.",
+    "new_translation": "Bằng lái xe của bạn đã hết hạn và cần được gia hạn sớm."
+  },
+  {
+    "word": "explainable",
+    "old_example": "The sudden drop in sales is easily explainable by the seasonal decrease in demand.",
+    "new_example": "The drop in sales is easily explainable by seasonal demand.",
+    "new_translation": "Sự sụt giảm doanh số có thể giải thích bởi nhu cầu theo mùa."
+  },
+  {
+    "word": "explained",
+    "old_example": "The technician explained how to use the new software system during the training session.",
+    "new_example": "The technician explained how to use the new system today.",
+    "new_translation": "Kỹ thuật viên đã giải thích cách sử dụng hệ thống mới hôm nay."
+  },
+  {
+    "word": "exploration",
+    "old_example": "The mission to Mars is a significant step forward in our exploration of the solar system.",
+    "new_example": "The mission to Mars is a significant step in our exploration.",
+    "new_translation": "Nhiệm vụ lên sao Hỏa là một bước tiến đáng kể trong khám phá."
+  },
+  {
+    "word": "expressly",
+    "old_example": "The hotel rules expressly forbid smoking in any of the guest rooms or common areas to ensure the comfort of all visitors.",
+    "new_example": "The hotel rules expressly forbid smoking in all guest rooms.",
+    "new_translation": "Quy định của khách sạn nghiêm cấm rõ ràng việc hút thuốc trong phòng."
+  },
+  {
+    "word": "exquisitely",
+    "old_example": "The dining table was exquisitely decorated with fine china, crystal glasses, and a centerpiece of exotic orchids.",
+    "new_example": "The dining table was exquisitely decorated with fine china and crystal.",
+    "new_translation": "Bàn ăn được trang trí một cách tinh xảo với đồ sứ và pha lê."
+  },
+  {
+    "word": "extending",
+    "old_example": "The company is considering extending the warranty period for all its new electronic products.",
+    "new_example": "The company is considering extending the warranty period for new products.",
+    "new_translation": "Công ty đang cân nhắc việc kéo dài thời gian bảo hành cho sản phẩm mới."
+  },
+  {
+    "word": "extent",
+    "old_example": "It is difficult to assess the full extent of the environmental damage until more data is collected.",
+    "new_example": "It is difficult to assess the extent of the environmental damage.",
+    "new_translation": "Thật khó để đánh giá mức độ thiệt hại môi trường."
+  },
+  {
+    "word": "externally",
+    "old_example": "The building looks very modern externally, but inside it has been preserved in its original traditional style.",
+    "new_example": "The building looks modern externally but has a traditional style inside.",
+    "new_translation": "Tòa nhà trông hiện đại ở bên ngoài nhưng mang phong cách truyền thống."
+  },
+  {
+    "word": "exton",
+    "old_example": "Exton is a thriving commercial hub with many corporate headquarters located in the area.",
+    "new_example": "Exton is a thriving commercial hub with many corporate headquarters.",
+    "new_translation": "Exton là trung tâm thương mại thịnh vượng với nhiều trụ sở công ty."
+  },
+  {
+    "word": "extraction",
+    "old_example": "The extraction of olive oil involves crushing the olives and then using a press to separate the oil from the solid components.",
+    "new_example": "The extraction of olive oil involves crushing olives and using a press.",
+    "new_translation": "Việc chiết xuất dầu ô liu bao gồm việc nghiền ô liu và ép."
+  },
+  {
+    "word": "extreme",
+    "old_example": "Outdoor activities were canceled due to the extreme weather conditions forecasted for the weekend.",
+    "new_example": "Outdoor activities were canceled due to the extreme weather conditions.",
+    "new_translation": "Các hoạt động ngoài trời đã bị hủy do thời tiết khắc nghiệt."
+  },
+  {
+    "word": "extreme",
+    "old_example": "He tends to go to extremes whenever he starts a new hobby, spending thousands of dollars on equipment.",
+    "new_example": "He tends to go to extremes whenever he starts a new hobby.",
+    "new_translation": "Anh ấy có xu hướng đi đến thái cực khi bắt đầu sở thích mới."
+  },
+  {
+    "word": "eye",
+    "old_example": "He has a keen eye for detail, which makes him an excellent quality control inspector.",
+    "new_example": "He has a keen eye for detail as an inspector.",
+    "new_translation": "Anh ấy có khả năng quan sát chi tiết tinh tường như một giám định viên."
+  },
+  {
+    "word": "eyeball",
+    "old_example": "The optometrist used a special lamp to examine the patient's eyeballs for any signs of disease.",
+    "new_example": "The optometrist used a lamp to examine the patient's eyeballs.",
+    "new_translation": "Bác sĩ đã sử dụng đèn để kiểm tra nhãn cầu của bệnh nhân."
+  },
+  {
+    "word": "eyewear",
+    "old_example": "The optical shop offers a wide variety of stylish eyewear for both children and adults.",
+    "new_example": "The shop offers a wide variety of stylish eyewear.",
+    "new_translation": "Cửa hàng cung cấp nhiều loại đồ đeo mắt thời trang."
+  },
+  {
+    "word": "fabricate",
+    "old_example": "The factory was ordered to stop trying to fabricate false international customer reviews for its innovative new technology products recently today.",
+    "new_example": "The factory was ordered to stop trying to fabricate false reviews.",
+    "new_translation": "Nhà máy bị yêu cầu ngừng việc cố tạo ra các đánh giá giả."
+  },
+  {
+    "word": "fabrication",
+    "old_example": "The marketing department was criticized for the fabrication of several false success stories in its latest international advertising campaign recently today.",
+    "new_example": "The marketing department was criticized for the fabrication of false stories.",
+    "new_translation": "Bộ phận tiếp thị bị chỉ trích vì ngụy tạo các câu chuyện giả."
+  },
+  {
+    "word": "facade",
+    "old_example": "The historic office building features a grand marble facade that reflects its unique architectural and cultural history in the city today.",
+    "new_example": "The building features a grand facade that reflects its unique history.",
+    "new_translation": "Tòa nhà có mặt tiền lớn phản ánh lịch sử độc đáo."
+  }
+]

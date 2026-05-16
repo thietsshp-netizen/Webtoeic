@@ -30,5 +30,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "scratch", "tmp", "Part 1", "Part 2", "Part 3_4", "Part 5", "Part 6", "Part 7", "ToeicVocab", "TuDien", "scripts"]
 }

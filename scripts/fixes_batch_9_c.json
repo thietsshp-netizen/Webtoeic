@@ -1,0 +1,603 @@
+
+[
+  {
+    "word": "foamy",
+    "old_example": "The barista served the cappuccino with a thick, foamy layer of steamed milk on top, just as the customer had requested.",
+    "new_example": "The barista served the cappuccino with a thick, foamy layer of milk.",
+    "new_translation": "Người pha chế đã phục vụ món cappuccino với một lớp bọt sữa dày."
+  },
+  {
+    "word": "focus-group",
+    "old_example": "The marketing agency organized a focus-group to gather feedback on the new advertising campaign.",
+    "new_example": "The agency organized a focus-group to gather feedback on the new campaign.",
+    "new_translation": "Cơ quan đã tổ chức một nhóm tập trung để thu thập phản hồi."
+  },
+  {
+    "word": "focusing",
+    "old_example": "By focusing on quality rather than quantity, the company has managed to build a loyal customer base.",
+    "new_example": "By focusing on quality, the company has managed to build loyal customers.",
+    "new_translation": "Bằng cách tập trung vào chất lượng, công ty đã xây dựng khách hàng trung thành."
+  },
+  {
+    "word": "folders",
+    "old_example": "Organizing your digital files into specific folders can save a lot of time in the long run.",
+    "new_example": "Organizing your files into specific folders can save a lot of time.",
+    "new_translation": "Tổ chức các tệp thành các thư mục cụ thể có thể tiết kiệm thời gian."
+  },
+  {
+    "word": "foliage",
+    "old_example": "In autumn, the mountains are covered in beautiful red and gold foliage as the leaves change color before falling.",
+    "new_example": "In autumn, the mountains are covered in beautiful red and gold foliage.",
+    "new_translation": "Vào mùa thu, những ngọn núi được bao phủ bởi những tán lá tuyệt đẹp."
+  },
+  {
+    "word": "followed",
+    "old_example": "The presentation was followed by a brief question and answer session for all participants.",
+    "new_example": "The presentation was followed by a brief question and answer session.",
+    "new_translation": "Bài thuyết trình đã được tiếp nối bởi một buổi hỏi và đáp ngắn."
+  },
+  {
+    "word": "follower",
+    "old_example": "The social media influencer has millions of followers who look to her for fashion advice and lifestyle inspiration.",
+    "new_example": "The social media influencer has millions of followers seeking lifestyle inspiration.",
+    "new_translation": "Người có tầm ảnh hưởng trên mạng xã hội có hàng triệu người theo dõi."
+  },
+  {
+    "word": "fondness",
+    "old_example": "She has a great fondness for classical music and often attends concerts at the city's symphony hall.",
+    "new_example": "She has a great fondness for classical music and often attends concerts.",
+    "new_translation": "Cô ấy có một sự yêu thích lớn đối với nhạc cổ điển."
+  },
+  {
+    "word": "foods",
+    "old_example": "It is important to consume a variety of healthy foods to get all the necessary nutrients for your body.",
+    "new_example": "It is important to consume a variety of healthy foods.",
+    "new_translation": "Điều quan trọng là phải tiêu thụ nhiều loại thực phẩm lành mạnh."
+  },
+  {
+    "word": "footbridge",
+    "old_example": "A new footbridge was built over the busy highway to provide a safe crossing for students walking to the nearby school.",
+    "new_example": "A new footbridge was built over the highway to provide safe crossing.",
+    "new_translation": "Một cây cầu đi bộ mới được xây bắc qua xa lộ."
+  },
+  {
+    "word": "footlight",
+    "old_example": "The actors stood in the bright glow of the footlights as they took their final bows at the end of the opening night performance.",
+    "new_example": "The actors stood in the bright glow of the footlights today.",
+    "new_translation": "Các diễn viên đứng trong ánh sáng rực rỡ của đèn sân khấu hôm nay."
+  },
+  {
+    "word": "footlights",
+    "old_example": "The actors stood in the bright glare of the footlights, waiting for their cues.",
+    "new_example": "The actors stood in the bright glare of the footlights.",
+    "new_translation": "Các diễn viên đứng trong ánh hào quang rực rỡ của hàng đèn sân khấu."
+  },
+  {
+    "word": "footrest",
+    "old_example": "The ergonomic office chair comes with an adjustable footrest to provide better support and comfort for long hours of work.",
+    "new_example": "The chair comes with an adjustable footrest to provide better comfort.",
+    "new_translation": "Chiếc ghế đi kèm với một giá để chân có thể điều chỉnh."
+  },
+  {
+    "word": "for",
+    "old_example": "This special discount is only available for a limited period of time during the holidays.",
+    "new_example": "This special discount is only available for a limited time.",
+    "new_translation": "Khoản chiết khấu đặc biệt này chỉ có hiệu lực trong thời gian giới hạn."
+  },
+  {
+    "word": "forbidden",
+    "old_example": "The use of mobile phones is strictly forbidden in the examination hall to prevent any potential cheating.",
+    "new_example": "The use of mobile phones is strictly forbidden in the examination hall.",
+    "new_translation": "Việc sử dụng điện thoại di động bị nghiêm cấm trong phòng thi."
+  },
+  {
+    "word": "forcefully",
+    "old_example": "The activist spoke forcefully against the proposed new law, arguing that it would infringe on citizens' basic rights.",
+    "new_example": "The activist spoke forcefully against the proposed new law.",
+    "new_translation": "Nhà hoạt động đã nói một cách quyết liệt phản đối dự luật mới."
+  },
+  {
+    "word": "forefront",
+    "old_example": "The company has always been at the forefront of technological innovation, consistently releasing groundbreaking products before its competitors.",
+    "new_example": "The company has always been at the forefront of technological innovation.",
+    "new_translation": "Công ty luôn ở vị trí tiên phong trong đổi mới công nghệ."
+  },
+  {
+    "word": "foreigner",
+    "old_example": "The tourist information center provides maps and guides in several languages to assist foreigners visiting the city.",
+    "new_example": "The center provides maps in several languages to assist foreigners.",
+    "new_translation": "Trung tâm cung cấp bản đồ bằng vài ngôn ngữ để hỗ trợ người nước ngoài."
+  },
+  {
+    "word": "foremost",
+    "old_example": "He is considered one of the foremost experts in the field of artificial intelligence.",
+    "new_example": "He is considered one of the foremost experts in artificial intelligence.",
+    "new_translation": "Ông ấy được coi là một trong những chuyên gia hàng đầu về AI."
+  },
+  {
+    "word": "foresee",
+    "old_example": "It was difficult to foresee the long-term impact of the new regulations on the local industry.",
+    "new_example": "It was difficult to foresee the impact of the new regulations.",
+    "new_translation": "Thật khó để tiên đoán tác động của các quy định mới."
+  },
+  {
+    "word": "foreseeable",
+    "old_example": "Due to the current political climate, the company decided to put all expansion plans on hold for the foreseeable future.",
+    "new_example": "The company put all expansion plans on hold for the foreseeable future.",
+    "new_translation": "Công ty đã dừng các kế hoạch mở rộng trong tương lai gần."
+  },
+  {
+    "word": "forest",
+    "old_example": "The tropical rain forest is home to millions of species of plants and animals.",
+    "new_example": "The tropical rain forest is home to millions of species.",
+    "new_translation": "Rừng mưa nhiệt đới là ngôi nhà của hàng triệu loài."
+  },
+  {
+    "word": "forester",
+    "old_example": "The forester spent the day marking trees that were ready for harvesting while ensuring the overall health of the ecosystem.",
+    "new_example": "The forester spent the day marking trees that were ready for harvesting.",
+    "new_translation": "Người làm lâm nghiệp đã dành cả ngày đánh dấu những cái cây khai thác."
+  },
+  {
+    "word": "forestry",
+    "old_example": "Sustainable forestry practices are essential for protecting biodiversity and mitigating the effects of climate change.",
+    "new_example": "Sustainable forestry practices are essential for protecting biodiversity.",
+    "new_translation": "Các hoạt động lâm nghiệp bền vững là thiết yếu để bảo vệ đa dạng sinh học."
+  },
+  {
+    "word": "forfeiture",
+    "old_example": "Failure to comply with the terms of the contract will result in the forfeiture of your initial deposit.",
+    "new_example": "Failure to comply with the contract will result in deposit forfeiture.",
+    "new_translation": "Việc không tuân thủ hợp đồng sẽ dẫn đến việc mất khoản đặt cọc."
+  },
+  {
+    "word": "forgo",
+    "old_example": "She decided to forgo a pay raise to help the company during the crisis.",
+    "new_example": "She decided to forgo a pay raise to help the company.",
+    "new_translation": "Cô ấy đã quyết định từ bỏ việc tăng lương để giúp công ty."
+  },
+  {
+    "word": "forklift",
+    "old_example": "Warehouse workers use a forklift to move heavy pallets of goods from the delivery trucks to the storage shelves.",
+    "new_example": "Warehouse workers use a forklift to move heavy pallets of goods.",
+    "new_translation": "Các công nhân kho sử dụng xe nâng để di chuyển các pallet hàng."
+  },
+  {
+    "word": "formality",
+    "old_example": "The signing of the contract was just a formality, as all the major details had already been agreed upon weeks ago.",
+    "new_example": "The signing of the contract was just a formality.",
+    "new_translation": "Việc ký kết hợp đồng chỉ là một thủ tục hình thức."
+  },
+  {
+    "word": "formally",
+    "old_example": "The new trade agreement was formally signed by the representatives of both countries during the summit in Washington.",
+    "new_example": "The new trade agreement was formally signed by both countries.",
+    "new_translation": "Hiệp định thương mại mới đã được ký kết chính thức bởi cả hai nước."
+  },
+  {
+    "word": "format",
+    "old_example": "You need to format the hard drive before using it for the first time.",
+    "new_example": "You need to format the hard drive before using it.",
+    "new_translation": "Bạn cần định dạng ổ cứng trước khi sử dụng."
+  },
+  {
+    "word": "forms",
+    "old_example": "Please fill out all the necessary forms before submitting your application to the human resources department.",
+    "new_example": "Please fill out all forms before submitting your application.",
+    "new_translation": "Vui lòng điền vào tất cả các mẫu đơn trước khi nộp hồ sơ."
+  },
+  {
+    "word": "formulate",
+    "old_example": "The management team met to formulate a new strategy for expanding into international markets.",
+    "new_example": "The management team met to formulate a new strategy today.",
+    "new_translation": "Đội ngũ quản lý đã họp để đề ra một chiến lược mới hôm nay."
+  },
+  {
+    "word": "formulation",
+    "old_example": "The scientific team spent months working on the formulation of a more effective treatment for the rare genetic disease.",
+    "new_example": "The scientific team worked on the formulation of a more effective treatment.",
+    "new_translation": "Nhóm khoa học đã làm việc để xây dựng một phương pháp điều trị hiệu quả."
+  },
+  {
+    "word": "forth",
+    "old_example": "The ideas set forth in the proposal aim to improve the company's operational efficiency.",
+    "new_example": "The ideas set forth in the proposal aim to improve efficiency.",
+    "new_translation": "Các ý tưởng đưa ra trong bản đề xuất nhằm cải thiện hiệu quả."
+  },
+  {
+    "word": "forthcoming",
+    "old_example": "Details of the forthcoming conference will be posted on the company website next week.",
+    "new_example": "Details of the forthcoming conference will be posted next week.",
+    "new_translation": "Thông tin chi tiết về hội nghị sắp tới sẽ được đăng vào tuần tới."
+  },
+  {
+    "word": "fortunately",
+    "old_example": "Fortunately, the firefighters arrived quickly and were able to extinguish the blaze before it spread to the neighboring houses.",
+    "new_example": "Fortunately, the firefighters arrived quickly and extinguished the blaze.",
+    "new_translation": "May thay, lính cứu hỏa đã đến nhanh chóng và dập tắt ngọn lửa."
+  },
+  {
+    "word": "fossil",
+    "old_example": "Scientists discovered a perfectly preserved dinosaur fossil during an archaeological dig in the desert.",
+    "new_example": "Scientists discovered a dinosaur fossil during a dig in the desert.",
+    "new_translation": "Các nhà khoa học đã khám phá ra một hóa thạch khủng long trong sa mạc."
+  },
+  {
+    "word": "foster",
+    "old_example": "The manager tries to foster a collaborative work environment where everyone feels comfortable sharing their ideas.",
+    "new_example": "The manager tries to foster a collaborative work environment.",
+    "new_translation": "Quản lý cố gắng thúc đẩy một môi trường làm việc cộng tác."
+  },
+  {
+    "word": "foster",
+    "old_example": "After their parents passed away, the siblings were placed in a loving foster home together.",
+    "new_example": "After their parents passed away, the siblings were placed in a home.",
+    "new_translation": "Sau khi cha mẹ qua đời, anh chị em đã được đưa vào một gia đình."
+  },
+  {
+    "word": "foundational",
+    "old_example": "Understanding the foundational principles of economic theory is essential for anyone wishing to pursue a career in finance.",
+    "new_example": "Understanding the foundational principles of economic theory is essential.",
+    "new_translation": "Hiểu được các nguyên tắc nền tảng của kinh tế học là điều thiết yếu."
+  },
+  {
+    "word": "founded",
+    "old_example": "The company was founded in 1995 with the mission of providing affordable clean energy solutions.",
+    "new_example": "The company was founded to provide affordable clean energy solutions.",
+    "new_translation": "Công ty được thành lập để cung cấp các giải pháp năng lượng sạch."
+  },
+  {
+    "word": "fourteen",
+    "old_example": "The warranty period for the new appliance is fourteen days from the date of purchase.",
+    "new_example": "The warranty period for the appliance is fourteen days.",
+    "new_translation": "Thời gian bảo hành cho thiết bị là mười bốn ngày."
+  },
+  {
+    "word": "foyer",
+    "old_example": "We agreed to meet in the hotel foyer at seven o'clock before going out for dinner.",
+    "new_example": "We agreed to meet in the hotel foyer before dinner.",
+    "new_translation": "Chúng tôi đã đồng ý gặp nhau tại tiền sảnh khách sạn trước bữa tối."
+  },
+  {
+    "word": "fractional",
+    "old_example": "The company reported a fractional increase in its quarterly profits, which was lower than what analysts had expected.",
+    "new_example": "The company reported a fractional increase in its quarterly profits.",
+    "new_translation": "Công ty đã báo cáo một sự gia tăng nhỏ bé trong lợi nhuận quý."
+  },
+  {
+    "word": "framing",
+    "old_example": "The framing of the question can significantly influence the answer provided by the participants.",
+    "new_example": "The framing of the question can influence the answer provided.",
+    "new_translation": "Cách đặt câu hỏi có thể ảnh hưởng đến câu trả lời."
+  },
+  {
+    "word": "france",
+    "old_example": "France is one of the leading economies in Europe and a global hub for art and culture.",
+    "new_example": "France is a leading economy and a hub for art and culture.",
+    "new_translation": "Pháp là một nền kinh tế hàng đầu và là trung tâm nghệ thuật."
+  },
+  {
+    "word": "frank",
+    "old_example": "To be frank, I don't think the current marketing strategy is achieving the desired results.",
+    "new_example": "To be frank, the current strategy is not achieving results.",
+    "new_translation": "Thẳng thắn mà nói, chiến lược hiện tại không đạt được kết quả."
+  },
+  {
+    "word": "freedom",
+    "old_example": "The new constitution guarantees fundamental freedoms, such as the freedom of speech and the freedom of assembly.",
+    "new_example": "The new constitution guarantees fundamental freedoms, such as freedom of speech.",
+    "new_translation": "Hiến pháp mới đảm bảo các quyền tự do như tự do ngôn luận."
+  },
+  {
+    "word": "freelancer",
+    "old_example": "She decided to leave her corporate job and become a freelancer, providing graphic design services to several different clients.",
+    "new_example": "She decided to become a freelancer providing graphic design services.",
+    "new_translation": "Cô ấy đã quyết định trở thành một người làm nghề tự do thiết kế đồ họa."
+  },
+  {
+    "word": "freely",
+    "old_example": "In a democratic society, citizens should be able to express their opinions freely without fear of persecution.",
+    "new_example": "Citizens should be able to express their opinions freely.",
+    "new_translation": "Công dân nên được tự do bày tỏ ý kiến của mình."
+  },
+  {
+    "word": "frequented",
+    "old_example": "The small cafe is frequented by local artists and writers looking for a quiet place to work.",
+    "new_example": "The small cafe is frequented by local artists and writers.",
+    "new_translation": "Quán cà phê nhỏ thường xuyên được các nghệ sĩ và nhà văn lui tới."
+  },
+  {
+    "word": "freshest",
+    "old_example": "The restaurant prides itself on using only the freshest ingredients sourced from local farms.",
+    "new_example": "The restaurant uses only the freshest ingredients from local farms.",
+    "new_translation": "Nhà hàng chỉ sử dụng những nguyên liệu tươi nhất từ trang trại."
+  },
+  {
+    "word": "freshness",
+    "old_example": "The baker prides himself on the freshness of his bread, which is baked from scratch every morning using local ingredients.",
+    "new_example": "The baker prides himself on the freshness of his bread.",
+    "new_translation": "Người thợ làm bánh tự hào về sự tươi ngon của bánh mì mình làm."
+  },
+  {
+    "word": "fridge",
+    "old_example": "We need to go grocery shopping because the fridge is almost empty and we have nothing for dinner.",
+    "new_example": "We need to go shopping because the fridge is almost empty.",
+    "new_translation": "Chúng ta cần đi mua sắm vì tủ lạnh gần như trống rỗng."
+  },
+  {
+    "word": "friend",
+    "old_example": "She has been a close friend of mine since we were in elementary school.",
+    "new_example": "She has been a close friend since elementary school.",
+    "new_translation": "Cô ấy đã là một người bạn thân kể từ khi học tiểu học."
+  },
+  {
+    "word": "frightful",
+    "old_example": "The storm caused a frightful amount of damage to the coastal towns, with many buildings losing their roofs.",
+    "new_example": "The storm caused a frightful amount of damage to the coastal towns.",
+    "new_translation": "Trận bão đã gây ra thiệt hại kinh khủng cho các thị trấn ven biển."
+  },
+  {
+    "word": "fritz",
+    "old_example": "The office coffee machine is on the fritz again, so we'll have to go to the cafe next door.",
+    "new_example": "The coffee machine is on the fritz again.",
+    "new_translation": "Máy pha cà phê lại bị hỏng rồi."
+  },
+  {
+    "word": "fruit",
+    "old_example": "The hard work and dedication of the team finally bore fruit with the successful launch of the project.",
+    "new_example": "The hard work of the team finally bore fruit with the project.",
+    "new_translation": "Sự làm việc chăm chỉ của đội ngũ cuối cùng đã mang lại thành quả."
+  },
+  {
+    "word": "fruits",
+    "old_example": "Eating a variety of fresh fruits and vegetables is essential for a balanced diet.",
+    "new_example": "Eating a variety of fresh fruits is essential for a balanced diet.",
+    "new_translation": "Ăn nhiều loại trái cây tươi là điều cần thiết cho chế độ ăn."
+  },
+  {
+    "word": "fruity",
+    "old_example": "The wine has a delightful fruity aroma with hints of dark cherries and ripe plums.",
+    "new_example": "The wine has a delightful fruity aroma with hints of cherries.",
+    "new_translation": "Loại rượu này có hương thơm trái cây thú vị với vị anh đào."
+  },
+  {
+    "word": "frustrating",
+    "old_example": "It is very frustrating when you cannot find a solution to a problem despite your best efforts.",
+    "new_example": "It is frustrating when you cannot find a solution to a problem.",
+    "new_translation": "Thật là nản lòng khi bạn không thể tìm ra giải pháp cho vấn đề."
+  },
+  {
+    "word": "frustration",
+    "old_example": "He expressed his frustration with the lack of progress on the new project despite months of hard work.",
+    "new_example": "He expressed his frustration with the lack of progress on the project.",
+    "new_translation": "Anh ấy đã bày tỏ sự bực bội đối với việc thiếu tiến triển dự án."
+  },
+  {
+    "word": "fryer",
+    "old_example": "The restaurant installed a new high-capacity deep fryer to keep up with the demand for French fries during the lunch rush.",
+    "new_example": "The restaurant installed a new deep fryer for the lunch rush.",
+    "new_translation": "Nhà hàng đã lắp đặt một chiếc nồi chiên cho giờ cao điểm."
+  },
+  {
+    "word": "fryers",
+    "old_example": "Air fryers have become increasingly popular in recent years as a healthier alternative to deep-frying.",
+    "new_example": "Air fryers have become popular as a healthier alternative to deep-frying.",
+    "new_translation": "Nồi chiên không dầu đã phổ biến như một giải pháp thay thế lành mạnh."
+  },
+  {
+    "word": "full-service",
+    "old_example": "The hotel provides a full-service experience, including a spa, fitness center, and fine-dining restaurant.",
+    "new_example": "The hotel provides a full-service experience, including a spa and gym.",
+    "new_translation": "Khách sạn cung cấp dịch vụ trọn gói, bao gồm cả spa và phòng gym."
+  },
+  {
+    "word": "full-time",
+    "old_example": "The company is looking for a full-time office manager to oversee daily administrative tasks.",
+    "new_example": "The company is looking for a full-time office manager today.",
+    "new_translation": "Công ty đang tìm kiếm một quản lý văn phòng làm việc toàn thời gian."
+  },
+  {
+    "word": "fuller",
+    "old_example": "We need a fuller understanding of the market trends before we invest more capital.",
+    "new_example": "We need a fuller understanding of the market trends before investing.",
+    "new_translation": "Chúng ta cần hiểu đầy đủ hơn về thị trường trước khi đầu tư."
+  },
+  {
+    "word": "fullness",
+    "old_example": "The chef explained that the secret to the sauce is the fullness of its flavor.",
+    "new_example": "The chef explained that the secret is the fullness of the flavor.",
+    "new_translation": "Đầu bếp giải thích rằng bí quyết là sự phong phú của hương vị."
+  },
+  {
+    "word": "fumble",
+    "old_example": "He had to fumble in his pockets for several minutes to find his car keys.",
+    "new_example": "He had to fumble in his pockets to find his car keys.",
+    "new_translation": "Anh ta đã phải lục lọi trong túi để tìm chìa khóa xe."
+  },
+  {
+    "word": "functionality",
+    "old_example": "The new version of the app includes several added functionalities that make it easier for users to manage their budgets.",
+    "new_example": "The new version of the app includes several added functionalities.",
+    "new_translation": "Phiên bản mới của ứng dụng bao gồm vài tính năng bổ sung."
+  },
+  {
+    "word": "fundraiser",
+    "old_example": "The charity organization is hosting a gala fundraiser next month to raise money for its new after-school program for underprivileged children.",
+    "new_example": "The charity is hosting a gala fundraiser for underprivileged children.",
+    "new_translation": "Tổ chức từ thiện đang tổ chức gây quỹ cho trẻ em khó khăn."
+  },
+  {
+    "word": "funds",
+    "old_example": "The company needs to secure additional funds to finance its expansion into Asian markets.",
+    "new_example": "The company needs additional funds to finance its expansion.",
+    "new_translation": "Công ty cần thêm nguồn tiền để tài trợ cho việc mở rộng."
+  },
+  {
+    "word": "funny",
+    "old_example": "He told a very funny story about his first day at work that made everyone laugh.",
+    "new_example": "He told a funny story that made everyone laugh.",
+    "new_translation": "Anh ấy đã kể một câu chuyện buồn cười khiến mọi người đều cười."
+  },
+  {
+    "word": "furiously",
+    "old_example": "She was typing furiously on her laptop to finish the report before the deadline.",
+    "new_example": "She was typing furiously to finish the report before the deadline.",
+    "new_translation": "Cô ấy đã đánh máy một cách điên cuồng để hoàn thành báo cáo."
+  },
+  {
+    "word": "fused",
+    "old_example": "The two metal plates were securely fused together using an advanced high-temperature welding technique.",
+    "new_example": "The two metal plates were fused together using a welding technique.",
+    "new_translation": "Hai tấm kim loại đã được gắn chặt với nhau bằng kỹ thuật hàn."
+  },
+  {
+    "word": "fusion",
+    "old_example": "The restaurant is famous for its creative fusion cuisine, which combines traditional Asian flavors with modern European techniques.",
+    "new_example": "The restaurant is famous for its creative fusion cuisine.",
+    "new_translation": "Nhà hàng nổi tiếng với ẩm thực kết hợp sáng tạo."
+  },
+  {
+    "word": "fussy",
+    "old_example": "He is a very fussy eater who refuses to try any new or unusual foods.",
+    "new_example": "He is a fussy eater who refuses to try new foods.",
+    "new_translation": "Anh ấy là một người ăn uống kén chọn, từ chối thử món mới."
+  },
+  {
+    "word": "gadget",
+    "old_example": "The kitchen is filled with all sorts of clever gadgets, including an automatic apple peeler.",
+    "new_example": "The kitchen is filled with all sorts of clever gadgets.",
+    "new_translation": "Nhà bếp đầy rẫy đủ loại dụng cụ thông minh."
+  },
+  {
+    "word": "galaxy",
+    "old_example": "The physicist spent several years studying the formation of ancient galaxies in the distant universe through various international laboratory experiments today.",
+    "new_example": "The physicist spent years studying the formation of ancient galaxies.",
+    "new_translation": "Nhà vật lý đã dành nhiều năm nghiên cứu sự hình thành thiên hà cổ."
+  },
+  {
+    "word": "gallery",
+    "old_example": "The city hosts a grand art gallery every year that attracts thousands of international visitors and global artists from all around today.",
+    "new_example": "The city hosts a grand art gallery every year.",
+    "new_translation": "Thành phố tổ chức triển lãm nghệ thuật lớn hàng năm."
+  },
+  {
+    "word": "galvanization",
+    "old_example": "The CEO's powerful speech led to a rapid galvanization of the workforce, resulting in a significant increase in productivity.",
+    "new_example": "The CEO's powerful speech led to a rapid galvanization of the workforce.",
+    "new_translation": "Bài phát biểu của CEO đã thúc đẩy nhanh chóng lực lượng lao động."
+  },
+  {
+    "word": "galvanize",
+    "old_example": "The success of the new marketing campaign manage managed to galvanize the entire team to work harder on the international expansion project today.",
+    "new_example": "The success of the campaign managed to galvanize the entire team.",
+    "new_translation": "Thành công của chiến dịch đã thôi thúc cả nhóm."
+  },
+  {
+    "word": "games",
+    "old_example": "Educational games can be a fun and effective way for children to learn new skills.",
+    "new_example": "Educational games can be an effective way for children to learn.",
+    "new_translation": "Các trò chơi giáo dục có thể là cách hiệu quả để trẻ học tập."
+  },
+  {
+    "word": "gaming",
+    "old_example": "The gaming industry has seen explosive growth over the past decade due to mobile technology.",
+    "new_example": "The gaming industry has seen explosive growth over the past decade.",
+    "new_translation": "Ngành công nghiệp trò chơi đã thấy sự tăng trưởng bùng nổ."
+  },
+  {
+    "word": "gao",
+    "old_example": "The GAO published a report on the effectiveness of recent government spending on infrastructure.",
+    "new_example": "The GAO published a report on the effectiveness of government spending.",
+    "new_translation": "GAO đã công bố một báo cáo về hiệu quả của chi tiêu chính phủ."
+  },
+  {
+    "word": "gap",
+    "old_example": "There is a significant gap between the skills that employers need and the skills that graduates currently possess.",
+    "new_example": "There is a gap between the skills employers need and graduates possess.",
+    "new_translation": "Có một khoảng cách giữa kỹ năng nhà tuyển dụng cần và sinh viên có."
+  },
+  {
+    "word": "garcia",
+    "old_example": "Mr. Garcia is the lead attorney representing the company in the intellectual property case.",
+    "new_example": "Mr. Garcia is the lead attorney representing the company.",
+    "new_translation": "Ông Garcia là luật sư chính đại diện cho công ty."
+  },
+  {
+    "word": "garden",
+    "old_example": "The office building features a beautiful rooftop garden where employees can relax during their lunch break.",
+    "new_example": "The office building features a beautiful rooftop garden.",
+    "new_translation": "Tòa nhà văn phòng có một khu vườn trên sân thượng tuyệt đẹp."
+  },
+  {
+    "word": "gardens",
+    "old_example": "The public gardens are famous for their magnificent display of tulips in the spring.",
+    "new_example": "The public gardens are famous for their display of tulips.",
+    "new_translation": "Các khu vườn công cộng nổi tiếng với sự trưng bày hoa tulip."
+  },
+  {
+    "word": "garlic",
+    "old_example": "The chef added crushed garlic to the oil to release its aromatic flavor before sautéing the vegetables.",
+    "new_example": "The chef added garlic to the oil before sautéing the vegetables.",
+    "new_translation": "Đầu bếp đã thêm tỏi vào dầu trước khi xào rau."
+  },
+  {
+    "word": "garner",
+    "old_example": "The young actor's impressive performance in his first film managed to garner widespread critical acclaim.",
+    "new_example": "The actor's impressive performance managed to garner widespread critical acclaim.",
+    "new_translation": "Diễn xuất ấn tượng của nam diễn viên đã giành được sự hoan nghênh."
+  },
+  {
+    "word": "gas",
+    "old_example": "Natural gas is increasingly used as a cleaner alternative to coal for electricity generation.",
+    "new_example": "Natural gas is increasingly used as a cleaner alternative to coal.",
+    "new_translation": "Khí thiên nhiên đang ngày càng được sử dụng để thay thế than đá."
+  },
+  {
+    "word": "gasoline",
+    "old_example": "The rising price of gasoline is forcing many commuters to consider using public transportation instead of driving.",
+    "new_example": "The rising price of gasoline is forcing many to use public transportation.",
+    "new_translation": "Giá xăng tăng cao đang buộc nhiều người sử dụng phương tiện công cộng."
+  },
+  {
+    "word": "gauge",
+    "old_example": "The driver glanced at the fuel gauge and realized that he needed to find a petrol station quickly.",
+    "new_example": "The driver glanced at the fuel gauge and found a station.",
+    "new_translation": "Người lái xe liếc nhìn đồng hồ đo nhiên liệu và tìm thấy một trạm."
+  },
+  {
+    "word": "gauge",
+    "old_example": "It is difficult to gauge the public's reaction to the new policy until it has been in effect for several months.",
+    "new_example": "It is difficult to gauge the public's reaction to the new policy.",
+    "new_translation": "Thật khó để đánh giá phản ứng của công chúng đối với chính sách."
+  },
+  {
+    "word": "gemstone",
+    "old_example": "The museum's collection includes a variety of rare gemstones, including diamonds, rubies, and emeralds from all over the world.",
+    "new_example": "The museum's collection includes a variety of rare gemstones.",
+    "new_translation": "Bộ sưu tập của bảo tàng bao gồm nhiều loại đá quý hiếm."
+  },
+  {
+    "word": "generalize",
+    "old_example": "It is often dangerous to generalize about an entire group of people based on one example.",
+    "new_example": "It is often dangerous to generalize about a group of people.",
+    "new_translation": "Thường là nguy hiểm khi khái quát hóa về một nhóm người."
+  },
+  {
+    "word": "generated",
+    "old_example": "The new solar farm generated enough electricity to power five thousand homes last month.",
+    "new_example": "The solar farm generated enough electricity to power many homes.",
+    "new_translation": "Trang trại mặt trời đã tạo ra đủ điện cung cấp cho nhiều nhà."
+  },
+  {
+    "word": "generator",
+    "old_example": "The hospital has a backup generator to ensure that life-saving equipment continues to function during a power outage.",
+    "new_example": "The hospital has a backup generator for power outages.",
+    "new_translation": "Bệnh viện có một máy phát điện dự phòng cho lúc mất điện."
+  },
+  {
+    "word": "generic",
+    "old_example": "Many consumers prefer to buy generic products at the supermarket because they are often much cheaper than brand-name items.",
+    "new_example": "Many consumers prefer to buy generic products because they are cheaper.",
+    "new_translation": "Nhiều người tiêu dùng thích mua các sản phẩm không thương hiệu vì rẻ."
+  }
+]

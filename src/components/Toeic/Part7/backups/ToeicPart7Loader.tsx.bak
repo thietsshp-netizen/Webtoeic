@@ -1,0 +1,110 @@
+import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import ToeicPart7Player from "./ToeicPart7Player";
+export const revalidate = 0;
+
+export default async function ToeicPart7Loader({ 
+  content, 
+  lessonId,
+  courseId,
+  nextLessonId
+}: { 
+  content: string; 
+  lessonId: string;
+  courseId?: string;
+  nextLessonId?: string;
+}) {
+  // 1. Phân tích bộ lọc
+  let filterGroups: any[] = [];
+  try {
+    const filters = JSON.parse(content || "{}");
+    
+    // Lấy toàn bộ nhóm câu hỏi Part 7
+    const part7Groups = await prisma.toeicQuestionGroup.findMany({
+      where: {
+        part: { partNumber: 7 }
+      },
+      include: {
+        questions: {
+          orderBy: { questionNo: 'asc' }
+        }
+      }
+    });
+
+    // Lọc trên server memory để linh hoạt metadata
+    filterGroups = part7Groups.filter((g: any) => {
+      const meta = g.metadata as any;
+      if (!meta) return false;
+      let match = true;
+      
+      if (filters.day) {
+        const filterDay = String(filters.day).trim();
+        const metaDay = String(meta.day || "").trim();
+        if (metaDay !== filterDay) match = false;
+      }
+      
+      if (filters.type) {
+        const filterType = String(filters.type).trim();
+        const metaType = String(meta.type || "").trim();
+        if (metaType !== filterType) match = false;
+      }
+
+      if (filters.book) {
+        const filterBook = String(filters.book).trim();
+        const metaBook = String(meta.book || "").trim();
+        if (metaBook !== filterBook) match = false;
+      }
+      
+      return match;
+    });
+
+    if (filterGroups.length > 0) {
+      console.log(`[Part7Loader] Lesson ${lessonId}: Found ${filterGroups.length} groups for filters:`, filters);
+    }
+
+  } catch (e) {
+    console.error("Lỗi phân tích bộ lọc Part 7:", e);
+  }
+
+  // 2. Lấy tiến độ cũ
+  const session = await getServerSession(authOptions) as any;
+  let initialProgress = {};
+  if (session?.user?.id && filterGroups.length > 0) {
+    const questionIds = filterGroups.flatMap(g => g.questions.map((q: any) => q.id));
+    const attempts = await prisma.questionAttempt.findMany({
+      where: {
+        userId: session.user.id,
+        questionId: { in: questionIds }
+      }
+    });
+    
+    initialProgress = attempts.reduce((acc: any, curr) => {
+      acc[curr.questionId] = {
+        isCorrect: curr.isCorrect,
+        userAnswer: curr.userAnswer,
+        isFlagged: curr.isFlagged
+      };
+      return acc;
+    }, {});
+  }
+
+  if (filterGroups.length === 0) {
+    return (
+      <div className="text-center py-20 bg-slate-50 border border-dashed rounded-3xl m-4">
+        <div className="text-slate-400 font-bold mb-2">KHÔNG TÌM THẤY BÀI TẬP PART 7</div>
+        <div className="text-sm text-slate-500 italic">Vui lòng kiểm tra lại bộ lọc Day hoặc Thể Loại trong giáo án.</div>
+      </div>
+    );
+  }
+
+  return (
+    <ToeicPart7Player 
+      data={filterGroups}
+      lessonId={lessonId}
+      courseId={courseId}
+      nextLessonId={nextLessonId}
+      initialProgress={initialProgress}
+    />
+  );
+}

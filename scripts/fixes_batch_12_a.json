@@ -1,0 +1,801 @@
+
+[
+  {
+    "word": "kitchen",
+    "old_example": "The hotel's main kitchen is equipped with professional-grade appliances to serve hundreds of guests daily.",
+    "new_example": "The hotel's main kitchen is equipped with professional-grade appliances for all guests.",
+    "new_translation": "Nhà bếp chính của khách sạn được trang bị các thiết bị chuyên dụng."
+  },
+  {
+    "word": "kitchenette",
+    "old_example": "The small studio apartment features a modern kitchenette with a compact refrigerator and a two-burner stove.",
+    "new_example": "The small studio apartment features a modern kitchenette with a compact refrigerator.",
+    "new_translation": "Căn hộ studio nhỏ có một khu bếp nhỏ hiện đại với tủ lạnh."
+  },
+  {
+    "word": "kitchenware",
+    "old_example": "The department store offers a wide variety of kitchenware, ranging from high-end pots and pans to specialized baking tools.",
+    "new_example": "The department store offers a wide variety of kitchenware for all customers.",
+    "new_translation": "Cửa hàng bách hóa cung cấp nhiều loại dụng cụ nhà bếp cho khách."
+  },
+  {
+    "word": "km",
+    "old_example": "The nearest convenience store is located about 2 km from our current office location.",
+    "new_example": "The nearest convenience store is located about 2 km from our office.",
+    "new_translation": "Cửa hàng tiện lợi gần nhất cách văn phòng chúng tôi khoảng 2 km."
+  },
+  {
+    "word": "knee",
+    "old_example": "He had to undergo physical therapy after suffering a serious knee injury during a corporate sports event.",
+    "new_example": "He had to undergo physical therapy after suffering a serious knee injury.",
+    "new_translation": "Anh ấy đã phải trải qua vật lý trị liệu sau chấn thương đầu gối."
+  },
+  {
+    "word": "kneeling",
+    "old_example": "The act of kneeling is often used in religious ceremonies as a sign of deep respect or submission.",
+    "new_example": "The act of kneeling is used as a sign of deep respect today.",
+    "new_translation": "Hành động quỳ xuống được sử dụng như dấu hiệu tôn trọng sâu sắc."
+  },
+  {
+    "word": "kneeling",
+    "old_example": "A kneeling figure was visible in the shadows of the old church, whispering a quiet prayer.",
+    "new_example": "A kneeling figure was visible in the shadows of the old church.",
+    "new_translation": "Một bóng người đang quỳ có thể nhìn thấy trong bóng nhà thờ cũ."
+  },
+  {
+    "word": "kneeling",
+    "old_example": "The technician was kneeling on the floor to inspect the wiring underneath the computer desk.",
+    "new_example": "The technician was kneeling on the floor to inspect the wiring today.",
+    "new_translation": "Kỹ thuật viên đang quỳ trên sàn để kiểm tra dây điện hôm nay."
+  },
+  {
+    "word": "knew",
+    "old_example": "We knew that the project would be challenging, so we allocated additional resources from the start.",
+    "new_example": "We knew the project would be challenging, so we allocated additional resources.",
+    "new_translation": "Chúng tôi biết dự án sẽ đầy thử thách nên đã bổ sung nguồn lực."
+  },
+  {
+    "word": "knife",
+    "old_example": "The chef demonstrated the proper technique for using a sharp kitchen knife to slice vegetables safely.",
+    "new_example": "The chef demonstrated the proper technique for using a sharp kitchen knife.",
+    "new_translation": "Đầu bếp đã trình diễn kỹ thuật đúng đắn khi dùng dao bếp sắc."
+  },
+  {
+    "word": "knives",
+    "old_example": "The professional kitchen was equipped with a complete set of high-quality stainless steel knives for various cutting tasks.",
+    "new_example": "The professional kitchen was equipped with a complete set of high-quality knives.",
+    "new_translation": "Căn bếp chuyên nghiệp được trang bị một bộ đầy đủ dao chất lượng."
+  },
+  {
+    "word": "knockoff",
+    "old_example": "Be careful when buying designer handbags online, as there are many cheap knockoffs that look very similar to the real thing.",
+    "new_example": "Be careful when buying handbags online, as there are many cheap knockoffs.",
+    "new_translation": "Hãy cẩn thận khi mua túi xách trực tuyến vì có nhiều hàng nhái."
+  },
+  {
+    "word": "knoll",
+    "old_example": "The luxury villas are situated on a small knoll overlooking the beautiful bay area.",
+    "new_example": "The luxury villas are situated on a small knoll overlooking the bay.",
+    "new_translation": "Các căn biệt thự sang trọng nằm trên một ngọn đồi thấp nhìn ra vịnh."
+  },
+  {
+    "word": "knotty",
+    "old_example": "The legal team spent weeks trying to resolve the knotty problems surrounding the merger agreement.",
+    "new_example": "The legal team spent weeks trying to resolve the knotty problems today.",
+    "new_translation": "Đội ngũ pháp lý đã dành nhiều tuần giải quyết vấn đề rắc rối."
+  },
+  {
+    "word": "know",
+    "old_example": "It is essential to know your target audience's preferences before launching a new product.",
+    "new_example": "It is essential to know your target audience's preferences before launching products.",
+    "new_translation": "Điều thiết yếu là phải biết sở thích của khách hàng trước khi ra mắt."
+  },
+  {
+    "word": "knowledge",
+    "old_example": "A strong working knowledge of English is required for all positions in our international sales department.",
+    "new_example": "A strong working knowledge of English is required for all positions today.",
+    "new_translation": "Kiến thức làm việc tốt về tiếng Anh là bắt buộc cho mọi vị trí."
+  },
+  {
+    "word": "knows",
+    "old_example": "Everyone in the office knows that the annual bonus will be distributed later this month.",
+    "new_example": "Everyone in the office knows the annual bonus will be distributed today.",
+    "new_translation": "Mọi người trong văn phòng đều biết tiền thưởng sẽ được phát hôm nay."
+  },
+  {
+    "word": "koenig",
+    "old_example": "Mr. Koenig has been appointed as the new technical director for our European manufacturing plants.",
+    "new_example": "Mr. Koenig has been appointed as the new technical director today.",
+    "new_translation": "Ông Koenig đã được bổ nhiệm làm giám đốc kỹ thuật mới hôm nay."
+  },
+  {
+    "word": "korean",
+    "old_example": "The company is looking for a bilingual assistant who is fluent in both English and Korean.",
+    "new_example": "The company is looking for a bilingual assistant fluent in Korean today.",
+    "new_translation": "Công ty tìm trợ lý song ngữ thông thạo tiếng Hàn hôm nay."
+  },
+  {
+    "word": "kota",
+    "old_example": "Kota Kinabalu is a famous tourist destination in Malaysia, known for its beautiful beaches.",
+    "new_example": "Kota Kinabalu is a famous tourist destination known for its beautiful beaches.",
+    "new_translation": "Kota Kinabalu là điểm đến du lịch nổi tiếng với những bãi biển đẹp."
+  },
+  {
+    "word": "kwon",
+    "old_example": "Ms. Kwon was awarded the 'Employee of the Month' for her exceptional sales performance.",
+    "new_example": "Ms. Kwon was awarded 'Employee of the Month' for her exceptional performance.",
+    "new_translation": "Cô Kwon đã được trao giải 'Nhân viên của tháng' vì thành tích tốt."
+  },
+  {
+    "word": "lab",
+    "old_example": "The research team is currently conducting experiments in the chemical lab to develop a new adhesive.",
+    "new_example": "The research team is currently conducting experiments in the chemical lab today.",
+    "new_translation": "Đội ngũ nghiên cứu hiện đang tiến hành các thí nghiệm hôm nay."
+  },
+  {
+    "word": "labeling",
+    "old_example": "Accurate labeling of food products is required by law to protect consumers with allergies.",
+    "new_example": "Accurate labeling of food products is required by law today.",
+    "new_translation": "Việc ghi nhãn chính xác các sản phẩm thực phẩm là bắt buộc hôm nay."
+  },
+  {
+    "word": "labor",
+    "old_example": "The cost of skilled labor has increased significantly in the construction industry over the past year.",
+    "new_example": "The cost of skilled labor has increased significantly in the industry today.",
+    "new_translation": "Chi phí nhân công có tay nghề đã tăng đáng kể trong ngành hôm nay."
+  },
+  {
+    "word": "laboratory",
+    "old_example": "The company is investing heavily in its new international research laboratory to create innovative new technology products for the global market recently.",
+    "new_example": "The company is investing heavily in its new research laboratory today.",
+    "new_translation": "Công ty đang đầu tư mạnh vào phòng thí nghiệm nghiên cứu mới."
+  },
+  {
+    "word": "laboured",
+    "old_example": "The patient's breathing was heavy and laboured, indicating that he was having severe respiratory problems.",
+    "new_example": "The patient's breathing was heavy and laboured today.",
+    "new_translation": "Nhịp thở của bệnh nhân nặng nề và khó khăn hôm nay."
+  },
+  {
+    "word": "laces",
+    "old_example": "Please make sure your shoelaces are tied securely before you begin the safety inspection.",
+    "new_example": "Please make sure your shoelaces are tied securely today.",
+    "new_translation": "Vui lòng đảm bảo dây giày của bạn được thắt chặt hôm nay."
+  },
+  {
+    "word": "lack",
+    "old_example": "The project failed mainly due to a lack of proper funding and clear communication among team members.",
+    "new_example": "The project failed due to a lack of funding and clear communication.",
+    "new_translation": "Dự án thất bại do thiếu kinh phí và giao tiếp không rõ ràng."
+  },
+  {
+    "word": "lacks",
+    "old_example": "The new marketing proposal lacks a detailed budget breakdown for the social media campaign.",
+    "new_example": "The new marketing proposal lacks a detailed budget breakdown today.",
+    "new_translation": "Bản đề xuất tiếp thị mới thiếu một bảng phân tích ngân sách hôm nay."
+  },
+  {
+    "word": "ladder",
+    "old_example": "The maintenance worker used a tall ladder to reach the broken light fixture in the warehouse ceiling.",
+    "new_example": "The worker used a tall ladder to reach the broken light fixture.",
+    "new_translation": "Nhân viên đã sử dụng một cái thang cao để tiếp cận bộ đèn hỏng."
+  },
+  {
+    "word": "ladders",
+    "old_example": "For safety reasons, all ladders in the factory must be inspected for stability before each use.",
+    "new_example": "All ladders in the factory must be inspected for stability before each use.",
+    "new_translation": "Tất cả các thang trong nhà máy phải được kiểm tra độ ổn định."
+  },
+  {
+    "word": "laggard",
+    "old_example": "The company was once a leader in the industry, but it has become a laggard in recent years due to its failure to innovate.",
+    "new_example": "The company was once a leader, but it has become a laggard.",
+    "new_translation": "Công ty từng là người dẫn đầu, nhưng đã trở thành một kẻ lạc hậu."
+  },
+  {
+    "word": "lagoon",
+    "old_example": "The luxury resort is built around a stunning turquoise lagoon, perfect for snorkeling and swimming.",
+    "new_example": "The luxury resort is built around a stunning lagoon today.",
+    "new_translation": "Khu nghỉ dưỡng sang trọng được xây dựng quanh một đầm nước hôm nay."
+  },
+  {
+    "word": "lagos",
+    "old_example": "Lagos is one of the fastest-growing cities in the world and a major hub for African technology startups.",
+    "new_example": "Lagos is one of the fastest-growing cities in the world today.",
+    "new_translation": "Lagos là một trong những thành phố phát triển nhanh nhất thế giới."
+  },
+  {
+    "word": "lake",
+    "old_example": "The corporate retreat will be held at a scenic hotel overlooking a beautiful mountain lake.",
+    "new_example": "The corporate retreat will be held at a hotel overlooking the lake.",
+    "new_translation": "Kỳ nghỉ của công ty sẽ được tổ chức tại khách sạn nhìn ra hồ."
+  },
+  {
+    "word": "lakeside",
+    "old_example": "The lakeside property is highly sought after by investors due to its potential for high tourism revenue.",
+    "new_example": "The lakeside property is highly sought after by many investors today.",
+    "new_translation": "Bất động sản ven hồ đang được nhiều nhà đầu tư săn đón hôm nay."
+  },
+  {
+    "word": "lakeville",
+    "old_example": "Lakeville is a quiet suburban community known for its excellent public schools and parks.",
+    "new_example": "Lakeville is a quiet suburban community known for its excellent schools.",
+    "new_translation": "Lakeville là một cộng đồng ngoại ô yên tĩnh có các trường học tốt."
+  },
+  {
+    "word": "lambert",
+    "old_example": "Ms. Lambert has been appointed as the new director of communications for the international non-profit organization.",
+    "new_example": "Ms. Lambert has been appointed as the new director of communications today.",
+    "new_translation": "Bà Lambert đã được bổ nhiệm làm giám đốc truyền thông mới hôm nay."
+  },
+  {
+    "word": "lamination",
+    "old_example": "The print shop offers a lamination service to protect your important documents and certificates from moisture and wear.",
+    "new_example": "The print shop offers a lamination service to protect your documents today.",
+    "new_translation": "Cửa hàng in cung cấp dịch vụ ép nhựa để bảo vệ tài liệu hôm nay."
+  },
+  {
+    "word": "lamppost",
+    "old_example": "The city council plans to install energy-efficient LED bulbs in every lamppost across the downtown area.",
+    "new_example": "The city council plans to install LED bulbs in every lamppost today.",
+    "new_translation": "Hội đồng thành phố lập kế hoạch lắp đặt bóng đèn LED hôm nay."
+  },
+  {
+    "word": "lamps",
+    "old_example": "The interior designer chose a set of modern lamps to brighten up the hotel lobby.",
+    "new_example": "The designer chose a set of modern lamps for the lobby today.",
+    "new_translation": "Nhà thiết kế đã chọn một bộ đèn hiện đại cho sảnh hôm nay."
+  },
+  {
+    "word": "lan",
+    "old_example": "The office LAN was upgraded last weekend to provide faster internet speeds for all staff members.",
+    "new_example": "The office LAN was upgraded last weekend to provide faster internet speeds.",
+    "new_translation": "Mạng LAN của văn phòng đã được nâng cấp vào cuối tuần trước."
+  },
+  {
+    "word": "lancaster",
+    "old_example": "Lancaster University is consistently ranked among the top ten universities in the United Kingdom.",
+    "new_example": "Lancaster University is consistently ranked among the top ten universities today.",
+    "new_translation": "Đại học Lancaster liên tục được xếp hạng trong top 10 hôm nay."
+  },
+  {
+    "word": "lanchester",
+    "old_example": "The Lanchester laws are mathematical formulae used to calculate the relative strengths of military forces.",
+    "new_example": "The Lanchester laws are formulae used to calculate the strengths of forces.",
+    "new_translation": "Các định luật Lanchester là các công thức dùng để tính sức mạnh."
+  },
+  {
+    "word": "land",
+    "old_example": "The developer is planning to build a new shopping complex on the vacant land near the highway.",
+    "new_example": "The developer is planning to build a shopping complex on the land.",
+    "new_translation": "Nhà phát triển đang lập kế hoạch xây dựng một khu phức hợp."
+  },
+  {
+    "word": "landfill",
+    "old_example": "The city is running out of space for landfill and needs to find alternative waste disposal methods.",
+    "new_example": "The city needs to find alternative waste disposal methods today.",
+    "new_translation": "Thành phố cần tìm các phương pháp xử lý chất thải thay thế hôm nay."
+  },
+  {
+    "word": "landfills",
+    "old_example": "The city is promoting recycling programs to reduce the amount of waste sent to landfills each year.",
+    "new_example": "The city is promoting recycling programs to reduce waste today.",
+    "new_translation": "Thành phố đang thúc đẩy các chương trình tái chế để giảm rác hôm nay."
+  },
+  {
+    "word": "landmarks",
+    "old_example": "Paris is famous for its iconic landmarks, such as the Eiffel Tower and the Louvre Museum.",
+    "new_example": "Paris is famous for its iconic landmarks today.",
+    "new_translation": "Paris nổi tiếng với các địa danh mang tính biểu tượng hôm nay."
+  },
+  {
+    "word": "landowner",
+    "old_example": "The local government is negotiating with landowners to acquire the property needed for the new highway.",
+    "new_example": "The local government is negotiating with landowners today.",
+    "new_translation": "Chính quyền địa phương đang đàm phán với các chủ đất hôm nay."
+  },
+  {
+    "word": "landscape",
+    "old_example": "The company hired a professional firm to landscape the areas around its new corporate headquarters.",
+    "new_example": "The company hired a professional firm to landscape the areas today.",
+    "new_translation": "Công ty đã thuê một công ty chuyên nghiệp làm đẹp cảnh quan."
+  },
+  {
+    "word": "landscaper",
+    "old_example": "We hired a professional landscaper to redesign our backyard and install a new patio.",
+    "new_example": "We hired a professional landscaper to redesign our backyard today.",
+    "new_translation": "Chúng tôi thuê người thiết kế cảnh quan để thiết kế lại sân sau."
+  },
+  {
+    "word": "landscapers",
+    "old_example": "A team of professional landscapers is working to renovate the public gardens before the flower festival starts.",
+    "new_example": "A team of landscapers is working to renovate the public gardens today.",
+    "new_translation": "Một đội ngũ những người làm cảnh quan đang cải tạo khu vườn."
+  },
+  {
+    "word": "landscapes",
+    "old_example": "The photographer is known for capturing stunning natural landscapes during his travels across Iceland.",
+    "new_example": "The photographer is known for capturing stunning natural landscapes today.",
+    "new_translation": "Nhiếp ảnh gia nổi tiếng với việc ghi lại những phong cảnh tự nhiên."
+  },
+  {
+    "word": "landscaping",
+    "old_example": "Professional landscaping can significantly increase the market value and curb appeal of a residential property.",
+    "new_example": "Professional landscaping can significantly increase the market value today.",
+    "new_translation": "Việc thiết kế cảnh quan chuyên nghiệp có thể làm tăng giá trị thị trường."
+  },
+  {
+    "word": "lane",
+    "old_example": "The city is creating a dedicated bus lane to improve public transportation efficiency during rush hour.",
+    "new_example": "The city is creating a dedicated bus lane for public transportation.",
+    "new_translation": "Thành phố đang tạo ra một làn đường dành riêng cho xe buýt."
+  },
+  {
+    "word": "lanes",
+    "old_example": "The highway was expanded from four lanes to six to accommodate the increasing volume of traffic.",
+    "new_example": "The highway was expanded to accommodate the increasing volume of traffic today.",
+    "new_translation": "Đường cao tốc đã được mở rộng để đáp ứng lượng giao thông hôm nay."
+  },
+  {
+    "word": "langston",
+    "old_example": "Langston Hughes was a central figure in the Harlem Renaissance, known for his influential poetry and prose.",
+    "new_example": "Langston Hughes was a central figure known for his influential poetry today.",
+    "new_translation": "Langston Hughes là một nhân vật nổi tiếng với các bài thơ hôm nay."
+  },
+  {
+    "word": "lanterns",
+    "old_example": "Colorful lanterns were hung throughout the streets to celebrate the arrival of the Lunar New Year.",
+    "new_example": "Colorful lanterns were hung throughout the streets today.",
+    "new_translation": "Những chiếc đèn lồng đầy màu sắc đã được treo khắp con phố hôm nay."
+  },
+  {
+    "word": "laptop",
+    "old_example": "The IT department provides a company laptop to every new employee on their first day of work.",
+    "new_example": "The IT department provides a company laptop to every new employee today.",
+    "new_translation": "Bộ phận CNTT cung cấp máy tính xách tay cho mỗi nhân viên hôm nay."
+  },
+  {
+    "word": "largely",
+    "old_example": "The success of the marketing campaign was largely due to the new manager's efforts.",
+    "new_example": "The success of the campaign was largely due to the manager's efforts.",
+    "new_translation": "Thành công của chiến dịch phần lớn là nhờ nỗ lực của quản lý."
+  },
+  {
+    "word": "larger",
+    "old_example": "The new warehouse is significantly larger than the old one, providing much-needed storage space.",
+    "new_example": "The new warehouse is significantly larger than the old one today.",
+    "new_translation": "Nhà kho mới lớn hơn đáng kể so với nhà kho cũ hôm nay."
+  },
+  {
+    "word": "largest",
+    "old_example": "The company is currently the largest producer of solar panels in the Southeast Asian region.",
+    "new_example": "The company is currently the largest producer of solar panels today.",
+    "new_translation": "Công ty hiện là nhà sản xuất tấm pin năng lượng mặt trời lớn nhất."
+  },
+  {
+    "word": "largo",
+    "old_example": "The second movement of the symphony is a beautiful largo that highlights the strings section.",
+    "new_example": "The second movement of the symphony is a beautiful largo today.",
+    "new_translation": "Chương thứ hai của bản giao hưởng là một đoạn largo đẹp hôm nay."
+  },
+  {
+    "word": "lasagna",
+    "old_example": "The Italian restaurant is famous for its homemade lasagna, which is made using a traditional family recipe.",
+    "new_example": "The Italian restaurant is famous for its homemade lasagna today.",
+    "new_translation": "Nhà hàng Ý nổi tiếng với món lasagna tự làm hôm nay."
+  },
+  {
+    "word": "laser",
+    "old_example": "The factory uses a high-precision laser to cut through thick sheets of steel with extreme accuracy.",
+    "new_example": "The factory uses a high-precision laser today.",
+    "new_translation": "Nhà máy sử dụng tia la-ze có độ chính xác cao hôm nay."
+  },
+  {
+    "word": "last",
+    "old_example": "The board meeting lasted for over three hours as they discussed the new expansion plans.",
+    "new_example": "The board meeting lasted for over three hours today.",
+    "new_translation": "Cuộc họp hội đồng quản trị đã kéo dài hơn ba tiếng đồng hồ."
+  },
+  {
+    "word": "last-minute",
+    "old_example": "Try to avoid making last-minute changes to the travel itinerary as it may cause confusion for the guests.",
+    "new_example": "Try to avoid making last-minute changes to the travel itinerary today.",
+    "new_translation": "Cố gắng tránh các thay đổi vào phút chót cho lịch trình hôm nay."
+  },
+  {
+    "word": "lasts",
+    "old_example": "The warranty on this electrical appliance lasts for two years from the date of purchase.",
+    "new_example": "The warranty on this appliance lasts for two years today.",
+    "new_translation": "Bảo hành cho thiết bị này kéo dài trong hai năm hôm nay."
+  },
+  {
+    "word": "late",
+    "old_example": "He apologized for his late arrival at the meeting, citing unexpected heavy traffic on the highway.",
+    "new_example": "He apologized for his late arrival at the meeting today.",
+    "new_translation": "Anh ấy đã xin lỗi vì sự đến muộn tại cuộc họp hôm nay."
+  },
+  {
+    "word": "lately",
+    "old_example": "I haven't seen the manager around the office much lately, as she's been busy with the new project.",
+    "new_example": "I haven't seen the manager around the office much lately today.",
+    "new_translation": "Gần đây tôi không thấy người quản lý ở văn phòng nhiều hôm nay."
+  },
+  {
+    "word": "lateness",
+    "old_example": "Frequent lateness will not be tolerated and may lead to disciplinary action according to company policy.",
+    "new_example": "Frequent lateness will not be tolerated according to company policy today.",
+    "new_translation": "Việc đi muộn thường xuyên sẽ không được chấp nhận hôm nay."
+  },
+  {
+    "word": "latest",
+    "old_example": "The engineering team is working on the latest version of the software, which includes several new features.",
+    "new_example": "The team is working on the latest version of the software today.",
+    "new_translation": "Đội ngũ đang làm việc trên phiên bản mới nhất của phần mềm."
+  },
+  {
+    "word": "laughable",
+    "old_example": "The company's claim that they were completely unaware of the environmental damage was considered laughable by the public.",
+    "new_example": "The company's claim was considered laughable by the public today.",
+    "new_translation": "Tuyên bố của công ty bị công chúng coi là nực cười hôm nay."
+  },
+  {
+    "word": "laughing",
+    "old_example": "The staff were laughing and chatting during the informal luncheon in the office breakroom.",
+    "new_example": "The staff were laughing and chatting during the luncheon today.",
+    "new_translation": "Nhân viên đang cười nói vui vẻ trong bữa trưa hôm nay."
+  },
+  {
+    "word": "laughter",
+    "old_example": "The sound of children's laughter filled the playground as they played games and enjoyed the sunny afternoon.",
+    "new_example": "The sound of laughter filled the playground today.",
+    "new_translation": "Tiếng cười tràn ngập sân chơi hôm nay."
+  },
+  {
+    "word": "launch",
+    "old_example": "The company is planning to launch a new line of eco-friendly products next quarter.",
+    "new_example": "The company is planning to launch a new line of products today.",
+    "new_translation": "Công ty đang lập kế hoạch ra mắt dòng sản phẩm mới hôm nay."
+  },
+  {
+    "word": "launched",
+    "old_example": "The successful marketing campaign launched last year led to a twenty percent increase in sales.",
+    "new_example": "The marketing campaign launched last year led to an increase in sales.",
+    "new_translation": "Chiến dịch tiếp thị triển khai năm ngoái đã dẫn đến tăng doanh số."
+  },
+  {
+    "word": "laundry",
+    "old_example": "The hotel offers a same-day laundry service for guests, provided they drop off their clothes before 10 AM.",
+    "new_example": "The hotel offers a same-day laundry service for all guests today.",
+    "new_translation": "Khách sạn cung cấp dịch vụ giặt là trong ngày cho tất cả khách."
+  },
+  {
+    "word": "lavender",
+    "old_example": "She planted several rows of lavender in her garden to enjoy its beautiful scent and color.",
+    "new_example": "She planted several rows of lavender in her garden today.",
+    "new_translation": "Cô ấy đã trồng vài hàng hoa oải hương trong vườn hôm nay."
+  },
+  {
+    "word": "lavishly",
+    "old_example": "The ballroom was lavishly decorated for the grand wedding, with hundreds of candles and thousands of fresh white roses.",
+    "new_example": "The ballroom was lavishly decorated for the grand wedding today.",
+    "new_translation": "Phòng khiêu vũ được trang trí xa hoa cho đám cưới lớn hôm nay."
+  },
+  {
+    "word": "law",
+    "old_example": "The company has strict policies in place to ensure full compliance with all local labor laws.",
+    "new_example": "The company has strict policies to ensure compliance with laws today.",
+    "new_translation": "Công ty có chính sách nghiêm ngặt để đảm bảo tuân thủ luật pháp."
+  },
+  {
+    "word": "lawmaker",
+    "old_example": "Local lawmakers are considering a new tax on plastic bags to encourage recycling and reduce waste.",
+    "new_example": "Local lawmakers are considering a new tax on plastic bags today.",
+    "new_translation": "Các nhà lập pháp đang xem xét một loại thuế mới hôm nay."
+  },
+  {
+    "word": "lawmakers",
+    "old_example": "Lawmakers are currently debating a new bill that aims to provide tax incentives for renewable energy companies.",
+    "new_example": "Lawmakers are currently debating a new bill today.",
+    "new_translation": "Các nhà lập pháp hiện đang thảo luận về một dự luật mới hôm nay."
+  },
+  {
+    "word": "lawn",
+    "old_example": "The gardener is responsible for mowing the lawn and trimming the hedges every two weeks.",
+    "new_example": "The gardener is responsible for mowing the lawn every two weeks today.",
+    "new_translation": "Người làm vườn chịu trách nhiệm cắt cỏ mỗi hai tuần hôm nay."
+  },
+  {
+    "word": "lawrenceville",
+    "old_example": "Lawrenceville is home to several major corporate regional offices and a well-known private school.",
+    "new_example": "Lawrenceville is home to several major corporate offices today.",
+    "new_translation": "Lawrenceville là nơi đặt trụ sở của vài văn phòng lớn hôm nay."
+  },
+  {
+    "word": "lawyer",
+    "old_example": "If you are unsure about the terms of the contract, it is highly recommended that you consult a lawyer.",
+    "new_example": "It is highly recommended that you consult a lawyer today.",
+    "new_translation": "Bạn nên tham khảo ý kiến của một luật sư hôm nay."
+  },
+  {
+    "word": "lawyers",
+    "old_example": "The firm employs a large team of lawyers specializing in intellectual property and international trade law.",
+    "new_example": "The firm employs a large team of lawyers today.",
+    "new_translation": "Công ty thuê một đội ngũ luật sư lớn hôm nay."
+  },
+  {
+    "word": "lax",
+    "old_example": "The company was criticized for its lax security procedures, which led to a data breach.",
+    "new_example": "The company was criticized for its lax security procedures today.",
+    "new_translation": "Công ty bị chỉ trích vì các quy trình an ninh lỏng lẻo hôm nay."
+  },
+  {
+    "word": "lay",
+    "old_example": "Please lay the architectural plans flat on the table so that everyone can see the details clearly.",
+    "new_example": "Please lay the architectural plans on the table today.",
+    "new_translation": "Vui lòng đặt các bản kế hoạch kiến trúc trên bàn hôm nay."
+  },
+  {
+    "word": "layer",
+    "old_example": "The new insulating material consists of multiple layers of recycled plastic and aluminum foil.",
+    "new_example": "The new insulating material consists of multiple layers today.",
+    "new_translation": "Vật liệu cách nhiệt mới bao gồm nhiều lớp hôm nay."
+  },
+  {
+    "word": "laying",
+    "old_example": "The construction crew is currently laying the pipes for the new underground drainage system.",
+    "new_example": "The construction crew is currently laying the pipes today.",
+    "new_translation": "Đội thi công hiện đang đặt các đường ống hôm nay."
+  },
+  {
+    "word": "layout",
+    "old_example": "The management decided to change the office layout to encourage more open communication and teamwork.",
+    "new_example": "The management decided to change the office layout today.",
+    "new_translation": "Ban quản lý đã quyết định thay đổi cách bố trí văn phòng."
+  },
+  {
+    "word": "layover",
+    "old_example": "We had a six-hour layover in Tokyo, so we decided to leave the airport and explore a few nearby temples before our connecting flight.",
+    "new_example": "We had a six-hour layover in Tokyo before our flight today.",
+    "new_translation": "Chúng tôi đã có sáu giờ nghỉ tại Tokyo trước chuyến bay."
+  },
+  {
+    "word": "lazily",
+    "old_example": "The clouds drifted lazily across the bright blue sky, making it the perfect afternoon for a picnic in the park.",
+    "new_example": "The clouds drifted lazily across the bright blue sky today.",
+    "new_translation": "Những đám mây trôi lững lờ trên bầu trời xanh rực rỡ hôm nay."
+  },
+  {
+    "word": "lead",
+    "old_example": "The marketing director will lead the new initiative to expand our digital presence in the Asian market.",
+    "new_example": "The marketing director will lead the new initiative today.",
+    "new_translation": "Giám đốc tiếp thị sẽ dẫn dắt sáng kiến mới hôm nay."
+  },
+  {
+    "word": "leader",
+    "old_example": "The company is looking for a strong leader who can motivate the sales team to achieve their ambitious annual targets.",
+    "new_example": "The company is looking for a strong leader today.",
+    "new_translation": "Công ty đang tìm kiếm một nhà lãnh đạo mạnh mẽ hôm nay."
+  },
+  {
+    "word": "leaders",
+    "old_example": "Global business leaders gathered in Singapore to discuss the future of artificial intelligence in the workplace.",
+    "new_example": "Global business leaders gathered in Singapore today.",
+    "new_translation": "Các nhà lãnh đạo doanh nghiệp toàn cầu đã tập trung tại Singapore."
+  },
+  {
+    "word": "leadership",
+    "old_example": "Under the CEO's visionary leadership, the firm has transformed into a major player in the global renewable energy market.",
+    "new_example": "Under the CEO's leadership, the firm has transformed today.",
+    "new_translation": "Dưới sự lãnh đạo của CEO, công ty đã chuyển mình hôm nay."
+  },
+  {
+    "word": "leading",
+    "old_example": "Our company is one of the leading providers of cloud computing solutions for small and medium enterprises.",
+    "new_example": "Our company is a leading provider of cloud computing solutions today.",
+    "new_translation": "Công ty chúng tôi là nhà cung cấp hàng đầu về điện toán đám mây."
+  },
+  {
+    "word": "leads",
+    "old_example": "The sales team is currently following up on several promising leads from the recent international trade fair.",
+    "new_example": "The sales team is currently following up on several leads today.",
+    "new_translation": "Đội ngũ bán hàng hiện đang theo sát vài khách tiềm năng hôm nay."
+  },
+  {
+    "word": "leaflet",
+    "old_example": "The health department published a brief leaflet providing information on how to identify and prevent common seasonal illnesses.",
+    "new_example": "The health department published a brief leaflet today.",
+    "new_translation": "Bộ y tế đã xuất bản một tờ rơi ngắn hôm nay."
+  },
+  {
+    "word": "leafy",
+    "old_example": "The corporate headquarters is located in a quiet, leafy suburb just outside the bustling city center.",
+    "new_example": "The corporate headquarters is located in a quiet, leafy suburb today.",
+    "new_translation": "Trụ sở chính của công ty nằm ở một vùng ngoại ô xanh tươi."
+  },
+  {
+    "word": "league",
+    "old_example": "The company's innovative new technology is in a league of its own, far ahead of all its competitors.",
+    "new_example": "The company's new technology is in a league of its own today.",
+    "new_translation": "Công nghệ mới của công ty ở một đẳng cấp riêng hôm nay."
+  },
+  {
+    "word": "leagues",
+    "old_example": "Professional sports leagues generate billions of dollars in revenue through broadcasting rights and sponsorships.",
+    "new_example": "Professional sports leagues generate billions of dollars in revenue today.",
+    "new_translation": "Các giải đấu thể thao chuyên nghiệp tạo ra hàng tỷ đô la hôm nay."
+  },
+  {
+    "word": "leak",
+    "old_example": "We need to fix the leak in the roof before the rainy season starts.",
+    "new_example": "We need to fix the leak in the roof today.",
+    "new_translation": "Chúng ta cần sửa lỗ hổng trên mái nhà hôm nay."
+  },
+  {
+    "word": "leaking",
+    "old_example": "The maintenance team was called immediately to fix a leaking pipe in the staff restroom.",
+    "new_example": "The maintenance team was called to fix a leaking pipe today.",
+    "new_translation": "Đội bảo trì đã được gọi để sửa một đường ống rò rỉ hôm nay."
+  },
+  {
+    "word": "leaky",
+    "old_example": "The hotel guests complained about a leaky faucet in the bathroom that kept them awake all night.",
+    "new_example": "The hotel guests complained about a leaky faucet today.",
+    "new_translation": "Các khách hàng đã phàn nàn về một vòi nước bị rò rỉ hôm nay."
+  },
+  {
+    "word": "lean",
+    "old_example": "To improve efficiency, the company has adopted lean manufacturing principles to reduce waste and optimize production.",
+    "new_example": "The company has adopted lean manufacturing principles today.",
+    "new_translation": "Công ty đã áp dụng các nguyên tắc sản xuất tinh gọn hôm nay."
+  },
+  {
+    "word": "leaned",
+    "old_example": "He leaned against the wall while waiting for the elevator to arrive at the lobby.",
+    "new_example": "He leaned against the wall while waiting today.",
+    "new_translation": "Anh ấy đã dựa vào tường trong khi chờ đợi hôm nay."
+  },
+  {
+    "word": "leaning",
+    "old_example": "In the picture, the woman is leaning over the desk to review the architectural blueprints.",
+    "new_example": "In the picture, the woman is leaning over the desk today.",
+    "new_translation": "Trong bức ảnh, người phụ nữ đang cúi trên bàn hôm nay."
+  },
+  {
+    "word": "learn",
+    "old_example": "Employees are encouraged to attend workshops to learn new skills and stay updated with industry trends.",
+    "new_example": "Employees are encouraged to attend workshops to learn new skills today.",
+    "new_translation": "Nhân viên được khuyến khích dự hội thảo để học kỹ năng mới."
+  },
+  {
+    "word": "learner",
+    "old_example": "The language school offers a variety of courses designed specifically for adult learners at all levels of proficiency.",
+    "new_example": "The language school offers a variety of courses for adult learners today.",
+    "new_translation": "Trường ngôn ngữ cung cấp nhiều khóa học cho học viên hôm nay."
+  },
+  {
+    "word": "learning",
+    "old_example": "Distance learning has become increasingly popular due to its flexibility and accessibility for working professionals.",
+    "new_example": "Distance learning has become increasingly popular today.",
+    "new_translation": "Học từ xa đã trở nên ngày càng phổ biến hôm nay."
+  },
+  {
+    "word": "lease",
+    "old_example": "The company signed a five-year lease for the new office space in the central business district.",
+    "new_example": "The company signed a five-year lease for the new office today.",
+    "new_translation": "Công ty đã ký hợp đồng thuê 5 năm cho văn phòng mới hôm nay."
+  },
+  {
+    "word": "leaseholder",
+    "old_example": "As a leaseholder, he is responsible for the internal maintenance of the apartment, while the freeholder manages the building's exterior.",
+    "new_example": "As a leaseholder, he is responsible for the maintenance of the apartment today.",
+    "new_translation": "Với tư cách là người thuê, anh ấy chịu trách nhiệm bảo trì căn hộ."
+  },
+  {
+    "word": "leasing",
+    "old_example": "Equipment leasing allows businesses to use the latest technology without a large initial capital investment.",
+    "new_example": "Equipment leasing allows businesses to use the latest technology today.",
+    "new_translation": "Việc thuê thiết bị cho phép các doanh nghiệp dùng công nghệ mới."
+  },
+  {
+    "word": "least",
+    "old_example": "Cost is often the least important factor when choosing high-quality safety equipment for the factory.",
+    "new_example": "Cost is often the least important factor when choosing equipment today.",
+    "new_translation": "Chi phí thường là yếu tố ít quan trọng nhất khi chọn thiết bị."
+  },
+  {
+    "word": "leaving",
+    "old_example": "Leaving the office lights on overnight is a waste of energy and against company policy.",
+    "new_example": "Leaving the office lights on overnight is against company policy today.",
+    "new_translation": "Việc để đèn văn phòng bật qua đêm là vi phạm chính sách."
+  },
+  {
+    "word": "lecture",
+    "old_example": "The guest speaker will deliver a lecture on the impact of globalization on local manufacturing.",
+    "new_example": "The guest speaker will deliver a lecture today.",
+    "new_translation": "Diễn giả khách mời sẽ trình bày một bài giảng hôm nay."
+  },
+  {
+    "word": "lecturer",
+    "old_example": "The guest lecturer provided a fascinating insight into the latest developments in artificial intelligence.",
+    "new_example": "The guest lecturer provided a fascinating insight today.",
+    "new_translation": "Giảng viên khách mời đã cung cấp một cái nhìn sâu sắc hôm nay."
+  },
+  {
+    "word": "lectures",
+    "old_example": "The university provides a series of online lectures for students who cannot attend classes in person.",
+    "new_example": "The university provides a series of online lectures today.",
+    "new_translation": "Trường đại học cung cấp một loạt các bài giảng trực tuyến hôm nay."
+  },
+  {
+    "word": "led",
+    "old_example": "The successful marketing campaign led to a significant increase in the company's market share.",
+    "new_example": "The successful marketing campaign led to an increase in market share today.",
+    "new_translation": "Chiến dịch tiếp thị thành công đã dẫn đến tăng thị phần hôm nay."
+  },
+  {
+    "word": "lee",
+    "old_example": "Mr. Lee is the senior consultant responsible for the firm's expansion into the Vietnamese market.",
+    "new_example": "Mr. Lee is the senior consultant today.",
+    "new_translation": "Ông Lee là chuyên viên tư vấn cấp cao hôm nay."
+  },
+  {
+    "word": "left",
+    "old_example": "The printing department is located at the end of the hallway, on the left side.",
+    "new_example": "The printing department is located on the left side today.",
+    "new_translation": "Bộ phận in ấn nằm ở phía bên trái hôm nay."
+  },
+  {
+    "word": "leftover",
+    "old_example": "The committee decided to donate the leftover budget to a local charity at the end of the year.",
+    "new_example": "The committee decided to donate the leftover budget today.",
+    "new_translation": "Ủy ban đã quyết định quyên góp phần ngân sách còn thừa hôm nay."
+  },
+  {
+    "word": "leg",
+    "old_example": "The final leg of the business trip involves visiting the company's regional headquarters in Singapore.",
+    "new_example": "The final leg of the trip involves visiting the headquarters today.",
+    "new_translation": "Chặng cuối cùng của chuyến đi bao gồm việc thăm trụ sở hôm nay."
+  },
+  {
+    "word": "legal",
+    "old_example": "We are seeking legal advice to ensure that the new partnership agreement is fully compliant with international regulations.",
+    "new_example": "We are seeking legal advice for the new agreement today.",
+    "new_translation": "Chúng tôi đang tìm kiếm lời khuyên pháp lý cho thỏa thuận hôm nay."
+  },
+  {
+    "word": "legend",
+    "old_example": "Steve Jobs is considered a legend in the technology industry for his role in co-founding Apple.",
+    "new_example": "Steve Jobs is considered a legend in the technology industry today.",
+    "new_translation": "Steve Jobs được coi là một huyền thoại công nghệ hôm nay."
+  },
+  {
+    "word": "legendary",
+    "old_example": "The athlete's performance in the championship game was legendary, inspiring a new generation of players to pursue their dreams.",
+    "new_example": "The athlete's performance was legendary, inspiring a new generation today.",
+    "new_translation": "Màn trình diễn của vận động viên là huyền thoại hôm nay."
+  },
+  {
+    "word": "legibly",
+    "old_example": "Please print your name and address legibly on the application form to avoid any processing delays.",
+    "new_example": "Please print your name and address legibly on the form today.",
+    "new_translation": "Vui lòng in tên và địa chỉ của bạn một cách rõ ràng hôm nay."
+  },
+  {
+    "word": "legislature",
+    "old_example": "The national legislature debated the new tax proposal for several weeks before finally reaching a consensus and passing the bill.",
+    "new_example": "The national legislature debated the new tax proposal for several weeks today.",
+    "new_translation": "Cơ quan lập pháp đã tranh luận về đề xuất thuế mới hôm nay."
+  },
+  {
+    "word": "legitimacy",
+    "old_example": "Opposition leaders questioned the legitimacy of the recent election results, citing widespread reports of voter intimidation and fraud.",
+    "new_example": "Opposition leaders questioned the legitimacy of the election results today.",
+    "new_translation": "Các nhà lãnh đạo đã đặt câu hỏi về tính hợp pháp hôm nay."
+  },
+  {
+    "word": "legroom",
+    "old_example": "He decided to pay extra for an exit row seat because it offered more legroom, making the long-haul flight much more comfortable.",
+    "new_example": "He decided to pay extra for a seat with more legroom today.",
+    "new_translation": "Anh ấy đã trả thêm tiền cho một chỗ ngồi có nhiều chỗ để chân."
+  }
+]

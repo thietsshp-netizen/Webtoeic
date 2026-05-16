@@ -1,0 +1,603 @@
+
+[
+  {
+    "word": "high-quality",
+    "old_example": "Using high-quality raw materials is crucial for ensuring the durability of the final product.",
+    "new_example": "Using high-quality raw materials is crucial for ensuring product durability.",
+    "new_translation": "Sử dụng nguyên liệu chất lượng cao là quan trọng để đảm bảo độ bền."
+  },
+  {
+    "word": "highest",
+    "old_example": "Customer satisfaction is our highest priority, and we strive to exceed expectations every day.",
+    "new_example": "Customer satisfaction is our highest priority in this company.",
+    "new_translation": "Sự hài lòng của khách hàng là ưu tiên cao nhất của công ty."
+  },
+  {
+    "word": "highlighting",
+    "old_example": "Highlighting key information in the report will make it easier for the executives to scan.",
+    "new_example": "Highlighting key information in the report will make it easier to scan.",
+    "new_translation": "Làm nổi bật thông tin chính trong báo cáo sẽ giúp dễ đọc lướt hơn."
+  },
+  {
+    "word": "hiking",
+    "old_example": "Hiking is a popular recreational activity in this mountainous region during the summer months.",
+    "new_example": "Hiking is a popular recreational activity in this mountainous region.",
+    "new_translation": "Đi bộ đường dài là hoạt động giải trí phổ biến ở vùng núi."
+  },
+  {
+    "word": "hill",
+    "old_example": "The corporate headquarters is situated on a hill with a magnificent view of the city.",
+    "new_example": "The corporate headquarters is situated on a hill today.",
+    "new_translation": "Trụ sở chính của công ty nằm trên một ngọn đồi hôm nay."
+  },
+  {
+    "word": "hilly",
+    "old_example": "The cycling route was quite difficult because it passed through a very hilly region with several steep climbs.",
+    "new_example": "The cycling route was difficult because it passed through a hilly region.",
+    "new_translation": "Tuyến đường đạp xe khó khăn vì nó đi qua vùng đồi núi."
+  },
+  {
+    "word": "him",
+    "old_example": "We sent him an invitation to be the keynote speaker at the annual technology summit.",
+    "new_example": "We sent him an invitation to be the speaker at the summit.",
+    "new_translation": "Chúng tôi đã gửi cho anh ấy lời mời làm diễn giả tại hội nghị."
+  },
+  {
+    "word": "hindrance",
+    "old_example": "The lack of reliable high-speed internet in rural areas is a major hindrance to economic development.",
+    "new_example": "The lack of high-speed internet is a major hindrance to development.",
+    "new_translation": "Việc thiếu internet tốc độ cao là một trở ngại lớn cho phát triển."
+  },
+  {
+    "word": "hint",
+    "old_example": "The detective noticed a faint hint of perfume in the room, which provided an important clue to the suspect's identity.",
+    "new_example": "The detective noticed a hint of perfume in the room today.",
+    "new_translation": "Thám tử nhận thấy một mùi hương nước hoa nhẹ trong phòng hôm nay."
+  },
+  {
+    "word": "hint",
+    "old_example": "He hinted that there might be some major changes coming to the department, but he wouldn't give any specific details.",
+    "new_example": "He hinted that there might be some changes coming to the department.",
+    "new_translation": "Anh ấy đã gợi ý rằng có thể có thay đổi tới bộ phận."
+  },
+  {
+    "word": "historic",
+    "old_example": "The signing of the peace treaty was a historic occasion that changed the course of the nation.",
+    "new_example": "The signing of the peace treaty was a historic occasion today.",
+    "new_translation": "Việc ký kết hiệp định hòa bình là một dịp lịch sử hôm nay."
+  },
+  {
+    "word": "historically",
+    "old_example": "The company has historically invested a large portion of its profits back into research and development.",
+    "new_example": "The company has historically invested its profits into research and development.",
+    "new_translation": "Công ty đã luôn đầu tư lợi nhuận vào nghiên cứu và phát triển."
+  },
+  {
+    "word": "hmm",
+    "old_example": "Hmm, that's an interesting point; I'll have to discuss it further with the rest of the team.",
+    "new_example": "Hmm, that's an interesting point for the team to discuss.",
+    "new_translation": "Hừm, đó là một quan điểm thú vị để cả đội thảo luận."
+  },
+  {
+    "word": "ho",
+    "old_example": "Mr. Ho was appointed as the regional director for the company's Southeast Asian operations.",
+    "new_example": "Mr. Ho was appointed as the regional director for the company.",
+    "new_translation": "Ông Ho đã được bổ nhiệm làm giám đốc khu vực cho công ty."
+  },
+  {
+    "word": "hoa",
+    "old_example": "All residents are required to pay a monthly fee to the HOA for the maintenance of common areas.",
+    "new_example": "All residents are required to pay a monthly fee to the HOA.",
+    "new_translation": "Tất cả cư dân được yêu cầu trả phí hàng tháng cho HOA."
+  },
+  {
+    "word": "hobbies",
+    "old_example": "In the job interview, she mentioned that her hobbies include photography and playing the piano.",
+    "new_example": "She mentioned that her hobbies include photography and playing the piano.",
+    "new_translation": "Cô ấy đề cập rằng sở thích bao gồm nhiếp ảnh và chơi piano."
+  },
+  {
+    "word": "hoffman",
+    "old_example": "Dustin Hoffman is a legendary American actor known for his versatile roles in cinema.",
+    "new_example": "Dustin Hoffman is a legendary actor known for his versatile roles.",
+    "new_translation": "Dustin Hoffman là nam diễn viên huyền thoại với những vai diễn đa dạng."
+  },
+  {
+    "word": "holdup",
+    "old_example": "There was a major holdup on the highway this morning due to a multi-car accident during rush hour.",
+    "new_example": "There was a major holdup on the highway due to an accident.",
+    "new_translation": "Có một sự tắc nghẽn lớn trên xa lộ do một vụ tai nạn."
+  },
+  {
+    "word": "hole",
+    "old_example": "The workers dug a deep hole in the ground to install the new utility pole.",
+    "new_example": "The workers dug a deep hole to install the new pole.",
+    "new_translation": "Các công nhân đã đào một cái hố sâu để lắp đặt cột mới."
+  },
+  {
+    "word": "holes",
+    "old_example": "The inspectors found several small holes in the roof that need to be repaired before the rainy season.",
+    "new_example": "The inspectors found several small holes in the roof today.",
+    "new_translation": "Các thanh tra đã tìm thấy một vài cái lỗ nhỏ trên mái."
+  },
+  {
+    "word": "holistic",
+    "old_example": "The company takes a holistic approach to employee well-being, focusing on both physical and mental health.",
+    "new_example": "The company takes a holistic approach to employee well-being.",
+    "new_translation": "Công ty áp dụng cách tiếp cận toàn diện đối với phúc lợi nhân viên."
+  },
+  {
+    "word": "hollow",
+    "old_example": "The old oak tree had a hollow trunk that provided a home for several owls.",
+    "new_example": "The old oak tree had a hollow trunk.",
+    "new_translation": "Cây sồi già có một thân cây rỗng."
+  },
+  {
+    "word": "homecoming",
+    "old_example": "The university is expecting thousands of alumni to return to campus for the annual homecoming weekend celebrations.",
+    "new_example": "The university is expecting many alumni to return for the celebrations.",
+    "new_translation": "Trường đại học mong đợi nhiều cựu sinh viên trở lại làm lễ."
+  },
+  {
+    "word": "homeless",
+    "old_example": "The local charity provides food and temporary shelter for the homeless in the city.",
+    "new_example": "The local charity provides food and shelter for the homeless.",
+    "new_translation": "Tổ chức từ thiện cung cấp thực phẩm và nơi ở cho người vô gia cư."
+  },
+  {
+    "word": "homemade",
+    "old_example": "The small cafe is famous for its delicious homemade soups and freshly baked bread.",
+    "new_example": "The small cafe is famous for its delicious homemade soups.",
+    "new_translation": "Quán cà phê nhỏ nổi tiếng với các món súp tự làm ngon."
+  },
+  {
+    "word": "homework",
+    "old_example": "Before negotiating the contract, it's important to do your homework and research the other company's financial background.",
+    "new_example": "Before negotiating the contract, it's important to do your homework.",
+    "new_translation": "Trước khi thương lượng hợp đồng, điều quan trọng là phải chuẩn bị kỹ."
+  },
+  {
+    "word": "hone",
+    "old_example": "The young intern is working hard to hone his coding skills during the summer program.",
+    "new_example": "The young intern is working hard to hone his coding skills.",
+    "new_translation": "Người thực tập trẻ đang làm việc chăm chỉ để rèn kỹ năng lập trình."
+  },
+  {
+    "word": "honesty",
+    "old_example": "The company values honesty and integrity above all else when hiring new employees for management positions.",
+    "new_example": "The company values honesty and integrity when hiring new employees.",
+    "new_translation": "Công ty coi trọng sự trung thực và chính trực khi tuyển nhân viên."
+  },
+  {
+    "word": "honorable",
+    "old_example": "She has had a long and honorable career in public service, spanning over thirty years.",
+    "new_example": "She has had a long and honorable career in public service.",
+    "new_translation": "Bà ấy đã có một sự nghiệp lâu dài và đáng kính."
+  },
+  {
+    "word": "honorarium",
+    "old_example": "The guest speaker was given a small honorarium as a token of appreciation for sharing his expertise with the students.",
+    "new_example": "The guest speaker was given a small honorarium today.",
+    "new_translation": "Diễn giả khách mời đã được tặng một khoản thù lao nhỏ hôm nay."
+  },
+  {
+    "word": "honored",
+    "old_example": "The company honored the original warranty even though the product was several years old.",
+    "new_example": "The company honored the original warranty for the old product.",
+    "new_translation": "Công ty đã chấp nhận bảo hành ban đầu cho sản phẩm cũ."
+  },
+  {
+    "word": "honoree",
+    "old_example": "The guest of honor and the other honorees were presented with plaques for their outstanding community service.",
+    "new_example": "The honorees were presented with plaques for their outstanding service.",
+    "new_translation": "Những người được vinh danh đã được trao tặng kỷ niệm chương."
+  },
+  {
+    "word": "honour",
+    "old_example": "It was a great honour to be invited to speak at the international conference.",
+    "new_example": "It was a great honour to be invited to the conference.",
+    "new_translation": "Thật là một vinh dự lớn khi được mời tham gia hội nghị."
+  },
+  {
+    "word": "hook",
+    "old_example": "The marketing team needs a strong hook to attract younger customers to the brand.",
+    "new_example": "The marketing team needs a strong hook to attract younger customers.",
+    "new_translation": "Nhóm tiếp thị cần một điểm hấp dẫn mạnh để thu hút khách trẻ."
+  },
+  {
+    "word": "hooks",
+    "old_example": "The marketing team is looking for a creative hook to grab the attention of the younger demographic.",
+    "new_example": "The marketing team is looking for a creative hook today.",
+    "new_translation": "Đội ngũ tiếp thị đang tìm kiếm một điểm lôi cuốn sáng tạo hôm nay."
+  },
+  {
+    "word": "hoped",
+    "old_example": "The organizers had hoped for a higher turnout, but the bad weather kept many people away.",
+    "new_example": "The organizers had hoped for a higher turnout today.",
+    "new_translation": "Các nhà tổ chức đã hy vọng có nhiều người tham gia hơn hôm nay."
+  },
+  {
+    "word": "hopeless",
+    "old_example": "He felt completely hopeless when he realized he had lost his job and savings.",
+    "new_example": "He felt completely hopeless when he realized he had lost his job.",
+    "new_translation": "Anh ta đã cảm thấy hoàn toàn tuyệt vọng khi mất việc."
+  },
+  {
+    "word": "hopes",
+    "old_example": "The CEO hopes to expand the company's operations into European markets by the end of next year.",
+    "new_example": "The CEO hopes to expand the company's operations next year.",
+    "new_translation": "CEO hy vọng sẽ mở rộng hoạt động của công ty vào năm tới."
+  },
+  {
+    "word": "horizontal",
+    "old_example": "The artist drew several horizontal lines to represent the calm surface of the sea.",
+    "new_example": "The artist drew several horizontal lines to represent the sea.",
+    "new_translation": "Người họa sĩ đã vẽ vài đường nằm ngang để thể hiện biển."
+  },
+  {
+    "word": "horseback",
+    "old_example": "The guided tour through the national park is conducted on horseback to minimize the impact on the environment.",
+    "new_example": "The tour through the park is conducted on horseback today.",
+    "new_translation": "Chuyến tham quan qua công viên được thực hiện trên lưng ngựa."
+  },
+  {
+    "word": "horticultural",
+    "old_example": "The botanical gardens host an annual horticultural show that attracts plant enthusiasts from all over the country.",
+    "new_example": "The gardens host an annual horticultural show for plant enthusiasts.",
+    "new_translation": "Khu vườn tổ chức triển lãm làm vườn hàng năm cho người yêu cây."
+  },
+  {
+    "word": "hose",
+    "old_example": "I used the garden hose to water the plants and wash the car during the warm weekend afternoon.",
+    "new_example": "I used the garden hose to water the plants today.",
+    "new_translation": "Tôi đã sử dụng vòi tưới vườn để tưới cây hôm nay."
+  },
+  {
+    "word": "hose",
+    "old_example": "The firefighters spent hours hosing down the ruins of the building to prevent any small fires from starting again.",
+    "new_example": "The firefighters spent hours hosing down the ruins of the building.",
+    "new_translation": "Các lính cứu hỏa đã dành hàng giờ để xịt nước vào đống đổ nát."
+  },
+  {
+    "word": "hospitable",
+    "old_example": "The local villagers were incredibly hospitable, offering us food and a place to stay when we got lost during our hiking trip.",
+    "new_example": "The local villagers were incredibly hospitable to the visitors today.",
+    "new_translation": "Những người dân làng địa phương vô cùng hiếu khách với khách hôm nay."
+  },
+  {
+    "word": "hospitalize",
+    "old_example": "He had to be hospitalized for several days after suffering a severe allergic reaction to the medication.",
+    "new_example": "He had to be hospitalized for several days today.",
+    "new_translation": "Anh ấy đã phải nhập viện trong vài ngày hôm nay."
+  },
+  {
+    "word": "hostel",
+    "old_example": "The budget travelers stayed at a youth hostel to save money during their trip.",
+    "new_example": "The budget travelers stayed at a youth hostel today.",
+    "new_translation": "Những khách du lịch tiết kiệm đã ở tại một nhà nghỉ thanh niên."
+  },
+  {
+    "word": "hostility",
+    "old_example": "There is a long history of hostility between the two neighboring countries, which has often led to border conflicts.",
+    "new_example": "There is a long history of hostility between the two countries.",
+    "new_translation": "Có một lịch sử thù địch lâu dài giữa hai quốc gia."
+  },
+  {
+    "word": "hot",
+    "old_example": "The latest smartphone model is currently the hot topic of discussion in the tech community.",
+    "new_example": "The latest smartphone model is currently the hot topic of discussion.",
+    "new_translation": "Mẫu điện thoại mới nhất hiện là chủ đề bàn tán sốt dẻo."
+  },
+  {
+    "word": "hotels",
+    "old_example": "Several luxury hotels are being built along the coastline to attract more international tourists.",
+    "new_example": "Several luxury hotels are being built along the coastline today.",
+    "new_translation": "Một vài khách sạn sang trọng đang được xây dựng dọc bờ biển."
+  },
+  {
+    "word": "hotline",
+    "old_example": "The company set up a twenty-four-hour customer service hotline to handle complaints and inquiries.",
+    "new_example": "The company set up a customer service hotline for complaints.",
+    "new_translation": "Công ty thiết lập đường dây nóng khách hàng để xử lý khiếu nại."
+  },
+  {
+    "word": "hours",
+    "old_example": "The museum's operating hours are from 9 AM to 6 PM, Tuesday through Sunday.",
+    "new_example": "The museum's operating hours are from 9 AM to 6 PM.",
+    "new_translation": "Giờ hoạt động của bảo tàng là từ 9 giờ sáng đến 6 giờ chiều."
+  },
+  {
+    "word": "houseplant",
+    "old_example": "She has a variety of beautiful houseplants in her living room, which help to brighten up the space and purify the air.",
+    "new_example": "She has a variety of beautiful houseplants in her living room.",
+    "new_translation": "Cô ấy có nhiều loại cây cảnh trong nhà đẹp trong phòng khách."
+  },
+  {
+    "word": "houseware",
+    "old_example": "The department store has a large section dedicated to houseware, including kitchen gadgets, linens, and cleaning supplies.",
+    "new_example": "The department store has a large section dedicated to houseware.",
+    "new_translation": "Cửa hàng bách hóa có một khu vực lớn dành riêng cho đồ gia dụng."
+  },
+  {
+    "word": "housewares",
+    "old_example": "The department store has a large section dedicated to high-quality housewares and kitchen appliances.",
+    "new_example": "The department store sells high-quality housewares and kitchen appliances.",
+    "new_translation": "Cửa hàng bách hóa bán đồ gia dụng cao cấp và thiết bị nhà bếp."
+  },
+  {
+    "word": "housewarming",
+    "old_example": "We received an invitation to their housewarming party next Saturday, and we're looking for a nice gift to bring.",
+    "new_example": "We received an invitation to their housewarming party next Saturday.",
+    "new_translation": "Chúng tôi nhận lời mời tham gia tiệc tân gia vào thứ Bảy tới."
+  },
+  {
+    "word": "housework",
+    "old_example": "He spent the entire Saturday morning doing housework, including vacuuming the floors and doing the laundry.",
+    "new_example": "He spent the entire Saturday morning doing housework today.",
+    "new_translation": "Anh ấy đã dành cả sáng thứ Bảy để làm việc nhà hôm nay."
+  },
+  {
+    "word": "how's",
+    "old_example": "How's the new project coming along? Are we on track to meet the deadline?",
+    "new_example": "How's the new project coming along today?",
+    "new_translation": "Dự án mới tiến triển thế nào rồi hôm nay?"
+  },
+  {
+    "word": "hubcap",
+    "old_example": "The car was missing a hubcap on the rear left wheel after hitting a deep pothole on the motorway.",
+    "new_example": "The car was missing a hubcap after hitting a pothole.",
+    "new_translation": "Chiếc xe bị mất nắp trục bánh xe sau khi va phải ổ gà."
+  },
+  {
+    "word": "hudson",
+    "old_example": "The Hudson River is a major waterway that flows through eastern New York state.",
+    "new_example": "The Hudson River flows through eastern New York state.",
+    "new_translation": "Sông Hudson chảy qua phía đông tiểu bang New York."
+  },
+  {
+    "word": "hugely",
+    "old_example": "The project was hugely successful, exceeding all expectations and generating millions of dollars in revenue for the company.",
+    "new_example": "The project was hugely successful and generated millions in revenue.",
+    "new_translation": "Dự án đã thành công rực rỡ và tạo ra hàng triệu doanh thu."
+  },
+  {
+    "word": "humane",
+    "old_example": "Animal rights groups are campaigning for more humane treatment of livestock in industrial farming facilities.",
+    "new_example": "Animal rights groups are campaigning for more humane treatment of livestock.",
+    "new_translation": "Các nhóm quyền động vật vận động đối xử nhân đạo với gia súc."
+  },
+  {
+    "word": "humble",
+    "old_example": "Despite his massive wealth, he lives a very humble life in a small town.",
+    "new_example": "Despite his massive wealth, he lives a very humble life.",
+    "new_translation": "Bất chấp sự giàu có khổng lồ, ông ấy sống rất khiêm tốn."
+  },
+  {
+    "word": "humiliate",
+    "old_example": "The coach humiliated the players by shouting at them in front of the spectators.",
+    "new_example": "The coach humiliated the players by shouting at them today.",
+    "new_translation": "Huấn luyện viên đã làm bẽ mặt các cầu thủ bằng cách quát mắng."
+  },
+  {
+    "word": "humor",
+    "old_example": "He has a great sense of humor and always manages to make everyone laugh.",
+    "new_example": "He has a great sense of humor and makes everyone laugh.",
+    "new_translation": "Anh ấy có khiếu hài hước tuyệt vời và làm mọi người cười."
+  },
+  {
+    "word": "humorist",
+    "old_example": "The famous humorist's weekly column in the newspaper provided a much-needed laugh for thousands of readers.",
+    "new_example": "The famous humorist's column provided a laugh for many readers.",
+    "new_translation": "Chuyên mục của người viết truyện cười mang lại tiếng cười cho độc giả."
+  },
+  {
+    "word": "hundredth",
+    "old_example": "The city celebrated its hundredth anniversary with a huge parade and a spectacular fireworks display at the harbor.",
+    "new_example": "The city celebrated its hundredth anniversary with a huge parade.",
+    "new_translation": "Thành phố kỷ niệm một trăm năm bằng một cuộc diễu hành lớn."
+  },
+  {
+    "word": "hung",
+    "old_example": "He hung the framed awards on the wall of his office to showcase his achievements.",
+    "new_example": "He hung the framed awards on the wall of his office.",
+    "new_translation": "Anh ấy đã treo các giải thưởng lên tường văn phòng."
+  },
+  {
+    "word": "hungry",
+    "old_example": "The young entrepreneur is hungry for success and is willing to work long hours to achieve it.",
+    "new_example": "The young entrepreneur is hungry for success in this industry.",
+    "new_translation": "Doanh nhân trẻ đang khao khát thành công trong ngành này."
+  },
+  {
+    "word": "hunter",
+    "old_example": "The experienced hunter spent hours tracking the deer through the dense forest before finally spotting it near the stream.",
+    "new_example": "The experienced hunter spent hours tracking the deer today.",
+    "new_translation": "Người thợ săn kinh nghiệm đã dành hàng giờ theo dấu hươu."
+  },
+  {
+    "word": "huron",
+    "old_example": "Lake Huron is shared by the Canadian province of Ontario and the U.S. state of Michigan.",
+    "new_example": "Lake Huron is shared by Ontario and Michigan today.",
+    "new_translation": "Hồ Huron được chia sẻ bởi Ontario và Michigan."
+  },
+  {
+    "word": "hurtful",
+    "old_example": "Her hurtful comments during the meeting caused a great deal of tension among the team members and led to a heated argument.",
+    "new_example": "Her hurtful comments during the meeting caused tension among the team.",
+    "new_translation": "Những nhận xét gây tổn thương đã gây ra căng thẳng trong nhóm."
+  },
+  {
+    "word": "husbandry",
+    "old_example": "Modern animal husbandry techniques aim to improve the health and productivity of livestock while ensuring their welfare.",
+    "new_example": "Modern animal husbandry techniques aim to improve the health of livestock.",
+    "new_translation": "Các kỹ thuật chăn nuôi hiện đại nhằm cải thiện sức khỏe gia súc."
+  },
+  {
+    "word": "hustle",
+    "old_example": "We had to hustle to get through the crowded airport terminal before our flight.",
+    "new_example": "We had to hustle to get through the airport terminal today.",
+    "new_translation": "Chúng tôi đã phải vội vã để đi qua nhà ga sân bay hôm nay."
+  },
+  {
+    "word": "hydrant",
+    "old_example": "Firefighters quickly connected their heavy hoses to the nearest fire hydrant to extinguish the blaze in the warehouse.",
+    "new_example": "Firefighters connected their hoses to the nearest fire hydrant today.",
+    "new_translation": "Các lính cứu hỏa đã kết nối vòi vào trụ nước chữa cháy."
+  },
+  {
+    "word": "hydrated",
+    "old_example": "It is important to stay hydrated during long flights to prevent fatigue and headaches.",
+    "new_example": "It is important to stay hydrated during long flights today.",
+    "new_translation": "Điều quan trọng là phải giữ đủ nước trong các chuyến bay dài."
+  },
+  {
+    "word": "hydraulic",
+    "old_example": "The heavy machinery uses a powerful hydraulic system to lift the massive steel beams.",
+    "new_example": "The heavy machinery uses a powerful hydraulic system for lifting.",
+    "new_translation": "Máy móc hạng nặng sử dụng hệ thống thủy lực để nâng."
+  },
+  {
+    "word": "hydrogen",
+    "old_example": "Many experts believe that hydrogen will be a key fuel for the future of transportation.",
+    "new_example": "Many experts believe that hydrogen will be a key fuel today.",
+    "new_translation": "Nhiều chuyên gia tin rằng hi-đrô sẽ là nhiên liệu then chốt."
+  },
+  {
+    "word": "hygienic",
+    "old_example": "It is important to maintain hygienic conditions in the kitchen to prevent the spread of harmful bacteria and foodborne illnesses.",
+    "new_example": "It is important to maintain hygienic conditions in the kitchen today.",
+    "new_translation": "Điều quan trọng là phải duy trì điều kiện hợp vệ sinh nhà bếp."
+  },
+  {
+    "word": "i",
+    "old_example": "I will send you the finalized report by the end of the business day.",
+    "new_example": "I will send you the report by the end of the day.",
+    "new_translation": "Tôi sẽ gửi cho bạn bản báo cáo vào cuối ngày."
+  },
+  {
+    "word": "i'll",
+    "old_example": "I'll call you as soon as I have more information regarding the delivery status.",
+    "new_example": "I'll call you as soon as I have more information today.",
+    "new_translation": "Tôi sẽ gọi cho bạn ngay khi tôi có thêm thông tin hôm nay."
+  },
+  {
+    "word": "ice-skating",
+    "old_example": "Ice-skating is a popular winter activity at the public rink in the city center.",
+    "new_example": "Ice-skating is a popular winter activity at the public rink.",
+    "new_translation": "Trượt băng là một hoạt động mùa đông phổ biến tại sân băng."
+  },
+  {
+    "word": "icy",
+    "old_example": "Drivers are advised to exercise caution on the icy roads during the winter months.",
+    "new_example": "Drivers are advised to exercise caution on the icy roads today.",
+    "new_translation": "Các tài xế được khuyên nên cẩn thận trên những con đường băng."
+  },
+  {
+    "word": "identical",
+    "old_example": "The two buildings are almost identical in design, except for the color of the window frames.",
+    "new_example": "The two buildings are almost identical in design today.",
+    "new_translation": "Hai tòa nhà gần như giống hệt nhau về thiết kế hôm nay."
+  },
+  {
+    "word": "identically",
+    "old_example": "The two buildings were designed identically to minimize construction costs and speed up the development process.",
+    "new_example": "The two buildings were designed identically to minimize construction costs today.",
+    "new_translation": "Hai tòa nhà được thiết kế giống hệt nhau để giảm chi phí."
+  },
+  {
+    "word": "identifiable",
+    "old_example": "The species is easily identifiable by the bright blue markings on its wings and its unique whistling song.",
+    "new_example": "The species is easily identifiable by the markings on its wings.",
+    "new_translation": "Loài này dễ dàng nhận dạng được nhờ những vết trên cánh."
+  },
+  {
+    "word": "identity",
+    "old_example": "You need to show a valid form of identity to enter the secure facility.",
+    "new_example": "You need to show a valid identity to enter the facility.",
+    "new_translation": "Bạn cần xuất trình giấy tờ nhận dạng để vào cơ sở."
+  },
+  {
+    "word": "ideology",
+    "old_example": "The politician was criticized for his controversial political ideology regarding international trade and economic policies in the national newspapers recently yesterday.",
+    "new_example": "The politician was criticized for his controversial political ideology recently.",
+    "new_translation": "Chính trị gia bị chỉ trích vì tư tưởng chính trị gây tranh cãi."
+  },
+  {
+    "word": "idiom",
+    "old_example": "The English teacher explained several common international business idioms to the international students during the management training program early yesterday morning.",
+    "new_example": "The teacher explained several common business idioms to the students today.",
+    "new_translation": "Giáo viên đã giải thích vài thành ngữ kinh doanh cho sinh viên hôm nay."
+  },
+  {
+    "word": "idleness",
+    "old_example": "The high rate of youth unemployment in the region has led to widespread idleness and social unrest.",
+    "new_example": "The high rate of unemployment has led to widespread idleness today.",
+    "new_translation": "Tỷ lệ thất nghiệp cao dẫn đến tình trạng nhàn rỗi diện rộng."
+  },
+  {
+    "word": "idly",
+    "old_example": "He sat idly on the porch, watching the cars drive by and enjoying the warm summer breeze.",
+    "new_example": "He sat idly on the porch, watching the cars drive by today.",
+    "new_translation": "Anh ấy ngồi thong thả trên hiên nhà, ngắm những chiếc xe chạy qua."
+  },
+  {
+    "word": "ife",
+    "old_example": "The ancient city of Ife is considered a spiritual home for the Yoruba people.",
+    "new_example": "The ancient city of Ife is a spiritual home for people.",
+    "new_translation": "Thành phố cổ Ife là một quê hương tâm linh cho mọi người."
+  },
+  {
+    "word": "ignorance",
+    "old_example": "The public's general ignorance of the long-term effects of climate change is a major obstacle to environmental reform.",
+    "new_example": "Public ignorance of climate change effects is an obstacle to reform.",
+    "new_translation": "Sự thiếu hiểu biết về biến đổi khí hậu là trở ngại cho cải cách."
+  },
+  {
+    "word": "ill-advised",
+    "old_example": "It was an ill-advised decision to invest all of his savings in such a risky start-up company.",
+    "new_example": "It was an ill-advised decision to invest all of his savings today.",
+    "new_translation": "Đó là một quyết định thiếu khôn ngoan khi đầu tư hết tiết kiệm."
+  },
+  {
+    "word": "illegality",
+    "old_example": "The company was fined heavily for the illegality of its waste disposal practices over several years.",
+    "new_example": "The company was fined heavily for the illegality of its practices today.",
+    "new_translation": "Công ty đã bị phạt nặng vì tính bất hợp pháp của các hoạt động."
+  },
+  {
+    "word": "illness",
+    "old_example": "He had to take a week off from work due to a sudden illness that required bed rest and medication.",
+    "new_example": "He had to take a week off from work due to illness.",
+    "new_translation": "Anh ấy đã phải nghỉ làm một tuần do bị bệnh."
+  },
+  {
+    "word": "illuminate",
+    "old_example": "A series of colorful floodlights were used to illuminate the historic building at night.",
+    "new_example": "Colorful floodlights were used to illuminate the historic building today.",
+    "new_translation": "Đèn pha đầy màu sắc được dùng chiếu sáng tòa nhà lịch sử."
+  },
+  {
+    "word": "illustrator",
+    "old_example": "The children's book features beautiful drawings by a famous illustrator who is known for her vibrant and imaginative style.",
+    "new_example": "The children's book features beautiful drawings by a famous illustrator today.",
+    "new_translation": "Cuốn sách thiếu nhi có những bức vẽ đẹp của họa sĩ nổi tiếng."
+  },
+  {
+    "word": "illustrious",
+    "old_example": "The university is proud of its illustrious alumni who have won several Nobel Prizes.",
+    "new_example": "The university is proud of its illustrious alumni today.",
+    "new_translation": "Trường đại học tự hào về những cựu sinh viên lừng lẫy hôm nay."
+  },
+  {
+    "word": "imagination",
+    "old_example": "The young author's vivid imagination allowed her to create a fascinating and believable fantasy world for her readers.",
+    "new_example": "The author's vivid imagination allowed her to create a fascinating world.",
+    "new_translation": "Trí tưởng tượng sống động giúp tác giả tạo ra thế giới lôi cuốn."
+  },
+  {
+    "word": "imaginative",
+    "old_example": "The architect's imaginative design for the new library incorporates elements of both traditional and modern styles.",
+    "new_example": "The architect's imaginative design for the library incorporates modern styles today.",
+    "new_translation": "Thiết kế sáng tạo của kiến trúc sư cho thư viện mang phong cách hiện đại."
+  }
+]

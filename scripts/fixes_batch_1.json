@@ -1,0 +1,603 @@
+
+[
+  {
+    "word": "abolish",
+    "old_example": "The government decided to abolish the old tax system and introduce a simpler one.",
+    "new_example": "The government decided to abolish the old tax system.",
+    "new_translation": "Chính phủ đã quyết định bãi bỏ hệ thống thuế cũ."
+  },
+  {
+    "word": "abortion",
+    "old_example": "The sudden withdrawal of funding led to the immediate abortion of the deep-sea exploration project.",
+    "new_example": "The lack of funding led to the project's immediate abortion.",
+    "new_translation": "Việc thiếu kinh phí dẫn đến sự chấm dứt dự án ngay lập tức."
+  },
+  {
+    "word": "abrasive",
+    "old_example": "His abrasive management style often managed to upset many of the company's junior employees.",
+    "new_example": "His abrasive style often upset many of the company's junior employees.",
+    "new_translation": "Phong cách thô lỗ của ông ấy thường làm phật lòng nhân viên cấp dưới."
+  },
+  {
+    "word": "abstraction",
+    "old_example": "To many students, higher mathematics seems like a collection of difficult and meaningless abstractions.",
+    "new_example": "To many students, higher mathematics seems like a collection of difficult abstractions.",
+    "new_translation": "Với nhiều sinh viên, toán cao cấp dường như là những ý tưởng trừu tượng."
+  },
+  {
+    "word": "abundance",
+    "old_example": "There is an abundance of natural resources in this region, including oil and timber.",
+    "new_example": "There is an abundance of natural resources in this region.",
+    "new_translation": "Có một sự dồi dào tài nguyên thiên nhiên ở vùng này."
+  },
+  {
+    "word": "acceptability",
+    "old_example": "The social acceptability of the new policy was questioned by many local community leaders.",
+    "new_example": "The social acceptability of the new policy was questioned by local leaders.",
+    "new_translation": "Tính chấp nhận của chính sách mới bị các lãnh đạo địa phương nghi ngờ."
+  },
+  {
+    "word": "accommodative",
+    "old_example": "The central bank maintained an accommodative monetary policy to support economic recovery and job creation.",
+    "new_example": "The central bank maintained an accommodative monetary policy to support growth.",
+    "new_translation": "Ngân hàng trung ương duy trì chính sách tiền tệ nới lỏng để hỗ trợ tăng trưởng."
+  },
+  {
+    "word": "accredit",
+    "old_example": "The institution was finally managed to be accredited by the national educational board yesterday.",
+    "new_example": "The institution was finally accredited by the national educational board yesterday.",
+    "new_translation": "Cơ sở này cuối cùng đã được hội đồng giáo dục quốc gia công nhận."
+  },
+  {
+    "word": "accumulate",
+    "old_example": "If you don't clean your house regularly, dust will quickly accumulate on all the surfaces.",
+    "new_example": "If you don't clean regularly, dust will quickly accumulate on all surfaces.",
+    "new_translation": "Nếu bạn không dọn dẹp thường xuyên, bụi sẽ nhanh chóng tích tụ trên mọi bề mặt."
+  },
+  {
+    "word": "acidity",
+    "old_example": "The expert noted that the high acidity of the wine paired perfectly with seafood.",
+    "new_example": "The high acidity of the wine paired perfectly with seafood.",
+    "new_translation": "Độ axit cao của rượu kết hợp hoàn hảo với hải sản."
+  },
+  {
+    "word": "activities",
+    "old_example": "The company organizes several team-building activities every year to improve collaboration among international employees.",
+    "new_example": "The company organizes annual team-building activities to improve collaboration.",
+    "new_translation": "Công ty tổ chức các hoạt động xây dựng đội ngũ hàng năm để cải thiện sự hợp tác."
+  },
+  {
+    "word": "add",
+    "old_example": "The company plans to add 50 new jobs by the end of the year.",
+    "new_example": "The company plans to add fifty new jobs by year end.",
+    "new_translation": "Công ty dự định thêm năm mươi việc làm mới vào cuối năm."
+  },
+  {
+    "word": "additive",
+    "old_example": "The government has introduced stricter regulations on the use of chemical additives in food products.",
+    "new_example": "The government introduced stricter regulations on chemical additives in food.",
+    "new_translation": "Chính phủ đã đưa ra các quy định nghiêm ngặt hơn về phụ gia thực phẩm."
+  },
+  {
+    "word": "adem",
+    "old_example": "Mr. Adem is the regional manager responsible for our operations in several European countries.",
+    "new_example": "Mr. Adem is the manager responsible for our European operations.",
+    "new_translation": "Ông Adem là quản lý chịu trách nhiệm cho các hoạt động tại Châu Âu."
+  },
+  {
+    "word": "adherence",
+    "old_example": "Strict adherence to safety guidelines is essential to prevent accidents in the chemical laboratory.",
+    "new_example": "Strict adherence to safety guidelines is essential to prevent laboratory accidents.",
+    "new_translation": "Tuân thủ nghiêm ngặt các hướng dẫn an toàn là thiết yếu để ngăn tai nạn."
+  },
+  {
+    "word": "admirable",
+    "old_example": "The marketing team's commitment to delivering high-quality international campaigns within tight deadlines is truly admirable.",
+    "new_example": "The team's commitment to delivering high-quality campaigns is truly admirable.",
+    "new_translation": "Sự cam kết của nhóm trong việc cung cấp các chiến dịch chất lượng thật đáng ngưỡng mộ."
+  },
+  {
+    "word": "admirably",
+    "old_example": "She handled the difficult situation admirably and earned the respect of her entire team.",
+    "new_example": "She handled the difficult situation admirably and earned her team's respect.",
+    "new_translation": "Cô ấy xử lý tình huống khó khăn thật tuyệt vời và nhận được sự tôn trọng."
+  },
+  {
+    "word": "adolescence",
+    "old_example": "Adolescence is a time of major physical and emotional changes for most young individuals.",
+    "new_example": "Adolescence is a time of major physical changes for most young people.",
+    "new_translation": "Tuổi thiếu niên là thời gian thay đổi thể chất lớn đối với hầu hết người trẻ."
+  },
+  {
+    "word": "adorable",
+    "old_example": "Everyone thought the new baby was absolutely adorable in his tiny blue knitted sweater.",
+    "new_example": "Everyone thought the new baby was absolutely adorable in his tiny sweater.",
+    "new_translation": "Mọi người đều nghĩ em bé mới sinh tuyệt đối đáng yêu trong chiếc áo len tí hon."
+  },
+  {
+    "word": "adulthood",
+    "old_example": "Transitioning from adolescence to adulthood can be a challenging period for many young people.",
+    "new_example": "Transitioning to adulthood can be a challenging period for many people.",
+    "new_translation": "Chuyển sang tuổi trưởng thành có thể là một giai đoạn thử thách với nhiều người."
+  },
+  {
+    "word": "advertisements",
+    "old_example": "The company has increased its annual budget for international advertisements in several major financial publications.",
+    "new_example": "The company increased its budget for advertisements in several financial publications.",
+    "new_translation": "Công ty đã tăng ngân sách quảng cáo trên một số ấn phẩm tài chính."
+  },
+  {
+    "word": "advertiser",
+    "old_example": "The magazine attracts a wide range of advertisers from the fashion and beauty industries.",
+    "new_example": "The magazine attracts many advertisers from the fashion and beauty industries.",
+    "new_translation": "Tạp chí thu hút nhiều nhà quảng cáo từ ngành thời trang và làm đẹp."
+  },
+  {
+    "word": "aesthetic",
+    "old_example": "The new office design is not only functional but also has a strong aesthetic appeal.",
+    "new_example": "The new office design is functional and has a strong aesthetic appeal.",
+    "new_translation": "Thiết kế văn phòng mới vừa tiện dụng vừa có tính thẩm mỹ cao."
+  },
+  {
+    "word": "affiliation",
+    "old_example": "The research institute maintains a close affiliation with several leading universities to foster academic collaboration.",
+    "new_example": "The institute maintains a close affiliation with several leading universities.",
+    "new_translation": "Viện nghiên cứu duy trì mối liên kết chặt chẽ với một số trường đại học hàng đầu."
+  },
+  {
+    "word": "affiliations",
+    "old_example": "The university has several international research affiliations with leading technology corporations in Europe and Asia.",
+    "new_example": "The university has research affiliations with leading technology corporations.",
+    "new_translation": "Trường đại học có các mối liên kết nghiên cứu với những tập đoàn công nghệ hàng đầu."
+  },
+  {
+    "word": "affordably",
+    "old_example": "The new restaurant aims to provide high-quality organic meals affordably for the local community.",
+    "new_example": "The restaurant aims to provide organic meals affordably for the community.",
+    "new_translation": "Nhà hàng cung cấp các bữa ăn hữu cơ với giá cả phải chăng cho cộng đồng."
+  },
+  {
+    "word": "agritourism",
+    "old_example": "Agritourism has become a very popular way for city families to experience farm life.",
+    "new_example": "Agritourism is a popular way for families to experience farm life.",
+    "new_translation": "Du lịch nông nghiệp là một cách phổ biến để các gia đình trải nghiệm cuộc sống nông trại."
+  },
+  {
+    "word": "airborne",
+    "old_example": "Health officials warned that the new virus could potentially become airborne in crowded spaces.",
+    "new_example": "Health officials warned that the virus could become airborne in crowded spaces.",
+    "new_translation": "Các quan chức y tế cảnh báo virus có thể lây qua không khí nơi đông người."
+  },
+  {
+    "word": "airfare",
+    "old_example": "A significant portion of the travel budget was spent on round-trip airfare to London.",
+    "new_example": "A significant portion of the budget was spent on airfare to London.",
+    "new_translation": "Một phần đáng kể ngân sách đã được chi cho vé máy bay đi Luân Đôn."
+  },
+  {
+    "word": "airfreight",
+    "old_example": "The company decided to use airfreight to ensure the urgent shipment arrived on time.",
+    "new_example": "The company used airfreight to ensure the urgent shipment arrived on time.",
+    "new_translation": "Công ty dùng vận tải hàng không để đảm bảo hàng khẩn cấp đến đúng giờ."
+  },
+  {
+    "word": "airy",
+    "old_example": "The new living room is very bright and airy, with large windows overlooking the garden.",
+    "new_example": "The new living room is bright and airy with large windows.",
+    "new_translation": "Phòng khách mới sáng sủa và thoáng đãng với những cửa sổ lớn."
+  },
+  {
+    "word": "alden",
+    "old_example": "Mr. Alden is the regional director responsible for our expanding operations in the Asia-Pacific region.",
+    "new_example": "Mr. Alden is the director responsible for our Asia-Pacific operations.",
+    "new_translation": "Ông Alden là giám đốc chịu trách nhiệm cho các hoạt động tại Châu Á - Thái Bình Dương."
+  },
+  {
+    "word": "alignments",
+    "old_example": "Strategic alignments between international corporations are becoming increasingly common in the global technology sector.",
+    "new_example": "Strategic alignments between corporations are becoming common in the technology sector.",
+    "new_translation": "Liên kết chiến lược giữa các tập đoàn đang trở nên phổ biến trong ngành công nghệ."
+  },
+  {
+    "word": "alive",
+    "old_example": "The city center really comes alive at night when the neon lights turn on.",
+    "new_example": "The city center really comes alive at night with neon lights.",
+    "new_translation": "Trung tâm thành phố thực sự trở nên sống động vào ban đêm với ánh đèn neon."
+  },
+  {
+    "word": "allergen",
+    "old_example": "Dust and pollen are common allergens that can cause breathing problems for some people.",
+    "new_example": "Dust and pollen are common allergens that cause breathing problems.",
+    "new_translation": "Bụi và phấn hoa là những chất gây dị ứng phổ biến gây ra các vấn đề hô hấp."
+  },
+  {
+    "word": "allure",
+    "old_example": "The allure of high profits managed to attract many new investors to the startup.",
+    "new_example": "The allure of high profits attracted many new investors to the startup.",
+    "new_translation": "Sức hấp dẫn của lợi nhuận cao đã thu hút nhiều nhà đầu tư mới."
+  },
+  {
+    "word": "almond",
+    "old_example": "Almonds are a healthy snack as they are rich in vitamins, minerals, and healthy fats.",
+    "new_example": "Almonds are a healthy snack rich in vitamins and minerals.",
+    "new_translation": "Hạnh nhân là một món ăn nhẹ lành mạnh giàu vitamin và khoáng chất."
+  },
+  {
+    "word": "aloud",
+    "old_example": "The teacher asked the student to read the short poem aloud to the class.",
+    "new_example": "The teacher asked the student to read the poem aloud.",
+    "new_translation": "Giáo viên yêu cầu học sinh đọc to bài thơ."
+  },
+  {
+    "word": "aluminum",
+    "old_example": "Aluminum is widely used in the aerospace industry because it is both lightweight and strong.",
+    "new_example": "Aluminum is widely used in aerospace because it is lightweight and strong.",
+    "new_translation": "Nhôm được dùng rộng rãi trong hàng không vì nhẹ và bền."
+  },
+  {
+    "word": "alumna",
+    "old_example": "She is a proud alumna of the university and often donates to its scholarship fund.",
+    "new_example": "She is a proud alumna and often donates to the scholarship fund.",
+    "new_translation": "Cô ấy là một cựu sinh viên và thường quyên góp cho quỹ học bổng."
+  },
+  {
+    "word": "alumni",
+    "old_example": "The university's alumni association organizes regular networking events and fundraising campaigns for current students.",
+    "new_example": "The alumni association organizes networking events and fundraising for students.",
+    "new_translation": "Hội cựu sinh viên tổ chức các sự kiện kết nối và gây quỹ cho sinh viên."
+  },
+  {
+    "word": "alumnus",
+    "old_example": "He is a distinguished alumnus of the college and often gives guest lectures there.",
+    "new_example": "He is a distinguished alumnus and often gives guest lectures.",
+    "new_translation": "Ông ấy là một cựu sinh viên kiệt xuất và thường có các bài giảng khách mời."
+  },
+  {
+    "word": "amber",
+    "old_example": "The necklace featured a large piece of ancient amber with an insect trapped inside.",
+    "new_example": "The necklace featured a piece of amber with an insect inside.",
+    "new_translation": "Chiếc vòng cổ có một mảnh hổ phách với một con côn trùng bên trong."
+  },
+  {
+    "word": "ambiance",
+    "old_example": "The soft lighting and jazz music created a very romantic ambiance in the restaurant.",
+    "new_example": "The soft lighting and jazz music created a romantic ambiance.",
+    "new_translation": "Ánh sáng dịu và nhạc jazz đã tạo ra một bầu không khí lãng mạn."
+  },
+  {
+    "word": "ambitious",
+    "old_example": "The company has set an ambitious goal to increase sales by fifty percent this year.",
+    "new_example": "The company set an ambitious goal to increase sales this year.",
+    "new_translation": "Công ty đặt ra một mục tiêu đầy tham vọng là tăng doanh số trong năm nay."
+  },
+  {
+    "word": "amenities",
+    "old_example": "The hotel offers a wide range of amenities, including a swimming pool and a gym.",
+    "new_example": "The hotel offers many amenities, including a pool and a gym.",
+    "new_translation": "Khách sạn cung cấp nhiều tiện nghi, bao gồm hồ bơi và phòng tập."
+  },
+  {
+    "word": "amina",
+    "old_example": "Ms. Amina is the senior human resources manager leading the new international employee recruitment initiative.",
+    "new_example": "Ms. Amina is the manager leading the new recruitment initiative.",
+    "new_translation": "Cô Amina là quản lý đang dẫn dắt sáng kiến tuyển dụng mới."
+  },
+  {
+    "word": "amplify",
+    "old_example": "The company uses social media to amplify its marketing messages and reach a wider audience.",
+    "new_example": "The company uses social media to amplify its marketing messages.",
+    "new_translation": "Công ty sử dụng mạng xã hội để tăng cường các thông điệp tiếp thị."
+  },
+  {
+    "word": "ana",
+    "old_example": "Ana is the regional sales director responsible for managing our international partnerships in Western Europe.",
+    "new_example": "Ana is the director responsible for managing our European partnerships.",
+    "new_translation": "Ana là giám đốc chịu trách nhiệm quản lý các quan hệ đối tác tại Châu Âu."
+  },
+  {
+    "word": "anchor",
+    "old_example": "The captain ordered the crew to drop the anchor as the ship approached the small tropical harbor.",
+    "new_example": "The captain ordered the crew to drop the anchor.",
+    "new_translation": "Thuyền trưởng đã ra lệnh cho thủy thủ đoàn thả neo."
+  },
+  {
+    "word": "angle",
+    "old_example": "The photographer tried several different angles to capture the building in the best possible light.",
+    "new_example": "The photographer tried different angles to capture the building.",
+    "new_translation": "Nhiếp ảnh gia đã thử các góc khác nhau để chụp tòa nhà."
+  },
+  {
+    "word": "annexation",
+    "old_example": "The annexation of the small territory by the neighboring country led to significant international political tension.",
+    "new_example": "The annexation of the territory led to significant political tension.",
+    "new_translation": "Việc sáp nhập lãnh thổ đã dẫn đến căng thẳng chính trị đáng kể."
+  },
+  {
+    "word": "anonymously",
+    "old_example": "The wealthy businessman donated several million dollars to the local charity organization anonymously yesterday afternoon.",
+    "new_example": "The businessman donated several million dollars to charity anonymously yesterday.",
+    "new_translation": "Nhà kinh doanh đã ẩn danh quyên góp vài triệu đô la cho từ thiện hôm qua."
+  },
+  {
+    "word": "answerable",
+    "old_example": "The project manager is directly answerable to the CEO for any delays or issues.",
+    "new_example": "The project manager is directly answerable to the CEO.",
+    "new_translation": "Người quản lý dự án chịu trách nhiệm trực tiếp trước Giám đốc điều hành."
+  },
+  {
+    "word": "antibiotic",
+    "old_example": "The doctor prescribed a course of antibiotics to treat the patient's severe bacterial infection.",
+    "new_example": "The doctor prescribed antibiotics to treat the patient's infection.",
+    "new_translation": "Bác sĩ đã kê đơn kháng sinh để điều trị nhiễm trùng cho bệnh nhân."
+  },
+  {
+    "word": "anticipate",
+    "old_example": "We anticipate that the new product will be very successful in the international market.",
+    "new_example": "We anticipate that the new product will be very successful.",
+    "new_translation": "Chúng tôi dự đoán rằng sản phẩm mới sẽ rất thành công."
+  },
+  {
+    "word": "antivirus",
+    "old_example": "It is essential to update your antivirus software regularly to protect your computer from malware.",
+    "new_example": "It is essential to update your antivirus software regularly.",
+    "new_translation": "Việc cập nhật phần mềm diệt virus thường xuyên là rất thiết yếu."
+  },
+  {
+    "word": "anxious",
+    "old_example": "Parents are often anxious about their children's safety when they start going to school alone.",
+    "new_example": "Parents are often anxious about their children's safety.",
+    "new_translation": "Cha mẹ thường lo lắng về sự an toàn của con cái."
+  },
+  {
+    "word": "anymore",
+    "old_example": "She doesn't work at the bank anymore; she started her own consulting business last year.",
+    "new_example": "She doesn't work at the bank anymore.",
+    "new_translation": "Cô ấy không còn làm việc ở ngân hàng nữa."
+  },
+  {
+    "word": "anyway",
+    "old_example": "It was raining heavily outside, but we decided to go for a walk anyway.",
+    "new_example": "It was raining heavily, but we decided to walk anyway.",
+    "new_translation": "Trời đang mưa to, nhưng dù sao chúng tôi cũng quyết định đi dạo."
+  },
+  {
+    "word": "apartment",
+    "old_example": "He moved into a small apartment in the city center to be closer to work.",
+    "new_example": "He moved into a small apartment to be closer to work.",
+    "new_translation": "Anh ấy đã chuyển vào một căn hộ nhỏ để gần nơi làm việc hơn."
+  },
+  {
+    "word": "apartments",
+    "old_example": "The new residential development includes several luxury apartments with stunning views of the city.",
+    "new_example": "The new development includes several luxury apartments.",
+    "new_translation": "Khu chung cư mới bao gồm một vài căn hộ sang trọng."
+  },
+  {
+    "word": "apathetic",
+    "old_example": "Many voters felt apathetic about the upcoming election due to the lack of clear political choices.",
+    "new_example": "Many voters felt apathetic about the upcoming election.",
+    "new_translation": "Nhiều cử tri cảm thấy thờ ơ với cuộc bầu cử sắp tới."
+  },
+  {
+    "word": "aperture",
+    "old_example": "Adjusting the camera's aperture controls the amount of light that enters the lens during a shot.",
+    "new_example": "Adjusting the camera's aperture controls the amount of light.",
+    "new_translation": "Điều chỉnh khẩu độ máy ảnh giúp kiểm soát lượng ánh sáng."
+  },
+  {
+    "word": "apologetic",
+    "old_example": "The customer service representative was very apologetic about the delay in processing the customer's refund.",
+    "new_example": "The representative was very apologetic about the delay.",
+    "new_translation": "Người đại diện đã rất biết lỗi về sự chậm trễ."
+  },
+  {
+    "word": "apparatus",
+    "old_example": "The laboratory is equipped with the latest scientific apparatus for conducting complex chemical experiments.",
+    "new_example": "The laboratory is equipped with the latest scientific apparatus.",
+    "new_translation": "Phòng thí nghiệm được trang bị các thiết bị khoa học mới nhất."
+  },
+  {
+    "word": "apparent",
+    "old_example": "It became apparent that the new marketing strategy was not achieving the expected international sales targets.",
+    "new_example": "It became apparent that the strategy was not working.",
+    "new_translation": "Rõ ràng là chiến lược này đã không hiệu quả."
+  },
+  {
+    "word": "apparently",
+    "old_example": "Apparently, the new marketing campaign has already led to a significant increase in sales.",
+    "new_example": "Apparently, the campaign has led to a significant increase in sales.",
+    "new_translation": "Hình như chiến dịch đã dẫn đến sự gia tăng đáng kể về doanh số."
+  },
+  {
+    "word": "appearance",
+    "old_example": "The famous author made a rare public appearance at the international book fair yesterday.",
+    "new_example": "The author made a rare public appearance at the book fair.",
+    "new_translation": "Tác giả đã có một lần xuất hiện hiếm hoi tại hội chợ sách."
+  },
+  {
+    "word": "appearances",
+    "old_example": "The politician made several public appearances during the final week of the election campaign.",
+    "new_example": "The politician made several public appearances during the campaign.",
+    "new_translation": "Chính trị gia đã có một vài lần xuất hiện công khai trong chiến dịch."
+  },
+  {
+    "word": "appears",
+    "old_example": "It appears that the international economy is finally beginning to recover from the recession.",
+    "new_example": "It appears that the economy is finally beginning to recover.",
+    "new_translation": "Có vẻ như nền kinh tế cuối cùng cũng bắt đầu phục hồi."
+  },
+  {
+    "word": "appendage",
+    "old_example": "The small robot features a specialized mechanical appendage designed for handling delicate electronic components and materials.",
+    "new_example": "The small robot features a specialized mechanical appendage.",
+    "new_translation": "Robot nhỏ có một bộ phận phụ cơ khí chuyên dụng."
+  },
+  {
+    "word": "appendix",
+    "old_example": "The detailed financial reports can be found in the appendix of the annual document.",
+    "new_example": "Detailed reports can be found in the appendix.",
+    "new_translation": "Các báo cáo chi tiết có thể được tìm thấy trong phụ lục."
+  },
+  {
+    "word": "applause",
+    "old_example": "The speaker received a standing ovation and loud applause after his inspiring keynote address.",
+    "new_example": "The speaker received a standing ovation and loud applause.",
+    "new_translation": "Diễn giả đã nhận được sự tung hô và tràng pháo tay lớn."
+  },
+  {
+    "word": "apples",
+    "old_example": "We bought a large bag of organic apples from the local farmer's market yesterday.",
+    "new_example": "We bought a large bag of organic apples yesterday.",
+    "new_translation": "Hôm qua chúng tôi đã mua một túi táo hữu cơ lớn."
+  },
+  {
+    "word": "applicable",
+    "old_example": "Please fill in the form and attach all the applicable documents for your application.",
+    "new_example": "Please fill in the form and attach all applicable documents.",
+    "new_translation": "Vui lòng điền vào mẫu và đính kèm các tài liệu phù hợp."
+  },
+  {
+    "word": "applicant",
+    "old_example": "The successful applicant will be notified of the decision by the end of next week.",
+    "new_example": "The successful applicant will be notified by next week.",
+    "new_translation": "Ứng viên thành công sẽ được thông báo vào tuần tới."
+  },
+  {
+    "word": "applicants",
+    "old_example": "There were over five hundred applicants for the senior manager position in our department.",
+    "new_example": "There were over five hundred applicants for the position.",
+    "new_translation": "Đã có hơn năm trăm ứng viên cho vị trí này."
+  },
+  {
+    "word": "applies",
+    "old_example": "The new company policy regarding remote work applies to all employees in every department.",
+    "new_example": "The new policy applies to all employees in every department.",
+    "new_translation": "Chính sách mới áp dụng cho mọi nhân viên ở mọi bộ phận."
+  },
+  {
+    "word": "applying",
+    "old_example": "Applying for a visa can be a long and complicated process for some international travelers.",
+    "new_example": "Applying for a visa can be a long and complicated process.",
+    "new_translation": "Xin thị thực có thể là một quá trình dài và phức tạp."
+  },
+  {
+    "word": "appointing",
+    "old_example": "The board is considering appointing a new CEO by the end of the month.",
+    "new_example": "The board is considering appointing a new CEO.",
+    "new_translation": "Hội đồng quản trị đang xem xét việc bổ nhiệm CEO mới."
+  },
+  {
+    "word": "appointment",
+    "old_example": "I have an appointment with the senior financial consultant at three o'clock tomorrow afternoon.",
+    "new_example": "I have an appointment with the consultant at three tomorrow.",
+    "new_translation": "Tôi có một cuộc hẹn với tư vấn viên vào lúc ba giờ mai."
+  },
+  {
+    "word": "appraisal",
+    "old_example": "The manager conducted an annual performance appraisal for every employee in the marketing department.",
+    "new_example": "The manager conducted an annual performance appraisal for every employee.",
+    "new_translation": "Quản lý đã thực hiện đánh giá năng lực hàng năm cho mọi nhân viên."
+  },
+  {
+    "word": "appraise",
+    "old_example": "The expert was hired to appraise the value of the rare international jewelry collection.",
+    "new_example": "The expert was hired to appraise the jewelry collection.",
+    "new_translation": "Chuyên gia đã được thuê để thẩm định bộ sưu tập trang sức."
+  },
+  {
+    "word": "appraiser",
+    "old_example": "The professional appraiser estimated the market value of the estate to be several million dollars.",
+    "new_example": "The appraiser estimated the estate's value at several million dollars.",
+    "new_translation": "Người định giá ước tính giá trị trang điền là vài triệu đô la."
+  },
+  {
+    "word": "appreciable",
+    "old_example": "The new marketing strategy led to an appreciable increase in sales throughout the region.",
+    "new_example": "The new strategy led to an appreciable increase in sales.",
+    "new_translation": "Chiến lược mới đã dẫn đến sự gia tăng đáng kể về doanh số."
+  },
+  {
+    "word": "appreciably",
+    "old_example": "The temperature in the office has dropped appreciably since the air conditioning was repaired.",
+    "new_example": "The temperature dropped appreciably since the air conditioning was repaired.",
+    "new_translation": "Nhiệt độ đã giảm đáng kể kể từ khi điều hòa được sửa."
+  },
+  {
+    "word": "appreciate",
+    "old_example": "We deeply appreciate your help and support during this difficult transition period for our company.",
+    "new_example": "We deeply appreciate your support during this transition period.",
+    "new_translation": "Chúng tôi chân thành cảm kích sự hỗ trợ của bạn trong giai đoạn chuyển đổi."
+  },
+  {
+    "word": "appreciated",
+    "old_example": "Your hard work and dedication to the project are highly appreciated by the entire team.",
+    "new_example": "Your dedication to the project is highly appreciated.",
+    "new_translation": "Sự cống hiến của bạn cho dự án được đánh giá cao."
+  },
+  {
+    "word": "appreciation",
+    "old_example": "The company held a special dinner in appreciation of the employees' hard work this year.",
+    "new_example": "The company held a dinner in appreciation of the employees.",
+    "new_translation": "Công ty đã tổ chức một bữa tối để cảm ơn nhân viên."
+  },
+  {
+    "word": "appreciative",
+    "old_example": "The manager was highly appreciative of the team's hard work during the successful international product launch.",
+    "new_example": "The manager was appreciative of the team's hard work.",
+    "new_translation": "Quản lý đã rất cảm kích trước sự chăm chỉ của nhóm."
+  },
+  {
+    "word": "apprentice",
+    "old_example": "He started his career as an apprentice at a local carpentry workshop ten years ago.",
+    "new_example": "He started his career as an apprentice ten years ago.",
+    "new_translation": "Anh ấy bắt đầu sự nghiệp học việc của mình từ 10 năm trước."
+  },
+  {
+    "word": "approach",
+    "old_example": "The company decided to adopt a more aggressive approach to marketing in the international sector.",
+    "new_example": "The company adopted a more aggressive approach to marketing.",
+    "new_translation": "Công ty đã áp dụng một cách tiếp cận quyết liệt hơn đối với tiếp thị."
+  },
+  {
+    "word": "approaching",
+    "old_example": "The deadline for the international expansion project is approaching rapidly, so we must work faster.",
+    "new_example": "The deadline is approaching rapidly, so we must work faster.",
+    "new_translation": "Thời hạn đang đến gần nhanh chóng, nên chúng ta phải làm nhanh hơn."
+  },
+  {
+    "word": "appropriately",
+    "old_example": "Please ensure that you are dressed appropriately for the formal international business dinner tonight.",
+    "new_example": "Please ensure that you are dressed appropriately for dinner tonight.",
+    "new_translation": "Vui lòng đảm bảo rằng bạn ăn mặc phù hợp cho bữa tối nay."
+  },
+  {
+    "word": "appropriateness",
+    "old_example": "The committee discussed the appropriateness of the new marketing campaign for our target audience.",
+    "new_example": "The committee discussed the appropriateness of the new campaign.",
+    "new_translation": "Ủy ban đã thảo luận về tính phù hợp của chiến dịch mới."
+  },
+  {
+    "word": "approval",
+    "old_example": "The board of directors gave its official approval for the new international expansion plan.",
+    "new_example": "The board gave its official approval for the expansion plan.",
+    "new_translation": "Hội đồng quản trị đã chính thức phê duyệt kế hoạch mở rộng."
+  },
+  {
+    "word": "approvals",
+    "old_example": "The project cannot proceed until we have received all the necessary government approvals and permits.",
+    "new_example": "The project needs all necessary government approvals to proceed.",
+    "new_translation": "Dự án cần có tất cả phê duyệt từ chính phủ để tiến hành."
+  },
+  {
+    "word": "approve",
+    "old_example": "The board of directors is expected to approve the new annual budget this afternoon.",
+    "new_example": "The board is expected to approve the new budget today.",
+    "new_translation": "Hội đồng quản trị dự kiến sẽ phê duyệt ngân sách mới hôm nay."
+  },
+  {
+    "word": "approved",
+    "old_example": "The new international marketing strategy was officially approved by the board of directors yesterday.",
+    "new_example": "The new marketing strategy was officially approved yesterday.",
+    "new_translation": "Chiến lược tiếp thị mới đã chính thức được phê duyệt hôm qua."
+  }
+]

@@ -1,0 +1,15 @@
+- [x] **Giai đoạn 1: Nâng cấp Cơ sở dữ liệu**
+    - [x] Cập nhật `schema.prisma` với các trường SRS mới.
+    - [x] Chạy migration để cập nhật database (đảm bảo không mất dữ liệu).
+- [x] **Giai đoạn 2: Xây dựng Logic Backend**
+    - [x] Tạo API Route `srs-update` để xử lý việc thăng/giáng cấp Hộp.
+    - [ ] Kiểm tra logic tính toán ngày ôn tập (`nextReviewDate`).
+- [ ] **Giai đoạn 3: Cập nhật Giao diện Dashboard**
+    - [ ] Thêm Tab "CẦN ÔN TẬP" vào Header của Sổ tay.
+    - [ ] Cập nhật logic lọc từ vựng theo ngày đến hạn.
+    - [ ] Thiết kế thanh tiến trình 5 vạch trên thẻ từ `DashVocabCard`.
+- [ ] **Giai đoạn 4: Tích hợp vào Game**
+    - [ ] Tích hợp lệnh gọi API ngầm vào kết quả Đúng/Sai của các trò chơi.
+    - [ ] Kiểm tra tính đồng bộ giữa Dashboard và Khóa học.
+- [ ] **Giai đoạn 5: Kiểm tra & Nghiệm thu**
+    - [ ] Chạy thử nghiệm thực tế toàn bộ chu trình SRS.

@@ -1,0 +1,645 @@
+
+[
+  {
+    "word": "men's",
+    "old_example": "The department store has a large section dedicated to men's business attire, including suits and ties.",
+    "new_example": "The department store has a large section for men's business attire today.",
+    "new_translation": "Cửa hàng bách hóa có một khu vực lớn cho trang phục nam giới."
+  },
+  {
+    "word": "mending",
+    "old_example": "She spent the evening doing some mending, fixing the small holes in her favorite wool sweaters.",
+    "new_example": "She spent the evening doing some mending on her favorite sweaters today.",
+    "new_translation": "Cô ấy đã dành cả buổi tối để sửa áo len yêu thích hôm nay."
+  },
+  {
+    "word": "mental",
+    "old_example": "Maintaining good mental health is essential for professional productivity and efficiency in the international department globally recently recently recently recently.",
+    "new_example": "Maintaining good mental health is essential for professional productivity today.",
+    "new_translation": "Duy trì sức khỏe tinh thần tốt là thiết yếu cho năng suất hôm nay."
+  },
+  {
+    "word": "mentee",
+    "old_example": "The new intern was assigned an experienced manager as her mentor, and the mentee met with him weekly to discuss her progress and career goals.",
+    "new_example": "The mentee met with her mentor weekly to discuss her career goals.",
+    "new_translation": "Người được cố vấn gặp người hướng dẫn hằng tuần hôm nay."
+  },
+  {
+    "word": "mention",
+    "old_example": "The manager managed to mention the new international expansion project during the annual departmental meeting yesterday afternoon recently recently recently recently.",
+    "new_example": "The manager mentioned the new international expansion project during the meeting yesterday.",
+    "new_translation": "Quản lý đã đề cập đến dự án mở rộng quốc tế trong cuộc họp."
+  },
+  {
+    "word": "mentioned",
+    "old_example": "The CEO mentioned the successful international product launch during his keynote address at the technology summit yesterday afternoon recently recently recently recently recently.",
+    "new_example": "The CEO mentioned the successful international product launch during his address yesterday.",
+    "new_translation": "CEO đã nhắc đến việc ra mắt sản phẩm quốc tế hôm qua."
+  },
+  {
+    "word": "mentor",
+    "old_example": "The senior marketing director acted as a professional mentor to the new global team members to ensure success.",
+    "new_example": "The senior marketing director acted as a mentor to the team members.",
+    "new_translation": "Giám đốc tiếp thị cấp cao đã làm người cố vấn cho các thành viên."
+  },
+  {
+    "word": "mentoring",
+    "old_example": "The mentoring scheme has been highly effective in reducing turnover rates among junior associates.",
+    "new_example": "The mentoring scheme has been highly effective in reducing turnover rates today.",
+    "new_translation": "Sơ đồ hướng dẫn đã rất hiệu quả trong việc giảm nghỉ việc."
+  },
+  {
+    "word": "mentorship",
+    "old_example": "The company established a formal mentorship program to help junior employees develop their leadership skills and advance their careers within the organization.",
+    "new_example": "The company established a mentorship program to help junior employees today.",
+    "new_translation": "Công ty đã thiết lập một chương trình cố vấn cho nhân viên."
+  },
+  {
+    "word": "menu",
+    "old_example": "The restaurant has updated its menu to include several gluten-free and vegan options for its health-conscious guests.",
+    "new_example": "The restaurant has updated its menu to include vegan options today.",
+    "new_translation": "Nhà hàng đã cập nhật thực đơn để thêm các món chay hôm nay."
+  },
+  {
+    "word": "menus",
+    "old_example": "All the conference catering menus are designed to cater to various dietary requirements and cultural preferences.",
+    "new_example": "All the conference catering menus are designed for various dietary requirements today.",
+    "new_translation": "Tất cả các thực đơn hội nghị được thiết kế cho nhu cầu ăn kiêng."
+  },
+  {
+    "word": "mercer",
+    "old_example": "Mercer is a global consulting firm that specializes in human resources, talent management, and investment.",
+    "new_example": "Mercer is a global consulting firm that specializes in human resources today.",
+    "new_translation": "Mercer là công ty tư vấn toàn cầu chuyên về nhân sự hôm nay."
+  },
+  {
+    "word": "merchandise",
+    "old_example": "The company sells a wide range of high-quality international merchandise in its official museum gift shop.",
+    "new_example": "The company sells a wide range of high-quality international merchandise today.",
+    "new_translation": "Công ty bán đa dạng các mặt hàng quốc tế chất lượng cao hôm nay."
+  },
+  {
+    "word": "merchandise",
+    "old_example": "The store manager is responsible for ensuring that all the merchandise is displayed attractively to encourage sales.",
+    "new_example": "The manager ensures that all merchandise is displayed attractively to encourage sales.",
+    "new_translation": "Quản lý đảm bảo hàng hóa được trưng bày hấp dẫn để bán hàng."
+  },
+  {
+    "word": "merchant",
+    "old_example": "The city center is home to several successful international merchants who trade in high-quality electronic components.",
+    "new_example": "The city center is home to several successful international merchants today.",
+    "new_translation": "Trung tâm thành phố là nơi có nhiều thương gia quốc tế thành đạt."
+  },
+  {
+    "word": "meredith",
+    "old_example": "Meredith has been selected as the lead architect for the new municipal library building project.",
+    "new_example": "Meredith has been selected as the lead architect for the new project.",
+    "new_translation": "Meredith đã được chọn làm kiến trúc sư trưởng cho dự án mới."
+  },
+  {
+    "word": "merely",
+    "old_example": "The manager's decision was merely a suggestion and not an official directive for the international project team.",
+    "new_example": "The manager's decision was merely a suggestion for the international project team.",
+    "new_translation": "Quyết định của quản lý chỉ là một gợi ý cho đội dự án."
+  },
+  {
+    "word": "merge",
+    "old_example": "The two international corporations decided to merge their operations to create a more competitive global technology company globally recently recently recently recently recently recently recently.",
+    "new_example": "The two corporations decided to merge to create a competitive company today.",
+    "new_translation": "Hai tập đoàn quyết định sáp nhập để tạo ra công ty cạnh tranh."
+  },
+  {
+    "word": "merger",
+    "old_example": "The board of directors is discussing the terms of the new international merger agreement between the two corporations.",
+    "new_example": "The board is discussing the terms of the international merger agreement today.",
+    "new_translation": "Hội đồng quản trị đang thảo luận điều khoản thỏa thuận sáp nhập."
+  },
+  {
+    "word": "mesh",
+    "old_example": "The manager's leadership style didn't always mesh well with the company's traditional corporate culture, leading to occasional disagreements.",
+    "new_example": "The manager's leadership style didn't always mesh well with the company culture.",
+    "new_translation": "Phong cách lãnh đạo của quản lý không luôn ăn khớp với văn hóa."
+  },
+  {
+    "word": "message",
+    "old_example": "Please leave a professional message for the manager if she is unavailable to take your international call.",
+    "new_example": "Please leave a professional message for the manager if she is unavailable.",
+    "new_translation": "Vui lòng để lại lời nhắn cho quản lý nếu bà ấy không có mặt."
+  },
+  {
+    "word": "messages",
+    "old_example": "The customer service department receives hundreds of email messages every day from clients worldwide.",
+    "new_example": "The customer service department receives hundreds of email messages every day today.",
+    "new_translation": "Bộ phận dịch vụ khách hàng nhận được hàng trăm tin nhắn hằng ngày."
+  },
+  {
+    "word": "messenger",
+    "old_example": "The international messenger is responsible to deliver every important business document to the regional headquarters office.",
+    "new_example": "The international messenger is responsible to deliver every important document today.",
+    "new_translation": "Người đưa thư quốc tế chịu trách nhiệm chuyển mọi tài liệu hôm nay."
+  },
+  {
+    "word": "messiest",
+    "old_example": "Cleaning up after the construction project was finished turned out to be the messiest part of the entire job.",
+    "new_example": "Cleaning up after the construction project was the messiest part today.",
+    "new_translation": "Dọn dẹp sau dự án xây dựng là phần bừa bộn nhất hôm nay."
+  },
+  {
+    "word": "messily",
+    "old_example": "The children ate their chocolate cake messily, leaving crumbs and dark smears all over the white tablecloth and their own faces.",
+    "new_example": "The children ate their chocolate cake messily on the white tablecloth today.",
+    "new_translation": "Lũ trẻ ăn bánh sô-cô-la một cách bừa bãi trên khăn trải bàn."
+  },
+  {
+    "word": "messy",
+    "old_example": "The divorce was a long and messy process that involved several legal disputes over property and financial assets.",
+    "new_example": "The divorce was a long and messy process with several legal disputes.",
+    "new_translation": "Cuộc ly hôn là quá trình dài và phức tạp với nhiều tranh chấp."
+  },
+  {
+    "word": "metal",
+    "old_example": "The factory uses several high-quality industrial metal components for its daily international production and warehouse operations.",
+    "new_example": "The factory uses high-quality industrial metal components for its daily production today.",
+    "new_translation": "Nhà máy dùng linh kiện kim loại chất lượng cao cho sản xuất."
+  },
+  {
+    "word": "metalworks",
+    "old_example": "The family-owned metalworks has been providing custom iron railings for local construction projects for three generations.",
+    "new_example": "The family-owned metalworks provides custom iron railings for local projects today.",
+    "new_translation": "Xưởng cơ khí của gia đình cung cấp lan can sắt cho dự án."
+  },
+  {
+    "word": "meteorite",
+    "old_example": "Researchers discovered several ancient meteorite fragments buried deep beneath the surface of the regional coastal area recently.",
+    "new_example": "Researchers discovered several ancient meteorite fragments in the coastal area today.",
+    "new_translation": "Các nhà nghiên cứu đã phát hiện vài mảnh thiên thạch tại vùng biển."
+  },
+  {
+    "word": "meteorology",
+    "old_example": "The researchers are studying the principles of international meteorology to improve the accuracy of regional weather forecasts throughout the burgeoning coastal area.",
+    "new_example": "Researchers are studying international meteorology to improve weather forecasts today.",
+    "new_translation": "Các nhà nghiên cứu đang tìm hiểu khí tượng học để cải thiện dự báo."
+  },
+  {
+    "word": "meter",
+    "old_example": "The maintenance crew is scheduled to install a new electricity meter in the international headquarters building early tomorrow morning ahead of schedule today.",
+    "new_example": "The maintenance crew will install a new electricity meter tomorrow morning today.",
+    "new_translation": "Đội bảo trì sẽ lắp công tơ điện mới vào sáng mai hôm nay."
+  },
+  {
+    "word": "method",
+    "old_example": "The company implemented a new innovative method for managing its international marketing and sales operations throughout the burgeoning global technology and research sector.",
+    "new_example": "The company implemented a new method for managing its international marketing operations.",
+    "new_translation": "Công ty triển khai phương pháp mới quản lý hoạt động tiếp thị quốc tế."
+  },
+  {
+    "word": "methodology",
+    "old_example": "The researchers provided a detailed explanation of their international study methodology during the annual technology and marketing project meeting held in the office.",
+    "new_example": "The researchers explained their international study methodology during the meeting today.",
+    "new_translation": "Các nhà nghiên cứu đã giải thích phương pháp nghiên cứu trong cuộc họp."
+  },
+  {
+    "word": "methods",
+    "old_example": "Modern farming methods use satellite technology and data analytics to optimize crop yields and reduce waste.",
+    "new_example": "Modern farming methods use satellite technology to optimize crop yields today.",
+    "new_translation": "Các phương pháp canh tác hiện đại dùng công nghệ vệ tinh hôm nay."
+  },
+  {
+    "word": "meticulously",
+    "old_example": "The manager meticulously reviewed every single clause in the international contract before the final signing ceremony yesterday.",
+    "new_example": "The manager meticulously reviewed every clause in the international contract yesterday.",
+    "new_translation": "Quản lý đã xem xét tỉ mỉ từng điều khoản trong hợp đồng hôm qua."
+  },
+  {
+    "word": "metric",
+    "old_example": "The manager presented several key performance metrics regarding the company's international marketing and sales performance during the annual global technology summit recently.",
+    "new_example": "The manager presented several key performance metrics during the technology summit today.",
+    "new_translation": "Quản lý trình bày chỉ số hiệu suất chính tại hội nghị hôm nay."
+  },
+  {
+    "word": "metric",
+    "old_example": "Most countries in the world have adopted the metric system for weight and distance measurements.",
+    "new_example": "Most countries have adopted the metric system for weight and distance measurements.",
+    "new_translation": "Hầu hết các nước đã áp dụng hệ mét cho các phép đo lường."
+  },
+  {
+    "word": "metro",
+    "old_example": "The metro system in Paris is one of the most efficient ways to travel around the city's main tourist attractions.",
+    "new_example": "The metro system in Paris is an efficient way to travel today.",
+    "new_translation": "Hệ thống tàu điện ngầm ở Paris là cách đi lại hiệu quả hôm nay."
+  },
+  {
+    "word": "metropolitan",
+    "old_example": "The company's new regional headquarters is located in the heart of the metropolitan international business district area throughout the entire burgeoning global market.",
+    "new_example": "The new regional headquarters is located in the heart of the city.",
+    "new_translation": "Trụ sở khu vực mới nằm ở trung tâm của thành phố."
+  },
+  {
+    "word": "mhs",
+    "old_example": "The regional conference on healthcare innovation will be hosted at the MHS conference center next month.",
+    "new_example": "The regional conference will be hosted at the MHS conference center today.",
+    "new_translation": "Hội nghị khu vực sẽ được tổ chức tại trung tâm MHS hôm nay."
+  },
+  {
+    "word": "mia",
+    "old_example": "Mia was promoted to the position of Senior Account Executive after achieving exceptional sales results last quarter.",
+    "new_example": "Mia was promoted to Senior Account Executive after achieving exceptional sales results.",
+    "new_translation": "Mia đã được thăng chức sau khi đạt kết quả bán hàng đặc biệt."
+  },
+  {
+    "word": "micro",
+    "old_example": "The researcher used a high-powered microscope to observe the micro-level changes in the structure of the experimental alloy after heat treatment.",
+    "new_example": "The researcher used a microscope to observe micro-level changes in the structure.",
+    "new_translation": "Nhà nghiên cứu đã sử dụng kính hiển vi để quan sát thay đổi vi mô."
+  },
+  {
+    "word": "microchip",
+    "old_example": "Modern smartphones contain a sophisticated microchip that allows them to process vast amounts of data and perform complex tasks quickly.",
+    "new_example": "Modern smartphones contain a sophisticated microchip that processes data quickly today.",
+    "new_translation": "Điện thoại thông minh hiện đại chứa vi mạch xử lý dữ liệu nhanh."
+  },
+  {
+    "word": "microphone",
+    "old_example": "Please adjust the height of the microphone before starting your presentation so that everyone can hear you clearly.",
+    "new_example": "Please adjust the height of the microphone before starting your presentation today.",
+    "new_translation": "Vui lòng điều chỉnh độ cao của micrô trước khi thuyết trình hôm nay."
+  },
+  {
+    "word": "microphones",
+    "old_example": "The press conference hall is equipped with multiple microphones to accommodate questions from several reporters at once.",
+    "new_example": "The hall is equipped with multiple microphones for the reporters today.",
+    "new_translation": "Phòng được trang bị nhiều micrô cho các phóng viên hôm nay."
+  },
+  {
+    "word": "microscope",
+    "old_example": "The technical team used a high-resolution digital microscope to inspect the innovative electronic components during the international manufacturing and quality control project recently.",
+    "new_example": "The team used a digital microscope to inspect the electronic components today.",
+    "new_translation": "Đội đã dùng kính hiển vi kỹ thuật số để kiểm tra linh kiện hôm nay."
+  },
+  {
+    "word": "microwave",
+    "old_example": "The staff break room includes two microwaves for employees who wish to heat up their lunch.",
+    "new_example": "The staff break room includes two microwaves for employees today.",
+    "new_translation": "Phòng nghỉ của nhân viên bao gồm hai chiếc lò vi sóng hôm nay."
+  },
+  {
+    "word": "mid",
+    "old_example": "The company is scheduled to launch its new international marketing campaign in mid-July to attract more global customers in the burgeoning technology sector today.",
+    "new_example": "The company is scheduled to launch its new marketing campaign in mid-July.",
+    "new_translation": "Công ty dự kiến sẽ phát động chiến dịch tiếp thị mới vào giữa tháng Bảy."
+  },
+  {
+    "word": "midcareer",
+    "old_example": "Many professionals decide to pursue an MBA in their midcareer to gain advanced management skills and increase their chances of reaching executive levels.",
+    "new_example": "Many professionals decide to pursue an MBA in their midcareer today.",
+    "new_translation": "Nhiều chuyên gia quyết định theo đuổi bằng MBA giữa sự nghiệp."
+  },
+  {
+    "word": "midday",
+    "old_example": "The outdoor market is usually busiest at midday when local office workers come out to buy their lunch.",
+    "new_example": "The outdoor market is usually busiest at midday today.",
+    "new_translation": "Chợ ngoài trời thường bận rộn nhất vào giữa trưa hôm nay."
+  },
+  {
+    "word": "middle",
+    "old_example": "The company decided to target the burgeoning middle class in several international markets to increase its global sales and professional reputation throughout the year.",
+    "new_example": "The company decided to target the middle class in international markets today.",
+    "new_translation": "Công ty quyết định nhắm vào tầng lớp trung lưu thị trường quốc tế."
+  },
+  {
+    "word": "midsize",
+    "old_example": "The family decided to rent a midsize SUV for their cross-country road trip to ensure everyone had enough legroom.",
+    "new_example": "The family decided to rent a midsize SUV for their road trip.",
+    "new_translation": "Gia đình đã quyết định thuê một chiếc xe SUV cỡ vừa cho chuyến đi."
+  },
+  {
+    "word": "midtown",
+    "old_example": "The new office building is located in midtown, within walking distance of several popular restaurants, cafes, and subway stations.",
+    "new_example": "The new office building is located in midtown near several restaurants today.",
+    "new_translation": "Tòa nhà văn phòng mới nằm ở khu trung tâm gần các nhà hàng."
+  },
+  {
+    "word": "midwestern",
+    "old_example": "The traditional midwestern hospitality was evident when the local family invited us into their home for a home-cooked dinner during our road trip.",
+    "new_example": "The midwestern hospitality was evident when the family invited us for dinner.",
+    "new_translation": "Sự hiếu khách của miền Trung Tây thể hiện khi gia đình mời cơm."
+  },
+  {
+    "word": "midwifery",
+    "old_example": "After completing her degree in midwifery, she spent several years working in a rural hospital to gain practical experience before joining a private clinic.",
+    "new_example": "She spent several years working in a rural hospital after her degree.",
+    "new_translation": "Cô đã dành vài năm làm việc tại một bệnh viện sau khi tốt nghiệp."
+  },
+  {
+    "word": "midyear",
+    "old_example": "The company scheduled a midyear performance review for all staff to assess progress towards their annual targets and identify any training needs.",
+    "new_example": "The company scheduled a midyear performance review for all staff today.",
+    "new_translation": "Công ty đã lên lịch đánh giá hiệu suất giữa năm cho nhân viên."
+  },
+  {
+    "word": "might",
+    "old_example": "The company's international success is a testament to the hard work of its global marketing team members.",
+    "new_example": "The company's success is a testament to the hard work of the team.",
+    "new_translation": "Thành công của công ty là minh chứng cho sự chăm chỉ của đội ngũ."
+  },
+  {
+    "word": "might've",
+    "old_example": "We might've completed the audit sooner if all the necessary documents had been organized properly.",
+    "new_example": "We might've completed the audit sooner if the documents were organized properly.",
+    "new_translation": "Chúng ta lẽ ra đã có thể xong sớm hơn nếu tài liệu được sắp xếp."
+  },
+  {
+    "word": "migrate",
+    "old_example": "Many bird species migrate thousands of miles each year to find warmer climates and food sources.",
+    "new_example": "Many bird species migrate thousands of miles each year today.",
+    "new_translation": "Nhiều loài chim di cư hàng ngàn dặm mỗi năm hôm nay."
+  },
+  {
+    "word": "migration",
+    "old_example": "The company is managing the migration of its international data to a new secure cloud server.",
+    "new_example": "The company is managing the migration of data to a new server.",
+    "new_translation": "Công ty đang quản lý việc di chuyển dữ liệu sang máy chủ mới."
+  },
+  {
+    "word": "migratory",
+    "old_example": "The wetlands provide a vital resting place for thousands of migratory birds as they travel thousands of miles between their breeding and wintering grounds.",
+    "new_example": "The wetlands provide a vital resting place for thousands of migratory birds.",
+    "new_translation": "Các vùng đất ngập nước cung cấp nơi nghỉ chân cho chim di trú."
+  },
+  {
+    "word": "mike",
+    "old_example": "Mike is the lead technician responsible for maintaining the server farm in our regional data center.",
+    "new_example": "Mike is the lead technician for maintaining the server farm today.",
+    "new_translation": "Mike là kỹ thuật viên trưởng chịu trách nhiệm bảo trì hệ thống hôm nay."
+  },
+  {
+    "word": "mild",
+    "old_example": "The doctor diagnosed him with a mild case of the flu and recommended a few days of rest.",
+    "new_example": "The doctor diagnosed him with a mild case of the flu today.",
+    "new_translation": "Bác sĩ chẩn đoán anh ấy bị cúm nhẹ hôm nay."
+  },
+  {
+    "word": "mildew",
+    "old_example": "The damp basement was filled with a strong smell of mildew, forcing the homeowners to install a high-powered dehumidifier and treat the walls.",
+    "new_example": "The damp basement was filled with a strong smell of mildew today.",
+    "new_translation": "Tầng hầm ẩm ướt đầy mùi nấm mốc nồng nặc hôm nay."
+  },
+  {
+    "word": "mildly",
+    "old_example": "The manager was only mildly surprised by the news of the competitor's new product launch.",
+    "new_example": "The manager was only mildly surprised by the news today.",
+    "new_translation": "Người quản lý chỉ hơi ngạc nhiên trước tin tức hôm nay."
+  },
+  {
+    "word": "mile",
+    "old_example": "The nearest convenience store is about a mile away, so it is easier to walk than drive.",
+    "new_example": "The nearest convenience store is about a mile away today.",
+    "new_translation": "Cửa hàng tiện lợi gần nhất cách đây khoảng một dặm hôm nay."
+  },
+  {
+    "word": "mileage",
+    "old_example": "The used car is in excellent condition despite having relatively high mileage on the clock.",
+    "new_example": "The used car is in excellent condition despite high mileage today.",
+    "new_translation": "Chiếc xe cũ đang trong tình trạng tuyệt vời dù đã đi nhiều dặm."
+  },
+  {
+    "word": "milestone",
+    "old_example": "The successful launch of the first satellite was a significant milestone in the country's space exploration program and national technological history.",
+    "new_example": "The launch of the first satellite was a significant milestone today.",
+    "new_translation": "Việc phóng vệ tinh đầu tiên là một cột mốc quan trọng hôm nay."
+  },
+  {
+    "word": "military",
+    "old_example": "The government announced plans to increase military spending over the next decade to modernize the country's national defense systems.",
+    "new_example": "The government announced plans to increase military spending today.",
+    "new_translation": "Chính phủ đã thông báo kế hoạch tăng chi tiêu quân sự hôm nay."
+  },
+  {
+    "word": "milk",
+    "old_example": "The dairy farm uses automated equipment to milk the cows and process the fresh milk for distribution.",
+    "new_example": "The dairy farm uses automated equipment to milk the cows today.",
+    "new_translation": "Trang trại bò sữa sử dụng thiết bị tự động để vắt sữa hôm nay."
+  },
+  {
+    "word": "milkshake",
+    "old_example": "For dessert, the children each chose a thick chocolate milkshake topped with whipped cream and a bright red cherry.",
+    "new_example": "The children each chose a thick chocolate milkshake for dessert today.",
+    "new_translation": "Mỗi đứa trẻ chọn một ly sữa lắc sô-cô-la cho món tráng miệng."
+  },
+  {
+    "word": "mill",
+    "old_example": "The old textile mill has been converted into a modern apartment complex with loft-style units.",
+    "new_example": "The old textile mill has been converted into a modern apartment complex.",
+    "new_translation": "Nhà máy dệt cũ đã được chuyển đổi thành khu căn hộ hiện đại."
+  },
+  {
+    "word": "miller",
+    "old_example": "Ms. Miller is the senior legal advisor who will be handling the contract negotiations for the merger.",
+    "new_example": "Ms. Miller is the senior legal advisor for the contract negotiations today.",
+    "new_translation": "Bà Miller là chuyên viên tư vấn pháp lý cho việc đàm phán."
+  },
+  {
+    "word": "milliliter",
+    "old_example": "The small travel-sized bottle contains exactly one hundred milliliters of shampoo, which is the maximum amount allowed in carry-on luggage for international flights.",
+    "new_example": "The travel-sized bottle contains exactly one hundred milliliters of shampoo today.",
+    "new_translation": "Chai nhỏ dùng khi đi du lịch chứa chính xác 100 mi-li-lít dầu gội."
+  },
+  {
+    "word": "millilitre",
+    "old_example": "The recipe calls for exactly 250 millilitres of fresh cream to be added to the chocolate mixture.",
+    "new_example": "The recipe calls for 250 millilitres of fresh cream today.",
+    "new_translation": "Công thức yêu cầu cho 250 mi-li-lít kem tươi hôm nay."
+  },
+  {
+    "word": "million",
+    "old_example": "The international corporation's annual profit reached over five million dollars for the first time last financial year.",
+    "new_example": "The corporation's annual profit reached over five million dollars last year.",
+    "new_translation": "Lợi nhuận hàng năm của tập đoàn đạt hơn năm triệu đô la năm qua."
+  },
+  {
+    "word": "millionth",
+    "old_example": "The website celebrated its millionth visitor today with a special giveaway of several high-end tablet computers and smartphones.",
+    "new_example": "The website celebrated its millionth visitor with a special giveaway today.",
+    "new_translation": "Trang web đã chào đón vị khách thứ một triệu bằng quà tặng."
+  },
+  {
+    "word": "mills",
+    "old_example": "Several paper mills along the river have implemented new water recycling systems to reduce pollution.",
+    "new_example": "Several paper mills have implemented new water recycling systems today.",
+    "new_translation": "Một vài nhà máy giấy đã triển khai hệ thống tái chế nước mới."
+  },
+  {
+    "word": "milne",
+    "old_example": "A.A. Milne is beloved by readers worldwide for his charming stories about Christopher Robin and his forest friends.",
+    "new_example": "A.A. Milne is beloved for his stories about Christopher Robin today.",
+    "new_translation": "A.A. Milne được yêu mến nhờ những câu chuyện về Christopher Robin."
+  },
+  {
+    "word": "mind",
+    "old_example": "Would you mind if I borrowed your laptop for a few minutes to check my email?",
+    "new_example": "Would you mind if I borrowed your laptop for a few minutes?",
+    "new_translation": "Bạn có phiền không nếu tôi mượn máy tính xách tay một chút?"
+  },
+  {
+    "word": "mindful",
+    "old_example": "The manager is always mindful of the international safety standards required for the launch of new products.",
+    "new_example": "The manager is always mindful of international safety standards today.",
+    "new_translation": "Quản lý luôn lưu tâm đến các tiêu chuẩn an toàn quốc tế."
+  },
+  {
+    "word": "mine",
+    "old_example": "The company is investing in a new international mining project to source high-quality industrial minerals for production.",
+    "new_example": "The company is investing in a new international mining project today.",
+    "new_translation": "Công ty đang đầu tư vào một dự án khai thác quốc tế mới hôm nay."
+  },
+  {
+    "word": "mineral",
+    "old_example": "Researchers are studying the chemical properties of various industrial minerals discovered during their international expedition to the park.",
+    "new_example": "Researchers are studying the chemical properties of various industrial minerals today.",
+    "new_translation": "Các nhà nghiên cứu đang tìm hiểu đặc tính hóa học khoáng sản."
+  },
+  {
+    "word": "mingle",
+    "old_example": "The conference organizers provided several coffee breaks throughout the day to encourage the participants to mingle and share their research ideas.",
+    "new_example": "The organizers provided several coffee breaks to encourage participants to mingle today.",
+    "new_translation": "Những người tổ chức đã sắp xếp giờ nghỉ để khuyến khích giao lưu."
+  },
+  {
+    "word": "miniature",
+    "old_example": "The museum features an impressive display of miniature steam engines and historic locomotives that have been meticulously handcrafted by skilled model makers.",
+    "new_example": "The museum features an impressive display of miniature steam engines today.",
+    "new_translation": "Bảo tàng có màn trình bày ấn tượng về động cơ hơi nước thu nhỏ."
+  },
+  {
+    "word": "minify",
+    "old_example": "Web developers often minify their CSS and JavaScript files to improve page load times and website performance.",
+    "new_example": "Web developers often minify their files to improve page load times today.",
+    "new_translation": "Các nhà phát triển web thường thu nhỏ tệp để tăng tốc độ tải."
+  },
+  {
+    "word": "minimalist",
+    "old_example": "The architect designed a stunning minimalist office space that focused on clean lines, natural light, and a lack of unnecessary ornamentation.",
+    "new_example": "The architect designed a stunning minimalist office space today.",
+    "new_translation": "Kiến trúc sư đã thiết kế không gian văn phòng tối giản tuyệt đẹp."
+  },
+  {
+    "word": "minimally",
+    "old_example": "The patient's condition has improved minimally over the last week, so the medical team decided to adjust the dosage of her medication.",
+    "new_example": "The patient's condition has improved minimally over the last week today.",
+    "new_translation": "Tình trạng của bệnh nhân đã cải thiện rất ít trong tuần qua."
+  },
+  {
+    "word": "minimize",
+    "old_example": "The new safety regulations are designed to minimize the risk of workplace accidents and ensure a secure environment for all industrial workers.",
+    "new_example": "The new safety regulations are designed to minimize workplace accidents today.",
+    "new_translation": "Các quy định an toàn mới nhằm giảm thiểu tai nạn lao động."
+  },
+  {
+    "word": "minimum",
+    "old_example": "The company aims to keep operational costs to a professional minimum while maintaining high international safety standards.",
+    "new_example": "The company aims to keep operational costs to a minimum today.",
+    "new_translation": "Công ty đặt mục tiêu giữ chi phí vận hành ở mức tối thiểu."
+  },
+  {
+    "word": "miniprojector",
+    "old_example": "He used a portable miniprojector to share his presentation with the clients in the small meeting room.",
+    "new_example": "He used a portable miniprojector to share his presentation today.",
+    "new_translation": "Anh ấy đã sử dụng một chiếc máy chiếu mini cầm tay hôm nay."
+  },
+  {
+    "word": "minister",
+    "old_example": "The international trade minister is scheduled to visit the regional headquarters to discuss new global economic growth.",
+    "new_example": "The international trade minister will visit the regional headquarters today.",
+    "new_translation": "Bộ trưởng thương mại quốc tế sẽ đến thăm trụ sở khu vực."
+  },
+  {
+    "word": "minor",
+    "old_example": "The technical team identified several minor bugs in the international software application that were easily rectified yesterday.",
+    "new_example": "The team identified several minor bugs in the software application yesterday.",
+    "new_translation": "Đội kỹ thuật xác định vài lỗi nhỏ trong ứng dụng phần mềm hôm qua."
+  },
+  {
+    "word": "minor",
+    "old_example": "The aircraft had to return to the airport due to a minor technical issue that was quickly resolved.",
+    "new_example": "The aircraft returned to the airport due to a minor technical issue.",
+    "new_translation": "Máy bay đã phải quay lại sân bay do một vấn đề kỹ thuật nhỏ."
+  },
+  {
+    "word": "mint",
+    "old_example": "The company's new international technology products are in mint condition, ready for the grand global launch event.",
+    "new_example": "The company's new products are in mint condition today.",
+    "new_translation": "Các sản phẩm mới của công ty ở trong tình trạng mới tinh hôm nay."
+  },
+  {
+    "word": "minus",
+    "old_example": "The company's international sales revenue for the last quarter was minus five percent due to the recession.",
+    "new_example": "The company's international sales revenue for last quarter was minus five percent.",
+    "new_translation": "Doanh thu bán hàng quốc tế của công ty quý qua đã giảm 5%."
+  },
+  {
+    "word": "minus",
+    "old_example": "The final price for the item will be the listed price minus the ten percent loyalty discount.",
+    "new_example": "The price will be the listed price minus the discount today.",
+    "new_translation": "Giá sẽ là giá niêm yết trừ đi khoản giảm giá hôm nay."
+  },
+  {
+    "word": "minute",
+    "old_example": "The auditor identified several minute errors in the international marketing and sales report that were easily rectified.",
+    "new_example": "The auditor identified several minute errors in the report today.",
+    "new_translation": "Kiểm toán viên xác định vài lỗi nhỏ trong báo cáo hôm nay."
+  },
+  {
+    "word": "minutes",
+    "old_example": "The international flight is scheduled to depart in exactly fifteen minutes from the city airport terminal tomorrow.",
+    "new_example": "The international flight will depart in fifteen minutes today.",
+    "new_translation": "Chuyến bay quốc tế sẽ khởi hành trong mười lăm phút nữa hôm nay."
+  },
+  {
+    "word": "minutes",
+    "old_example": "The secretary is responsible for taking the minutes and distributing them to all attendees after the session.",
+    "new_example": "The secretary is responsible for taking the minutes today.",
+    "new_translation": "Thư ký chịu trách nhiệm ghi biên bản hôm nay."
+  },
+  {
+    "word": "mira",
+    "old_example": "Mira has been selected to represent the firm at the upcoming international technology symposium in Tokyo.",
+    "new_example": "Mira has been selected to represent the firm in Tokyo today.",
+    "new_translation": "Mira đã được chọn để đại diện cho công ty tại Tokyo hôm nay."
+  },
+  {
+    "word": "mirror",
+    "old_example": "The company's recent success mirrors the overall growth trend in the renewable energy sector.",
+    "new_example": "The company's recent success mirrors the growth in the energy sector today.",
+    "new_translation": "Thành công của công ty phản ánh sự tăng trưởng ngành năng lượng."
+  },
+  {
+    "word": "misbehave",
+    "old_example": "The students were warned that if they continued to misbehave during the field trip, they would be sent back to school immediately.",
+    "new_example": "The students were warned not to misbehave during the trip today.",
+    "new_translation": "Các học sinh đã bị cảnh báo không được cư xử tệ trong chuyến đi."
+  },
+  {
+    "word": "miscellaneous",
+    "old_example": "Please include all miscellaneous international business expenses in your final monthly report to the accounting department.",
+    "new_example": "Please include all miscellaneous business expenses in your report today.",
+    "new_translation": "Vui lòng bao gồm tất cả các chi phí kinh doanh hỗn hợp hôm nay."
+  },
+  {
+    "word": "misconception",
+    "old_example": "The manager issued a statement to resolve the common misconception regarding the company's international financial health.",
+    "new_example": "The manager issued a statement to resolve the common misconception today.",
+    "new_translation": "Quản lý đã đưa ra tuyên bố để giải tỏa quan niệm sai lầm hôm nay."
+  },
+  {
+    "word": "miserable",
+    "old_example": "The traveler felt miserable after his international flight was canceled due to severe weather conditions and technical issues.",
+    "new_example": "The traveler felt miserable after his international flight was canceled today.",
+    "new_translation": "Người du hành thấy khổ sở sau khi chuyến bay quốc tế bị hủy."
+  },
+  {
+    "word": "misfile",
+    "old_example": "The administrative assistant realized that she had accidentally misfiled the important medical documents in the wrong patient folder.",
+    "new_example": "The assistant realized she had misfiled the important documents today.",
+    "new_translation": "Trợ lý nhận ra cô đã cất nhầm các tài liệu quan trọng hôm nay."
+  }
+]

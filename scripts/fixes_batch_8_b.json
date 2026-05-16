@@ -1,0 +1,603 @@
+
+[
+  {
+    "word": "durable",
+    "old_example": "The new regional headquarters was built using high-quality durable materials and innovative green technology globally recently today.",
+    "new_example": "The new headquarters was built using high-quality durable materials.",
+    "new_translation": "Trụ sở mới được xây dựng bằng vật liệu bền chất lượng cao."
+  },
+  {
+    "word": "duration",
+    "old_example": "The manager emphasized the importance of staying focused throughout the entire duration of the international marketing project globally today.",
+    "new_example": "The manager emphasized staying focused throughout the duration of the project.",
+    "new_translation": "Quản lý nhấn mạnh việc tập trung trong suốt thời gian diễn ra dự án."
+  },
+  {
+    "word": "duress",
+    "old_example": "The lawyer argued that the confession was invalid because it had been obtained under duress.",
+    "new_example": "The lawyer argued that the confession was obtained under duress.",
+    "new_translation": "Luật sư lập luận rằng lời thú tội được lấy dưới sự cưỡng ép."
+  },
+  {
+    "word": "during",
+    "old_example": "The international technology summit will take place during the first successful week of December morning morning in Singapore recently today.",
+    "new_example": "The technology summit will take place during the first week of December.",
+    "new_translation": "Hội nghị công nghệ sẽ diễn ra trong tuần đầu tiên của tháng 12."
+  },
+  {
+    "word": "dust",
+    "old_example": "The shelves were covered in a thick layer of dust because the office hadn't been used for months.",
+    "new_example": "The shelves were covered in dust because the office was unused.",
+    "new_translation": "Các kệ sách bị bao phủ bởi bụi vì văn phòng không dùng."
+  },
+  {
+    "word": "duty",
+    "old_example": "The administrative assistant is on duty to assist all the international project team members early every Monday morning today.",
+    "new_example": "The assistant is on duty to help all project team members.",
+    "new_translation": "Trợ lý đang làm nhiệm vụ hỗ trợ mọi thành viên đội dự án."
+  },
+  {
+    "word": "dwelling",
+    "old_example": "The small coastal cottage is a modern dwelling located peacefully amidst the tall pine trees in the national forest recently today.",
+    "new_example": "The small cottage is a modern dwelling located in the forest.",
+    "new_translation": "Ngôi nhà nhỏ là một nơi ở hiện đại nằm trong rừng."
+  },
+  {
+    "word": "dwindle",
+    "old_example": "The company's international sales revenue manage managed to dwindle significantly throughout the entire last financial quarter globally recently.",
+    "new_example": "The company's sales revenue managed to dwindle significantly last quarter.",
+    "new_translation": "Doanh thu bán hàng của công ty đã bị sụt giảm mạnh quý qua."
+  },
+  {
+    "word": "dye",
+    "old_example": "She used a natural indigo dye to color the fabric for her handmade scarves.",
+    "new_example": "She used a natural indigo dye for her handmade scarves.",
+    "new_translation": "Cô ấy đã sử dụng thuốc nhuộm chàm cho những chiếc khăn thủ công."
+  },
+  {
+    "word": "dye",
+    "old_example": "He decided to dye his hair bright blue for the music festival next week.",
+    "new_example": "He decided to dye his hair blue for the music festival.",
+    "new_translation": "Anh ấy đã quyết định nhuộm tóc màu xanh cho lễ hội âm nhạc."
+  },
+  {
+    "word": "dynamic",
+    "old_example": "The company is looking for a dynamic professional with several successful years of experience in international technology and marketing today.",
+    "new_example": "The company is looking for a dynamic professional with years of experience.",
+    "new_translation": "Công ty đang tìm kiếm một chuyên gia năng động có nhiều kinh nghiệm."
+  },
+  {
+    "word": "dynamism",
+    "old_example": "The success of the startup is due to the dynamism and vision of its young founders.",
+    "new_example": "The success of the startup is due to its founders' dynamism.",
+    "new_translation": "Sự thành công của công ty khởi nghiệp là nhờ sự năng động của người sáng lập."
+  },
+  {
+    "word": "e-mail",
+    "old_example": "I will send you the finalized proposal via e-mail by the end of the day.",
+    "new_example": "I will send you the finalized proposal via e-mail today.",
+    "new_translation": "Tôi sẽ gửi cho bạn bản đề xuất đã hoàn tất qua email hôm nay."
+  },
+  {
+    "word": "e-signature",
+    "old_example": "Please provide your e-signature at the bottom of the electronic contract to finalize the agreement.",
+    "new_example": "Please provide your e-signature at the bottom of the contract.",
+    "new_translation": "Vui lòng cung cấp chữ ký điện tử của bạn ở cuối hợp đồng."
+  },
+  {
+    "word": "eagle",
+    "old_example": "The eagle is a symbol of strength and freedom in many cultures around the world because of its powerful flight and keen eyesight.",
+    "new_example": "The eagle is a symbol of strength and freedom in many cultures.",
+    "new_translation": "Đại bàng là biểu tượng của sức mạnh và tự do trong nhiều nền văn hóa."
+  },
+  {
+    "word": "ear",
+    "old_example": "She has a good ear for music and can play almost any song by ear.",
+    "new_example": "She has a good ear for music and can play songs by ear.",
+    "new_translation": "Cô ấy có khả năng thẩm âm tốt và có thể chơi nhạc qua tai."
+  },
+  {
+    "word": "earlier",
+    "old_example": "As mentioned earlier in the meeting, we need to finalize the budget by tomorrow.",
+    "new_example": "As mentioned earlier, we need to finalize the budget by tomorrow.",
+    "new_translation": "Như đã đề cập trước đó, chúng ta cần hoàn tất ngân sách vào mai."
+  },
+  {
+    "word": "earned",
+    "old_example": "She earned a reputation as a tough but fair negotiator during the union talks.",
+    "new_example": "She earned a reputation as a tough but fair negotiator.",
+    "new_translation": "Cô ấy đã giành được danh tiếng là một người đàm phán công bằng."
+  },
+  {
+    "word": "earplug",
+    "old_example": "She always wears earplugs when she travels by plane to block out the noise of the engines and get some sleep during the flight.",
+    "new_example": "She always wears earplugs when she travels by plane to block noise.",
+    "new_translation": "Cô ấy luôn đeo nút tai khi đi máy bay để chặn tiếng ồn."
+  },
+  {
+    "word": "earrings",
+    "old_example": "She wore a pair of elegant gold earrings that matched her beautiful blue silk dress for the banquet.",
+    "new_example": "She wore elegant gold earrings that matched her dress for the banquet.",
+    "new_translation": "Cô ấy đã đeo bông tai vàng thanh lịch hợp với chiếc váy dự tiệc."
+  },
+  {
+    "word": "easel",
+    "old_example": "The artist placed her canvas on a sturdy wooden easel before starting to paint the coastal landscape today.",
+    "new_example": "The artist placed her canvas on an easel before starting to paint.",
+    "new_translation": "Họa sĩ đặt tấm toan lên giá vẽ trước khi bắt đầu vẽ."
+  },
+  {
+    "word": "easier",
+    "old_example": "The new software update makes it much easier to organize large sets of data.",
+    "new_example": "The new update makes it much easier to organize large data sets.",
+    "new_translation": "Bản cập nhật mới giúp việc tổ chức dữ liệu lớn dễ dàng hơn."
+  },
+  {
+    "word": "easiest",
+    "old_example": "The easiest way to reach the city center is by taking the express train.",
+    "new_example": "The easiest way to reach the city center is by express train.",
+    "new_translation": "Cách dễ nhất để đến trung tâm thành phố là đi tàu tốc hành."
+  },
+  {
+    "word": "easily",
+    "old_example": "The problem can be easily solved with the help of the new technical support team.",
+    "new_example": "The problem can be easily solved with the help of technical support.",
+    "new_translation": "Vấn đề này có thể được giải quyết dễ dàng với sự hỗ trợ kỹ thuật."
+  },
+  {
+    "word": "easternmost",
+    "old_example": "The lighthouse is located on the easternmost point of the island, guiding ships safely through the rocky coastal waters at night.",
+    "new_example": "The lighthouse is located on the easternmost point of the island.",
+    "new_translation": "Ngọn hải đăng nằm ở điểm cực đông của hòn đảo."
+  },
+  {
+    "word": "easygoing",
+    "old_example": "The manager has an easygoing personality and maintains a positive working environment for all international employees.",
+    "new_example": "The manager has an easygoing personality and maintains a positive working environment.",
+    "new_translation": "Quản lý có tính cách dễ chịu và duy trì môi trường làm việc tích cực."
+  },
+  {
+    "word": "eaten",
+    "old_example": "Have you already eaten lunch, or would you like to join us for a meal?",
+    "new_example": "Have you already eaten lunch, or would you like to join us?",
+    "new_translation": "Bạn đã ăn trưa chưa, hay bạn có muốn dùng bữa cùng chúng tôi không?"
+  },
+  {
+    "word": "eatery",
+    "old_example": "The downtown area is famous for its many small, family-owned eateries that serve authentic local cuisine.",
+    "new_example": "The downtown area is famous for its small family-owned eateries.",
+    "new_translation": "Khu vực trung tâm nổi tiếng với nhiều quán ăn nhỏ gia đình."
+  },
+  {
+    "word": "ebb",
+    "old_example": "The tide began to ebb, revealing several beautiful shells and small tropical fish along the local coastal shore.",
+    "new_example": "The tide began to ebb, revealing shells along the shore.",
+    "new_translation": "Thủy triều bắt đầu rút, để lộ vài vỏ ốc dọc bờ biển."
+  },
+  {
+    "word": "eccentric",
+    "old_example": "The famous international artist was known for his eccentric behavior and unique creative modern painting and sculpture style.",
+    "new_example": "The famous artist was known for his eccentric behavior and unique style.",
+    "new_translation": "Nghệ sĩ nổi tiếng được biết đến với hành vi lập dị và phong cách độc đáo."
+  },
+  {
+    "word": "echelon",
+    "old_example": "The senior management echelon is responsible for making all the important decisions regarding the company's international expansion strategy.",
+    "new_example": "The senior management echelon is responsible for making important decisions.",
+    "new_translation": "Cấp quản lý cao cấp chịu trách nhiệm đưa ra các quyết định quan trọng."
+  },
+  {
+    "word": "echo",
+    "old_example": "We could hear the echo of our voices reflecting off the walls of the large and empty marble hallway.",
+    "new_example": "We could hear the echo of our voices in the empty hallway.",
+    "new_translation": "Chúng tôi có thể nghe thấy tiếng vang giọng nói trong hành lang trống."
+  },
+  {
+    "word": "economic",
+    "old_example": "The sudden economic recession manage managed to cause significant financial difficulties for several major international technology corporations recently.",
+    "new_example": "The economic recession caused significant financial difficulties for several corporations.",
+    "new_translation": "Cuộc suy thoái kinh tế đã gây ra khó khăn tài chính cho vài tập đoàn."
+  },
+  {
+    "word": "economical",
+    "old_example": "The company is working to find more economical ways to produce its innovative international products without compromising quality.",
+    "new_example": "The company is working to find more economical ways to produce products.",
+    "new_translation": "Công ty đang nỗ lực tìm cách tiết kiệm hơn để sản xuất sản phẩm."
+  },
+  {
+    "word": "economics",
+    "old_example": "She decided to study international economics at university to understand the complex global market and financial trade systems.",
+    "new_example": "She decided to study economics at university to understand the global market.",
+    "new_translation": "Cô quyết định học kinh tế tại đại học để hiểu về thị trường toàn cầu."
+  },
+  {
+    "word": "economize",
+    "old_example": "The manager asked all regional departments to economize on their operational expenses during the current global economic crisis.",
+    "new_example": "The manager asked departments to economize on their operational expenses.",
+    "new_translation": "Quản lý yêu cầu các bộ phận tiết kiệm chi phí vận hành."
+  },
+  {
+    "word": "economy",
+    "old_example": "The government is introducing new policies to boost the national economy and encourage international trade and global investment.",
+    "new_example": "The government is introducing new policies to boost the national economy.",
+    "new_translation": "Chính phủ đang đưa ra các chính sách mới để thúc đẩy kinh tế."
+  },
+  {
+    "word": "ecosystem",
+    "old_example": "International organizations are working to protect the delicate marine ecosystem from the harmful effects of industrial pollution and climate change.",
+    "new_example": "Organizations are working to protect the delicate marine ecosystem from pollution.",
+    "new_translation": "Các tổ chức đang nỗ lực bảo vệ hệ sinh thái biển khỏi ô nhiễm."
+  },
+  {
+    "word": "edible",
+    "old_example": "Many wild mushrooms look similar, so it is important to be absolutely certain of a species' identity before assuming it is edible.",
+    "new_example": "It is important to be certain of a mushroom species before eating it.",
+    "new_translation": "Điều quan trọng là phải chắc chắn về loài nấm trước khi ăn."
+  },
+  {
+    "word": "edifice",
+    "old_example": "The company's new regional headquarters is a grand architectural edifice that features several innovative green and sustainable technologies today.",
+    "new_example": "The new headquarters is a grand edifice featuring sustainable technologies.",
+    "new_translation": "Trụ sở mới là một công trình lớn có các công nghệ bền vững."
+  },
+  {
+    "word": "edit",
+    "old_example": "Please remember to edit the international marketing report carefully to ensure that it is free from grammatical errors today.",
+    "new_example": "Please edit the marketing report carefully to ensure it is error-free.",
+    "new_translation": "Vui lòng chỉnh sửa báo cáo tiếp thị cẩn thận để đảm bảo không lỗi."
+  },
+  {
+    "word": "edition",
+    "old_example": "Please refer to the latest edition of the product catalog for information about our company's innovative new technology products.",
+    "new_example": "Please refer to the latest edition of the product catalog.",
+    "new_translation": "Vui lòng xem ấn bản mới nhất của danh mục sản phẩm."
+  },
+  {
+    "word": "editor",
+    "old_example": "The senior editor manage managed to review and finalize the international marketing and sales report before the final monthly deadline.",
+    "new_example": "The senior editor managed to finalize the marketing report before the deadline.",
+    "new_translation": "Biên tập viên cao cấp đã hoàn thiện báo cáo tiếp thị trước thời hạn."
+  },
+  {
+    "word": "edits",
+    "old_example": "The author made several minor edits to the manuscript before submitting it to the publisher.",
+    "new_example": "The author made several minor edits to the manuscript before submission.",
+    "new_translation": "Tác giả đã thực hiện vài chỉnh sửa nhỏ trước khi nộp."
+  },
+  {
+    "word": "education",
+    "old_example": "The company provides several international education resources and professional development opportunities for all its employees and their families globally.",
+    "new_example": "The company provides education resources and development opportunities for all employees.",
+    "new_translation": "Công ty cung cấp các nguồn lực giáo dục cho nhân viên."
+  },
+  {
+    "word": "educator",
+    "old_example": "She is a skilled international educator who has spent several years teaching English and management in different major global cities.",
+    "new_example": "She is a skilled educator who has taught English for several years.",
+    "new_translation": "Cô là một nhà giáo dục lành nghề đã dạy tiếng Anh nhiều năm."
+  },
+  {
+    "word": "effect",
+    "old_example": "The new marketing strategy manage managed to have a significant positive effect on the company's international sales and revenue recently.",
+    "new_example": "The new marketing strategy had a significant positive effect on sales.",
+    "new_translation": "Chiến lược tiếp thị mới đã tạo ra tác động tích cực lên doanh số."
+  },
+  {
+    "word": "effective",
+    "old_example": "The manager implemented an effective communication strategy to ensure better coordination among all international project team members globally today.",
+    "new_example": "The manager implemented an effective communication strategy for better coordination.",
+    "new_translation": "Quản lý đã triển khai chiến lược liên lạc hiệu quả để điều phối tốt hơn."
+  },
+  {
+    "word": "effectively",
+    "old_example": "The team worked effectively to complete the successful international marketing and development project before the final monthly deadline recently.",
+    "new_example": "The team worked effectively to complete the project before the deadline.",
+    "new_translation": "Cả nhóm đã làm việc hiệu quả để hoàn thành dự án trước thời hạn."
+  },
+  {
+    "word": "effects",
+    "old_example": "The sudden economic recession manage managed to have several detrimental effects on the company's international operations and global investment projects.",
+    "new_example": "The economic recession had several detrimental effects on international operations.",
+    "new_translation": "Cuộc suy thoái kinh tế đã gây ra vài tác động có hại cho hoạt động."
+  },
+  {
+    "word": "efficacy",
+    "old_example": "The researchers demonstrated the high efficacy of the new international medical treatment through several successful clinical trials and experiments.",
+    "new_example": "The researchers demonstrated the high efficacy of the new medical treatment.",
+    "new_translation": "Các nhà nghiên cứu đã chứng minh hiệu quả cao của phương pháp điều trị mới."
+  },
+  {
+    "word": "efficiency",
+    "old_example": "The company is working to improve its overall operational efficiency through new digital technology and automated production systems globally.",
+    "new_example": "The company is working to improve operational efficiency through new technology.",
+    "new_translation": "Công ty đang nỗ lực cải thiện hiệu quả vận hành qua công nghệ mới."
+  },
+  {
+    "word": "efficient",
+    "old_example": "The new automated production system manage managed to be highly efficient and significantly reduced overall manufacturing costs and waste recently.",
+    "new_example": "The new automated production system was highly efficient and reduced costs.",
+    "new_translation": "Hệ thống sản xuất tự động mới rất hiệu quả và đã giúp giảm chi phí."
+  },
+  {
+    "word": "efficiently",
+    "old_example": "The team worked efficiently to resolve the technical issues affecting the company's international software application early yesterday morning recently.",
+    "new_example": "The team worked efficiently to resolve the technical issues.",
+    "new_translation": "Cả nhóm đã làm việc hiệu quả để giải quyết lỗi kỹ thuật."
+  },
+  {
+    "word": "effort",
+    "old_example": "The manager praised the team for their hard work and effort during the successful international marketing and expansion project recently.",
+    "new_example": "The manager praised the team for their hard work and effort.",
+    "new_translation": "Quản lý đã khen ngợi nhóm vì sự chăm chỉ và nỗ lực."
+  },
+  {
+    "word": "effortlessly",
+    "old_example": "The professional dancer moved effortlessly across the stage, performing complex jumps and turns with incredible grace and precision.",
+    "new_example": "The dancer moved effortlessly across the stage with incredible grace.",
+    "new_translation": "Vũ công di chuyển một cách dễ dàng trên sân khấu rất uyển chuyển."
+  },
+  {
+    "word": "efforts",
+    "old_example": "Despite our best efforts, we were unable to secure the contract before the deadline.",
+    "new_example": "Despite our best efforts, we could not secure the contract.",
+    "new_translation": "Mặc dù đã nỗ lực hết mình, chúng tôi đã không thể giành hợp đồng."
+  },
+  {
+    "word": "egress",
+    "old_example": "Please ensure that every emergency egress in the office building is clearly marked and kept free from any unnecessary clutter today.",
+    "new_example": "Ensure that every emergency egress is clearly marked and kept clear.",
+    "new_translation": "Hãy đảm bảo mọi lối thoát hiểm được đánh dấu rõ và để trống."
+  },
+  {
+    "word": "eisner",
+    "old_example": "Michael Eisner led the Walt Disney Company through a period of significant growth and transformation.",
+    "new_example": "Michael Eisner led the company through a period of significant growth.",
+    "new_translation": "Michael Eisner đã dẫn dắt công ty qua giai đoạn tăng trưởng mạnh."
+  },
+  {
+    "word": "eject",
+    "old_example": "The security guards manage managed to eject the unauthorized intruder from the company's secure international data center building yesterday afternoon.",
+    "new_example": "The security guards managed to eject the intruder from the building.",
+    "new_translation": "Bảo vệ đã đuổi được kẻ xâm nhập khỏi tòa nhà."
+  },
+  {
+    "word": "elaborate",
+    "old_example": "Please elaborate on the innovative features of our new international product line during the presentation at the trade fair tomorrow.",
+    "new_example": "Please elaborate on the features of our new product line tomorrow.",
+    "new_translation": "Vui lòng giải thích chi tiết các tính năng của dòng sản phẩm mới."
+  },
+  {
+    "word": "elapse",
+    "old_example": "Several successful months manage managed to elapse before the company officially decided to launch its new international marketing campaign globally.",
+    "new_example": "Several months managed to elapse before the company launched the campaign.",
+    "new_translation": "Vài tháng đã trôi qua trước khi công ty tung ra chiến dịch."
+  },
+  {
+    "word": "elastic",
+    "old_example": "The new synthetic material is highly elastic and can be used for several different international manufacturing and industrial applications globally.",
+    "new_example": "The new synthetic material is highly elastic and has many applications.",
+    "new_translation": "Vật liệu tổng hợp mới có độ đàn hồi cao và có nhiều ứng dụng."
+  },
+  {
+    "word": "elated",
+    "old_example": "The team felt elated after hearing the news that the board of directors finally approved the international expansion project today.",
+    "new_example": "The team felt elated after the board approved the project.",
+    "new_translation": "Cả nhóm thấy phấn khởi sau khi hội đồng phê duyệt dự án."
+  },
+  {
+    "word": "elation",
+    "old_example": "A wave of elation swept through the stadium as the home team scored the winning goal in the final seconds of the championship match.",
+    "new_example": "A wave of elation swept through the stadium as the team scored.",
+    "new_translation": "Sự hân hoan đã tràn khắp sân vận động khi đội ghi bàn."
+  },
+  {
+    "word": "elderly",
+    "old_example": "The local community center offers specialized fitness and social programs designed specifically for the elderly residents of the neighborhood.",
+    "new_example": "The center offers fitness programs designed specifically for elderly residents.",
+    "new_translation": "Trung tâm cung cấp các chương trình thể dục thiết kế cho người già."
+  },
+  {
+    "word": "elect",
+    "old_example": "The shareholders will meet early next month to elect the new members of the board of directors for our company.",
+    "new_example": "The shareholders will meet next month to elect new board members.",
+    "new_translation": "Các cổ đông sẽ họp vào tháng tới để bầu ra thành viên hội đồng mới."
+  },
+  {
+    "word": "elected",
+    "old_example": "The new CEO was elected by the board of directors after a long and thorough international recruitment and selection process recently.",
+    "new_example": "The new CEO was elected by the board after a thorough process.",
+    "new_translation": "CEO mới đã được bầu bởi hội đồng quản trị sau quá trình kỹ lưỡng."
+  },
+  {
+    "word": "election",
+    "old_example": "The company is preparing for the annual board election which will be held at the city center headquarters next Friday morning.",
+    "new_example": "The company is preparing for the annual board election next Friday.",
+    "new_translation": "Công ty đang chuẩn bị cho cuộc bầu cử hội đồng vào thứ Sáu tới."
+  },
+  {
+    "word": "electric",
+    "old_example": "The company plans to launch a new line of innovative electric vehicles for the international market early next calendar year globally.",
+    "new_example": "The company plans to launch a new line of electric vehicles.",
+    "new_translation": "Công ty kế hoạch ra mắt dòng xe điện mới."
+  },
+  {
+    "word": "electrical",
+    "old_example": "The maintenance crew is scheduled to service every electrical panel in the international conference hall early tomorrow morning morning ahead of schedule.",
+    "new_example": "The crew is scheduled to service every electrical panel tomorrow morning.",
+    "new_translation": "Đội bảo trì được lên lịch bảo dưỡng mọi bảng điện vào sáng mai."
+  },
+  {
+    "word": "electrician",
+    "old_example": "The skilled professional electrician was hired to repair the damaged wiring in the company's new regional headquarters building yesterday afternoon recently.",
+    "new_example": "The electrician was hired to repair the damaged wiring in the building.",
+    "new_translation": "Thợ điện được thuê để sửa đường dây bị hỏng trong tòa nhà."
+  },
+  {
+    "word": "electricity",
+    "old_example": "The factory uses a large amount of electricity for its daily international production and warehouse operations throughout the entire calendar year.",
+    "new_example": "The factory uses a large amount of electricity for its daily operations.",
+    "new_translation": "Nhà máy sử dụng lượng điện lớn cho hoạt động hằng ngày."
+  },
+  {
+    "word": "electrification",
+    "old_example": "The rapid electrification of the rural areas has brought significant improvements in healthcare, education, and economic opportunities for the local residents.",
+    "new_example": "The electrification of rural areas has brought significant improvements to residents.",
+    "new_translation": "Sự điện khí hóa nông thôn đã mang lại cải thiện cho cư dân."
+  },
+  {
+    "word": "electrify",
+    "old_example": "The government plans to electrify the entire rural region by the end of the decade.",
+    "new_example": "The government plans to electrify the entire region by 2030.",
+    "new_translation": "Chính phủ có kế hoạch điện khí hóa toàn bộ khu vực trước 2030."
+  },
+  {
+    "word": "electronic",
+    "old_example": "The store offers a wide variety of high-quality and affordable international electronic devices for all its global customers starting from today.",
+    "new_example": "The store offers a variety of affordable electronic devices.",
+    "new_translation": "Cửa hàng cung cấp nhiều loại thiết bị điện tử giá rẻ."
+  },
+  {
+    "word": "electronically",
+    "old_example": "Please remember to submit your international project application electronically through the company's official website before the final monthly deadline today.",
+    "new_example": "Please submit your project application electronically through the official website.",
+    "new_translation": "Vui lòng nộp đơn đăng ký dự án trực tuyến qua trang web."
+  },
+  {
+    "word": "electronics",
+    "old_example": "She decided to study industrial electronics at university because of her interest in modern technology and innovative computer engineering science.",
+    "new_example": "She decided to study electronics at university due to her interest.",
+    "new_translation": "Cô quyết định học điện tử tại đại học vì sự quan tâm của mình."
+  },
+  {
+    "word": "elegance",
+    "old_example": "The luxury hotel room features several beautiful architectural elements that reflect its unique style and modern international elegance today.",
+    "new_example": "The luxury hotel room reflects unique style and modern elegance.",
+    "new_translation": "Phòng khách sạn sang trọng phản ánh phong cách và sự trang nhã."
+  },
+  {
+    "word": "elegant",
+    "old_example": "She wore an elegant silk dress and expensive international jewelry for the grand corporate banquet held at the luxury hotel tonight.",
+    "new_example": "She wore an elegant silk dress for the grand corporate banquet.",
+    "new_translation": "Cô đã mặc một chiếc váy lụa thanh lịch cho bữa tiệc công ty."
+  },
+  {
+    "word": "element",
+    "old_example": "A key element of our company's future success is its ability to innovate and compete effectively in the international technology sector.",
+    "new_example": "A key element of success is the ability to innovate and compete.",
+    "new_translation": "Yếu tố then chốt cho thành công là khả năng sáng tạo và cạnh tranh."
+  },
+  {
+    "word": "elementary",
+    "old_example": "The training program provides several elementary lessons regarding international marketing and sales strategies for all new employees joining our company.",
+    "new_example": "The program provides elementary lessons regarding marketing and sales strategies.",
+    "new_translation": "Chương trình cung cấp các bài học sơ cấp về chiến lược tiếp thị."
+  },
+  {
+    "word": "elements",
+    "old_example": "The ancient wooden structure began to decay after several successful decades of exposure to the natural elements and harsh weather conditions.",
+    "new_example": "The wooden structure began to decay after exposure to the elements.",
+    "new_translation": "Cấu trúc gỗ bắt đầu bị mục nát sau khi tiếp xúc với thiên nhiên."
+  },
+  {
+    "word": "elevate",
+    "old_example": "The success of the new international marketing campaign manage managed to elevate the company's brand awareness throughout the global retail sector.",
+    "new_example": "The success of the campaign managed to elevate the company's brand awareness.",
+    "new_translation": "Thành công của chiến dịch đã giúp nâng cao nhận diện thương hiệu."
+  },
+  {
+    "word": "elevated",
+    "old_example": "The construction of the elevated railway system has significantly reduced traffic congestion in the city center.",
+    "new_example": "The construction of the elevated railway system reduced traffic congestion.",
+    "new_translation": "Việc xây dựng hệ thống đường sắt trên cao đã làm giảm tắc đường."
+  },
+  {
+    "word": "elevation",
+    "old_example": "The surveyors measured the elevation of the new regional headquarters building site using a modern international laser measurement tool today.",
+    "new_example": "The surveyors measured the elevation of the site using a laser tool.",
+    "new_translation": "Những người khảo sát đã đo độ cao của công trường bằng công cụ laser."
+  },
+  {
+    "word": "elevator",
+    "old_example": "Please wait for the elevator in the lobby while the maintenance crew finishes their regular inspection of the office building today.",
+    "new_example": "Please wait for the elevator while the crew finishes the inspection.",
+    "new_translation": "Vui lòng đợi thang máy trong khi đội hoàn tất việc kiểm tra."
+  },
+  {
+    "word": "eligible",
+    "old_example": "You will be eligible for a professional promotion after you successfully complete the international management and marketing training program recently.",
+    "new_example": "You will be eligible for promotion after you complete the training program.",
+    "new_translation": "Bạn sẽ đủ điều kiện thăng tiến sau khi hoàn thành chương trình đào tạo."
+  },
+  {
+    "word": "eliminate",
+    "old_example": "The company is working hard to eliminate all technical defects and improve the overall quality of its international technology products today.",
+    "new_example": "The company is working to eliminate all technical defects.",
+    "new_translation": "Công ty đang nỗ lực loại bỏ mọi lỗi kỹ thuật."
+  },
+  {
+    "word": "elite",
+    "old_example": "The luxury international hotel has an elite clientele that includes several famous global celebrities and wealthy international businesspeople annually today.",
+    "new_example": "The luxury hotel has an elite clientele of famous celebrities.",
+    "new_translation": "Khách sạn sang trọng có lượng khách hàng thượng lưu là các ngôi sao."
+  },
+  {
+    "word": "elliptical",
+    "old_example": "The architect decided to use a unique elliptical design for the company's new regional headquarters building in the busy city center area.",
+    "new_example": "The architect used a unique elliptical design for the new building.",
+    "new_translation": "Kiến trúc sư dùng thiết kế hình elip độc đáo cho tòa nhà mới."
+  },
+  {
+    "word": "elm",
+    "old_example": "The park is famous for its centuries-old elm trees that provide shade to visitors.",
+    "new_example": "The park is famous for its old elm trees.",
+    "new_translation": "Công viên nổi tiếng với những cây đu cổ thụ."
+  },
+  {
+    "word": "eloquent",
+    "old_example": "The CEO gave an eloquent speech regarding the company's future international growth and expansion project during the annual shareholders' meeting yesterday.",
+    "new_example": "The CEO gave an eloquent speech during the annual shareholders' meeting.",
+    "new_translation": "CEO đã có bài phát biểu hùng hồn tại đại hội cổ đông."
+  },
+  {
+    "word": "elusive",
+    "old_example": "The cause of the sudden technical failure remained elusive until the software engineers conducted a thorough and intensive system audit yesterday morning.",
+    "new_example": "The cause of the technical failure remained elusive for several days.",
+    "new_translation": "Nguyên nhân của lỗi kỹ thuật vẫn khó xác định trong vài ngày."
+  },
+  {
+    "word": "embark",
+    "old_example": "The company is about to embark on a major expansion plan into the European market.",
+    "new_example": "The company is about to embark on a major expansion plan.",
+    "new_translation": "Công ty sắp sửa bắt đầu một kế hoạch mở rộng lớn."
+  },
+  {
+    "word": "embarrassment",
+    "old_example": "To avoid any potential embarrassment during the formal dinner, she spent some time studying the traditional etiquette of the host country.",
+    "new_example": "To avoid embarrassment, she studied the etiquette of the host country.",
+    "new_translation": "Để tránh bối rối, cô đã nghiên cứu nghi lễ của nước chủ nhà."
+  },
+  {
+    "word": "emblematic",
+    "old_example": "The eagle has long been emblematic of strength and freedom in many different cultures around the world.",
+    "new_example": "The eagle is emblematic of strength and freedom in many cultures.",
+    "new_translation": "Đại bàng là biểu tượng cho sức mạnh và tự do ở nhiều nơi."
+  },
+  {
+    "word": "embroidery",
+    "old_example": "The traditional wedding dress was decorated with intricate gold embroidery, which had been handcrafted by skilled local artisans over several months.",
+    "new_example": "The traditional wedding dress was decorated with intricate gold embroidery.",
+    "new_translation": "Chiếc váy cưới truyền thống được trang trí bằng họa tiết thêu vàng."
+  },
+  {
+    "word": "emergence",
+    "old_example": "The emergence of several new competitive startups in the renewable energy sector has forced the traditional oil giants to accelerate their transition to green power.",
+    "new_example": "The emergence of new startups forced oil giants to transition to green power.",
+    "new_translation": "Sự xuất hiện của các công ty khởi nghiệp buộc các tập đoàn dầu mỏ chuyển đổi."
+  },
+  {
+    "word": "emoji",
+    "old_example": "He sent a smiling emoji to show that he was only joking about missing the party.",
+    "new_example": "He sent a smiling emoji to show he was only joking.",
+    "new_translation": "Anh ta đã gửi một biểu tượng mỉm cười để cho thấy mình chỉ đùa."
+  }
+]

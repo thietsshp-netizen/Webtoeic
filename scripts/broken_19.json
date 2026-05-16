@@ -1,0 +1,1860 @@
+[
+  {
+    "idx": 242,
+    "id": "ETS2026_TEST_01_62_64",
+    "json": {
+      "passages": [
+        {
+          "category": "Conversation 62-64",
+          "html_content": "<div data-sid='s1'><b>Nữ (Mỹ):</b> Chào Suresh.</div><div data-sid='s2'><sup>62</sup><b>Tôi đang ở sân bay để chờ chuyến bay của mình.</b></div><div data-sid='s3'>Tôi muốn gặp một nhà đầu tư tiềm năng trong khi tôi ở Chicago.</div><div data-sid='s4'>Tên cô ấy là Marta Gomez.</div><div data-sid='s5'>Tôi có thể gửi cho anh thông tin liên lạc của cô ấy.</div><div data-sid='s6'><b>Nam (Trung Quốc):</b> Được thôi.</div><div data-sid='s7'><sup>63</sup><b>Ngày nào thì cô muốn gặp cô ấy hơn?</b></div><div data-sid='s8'><b>Nữ (Mỹ):</b> <sup>63</sup><b>Hay là ngay sau cuộc họp của tôi với nhân viên ở Chicago?</b></div><div data-sid='s9'><b>Nam (Trung Quốc):</b> Được rồi.</div><div data-sid='s10'>Nhân tiện, <sup>64</sup><b>cô có thấy rằng công ty chúng ta đã giành được một giải thưởng cho những đóng góp của chúng ta cho cộng đồng không?</b></div><div data-sid='s11'>Nó vừa được thông báo sáng nay.</div>",
+          "translation_map": {
+            "s1": "<b>Nữ (Mỹ):</b> Chào Suresh.",
+            "s2": "<sup>62</sup><b>Tôi đang ở sân bay để chờ chuyến bay của mình.</b>",
+            "s3": "Tôi muốn gặp một nhà đầu tư tiềm năng trong khi tôi ở Chicago.",
+            "s4": "Tên cô ấy là Marta Gomez.",
+            "s5": "Tôi có thể gửi cho anh thông tin liên lạc của cô ấy.",
+            "s6": "<b>Nam (Trung Quốc):</b> Được thôi.",
+            "s7": "<sup>63</sup><b>Ngày nào thì cô muốn gặp cô ấy hơn?</b>",
+            "s8": "<b>Nữ (Mỹ):</b> <sup>63</sup><b>Hay là ngay sau cuộc họp của tôi với nhân viên ở Chicago?</b>",
+            "s9": "<b>Nam (Trung Quốc):</b> Được rồi.",
+            "s10": "Nhân tiện, <sup>64</sup><b>cô có thấy rằng công ty chúng ta đã giành được một giải thưởng cho những đóng góp của chúng ta cho cộng đồng không?</b>",
+            "s11": "Nó vừa được thông báo sáng nay."
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 62,
+          "text": "Where is the woman?",
+          "options": {
+            "A": "At a restaurant",
+            "B": "At a travel agency",
+            "C": "At an airport",
+            "D": "At a warehouse"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s2"
+          ],
+          "explanation": {
+            "vi": "Where is the woman?",
+            "options_vn": {
+              "A": "Tại một nhà hàng",
+              "B": "Tại một đại lý du lịch",
+              "C": "Tại một sân bay",
+              "D": "Tại một kho hàng"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Tại một sân bay (C)**."
+          }
+        },
+        {
+          "questionNo": 63,
+          "text": "Look at the graphic. When does the woman prefer to meet with an investor?",
+          "options": {
+            "A": "On Monday",
+            "B": "On Tuesday",
+            "C": "On Wednesday",
+            "D": "On Thursday"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s7",
+            "s8"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Vào Thứ Hai",
+              "B": "Vào Thứ Ba",
+              "C": "Vào Thứ Tư",
+              "D": "Vào Thứ Năm"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Vào Thứ Tư (C)**."
+          }
+        },
+        {
+          "questionNo": 64,
+          "text": "What good news does the man share?",
+          "options": {
+            "A": "A colleague received a promotion.",
+            "B": "A conference proposal was accepted.",
+            "C": "An airline ticket has been upgraded.",
+            "D": "A company won an award."
+          },
+          "correct": "D",
+          "evidence_sids": [
+            "s10"
+          ],
+          "explanation": {
+            "vi": "What good news does the man share?",
+            "options_vn": {
+              "A": "Một đồng nghiệp được thăng chức.",
+              "B": "Một đề xuất hội nghị đã được chấp nhận.",
+              "C": "Vé máy bay đã được nâng hạng.",
+              "D": "Một công ty đã giành được giải thưởng."
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một công ty đã giành được giải thưởng. (D)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 243,
+    "id": "ETS2026_TEST_01_65_67",
+    "json": {
+      "passages": [
+        {
+          "category": "Conversation 65-67",
+          "html_content": "<div data-sid='s1'><b>Nam (Úc):</b> Marion, <sup>65</sup><b>we keep getting calls from people who want to visit the botanical garden but can't find parking information.</b></div><div data-sid='s2'>Isn't it on our Web site?</div><div data-sid='s3'><b>Nữ (Anh):</b> It is, but you have to click on the “About Us” page and scroll to the bottom of that page.</div><div data-sid='s4'>Maybe people don't see it.</div><div data-sid='s5'><b>Nam (Úc):</b> Oh, <sup>66</sup><b>I think we should move that information from the “About Us” page and make a separate page for directions and parking information.</b></div><div data-sid='s6'><b>That way, people can find it more easily.</b></div><div data-sid='s7'><b>Nữ (Anh):</b> I'd be happy to make that change.</div><div data-sid='s8'>But <sup>67</sup><b>we're in the middle of updating our software, so it'll have to wait until Monday.</b></div>",
+          "translation_map": {
+            "s1": "<b>Nam (Úc):</b> Marion, <sup>65</sup><b>chúng ta liên tục nhận được cuộc gọi từ những người muốn đến thăm vườn bách thảo nhưng không tìm thấy thông tin bãi đậu xe.</b>",
+            "s2": "Nó không có trên trang web của chúng ta sao?",
+            "s3": "<b>Nữ (Anh):</b> Có, nhưng anh phải nhấp vào trang “Về chúng tôi” và cuộn xuống cuối trang đó.",
+            "s4": "Có lẽ mọi người không nhìn thấy nó.",
+            "s5": "<b>Nam (Úc):</b> Ồ, <sup>66</sup><b>tôi nghĩ chúng ta nên chuyển thông tin đó từ trang “Về chúng tôi” và tạo một trang riêng cho thông tin chỉ đường và bãi đậu xe.</b>",
+            "s6": "<b>Bằng cách đó, mọi người có thể tìm thấy nó dễ dàng hơn.</b>",
+            "s7": "<b>Nữ (Anh):</b> Tôi rất sẵn lòng thực hiện thay đổi đó.",
+            "s8": "Nhưng <sup>67</sup><b>chúng ta đang trong quá trình cập nhật phần mềm, vì vậy việc này sẽ phải đợi đến thứ Hai.</b>"
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 65,
+          "text": "Where do the speakers work?",
+          "options": {
+            "A": "At an amusement park",
+            "B": "At an art museum",
+            "C": "At a concert hall",
+            "D": "At a botanical garden"
+          },
+          "correct": "D",
+          "evidence_sids": [
+            "s1"
+          ],
+          "explanation": {
+            "vi": "Where do the speakers work?",
+            "options_vn": {
+              "A": "Tại một công viên giải trí",
+              "B": "Tại một bảo tàng nghệ thuật",
+              "C": "Tại một phòng hòa nhạc",
+              "D": "Tại một vườn bách thảo"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Tại một vườn bách thảo (D)**."
+          }
+        },
+        {
+          "questionNo": 66,
+          "text": "Look at the graphic. Which page on the Web site does the man want to change?",
+          "options": {
+            "A": "Page 1",
+            "B": "Page 2",
+            "C": "Page 3",
+            "D": "Page 4"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s5",
+            "s6"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Trang 1",
+              "B": "Trang 2",
+              "C": "Trang 3",
+              "D": "Trang 4"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Trang 1 (A)**."
+          }
+        },
+        {
+          "questionNo": 67,
+          "text": "Why does the woman say she cannot complete a task until Monday?",
+          "options": {
+            "A": "She requires approval from a manager.",
+            "B": "She is attending a workshop.",
+            "C": "Some software is being updated.",
+            "D": "Some clients will be arriving soon."
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s8"
+          ],
+          "explanation": {
+            "vi": "Tại sao người phụ nữ nói: [trích dẫn]?",
+            "options_vn": {
+              "A": "Cô ấy cần sự chấp thuận từ quản lý.",
+              "B": "Cô ấy đang tham dự một buổi thảo luận.",
+              "C": "Một số phần mềm đang được cập nhật.",
+              "D": "Một số khách hàng sẽ sớm đến."
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một số phần mềm đang được cập nhật. (C)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 244,
+    "id": "ETS2026_TEST_01_68_70",
+    "json": {
+      "passages": [
+        {
+          "category": "Conversation 68-70",
+          "html_content": "<div data-sid='s1'><b>Nam (Úc):</b> Tin tốt đây! <sup>68</sup><b>Cuối cùng chúng ta đã nhận được sự chấp thuận cho dự án của bộ phận mình về việc lắp đặt các giá để xe đạp tại ga tàu trung tâm thành phố.</b></div><div data-sid='s2'><b>Nữ (Mỹ):</b> Cuối cùng cũng xong! Vậy, bây giờ chúng ta cần quyết định nơi đặt các giá để xe. Khu vực cạnh lối vào nhà ga thì sao?</div><div data-sid='s3'><b>Nam (Úc):</b> Hmm. Nếu chúng ta hỏi những người đi xe, <sup>69</sup><b>tôi cá là họ sẽ nói rằng vị trí thuận tiện nhất là càng gần sân ga càng tốt.</b></div><div data-sid='s4'><b>Nữ (Mỹ):</b> <sup>69</sup><b>Hãy làm như vậy đi.</b> <sup>70</sup><b>Tôi sẽ liên lạc với một số công ty để hỏi báo giá.</b></div>",
+          "translation_map": {
+            "s1": "<b>Nam (Úc):</b> Good news! <sup>68</sup><b>We have finally received the go-ahead for our department’s project to install bicycle racks at the train station downtown.</b>",
+            "s2": "<b>Nữ (Mỹ):</b> At last! So, now we need to decide where to place the racks. How about by the station entrance?",
+            "s3": "<b>Nam (Úc):</b> Hmm. If we asked riders, <sup>69</sup><b>I bet they’d say that the most convenient spot is as close to the platform as possible.</b>",
+            "s4": "<b>Nữ (Mỹ):</b> <sup>69</sup><b>Let’s do that.</b> <sup>70</sup><b>I’ll contact some companies for estimates.</b>"
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 68,
+          "text": "What news does the man share?",
+          "options": {
+            "A": "A station road will be closed for repair.",
+            "B": "A project has been approved.",
+            "C": "A parking area has been expanded.",
+            "D": "An office will relocate."
+          },
+          "correct": "B",
+          "evidence_sids": [
+            "s1"
+          ],
+          "explanation": {
+            "vi": "What news does the man share?",
+            "options_vn": {
+              "A": "Một con đường gần nhà ga sẽ bị đóng để sửa chữa.",
+              "B": "Một dự án đã được chấp thuận.",
+              "C": "Một khu vực đỗ xe đã được mở rộng.",
+              "D": "Một văn phòng sẽ di dời."
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một dự án đã được chấp thuận. (B)**."
+          }
+        },
+        {
+          "questionNo": 69,
+          "text": "Look at the graphic. Where do the speakers decide to install some bicycle racks?",
+          "options": {
+            "A": "Near the covered parking area",
+            "B": "Near the long-term parking area",
+            "C": "Near the short-term parking area",
+            "D": "Near the overflow parking area"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s3",
+            "s4"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Gần khu vực đỗ xe có mái che",
+              "B": "Gần khu vực đỗ xe dài hạn",
+              "C": "Gần khu vực đỗ xe ngắn hạn",
+              "D": "Gần khu vực đỗ xe dự phòng"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Gần khu vực đỗ xe có mái che (A)**."
+          }
+        },
+        {
+          "questionNo": 70,
+          "text": "Why does the woman say she will contact some companies?",
+          "options": {
+            "A": "To arrange a loan",
+            "B": "To apply for a permit",
+            "C": "To ask for estimates",
+            "D": "To create a proposal"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s4"
+          ],
+          "explanation": {
+            "vi": "Tại sao người phụ nữ nói: [trích dẫn]?",
+            "options_vn": {
+              "A": "Để sắp xếp một khoản vay",
+              "B": "Để xin giấy phép",
+              "C": "Để hỏi báo giá",
+              "D": "Để tạo một đề xuất"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Để hỏi báo giá (C)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 253,
+    "id": "ETS2026_TEST_01_95_97",
+    "json": {
+      "passages": [
+        {
+          "category": "Broadcast + Graphic 95-97",
+          "html_content": "<div data-sid='s1'><b>Nữ (Anh):</b> Trong tin tức địa phương, Tòa nhà Văn phòng Reston ở khu trung tâm đã hoàn thành.</div><div data-sid='s2'><sup>95</sup><b>Đặc điểm phi thường nhất của tòa nhà là khu vườn xinh đẹp nằm ở sảnh chờ.</b></div><div data-sid='s3'>Văn phòng quản lý của Reston đã xác nhận danh sách khách thuê cho tòa nhà.</div><div data-sid='s4'>Và <sup>96</sup><b>chúng tôi đã phỏng vấn Giám đốc điều hành của Barnum Financial Services về các văn phòng mới của công ty này.</b></div><div data-sid='s5'>Ông ấy nói rằng ông và đội ngũ của mình rất hào hứng khi chuyển đến vào tháng Giêng.</div><div data-sid='s6'><sup>97</sup><b>Một bản ghi âm của cuộc phỏng vấn đầy đủ với Giám đốc điều hành hiện đã có trên trang web của chúng tôi.</b></div>",
+          "translation_map": {
+            "s1": "<b>Nữ (Anh):</b> In local news, the downtown Reston Office Tower is completed.",
+            "s2": "<sup>95</sup><b>The most extraordinary feature of the building is its beautiful garden, located in the lobby.</b>",
+            "s3": "Reston’s management office has confirmed the tenant list for the building.",
+            "s4": "And <sup>96</sup><b>we interviewed the CEO of Barnum Financial Services about its new offices.</b>",
+            "s5": "He said he and his team are excited to move in in January.",
+            "s6": "<sup>97</sup><b>A recording of the full interview with the CEO is available on our Web site.</b>"
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 95,
+          "text": "According to the speaker, what is special about the Reston Office Tower?",
+          "options": {
+            "A": "It features an indoor garden.",
+            "B": "It exhibits work from local artists.",
+            "C": "It runs on solar power.",
+            "D": "It has won many awards."
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s2"
+          ],
+          "explanation": {
+            "vi": "According to the speaker, what is special about the Reston Office Tower?",
+            "options_vn": {
+              "A": "Nó có một khu vườn trong nhà.",
+              "B": "Nó trưng bày tác phẩm của các nghệ sĩ địa phương.",
+              "C": "Nó chạy bằng năng lượng mặt trời.",
+              "D": "Nó đã giành được nhiều giải thưởng."
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Nó có một khu vườn trong nhà. (A)**."
+          }
+        },
+        {
+          "questionNo": 96,
+          "text": "Look at the graphic. Which floors will be occupied in January?",
+          "options": {
+            "A": "Floors 1-5",
+            "B": "Floors 6-10",
+            "C": "Floors 11-14",
+            "D": "Floors 15-17"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s4"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Tầng 1-5",
+              "B": "Tầng 6-10",
+              "C": "Tầng 11-14",
+              "D": "Tầng 15-17"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Tầng 11-14 (C)**."
+          }
+        },
+        {
+          "questionNo": 97,
+          "text": "What does the speaker say is available on a Web site?",
+          "options": {
+            "A": "Some photographs",
+            "B": "An event schedule",
+            "C": "A floor layout",
+            "D": "A recorded interview"
+          },
+          "correct": "D",
+          "evidence_sids": [
+            "s6"
+          ],
+          "explanation": {
+            "vi": "What does the speaker say is available on a Web site?",
+            "options_vn": {
+              "A": "Một số bức ảnh",
+              "B": "Lịch trình sự kiện",
+              "C": "Sơ đồ mặt bằng tầng",
+              "D": "Một bản ghi âm cuộc phỏng vấn"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một bản ghi âm cuộc phỏng vấn (D)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 254,
+    "id": "ETS2026_TEST_01_98_100",
+    "json": {
+      "passages": [
+        {
+          "category": "Meeting Excerpt 98-100",
+          "html_content": "<div data-sid='s1'><b>Nam (Úc):</b> Chào buổi sáng, và <sup>98</sup><b>cảm ơn các bạn đã tham dự cuộc họp dành cho các nhà đầu tư tiềm năng này.</b></div><div data-sid='s2'>ZZ Mining đã và đang lên kế hoạch mở rộng hoạt động của chúng tôi bằng cách mở thêm một mỏ bạc.</div><div data-sid='s3'>Hãy để tôi cho các bạn xem phân tích phòng thí nghiệm về việc khoan thăm dò của chúng tôi.</div><div data-sid='s4'>Trên màn hình, các bạn có thể thấy thông tin về quặng được chiết xuất từ các địa điểm khác nhau.</div><div data-sid='s5'>Địa điểm có cấp độ cao nhất có 410 gam bạc trên mỗi tấn quặng.</div><div data-sid='s6'>Tuy nhiên, <sup>99</sup><b>địa điểm có 390 gam mỗi tấn có trữ lượng lớn hơn, vì vậy đó là nơi chúng tôi sẽ xây dựng mỏ mới.</b></div><div data-sid='s7'><sup>100</sup><b>Bước tiếp theo của chúng tôi là nộp đơn xin các giấy phép cần thiết.</b></div><div data-sid='s8'>Chúng tôi sẽ thực hiện việc đó vào tuần tới.</div>",
+          "translation_map": {
+            "s1": "<b>Nam (Úc):</b> Chào buổi sáng, và <sup>98</sup><b>cảm ơn các bạn đã tham dự cuộc họp dành cho các nhà đầu tư tiềm năng này.</b>",
+            "s2": "ZZ Mining đã và đang lên kế hoạch mở rộng hoạt động của chúng tôi bằng cách mở thêm một mỏ bạc.",
+            "s3": "Hãy để tôi cho các bạn xem phân tích phòng thí nghiệm về việc khoan thăm dò của chúng tôi.",
+            "s4": "Trên màn hình, các bạn có thể thấy thông tin về quặng được chiết xuất từ các địa điểm khác nhau.",
+            "s5": "Địa điểm có cấp độ cao nhất có 410 gam bạc trên mỗi tấn quặng.",
+            "s6": "Tuy nhiên, <sup>99</sup><b>địa điểm có 390 gam mỗi tấn có trữ lượng lớn hơn, vì vậy đó là nơi chúng tôi sẽ xây dựng mỏ mới.</b>",
+            "s7": "<sup>100</sup><b>Bước tiếp theo của chúng tôi là nộp đơn xin các giấy phép cần thiết.</b>",
+            "s8": "Chúng tôi sẽ thực hiện việc đó vào tuần tới."
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 98,
+          "text": "Who most likely are the listeners?",
+          "options": {
+            "A": "Safety engineers",
+            "B": "Laboratory technicians",
+            "C": "Legal consultants",
+            "D": "Business investors"
+          },
+          "correct": "D",
+          "evidence_sids": [
+            "s1"
+          ],
+          "explanation": {
+            "vi": "Who most likely are the listeners?",
+            "options_vn": {
+              "A": "Kỹ sư an toàn",
+              "B": "Kỹ thuật viên phòng thí nghiệm",
+              "C": "Cố vấn pháp lý",
+              "D": "Nhà đầu tư kinh doanh"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Nhà đầu tư kinh doanh (D)**."
+          }
+        },
+        {
+          "questionNo": 99,
+          "text": "Look at the graphic. Where will a new mine be built?",
+          "options": {
+            "A": "At site 1",
+            "B": "At site 2",
+            "C": "At site 3",
+            "D": "At site 4"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s6"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Tại địa điểm 1",
+              "B": "Tại địa điểm 2",
+              "C": "Tại địa điểm 3",
+              "D": "Tại địa điểm 4"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Tại địa điểm 3 (C)**."
+          }
+        },
+        {
+          "questionNo": 100,
+          "text": "What does the speaker say is the next step?",
+          "options": {
+            "A": "Applying for permits",
+            "B": "Installing equipment",
+            "C": "Hiring additional staff",
+            "D": "Updating a manual"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s7"
+          ],
+          "explanation": {
+            "vi": "What does the speaker say is the next step?",
+            "options_vn": {
+              "A": "Nộp đơn xin giấy phép",
+              "B": "Lắp đặt thiết bị",
+              "C": "Thuê thêm nhân viên",
+              "D": "Cập nhật sổ tay hướng dẫn"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Nộp đơn xin giấy phép (A)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 265,
+    "id": "ETS2026_TEST_02_62_64",
+    "json": {
+      "passages": [
+        {
+          "category": "Conversation 62-64",
+          "html_content": "<div data-sid='s1'><b>M-Au:</b> I really need this coffee break.</div><div data-sid='s2'>My morning meeting with a client was really difficult.</div><div data-sid='s3'><b>W-Br:</b> What did you talk about?</div><div data-sid='s4'><b>M-Au:</b> The project timeline.</div><div data-sid='s5'><sup>62</sup><b>They asked us to have a prototype design to them three weeks earlier than originally planned.</b></div><div data-sid='s6'><b>W-Br:</b> Wow. Well, today's drink is on me.</div><div data-sid='s7'>What would you like?</div><div data-sid='s8'><b>M-Au:</b> That's very kind of you!</div><div data-sid='s9'><sup>63</sup><b>I'll have the White Cloud Coffee.</b></div><div data-sid='s10'>I like a little milk in my coffee.</div><div data-sid='s11'><b>W-Br:</b> Good choice.</div><div data-sid='s12'>By the way, I have some news to share with you.</div><div data-sid='s13'>Have you heard anything about David?</div><div data-sid='s14'><b>M-Au:</b> No, what's going on?</div><div data-sid='s15'><b>W-Br:</b> <sup>64</sup><b>I heard he's planning to retire next month.</b></div>",
+          "translation_map": {
+            "s1": "<b>Nam (Úc):</b> Tôi thực sự cần giờ nghỉ giải lao này.",
+            "s2": "Cuộc họp sáng nay của tôi với khách hàng thực sự rất khó khăn.",
+            "s3": "<b>Nữ (Anh):</b> Các bạn đã thảo luận về vấn đề gì vậy?",
+            "s4": "<b>Nam (Úc):</b> Lịch trình dự án.",
+            "s5": "<sup>62</sup><b>Họ yêu cầu chúng tôi cung cấp thiết kế nguyên mẫu cho họ sớm hơn ba tuần so với kế hoạch ban đầu.</b>",
+            "s6": "<b>Nữ (Anh):</b> Chà. Vậy thì ly nước hôm nay tôi mời.",
+            "s7": "Anh muốn dùng loại nào?",
+            "s8": "<b>Nam (Úc):</b> Cô thật tốt bụng!",
+            "s9": "<sup>63</sup><b>Tôi sẽ chọn Cà phê Mây Trắng (White Cloud Coffee).</b>",
+            "s10": "Tôi thích một chút sữa trong cà phê của mình.",
+            "s11": "<b>Nữ (Anh):</b> Lựa chọn tốt đấy.",
+            "s12": "À, tôi có một vài tin tức muốn chia sẻ với anh.",
+            "s13": "Anh có nghe tin gì về David chưa?",
+            "s14": "<b>Nam (Úc):</b> Chưa, có chuyện gì vậy?",
+            "s15": "<b>Nữ (Anh):</b> <sup>64</sup><b>Nghe nói anh ấy đang kế hoạch nghỉ hưu vào tháng tới.</b>"
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 62,
+          "text": "What did the man's client request?",
+          "options": {
+            "A": "A large shipment",
+            "B": "A shortened timeline",
+            "C": "A change in design",
+            "D": "A more expensive material"
+          },
+          "correct": "B",
+          "evidence_sids": [
+            "s5"
+          ],
+          "explanation": {
+            "vi": "What did the man's client request?",
+            "options_vn": {
+              "A": "Một lô hàng lớn",
+              "B": "Một mốc thời gian được rút ngắn",
+              "C": "Một sự thay đổi trong thiết kế",
+              "D": "Một loại vật liệu đắt tiền hơn"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một mốc thời gian được rút ngắn (B)**."
+          }
+        },
+        {
+          "questionNo": 63,
+          "text": "Look at the graphic. How much does the man's coffee cost?",
+          "options": {
+            "A": "$2.00",
+            "B": "$3.25",
+            "C": "$3.75",
+            "D": "$4.25"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s9"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "$2.00",
+              "B": "$3.25",
+              "C": "$3.75",
+              "D": "$4.25"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **$3.75 (C)**."
+          }
+        },
+        {
+          "questionNo": 64,
+          "text": "What does the woman say about David?",
+          "options": {
+            "A": "He is retiring.",
+            "B": "He is organizing a party.",
+            "C": "He is on vacation.",
+            "D": "He accepted another position."
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s15"
+          ],
+          "explanation": {
+            "vi": "What does the woman say about David?",
+            "options_vn": {
+              "A": "Anh ấy sẽ nghỉ hưu.",
+              "B": "Anh ấy đang tổ chức một bữa tiệc.",
+              "C": "Anh ấy đang đi nghỉ mát.",
+              "D": "Anh ấy đã chấp nhận một vị trí công việc khác."
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Anh ấy sẽ nghỉ hưu. (A)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 266,
+    "id": "ETS2026_TEST_02_65_67",
+    "json": {
+      "passages": [
+        {
+          "category": "Conversation 65-67",
+          "html_content": "<div data-sid='s1'><b>Nam (Úc):</b> This is Bradley from Windows Galore.</div><div data-sid='s2'>How can I help you?</div><div data-sid='s3'><b>Nữ (Mỹ):</b> Hello! <sup>65</sup><b>I'd like to have screens added to my windows at home.</b></div><div data-sid='s4'>I was wondering if you would be available to stop by and take a look.</div><div data-sid='s5'><sup>66</sup><b>I live at 42 West Third Street, by the way.</b></div><div data-sid='s6'><b>Nam (Úc):</b> OK—that's not far.</div><div data-sid='s7'>Let me see.</div><div data-sid='s8'>I could come any morning this week.</div><div data-sid='s9'><b>Nữ (Mỹ):</b> How about in the afternoon?</div><div data-sid='s10'><b>Nam (Úc):</b> Hmm. <sup>67</sup><b>I could reschedule my Tuesday afternoon appointment.</b></div><div data-sid='s11'>I'll check and get back to you—I have your number now.</div><div data-sid='s12'>And your name is?</div><div data-sid='s13'><b>Nữ (Mỹ):</b> Hoffman—Claudia Hoffman.</div><div data-sid='s14'>Thank you.</div><div data-sid='s15'>Talk to you soon.</div>",
+          "translation_map": {
+            "s1": "<b>Nam (Úc):</b> Đây là Bradley từ Windows Galore.",
+            "s2": "Tôi có thể giúp gì cho bà?",
+            "s3": "<b>Nữ (Mỹ):</b> Xin chào! <sup>65</sup><b>Tôi muốn lắp thêm lưới chống côn trùng cho cửa sổ ở nhà.</b>",
+            "s4": "Tôi tự hỏi liệu anh có rảnh để ghé qua và xem xét không.",
+            "s5": "<sup>66</sup><b>Nhân tiện, tôi sống ở số 42 West Third Street.</b>",
+            "s6": "<b>Nam (Úc):</b> Được rồi—nơi đó không xa.",
+            "s7": "Để tôi xem nào.",
+            "s8": "Tôi có thể ghé qua vào bất kỳ buổi sáng nào trong tuần này.",
+            "s9": "<b>Nữ (Mỹ):</b> Vậy còn buổi chiều thì sao?",
+            "s10": "<b>Nam (Úc):</b> Hmm. <sup>67</sup><b>Tôi có thể dời lại cuộc hẹn chiều Thứ Ba của mình.</b>",
+            "s11": "Tôi sẽ kiểm tra và liên lạc lại với bà—bây giờ tôi đã có số của bà rồi.",
+            "s12": "Và tên bà là gì ạ?",
+            "s13": "<b>Nữ (Mỹ):</b> Hoffman—Claudia Hoffman.",
+            "s14": "Cảm ơn anh.",
+            "s15": "Nói chuyện với anh sau nhé."
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 65,
+          "text": "What does the man most likely do?",
+          "options": {
+            "A": "Install windows",
+            "B": "Repair roofs",
+            "C": "Remove trees",
+            "D": "Plant gardens"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s3"
+          ],
+          "explanation": {
+            "vi": "What does the man most likely do?",
+            "options_vn": {
+              "A": "Lắp đặt cửa sổ",
+              "B": "Sửa mái nhà",
+              "C": "Chặt cây",
+              "D": "Trồng vườn"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Lắp đặt cửa sổ (A)**."
+          }
+        },
+        {
+          "questionNo": 66,
+          "text": "What does the woman provide?",
+          "options": {
+            "A": "A floor layout",
+            "B": "An address",
+            "C": "A form of payment",
+            "D": "Proof of insurance"
+          },
+          "correct": "B",
+          "evidence_sids": [
+            "s5"
+          ],
+          "explanation": {
+            "vi": "What does the woman provide?",
+            "options_vn": {
+              "A": "Sơ đồ sàn",
+              "B": "Một địa chỉ",
+              "C": "Hình thức thanh toán",
+              "D": "Bằng chứng bảo hiểm"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một địa chỉ (B)**."
+          }
+        },
+        {
+          "questionNo": 67,
+          "text": "Look at the graphic. Which appointment will the man try to reschedule?",
+          "options": {
+            "A": "The inspector's visit",
+            "B": "The bank loan meeting",
+            "C": "The dental cleaning",
+            "D": "The café project"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s10"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Chuyến thăm của thanh tra",
+              "B": "Cuộc họp vay vốn ngân hàng",
+              "C": "Lấy cao răng",
+              "D": "Dự án quán cà phê"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Chuyến thăm của thanh tra (A)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 267,
+    "id": "ETS2026_TEST_02_68_70",
+    "json": {
+      "passages": [
+        {
+          "category": "Conversation 68-70",
+          "html_content": "<div data-sid='s1'><b>Nam (Úc):</b> Ms. Kwon, <sup>68</sup><b>thank you for sending me to the upcoming robotics conference.</b></div><div data-sid='s2'>I didn't expect an opportunity like this so soon after being hired here.</div><div data-sid='s3'><b>Nữ (Anh):</b> <sup>69</sup><b>It's important for you to be familiar with current robot designs.</b></div><div data-sid='s4'><b>There are always new trends and technologies coming out, and I want you to stay ahead of developments in our industry.</b></div><div data-sid='s5'><b>Nam (Úc):</b> I agree.</div><div data-sid='s6'>Plus, it'll give me the chance to introduce myself to potential clients.</div><div data-sid='s7'><b>Nữ (Anh):</b> Oh, about that: here's a handout I provide to all new hires.</div><div data-sid='s8'>It includes some helpful tips—especially this one.</div><div data-sid='s9'><sup>70</sup><b>Do you have your business cards yet?</b></div><div data-sid='s10'><b>Nam (Úc):</b> Hmm.</div><div data-sid='s11'>I haven't received them, but I'll call the printer today for an update.</div>",
+          "translation_map": {
+            "s1": "<b>Nam (Úc):</b> Cô Kwon, <sup>68</sup><b>cảm ơn cô đã cử tôi tham gia hội nghị người máy sắp tới.</b>",
+            "s2": "Tôi không ngờ mình lại có cơ hội như thế này ngay sau khi được tuyển dụng vào đây.",
+            "s3": "<b>Nữ (Anh):</b> <sup>69</sup><b>Việc anh làm quen với các thiết kế robot hiện tại là rất quan trọng.</b>",
+            "s4": "<b>Luôn có những xu hướng và công nghệ mới ra đời, và tôi muốn anh nắm bắt được những bước phát triển trong ngành của chúng ta.</b>",
+            "s5": "<b>Nam (Úc):</b> Tôi đồng ý.",
+            "s6": "Ngoài ra, nó sẽ cho tôi cơ hội để giới thiệu bản thân với các khách hàng tiềm năng.",
+            "s7": "<b>Nữ (Anh):</b> Ồ, về việc đó: đây là tài liệu tôi cung cấp cho tất cả nhân viên mới.",
+            "s8": "Nó bao gồm một số mẹo hữu ích—đặc biệt là mẹo này.",
+            "s9": "<sup>70</sup><b>Anh đã có danh thiếp chưa?</b>",
+            "s10": "<b>Nam (Úc):</b> Ừm.",
+            "s11": "Tôi vẫn chưa nhận được chúng, nhưng tôi sẽ gọi cho nhà in hôm nay để cập nhật tình hình."
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 68,
+          "text": "What industry do the speakers most likely work in?",
+          "options": {
+            "A": "Legal",
+            "B": "Construction",
+            "C": "Agriculture",
+            "D": "Robotics"
+          },
+          "correct": "D",
+          "evidence_sids": [
+            "s1"
+          ],
+          "explanation": {
+            "vi": "Người nói làm việc trong lĩnh vực/ngành nào?",
+            "options_vn": {
+              "A": "Pháp lý",
+              "B": "Xây dựng",
+              "C": "Nông nghiệp",
+              "D": "Robot học"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Robot học (D)**."
+          }
+        },
+        {
+          "questionNo": 69,
+          "text": "Why does the woman want the man to attend a conference?",
+          "options": {
+            "A": "To learn more about the latest industry trends",
+            "B": "To accept a reward on behalf of the company",
+            "C": "To host a panel discussion",
+            "D": "To screen job candidates"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s3",
+            "s4"
+          ],
+          "explanation": {
+            "vi": "Why does the woman want the man to attend a conference?",
+            "options_vn": {
+              "A": "Để tìm hiểu thêm về các xu hướng mới nhất trong ngành",
+              "B": "Để thay mặt công ty nhận giải thưởng",
+              "C": "Để chủ trì một phiên thảo luận",
+              "D": "Để sàng lọc các ứng viên xin việc"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Để tìm hiểu thêm về các xu hướng mới nhất trong ngành (A)**."
+          }
+        },
+        {
+          "questionNo": 70,
+          "text": "Look at the graphic. Which tip does the woman point out?",
+          "options": {
+            "A": "Tip 1",
+            "B": "Tip 2",
+            "C": "Tip 3",
+            "D": "Tip 4"
+          },
+          "correct": "D",
+          "evidence_sids": [
+            "s9"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Mẹo 1",
+              "B": "Mẹo 2",
+              "C": "Mẹo 3",
+              "D": "Mẹo 4"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Mẹo 4 (D)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 276,
+    "id": "ETS2026_TEST_02_95_97",
+    "json": {
+      "passages": [
+        {
+          "category": "Announcement 95-97",
+          "html_content": "<div data-sid='s1'><b>W-Br:</b> Welcome to the Abingdon Transit Station.</div><div data-sid='s2'>Please be advised that <sup>95</sup><b>the Circle Route bus is not currently stopping at the station entrance because of some street resurfacing work.</b></div><div data-sid='s3'><sup>96</sup><b>A temporary bus stop has been set up around the corner in front of the post office.</b></div><div data-sid='s4'>Signs are posted directing you to the new stop.</div><div data-sid='s5'>Bus timetables will be affected by the change in the route.</div><div data-sid='s6'><sup>97</sup><b>Use the Abingdon Transit mobile phone app to view live updates for when the next bus is due.</b></div>",
+          "translation_map": {
+            "s1": "<b>Nữ (Anh):</b> Chào mừng quý khách đến với Trạm Trung chuyển Abingdon.",
+            "s2": "Xin lưu ý rằng <sup>95</sup><b>xe buýt Tuyến Circle hiện không dừng tại lối vào nhà ga do một số công trình trải nhựa lại mặt đường.</b>",
+            "s3": "<sup>96</sup><b>Một điểm dừng xe buýt tạm thời đã được thiết lập ở góc đường phía trước bưu điện.</b>",
+            "s4": "Các biển báo đã được đặt để dẫn đường quý khách đến điểm dừng mới.",
+            "s5": "Thời gian biểu của xe buýt sẽ bị ảnh hưởng bởi sự thay đổi lộ trình này.",
+            "s6": "<sup>97</sup><b>Hãy sử dụng ứng dụng điện thoại di động Abingdon Transit để xem các cập nhật trực tiếp về thời gian chuyến xe buýt tiếp theo sẽ đến.</b>"
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 95,
+          "text": "According to the speaker, why was a transit route changed?",
+          "options": {
+            "A": "Some streets are being resurfaced.",
+            "B": "Some roads are closed for a bicycle race.",
+            "C": "A group of residents is hosting a fund-raising concert.",
+            "D": "A local politician will be speaking in a park."
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s2"
+          ],
+          "explanation": {
+            "vi": "According to the speaker, why was a transit route changed?",
+            "options_vn": {
+              "A": "Một số con đường đang được trải nhựa lại.",
+              "B": "Một số con đường bị đóng cửa để tổ chức đua xe đạp.",
+              "C": "Một nhóm cư dân đang tổ chức một buổi hòa nhạc gây quỹ.",
+              "D": "Một chính trị gia địa phương sẽ phát biểu trong công viên."
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một số con đường đang được trải nhựa lại. (A)**."
+          }
+        },
+        {
+          "questionNo": 96,
+          "text": "Look at the graphic. Where will the listeners find a new bus stop?",
+          "options": {
+            "A": "On Plum Lane",
+            "B": "On Peach Street",
+            "C": "On Cherry Avenue",
+            "D": "On Quincy Drive"
+          },
+          "correct": "B",
+          "evidence_sids": [
+            "s3"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Trên ngõ Plum",
+              "B": "Trên phố Peach",
+              "C": "Trên đại lộ Cherry",
+              "D": "Trên đường Quincy"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Trên phố Peach (B)**."
+          }
+        },
+        {
+          "questionNo": 97,
+          "text": "Why should the listeners check a mobile phone application?",
+          "options": {
+            "A": "To apply for a job",
+            "B": "To scan a promotional code",
+            "C": "To view bus schedule updates",
+            "D": "To purchase bus tickets"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s6"
+          ],
+          "explanation": {
+            "vi": "Why should the listeners check a mobile phone application?",
+            "options_vn": {
+              "A": "Để nộp đơn xin việc",
+              "B": "Để quét mã khuyến mãi",
+              "C": "Để xem các cập nhật lịch trình xe buýt",
+              "D": "Để mua vé xe buýt"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Để xem các cập nhật lịch trình xe buýt (C)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 277,
+    "id": "ETS2026_TEST_02_98_100",
+    "json": {
+      "passages": [
+        {
+          "category": "Announcement + Workshop Schedule 98-100",
+          "html_content": "<div data-sid='s1'><b>Nam (Trung Quốc):</b> Hello, everyone! <sup>98</sup><b>We're happy to announce that the February continuing education workshops here at the community center were very successful.</b></div><div data-sid='s2'>Thank you for working so hard to make sure they ran smoothly.</div><div data-sid='s3'>Every workshop was completely full.</div><div data-sid='s4'><sup>99</sup><b>In fact, we had to create a waiting list for the Monday night workshop.</b></div><div data-sid='s5'><sup>99</sup><b>Beginning in March, we'll offer that same workshop on Fridays.</b></div><div data-sid='s6'>Now, many participants complained about the lack of vending machines in the building.</div><div data-sid='s7'><sup>100</sup><b>Bianca will be contacting vending services next week to ask about pricing.</b></div>",
+          "translation_map": {
+            "s1": "<b>Nam (Trung Quốc):</b> Chào mọi người! <sup>98</sup><b>Chúng tôi rất vui mừng thông báo rằng các hội thảo giáo dục thường xuyên vào tháng 2 tại trung tâm cộng đồng ở đây đã thành công tốt đẹp.</b>",
+            "s2": "Cảm ơn các bạn đã làm việc chăm chỉ để đảm bảo chúng diễn ra suôn sẻ.",
+            "s3": "Mỗi hội thảo đều đã kín chỗ hoàn toàn.",
+            "s4": "<sup>99</sup><b>Trên thực tế, chúng tôi đã phải lập một danh sách chờ cho hội thảo tối Thứ Hai.</b>",
+            "s5": "<sup>99</sup><b>Bắt đầu từ tháng 3, chúng tôi sẽ tổ chức chính hội thảo đó vào các ngày Thứ Sáu.</b>",
+            "s6": "Bây giờ, nhiều người tham gia đã phàn nàn về việc thiếu máy bán hàng tự động trong tòa nhà.",
+            "s7": "<sup>100</sup><b>Bianca sẽ liên hệ với các dịch vụ bán hàng tự động vào tuần tới để hỏi về giá cả.</b>"
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 98,
+          "text": "Where does the speaker work?",
+          "options": {
+            "A": "At a restaurant",
+            "B": "At a public library",
+            "C": "At a community center",
+            "D": "At a hospital"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s1"
+          ],
+          "explanation": {
+            "vi": "Where does the speaker work?",
+            "options_vn": {
+              "A": "Tại một nhà hàng",
+              "B": "Tại một thư viện công cộng",
+              "C": "Tại một trung tâm cộng đồng",
+              "D": "Tại một bệnh viện"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Tại một trung tâm cộng đồng (C)**."
+          }
+        },
+        {
+          "questionNo": 99,
+          "text": "Look at the graphic. Which workshop will be offered on Fridays starting in March?",
+          "options": {
+            "A": "Podcasting",
+            "B": "Entrepreneurship for Beginners",
+            "C": "Introduction to Coding",
+            "D": "Accounting for Small Businesses"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s4",
+            "s5"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Podcasting",
+              "B": "Khởi nghiệp cho người mới bắt đầu",
+              "C": "Nhập môn lập trình",
+              "D": "Kế toán cho doanh nghiệp nhỏ"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Podcasting (A)**."
+          }
+        },
+        {
+          "questionNo": 100,
+          "text": "What will Bianca do next week?",
+          "options": {
+            "A": "Request feedback from participants",
+            "B": "Order office supplies",
+            "C": "Update registration information",
+            "D": "Contact some vendors"
+          },
+          "correct": "D",
+          "evidence_sids": [
+            "s7"
+          ],
+          "explanation": {
+            "vi": "What will Bianca do next week?",
+            "options_vn": {
+              "A": "Yêu cầu phản hồi từ người tham gia",
+              "B": "Đặt văn phòng phẩm",
+              "C": "Cập nhật thông tin đăng ký",
+              "D": "Liên hệ với một số nhà cung cấp"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Liên hệ với một số nhà cung cấp (D)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 288,
+    "id": "ETS2026_TEST_03_62_64",
+    "json": {
+      "passages": [
+        {
+          "category": "Conversation 62-64",
+          "html_content": "<div data-sid='s1'><b>Nữ (Mỹ):</b> Marco, you'll be restocking the cleaning products this morning, right?</div><div data-sid='s2'>While you're doing that, <sup>62</sup><b>could you also put the updated sale-price labels on the hand soap dispensers?</b></div><div data-sid='s3'><b>They're on the shelf right above the laundry detergent.</b></div><div data-sid='s4'><b>Nam (Trung Quốc):</b> No problem—that shouldn't take long.</div><div data-sid='s5'>What else can I help with?</div><div data-sid='s6'><b>Nữ (Mỹ):</b> <sup>63</sup><b>Can you make room for our new international foods section at the front of the store?</b></div><div data-sid='s7'><b>Nam (Trung Quốc):</b> <sup>64</sup><b>Oh, did the shipment finally arrive? That snowstorm up north really affected delivery schedules.</b></div>",
+          "translation_map": {
+            "s1": "<b>Nữ (Mỹ):</b> Marco, sáng nay anh sẽ bổ sung thêm các sản phẩm tẩy rửa, đúng không?",
+            "s2": "Trong khi làm việc đó, <sup>62</sup><b>anh có thể dán nhãn giá khuyến mãi đã cập nhật lên các bình đựng xà phòng rửa tay được không?</b>",
+            "s3": "<b>Chúng ở trên kệ ngay phía trên chỗ bột giặt ấy.</b>",
+            "s4": "<b>Nam (Trung Quốc):</b> Không vấn đề gì—việc đó sẽ không mất nhiều thời gian đâu.",
+            "s5": "Tôi có thể giúp gì thêm nữa không?",
+            "s6": "<sup>63</sup><b>Anh có thể dọn chỗ cho khu vực thực phẩm quốc tế mới của chúng ta ở phía trước cửa hàng không?</b>",
+            "s7": "<sup>64</sup><b>Ồ, cuối cùng thì chuyến hàng đã đến rồi sao? Trận bão tuyết ở phía bắc thực sự đã ảnh hưởng đến lịch trình giao hàng.</b>"
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 62,
+          "text": "Look at the graphic. Which dollar amount will the man change?",
+          "options": {
+            "A": "$2.37",
+            "B": "$4.55",
+            "C": "$7.86",
+            "D": "$2.91"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s2",
+            "s3"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "$2.37",
+              "B": "$4.55",
+              "C": "$7.86",
+              "D": "$2.91"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **$2.37 (A)**."
+          }
+        },
+        {
+          "questionNo": 63,
+          "text": "What will be added at the front of the store?",
+          "options": {
+            "A": "An additional checkout stand",
+            "B": "A holiday display",
+            "C": "A special food section",
+            "D": "A seating area"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s6"
+          ],
+          "explanation": {
+            "vi": "What will be added at the front of the store?",
+            "options_vn": {
+              "A": "Một quầy thanh toán bổ sung",
+              "B": "Một khu trưng bày ngày lễ",
+              "C": "Một khu vực thực phẩm đặc biệt",
+              "D": "Một khu vực ghế ngồi"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một khu vực thực phẩm đặc biệt (C)**."
+          }
+        },
+        {
+          "questionNo": 64,
+          "text": "According to the man, why did a shipment arrive late?",
+          "options": {
+            "A": "He forgot to place an order.",
+            "B": "It was delivered to the wrong address.",
+            "C": "Some supplies were unavailable.",
+            "D": "Weather conditions were poor."
+          },
+          "correct": "D",
+          "evidence_sids": [
+            "s7"
+          ],
+          "explanation": {
+            "vi": "According to the man, why did a shipment arrive late?",
+            "options_vn": {
+              "A": "Anh ấy quên đặt hàng.",
+              "B": "Nó đã được giao đến sai địa chỉ.",
+              "C": "Một số vật tư không có sẵn.",
+              "D": "Điều kiện thời tiết xấu."
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Điều kiện thời tiết xấu. (D)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 289,
+    "id": "ETS2026_TEST_03_65_67",
+    "json": {
+      "passages": [
+        {
+          "category": "Conversation 65-67",
+          "html_content": "<div data-sid='s1'><b>W-Br:</b> Thanks for calling Kwon Photography Studio.</div><div data-sid='s2'><b>M-Au:</b> Hello. <sup>65</sup><b>I need to have a photo taken for a Canadian passport.</b></div><div data-sid='s3'><b>W-Br:</b> OK. You can make an appointment Monday through Friday.</div><div data-sid='s4'><sup>66</sup><b>Just bring in a copy of the application so we can see the size requirements.</b></div><div data-sid='s5'><b>M-Au:</b> I work nine to five every day at my current job.</div><div data-sid='s6'>Do you have any openings after five P.M.?</div><div data-sid='s7'><b>W-Br:</b> No problem. <sup>67</sup><b>We're open until six P.M. one day a week.</b></div>",
+          "translation_map": {
+            "s1": "<b>Nữ (Anh):</b> Cảm ơn bạn đã gọi đến Studio Ảnh Kwon.",
+            "s2": "<b>Nam (Úc):</b> Xin chào. <sup>65</sup><b>Tôi cần chụp một tấm ảnh cho hộ chiếu Canada.</b>",
+            "s3": "<b>Nữ (Anh):</b> Được chứ. Bạn có thể đặt lịch hẹn từ Thứ Hai đến Thứ Sáu.",
+            "s4": "<sup>66</sup><b>Chỉ cần mang theo một bản sao đơn đăng ký để chúng tôi có thể xem các yêu cầu về kích thước.</b>",
+            "s5": "<b>Nam (Úc):</b> Tôi làm việc từ chín giờ đến năm giờ mỗi ngày tại công việc hiện tại.",
+            "s6": "Các bạn có khung giờ trống nào sau năm giờ chiều không?",
+            "s7": "<b>Nữ (Anh):</b> Không vấn đề gì. <sup>67</sup><b>Chúng tôi mở cửa đến sáu giờ chiều một ngày trong tuần.</b>"
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 65,
+          "text": "What does the man say he needs to have done?",
+          "options": {
+            "A": "He needs to schedule a job interview.",
+            "B": "He needs to cancel a doctor's appointment.",
+            "C": "He needs to have his photograph taken.",
+            "D": "He needs to renew his driver's license."
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s2"
+          ],
+          "explanation": {
+            "vi": "What does the man say he needs to have done?",
+            "options_vn": {
+              "A": "Anh ấy cần lên lịch phỏng vấn xin việc.",
+              "B": "Anh ấy cần hủy một cuộc hẹn với bác sĩ.",
+              "C": "Anh ấy cần được chụp ảnh.",
+              "D": "Anh ấy cần gia hạn bằng lái xe."
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Anh ấy cần được chụp ảnh. (C)**."
+          }
+        },
+        {
+          "questionNo": 66,
+          "text": "What does the woman ask the man to bring to an appointment?",
+          "options": {
+            "A": "An application form",
+            "B": "Some references",
+            "C": "A study guide",
+            "D": "A payment receipt"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s4"
+          ],
+          "explanation": {
+            "vi": "What does the woman ask the man to bring to an appointment?",
+            "options_vn": {
+              "A": "Một mẫu đơn đăng ký",
+              "B": "Một số tài liệu tham khảo",
+              "C": "Một hướng dẫn học tập",
+              "D": "Một biên lai thanh toán"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một mẫu đơn đăng ký (A)**."
+          }
+        },
+        {
+          "questionNo": 67,
+          "text": "Look at the graphic. Which day will the man request an appointment for?",
+          "options": {
+            "A": "Monday",
+            "B": "Tuesday",
+            "C": "Wednesday",
+            "D": "Thursday"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s7"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Thứ Hai",
+              "B": "Thứ Ba",
+              "C": "Thứ Tư",
+              "D": "Thứ Năm"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Thứ Tư (C)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 290,
+    "id": "ETS2026_TEST_03_68_70",
+    "json": {
+      "passages": [
+        {
+          "category": "Conversation 68-70",
+          "html_content": "<div data-sid='s1'><b>M-Au:</b> Hi, Marina. <sup>68</sup><b>Do you have receipts for your expenses from the dental hygienists' conference you attended last week?</b></div><div data-sid='s2'><b>W-Am:</b> Yes, I have them. I was just going to scan them and send them to you by e-mail.</div><div data-sid='s3'><b>M-Au:</b> Thanks very much. <sup>69</sup><b>Once I receive them, I'll process your request for reimbursement.</b></div><div data-sid='s4'>Don't forget to fill out the travel expenses form and include it in your e-mail, too.</div><div data-sid='s5'><b>W-Am:</b> OK. <sup>70</sup><b>Remind me, what should I use for the department code?</b></div><div data-sid='s6'><b>M-Au:</b> Oh, sorry. I forgot to tell you. Use number 1009.</div>",
+          "translation_map": {
+            "s1": "<b>Nam (Úc):</b> Chào Marina. <sup>68</sup><b>Cô có giữ hóa đơn cho các khoản chi phí từ hội nghị chuyên gia vệ sinh nha khoa mà cô đã tham dự tuần trước không?</b>",
+            "s2": "<b>Nữ (Mỹ):</b> Có, tôi có giữ. Tôi đang định quét chúng và gửi cho anh qua email.",
+            "s3": "<b>Nam (Úc):</b> Cảm ơn cô rất nhiều. <sup>69</sup><b>Ngay khi nhận được chúng, tôi sẽ xử lý yêu cầu hoàn tiền của cô.</b>",
+            "s4": "Đừng quên điền vào mẫu chi phí đi lại và đính kèm vào email của cô luôn nhé.",
+            "s5": "<b>Nữ (Mỹ):</b> Được thôi. <sup>70</sup><b>Nhắc tôi với, tôi nên dùng mã số nào cho phần mã phòng ban (department code)?</b>",
+            "s6": "<b>Nam (Úc):</b> Ồ, xin lỗi. Tôi quên chưa nói với cô. Hãy dùng số 1009."
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 68,
+          "text": "What event did the woman attend last week?",
+          "options": {
+            "A": "A professional conference",
+            "B": "A training workshop",
+            "C": "A car auction",
+            "D": "A product demonstration"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s1"
+          ],
+          "explanation": {
+            "vi": "What event did the woman attend last week?",
+            "options_vn": {
+              "A": "Một hội nghị chuyên môn",
+              "B": "Một buổi hội thảo đào tạo",
+              "C": "Một buổi đấu giá xe hơi",
+              "D": "Một buổi giới thiệu sản phẩm"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một hội nghị chuyên môn (A)**."
+          }
+        },
+        {
+          "questionNo": 69,
+          "text": "What will the man do with the documents the woman provides?",
+          "options": {
+            "A": "Process a request",
+            "B": "Postpone a reservation",
+            "C": "Make a schedule",
+            "D": "Finalize a report"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s3"
+          ],
+          "explanation": {
+            "vi": "What will the man do with the documents the woman provides?",
+            "options_vn": {
+              "A": "Xử lý một yêu cầu",
+              "B": "Hoãn một việc đặt chỗ",
+              "C": "Lập một thời khóa biểu",
+              "D": "Hoàn tất một bản báo cáo"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Xử lý một yêu cầu (A)**."
+          }
+        },
+        {
+          "questionNo": 70,
+          "text": "Look at the graphic. Which section does the woman ask about?",
+          "options": {
+            "A": "Section 2",
+            "B": "Section 3",
+            "C": "Section 4",
+            "D": "Section 5"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s5"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Phần 2",
+              "B": "Phần 3",
+              "C": "Phần 4",
+              "D": "Phần 5"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Phần 4 (C)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 299,
+    "id": "ETS2026_TEST_03_95_97",
+    "json": {
+      "passages": [
+        {
+          "category": "Telephone Message 95-97",
+          "html_content": "<div data-sid='s1'><b>M-Au:</b> Hi. This is Liam from Oceania Flowers.</div><div data-sid='s2'>I’m calling about our print order for coupons.</div><div data-sid='s3'><sup>95</sup><b>We originally said we needed the coupons by Friday, but we now need them to be ready by Wednesday instead.</b></div><div data-sid='s4'><sup>96</sup><b>We just found out yesterday that our application to the National Florists Association was approved.</b></div><div data-sid='s5'>We’ll be attending their annual Floral Show in Richmond this weekend.</div><div data-sid='s6'>Oh, one other thing—<sup>97</sup><b>we’d also like to change the limit to five items on the coupon.</b></div><div data-sid='s7'>Can you take care of that before you start printing? Thank you!</div>",
+          "translation_map": {
+            "s1": "<b>Nam (Úc):</b> Xin chào. Tôi là Liam từ Oceania Flowers.",
+            "s2": "Tôi gọi điện về đơn hàng in phiếu giảm giá của chúng tôi.",
+            "s3": "<sup>95</sup><b>Ban đầu chúng tôi nói rằng cần các phiếu giảm giá vào thứ Sáu, nhưng hiện tại chúng tôi cần chúng phải sẵn sàng vào thứ Tư.</b>",
+            "s4": "<sup>96</sup><b>Chúng tôi vừa mới biết được vào hôm qua rằng đơn xin gia nhập Hiệp hội Những người trồng hoa Quốc gia của chúng tôi đã được chấp thuận.</b>",
+            "s5": "Chúng tôi sẽ tham dự Triển lãm Hoa hàng năm của họ tại Richmond vào cuối tuần này.",
+            "s6": "Ồ, còn một việc nữa—<sup>97</sup><b>chúng tôi cũng muốn thay đổi giới hạn trên phiếu giảm giá thành năm mặt hàng.</b>",
+            "s7": "Bạn có thể xử lý việc đó trước khi bắt đầu in không? Cảm ơn bạn!"
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 95,
+          "text": "Why is the speaker calling?",
+          "options": {
+            "A": "To file a complaint",
+            "B": "To purchase some tickets",
+            "C": "To revise an order",
+            "D": "To promote a product"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s3",
+            "s6"
+          ],
+          "explanation": {
+            "vi": "Why is the speaker calling?",
+            "options_vn": {
+              "A": "Để khiếu nại",
+              "B": "Để mua một số vé",
+              "C": "Để sửa đổi một đơn hàng",
+              "D": "Để quảng bá một sản phẩm"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Để sửa đổi một đơn hàng (C)**."
+          }
+        },
+        {
+          "questionNo": 96,
+          "text": "What did the speaker find out yesterday?",
+          "options": {
+            "A": "A printer was replaced.",
+            "B": "An application was approved.",
+            "C": "A sales event was announced.",
+            "D": "A lease was extended."
+          },
+          "correct": "B",
+          "evidence_sids": [
+            "s4"
+          ],
+          "explanation": {
+            "vi": "What did the speaker find out yesterday?",
+            "options_vn": {
+              "A": "Một máy in đã được thay thế.",
+              "B": "Một đơn xin đã được chấp thuận.",
+              "C": "Một sự kiện bán hàng đã được thông báo.",
+              "D": "Một hợp đồng thuê đã được gia hạn."
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một đơn xin đã được chấp thuận. (B)**."
+          }
+        },
+        {
+          "questionNo": 97,
+          "text": "Look at the graphic. Which number does the speaker want to change?",
+          "options": {
+            "A": "2005",
+            "B": "25",
+            "C": "2",
+            "D": "6"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s6"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "2005",
+              "B": "25",
+              "C": "2",
+              "D": "6"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **2 (C)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 300,
+    "id": "ETS2026_TEST_03_98_100",
+    "json": {
+      "passages": [
+        {
+          "category": "Message + Bus Route 98-100",
+          "html_content": "<div data-sid='s1'><b>M-Cn:</b> Hi, Takuma. <sup>98</sup><b>Good news—you got your first television audition! It's for a role in a TV drama.</b></div><div data-sid='s2'>I've sent an e-mail with the script and details.</div><div data-sid='s3'>Since you're auditioning to join the cast of an ongoing show, <sup>99</sup><b>you should watch some videos of previous episodes so you understand the role.</b></div><div data-sid='s4'>One last note—since you're new to the city, you might be wondering about the best bus route to take.</div><div data-sid='s5'>You could take the green line to Orchard, but <sup>100</sup><b>I'd recommend taking the yellow line to the last stop.</b></div><div data-sid='s6'>It's a longer route, but the last stop is closer to the studio.</div>",
+          "translation_map": {
+            "s1": "<b>Nam (Trung Quốc):</b> Chào Takuma. <sup>98</sup><b>Tin tốt đây—bạn đã có buổi thử giọng truyền hình đầu tiên rồi! Đó là một vai diễn trong một bộ phim truyền hình dài tập.</b>",
+            "s2": "Tôi đã gửi một email kèm theo kịch bản và thông tin chi tiết.",
+            "s3": "Vì bạn đang thử vai để gia nhập dàn diễn viên của một chương trình đang phát sóng, <sup>99</sup><b>bạn nên xem một số video của các tập trước để hiểu rõ về vai diễn.</b>",
+            "s4": "Lưu ý cuối cùng—vì bạn mới đến thành phố này, có thể bạn đang thắc mắc về tuyến xe buýt tốt nhất nên đi.",
+            "s5": "Bạn có thể đi tuyến màu xanh lá cây đến Orchard, nhưng <sup>100</sup><b>tôi khuyên bạn nên đi tuyến màu vàng đến điểm dừng cuối cùng.</b>",
+            "s6": "Đó là một lộ trình dài hơn, nhưng điểm dừng cuối cùng lại gần trường quay hơn."
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 98,
+          "text": "Who most likely is the listener?",
+          "options": {
+            "A": "An actor",
+            "B": "A photographer",
+            "C": "A writer",
+            "D": "An athlete"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s1"
+          ],
+          "explanation": {
+            "vi": "Who most likely is the listener?",
+            "options_vn": {
+              "A": "Một diễn viên",
+              "B": "Một nhiếp ảnh gia",
+              "C": "Một nhà văn",
+              "D": "Một vận động viên"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một diễn viên (A)**."
+          }
+        },
+        {
+          "questionNo": 99,
+          "text": "According to the speaker, what should the listener do to prepare?",
+          "options": {
+            "A": "Update a résumé",
+            "B": "Review some videos",
+            "C": "Contact a colleague",
+            "D": "Make a recording"
+          },
+          "correct": "B",
+          "evidence_sids": [
+            "s3"
+          ],
+          "explanation": {
+            "vi": "According to the speaker, what should the listener do to prepare?",
+            "options_vn": {
+              "A": "Cập nhật sơ yếu lý lịch",
+              "B": "Xem lại một số video",
+              "C": "Liên hệ với đồng nghiệp",
+              "D": "Thực hiện một bản ghi âm"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Xem lại một số video (B)**."
+          }
+        },
+        {
+          "questionNo": 100,
+          "text": "Look at the graphic. Which bus stop does the speaker recommend getting off at?",
+          "options": {
+            "A": "Orchard",
+            "B": "Heath",
+            "C": "Grove",
+            "D": "Meadow"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s5"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Orchard",
+              "B": "Heath",
+              "C": "Grove",
+              "D": "Meadow"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Grove (C)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 311,
+    "id": "ETS2026_TEST_04_62_64",
+    "json": {
+      "passages": [
+        {
+          "category": "Conversation [62-64]",
+          "html_content": "<div data-sid='s1'><b>M-Au:</b> Hi, Ms. Rossi.</div><div data-sid='s2'><sup>62</sup><b>I understand you're concerned about a charge that appears on the statement for your business account.</b></div><div data-sid='s3'><b>W-Am:</b> Yes, <sup>63</sup><b>I have a question about the charge on May 3.</b></div><div data-sid='s4'>I don't remember purchasing anything for that amount.</div><div data-sid='s5'><b>M-Au:</b> Let me review your statement now. Hmm.</div><div data-sid='s6'>It looks like that purchase was made abroad.</div><div data-sid='s7'>So an international transaction fee was added to the purchase amount.</div><div data-sid='s8'><b>W-Am:</b> Oh, yes—I was out of the country at that time.</div><div data-sid='s9'>Thanks for clarifying.</div><div data-sid='s10'><sup>64</sup><b>Can you provide me with a list of all the bank fees for transactions made abroad?</b></div><div data-sid='s11'><b>M-Au:</b> <sup>64</sup><b>Yes, of course. Here's a document that lists all the information.</b></div>",
+          "translation_map": {
+            "s1": "<b>Nam (Úc):</b> Chào bà Rossi.",
+            "s2": "<sup>62</sup><b>Tôi hiểu bà đang lo lắng về một khoản phí xuất hiện trên sao kê tài khoản doanh nghiệp của mình.</b>",
+            "s3": "<b>Nữ (Mỹ):</b> Vâng, <sup>63</sup><b>tôi có một câu hỏi về khoản phí vào ngày 3 tháng 5.</b>",
+            "s4": "Tôi không nhớ là đã mua bất cứ thứ gì với số tiền đó.",
+            "s5": "<b>Nam (Úc):</b> Để tôi xem lại sao kê của bà ngay bây giờ. Hừm.",
+            "s6": "Có vẻ như giao dịch mua đó đã được thực hiện ở nước ngoài.",
+            "s7": "Vì vậy, một khoản phí giao dịch quốc tế đã được cộng vào số tiền mua hàng.",
+            "s8": "<b>Nữ (Mỹ):</b> Ồ, đúng rồi—lúc đó tôi đang ở nước ngoài.",
+            "s9": "Cảm ơn anh đã làm rõ.",
+            "s10": "<sup>64</sup><b>Anh có thể cung cấp cho tôi danh sách tất cả các loại phí ngân hàng cho các giao dịch được thực hiện ở nước ngoài không?</b>",
+            "s11": "<b>Nam (Úc):</b> <sup>64</sup><b>Vâng, tất nhiên rồi. Đây là tài liệu liệt kê tất cả các thông tin đó.</b>"
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 62,
+          "text": "Where does the man most likely work?",
+          "options": {
+            "A": "At an airport",
+            "B": "At a bank",
+            "C": "At a real estate agency",
+            "D": "At a department store"
+          },
+          "correct": "B",
+          "evidence_sids": [
+            "s2",
+            "s10"
+          ],
+          "explanation": {
+            "vi": "Where does the man most likely work?",
+            "options_vn": {
+              "A": "Tại một sân bay",
+              "B": "Tại một ngân hàng",
+              "C": "Tại một đại lý bất động sản",
+              "D": "Tại một cửa hàng bách hóa"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Tại một ngân hàng (B)**."
+          }
+        },
+        {
+          "questionNo": 63,
+          "text": "Look at the graphic. Which amount does the woman ask about?",
+          "options": {
+            "A": "$203.00",
+            "B": "$350.00",
+            "C": "$75.50",
+            "D": "$83.15"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s3"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "$203.00",
+              "B": "$350.00",
+              "C": "$75.50",
+              "D": "$83.15"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **$203.00 (A)**."
+          }
+        },
+        {
+          "questionNo": 64,
+          "text": "What does the man give the woman?",
+          "options": {
+            "A": "An updated statement",
+            "B": "A list of fees",
+            "C": "A discount card",
+            "D": "A brochure"
+          },
+          "correct": "B",
+          "evidence_sids": [
+            "s10",
+            "s11"
+          ],
+          "explanation": {
+            "vi": "What does the man give the woman?",
+            "options_vn": {
+              "A": "Một bản sao kê đã cập nhật",
+              "B": "Một danh sách các loại phí",
+              "C": "Một thẻ giảm giá",
+              "D": "Một cuốn tài liệu quảng cáo"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một danh sách các loại phí (B)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 312,
+    "id": "ETS2026_TEST_04_65_67",
+    "json": {
+      "passages": [
+        {
+          "category": "Conversation [65-67]",
+          "html_content": "<div data-sid='s1'><b>Nam (Trung Quốc):</b> Magali, were you able to reserve the performing arts center for the piano concert?</div><div data-sid='s2'><b>Nữ (Mỹ):</b> Yes.</div><div data-sid='s3'><sup>65</sup><b>I booked their main auditorium for that day.</b></div><div data-sid='s4'>They're sending me the contract.</div><div data-sid='s5'><b>Nam (Trung Quốc):</b> <sup>65</sup><b>Thanks for doing that.</b></div><div data-sid='s6'><b>Nữ (Mỹ):</b> No problem.</div><div data-sid='s7'>Hopefully, it'll be as successful as last year.</div><div data-sid='s8'><b>Nam (Trung Quốc):</b> We sold 2,000 tickets last year, but we had three celebrity performers.</div><div data-sid='s9'><sup>66</sup><b>I'm worried we won't sell as many tickets this year.</b></div><div data-sid='s10'><b>Nữ (Mỹ):</b> Well, Xinyu Gu is a very popular pianist.</div><div data-sid='s11'>And she's staying after the concert to sign autographs.</div><div data-sid='s12'>Which reminds me, where should we set up the table for that?</div><div data-sid='s13'><b>Nam (Trung Quốc):</b> Good question.</div><div data-sid='s14'>Hmm.</div><div data-sid='s15'>The café should be closed by then.</div><div data-sid='s16'><sup>67</sup><b>Let's set it up next to the café.</b></div>",
+          "translation_map": {
+            "s1": "<b>Nam (Trung Quốc):</b> Magali, cô có thể đặt trước trung tâm biểu diễn nghệ thuật cho buổi hòa nhạc piano không?",
+            "s2": "<b>Nữ (Mỹ):</b> Có chứ.",
+            "s3": "<sup>65</sup><b>Tôi đã đặt khán phòng chính của họ cho ngày đó rồi.</b>",
+            "s4": "Họ đang gửi hợp đồng cho tôi.",
+            "s5": "<b>Nam (Trung Quốc):</b> <sup>65</sup><b>Cảm ơn cô đã làm việc đó.</b>",
+            "s6": "<b>Nữ (Mỹ):</b> Không có gì.",
+            "s7": "Hy vọng nó sẽ thành công như năm ngoái.",
+            "s8": "<b>Nam (Trung Quốc):</b> Năm ngoái chúng ta đã bán được 2.000 vé, nhưng chúng ta đã có ba nghệ sĩ biểu diễn nổi tiếng.",
+            "s9": "<sup>66</sup><b>Tôi lo lắng rằng năm nay chúng ta sẽ không bán được nhiều vé như vậy.</b>",
+            "s10": "<b>Nữ (Mỹ):</b> Chà, Xinyu Gu là một nghệ sĩ piano rất được yêu thích.",
+            "s11": "Và cô ấy sẽ ở lại sau buổi hòa nhạc để ký tặng.",
+            "s12": "Điều đó làm tôi nhớ ra, chúng ta nên đặt bàn cho việc đó ở đâu?",
+            "s13": "<b>Nam (Trung Quốc):</b> Câu hỏi hay đấy.",
+            "s14": "Hừm.",
+            "s15": "Lúc đó quán cà phê chắc đã đóng cửa rồi.",
+            "s16": "<sup>67</sup><b>Hãy đặt nó cạnh quán cà phê nhé.</b>"
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 65,
+          "text": "What does the man thank the woman for doing?",
+          "options": {
+            "A": "Printing programs",
+            "B": "Setting up lighting",
+            "C": "Reserving a venue",
+            "D": "Paying a performer"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s3",
+            "s5"
+          ],
+          "explanation": {
+            "vi": "What does the man thank the woman for doing?",
+            "options_vn": {
+              "A": "In chương trình",
+              "B": "Thiết lập ánh sáng",
+              "C": "Đặt một địa điểm",
+              "D": "Trả tiền cho người biểu diễn"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Đặt một địa điểm (C)**."
+          }
+        },
+        {
+          "questionNo": 66,
+          "text": "What does the man say he is worried about?",
+          "options": {
+            "A": "Reviews from critics",
+            "B": "Ticket sales",
+            "C": "A performance schedule",
+            "D": "The cost of merchandise"
+          },
+          "correct": "B",
+          "evidence_sids": [
+            "s9"
+          ],
+          "explanation": {
+            "vi": "What does the man say he is worried about?",
+            "options_vn": {
+              "A": "Đánh giá từ các nhà phê bình",
+              "B": "Doanh số bán vé",
+              "C": "Lịch biểu diễn",
+              "D": "Chi phí hàng hóa"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Doanh số bán vé (B)**."
+          }
+        },
+        {
+          "questionNo": 67,
+          "text": "Look at the graphic. Where will a table be set up?",
+          "options": {
+            "A": "At location 1",
+            "B": "At location 2",
+            "C": "At location 3",
+            "D": "At location 4"
+          },
+          "correct": "D",
+          "evidence_sids": [
+            "s16"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Tại vị trí 1",
+              "B": "Tại vị trí 2",
+              "C": "Tại vị trí 3",
+              "D": "Tại vị trí 4"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Tại vị trí 4 (D)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 313,
+    "id": "ETS2026_TEST_04_68_70",
+    "json": {
+      "passages": [
+        {
+          "category": "Conversation [68-70]",
+          "html_content": "<div data-sid='s1'><b>Nam (Úc):</b> Welcome to the garden center. Can I help you?</div><div data-sid='s2'><b>Nữ (Anh):</b> Hi.</div><div data-sid='s3'><sup>68</sup><b>I've started growing rose bushes,</b> and I've heard they require special care.</div><div data-sid='s4'><sup>68</sup><b>Are there any products you can recommend?</b></div><div data-sid='s5'><b>Nam (Úc):</b> Yes!</div><div data-sid='s6'>But first, I'd like to show you a great resource on our Web site.</div><div data-sid='s7'>Have you seen our blog?</div><div data-sid='s8'><b>Nữ (Anh):</b> No, I haven't.</div><div data-sid='s9'><b>Nam (Úc):</b> We have monthly posts on many gardening topics, and <sup>69</sup><b>there's a recent one about growing roses.</b></div><div data-sid='s10'><b>Nữ (Anh):</b> <sup>69</sup><b>I'll check it out!</b></div><div data-sid='s11'>Thanks so much.</div><div data-sid='s12'><b>Nam (Úc):</b> You're welcome.</div><div data-sid='s13'>Now—<sup>70</sup><b>let me show you our fertilizers.</b></div><div data-sid='s14'>They're in aisle six.</div>",
+          "translation_map": {
+            "s1": "<b>Nam (Úc):</b> Chào mừng đến với trung tâm làm vườn. Tôi có thể giúp gì cho bà?",
+            "s2": "<b>Nữ (Anh):</b> Chào ông.",
+            "s3": "<sup>68</sup><b>Tôi đã bắt đầu trồng các bụi hoa hồng,</b> và tôi nghe nói chúng cần được chăm sóc đặc biệt.",
+            "s4": "<sup>68</sup><b>Có sản phẩm nào ông có thể giới thiệu không?</b>",
+            "s5": "<b>Nam (Úc):</b> Có chứ!",
+            "s6": "Nhưng trước tiên, tôi muốn giới thiệu cho bà một nguồn tài nguyên tuyệt vời trên trang web của chúng tôi.",
+            "s7": "Bà đã xem blog của chúng tôi chưa?",
+            "s8": "<b>Nữ (Anh):</b> Chưa, tôi chưa xem.",
+            "s9": "<b>Nam (Úc):</b> Chúng tôi có các bài đăng hàng tháng về nhiều chủ đề làm vườn, và <sup>69</sup><b>có một bài đăng gần đây về việc trồng hoa hồng.</b>",
+            "s10": "<b>Nữ (Anh):</b> <sup>69</sup><b>Tôi sẽ xem thử!</b>",
+            "s11": "Cảm ơn ông rất nhiều.",
+            "s12": "<b>Nam (Úc):</b> Không có gì.",
+            "s13": "Bây giờ—<sup>70</sup><b>để tôi chỉ cho bà các loại phân bón của chúng tôi.</b>",
+            "s14": "Chúng ở lối đi số sáu."
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 68,
+          "text": "Why is the woman at the garden center?",
+          "options": {
+            "A": "To enroll in a course",
+            "B": "To join a gardening club",
+            "C": "To buy some supplies",
+            "D": "To return a purchase"
+          },
+          "correct": "C",
+          "evidence_sids": [
+            "s3",
+            "s4"
+          ],
+          "explanation": {
+            "vi": "Why is the woman at the garden center?",
+            "options_vn": {
+              "A": "Để đăng ký một khóa học",
+              "B": "Để tham gia câu lạc bộ làm vườn",
+              "C": "Để mua một số vật tư",
+              "D": "Để trả lại món đồ đã mua"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Để mua một số vật tư (C)**."
+          }
+        },
+        {
+          "questionNo": 69,
+          "text": "Look at the graphic. Which month's post will the woman most likely read?",
+          "options": {
+            "A": "May's post",
+            "B": "June's post",
+            "C": "July's post",
+            "D": "August's post"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s9",
+            "s10"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Bài đăng tháng 5",
+              "B": "Bài đăng tháng 6",
+              "C": "Bài đăng tháng 7",
+              "D": "Bài đăng tháng 8"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Bài đăng tháng 5 (A)**."
+          }
+        },
+        {
+          "questionNo": 70,
+          "text": "What kind of products will the man show to the woman?",
+          "options": {
+            "A": "Indoor plants",
+            "B": "Plant fertilizers",
+            "C": "Gardening tools",
+            "D": "Irrigation systems"
+          },
+          "correct": "B",
+          "evidence_sids": [
+            "s13"
+          ],
+          "explanation": {
+            "vi": "What kind of products will the man show to the woman?",
+            "options_vn": {
+              "A": "Cây trồng trong nhà",
+              "B": "Phân bón cây trồng",
+              "C": "Dụng cụ làm vườn",
+              "D": "Hệ thống tưới tiêu"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Phân bón cây trồng (B)**."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "idx": 322,
+    "id": "ETS2026_TEST_04_95_97",
+    "json": {
+      "passages": [
+        {
+          "category": "Tour Information [95-97]",
+          "html_content": "<div data-sid='s1'><b>M-Au:</b> Please follow me, and <sup>95</sup><b>we'll begin today's tour.</b></div><div data-sid='s2'>Now, I know not everyone who takes this all-access tour is <sup>95</sup><b>a football fan.</b></div><div data-sid='s3'>Many of our visitors are just curious about how <sup>95</sup><b>a modern sports facility of this size</b> operates.</div><div data-sid='s4'>Well, you'll get to see that and much more.</div><div data-sid='s5'>And fortunately for us, <sup>96</sup><b>today's forecast shows a mix of sun and clouds, with no rain.</b></div><div data-sid='s6'>That's just the right combination for spending some time outside on the field comfortably.</div><div data-sid='s7'>Also, as a heads-up, <sup>97</sup><b>a shuttle bus will meet us at the end of the tour to bring us all back to the parking lot.</b></div>",
+          "translation_map": {
+            "s1": "<b>Nam (Úc):</b> Vui lòng đi theo tôi, và <sup>95</sup><b>chúng ta sẽ bắt đầu chuyến tham quan ngày hôm nay.</b>",
+            "s2": "Bây giờ, tôi biết không phải ai tham gia chuyến tham quan trọn gói này cũng là <sup>95</sup><b>một người hâm mộ bóng đá.</b>",
+            "s3": "Nhiều du khách của chúng tôi chỉ tò mò về cách <sup>95</sup><b>một cơ sở thể thao hiện đại với quy mô như thế này</b> vận hành.",
+            "s4": "Vâng, quý vị sẽ được tận mắt chứng kiến điều đó và nhiều hơn thế nữa.",
+            "s5": "Và may mắn cho chúng ta, <sup>96</sup><b>dự báo thời tiết hôm nay cho thấy trời nắng xen kẽ nhiều mây và không mưa.</b>",
+            "s6": "Đó là sự kết hợp hoàn hảo để chúng ta dành thời gian ngoài sân một cách thoải mái.",
+            "s7": "Ngoài ra, xin lưu ý rằng <sup>97</sup><b>một chiếc xe buýt đưa đón sẽ đón chúng ta khi kết thúc chuyến tham quan để đưa tất cả trở lại bãi đậu xe.</b>"
+          }
+        }
+      ],
+      "questions": [
+        {
+          "questionNo": 95,
+          "text": "Where are the listeners?",
+          "options": {
+            "A": "At a farm",
+            "B": "At a factory",
+            "C": "At a museum",
+            "D": "At a stadium"
+          },
+          "correct": "D",
+          "evidence_sids": [
+            "s1",
+            "s2",
+            "s3"
+          ],
+          "explanation": {
+            "vi": "Where are the listeners?",
+            "options_vn": {
+              "A": "Tại một trang trại",
+              "B": "Tại một nhà máy",
+              "C": "Tại một bảo tàng",
+              "D": "Tại một sân vận động"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Tại một sân vận động (D)**."
+          }
+        },
+        {
+          "questionNo": 96,
+          "text": "Look at the graphic. When is the tour taking place?",
+          "options": {
+            "A": "On Monday",
+            "B": "On Tuesday",
+            "C": "On Wednesday",
+            "D": "On Thursday"
+          },
+          "correct": "A",
+          "evidence_sids": [
+            "s5"
+          ],
+          "explanation": {
+            "vi": "Dựa vào sơ đồ/hình ảnh bổ sung. Nhiệm vụ nào sẽ được giao?",
+            "options_vn": {
+              "A": "Vào Thứ Hai",
+              "B": "Vào Thứ Ba",
+              "C": "Vào Thứ Tư",
+              "D": "Vào Thứ Năm"
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Vào Thứ Hai (A)**."
+          }
+        },
+        {
+          "questionNo": 97,
+          "text": "What will happen at the end of the tour?",
+          "options": {
+            "A": "Pictures will be taken.",
+            "B": "Food will be served.",
+            "C": "Gifts will be given out.",
+            "D": "A shuttle bus will arrive."
+          },
+          "correct": "D",
+          "evidence_sids": [
+            "s7"
+          ],
+          "explanation": {
+            "vi": "What will happen at the end of the tour?",
+            "options_vn": {
+              "A": "Ảnh sẽ được chụp.",
+              "B": "Thức ăn sẽ được phục vụ.",
+              "C": "Quà tặng sẽ được phát.",
+              "D": "Một chiếc xe buýt đưa đón sẽ đến."
+            },
+            "why_correct": "Dựa vào các từ khóa và bối cảnh được nhắc đến trong đoạn hội thoại/bài nói, đáp án chính xác nhất là **Một chiếc xe buýt đưa đón sẽ đến. (D)**."
+          }
+        }
+      ]
+    }
+  }
+]
