@@ -44,6 +44,8 @@ export function AdminInlineEditor({
   const [isHovered, setIsHovered] = useState(false);
   const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
 
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
   const handleMouseEnter = () => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
     setIsHovered(true);
@@ -53,6 +55,10 @@ export function AdminInlineEditor({
     hoverTimeout.current = setTimeout(() => {
       setIsHovered(false);
     }, 150);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setMousePos({ x: e.clientX, y: e.clientY });
   };
 
   const [syncLogs, setSyncLogs] = useState<string[] | null>(null);
@@ -281,10 +287,10 @@ export function AdminInlineEditor({
     <div 
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="fixed transition-all duration-200 z-[10000] scale-90 -translate-y-full"
+      className="fixed transition-all duration-200 z-[10000] scale-90 -translate-x-full -translate-y-full"
       style={{
-        top: (containerRef.current?.getBoundingClientRect().top || 0) + window.scrollY - 8,
-        left: (containerRef.current?.getBoundingClientRect().right || 0) + window.scrollX - 40,
+        top: mousePos.y - 10,
+        left: mousePos.x - 10,
       }}
     >
       <div className="bg-slate-900/95 backdrop-blur-md text-white text-[9px] py-2 px-3 rounded-xl shadow-2xl border border-white/10 whitespace-nowrap font-mono flex flex-col gap-1 ring-4 ring-indigo-500/10 pointer-events-auto cursor-default">
@@ -315,6 +321,7 @@ export function AdminInlineEditor({
       ref={containerRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
       className={`relative inline ${
         isEditing ? "" : `hover:bg-indigo-50/40 rounded px-0.5 -mx-0.5 cursor-help`
       } ${className}`}

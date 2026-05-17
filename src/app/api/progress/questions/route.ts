@@ -171,6 +171,9 @@ export async function POST(req: Request) {
               isCorrect: atm.isCorrect,
               userAnswer: atm.userAnswer,
               courseId: atm.courseId || atm.courseId === null ? atm.courseId : undefined,
+              isFlagged: atm.isFlagged !== undefined ? atm.isFlagged : undefined,
+              flagColor: atm.flagColor !== undefined ? atm.flagColor : undefined,
+              flagNote: atm.flagNote !== undefined ? atm.flagNote : undefined,
               updatedAt: new Date(),
             },
             create: {

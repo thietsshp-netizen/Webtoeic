@@ -140,6 +140,55 @@ export default function ToeicReviewManager({
     }
   };
 
+  // Xử lý dọn dẹp siêu tốc câu hỏi khỏi danh sách review
+  const handleQuickResolve = async (item: ReviewItem) => {
+    const qKey = item.questionId;
+    const corrAns = item.question?.correctAnswer || item.userAnswer || 'A';
+
+    // 1. Chuyển sang câu tiếp theo NGAY LẬP TỨC để tạo cảm giác siêu nhanh (snappy)
+    const currentIndex = filteredItems.findIndex(it => it.questionId === qKey);
+    let nextActiveId: string | null = null;
+    if (currentIndex !== -1) {
+      if (currentIndex + 1 < filteredItems.length) {
+        nextActiveId = filteredItems[currentIndex + 1].questionId;
+      } else if (currentIndex > 0) {
+        nextActiveId = filteredItems[currentIndex - 1].questionId;
+      }
+    }
+    setActiveQuestionId(nextActiveId);
+
+    // 2. Gọi API cập nhật database chạy ngầm
+    try {
+      fetch('/api/progress/questions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'batch',
+          attempts: [{
+            questionId: item.questionId,
+            lessonId: item.lessonId,
+            courseId: item.courseId,
+            isCorrect: true,
+            userAnswer: corrAns,
+            isFlagged: false,
+            flagColor: null,
+            flagNote: null
+          }]
+        })
+      });
+    } catch (e) {
+      console.error("Lỗi khi xoá khỏi danh sách review:", e);
+    }
+
+    // 3. Cập nhật local state để biến mất khỏi list ngay lập tức
+    setItems(prev => prev.map(it => 
+      it.questionId === qKey 
+        ? { ...it, isCorrect: true, isFlagged: false, flagColor: null, flagNote: null }
+        : it
+    ));
+    setResolvedIds(prev => new Set(prev).add(qKey));
+  };
+
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] text-center p-10 bg-white rounded-3xl border border-dashed border-slate-200">
@@ -264,10 +313,10 @@ export default function ToeicReviewManager({
             const fColor = item.flagColor?.toUpperCase();
             
             return (
-              <button
+              <div
                 key={item.attemptId}
                 onClick={() => setActiveQuestionId(item.questionId)}
-                className={`w-full text-left p-4 rounded-2xl border transition-all flex items-center justify-between group ${
+                className={`w-full text-left p-4 rounded-2xl border transition-all flex items-center justify-between group cursor-pointer relative ${
                   isSelected 
                     ? activeFilter === 'flagged' ? 'bg-orange-50 border-orange-200 text-orange-700 shadow-sm ring-4 ring-orange-50/50' :
                       activeFilter === 'note' ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm ring-4 ring-blue-50/50' :
@@ -276,6 +325,24 @@ export default function ToeicReviewManager({
                     : 'bg-white border-slate-100 text-slate-600 hover:border-blue-200 hover:shadow-sm'
                 }`}
               >
+                {/* Nút tích tròn nhỏ dọn dẹp siêu tốc ở góc phải trên cùng */}
+                <div 
+                  className="absolute top-2 right-2 z-10" 
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    onClick={() => handleQuickResolve(item)}
+                    className={`p-1 rounded-md border transition-all active:scale-95 flex items-center justify-center shadow-sm ${
+                      isSelected
+                        ? 'bg-white/20 border-white/20 hover:bg-white text-emerald-500 hover:text-emerald-600'
+                        : 'bg-emerald-50 border-emerald-100 text-emerald-500 hover:bg-emerald-500 hover:text-white'
+                    }`}
+                    title="Xoá khỏi danh sách review, đồng thời xoá cờ và ghi chú"
+                  >
+                    <CheckCircle size={10} />
+                  </button>
+                </div>
+
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black ${
                     isSelected 
@@ -369,7 +436,7 @@ export default function ToeicReviewManager({
                   </div>
                 </div>
                 <ChevronRight size={14} className={isSelected ? 'text-white' : 'text-slate-300 group-hover:text-blue-400'} />
-              </button>
+              </div>
             );
           })}
         </div>
