@@ -1834,9 +1834,14 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip }: any) {
           </div>
 
           <div className="flex-1 overflow-y-auto pr-1 text-left scrollbar-hide">
-            <div className="text-slate-600 text-[15px] leading-relaxed font-medium">
-              {vocab.example || "---"}
-            </div>
+            {vocab.example ? (
+              <div 
+                className="text-slate-600 text-[15px] leading-relaxed font-medium"
+                dangerouslySetInnerHTML={{ __html: vocab.example }}
+              />
+            ) : (
+              <div className="text-slate-600 text-[15px] leading-relaxed font-medium">---</div>
+            )}
           </div>
 
           {vocab.synonyms && (
@@ -1884,13 +1889,17 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip }: any) {
 
           <div className="space-y-4 text-[15px] flex-1 overflow-y-auto pr-2 scrollbar-hide">
             <div className="flex flex-col gap-2">
-              <div className="text-slate-700 leading-relaxed font-medium bg-white/40 p-4 rounded-2xl border border-white/60 shadow-sm">
-                {vocab.example}
-              </div>
+              {vocab.example && (
+                <div 
+                  className="text-slate-700 leading-relaxed font-medium bg-white/40 p-4 rounded-2xl border border-white/60 shadow-sm"
+                  dangerouslySetInnerHTML={{ __html: vocab.example }}
+                />
+              )}
               {vocab.exampleTranslation && (
-                <div className="text-slate-500 italic leading-relaxed pl-4 border-l-2 border-blue-200 py-1 bg-slate-50/50 rounded-r-xl pr-3">
-                  {vocab.exampleTranslation}
-                </div>
+                <div 
+                  className="text-slate-500 italic leading-relaxed pl-4 border-l-2 border-blue-200 py-1 bg-slate-50/50 rounded-r-xl pr-3"
+                  dangerouslySetInnerHTML={{ __html: vocab.exampleTranslation }}
+                />
               )}
             </div>
 
