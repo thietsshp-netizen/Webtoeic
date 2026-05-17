@@ -20,7 +20,7 @@ export default function SiteHeader() {
   // Hàm tạo màu từ string (email) để mỗi user có 1 màu riêng
   const getAvatarColor = (email: string) => {
     const colors = [
-      'bg-blue-500', 'bg-purple-500', 'bg-emerald-500', 
+      'bg-blue-500', 'bg-purple-500', 'bg-emerald-500',
       'bg-orange-500', 'bg-pink-500', 'bg-indigo-500', 'bg-cyan-500'
     ];
     if (!email) return colors[0];
@@ -66,7 +66,7 @@ export default function SiteHeader() {
 
       // Update session realtime
       await update({ name: profileData.displayName });
-      
+
       setUpdateMsg({ type: "success", text: "Cập nhật thành công!" });
       setProfileData(prev => ({ ...prev, password: "" }));
     } catch (e: any) {
@@ -132,14 +132,14 @@ export default function SiteHeader() {
                     </span>
                   </div>
 
-                  <div 
+                  <div
                     className={`w-9 h-9 rounded-full ${avatarColor} flex items-center justify-center font-black text-[11px] text-white shadow-lg shadow-blue-500/20`}
                   >
                     {userInitials}
                   </div>
-                  
+
                   <div className="flex items-center gap-1 border-l border-slate-200 pl-4">
-                    <button 
+                    <button
                       onClick={() => setShowProfileModal(true)}
                       className="p-2.5 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-blue-600 transition-all active:scale-90"
                       title="Cài đặt tài khoản"
@@ -174,14 +174,14 @@ export default function SiteHeader() {
                 <h2 className="text-xl font-black text-slate-800 tracking-tight uppercase">Cài đặt tài khoản</h2>
                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Học viên: {session?.user?.email}</p>
               </div>
-              <button 
-                onClick={() => setShowProfileModal(false)} 
+              <button
+                onClick={() => setShowProfileModal(false)}
                 className="p-2 hover:bg-white rounded-full transition-colors border border-slate-100 shadow-sm"
               >
                 <X size={20} className="text-slate-400" />
               </button>
             </div>
-            
+
             <div className="p-8 space-y-6">
               {updateMsg.text && (
                 <div className={`p-4 rounded-2xl text-xs font-bold border ${updateMsg.type === 'success' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'}`}>
@@ -198,7 +198,7 @@ export default function SiteHeader() {
                     className="w-full pl-12 pr-4 py-4 bg-blue-50/30 border border-blue-100 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition-all font-bold text-slate-700"
                     placeholder="Nhập tên mới..."
                     value={profileData.displayName}
-                    onChange={e => setProfileData({...profileData, displayName: e.target.value})}
+                    onChange={e => setProfileData({ ...profileData, displayName: e.target.value })}
                   />
                 </div>
               </div>
@@ -212,7 +212,7 @@ export default function SiteHeader() {
                     placeholder="Để trống nếu không đổi"
                     className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition-all font-bold text-slate-700"
                     value={profileData.password}
-                    onChange={e => setProfileData({...profileData, password: e.target.value})}
+                    onChange={e => setProfileData({ ...profileData, password: e.target.value })}
                   />
                 </div>
               </div>

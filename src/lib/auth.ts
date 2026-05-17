@@ -92,12 +92,12 @@ export const authOptions: NextAuthOptions = {
 
         // Nếu đã quá ngày hết hạn
         if (expiresAt < now) {
-          // Tính toán số ngày (để cho phép đăng nhập nếu đang ở ngày -1 như yêu cầu)
+          // Tính toán số ngày
           const diffTime = expiresAt.getTime() - now.getTime();
           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
           if (diffDays <= -1) {
-            throw new Error("Tài khoản đã hết hạn. Vui lòng liên hệ Admin để được gia hạn.");
+            return `/auth/signin?error=ExpiredAccount&email=${encodeURIComponent(user.email as string)}`;
           }
         }
       }
@@ -141,9 +141,9 @@ export const authOptions: NextAuthOptions = {
                 const accountAgeInDays = (Date.now() - userCreatedAt.getTime()) / (1000 * 60 * 60 * 24);
 
                 if (accountAgeInDays > 30) {
-                  throw new Error(`Tài khoản của bạn đã quá 30 ngày. Không thể đăng ký thêm ${deviceType} mới. Vui lòng liên hệ Admin.`);
+                  return `/auth/signin?error=DeviceLimitLocked&type=${deviceType}`;
                 } else {
-                  throw new Error(`Bạn đã có 1 ${deviceType} đăng ký. Bạn có thể đổi thiết bị trong mục Tài khoản (thời hạn 30 ngày đầu kể từ lúc tạo tài khoản).`);
+                  return `/auth/signin?error=DeviceLimitTrial&type=${deviceType}`;
                 }
               } else {
                 // Còn slot, tự động đăng ký máy mới
@@ -161,11 +161,10 @@ export const authOptions: NextAuthOptions = {
         }
       } catch (deviceError: any) {
         console.error("SignIn Callback - Device Check Error:", deviceError);
-        // Nếu là lỗi do mình throw thì ném tiếp để NextAuth xử lý
-        if (deviceError.message && (deviceError.message.includes("hết lượt") || deviceError.message.includes("đổi thiết bị"))) {
-          throw deviceError;
+        // Nếu catch được chuỗi URL redirect từ logic trong try
+        if (typeof deviceError === 'string' && deviceError.includes("/auth/signin")) {
+          return deviceError;
         }
-        // Các lỗi khác (cookies, db...) thì cho qua để không chặn user đăng nhập
       }
 
       console.log("SignIn Callback - Success");
@@ -316,6 +315,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/auth/signin", // Chuyển hướng đến trang Đăng nhập chuyên nghiệp
+    error: "/auth/signin",  // Mọi lỗi xác thực đều đưa về trang Đăng nhập custom
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

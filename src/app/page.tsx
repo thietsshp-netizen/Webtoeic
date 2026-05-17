@@ -351,7 +351,7 @@ function HomeContent() {
           </Link>
 
           <div className="flex items-center bg-slate-100/50 p-1.5 rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-[240px] md:max-w-none">
-            <TabBtn href="/" id="intro" active={activeTab} label="GIỚI THIỆU" icon={<Star size={16} />} />
+            <TabBtn href="/?tab=intro" id="intro" active={activeTab} label="GIỚI THIỆU" icon={<Star size={16} />} />
             <TabBtn href="/courses" id="courses" active={activeTab} label="KHÓA HỌC" icon={<BookOpen size={16} />} />
             <TabBtn href="/?tab=dashboard" id="dashboard" active={activeTab} label="DASHBOARD" icon={<Layout size={16} />} color="blue" />
           </div>
@@ -814,7 +814,7 @@ function HomeContent() {
 
                 <div className="mt-8 text-center">
                   <Link
-                    href="/"
+                    href="/?tab=intro"
                     className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-widest cursor-pointer"
                   >
                     ← Quay lại trang giới thiệu

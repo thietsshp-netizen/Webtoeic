@@ -11,6 +11,10 @@ const ERROR_MESSAGES: Record<string, string> = {
   OAuthAccountNotLinked: "Email này không được phép đăng nhập theo cách này.",
   CredentialsSignin:     "Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại.",
   SessionRequired:       "Bạn cần đăng nhập để tiếp tục.",
+  ExpiredAccount:        "Tài khoản dùng thử của bạn đã hết hạn (7 ngày). Vui lòng liên hệ Admin để đăng ký khóa học chính thức!",
+  DeviceLimitLocked:     "Tài khoản đã quá hạn 30 ngày và đạt giới hạn thiết bị. Không thể đăng ký thêm thiết bị mới. Vui lòng liên hệ Admin.",
+  DeviceLimitTrial:      "Tài khoản đã đạt giới hạn thiết bị đăng nhập. Bạn có thể quản lý và đổi thiết bị trong mục Cài đặt tài khoản ở Dashboard.",
+  Callback:              "Đăng nhập thất bại. Tài khoản của bạn có thể đã hết hạn hoặc bị giới hạn thiết bị.",
   Default:               "Đã xảy ra lỗi, vui lòng thử lại sau.",
 };
 
@@ -24,7 +28,14 @@ function SignInForm() {
   const [showCredentials, setShowCredentials] = useState(false);
 
   const urlError = searchParams.get("error") ?? "";
-  const [error, setError] = useState(ERROR_MESSAGES[urlError] ?? (urlError ? ERROR_MESSAGES.Default : ""));
+  const emailParam = searchParams.get("email") ?? "";
+  
+  let initialError = ERROR_MESSAGES[urlError] ?? (urlError ? ERROR_MESSAGES.Default : "");
+  if (urlError === "ExpiredAccount" && emailParam) {
+    initialError = `Tài khoản ${decodeURIComponent(emailParam)} đã hết hạn dùng thử (7 ngày). Vui lòng liên hệ Admin để đăng ký khóa học chính thức!`;
+  }
+  
+  const [error, setError] = useState(initialError);
 
   const rawCallback = searchParams.get("callbackUrl") || "";
   const callbackUrl = rawCallback.includes("error=") ? "/?tab=dashboard" : rawCallback || "/?tab=dashboard";
@@ -88,6 +99,12 @@ function SignInForm() {
               và trải nghiệm tính năng <span className="font-black uppercase text-emerald-600">PRO</span>!
             </p>
           </div>
+
+          {error && (
+            <div className="mb-6 bg-red-50 text-red-600 p-5 rounded-3xl text-xs font-bold text-center border border-red-100 shadow-sm">
+              {error}
+            </div>
+          )}
 
           {/* Google Sign In - NEW */}
           <button
