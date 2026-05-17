@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, Suspense } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut, signIn } from "next-auth/react";
 import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
 import { clsx } from "clsx";
 import CourseCard from "@/components/Course/CourseCard";
 import PlacementTest from "@/components/PlacementTest/PlacementTest";
 import FloatingMessenger from "@/components/UI/FloatingMessenger";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail } from "lucide-react";
 
 
 
@@ -80,6 +82,46 @@ function HomeContent() {
 
   // --- STATES QUẢN LÝ GIAO DIỆN ---
   const [activeTab, setActiveTab] = useState<string>("courses");
+
+  // --- STATES QUẢN LÝ ĐĂNG NHẬP (CREDENTIALS) TRÊN DASHBOARD CHƯA LOGIN ---
+  const [dashEmail, setDashEmail] = useState("");
+  const [dashPassword, setDashPassword] = useState("");
+  const [dashShowPassword, setDashShowPassword] = useState(false);
+  const [dashIsLoading, setDashIsLoading] = useState(false);
+  const [dashShowCredentials, setDashShowCredentials] = useState(false);
+  const [dashError, setDashError] = useState("");
+
+  const ERROR_MESSAGES: Record<string, string> = {
+    OAuthAccountNotLinked: "Email này không được phép đăng nhập theo cách này.",
+    CredentialsSignin:     "Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại.",
+    SessionRequired:       "Bạn cần đăng nhập để tiếp tục.",
+    Default:               "Đã xảy ra lỗi, vui lòng thử lại sau.",
+  };
+
+  const handleDashboardCredentialsLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setDashIsLoading(true);
+    setDashError("");
+
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        email: dashEmail,
+        password: dashPassword,
+        callbackUrl: "/?tab=dashboard",
+      });
+
+      if (res?.error) {
+        setDashError(ERROR_MESSAGES[res.error] ?? ERROR_MESSAGES.Default);
+      } else {
+        window.location.href = "/?tab=dashboard";
+      }
+    } catch (err) {
+      setDashError("Đã xảy ra lỗi hệ thống, vui lòng thử lại.");
+    } finally {
+      setDashIsLoading(false);
+    }
+  };
   const [dashTab, setDashTab] = useState<string>("courses");
   const [vocabMode, setVocabMode] = useState<string>("library");
   const [vocabFilter, setVocabFilter] = useState<"all" | "unlearned" | "review">("all");
@@ -632,41 +674,159 @@ function HomeContent() {
         {/* --- TAB 3: DASHBOARD (STUDENT CONSOLE) --- */}
         {activeTab === "dashboard" && (
           status === "unauthenticated" ? (
-            <div className="max-w-xl mx-auto bg-white p-12 md:p-16 rounded-[4rem] shadow-2xl border border-slate-100/50 text-center relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600"></div>
-              <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-50 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
-
-              <div className="w-24 h-24 bg-blue-50 text-blue-600 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-sm relative z-10">
-                <ShieldCheck size={48} className="animate-pulse" />
+            <div className="max-w-xl mx-auto text-center relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
+              <div className="w-16 h-16 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-blue-200 hover:rotate-6 transition-transform">
+                <GraduationCap className="text-white" size={32} />
               </div>
+              <h2 className="mt-6 text-center text-3xl font-black tracking-tight text-slate-900 uppercase italic leading-none">
+                BẠN CẦN ĐĂNG KÝ TÀI KHOẢN
+              </h2>
+              <p className="mt-4 text-center text-sm font-medium text-slate-500 max-w-md mx-auto leading-relaxed">
+                để được cấp Dashboard riêng và trải nghiệm các tính năng Pro
+              </p>
 
-              <h2 className="text-3xl font-black text-slate-800 mb-6 uppercase italic tracking-tighter">Khu vực dành cho học viên</h2>
+              <div className="mt-8 bg-white/80 backdrop-blur-xl py-10 px-6 shadow-2xl rounded-[3rem] sm:px-12 border border-white text-left">
+                {/* Hộp thông báo màu xanh ngọc (Emerald Box) */}
+                <div className="mb-8 p-5 bg-emerald-50 rounded-3xl border border-emerald-100 text-center shadow-sm shadow-emerald-50/50">
+                  <ShieldCheck className="text-emerald-500 mx-auto mb-3" size={28} />
+                  <p className="text-xs font-bold text-emerald-700 leading-relaxed">
+                    Hãy đăng ký tài khoản để nhận ngay
+                    <br />
+                    <span className="text-emerald-600 font-black text-lg tracking-wide">7 NGÀY HỌC THỬ MIỄN PHÍ</span>
+                    <br />
+                    và trải nghiệm tính năng <span className="font-black uppercase text-emerald-600">PRO</span>!
+                  </p>
+                </div>
 
-              <div className="space-y-6 mb-12 text-slate-600 font-medium leading-relaxed">
-                <p className="text-lg">
-                  Rất tiếc! Khu vực này chỉ dành riêng cho học viên chính thức của <span className="text-slate-900 font-bold italic uppercase">hoctoeic</span>.
-                </p>
-                <p className="p-6 bg-slate-50 rounded-3xl border border-slate-100 text-sm">
-                  Để đăng ký tài khoản và bắt đầu lộ trình học tập, bạn vui lòng liên hệ với <span className="text-blue-600 font-bold">Mr. Thiệt</span> qua:
-                  <br /><br />
-                  <span className="flex flex-col gap-3">
-                    <a href="https://www.facebook.com/" target="_blank" className="flex items-center justify-center gap-2 hover:text-blue-600 transition-colors">
-                      👤 <span className="font-bold">Facebook cá nhân</span>
-                    </a>
-                    <a href="https://www.facebook.com/ToeicMrThiet990" target="_blank" className="flex items-center justify-center gap-2 hover:text-blue-600 transition-colors">
-                      🏢 <span className="font-bold">Fanpage: Toeic Mr. Thiệt 990</span>
-                    </a>
-                  </span>
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-4">
+                {/* Google Sign In */}
                 <button
-                  onClick={() => setActiveTab("intro")}
-                  className="w-full py-5 bg-slate-900 text-white rounded-[2rem] font-bold text-sm uppercase tracking-widest shadow-xl hover:bg-blue-600 active:scale-95 transition-all flex items-center justify-center gap-3"
+                  onClick={() => signIn("google", { callbackUrl: "/?tab=dashboard" })}
+                  className="w-full flex flex-col justify-center items-center gap-1 py-4 px-4 bg-white border-2 border-slate-100 rounded-[2rem] shadow-sm hover:shadow-md hover:bg-slate-50 transition-all active:scale-[0.98] group cursor-pointer"
                 >
-                  <ArrowLeft size={18} /> Quay lại trang giới thiệu
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                      <path fill="#EA4335" d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.27 0 3.198 2.698 1.24 6.65l4.026 3.115Z" />
+                      <path fill="#34A853" d="M16.04 18.013c-1.09.585-2.346.903-3.66.903a7.07 7.07 0 0 1-6.717-4.887l-4.04 3.114C3.553 21.1 7.495 24 12 24c3.055 0 5.783-1.01 7.803-2.733l-3.762-3.254Z" />
+                      <path fill="#4285F4" d="M23.49 12.275c0-.84-.075-1.65-.214-2.434H12v4.604h6.442a5.504 5.504 0 0 1-2.39 3.61l3.762 3.254c2.201-2.032 3.678-5.023 3.678-8.761Z" />
+                      <path fill="#FBBC05" d="M5.663 14.03a7.062 7.062 0 0 1 0-4.06L1.637 6.855a11.824 11.824 0 0 0 0 10.29l4.026-3.115Z" />
+                    </svg>
+                    <span className="text-sm font-black text-slate-700 uppercase tracking-wide">Đăng ký/Đăng nhập bằng Google</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-400 group-hover:text-slate-500 transition-colors">(không cần tạo mật khẩu)</span>
                 </button>
+
+                {/* Admin Credentials section */}
+                <div className="mt-8 mb-4 text-center">
+                  <p className="text-xs font-semibold text-slate-500 leading-relaxed">
+                    Nếu bạn đã được Admin cấp tài khoản và mật khẩu,
+                    <br />
+                    hãy đăng nhập theo link dưới đây:
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setDashShowCredentials(!dashShowCredentials)}
+                  className="w-full flex flex-col justify-center items-center gap-1 py-3 px-4 bg-slate-50 border border-slate-200 rounded-[2rem] hover:bg-slate-100 hover:border-slate-300 transition-all active:scale-[0.98] cursor-pointer animate-none"
+                >
+                  <span className="text-xs font-black text-blue-600 uppercase tracking-wide">
+                    {dashShowCredentials ? "Ẩn khung đăng nhập" : "Đăng nhập bằng tài khoản được cấp"}
+                  </span>
+                  <span className="text-[9px] font-bold text-slate-400">
+                    {dashShowCredentials ? "(Nhấp để thu gọn)" : "(Cần email và mật khẩu được cấp)"}
+                  </span>
+                </button>
+
+                <AnimatePresence>
+                  {dashShowCredentials && (
+                    <motion.form
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-6 mt-6 overflow-hidden"
+                      onSubmit={handleDashboardCredentialsLogin}
+                    >
+                      {dashError && (
+                        <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-xs font-bold text-center border border-red-100">
+                          {dashError}
+                        </div>
+                      )}
+
+                      <div>
+                        <label className="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2">Thư điện tử (Email)</label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <Mail className="h-5 w-5 text-slate-300" />
+                          </div>
+                          <input
+                            type="email"
+                            required
+                            value={dashEmail}
+                            onChange={(e) => setDashEmail(e.target.value)}
+                            className="block w-full pl-12 pr-4 py-4 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all font-medium bg-slate-50/50"
+                            placeholder="học.viên@example.com"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2">Mật khẩu</label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <Lock className="h-5 w-5 text-slate-300" />
+                          </div>
+                          <input
+                            type={dashShowPassword ? "text" : "password"}
+                            required
+                            value={dashPassword}
+                            onChange={(e) => setDashPassword(e.target.value)}
+                            className="block w-full pl-12 pr-12 py-4 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all font-medium bg-slate-50/50"
+                            placeholder="••••••••"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setDashShowPassword(!dashShowPassword)}
+                            className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-slate-500 transition-colors"
+                          >
+                            {dashShowPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <input id="remember-me" name="remember-me" type="checkbox" className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded" />
+                          <label htmlFor="remember-me" className="ml-2 block text-xs font-medium text-slate-500">Ghi nhớ tôi</label>
+                        </div>
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={dashIsLoading}
+                        className="w-full flex justify-center items-center gap-2 py-4 px-4 border border-transparent rounded-[2rem] shadow-xl shadow-blue-100 text-sm font-black uppercase tracking-widest text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                      >
+                        {dashIsLoading ? "Đang xử lý..." : "Đăng nhập"} <ArrowRight size={18} />
+                      </button>
+                    </motion.form>
+                  )}
+                </AnimatePresence>
+
+                <div className="mt-8 text-center">
+                  <button
+                    onClick={() => setActiveTab("intro")}
+                    className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-widest cursor-pointer"
+                  >
+                    ← Quay lại trang giới thiệu
+                  </button>
+                </div>
+
+                <div className="mt-8 text-center text-xs font-medium text-slate-400 flex flex-col items-center gap-2">
+                  <div className="flex items-center gap-1 justify-center">
+                    <ShieldCheck size={14} className="text-emerald-500" />
+                    <span>Bảo mật an toàn bởi hoctoeic PRO</span>
+                  </div>
+                </div>
               </div>
             </div>
           ) : (

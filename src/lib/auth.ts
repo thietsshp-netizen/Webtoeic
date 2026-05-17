@@ -89,15 +89,15 @@ export const authOptions: NextAuthOptions = {
       if (dbUser && dbUser.accountExpiresAt) {
         const now = new Date();
         const expiresAt = new Date(dbUser.accountExpiresAt);
-        
+
         // Nếu đã quá ngày hết hạn
         if (expiresAt < now) {
           // Tính toán số ngày (để cho phép đăng nhập nếu đang ở ngày -1 như yêu cầu)
           const diffTime = expiresAt.getTime() - now.getTime();
           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          
+
           if (diffDays <= -1) {
-             throw new Error("Tài khoản đã hết hạn. Vui lòng liên hệ Admin để được gia hạn.");
+            throw new Error("Tài khoản đã hết hạn. Vui lòng liên hệ Admin để được gia hạn.");
           }
         }
       }
@@ -108,9 +108,9 @@ export const authOptions: NextAuthOptions = {
           const cookieStore = await cookies();
           const fingerprint = cookieStore.get("device_fingerprint")?.value;
           const userAgent = (await headers()).get("user-agent") || "";
-          
+
           console.log("SignIn Callback - Device Check - Fingerprint:", fingerprint);
-          
+
           if (!fingerprint) {
             // Nếu không có fingerprint, cho qua tạm thời hoặc chặn tùy cấu hình
           } else {
@@ -178,9 +178,9 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).daysLeft = token.daysLeft;
         (session.user as any).expiresAt = token.expiresAt;
         (session.user as any).createdAt = token.createdAt;
-        
+
         session.user.name = (token.displayName as string) || (token.name as string) || (session.user.email?.split('@')[0]);
-        
+
         if (token.picture) {
           session.user.image = token.picture;
         }
@@ -204,13 +204,13 @@ export const authOptions: NextAuthOptions = {
             where: { id: token.sub as string },
             select: { id: true, role: true, accountExpiresAt: true, displayName: true, name: true, createdAt: true, activeSessionId: true } as any
           });
-          
+
           if (!dbUser) {
             console.log("JWT Callback - dbUser not found for sub:", token.sub);
             if (user) {
               console.log("JWT Callback - Initial Sign In - Proceeding anyway");
             } else {
-              return null as any; 
+              return null as any;
             }
           } else {
             // KIỂM TRA ACTIVE SESSION (CHỐNG HỌC SONG SONG)
@@ -230,13 +230,13 @@ export const authOptions: NextAuthOptions = {
               const expiresAt = new Date(dbUser.accountExpiresAt as any);
               const diffTime = expiresAt.getTime() - now.getTime();
               const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-              
+
               // Nếu đã hết hạn (-1) thì hủy session luôn (Trừ ADMIN)
               if (diffDays <= -1 && (dbUser as any).role !== "ADMIN") {
                 console.log("JWT Callback - Account expired for User:", token.sub);
                 return null as any;
               }
-              
+
               token.daysLeft = diffDays;
             } else {
               token.daysLeft = null;
@@ -252,7 +252,7 @@ export const authOptions: NextAuthOptions = {
         try {
           const newSessionId = uuidv4();
           token.sessionId = newSessionId;
-          
+
           console.log("JWT Callback - Updating activeSessionId for User:", user.id);
           // Cập nhật vào DB
           await (prisma as any).user.update({
@@ -264,7 +264,7 @@ export const authOptions: NextAuthOptions = {
           const cookieStore = await cookies();
           const fingerprint = cookieStore.get("device_fingerprint")?.value;
           const userAgent = (await headers()).get("user-agent") || "";
-          
+
           if (fingerprint) {
             const isMobile = /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle/i.test(userAgent);
             const deviceType = isMobile ? "MOBILE" : "PC";
@@ -303,7 +303,7 @@ export const authOptions: NextAuthOptions = {
           console.error("JWT Callback - Initial Setup Error:", e);
         }
       }
-      
+
       if (trigger === "update" && updatedSession?.name) {
         token.displayName = updatedSession.name;
       }
