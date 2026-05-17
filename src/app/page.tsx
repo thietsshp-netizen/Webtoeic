@@ -413,12 +413,12 @@ function HomeContent() {
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-6">
-                <button
-                  onClick={() => setActiveTab("courses")}
+                <Link
+                  href="/courses"
                   className="group bg-blue-600 text-white px-12 py-6 rounded-[2.5rem] font-bold text-sm uppercase tracking-widest shadow-[0_20px_50px_rgba(37,99,235,0.3)] hover:bg-blue-700 hover:-translate-y-1.5 transition-all duration-300 flex items-center gap-3"
                 >
                   Xem danh sách lớp học <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
-                </button>
+                </Link>
                 <button
                   onClick={() => setShowPlacementTest(true)}
                   className="bg-white text-slate-600 border-2 border-slate-100 px-12 py-6 rounded-[2.5rem] font-bold text-sm uppercase tracking-widest hover:bg-slate-50 hover:border-slate-300 transition-all"
@@ -813,12 +813,12 @@ function HomeContent() {
                 </AnimatePresence>
 
                 <div className="mt-8 text-center">
-                  <button
-                    onClick={() => setActiveTab("intro")}
+                  <Link
+                    href="/"
                     className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-widest cursor-pointer"
                   >
                     ← Quay lại trang giới thiệu
-                  </button>
+                  </Link>
                 </div>
 
                 <div className="mt-8 text-center text-xs font-medium text-slate-400 flex flex-col items-center gap-2">
