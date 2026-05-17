@@ -35,7 +35,7 @@ interface ToeicPart5PlayerProps {
   isReviewMode?: boolean;
   isSubmitted?: boolean;
   onResolved?: () => void;
-  onToggleFlag?: (flag: boolean, color?: FlagColor | null, note?: string) => void;
+  onToggleFlag?: (qId: string, flag: boolean, color?: FlagColor | null, note?: string) => void;
   onProgressChange?: (progress: Record<string, ProgressType>) => void;
   isFullTest?: boolean;
   onNextPart?: () => void;
@@ -347,7 +347,7 @@ export default function ToeicPart5Player({
     } catch (e) {
       console.error("Lỗi gắn cờ:", e);
     }
-    if (onToggleFlag) onToggleFlag(!!color, color, deleteNote ? undefined : (note !== undefined ? note : (flagNotes[qId] || "")));
+    if (onToggleFlag) onToggleFlag(qId, !!color, color, deleteNote ? undefined : (note !== undefined ? note : (flagNotes[qId] || "")));
   };
 
   useEffect(() => {
@@ -693,6 +693,7 @@ export default function ToeicPart5Player({
                       handleUpdateFlag(qKey, null, undefined, deleteNote);
                     }}
                     compact={true}
+                    layout="horizontal"
                   />
                   <div className="h-6 w-[1px] bg-blue-100"></div>
                   <button

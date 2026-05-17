@@ -475,7 +475,7 @@ export default function ToeicReviewManager({
                      }}
                      isReviewMode={true}
                      onResolved={() => handleStateChange(activeItem.questionId, { isCorrect: true })}
-                     onToggleFlag={(qId: string, flag: boolean, color?: ReviewItem['flagColor'], note?: string) => handleStateChange(activeItem.questionId, { isFlagged: flag, flagColor: color, flagNote: note })}
+                     onToggleFlag={(flag: boolean, color?: ReviewItem['flagColor'], note?: string) => handleStateChange(activeItem.questionId, { isFlagged: flag, flagColor: color, flagNote: note })}
                      jumpTo={jumpTo}
                    />
                 ) : activeItem.partNumber === 2 ? (
@@ -494,7 +494,7 @@ export default function ToeicReviewManager({
                      }}
                      isReviewMode={true}
                      onResolved={() => handleStateChange(activeItem.questionId, { isCorrect: true })}
-                     onToggleFlag={(qId: string, flag: boolean, color?: ReviewItem['flagColor'], note?: string) => handleStateChange(activeItem.questionId, { isFlagged: flag, flagColor: color, flagNote: note })}
+                     onToggleFlag={(flag: boolean, color?: ReviewItem['flagColor'], note?: string) => handleStateChange(activeItem.questionId, { isFlagged: flag, flagColor: color, flagNote: note })}
                       jumpTo={jumpTo}
                    />
                 ) : (activeItem.partNumber === 3 || activeItem.partNumber === 4) ? (
@@ -513,7 +513,7 @@ export default function ToeicReviewManager({
                      }}
                      isReviewMode={true}
                      onResolved={() => handleStateChange(activeItem.questionId, { isCorrect: true })}
-                     onToggleFlag={(qId: string, flag: boolean, color?: ReviewItem['flagColor'], note?: string) => handleStateChange(activeItem.questionId, { isFlagged: flag, flagColor: color, flagNote: note })}
+                     onToggleFlag={(flag: boolean, color?: ReviewItem['flagColor'], note?: string) => handleStateChange(activeItem.questionId, { isFlagged: flag, flagColor: color, flagNote: note })}
                       jumpTo={jumpTo}
                    />
                 ) : activeItem.partNumber === 5 ? (
@@ -532,7 +532,7 @@ export default function ToeicReviewManager({
                      }}
                      isReviewMode={true}
                      onResolved={() => handleStateChange(activeItem.questionId, { isCorrect: true })}
-                     onToggleFlag={(qId: string, flag: boolean, color?: ReviewItem['flagColor'], note?: string) => handleStateChange(activeItem.questionId, { isFlagged: flag, flagColor: color, flagNote: note })}
+                     onToggleFlag={(flag: boolean, color?: ReviewItem['flagColor'], note?: string) => handleStateChange(activeItem.questionId, { isFlagged: flag, flagColor: color, flagNote: note })}
                       jumpTo={jumpTo}
                    />
                 ) : activeItem.partNumber === 6 ? (

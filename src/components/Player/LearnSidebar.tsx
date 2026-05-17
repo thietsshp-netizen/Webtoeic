@@ -34,6 +34,7 @@ interface Lesson {
   title: string;
   contentType: string;
   order: number;
+  isPreview: boolean;
 }
 
 interface Section {
@@ -70,6 +71,9 @@ export default function LearnSidebar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
   const [colorFilter, setColorFilter] = useState<string | null>(null);
+  const [typeFilter, setTypeFilter] = useState<'ALL' | 'NOTE' | 'FLAG_ONLY'>('ALL');
+  const [expandedDrawerBooks, setExpandedDrawerBooks] = useState<Record<string, boolean>>({});
+  const [expandedDrawerSections, setExpandedDrawerSections] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     async function fetchSyllabus() {
@@ -137,6 +141,57 @@ export default function LearnSidebar() {
     }
   }, [isDrawerOpen]);
 
+  // Tự động mở rộng toàn bộ Sách và Chương trong Drawer khi danh sách ghi chú tải xong
+  useEffect(() => {
+    if (notes.length > 0) {
+      const initialBooks: Record<string, boolean> = {};
+      const initialSections: Record<string, boolean> = {};
+      notes.forEach(note => {
+        const bookTitle = note.lesson?.section?.book?.title || "Khác";
+        const sectionTitle = note.lesson?.section?.title || "Chương khác";
+        const sectionKey = `${bookTitle}-${sectionTitle}`;
+        initialBooks[bookTitle] = true;
+        initialSections[sectionKey] = true;
+      });
+      setExpandedDrawerBooks(initialBooks);
+      setExpandedDrawerSections(initialSections);
+    }
+  }, [notes]);
+
+  const toggleDrawerBook = (bookTitle: string) => {
+    setExpandedDrawerBooks(prev => ({
+      ...prev,
+      [bookTitle]: prev[bookTitle] === false ? true : false
+    }));
+  };
+
+  const toggleDrawerSection = (sectionKey: string) => {
+    setExpandedDrawerSections(prev => ({
+      ...prev,
+      [sectionKey]: prev[sectionKey] === false ? true : false
+    }));
+  };
+
+  const toggleAllDrawerItems = () => {
+    const isAnyExpanded = Object.values(expandedDrawerBooks).some(v => v) || Object.values(expandedDrawerSections).some(v => v);
+    if (isAnyExpanded) {
+      setExpandedDrawerBooks({});
+      setExpandedDrawerSections({});
+    } else {
+      const newBooks: Record<string, boolean> = {};
+      const newSections: Record<string, boolean> = {};
+      notes.forEach(note => {
+        const bookTitle = note.lesson?.section?.book?.title || "Khác";
+        const sectionTitle = note.lesson?.section?.title || "Chương khác";
+        const sectionKey = `${bookTitle}-${sectionTitle}`;
+        newBooks[bookTitle] = true;
+        newSections[sectionKey] = true;
+      });
+      setExpandedDrawerBooks(newBooks);
+      setExpandedDrawerSections(newSections);
+    }
+  };
+
   const toggleBook = (id: string) => {
     const book = books.find(b => b.id === id);
     const isExpanding = !expandedBooks[id];
@@ -182,7 +237,16 @@ export default function LearnSidebar() {
   const filteredNotes = notes.filter(n => {
     const matchesSearch = `${n.flagNote || ''} ${n.question?.questionText || ''} ${n.lesson?.title || ''}`.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesColor = colorFilter ? n.flagColor === colorFilter : true;
-    return matchesSearch && matchesColor;
+    
+    // Lọc theo loại
+    let matchesType = true;
+    if (typeFilter === 'NOTE') {
+      matchesType = !!(n.flagNote && n.flagNote.trim() !== "");
+    } else if (typeFilter === 'FLAG_ONLY') {
+      matchesType = !(n.flagNote && n.flagNote.trim() !== "");
+    }
+
+    return matchesSearch && matchesColor && matchesType;
   }).sort((a, b) => {
     const dateA = new Date(a.updatedAt).getTime();
     const dateB = new Date(b.updatedAt).getTime();
@@ -208,6 +272,16 @@ export default function LearnSidebar() {
       case 'BLUE': return 'bg-blue-500';
       case 'YELLOW': return 'bg-yellow-500';
       default: return 'bg-slate-300';
+    }
+  };
+
+  const getFlagColorTextClass = (color: string) => {
+    switch (color) {
+      case 'RED': return 'text-red-500';
+      case 'PURPLE': return 'text-purple-500';
+      case 'BLUE': return 'text-blue-500';
+      case 'YELLOW': return 'text-yellow-500';
+      default: return 'text-slate-400';
     }
   };
 
@@ -247,35 +321,80 @@ export default function LearnSidebar() {
                     </div>
                     Review Center
                   </h2>
-                  <button 
-                    onClick={() => setIsDrawerOpen(false)}
-                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-                  >
-                    <X size={20} />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={toggleAllDrawerItems}
+                      className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all active:scale-95"
+                      title="Thu/mở nhanh toàn bộ cờ & ghi chú"
+                    >
+                      <ChevronsUpDown size={16} />
+                    </button>
+                    <button 
+                      onClick={() => setIsDrawerOpen(false)}
+                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all active:scale-95"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
                 </div>
 
-                {/* Search & Sort */}
+                {/* Search & Sort & Filters */}
                 <div className="space-y-3">
+                  {/* Dòng 1: Ô Search */}
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
                     <input 
                       type="text" 
-                      placeholder="Tìm ghi chú..."
+                      placeholder="Tìm ghi chú, câu hỏi..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="w-full pl-9 pr-4 py-2 bg-white rounded-xl text-xs border border-slate-100 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
                     />
                   </div>
                   
+                  {/* Dòng 2: Tabs chọn loại (Tất cả / Chỉ cờ / Có ghi chú) */}
+                  <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200/40">
+                    <button
+                      onClick={() => setTypeFilter('ALL')}
+                      className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-wider rounded-md transition-all ${
+                        typeFilter === 'ALL' 
+                          ? "bg-white text-indigo-600 shadow-sm" 
+                          : "text-slate-400 hover:text-slate-600"
+                      }`}
+                    >
+                      Tất cả
+                    </button>
+                    <button
+                      onClick={() => setTypeFilter('FLAG_ONLY')}
+                      className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-wider rounded-md transition-all ${
+                        typeFilter === 'FLAG_ONLY' 
+                          ? "bg-white text-indigo-600 shadow-sm" 
+                          : "text-slate-400 hover:text-slate-600"
+                      }`}
+                    >
+                      Chỉ cờ
+                    </button>
+                    <button
+                      onClick={() => setTypeFilter('NOTE')}
+                      className={`flex-1 py-1.5 text-[9px] font-black uppercase tracking-wider rounded-md transition-all ${
+                        typeFilter === 'NOTE' 
+                          ? "bg-white text-indigo-600 shadow-sm" 
+                          : "text-slate-400 hover:text-slate-600"
+                      }`}
+                    >
+                      Có ghi chú
+                    </button>
+                  </div>
+
+                  {/* Dòng 3: Sắp xếp & Lọc theo màu cờ */}
                   <div className="flex items-center gap-2">
                     <button 
                       onClick={() => setSortOrder(prev => prev === 'newest' ? 'oldest' : 'newest')}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-white border border-slate-100 rounded-lg text-[10px] font-black text-slate-500 uppercase tracking-wider hover:bg-slate-50 transition-all"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-white border border-slate-100 rounded-lg text-[10px] font-black text-slate-500 uppercase tracking-wider hover:bg-slate-50 transition-all shadow-sm"
                     >
                       <ArrowUpDown size={12} /> {sortOrder === 'newest' ? 'Mới nhất' : 'Cũ nhất'}
                     </button>
-                    <div className="flex items-center gap-1 bg-slate-100/50 p-1 rounded-lg border border-slate-100">
+                    <div className="flex items-center gap-1 bg-slate-100/50 p-1 rounded-lg border border-slate-100 shrink-0">
                       {['RED', 'PURPLE', 'BLUE', 'YELLOW'].map(color => (
                         <button
                           key={color}
@@ -296,54 +415,122 @@ export default function LearnSidebar() {
                     <span className="text-[10px] font-black uppercase tracking-widest">Đang tải dữ liệu...</span>
                   </div>
                 ) : Object.keys(groupedNotes).length > 0 ? (
-                  Object.entries(groupedNotes).map(([bookTitle, sections]: [string, any]) => (
-                    <div key={bookTitle} className="space-y-4">
-                      <h3 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.15em] px-2">{bookTitle}</h3>
-                      {Object.entries(sections).map(([sectionTitle, notes]: [string, any]) => (
-                        <div key={sectionTitle} className="space-y-3">
-                          <div className="flex items-center gap-2 px-2 opacity-60">
-                            <Layers size={12} className="text-slate-400" />
-                            <span className="text-[11px] font-bold text-slate-500">{sectionTitle}</span>
-                          </div>
-                          <div className="space-y-2">
-                            {notes.map((note: any) => (
-                              <div 
-                                key={note.id}
-                                onClick={() => {
-                                  router.push(`/learn/${courseId}/lesson/${note.lesson?.id}?q=${note.question?.id}`);
-                                }}
-                                className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-indigo-100 transition-all group cursor-pointer active:scale-[0.98]"
-                              >
-                                <div className="flex items-start justify-between mb-2">
-                                  <div className="flex items-center gap-2">
-                                    <div className={`w-1.5 h-3.5 rounded-full ${getFlagColorClass(note.flagColor)}`} />
-                                    <span className="text-[11px] font-black text-slate-800 uppercase">Câu {note.question?.questionNo}</span>
-                                  </div>
-                                  <ExternalLink size={12} className="text-slate-200 group-hover:text-indigo-400 transition-colors" />
-                                </div>
-                                
-                                {note.question?.questionText && (
-                                  <p className="text-[10px] text-slate-400 line-clamp-1 italic mb-2 leading-relaxed">
-                                    "{note.question.questionText.replace(/^\d+[\.\s]*/, '')}"
-                                  </p>
-                                )}
-                                
-                                {note.flagNote ? (
-                                  <div className="bg-indigo-50/30 p-3 rounded-xl border border-indigo-100/20">
-                                    <p className="text-xs font-bold text-slate-700 leading-relaxed">
-                                      {note.flagNote}
-                                    </p>
-                                  </div>
-                                ) : (
-                                  <div className="text-[10px] font-bold text-slate-300 italic px-1">Đã gắn cờ</div>
-                                )}
-                              </div>
-                            ))}
+                  Object.entries(groupedNotes).map(([bookTitle, sections]: [string, any]) => {
+                    // Thống kê tổng số cờ và ghi chú của Cuốn sách này
+                    let bookTotalFlags = 0;
+                    let bookTotalNotes = 0;
+                    Object.values(sections).forEach((notesList: any) => {
+                      bookTotalFlags += notesList.length;
+                      bookTotalNotes += notesList.filter((n: any) => n.flagNote && n.flagNote.trim() !== "").length;
+                    });
+
+                    const isBookExpanded = expandedDrawerBooks[bookTitle] !== false; // Mặc định mở rộng
+
+                    return (
+                      <div key={bookTitle} className="bg-white rounded-3xl p-3.5 shadow-sm border border-slate-100 mb-4 transition-all duration-300">
+                        {/* Book Header Toggle */}
+                        <div 
+                          onClick={() => toggleDrawerBook(bookTitle)}
+                          className="flex items-center justify-between p-2 px-3 cursor-pointer select-none hover:bg-slate-50 rounded-2xl transition-all duration-200 group"
+                        >
+                          <h3 className="text-[11px] font-black text-indigo-500 uppercase tracking-[0.12em] line-clamp-1 min-w-0 pr-2">{bookTitle}</h3>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-[9px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100/20">
+                              {bookTotalFlags} cờ • {bookTotalNotes} ghi chú
+                            </span>
+                            {isBookExpanded ? (
+                              <ChevronDown size={14} className="text-slate-400 group-hover:text-indigo-500 transition-colors" />
+                            ) : (
+                              <ChevronRight size={14} className="text-slate-400 group-hover:text-indigo-500 transition-colors" />
+                            )}
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  ))
+
+                        {/* Sections list inside Book */}
+                        {isBookExpanded && (
+                          <div className="space-y-5 mt-4 ml-1 animate-in fade-in duration-200">
+                            {Object.entries(sections).map(([sectionTitle, sectionNotes]: [string, any]) => {
+                              const sectionKey = `${bookTitle}-${sectionTitle}`;
+                              const isSectionExpanded = expandedDrawerSections[sectionKey] !== false; // Mặc định mở rộng
+
+                              const sectionTotalFlags = sectionNotes.length;
+                              const sectionTotalNotes = sectionNotes.filter((n: any) => n.flagNote && n.flagNote.trim() !== "").length;
+
+                              return (
+                                <div key={sectionTitle} className="space-y-3">
+                                  {/* Section Header Toggle */}
+                                  <div 
+                                    onClick={() => toggleDrawerSection(sectionKey)}
+                                    className="flex items-center justify-between p-1.5 px-2.5 cursor-pointer select-none hover:bg-slate-50/70 rounded-xl transition-all duration-200 group/sec"
+                                  >
+                                    <div className="flex items-center gap-2 opacity-80 min-w-0 pr-2">
+                                      <Layers size={11} className="text-slate-400 shrink-0" />
+                                      <span className="text-[11px] font-bold text-slate-500 truncate">{sectionTitle}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 shrink-0">
+                                      <span className="text-[9px] font-bold text-slate-400 bg-slate-100/60 px-1.5 py-0.5 rounded-md">
+                                        {sectionTotalFlags} cờ • {sectionTotalNotes} ghi chú
+                                      </span>
+                                      {isSectionExpanded ? (
+                                        <ChevronDown size={12} className="text-slate-400 group-hover/sec:text-indigo-500 transition-colors" />
+                                      ) : (
+                                        <ChevronRight size={12} className="text-slate-400 group-hover/sec:text-indigo-500 transition-colors" />
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Section Notes Items */}
+                                  {isSectionExpanded && (
+                                    <div className="space-y-2 pl-2 border-l border-slate-100 animate-in fade-in duration-200">
+                                      {sectionNotes.map((note: any) => (
+                                        <div 
+                                          key={note.id}
+                                          onClick={() => {
+                                            router.push(`/learn/${courseId}/lesson/${note.lesson?.id}?q=${note.question?.id}`);
+                                          }}
+                                          className="bg-slate-50/30 border border-slate-100/60 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-indigo-100/40 hover:bg-white transition-all group cursor-pointer active:scale-[0.98]"
+                                        >
+                                          <div className="flex items-start justify-between mb-1.5">
+                                            <div className="flex items-center gap-2 min-w-0 pr-2">
+                                              <div className={`w-1.5 h-3.5 rounded-full ${getFlagColorClass(note.flagColor)} shrink-0`} />
+                                              <span className="text-[11px] font-black text-slate-800 uppercase shrink-0">Câu {note.question?.questionNo}</span>
+                                              
+                                              {/* Icon cờ màu tương ứng */}
+                                              <Flag size={10} className={`${getFlagColorTextClass(note.flagColor)} shrink-0`} fill="currentColor" />
+                                              
+                                              {/* Icon cây bút (nếu có ghi chú) */}
+                                              {note.flagNote && note.flagNote.trim() !== "" && (
+                                                <PenLine size={10} className="text-indigo-500 shrink-0" />
+                                              )}
+                                            </div>
+                                            <ExternalLink size={11} className="text-slate-300 group-hover:text-indigo-400 transition-colors shrink-0" />
+                                          </div>
+                                          
+                                          {note.question?.questionText && (
+                                            <p className="text-[10px] text-slate-400 line-clamp-1 italic mb-2 leading-relaxed">
+                                              "{note.question.questionText.replace(/^\d+[\.\s]*/, '')}"
+                                            </p>
+                                          )}
+                                          
+                                          {note.flagNote && note.flagNote.trim() !== "" ? (
+                                            <div className="bg-white/80 p-3 rounded-xl border border-slate-100/60">
+                                              <p className="text-xs font-semibold text-slate-700 leading-relaxed">
+                                                {note.flagNote}
+                                              </p>
+                                            </div>
+                                          ) : null}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })
                 ) : (
                   <div className="text-center py-20 px-6">
                     <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
@@ -409,6 +596,10 @@ export default function LearnSidebar() {
         <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 px-3">
           {books.map((book, bIdx) => {
             const isBookExpanded = expandedBooks[book.id];
+            const freeCount = book.sections.reduce((acc, section) => 
+              acc + section.lessons.filter(l => l.isPreview).length, 0
+            );
+
             return (
               <div key={book.id} className="mb-4">
                 {/* LEVEL 1: BOOK */}
@@ -425,7 +616,14 @@ export default function LearnSidebar() {
                       <BookOpen size={20} className={isBookExpanded ? "animate-pulse" : ""} />
                     </div>
                     <div className="text-left">
-                      <p className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-0.5">Sách {bIdx + 1}</p>
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <p className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em]">Sách {bIdx + 1}</p>
+                        {!isEnrolled && freeCount > 0 && (
+                          <span className="bg-emerald-500/10 text-emerald-600 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border border-emerald-500/20 shadow-sm animate-pulse shrink-0">
+                            Free {freeCount} bài
+                          </span>
+                        )}
+                      </div>
                       <h3 className={`text-[14px] font-black uppercase tracking-tight leading-tight line-clamp-1 transition-colors ${
                         isBookExpanded ? "text-slate-900" : "text-slate-600"
                       }`}>
@@ -512,11 +710,18 @@ export default function LearnSidebar() {
                                     </div>
                                     
                                     <div className="flex-1 min-w-0">
-                                      <p className={`text-[11px] font-semibold leading-snug truncate ${
-                                        isActive ? "text-indigo-800 font-bold" : isLocked ? "text-slate-300" : "text-slate-600"
-                                      }`}>
-                                        {lesson.title}
-                                      </p>
+                                      <div className="flex items-center gap-1.5 min-w-0">
+                                        <p className={`text-[11px] font-semibold leading-snug truncate ${
+                                          isActive ? "text-indigo-800 font-bold" : isLocked ? "text-slate-300" : "text-slate-600"
+                                        }`}>
+                                          {lesson.title}
+                                        </p>
+                                        {!isEnrolled && lesson.isPreview && (
+                                          <span className="bg-emerald-500/10 text-emerald-600 text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 shadow-sm border border-emerald-500/10">
+                                            Free
+                                          </span>
+                                        )}
+                                      </div>
                                     </div>
 
                                     <div className="flex items-center gap-1 shrink-0 scale-75 origin-right">

@@ -939,11 +939,12 @@ export default function ToeicPart6Player({
                         </div>
                         <FlagSelector
                           isFlagged={!!flags[qKey]}
-                          flagColor={flags[qKey] || 'RED'}
+                          flagColor={flags[qKey] || null}
                           flagNote={flagNotes[qKey]}
                           onToggle={(color, note) => handleToggleFlag(qKey, color, note)}
                           onUnflag={(deleteNote) => handleToggleFlag(qKey, null, undefined, deleteNote)}
                           compact={true}
+                          layout="vertical"
                         />
                       </div>
 

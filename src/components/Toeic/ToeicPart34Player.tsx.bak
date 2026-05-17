@@ -218,7 +218,7 @@ interface ToeicPart34PlayerProps {
   isReviewMode?: boolean;
   isSubmitted?: boolean;
   onResolved?: () => void;
-  onToggleFlag?: (qId: string, flag: boolean, color?: FlagColor | null, note?: string) => void;
+  onToggleFlag?: (flag: boolean, color?: FlagColor | null, note?: string) => void;
   targetPart?: number;
   onProgressChange?: (progress: Record<string, any>) => void;
   isFullTest?: boolean;
@@ -1009,7 +1009,7 @@ export default function ToeicPart34Player({
       console.error("Lỗi khi gắn cờ:", err);
     }
 
-    if (onToggleFlag) onToggleFlag(questionId, !!color, color, deleteNote ? undefined : (note !== undefined ? note : flagNotes[questionId]));
+    if (onToggleFlag) onToggleFlag(!!color, color, deleteNote ? undefined : (note !== undefined ? note : flagNotes[questionId]));
   };
 
   useEffect(() => {

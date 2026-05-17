@@ -1195,11 +1195,12 @@ export default function ToeicPart7Player({
                             </button>
                             <FlagSelector
                               isFlagged={!!flags[q.id]}
-                              flagColor={(flags[q.id] || 'RED') as FlagColor}
+                              flagColor={(flags[q.id] || null) as FlagColor | null}
                               flagNote={notes[q.id] || ""}
-                              onToggle={(color: FlagColor, note?: string) => handleToggleFlag(q.id, color, note)}
+                              onToggle={(color: FlagColor | null, note?: string) => handleToggleFlag(q.id, color, note)}
                               onUnflag={(deleteNote: boolean) => handleToggleFlag(q.id, null, deleteNote ? "" : undefined)}
                               compact={true}
+                              layout="vertical"
                             />
                           </div>
                         )}

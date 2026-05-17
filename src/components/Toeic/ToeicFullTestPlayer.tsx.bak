@@ -357,7 +357,10 @@ export default function ToeicFullTestPlayer({
                 lessonId,
                 courseId,
                 userAnswer: userAns,
-                isCorrect: isCorrect
+                isCorrect: isCorrect,
+                isFlagged: prog.isFlagged || false,
+                flagColor: prog.flagColor || null,
+                flagNote: prog.flagNote || null
               };
             });
 
@@ -509,8 +512,10 @@ export default function ToeicFullTestPlayer({
                   data={data[1]} lessonId={lessonId} courseId={courseId} isFullTest={true} initialProgress={userProgress} isSubmitted={isSubmitted}
                   onProgressChange={handleUpdateProgress} jumpTo={jumpTo} onNextPart={() => setActivePart(2)}
                   onActiveQuestionChange={setActiveQuestionNo}
-                  onToggleFlag={(qId: string, flag: boolean, color?: FlagColor | null, note?: string) => {
-                    handleUpdateProgress({ [qId]: { isFlagged: flag, flagColor: color || null, flagNote: note } });
+                  onToggleFlag={(flag: boolean, color?: FlagColor | null, note?: string) => {
+                    if (activeQuestionNo) {
+                      handleUpdateProgress({ [activeQuestionNo]: { isFlagged: flag, flagColor: color || null, flagNote: note } });
+                    }
                   }}
                   globalOffset={partOffsets[1]} globalTotal={allQuestions.length}
                 />
@@ -521,8 +526,10 @@ export default function ToeicFullTestPlayer({
                   data={data[2]} lessonId={lessonId} courseId={courseId} isFullTest={true} initialProgress={userProgress} isSubmitted={isSubmitted}
                   onProgressChange={handleUpdateProgress} jumpTo={jumpTo} onNextPart={() => setActivePart(3)}
                   onActiveQuestionChange={setActiveQuestionNo}
-                  onToggleFlag={(qId: string, flag: boolean, color?: FlagColor | null, note?: string) => {
-                    handleUpdateProgress({ [qId]: { isFlagged: flag, flagColor: color || null, flagNote: note } });
+                  onToggleFlag={(flag: boolean, color?: FlagColor | null, note?: string) => {
+                    if (activeQuestionNo) {
+                      handleUpdateProgress({ [activeQuestionNo]: { isFlagged: flag, flagColor: color || null, flagNote: note } });
+                    }
                   }}
                   onPrevPart={() => {
                     const lastQ = allQuestions.filter(q => q.part === 1).pop()?.questionNo || 6;
@@ -538,8 +545,10 @@ export default function ToeicFullTestPlayer({
                   data={data[3]} lessonId={lessonId} courseId={courseId} isFullTest={true} initialProgress={userProgress} isSubmitted={isSubmitted}
                   targetPart={3} onProgressChange={handleUpdateProgress} jumpTo={jumpTo} onNextPart={() => setActivePart(4)}
                   onActiveQuestionChange={setActiveQuestionNo}
-                  onToggleFlag={(qId: string, flag: boolean, color?: FlagColor | null, note?: string) => {
-                    handleUpdateProgress({ [qId]: { isFlagged: flag, flagColor: color || null, flagNote: note } });
+                  onToggleFlag={(flag: boolean, color?: FlagColor | null, note?: string) => {
+                    if (activeQuestionNo) {
+                      handleUpdateProgress({ [activeQuestionNo]: { isFlagged: flag, flagColor: color || null, flagNote: note } });
+                    }
                   }}
                   onPrevPart={() => {
                     const lastQ = allQuestions.filter(q => q.part === 2).pop()?.questionNo || 31;
@@ -555,8 +564,10 @@ export default function ToeicFullTestPlayer({
                   data={data[4]} lessonId={lessonId} courseId={courseId} isFullTest={true} initialProgress={userProgress} isSubmitted={isSubmitted}
                   targetPart={4} onProgressChange={handleUpdateProgress} jumpTo={jumpTo} onNextPart={() => setActivePart(5)}
                   onActiveQuestionChange={setActiveQuestionNo}
-                  onToggleFlag={(qId: string, flag: boolean, color?: FlagColor | null, note?: string) => {
-                    handleUpdateProgress({ [qId]: { isFlagged: flag, flagColor: color || null, flagNote: note } });
+                  onToggleFlag={(flag: boolean, color?: FlagColor | null, note?: string) => {
+                    if (activeQuestionNo) {
+                      handleUpdateProgress({ [activeQuestionNo]: { isFlagged: flag, flagColor: color || null, flagNote: note } });
+                    }
                   }}
                   onPrevPart={() => {
                     const lastQ = allQuestions.filter(q => q.part === 3).pop()?.questionNo || 70;
@@ -572,8 +583,10 @@ export default function ToeicFullTestPlayer({
                   data={data[5]} lessonId={lessonId} courseId={courseId} isFullTest={true} initialProgress={userProgress} isSubmitted={isSubmitted}
                   onProgressChange={handleUpdateProgress} jumpTo={jumpTo} onNextPart={() => setActivePart(6)}
                   onActiveQuestionChange={setActiveQuestionNo}
-                  onToggleFlag={(qId: string, flag: boolean, color?: FlagColor | null, note?: string) => {
-                    handleUpdateProgress({ [qId]: { isFlagged: flag, flagColor: color || null, flagNote: note } });
+                  onToggleFlag={(flag: boolean, color?: FlagColor | null, note?: string) => {
+                    if (activeQuestionNo) {
+                      handleUpdateProgress({ [activeQuestionNo]: { isFlagged: flag, flagColor: color || null, flagNote: note } });
+                    }
                   }}
                   onPrevPart={() => {
                     const lastQ = allQuestions.filter(q => q.part === 4).pop()?.questionNo || 100;

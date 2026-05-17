@@ -302,10 +302,10 @@ const DictationSentence = ({ targetText }: { targetText: string }) => {
         })}
       </div>
 
-      {/* Real Input Layer - Hidden underneath */}
       <textarea
         ref={textareaRef}
         value={input}
+        data-dictation="true"
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             e.preventDefault();
@@ -364,7 +364,7 @@ export default function ToeicPart2Player({
   nextLessonId?: string;
   isReviewMode?: boolean;
   onResolved?: () => void;
-  onToggleFlag?: (flag: boolean, color?: FlagColor | null, note?: string) => void;
+  onToggleFlag?: (qId: string, flag: boolean, color?: FlagColor | null, note?: string) => void;
   onProgressChange?: (progress: Record<string, any>) => void;
   isFullTest?: boolean;
   onNextPart?: () => void;
@@ -461,9 +461,9 @@ export default function ToeicPart2Player({
     if (jumpTo?.id && data.length > 0) {
       const targetId = String(jumpTo.id);
       // Tìm vị trí của nhóm chứa câu hỏi (hỗ trợ cả database ID và questionNo)
-      const idx = data.findIndex(g => 
-        g.questions?.some((q: any) => 
-          String(q.questionNo) === targetId || 
+      const idx = data.findIndex(g =>
+        g.questions?.some((q: any) =>
+          String(q.questionNo) === targetId ||
           String(q.id) === targetId
         )
       );
@@ -476,7 +476,7 @@ export default function ToeicPart2Player({
           const el = document.getElementById(`question-${targetId}`) ||
             document.querySelector(`[id$="-${targetId}"]`) ||
             document.querySelector(`[id^="question-"][id$="-${targetId}"]`);
-            
+
           if (el) {
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             // Thêm hiệu ứng highlight
@@ -705,7 +705,7 @@ export default function ToeicPart2Player({
       console.error("Lỗi khi gắn cờ:", err);
     }
 
-    if (onToggleFlag) onToggleFlag(!!color, color, deleteNote ? undefined : (note !== undefined ? note : flagNotes[questionId]));
+    if (onToggleFlag) onToggleFlag(questionId, !!color, color, deleteNote ? undefined : (note !== undefined ? note : flagNotes[questionId]));
   };
 
   const handleFinishTest = async () => {
@@ -903,15 +903,22 @@ export default function ToeicPart2Player({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
-      const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
 
-      // Phím số 1-4: Vẫn cho phép làm phím tắt khi đang chép chính tả (Dictation)
-      // nhưng sẽ chặn nếu đang gõ trong ô Ghi chú (Flag Note)
-      if (['1', '2', '3', '4'].includes(e.key)) {
-        if (target.id === 'flag-note-textarea') return;
-      } else if (isInput) {
-        // Các phím khác (mũi tên, `) thì chặn nếu đang ở trong bất kỳ input nào
+      // 1. Chặn phím tắt khi đang focus vào ô ghi chú Flag Note
+      if (target && target.id === 'flag-note-textarea') {
         return;
+      }
+
+      // 2. Khi đang chép chính tả: chỉ cho phép 1, 2, 3, 4 và phím ` phát âm thanh hoạt động
+      if (target && target.getAttribute('data-dictation') === 'true') {
+        if (!['1', '2', '3', '4', '`'].includes(e.key)) {
+          return;
+        }
+      } else {
+        // 3. Ở các input/textarea khác: Chặn hoàn toàn phím tắt
+        if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
+          return;
+        }
       }
 
       if (e.key === '`') {
@@ -1070,6 +1077,7 @@ export default function ToeicPart2Player({
                       onToggle={(color, note) => handleUpdateFlag(currentQKey, color, note)}
                       onUnflag={(deleteNote) => handleUpdateFlag(currentQKey, null, undefined, deleteNote)}
                       compact={true}
+                      layout="horizontal"
                     />
                     <button
                       onClick={() => setRevealMode(!revealMode)}
@@ -1089,8 +1097,8 @@ export default function ToeicPart2Player({
                             playSegment('question');
                           }}
                           className={`w-8 h-8 flex items-center justify-center rounded-xl border-2 transition-all duration-300 ${playingSegmentLabel === 'question'
-                              ? 'border-indigo-600 bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
-                              : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 shadow-sm bg-white'
+                            ? 'border-indigo-600 bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
+                            : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 shadow-sm bg-white'
                             }`}
                           title="Nghe câu hỏi (Phím tắt: phím số 1)"
                         >
@@ -1108,9 +1116,9 @@ export default function ToeicPart2Player({
                               // HIEN THI TIENG ANH: KHONG QUET VAO PHAN VIETNAMESE
                               const explQuestion = richData?.question?.en || (typeof richData?.question === 'string' ? richData.question : null);
                               const transcriptQuestion = engParts.find(p => p.label === '?' || p.label === 'Q')?.text;
-                              
+
                               const displayValue = explQuestion || transcriptQuestion || questionData.questionText || "";
-                              
+
                               let target: "group" | "question" = "question";
                               let field = "questionText";
                               let id = questionData?.id;
@@ -1153,9 +1161,9 @@ export default function ToeicPart2Player({
                                 const metaTranslation = (questionData.metadata as any)?.vietnamese?.question_vi || (questionData.metadata as any)?.vietnamese?.question;
                                 const explTranslation = richData?.question?.vi || (typeof richData?.question === 'object' ? richData.question.vi : null) || explanationObj.vietText;
                                 const transcriptTranslation = vieParts.find(p => p.label === 'Q' || p.label === '?')?.text;
-                                
+
                                 const displayValue = metaTranslation || explTranslation || transcriptTranslation || "";
-                                
+
                                 let target: "group" | "question" = "question";
                                 let field = "explanation.vietText";
                                 let id = questionData?.id;
@@ -1217,7 +1225,7 @@ export default function ToeicPart2Player({
                           className="w-full select-text cursor-default"
                         >
                           <div className={boxClasses.replace('cursor-pointer', 'cursor-default')}>
-                            <div 
+                            <div
                               onClick={() => handleSelectAnswer(opt)}
                               className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[12px] font-black border transition-all duration-300 cursor-pointer group/opt ${revealMode
                                 ? (isCorrectTarget ? 'bg-emerald-500 text-white border-emerald-600 shadow-sm shadow-emerald-500/20' : isSelected ? 'bg-red-500 text-white border-red-600 shadow-sm shadow-red-500/20' : 'bg-slate-50 text-slate-400 border-slate-200')
@@ -1236,8 +1244,8 @@ export default function ToeicPart2Player({
                                         playSegment(opt);
                                       }}
                                       className={`p-1 rounded-md transition-all duration-300 ${playingSegmentLabel === opt
-                                          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
-                                          : 'hover:bg-slate-100 text-slate-400 hover:text-indigo-600'
+                                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
+                                        : 'hover:bg-slate-100 text-slate-400 hover:text-indigo-600'
                                         }`}
                                       title={`Nghe phương án ${opt} (Phím tắt: phím số ${['A', 'B', 'C'].indexOf(opt) + 2})`}
                                     >
@@ -1268,16 +1276,16 @@ export default function ToeicPart2Player({
                                       </div>
                                       {viText && revealMode && (
                                         <div className={`text-xs italic mt-0.5 ${isCorrectTarget ? 'text-emerald-700/80 font-medium' : 'text-slate-500'}`}>
-                                            <AdminInlineEditor
-                                              target="question"
-                                              id={questionData.id}
-                                              field={`${basePath}.vietText`}
-                                              sid={opt}
-                                              value={viText}
-                                              multiline
-                                            >
-                                              <StaticFormattedText text={viText} />
-                                            </AdminInlineEditor>
+                                          <AdminInlineEditor
+                                            target="question"
+                                            id={questionData.id}
+                                            field={`${basePath}.vietText`}
+                                            sid={opt}
+                                            value={viText}
+                                            multiline
+                                          >
+                                            <StaticFormattedText text={viText} />
+                                          </AdminInlineEditor>
                                         </div>
                                       )}
                                     </div>
@@ -1327,7 +1335,7 @@ export default function ToeicPart2Player({
                                 <p className="font-medium text-[10px] mb-1">{incorrectRationale.context_intro || "Câu này sẽ ĐÚNG nếu câu hỏi là:"}</p>
                                 <div className="group/suggested">
                                   <div className="flex items-center gap-1">
-                                    • 
+                                    •
                                     <AdminInlineEditor
                                       target="question"
                                       id={questionData.id}
@@ -1347,7 +1355,7 @@ export default function ToeicPart2Player({
                                   </div>
                                 </div>
                                 <div className="text-red-900/60 font-medium">
-                                  → 
+                                  →
                                   <AdminInlineEditor
                                     target="question"
                                     id={questionData.id}

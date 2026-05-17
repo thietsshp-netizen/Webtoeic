@@ -69,6 +69,8 @@ export async function POST(req: Request) {
                   update: {
                     userAnswer: a.userAnswer,
                     isCorrect: a.isCorrect,
+                    isFlagged: a.isFlagged,
+                    flagColor: a.flagColor,
                     updatedAt: new Date()
                   },
                   create: {
@@ -76,6 +78,8 @@ export async function POST(req: Request) {
                     questionId: a.questionId,
                     userAnswer: a.userAnswer,
                     isCorrect: a.isCorrect,
+                    isFlagged: a.isFlagged,
+                    flagColor: a.flagColor,
                     lessonId: lessonId || null
                   }
                 })

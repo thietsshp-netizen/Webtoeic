@@ -65,7 +65,7 @@ export default function FlagSelector({
   };
 
   const handleSaveNote = () => {
-    onToggle(isFlagged ? (flagColor || 'RED') : null, tempNote);
+    onToggle(flagColor || null, tempNote);
     setIsEditingNote(false);
   };
 
@@ -178,13 +178,13 @@ export default function FlagSelector({
         <AnimatePresence>
           {isHoveringNote && !isEditingNote && hasNote && (
             <motion.div
-              initial={{ opacity: 0, y: isVertical ? -10 : -10, scale: 0.95 }}
+              initial={{ opacity: 0, y: isVertical ? -10 : 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: isVertical ? -10 : -10, scale: 0.95 }}
+              exit={{ opacity: 0, y: isVertical ? -10 : 10, scale: 0.95 }}
               className={`absolute w-64 z-[100] pointer-events-none ${
                 isVertical 
                   ? 'left-full top-0 ml-2' 
-                  : 'top-full left-1/2 -translate-x-1/2 mt-2'
+                  : 'bottom-full left-1/2 -translate-x-1/2 mb-2'
               }`}
             >
               <div className="bg-slate-900/95 backdrop-blur-md text-white p-4 rounded-2xl shadow-2xl border border-white/10 relative">
@@ -198,7 +198,7 @@ export default function FlagSelector({
                 <div className={`absolute w-2 h-2 bg-slate-900/90 rotate-45 border-white/10 ${
                   isVertical
                     ? '-left-1 top-4 border-l border-b'
-                    : '-top-1 left-1/2 -translate-x-1/2 border-l border-t'
+                    : '-bottom-1 left-1/2 -translate-x-1/2 border-r border-b'
                 }`} />
               </div>
             </motion.div>
@@ -227,7 +227,7 @@ export default function FlagSelector({
               {hasNote && (
                 <button 
                   onClick={() => {
-                    onToggle(isFlagged ? (flagColor || 'RED') : null, "");
+                    onToggle(flagColor || null, "");
                     setTempNote("");
                     setIsEditingNote(false);
                   }}
