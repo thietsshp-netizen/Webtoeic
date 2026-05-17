@@ -409,6 +409,13 @@ export default function ToeicFullTestPlayer({
 
   return (
     <div className="flex flex-col h-full bg-slate-50 overflow-hidden relative">
+      {/* Hidden button to be clicked programmatically by child Part Players */}
+      <button
+        id="full-test-submit-btn"
+        className="hidden"
+        onClick={handleSubmit}
+      />
+
       {/* Portal for Timer in Top Header */}
       {mounted && document.getElementById("header-extra-portal") && createPortal(
         <div className="flex items-center gap-3 bg-slate-50/50 px-4 py-2 rounded-2xl border border-slate-200/50 backdrop-blur-md">
