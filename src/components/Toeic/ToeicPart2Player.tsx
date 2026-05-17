@@ -1217,18 +1217,18 @@ export default function ToeicPart2Player({
                           className="w-full select-text cursor-default"
                         >
                           <div className={boxClasses.replace('cursor-pointer', 'cursor-default')}>
-                            <div
+                            <div 
                               onClick={() => handleSelectAnswer(opt)}
-                              className="shrink-0 pt-0.5 cursor-pointer group/radio"
+                              className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[12px] font-black border transition-all duration-300 cursor-pointer group/opt ${revealMode
+                                ? (isCorrectTarget ? 'bg-emerald-500 text-white border-emerald-600 shadow-sm shadow-emerald-500/20' : isSelected ? 'bg-red-500 text-white border-red-600 shadow-sm shadow-red-500/20' : 'bg-slate-50 text-slate-400 border-slate-200')
+                                : isSelected ? 'bg-blue-600 text-white border-blue-700 scale-105 shadow-sm shadow-blue-200' : 'bg-white text-slate-400 border-slate-200 hover:border-indigo-500 hover:scale-110'
+                                }`}
                             >
-                              <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all group-hover/radio:scale-110 group-active/radio:scale-95 ${circleBorder}`}>
-                                {(revealMode ? (isCorrectTarget || isSelected) : isSelected) && <div className={`w-2.5 h-2.5 rounded-full ${circleFill}`} />}
-                              </div>
+                              {opt}
                             </div>
                             <div className="flex-1 w-full text-left">
                               <div className={`font-bold text-[16px] leading-relaxed flex items-start gap-2 ${revealMode && isCorrectTarget ? 'text-emerald-700' : 'text-slate-900'}`}>
                                 <div className="flex items-center gap-1.5 shrink-0 mt-[2px]">
-                                  <span className="font-bold text-[17px]">({opt})</span>
                                   {(currentGroup?.metadata as any)?.timestamps?.[opt] && (
                                     <button
                                       onClick={(e) => {

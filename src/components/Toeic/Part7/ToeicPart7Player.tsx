@@ -1183,16 +1183,16 @@ export default function ToeicPart7Player({
 
                         {mounted && (
                           <div className="flex flex-col items-center gap-3">
-                              <button
-                                onClick={() => handleToggleHint(qKey, q)}
-                                className={`p-2 rounded-xl transition-all duration-300 ${hintsActive[qKey]
-                                  ? "bg-yellow-400 text-white shadow-lg shadow-yellow-200"
-                                  : "bg-white text-slate-300 border border-slate-100 hover:text-yellow-500 hover:border-yellow-200"
-                                  }`}
-                                title="Xem câu gợi ý trong đoạn văn"
-                              >
-                                <Lightbulb size={18} fill={hintsActive[qKey] ? "currentColor" : "none"} />
-                              </button>
+                            <button
+                              onClick={() => handleToggleHint(qKey, q)}
+                              className={`p-2 rounded-xl transition-all duration-300 ${hintsActive[qKey]
+                                ? "bg-yellow-400 text-white shadow-lg shadow-yellow-200"
+                                : "bg-white text-slate-300 border border-slate-100 hover:text-yellow-500 hover:border-yellow-200"
+                                }`}
+                              title="Xem câu gợi ý trong đoạn văn"
+                            >
+                              <Lightbulb size={18} fill={hintsActive[qKey] ? "currentColor" : "none"} />
+                            </button>
                             <FlagSelector
                               isFlagged={!!flags[q.id]}
                               flagColor={(flags[q.id] || 'RED') as FlagColor}
@@ -1229,7 +1229,7 @@ export default function ToeicPart7Player({
 
                                 return (
                                   <div className="space-y-4">
-                                    <div className="flex flex-wrap items-center gap-x-1.5 leading-relaxed">
+                                    <div className="leading-relaxed text-[17px] font-bold text-slate-900">
                                       {parts.map((part: string, i: number) => {
                                         const posMatch = part.match(/^\[([1-4])\]$/);
                                         if (posMatch) {
@@ -1335,7 +1335,7 @@ export default function ToeicPart7Player({
                             })()}
                           </AdminInlineEditor>
                         </div>
-                        
+
                         {/* Options List */}
                         <div className="space-y-0.5">
                           {['A', 'B', 'C', 'D'].map((label) => {
@@ -1343,7 +1343,7 @@ export default function ToeicPart7Player({
                             if (!optText) return null;
                             const isSelected = userAns === label;
                             const isCorrectLabel = q.correctAnswer === label;
-                            
+
                             let uiState = "UNSELECTED";
                             if (isRevealed) {
                               if (isCorrectLabel) uiState = "CORRECT";
@@ -1364,9 +1364,9 @@ export default function ToeicPart7Player({
                               <div key={label} className="space-y-1">
                                 <div
                                   onClick={() => !isRevealed && setAnswers(prev => ({ ...prev, [qKey]: label }))}
-                                  className={`group/opt w-full flex items-start gap-2 py-0.5 px-3 rounded-xl border-2 transition-all cursor-pointer relative ${style}`}
+                                  className={`group/opt w-full flex items-center gap-2 py-0.5 px-2 rounded-xl border-2 transition-all cursor-pointer relative ${style}`}
                                 >
-                                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 border-2 transition-all ${isSelected ? 'bg-indigo-600 border-indigo-600 text-white' : isRevealed && isCorrectLabel ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-slate-50 border-slate-100 text-slate-400 group-hover/opt:border-indigo-300 group-hover/opt:bg-white'}`}>
+                                  <div className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shrink-0 border-2 transition-all ${isSelected ? 'bg-indigo-600 border-indigo-600 text-white' : isRevealed && isCorrectLabel ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-slate-50 border-slate-100 text-slate-400 group-hover/opt:border-indigo-300 group-hover/opt:bg-white'}`}>
                                     {label}
                                   </div>
                                   <div className="flex-1 min-w-0 py-0.5">

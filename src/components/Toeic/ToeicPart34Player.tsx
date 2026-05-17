@@ -1284,13 +1284,13 @@ export default function ToeicPart34Player({
                 <div className="w-1.5 h-4 bg-indigo-600 rounded-full"></div>
                 <span className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Transcript & Translation</span>
                 {/* Eye icon: hiện/ẩn đáp án & transcript */}
-                  <button
-                    onClick={() => setRevealMode(!revealMode)}
-                    className={`w-7 h-7 ml-1 flex items-center justify-center rounded-lg border-2 transition-all ${revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'}`}
-                    title={`${revealMode ? 'Ẩn lời giải' : 'Hiện lời giải'} (Phím tắt: ctrl/cmd + shift + s)`}
-                  >
-                    <span className="text-xs leading-none">👁️</span>
-                  </button>
+                <button
+                  onClick={() => setRevealMode(!revealMode)}
+                  className={`w-7 h-7 ml-1 flex items-center justify-center rounded-lg border-2 transition-all ${revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'}`}
+                  title={`${revealMode ? 'Ẩn lời giải' : 'Hiện lời giải'} (Phím tắt: ctrl/cmd + shift + s)`}
+                >
+                  <span className="text-xs leading-none">👁️</span>
+                </button>
               </div>
 
               {parsedTranscript ? (
@@ -1607,7 +1607,7 @@ export default function ToeicPart34Player({
                                           const qKey = q.id || `${currentGroup.id}_${q.questionNo}`;
                                           !revealMode && handleSelect(qKey, opt);
                                         }}
-                                        className={`w-6 h-6 rounded-lg flex items-center justify-center text-[12px] font-black border transition-all duration-300 cursor-pointer group/opt ${revealMode
+                                        className={`w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-black border transition-all duration-300 cursor-pointer group/opt ${revealMode
                                           ? (isCorrect ? 'bg-emerald-500 text-white border-emerald-600 shadow-sm shadow-emerald-500/20' : isSelected ? 'bg-red-500 text-white border-red-600 shadow-sm shadow-red-500/20' : 'bg-slate-50 text-slate-400 border-slate-200')
                                           : isSelected ? 'bg-blue-600 text-white border-blue-700 scale-105 shadow-sm shadow-blue-200' : 'bg-white text-slate-400 border-slate-200 hover:border-indigo-500 hover:scale-110'
                                           }`}

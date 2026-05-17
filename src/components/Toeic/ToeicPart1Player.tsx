@@ -1185,18 +1185,20 @@ export default function ToeicPart1Player({
                       onMouseDown={(e) => e.stopPropagation()}
                       className={`${boxClasses.replace('cursor-pointer', 'cursor-default')} ${mode === 'dictation' ? 'select-none' : 'select-text'}`}
                     >
-                      <div className="shrink-0 pt-1">
+                      <div className="shrink-0 pt-0.5">
                         <div 
                           onClick={() => handleSelectAnswer(opt)}
-                          className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-300 cursor-pointer hover:scale-110 active:scale-95 ${circleBorder} ${isSelected ? 'scale-110' : ''}`}
+                          className={`w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-black border transition-all duration-300 cursor-pointer group/opt ${revealMode
+                            ? (isCorrectTarget ? 'bg-emerald-500 text-white border-emerald-600 shadow-sm shadow-emerald-500/20' : isSelected ? 'bg-red-500 text-white border-red-600 shadow-sm shadow-red-500/20' : 'bg-slate-50 text-slate-400 border-slate-200')
+                            : isSelected ? 'bg-blue-600 text-white border-blue-700 scale-105 shadow-sm shadow-blue-200' : 'bg-white text-slate-400 border-slate-200 hover:border-indigo-500 hover:scale-110'
+                            }`}
                         >
-                          {(revealMode ? (isCorrectTarget || isSelected) : isSelected) && <div className={`w-2.5 h-2.5 rounded-full animate-in zoom-in duration-300 ${circleFill}`} />}
+                          {opt}
                         </div>
                       </div>
                       <div className="flex-1 w-full text-left">
                         <div className={`font-bold text-[16px] leading-relaxed flex items-center gap-3 ${revealMode && isCorrectTarget ? 'text-emerald-700' : 'text-slate-900'}`}>
                           <div className="flex items-center gap-1.5 shrink-0">
-                            <span className="font-bold text-[17px]">({opt})</span>
                             {(currentGroup?.metadata as any)?.timestamps?.[opt] && (
                               <button
                                 onClick={(e) => {

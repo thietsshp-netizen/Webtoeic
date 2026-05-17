@@ -983,10 +983,10 @@ export default function ToeicPart6Player({
 
                             return (
                               <div key={opt}>
-                                <div className={`group w-full flex items-start py-0.5 px-2.5 rounded-xl border text-left transition-all relative cursor-default select-text gap-2 ${optClass}`}>
+                                <div className={`group w-full flex items-center py-0.5 px-2 rounded-xl border text-left transition-all relative cursor-default select-text gap-2 ${optClass}`}>
                                   <span
                                     onClick={() => !(isReviewMode || isSubmittedInternal) && handleSelect(qKey, opt)}
-                                    className={`w-6 h-6 rounded-lg flex-shrink-0 flex items-center justify-center text-[12px] font-black border transition-all duration-300 mt-0.5 ${!(isReviewMode || isSubmittedInternal) ? 'cursor-pointer hover:scale-110 active:scale-95' : 'cursor-default'} ${letterClass}`}
+                                    className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[12px] font-black border transition-all duration-300 ${!(isReviewMode || isSubmittedInternal) ? 'cursor-pointer hover:scale-110 active:scale-95' : 'cursor-default'} ${letterClass}`}
                                   >
                                     {opt}
                                   </span>
