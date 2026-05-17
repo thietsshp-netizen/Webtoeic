@@ -1183,15 +1183,16 @@ export default function ToeicPart7Player({
 
                         {mounted && (
                           <div className="flex flex-col items-center gap-3">
-                            <button
-                              onClick={() => handleToggleHint(qKey, q)}
-                              className={`p-2 rounded-xl transition-all duration-300 ${hintsActive[qKey]
-                                ? "bg-yellow-400 text-white shadow-lg shadow-yellow-200"
-                                : "bg-white text-slate-300 border border-slate-100 hover:text-yellow-500 hover:border-yellow-200"
-                                }`}
-                            >
-                              <Lightbulb size={18} fill={hintsActive[qKey] ? "currentColor" : "none"} />
-                            </button>
+                              <button
+                                onClick={() => handleToggleHint(qKey, q)}
+                                className={`p-2 rounded-xl transition-all duration-300 ${hintsActive[qKey]
+                                  ? "bg-yellow-400 text-white shadow-lg shadow-yellow-200"
+                                  : "bg-white text-slate-300 border border-slate-100 hover:text-yellow-500 hover:border-yellow-200"
+                                  }`}
+                                title="Xem câu gợi ý trong đoạn văn"
+                              >
+                                <Lightbulb size={18} fill={hintsActive[qKey] ? "currentColor" : "none"} />
+                              </button>
                             <FlagSelector
                               isFlagged={!!flags[q.id]}
                               flagColor={(flags[q.id] || 'RED') as FlagColor}

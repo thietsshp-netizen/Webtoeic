@@ -1141,20 +1141,15 @@ export default function ToeicPart1Player({
                     compact={true}
                   />
                   {/* Eye / reveal icon button */}
-                  <div className="relative group/eye">
-                    <button
-                      onClick={() => setRevealMode(!revealMode)}
-                      className={`w-8 h-8 flex items-center justify-center rounded-lg border-2 transition-all ${
-                        revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'
-                      }`}
-                    >
-                      <span className="text-sm leading-none">{revealMode ? '👁️' : '👁️'}</span>
-                    </button>
-                    <div className="absolute left-0 top-full mt-1.5 opacity-0 group-hover/eye:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shadow-lg z-50">
-                      {revealMode ? 'Ẩn lời giải' : 'Hiện lời giải'} (Phím tắt: ctrl/cmd + shift + s)
-                      <div className="absolute -top-1 left-3 w-2 h-2 bg-slate-900 rotate-45"></div>
-                    </div>
-                  </div>
+                  <button
+                    onClick={() => setRevealMode(!revealMode)}
+                    className={`w-8 h-8 flex items-center justify-center rounded-lg border-2 transition-all ${
+                      revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'
+                    }`}
+                    title={`${revealMode ? 'Ẩn lời giải' : 'Hiện lời giải'} (Phím tắt: ctrl/cmd + shift + s)`}
+                  >
+                    <span className="text-sm leading-none">{revealMode ? '👁️' : '👁️'}</span>
+                  </button>
                   {mode === 'dictation' && <div className="text-xs font-bold text-pink-600 uppercase tracking-widest border-l-2 border-pink-500 pl-2">Thử thách điền từ: Gõ thay thế các dấu chấm</div>}
                 </div>
                 {['A', 'B', 'C', 'D'].map(opt => {
@@ -1203,25 +1198,20 @@ export default function ToeicPart1Player({
                           <div className="flex items-center gap-1.5 shrink-0">
                             <span className="font-bold text-[17px]">({opt})</span>
                             {(currentGroup?.metadata as any)?.timestamps?.[opt] && (
-                              <div className="relative group/speaker">
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    playSegment(opt);
-                                  }}
-                                  className={`p-1 rounded-md transition-all duration-300 ${
-                                    playingSegmentLabel === opt 
-                                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse' 
-                                      : 'hover:bg-slate-100 text-slate-400 hover:text-indigo-600'
-                                  }`}
-                                >
-                                  <Volume2 size={14} fill={playingSegmentLabel === opt ? "currentColor" : "none"} />
-                                </button>
-                                <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 opacity-0 group-hover/speaker:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[9px] font-black tracking-widest px-2 py-1 rounded-lg shadow-xl z-50">
-                                  NHẤN PHÍM {['A', 'B', 'C', 'D'].indexOf(opt) + 1} ĐỂ NGHE
-                                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45 -translate-y-1"></div>
-                                </div>
-                              </div>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  playSegment(opt);
+                                }}
+                                className={`p-1 rounded-md transition-all duration-300 ${
+                                  playingSegmentLabel === opt 
+                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse' 
+                                    : 'hover:bg-slate-100 text-slate-400 hover:text-indigo-600'
+                                }`}
+                                title={`Nghe phương án ${opt} (Phím tắt: phím số ${['A', 'B', 'C', 'D'].indexOf(opt) + 1})`}
+                              >
+                                <Volume2 size={14} fill={playingSegmentLabel === opt ? "currentColor" : "none"} />
+                              </button>
                             )}
                           </div>
                           <div className="flex-1">

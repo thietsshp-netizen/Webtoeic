@@ -1284,19 +1284,13 @@ export default function ToeicPart34Player({
                 <div className="w-1.5 h-4 bg-indigo-600 rounded-full"></div>
                 <span className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Transcript & Translation</span>
                 {/* Eye icon: hiện/ẩn đáp án & transcript */}
-                <div className="relative group/eye ml-1">
                   <button
                     onClick={() => setRevealMode(!revealMode)}
-                    className={`w-7 h-7 flex items-center justify-center rounded-lg border-2 transition-all ${revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'
-                      }`}
+                    className={`w-7 h-7 ml-1 flex items-center justify-center rounded-lg border-2 transition-all ${revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'}`}
+                    title={`${revealMode ? 'Ẩn lời giải' : 'Hiện lời giải'} (Phím tắt: ctrl/cmd + shift + s)`}
                   >
                     <span className="text-xs leading-none">👁️</span>
                   </button>
-                  <div className="absolute left-0 top-full mt-1.5 opacity-0 group-hover/eye:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shadow-lg z-50">
-                    {revealMode ? 'Ẩn lời giải' : 'Hiện lời giải'} (Phím tắt: ctrl/cmd + shift + s)
-                    <div className="absolute -top-1 left-3 w-2 h-2 bg-slate-900 rotate-45"></div>
-                  </div>
-                </div>
               </div>
 
               {parsedTranscript ? (
@@ -1380,8 +1374,8 @@ export default function ToeicPart34Player({
                       <BookOpenIcon className="w-10 h-10 text-indigo-300" />
                     </div>
                     <h4 className="text-slate-900 font-bold text-[16px] mb-2 text-balance">Luyện nghe tập trung</h4>
-                    <p className="text-slate-500 text-[13.5px] max-w-[240px] leading-relaxed mx-auto">
-                      Hãy nghe kỹ và làm bài trước khi xem lời thoại. Bấm <span className="font-bold text-indigo-600">"Hiện đáp án"</span> để mở khóa Transcript & Bản dịch.
+                    <p className="text-slate-500 text-[13.5px] max-w-[280px] leading-relaxed mx-auto">
+                      Hãy nghe kỹ và làm bài trước khi xem lời thoại. Bấm Icon con mắt hoặc <span className="font-bold text-indigo-600">"Hiện đáp án"</span> (phím tắt: <strong className="font-bold text-slate-800">ctrl/cmd+shift+s</strong>) để mở khóa Transcript & Bản dịch.
                     </p>
                   </div>
                 )
@@ -1522,6 +1516,7 @@ export default function ToeicPart34Player({
                                 <button
                                   onClick={() => playEvidence(qIdx)}
                                   className={`w-8 h-8 flex items-center justify-center rounded-xl border transition-all duration-300 ${playingSegmentLabel === qLabel ? 'border-indigo-600 bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'border-slate-100 text-slate-400 hover:border-indigo-300 hover:text-indigo-600'}`}
+                                  title={`Audio gợi ý (Phím tắt: phím số ${qIdx + 1})`}
                                 >
                                   <Volume2 size={13} />
                                 </button>

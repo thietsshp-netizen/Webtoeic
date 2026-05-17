@@ -1071,43 +1071,31 @@ export default function ToeicPart2Player({
                       onUnflag={(deleteNote) => handleUpdateFlag(currentQKey, null, undefined, deleteNote)}
                       compact={true}
                     />
-                    {/* Eye / reveal icon button */}
-                    <div className="relative group/eye">
-                      <button
-                        onClick={() => setRevealMode(!revealMode)}
-                        className={`w-7 h-7 flex items-center justify-center rounded-lg border-2 transition-all ${revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'
-                          }`}
-                      >
-                        <span className="text-xs leading-none">👁️</span>
-                      </button>
-                      <div className="absolute left-0 top-full mt-1.5 opacity-0 group-hover/eye:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shadow-lg z-50">
-                        {revealMode ? 'Ẩn lời giải' : 'Hiện lời giải'} (Phím tắt: ctrl/cmd + shift + s)
-                        <div className="absolute -top-1 left-3 w-2 h-2 bg-slate-900 rotate-45"></div>
-                      </div>
-                    </div>
+                    <button
+                      onClick={() => setRevealMode(!revealMode)}
+                      className={`w-7 h-7 flex items-center justify-center rounded-lg border-2 transition-all ${revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'}`}
+                      title={`${revealMode ? 'Ẩn lời giải' : 'Hiện lời giải'} (Phím tắt: ctrl/cmd + shift + s)`}
+                    >
+                      <span className="text-xs leading-none">👁️</span>
+                    </button>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="flex items-center gap-2 shrink-0 mt-[3px]">
                       <div className="bg-blue-600 text-white font-bold text-sm rounded-lg px-2.5 py-1 shadow-md leading-none">{questionData?.questionNo}</div>
                       {(currentGroup?.metadata as any)?.timestamps?.['question'] && (
-                        <div className="relative group/speaker">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              playSegment('question');
-                            }}
-                            className={`w-8 h-8 flex items-center justify-center rounded-xl border-2 transition-all duration-300 ${playingSegmentLabel === 'question'
-                                ? 'border-indigo-600 bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
-                                : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 shadow-sm bg-white'
-                              }`}
-                          >
-                            <Volume2 size={14} fill={playingSegmentLabel === 'question' ? "currentColor" : "none"} />
-                          </button>
-                          <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 opacity-0 group-hover/speaker:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[9px] font-black tracking-widest px-2 py-1.5 rounded-lg shadow-xl z-50">
-                            NHẤN PHÍM 1 ĐỂ NGHE
-                            <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45 -translate-y-1"></div>
-                          </div>
-                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            playSegment('question');
+                          }}
+                          className={`w-8 h-8 flex items-center justify-center rounded-xl border-2 transition-all duration-300 ${playingSegmentLabel === 'question'
+                              ? 'border-indigo-600 bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
+                              : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 shadow-sm bg-white'
+                            }`}
+                          title="Nghe câu hỏi (Phím tắt: phím số 1)"
+                        >
+                          <Volume2 size={14} fill={playingSegmentLabel === 'question' ? "currentColor" : "none"} />
+                        </button>
                       )}
                     </div>
                     <div className="flex-1 text-lg font-bold text-slate-800 leading-relaxed min-h-[40px]">
@@ -1242,24 +1230,19 @@ export default function ToeicPart2Player({
                                 <div className="flex items-center gap-1.5 shrink-0 mt-[2px]">
                                   <span className="font-bold text-[17px]">({opt})</span>
                                   {(currentGroup?.metadata as any)?.timestamps?.[opt] && (
-                                    <div className="relative group/speaker">
-                                      <button
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          playSegment(opt);
-                                        }}
-                                        className={`p-1 rounded-md transition-all duration-300 ${playingSegmentLabel === opt
-                                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
-                                            : 'hover:bg-slate-100 text-slate-400 hover:text-indigo-600'
-                                          }`}
-                                      >
-                                        <Volume2 size={13} fill={playingSegmentLabel === opt ? "currentColor" : "none"} />
-                                      </button>
-                                      <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 opacity-0 group-hover/speaker:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[9px] font-black tracking-widest px-2 py-1 rounded-lg shadow-xl z-50">
-                                        NHẤN PHÍM {['A', 'B', 'C'].indexOf(opt) + 2} ĐỂ NGHE
-                                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45 -translate-y-1"></div>
-                                      </div>
-                                    </div>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        playSegment(opt);
+                                      }}
+                                      className={`p-1 rounded-md transition-all duration-300 ${playingSegmentLabel === opt
+                                          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
+                                          : 'hover:bg-slate-100 text-slate-400 hover:text-indigo-600'
+                                        }`}
+                                      title={`Nghe phương án ${opt} (Phím tắt: phím số ${['A', 'B', 'C'].indexOf(opt) + 2})`}
+                                    >
+                                      <Volume2 size={13} fill={playingSegmentLabel === opt ? "currentColor" : "none"} />
+                                    </button>
                                   )}
                                 </div>
                                 <div className="flex-1">
