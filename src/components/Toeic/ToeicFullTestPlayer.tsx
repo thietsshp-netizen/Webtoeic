@@ -679,6 +679,8 @@ export default function ToeicFullTestPlayer({
                     const isFlagged = !!userProgress[qKey]?.isFlagged;
                     const isActive = q.questionNo === activeQuestionNo;
                     const isActiveGroup = activeQuestionNo !== null && q.groupId === allQuestions.find(aq => aq.questionNo === activeQuestionNo)?.groupId;
+                    const userAnswer = userProgress[qKey]?.userAnswer;
+                    const isCorrect = userAnswer && String(userAnswer).trim().toUpperCase() === String(q.correctAnswer || "").trim().toUpperCase();
 
                     return (
                       <button
@@ -695,12 +697,26 @@ export default function ToeicFullTestPlayer({
                         className={`
                         aspect-square rounded-xl text-[13px] font-black transition-all flex items-center justify-center relative
                         ${isActive
-                            ? "bg-blue-600 text-white scale-110 z-20 shadow-lg ring-2 ring-white ring-offset-2 ring-offset-blue-600"
+                            ? isSubmitted
+                              ? isCorrect
+                                ? "bg-emerald-600 text-white scale-110 z-20 shadow-lg ring-2 ring-emerald-500 ring-offset-2 ring-offset-slate-900"
+                                : "bg-rose-600 text-white scale-110 z-20 shadow-lg ring-2 ring-rose-500 ring-offset-2 ring-offset-slate-900"
+                              : "bg-blue-600 text-white scale-110 z-20 shadow-lg ring-2 ring-white ring-offset-2 ring-offset-slate-900"
                             : isActiveGroup
-                              ? "bg-blue-100 text-blue-700 border-2 border-blue-400 z-10 scale-105"
-                              : isAnswered
-                                ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
-                                : "bg-white/10 text-white/70 hover:bg-white/20 hover:text-white border border-white/10"
+                              ? isSubmitted
+                                ? isCorrect
+                                  ? "bg-emerald-500/20 text-emerald-300 border-2 border-emerald-500/50 z-10 scale-105"
+                                  : "bg-rose-500/20 text-rose-300 border-2 border-rose-500/50 z-10 scale-105"
+                                : "bg-blue-500/20 text-blue-300 border-2 border-blue-500/50 z-10 scale-105"
+                              : isSubmitted
+                                ? isAnswered
+                                  ? isCorrect
+                                    ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/25"
+                                    : "bg-rose-600 text-white shadow-md shadow-rose-600/25"
+                                  : "bg-rose-950/40 text-rose-400 border border-dashed border-rose-500/30"
+                                : isAnswered
+                                  ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
+                                  : "bg-white/10 text-white/70 hover:bg-white/20 hover:text-white border border-white/10"
                           }
                       `}
                       >
