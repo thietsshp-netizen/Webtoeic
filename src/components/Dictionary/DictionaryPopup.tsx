@@ -512,7 +512,7 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
                             onClick={(e) => toggleStar(e, m)}
                             disabled={isStarring === m.definition}
                             className={cn(
-                              "p-1.5 rounded-lg transition-all",
+                              "p-1.5 rounded-lg transition-all tour-dict-star-btn",
                               isStarred ? "text-yellow-500 bg-yellow-50" : "text-slate-300 hover:bg-slate-50 hover:text-yellow-500"
                             )}
                           >

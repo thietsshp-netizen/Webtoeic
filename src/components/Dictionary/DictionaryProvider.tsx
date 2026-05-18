@@ -133,11 +133,16 @@ export function DictionaryProvider({ children }: { children: React.ReactNode }) 
       }
     };
 
+    const handleClose = () => {
+      closeDictionary();
+    };
+
     document.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('mouseup', handleMouseUp);
     document.addEventListener('dblclick', handleDoubleClick);
     document.addEventListener('click', handleClick);
     window.addEventListener('dictionary-search', handleSearch);
+    window.addEventListener('dictionary-close', handleClose);
 
     return () => {
       document.removeEventListener('mousedown', handleMouseDown);
@@ -145,6 +150,7 @@ export function DictionaryProvider({ children }: { children: React.ReactNode }) 
       document.removeEventListener('dblclick', handleDoubleClick);
       document.removeEventListener('click', handleClick);
       window.removeEventListener('dictionary-search', handleSearch);
+      window.removeEventListener('dictionary-close', handleClose);
     };
   }, [openDictionary]);
 

@@ -141,6 +141,16 @@ export default function LearnSidebar() {
     }
   }, [isDrawerOpen]);
 
+  // Lắng nghe sự kiện tự động mở/đóng Review Center trong kịch bản Tour
+  useEffect(() => {
+    const handleTourReviewCenter = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setIsDrawerOpen(customEvent.detail.open);
+    };
+    window.addEventListener("toeic-tour-review-center", handleTourReviewCenter);
+    return () => window.removeEventListener("toeic-tour-review-center", handleTourReviewCenter);
+  }, []);
+
   // Tự động mở rộng toàn bộ Sách và Chương trong Drawer khi danh sách ghi chú tải xong
   useEffect(() => {
     if (notes.length > 0) {
@@ -300,12 +310,15 @@ export default function LearnSidebar() {
     <>
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
       
-      <div className="w-[340px] flex-shrink-0 border-r border-slate-100 bg-[#fbfcfd] flex flex-col h-full shadow-[1px_0_10px_rgba(0,0,0,0.02)] relative">
+      <div id="learn-course-sidebar" className="w-[340px] flex-shrink-0 border-r border-slate-100 bg-[#fbfcfd] flex flex-col h-full shadow-[1px_0_10px_rgba(0,0,0,0.02)] relative">
+        {/* Target ảo luôn tồn tại trên DOM để Driver.js đục sáng khít khao bảng Review Center */}
+        <div id="review-center-panel-target" className="absolute inset-0 pointer-events-none z-0" />
         
         {/* REVIEW CENTER DRAWER */}
         <AnimatePresence>
           {isDrawerOpen && (
             <motion.div 
+              id="review-center-panel"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
@@ -556,6 +569,7 @@ export default function LearnSidebar() {
             </h2>
             <div className="flex items-center gap-2">
               <button 
+                id="review-center-toggle-btn"
                 onClick={() => setIsDrawerOpen(true)}
                 className="p-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-lg transition-all active:scale-95 shadow-sm shadow-indigo-100"
                 title="Xem các câu gắn cờ/ghi chú trong khoá"

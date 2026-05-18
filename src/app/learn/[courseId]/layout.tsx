@@ -29,6 +29,16 @@ export default function LearnLayout({
     }
   }, [params?.courseId]);
 
+  // Lắng nghe sự kiện mở/đóng Sidebar bên trái trong kịch bản Tour
+  useEffect(() => {
+    const handleTourCourseSidebar = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setSidebarOpen(customEvent.detail.open);
+    };
+    window.addEventListener("toeic-tour-course-sidebar", handleTourCourseSidebar);
+    return () => window.removeEventListener("toeic-tour-course-sidebar", handleTourCourseSidebar);
+  }, []);
+
   // Tự động ẩn sidebar khi màn hình nhỏ (< 1280px)
   useEffect(() => {
     const handleResize = () => {

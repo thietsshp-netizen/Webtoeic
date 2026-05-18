@@ -89,7 +89,7 @@ export default function FlagSelector({
       >
         <button
           onClick={handleFlagClick}
-          className={`${compact ? 'p-1.5' : 'p-2.5 px-4'} rounded-xl transition-all flex items-center gap-2 relative border ${
+          className={`flag-selector-btn ${compact ? 'p-1.5' : 'p-2.5 px-4'} rounded-xl transition-all flex items-center gap-2 relative border ${
             isFlagged && flagColor
               ? 'bg-slate-50 border-slate-200 shadow-sm' 
               : 'text-slate-400 hover:text-red-500 hover:bg-red-50 border-transparent'
@@ -156,7 +156,7 @@ export default function FlagSelector({
             e.stopPropagation();
             setIsEditingNote(true);
           }}
-          className={`${compact ? 'p-1.5' : 'p-2.5 px-4'} rounded-xl transition-all flex items-center gap-2 relative border ${
+          className={`note-selector-btn ${compact ? 'p-1.5' : 'p-2.5 px-4'} rounded-xl transition-all flex items-center gap-2 relative border ${
             hasNote
               ? 'bg-blue-50 border-blue-100 text-blue-600 shadow-sm'
               : 'text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 border-transparent'
@@ -270,9 +270,12 @@ export default function FlagSelector({
             </div>
             <button 
               onClick={handleSaveNote}
-              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-1.5xl text-[12px] font-black shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all hover:scale-105 active:scale-95 uppercase tracking-widest"
+              className="flex flex-col items-center justify-center bg-blue-600 text-white px-5 py-1.5 rounded-xl shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all hover:scale-105 active:scale-95"
             >
-              <Check size={16} /> Lưu ghi chú
+              <div className="flex items-center gap-1 font-black text-[11px] tracking-widest uppercase">
+                <Check size={13} /> LƯU
+              </div>
+              <span className="text-[8px] font-bold opacity-80 mt-0.5 normal-case tracking-normal">(shift + enter)</span>
             </button>
           </div>
         </motion.div>,

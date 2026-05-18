@@ -58,6 +58,26 @@ export default function ToeicFullTestPlayer({
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [activeQuestionNo, setActiveQuestionNo] = useState<number | null>(null);
+  const [disableSidebarTransition, setDisableSidebarTransition] = useState(false);
+
+  // Lắng nghe sự kiện từ Tour để tự động mở bung Sidebar làm ví dụ
+  useEffect(() => {
+    const handleTourSidebar = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      // Tắt transition để Sidebar phình to lập tức 0ms, giúp Driver.js đo kích thước chuẩn 100%
+      setDisableSidebarTransition(true);
+      setIsSidebarHovered(customEvent.detail.open);
+
+      // Sau khi đóng hoặc chuyển bước, khôi phục lại transition mượt mà sau 500ms
+      if (!customEvent.detail.open) {
+        setTimeout(() => {
+          setDisableSidebarTransition(false);
+        }, 500);
+      }
+    };
+    window.addEventListener("toeic-tour-sidebar", handleTourSidebar);
+    return () => window.removeEventListener("toeic-tour-sidebar", handleTourSidebar);
+  }, []);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [timeInput, setTimeInput] = useState("120");
   const [isSaving, setIsSaving] = useState(false);
@@ -415,7 +435,7 @@ export default function ToeicFullTestPlayer({
 
       {/* Portal for Timer in Top Header */}
       {mounted && document.getElementById("header-extra-portal") && createPortal(
-        <div className="flex items-center gap-3 bg-slate-50/50 px-4 py-2 rounded-2xl border border-slate-200/50 backdrop-blur-md">
+        <div id="full-test-part-timer-target" className="flex items-center gap-3 bg-slate-50/50 px-4 py-2 rounded-2xl border border-slate-200/50 backdrop-blur-md">
           {/* Part tabs */}
           <div className="flex items-center gap-1.5">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider whitespace-nowrap">CHỌN PART:</span>
@@ -450,7 +470,7 @@ export default function ToeicFullTestPlayer({
                 <span className={`text-sm font-black font-mono ${timeLeft < 300 ? "text-red-600" : "text-slate-700"}`}>
                   {formatTime(timeLeft)}
                 </span>
-                <span className="text-[9px] text-slate-400 font-bold hidden group-hover:inline-block whitespace-nowrap ml-1 opacity-0 group-hover:opacity-100 transition-opacity">Sửa</span>
+                <span className="text-[9px] text-slate-400 font-bold whitespace-nowrap ml-1.5">Đặt lại</span>
               </button>
             ) : (
               <div className="flex items-center gap-1 bg-white border-2 border-blue-500 rounded-xl p-0.5 shadow-lg shadow-blue-500/10 animate-in zoom-in-95 duration-150">
@@ -624,8 +644,8 @@ export default function ToeicFullTestPlayer({
 
         {mounted && createPortal(
           <div
-            className={`
-              fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
+            className={`questions-sidebar-portal
+              fixed right-0 top-14 bottom-0 z-[999] ${disableSidebarTransition ? "" : "transition-all duration-300 ease-out"} border-l border-white/10 shadow-2xl flex flex-col
             ${isSidebarHovered ? "w-80 bg-slate-900/70 backdrop-blur-xl" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer"}
           `}
             onMouseEnter={() => setIsSidebarHovered(true)}

@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { Star, Volume2, RotateCcw, ChevronRight, ChevronLeft, BookOpen, Shuffle, PenLine, Link2, Lightbulb, Replace, Layers } from "lucide-react";
+import { Star, Volume2, RotateCcw, ChevronRight, ChevronLeft, BookOpen, Shuffle, PenLine, Link2, Lightbulb, Replace, Layers, HelpCircle, Compass } from "lucide-react";
 import confetti from "canvas-confetti";
+import VocabGuideModal from "@/components/Vocab/VocabGuideModal";
+import { startVocabTour } from "@/components/Toeic/toeicTour";
 
 export interface VocabWord {
   id: number | string;
@@ -93,7 +95,7 @@ function FlashCard({
           {/* Bookmark Button (Unlearned) - Left */}
           <button
             onClick={(e) => { e.stopPropagation(); onToggleUnlearned(); }}
-            className={`absolute top-3 left-3 p-1.5 rounded-lg transition-all ${isUnlearned ? "text-rose-500 bg-rose-50 scale-105 shadow-sm ring-1 ring-rose-100" : "text-slate-200 hover:text-rose-400 hover:bg-slate-50"}`}
+            className={`absolute top-3 left-3 p-1.5 rounded-lg transition-all vocab-unlearned-toggle-btn ${isUnlearned ? "text-rose-500 bg-rose-50 scale-105 shadow-sm ring-1 ring-rose-100" : "text-slate-200 hover:text-rose-400 hover:bg-slate-50"}`}
             title="Đánh dấu chưa thuộc"
           >
             <BookOpen size={16} fill={isUnlearned ? "currentColor" : "none"} />
@@ -107,7 +109,7 @@ function FlashCard({
           {/* Star Button (Notebook) - Right */}
           <button
             onClick={(e) => { e.stopPropagation(); onToggleNotebook(); }}
-            className={`absolute top-3 right-3 p-1.5 rounded-lg transition-all ${isInNotebook ? "text-amber-400 bg-amber-50 scale-105 shadow-sm ring-1 ring-amber-100" : "text-slate-200 hover:text-amber-300 hover:bg-slate-50"}`}
+            className={`absolute top-3 right-3 p-1.5 rounded-lg transition-all vocab-star-toggle-btn ${isInNotebook ? "text-amber-400 bg-amber-50 scale-105 shadow-sm ring-1 ring-amber-100" : "text-slate-200 hover:text-amber-300 hover:bg-slate-50"}`}
             title="Lưu/xoá từ khỏi từ vựng của bạn"
           >
             <Star size={16} fill={isInNotebook ? "currentColor" : "none"} />
@@ -868,6 +870,7 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
   const [loading, setLoading] = useState(true);
   const [globalFlip, setGlobalFlip] = useState<"front" | "back" | null>(null);
   const [hasMounted, setHasMounted] = useState(false);
+
   useEffect(() => { setHasMounted(true); }, []);
 
   // Load status từ DB
@@ -997,43 +1000,78 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
       <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-lg border-b border-slate-100 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-3">
-            <div>
-              <div className="text-xs text-slate-400 font-bold uppercase tracking-widest">Ngày {dayNumber}</div>
-              <h1 className="text-xl font-black text-slate-800">{title}</h1>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="flex bg-slate-100 rounded-2xl p-1 gap-1">
-                <button
-                  onClick={() => setFilterMode("all")}
-                  title="Chơi game với tất cả các từ"
-                  className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${filterMode === "all" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
-                >TẤT CẢ ({data.length})</button>
-                <button
-                  onClick={() => setFilterMode("starred")}
-                  title="Chơi game với các từ có nhãn chưa thuộc"
-                  className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1 ${filterMode === "starred" ? "bg-white text-rose-500 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
-                >
-                  <BookOpen size={12} className={filterMode === "starred" ? "text-rose-500" : "text-slate-400"} fill={filterMode === "starred" ? "currentColor" : "none"} />
-                  CHƯA THUỘC ({unlearnedCount})
-                </button>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
+              <div>
+                <div className="text-xs text-slate-400 font-bold uppercase tracking-widest">Ngày {dayNumber}</div>
+                <h1 className="text-xl font-black text-slate-800 flex items-center flex-wrap gap-2.5">
+                  <span id={hasMounted ? "vocab-title-target" : undefined}>{title}</span>
+                  <button
+                    onClick={() => startVocabTour(true)}
+                    id={hasMounted ? "vocab-guide-btn" : undefined}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm"
+                    title="Khởi động Tour hướng dẫn"
+                  >
+                    <Compass size={12} className="animate-pulse" />
+                    Hướng dẫn nhanh
+                  </button>
+                </h1>
+              </div>
+
+              <div className="flex items-center gap-2" id={hasMounted ? "vocab-filters-target" : undefined}>
+                <div className="flex bg-slate-100 rounded-2xl p-1 gap-1">
+                  <button
+                    onClick={() => setFilterMode("all")}
+                    id={hasMounted ? "vocab-filter-all-btn" : undefined}
+                    title="Chơi game với tất cả các từ"
+                    className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${filterMode === "all" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                  >TẤT CẢ ({data.length})</button>
+                  <button
+                    onClick={() => setFilterMode("starred")}
+                    id={hasMounted ? "vocab-filter-unlearned-btn" : undefined}
+                    title="Chơi game với các từ có nhãn chưa thuộc"
+                    className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1 ${filterMode === "starred" ? "bg-white text-rose-500 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                  >
+                    <BookOpen size={12} className={filterMode === "starred" ? "text-rose-500" : "text-slate-400"} fill={filterMode === "starred" ? "currentColor" : "none"} />
+                    CHƯA THUỘC ({unlearnedCount})
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="flex gap-1 overflow-x-auto">
-            {TABS.map(t => {
-              const Icon = t.icon;
+            {(() => {
+              const libraryTab = TABS.find(t => t.id === "library");
+              if (!libraryTab) return null;
+              const Icon = libraryTab.icon;
               return (
                 <button
-                  key={t.id}
-                  onClick={() => setTab(t.id as Tab)}
-                  title={hasMounted ? TOOLTIPS[t.id] : undefined}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black whitespace-nowrap transition-all ${tab === t.id ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
+                  key="library"
+                  id={hasMounted ? "vocab-mode-library-btn" : undefined}
+                  onClick={() => setTab("library")}
+                  title={hasMounted ? TOOLTIPS.library : undefined}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black whitespace-nowrap transition-all ${tab === "library" ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
                 >
-                  <Icon size={13} />{t.label}
+                  <Icon size={13} />{libraryTab.label}
                 </button>
               );
-            })}
+            })()}
+
+            <div className="flex gap-1" id={hasMounted ? "vocab-games-target" : undefined}>
+              {TABS.filter(t => t.id !== "library").map(t => {
+                const Icon = t.icon;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => setTab(t.id as Tab)}
+                    title={hasMounted ? TOOLTIPS[t.id] : undefined}
+                    className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black whitespace-nowrap transition-all ${tab === t.id ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
+                  >
+                    <Icon size={13} />{t.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -1051,6 +1089,7 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
             <div className="flex gap-2 mb-6">
               <button 
                 onClick={() => setGlobalFlip(prev => prev === "back" ? "front" : "back")}
+                id={hasMounted ? "vocab-global-flip-target" : undefined}
                 className="px-6 py-2.5 bg-white border border-slate-200 text-slate-600 font-bold text-[10px] uppercase tracking-widest rounded-xl hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2"
               >
                 <Layers size={14} className="text-blue-500" />
@@ -1061,16 +1100,17 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
               {activeWords.map((word, idx) => {
                 const key = word.word.trim().toLowerCase() + "|" + word.mean.trim().toLowerCase();
                 return (
-                  <FlashCard
-                    key={word.id}
-                    word={word}
-                    index={idx}
-                    isInNotebook={notebookIds.has(key)}
-                    isUnlearned={unlearnedIds.has(key)}
-                    onToggleNotebook={() => toggleNotebook(word)}
-                    onToggleUnlearned={() => toggleUnlearned(word)}
-                    globalFlip={globalFlip}
-                  />
+                  <div key={word.id} className={idx === 0 ? "vocab-card-first animate-in zoom-in duration-300" : "animate-in zoom-in duration-300"}>
+                    <FlashCard
+                      word={word}
+                      index={idx}
+                      isInNotebook={notebookIds.has(key)}
+                      isUnlearned={unlearnedIds.has(key)}
+                      onToggleNotebook={() => toggleNotebook(word)}
+                      onToggleUnlearned={() => toggleUnlearned(word)}
+                      globalFlip={globalFlip}
+                    />
+                  </div>
                 );
               })}
             </div>
@@ -1085,6 +1125,8 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
           <SynonymGame words={activeWords} onSRSUpdate={onSRSUpdate} />
         ) : null}
       </div>
+
+
 
       <style>{`
         .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }

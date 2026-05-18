@@ -14,6 +14,7 @@ import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
 import confetti from 'canvas-confetti';
 import Link from 'next/link';
 import FlagSelector, { FlagColor } from '../Player/FlagSelector';
+import { startToeicPartTour } from './toeicTour';
 
 function cleanSpeakerLabels(text: string) {
   if (!text) return "";
@@ -410,6 +411,8 @@ export default function ToeicPart2Player({
 
   useEffect(() => {
     setMounted(true);
+    // Tự động khởi chạy tour hướng dẫn học Part 2 lần đầu
+    startToeicPartTour(2);
   }, []);
 
   // Sync revealMode with externalIsSubmitted
@@ -493,10 +496,45 @@ export default function ToeicPart2Player({
 
   const [isSubmitted, setIsSubmitted] = useState(externalIsSubmitted);
   const [isHintMode, setIsHintMode] = useState(false);
+
+  // Lắng nghe sự kiện từ Tour Hướng Dẫn để tự động bật tắt chế độ
+  useEffect(() => {
+    const handleDictationMode = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail.open) {
+        setMode('dictation');
+      } else {
+        setMode('practice');
+      }
+    };
+    
+    const handleHintMode = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setIsHintMode(customEvent.detail.open);
+    };
+
+    window.addEventListener("toeic-tour-dictation-mode", handleDictationMode);
+    window.addEventListener("toeic-tour-hint-mode", handleHintMode);
+
+    return () => {
+      window.removeEventListener("toeic-tour-dictation-mode", handleDictationMode);
+      window.removeEventListener("toeic-tour-hint-mode", handleHintMode);
+    };
+  }, []);
   const [testScore, setTestScore] = useState({ correct: 0, total: 0, incorrect: 0, unanswered: 0 });
   const [time, setTime] = useState(0);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [playingSegmentLabel, setPlayingSegmentLabel] = useState<string | null>(null);
+
+  // Lắng nghe sự kiện từ Tour để tự động mở bung Sidebar làm ví dụ
+  useEffect(() => {
+    const handleTourSidebar = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setIsSidebarHovered(customEvent.detail.open);
+    };
+    window.addEventListener("toeic-tour-sidebar", handleTourSidebar);
+    return () => window.removeEventListener("toeic-tour-sidebar", handleTourSidebar);
+  }, []);
   const playingSegmentRef = useRef<{ label: string, end: number } | null>(null);
 
   const waveformRef = useRef<HTMLDivElement>(null);
@@ -1021,8 +1059,9 @@ export default function ToeicPart2Player({
           <div className="flex-1 overflow-y-auto px-4 pt-6 pb-20 scrollbar-thin">
             <div className="flex flex-wrap justify-between items-center bg-white px-3 py-1.5 rounded-xl shadow-sm border border-slate-100 mb-2 gap-2">
               <div className="flex items-center gap-2">
-                <button onClick={() => setMode(mode === 'dictation' ? 'practice' : 'dictation')} className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition ${mode === 'dictation' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-[0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-200 text-slate-500 hover:border-slate-300'}`}>✏️ Chế độ Chép chính tả</button>
+                <button id="dictation-mode-btn" onClick={() => setMode(mode === 'dictation' ? 'practice' : 'dictation')} className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition ${mode === 'dictation' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-[0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-200 text-slate-500 hover:border-slate-300'}`}>✏️ Chế độ Chép chính tả</button>
                 <button
+                  id="hint-mode-btn"
                   onClick={() => setIsHintMode(!isHintMode)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition flex items-center gap-2 ${isHintMode ? 'border-amber-500 bg-amber-50 text-amber-700 shadow-[0_0_15px_rgba(245,158,11,0.3)]' : 'border-slate-200 text-slate-500 hover:border-amber-300 hover:text-amber-600'}`}
                 >
@@ -1036,6 +1075,7 @@ export default function ToeicPart2Player({
                 {/* Play/Pause Button */}
                 <div className="relative group shrink-0">
                   <button
+                    id="play-audio-btn"
                     onClick={() => wavesurfer.current?.playPause()}
                     className="w-9 h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-lg shadow-indigo-100 transition-all active:scale-95 ring-4 ring-indigo-50"
                   >
@@ -1051,7 +1091,7 @@ export default function ToeicPart2Player({
 
                 {/* Waveform Container */}
                 <div className="flex-1 overflow-hidden rounded-lg" style={{ height: 36 }}>
-                  <div ref={waveformRef} className="w-full h-full cursor-crosshair" />
+                  <div id="waveform-audio-container" ref={waveformRef} className="w-full h-full cursor-crosshair" />
                 </div>
 
                 {/* Speed Controls */}
@@ -1066,7 +1106,7 @@ export default function ToeicPart2Player({
             </div>
 
             <div className="max-w-4xl mx-auto pb-10">
-              <div className="flex flex-col gap-2.5 py-2 justify-center w-full">
+              <div className="flex flex-col gap-2.5 py-2 justify-center w-full tour-question-options-target">
                 <div className={`border p-3.5 rounded-2xl mb-1 transition-all overflow-visible ${mode === 'dictation' ? 'border-pink-200 bg-pink-50/30' : 'border-blue-100 bg-blue-50/30'}`}>
                   <div className="flex items-center gap-2 mb-2">
                     <div className="text-[10px] font-bold text-blue-400 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">CÂU HỎI (QUESTION)</div>
@@ -1080,6 +1120,7 @@ export default function ToeicPart2Player({
                       layout="horizontal"
                     />
                     <button
+                      id="reveal-btn"
                       onClick={() => setRevealMode(!revealMode)}
                       className={`w-7 h-7 flex items-center justify-center rounded-lg border-2 transition-all ${revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'}`}
                       title={`${revealMode ? 'Ẩn lời giải' : 'Hiện lời giải'} (Phím tắt: ctrl/cmd + shift + s)`}
@@ -1096,7 +1137,7 @@ export default function ToeicPart2Player({
                             e.stopPropagation();
                             playSegment('question');
                           }}
-                          className={`w-8 h-8 flex items-center justify-center rounded-xl border-2 transition-all duration-300 ${playingSegmentLabel === 'question'
+                          className={`part2-segment-audio-btn w-8 h-8 flex items-center justify-center rounded-xl border-2 transition-all duration-300 ${playingSegmentLabel === 'question'
                             ? 'border-indigo-600 bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
                             : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 shadow-sm bg-white'
                             }`}
@@ -1243,7 +1284,7 @@ export default function ToeicPart2Player({
                                         e.stopPropagation();
                                         playSegment(opt);
                                       }}
-                                      className={`p-1 rounded-md transition-all duration-300 ${playingSegmentLabel === opt
+                                      className={`part2-segment-audio-btn p-1 rounded-md transition-all duration-300 ${playingSegmentLabel === opt
                                         ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
                                         : 'hover:bg-slate-100 text-slate-400 hover:text-indigo-600'
                                         }`}
@@ -1391,7 +1432,7 @@ export default function ToeicPart2Player({
         {/* 3. Bảng điều hướng câu hỏi (Bên phải) - Hover để mở rộng */}
         {!isFullTest && mounted && createPortal(
           <div
-            className={`
+            className={`questions-sidebar-portal
               fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
             ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer"}
           `}
@@ -1532,7 +1573,7 @@ export default function ToeicPart2Player({
       {/* BOTTOM NAVIGATION BAR */}
       {(() => {
         const navContent = (
-          <div className="flex items-center bg-white rounded-full p-1.5 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] min-w-[320px] justify-between pointer-events-auto">
+          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full p-1.5 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] min-w-[320px] justify-between pointer-events-auto">
             <div className="relative group">
               <button
                 onClick={() => {
@@ -1607,7 +1648,15 @@ export default function ToeicPart2Player({
 
         if (isFullTest && mounted && typeof document !== "undefined" && document.getElementById("bottom-nav-portal-target")) {
           return createPortal(
-            <div className="flex-none h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pb-2 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+            <div className="relative flex-none h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pb-2 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+              <button
+                onClick={() => startToeicPartTour(2, true)}
+                className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+                title="Khởi động Tour hướng dẫn nhanh"
+              >
+                <HelpCircle size={13} className="animate-pulse" />
+                Hướng dẫn nhanh
+              </button>
               {navContent}
             </div>,
             document.getElementById("bottom-nav-portal-target")!
@@ -1615,7 +1664,15 @@ export default function ToeicPart2Player({
         }
 
         return (
-          <div className="flex-none h-20 bg-white/80 backdrop-blur-md border-t border-slate-100 z-[70] flex items-center justify-center pb-2">
+          <div className="relative flex-none h-20 bg-white/80 backdrop-blur-md border-t border-slate-100 z-[70] flex items-center justify-center pb-2">
+            <button
+              onClick={() => startToeicPartTour(2, true)}
+              className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+              title="Khởi động Tour hướng dẫn nhanh"
+            >
+              <HelpCircle size={13} className="animate-pulse" />
+              Hướng dẫn nhanh
+            </button>
             {navContent}
           </div>
         );

@@ -9,13 +9,14 @@ import {
   InformationCircleIcon, ListBulletIcon, ArrowPathIcon,
   BookOpenIcon, SpeakerWaveIcon
 } from "@heroicons/react/24/solid";
-import { LayoutDashboard, Send, Edit2, Flag, PenLine } from "lucide-react";
+import { LayoutDashboard, Send, Edit2, Flag, PenLine, HelpCircle } from "lucide-react";
 import { AdminInlineEditor } from "@/components/Admin/AdminInlineEditor";
 import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
 import confetti from 'canvas-confetti';
 import Link from 'next/link';
 import FlagSelector, { FlagColor } from '../Player/FlagSelector';
 import ConfirmModal from '@/components/UI/ConfirmModal';
+import { startToeicPartTour } from './toeicTour';
 
 interface ProgressType {
   isCorrect: boolean;
@@ -137,6 +138,16 @@ export default function ToeicPart5Player({
   const [testScore, setTestScore] = useState({ correct: 0, total: 0, incorrect: 0, unanswered: 0 });
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  // Lắng nghe sự kiện từ Tour để tự động mở bung Sidebar làm ví dụ
+  useEffect(() => {
+    const handleTourSidebar = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setIsSidebarHovered(customEvent.detail.open);
+    };
+    window.addEventListener("toeic-tour-sidebar", handleTourSidebar);
+    return () => window.removeEventListener("toeic-tour-sidebar", handleTourSidebar);
+  }, []);
   const { isAdminMode } = useAdminEdit();
   const explainScrollRef = useRef<HTMLDivElement>(null);
 
@@ -147,6 +158,8 @@ export default function ToeicPart5Player({
 
   useEffect(() => {
     setMounted(true);
+    // Tự động khởi chạy tour hướng dẫn học Part 5 lần đầu
+    startToeicPartTour(5);
   }, []);
 
   // Notify parent of progress changes
@@ -676,8 +689,8 @@ export default function ToeicPart5Player({
       <div className="flex-1 flex overflow-hidden relative">
         <div className="flex-1 flex flex-col min-h-0 overflow-y-auto px-4 md:pl-8 md:pr-16 scroll-smooth">
           <div className="flex-1 flex flex-col w-full min-h-0 pb-10">
-            <div className="bg-white rounded-3xl shadow-md border border-blue-100 mt-4 shrink-0 overflow-hidden flex flex-col">
-              <div className="bg-slate-50/50 border-b border-slate-100 px-6 h-14 flex items-center justify-between shrink-0">
+            <div className="bg-white rounded-3xl shadow-md border border-blue-100 mt-4 shrink-0 flex flex-col relative z-20">
+              <div className="bg-slate-50/50 border-b border-slate-100 px-6 h-14 flex items-center justify-between shrink-0 rounded-t-3xl">
                 <div className="flex items-center gap-4"></div>
                 <div className="flex items-center gap-4">
                   <FlagSelector
@@ -697,6 +710,7 @@ export default function ToeicPart5Player({
                   />
                   <div className="h-6 w-[1px] bg-blue-100"></div>
                   <button
+                    id="reveal-btn"
                     onClick={() => setShowExplain(prev => ({ ...prev, [currentQ.id]: !prev[currentQ.id] }))}
                     title="Ẩn/Hiện lời giải (Phím tắt: ctrl/cmd + shift + s)"
                     className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase tracking-widest transition-all border ${showExplain[currentQ.id] ? 'bg-blue-600 text-white border-blue-700' : 'bg-white text-slate-600 border-blue-100 hover:border-blue-400'
@@ -1166,7 +1180,7 @@ export default function ToeicPart5Player({
         </div>
         {!isFullTest && mounted && createPortal(
           <div
-            className={`fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer"}`}
+            className={`questions-sidebar-portal fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer"}`}
             onMouseEnter={() => setIsSidebarHovered(true)}
             onMouseLeave={() => setIsSidebarHovered(false)}
             onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
@@ -1226,7 +1240,7 @@ export default function ToeicPart5Player({
       </div>
       {(() => {
         const navContent = (
-          <div className="flex items-center gap-6 pointer-events-auto">
+          <div id="toeic-navigation-container" className="flex items-center gap-6 pointer-events-auto">
             <div className="relative group">
               <button
                 onClick={() => currentIndex === 0 ? onPrevPart?.() : setCurrentIndex(prev => prev - 1)}
@@ -1271,11 +1285,19 @@ export default function ToeicPart5Player({
           </div>
         );
 
-        const footerWrapperClass = "flex-none h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pb-2 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]";
+        const footerWrapperClass = "relative flex-none h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pb-2 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]";
 
         if (isFullTest && mounted && typeof document !== "undefined" && document.getElementById("bottom-nav-portal-target")) {
           return createPortal(
             <div className={footerWrapperClass}>
+              <button
+                onClick={() => startToeicPartTour(5, true)}
+                className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+                title="Khởi động Tour hướng dẫn nhanh"
+              >
+                <HelpCircle size={13} className="animate-pulse" />
+                Hướng dẫn nhanh
+              </button>
               {navContent}
             </div>,
             document.getElementById("bottom-nav-portal-target")!
@@ -1284,6 +1306,14 @@ export default function ToeicPart5Player({
 
         return (
           <div className={footerWrapperClass}>
+            <button
+              onClick={() => startToeicPartTour(5, true)}
+              className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+              title="Khởi động Tour hướng dẫn nhanh"
+            >
+              <HelpCircle size={13} className="animate-pulse" />
+              Hướng dẫn nhanh
+            </button>
             {navContent}
           </div>
         );

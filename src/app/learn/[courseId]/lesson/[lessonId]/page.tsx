@@ -28,6 +28,8 @@ export default async function LessonDetailPage({
   const { courseId, lessonId } = await params;
   const { q } = await searchParams;
   const session = await getServerSession(authOptions) as any;
+  
+  console.log("Rebuilding page.tsx to inject tour targets");
   // Lấy dữ liệu bài học từ Prisma
   const lesson = await prisma.lesson.findUnique({
     where: { id: lessonId }
@@ -109,7 +111,7 @@ export default async function LessonDetailPage({
           <div id="header-extra-portal" className="flex-1 flex justify-center"></div>
         </div>
 
-        <div className="flex gap-1.5">
+        <div id="tour-lesson-nav-target" className="flex gap-1.5">
           {prevLesson ? (
             <Link
               href={`/learn/${courseId}/lesson/${prevLesson.id}`}

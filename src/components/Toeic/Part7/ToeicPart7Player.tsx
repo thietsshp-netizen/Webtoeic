@@ -9,6 +9,7 @@ import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
 import confetti from 'canvas-confetti';
 import Link from 'next/link';
 import FlagSelector, { FlagColor } from '../../Player/FlagSelector';
+import { startToeicPartTour } from '../toeicTour';
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
@@ -231,6 +232,16 @@ const PassageHTMLRenderer = memo(({
           filter: ${(reviewMode || isAdminMode) ? 'brightness(0.82)' : 'none'} !important;
           outline: ${(reviewMode || isAdminMode) ? '2px solid rgba(0,0,0,0.25)' : 'none'} !important;
           outline-offset: 1px !important;
+        }
+        /* Style cho câu văn mẫu dịch nghĩa trong Tour hướng dẫn - Chỉ kích hoạt khi đang ở bước dịch nghĩa của Tour */
+        body.driver-translate-step .tour-translate-demo-target {
+          position: relative !important;
+          z-index: 9999999 !important;
+          display: inline-block !important;
+          background-color: rgba(99, 102, 241, 0.18) !important;
+          outline: 2px solid rgba(99, 102, 241, 0.65) !important;
+          border-radius: 4px !important;
+          padding: 1px 4px !important;
         }
         /* Thu gọn khoảng cách các đoạn văn */
         .toeic-passage-content p {
@@ -512,6 +523,35 @@ export default function ToeicPart7Player({
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
 
+  // Lắng nghe sự kiện từ Tour để tự động mở bung Sidebar làm ví dụ
+  useEffect(() => {
+    const handleTourSidebar = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setIsSidebarHovered(customEvent.detail.open);
+    };
+
+    const handleEvidenceMode = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail.open) {
+        if (data && data[currentIndex]?.questions?.length > 0) {
+          const firstQ = data[currentIndex].questions[0];
+          const qKey = getQuestionKey(firstQ);
+          setHintsActive(prev => ({ ...prev, [qKey]: true }));
+        }
+      } else {
+        setHintsActive({});
+      }
+    };
+
+    window.addEventListener("toeic-tour-sidebar", handleTourSidebar);
+    window.addEventListener("toeic-tour-evidence-mode", handleEvidenceMode);
+    
+    return () => {
+      window.removeEventListener("toeic-tour-sidebar", handleTourSidebar);
+      window.removeEventListener("toeic-tour-evidence-mode", handleEvidenceMode);
+    };
+  }, [currentIndex, data]);
+
   // Split View States
   const [isSplitView, setIsSplitView] = useState(false);
   const [splitHeight, setSplitHeight] = useState(50);
@@ -630,6 +670,8 @@ export default function ToeicPart7Player({
 
   useEffect(() => {
     setMounted(true);
+    // Tự động khởi chạy tour hướng dẫn học Part 7 lần đầu
+    startToeicPartTour(7);
   }, []);
 
 
@@ -792,6 +834,70 @@ export default function ToeicPart7Player({
     return map;
   }, [passages]);
 
+  // Tự động gán nhãn .tour-translate-demo-target cho câu bằng chứng đầu tiên ngay khi mount/questions thay đổi (chờ 500ms để HTML render xong)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (questions.length > 0) {
+        // Xóa nhãn cũ nếu có
+        document.querySelectorAll('.tour-translate-demo-target').forEach(el => {
+          el.classList.remove('tour-translate-demo-target');
+        });
+
+        const firstQ = questions[0];
+        const rawSids = firstQ?.evidence_sids || firstQ?.metadata?.evidence_sids || firstQ?.explanation?.evidence_sids || [];
+        const sids = Array.isArray(rawSids) ? rawSids : [rawSids];
+        const targetSid = sids[0] || "s1";
+
+        const sentenceEl = document.querySelector(`.toeic-passage-content [data-sid="${targetSid}"]`) ||
+                           document.querySelector(`.toeic-passage-content [data-sid="${targetSid.toUpperCase()}"]`) ||
+                           document.querySelector(`.toeic-passage-content [data-sid="${targetSid.toLowerCase()}"]`) ||
+                           document.querySelector('.toeic-passage-content [data-sid]');
+
+        if (sentenceEl) {
+          sentenceEl.classList.add('tour-translate-demo-target');
+        }
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [questions.length, currentIndex]);
+
+  useEffect(() => {
+    const handleTranslateMode = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail.open) {
+        // Tìm câu bằng chứng đầu tiên của câu hỏi đầu tiên
+        const firstQ = questions[0];
+        const rawSids = firstQ?.evidence_sids || firstQ?.metadata?.evidence_sids || firstQ?.explanation?.evidence_sids || [];
+        const sids = Array.isArray(rawSids) ? rawSids : [rawSids];
+        const targetSid = sids[0] || "s3";
+
+        const sentenceEl = document.querySelector(`.toeic-passage-content [data-sid="${targetSid}"]`) ||
+                           document.querySelector(`.toeic-passage-content [data-sid="${targetSid.toUpperCase()}"]`) ||
+                           document.querySelector(`.toeic-passage-content [data-sid="${targetSid.toLowerCase()}"]`) ||
+                           document.querySelector('.toeic-passage-content [data-sid].tour-translate-demo-target') ||
+                           document.querySelector('.toeic-passage-content [data-sid]') as HTMLElement;
+
+        if (sentenceEl) {
+          const sid = sentenceEl.getAttribute('data-sid') || String(targetSid);
+          const rect = sentenceEl.getBoundingClientRect();
+          // Lấy bản dịch hoặc dùng text mặc định nếu chưa có
+          const text = translationMap[sid] || "Đây là bản dịch tiếng Việt minh hoạ cho câu văn này. Trong thực tế, bạn chỉ cần lướt chuột qua bất kỳ câu nào để xem nghĩa.";
+          
+          sentenceEl.classList.add('tour-translate-demo-target');
+          setTooltip({ text, rect, sid });
+        }
+      } else {
+        // Không xóa class .tour-translate-demo-target ở đây để tránh Race Condition khiến driver.js không tìm thấy element khi chuyển bước.
+        // Chỉ ẩn tooltip đi là đủ.
+        setTooltip(null);
+      }
+    };
+
+    window.addEventListener("toeic-tour-translate-mode", handleTranslateMode);
+    return () => window.removeEventListener("toeic-tour-translate-mode", handleTranslateMode);
+  }, [translationMap, questions]);
+
   useEffect(() => {
     if (reviewMode || showCompletion) return;
     const timer = setInterval(() => setTime(prev => prev + 1), 1000);
@@ -817,6 +923,11 @@ export default function ToeicPart7Player({
   }, [questions]);
 
   const handleSentenceHover = useCallback((sid: string | null, e: any, rect: any) => {
+    // Nếu đang chạy hướng dẫn nhanh (Tour), hoàn toàn bỏ qua các sự kiện di chuột để tránh làm mất hiển thị giả lập của Tour
+    if (typeof document !== "undefined" && document.body.classList.contains("driver-active")) {
+      return;
+    }
+
     if (tooltipTimeoutRef.current) clearTimeout(tooltipTimeoutRef.current);
 
     if (!sid || (!isRevealed && !isAdminMode)) {
@@ -1023,6 +1134,7 @@ export default function ToeicPart7Player({
         </div>
         <div className="flex items-center gap-2">
           <button
+            id="split-view-btn"
             onClick={() => setIsSplitView(prev => !prev)}
             title="Chia ngang đoạn văn"
             className={`flex items-center justify-center p-2 rounded-xl transition-all ${isSplitView ? 'bg-indigo-100 text-indigo-600 shadow-sm border border-indigo-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
@@ -1030,6 +1142,7 @@ export default function ToeicPart7Player({
             <PanelTopClose className="w-4 h-4" />
           </button>
           <button
+            id="reveal-btn"
             onClick={() => setShowExplainGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }))}
             title="Ẩn/Hiện lời giải (Phím tắt: ctrl/cmd + shift + s)"
             className={`flex items-center gap-2 px-5 py-2 rounded-xl font-black text-[11px] uppercase tracking-widest transition-all ${showExplainGroups[currentGroup.id] ? 'bg-slate-800 text-white shadow-lg' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
@@ -1044,6 +1157,7 @@ export default function ToeicPart7Player({
       <div className="flex-1 flex overflow-hidden relative w-full">
         {/* COLUMN 1: PASSAGES */}
         <div
+          id="toeic-passage-container-target"
           className="border-r border-slate-100 bg-white flex flex-col flex-none relative"
           style={{ width: `${leftWidth}%`, flexShrink: 0 }}
         >
@@ -1185,7 +1299,7 @@ export default function ToeicPart7Player({
                           <div className="flex flex-col items-center gap-3">
                             <button
                               onClick={() => handleToggleHint(qKey, q)}
-                              className={`p-2 rounded-xl transition-all duration-300 ${hintsActive[qKey]
+                              className={`hint-active-lightbulb p-2 rounded-xl transition-all duration-300 ${hintsActive[qKey]
                                 ? "bg-yellow-400 text-white shadow-lg shadow-yellow-200"
                                 : "bg-white text-slate-300 border border-slate-100 hover:text-yellow-500 hover:border-yellow-200"
                                 }`}
@@ -1408,7 +1522,7 @@ export default function ToeicPart7Player({
         {/* 3. Bảng điều hướng câu hỏi (Bên phải) - Hover để mở rộng */}
         {!isFullTest && mounted && createPortal(
           <div
-            className={`
+            className={`questions-sidebar-portal
               fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
             ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer"}
           `}
@@ -1550,7 +1664,7 @@ export default function ToeicPart7Player({
       {/* BOTTOM NAVIGATION BAR (PORTAL HOẶC CỐ ĐỊNH TÙY NGỮ CẢNH) */}
       {(() => {
         const navContent = (
-          <div className="flex items-center bg-slate-50/80 rounded-xl p-1 border border-slate-200/50 shadow-sm pointer-events-auto">
+          <div id="toeic-navigation-container" className="flex items-center bg-slate-50/80 rounded-xl p-1 border border-slate-200/50 shadow-sm pointer-events-auto">
             <div className="relative group">
               <button
                 onClick={() => {
@@ -1630,7 +1744,15 @@ export default function ToeicPart7Player({
           const target = document.getElementById("bottom-nav-portal-target");
           if (target) {
             return createPortal(
-              <div className="flex-none h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+              <div className="relative flex-none h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                <button
+                  onClick={() => startToeicPartTour(7, true)}
+                  className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+                  title="Khởi động Tour hướng dẫn nhanh"
+                >
+                  <HelpCircle size={13} className="animate-pulse" />
+                  Hướng dẫn nhanh
+                </button>
                 {navContent}
               </div>,
               target
@@ -1639,16 +1761,24 @@ export default function ToeicPart7Player({
         }
 
         return (
-          <div className="flex-none h-16 bg-white border-t border-slate-200 z-[70] flex items-center justify-center">
+          <div className="relative flex-none h-16 bg-white border-t border-slate-200 z-[70] flex items-center justify-center">
+            <button
+              onClick={() => startToeicPartTour(7, true)}
+              className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+              title="Khởi động Tour hướng dẫn nhanh"
+            >
+              <HelpCircle size={13} className="animate-pulse" />
+              Hướng dẫn nhanh
+            </button>
             {navContent}
           </div>
         );
       })()}
 
       {/* TOOLTIP TRANSLATION */}
-      {tooltip && tooltip.rect && tooltip.text && currentGroup && (
+      {tooltip && tooltip.rect && tooltip.text && currentGroup && mounted && createPortal(
         <div
-          className="fixed z-[9999] pointer-events-none transition-all duration-200"
+          className="fixed z-[99999999] pointer-events-none transition-all duration-200 tour-translate-tooltip-portal"
           style={{
             left: `${(tooltip.rect?.left || 0) + (tooltip.rect?.width || 0) / 2}px`,
             top: `${tooltip.rect?.top || 0}px`,
@@ -1677,7 +1807,8 @@ export default function ToeicPart7Player({
               </AdminInlineEditor>
             </span>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

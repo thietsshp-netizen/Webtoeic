@@ -3,12 +3,13 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { FlagIcon, TrophyIcon, ChevronRightIcon, ClockIcon } from "@heroicons/react/24/solid";
-import { GripHorizontal, ChevronsLeftRight, LayoutDashboard, Send, Edit2, Check, X, Flag, PenLine } from "lucide-react";
+import { GripHorizontal, ChevronsLeftRight, LayoutDashboard, Send, Edit2, Check, X, Flag, PenLine, HelpCircle } from "lucide-react";
 import { AdminInlineEditor } from "@/components/Admin/AdminInlineEditor";
 import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
 import confetti from 'canvas-confetti';
 import Link from 'next/link';
 import FlagSelector, { FlagColor } from '../../Player/FlagSelector';
+import { startToeicPartTour } from '../toeicTour';
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
@@ -327,6 +328,16 @@ export default function ToeicPart6Player({
   const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
+  // Lắng nghe sự kiện từ Tour để tự động mở bung Sidebar làm ví dụ
+  useEffect(() => {
+    const handleTourSidebar = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setIsSidebarHovered(customEvent.detail.open);
+    };
+    window.addEventListener("toeic-tour-sidebar", handleTourSidebar);
+    return () => window.removeEventListener("toeic-tour-sidebar", handleTourSidebar);
+  }, []);
+
   // Refs
   const questionRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const passageRefs = useRef<Map<string, HTMLElement>>(new Map());
@@ -378,6 +389,8 @@ export default function ToeicPart6Player({
 
   useEffect(() => {
     setMounted(true);
+    // Tự động khởi chạy tour hướng dẫn học Part 6 lần đầu
+    startToeicPartTour(6);
   }, []);
 
   // Sync with parent submission state
@@ -792,6 +805,7 @@ export default function ToeicPart6Player({
         <div className="max-w-[1600px] mx-auto bg-white rounded-2xl shadow-lg border border-slate-100 p-2 px-4 flex items-center justify-between gap-4">
           <div className="text-sm font-bold text-slate-700">Part 6: Text Completion</div>
           <button
+            id="reveal-btn"
             onClick={() => setShowExplainGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }))}
             title="Ẩn/Hiện lời giải (Phím tắt: ctrl/cmd + shift + s)"
             className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${isCurrentRevealed ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-white text-slate-600 border-slate-200'}`}
@@ -1113,7 +1127,7 @@ export default function ToeicPart6Player({
         {/* 3. Bảng điều hướng câu hỏi (Bên phải) - Hover để mở rộng */}
         {!isFullTest && mounted && createPortal(
           <div
-            className={`
+            className={`questions-sidebar-portal
               fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
             ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer"}
           `}
@@ -1271,7 +1285,7 @@ export default function ToeicPart6Player({
       {/* BOTTOM NAVIGATION BAR */}
       {(() => {
         const navContent = (
-          <div className="flex items-center bg-slate-50/80 rounded-xl p-1 border border-slate-200/50 shadow-sm pointer-events-auto">
+          <div id="toeic-navigation-container" className="flex items-center bg-slate-50/80 rounded-xl p-1 border border-slate-200/50 shadow-sm pointer-events-auto">
             <div className="relative group">
               <button
                 onClick={() => {
@@ -1346,7 +1360,15 @@ export default function ToeicPart6Player({
 
         if (isFullTest && mounted && typeof document !== "undefined" && document.getElementById("bottom-nav-portal-target")) {
           return createPortal(
-            <div className="flex-none h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+            <div className="relative flex-none h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+              <button
+                onClick={() => startToeicPartTour(6, true)}
+                className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+                title="Khởi động Tour hướng dẫn nhanh"
+              >
+                <HelpCircle size={13} className="animate-pulse" />
+                Hướng dẫn nhanh
+              </button>
               {navContent}
             </div>,
             document.getElementById("bottom-nav-portal-target")!
@@ -1354,7 +1376,15 @@ export default function ToeicPart6Player({
         }
 
         return (
-          <div className="flex-none h-16 bg-white border-t border-slate-200 z-[70] flex items-center justify-center">
+          <div className="relative flex-none h-16 bg-white border-t border-slate-200 z-[70] flex items-center justify-center">
+            <button
+              onClick={() => startToeicPartTour(6, true)}
+              className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+              title="Khởi động Tour hướng dẫn nhanh"
+            >
+              <HelpCircle size={13} className="animate-pulse" />
+              Hướng dẫn nhanh
+            </button>
             {navContent}
           </div>
         );

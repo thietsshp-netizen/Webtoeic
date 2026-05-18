@@ -133,3 +133,83 @@ h1, h2, h3, h4, h5, h6 {
 .animate-pulse-blue {
   animation: pulse-blue 1.5s ease-in-out 2;
 }
+
+/* ====================================================
+   DRIVER.JS PREMIUM THEME - Tương phản cực cao
+   ==================================================== */
+.driverjs-theme {
+  background-color: #0f172a !important; /* Nền tối sâu */
+  color: #f8fafc !important; /* Chữ trắng sáng */
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 1.5rem !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.driverjs-theme .driver-popover-title {
+  color: #ffffff !important;
+  font-size: 1.25rem !important;
+  font-weight: 900 !important;
+  font-family: var(--font-sans) !important;
+  letter-spacing: -0.01em !important;
+}
+
+.driverjs-theme .driver-popover-description {
+  color: #cbd5e1 !important; /* Chữ xám sáng cực kỳ dễ đọc, chống mỏi mắt */
+  font-size: 0.875rem !important;
+  line-height: 1.6 !important;
+  font-family: var(--font-sans) !important;
+}
+
+.driverjs-theme .driver-popover-description strong {
+  color: #38bdf8 !important; /* Làm nổi bật các phím tắt bằng màu xanh sky siêu đẹp */
+  font-weight: 800 !important;
+}
+
+/* Nút "Tiếp theo ➔" - Sáng rực rỡ, nổi bật */
+.driverjs-theme .driver-popover-next-btn {
+  background-color: #2563eb !important; /* Xanh Royal nổi bật */
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  font-size: 0.8125rem !important;
+  padding: 0.625rem 1.25rem !important;
+  border-radius: 9999px !important;
+  border: none !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+}
+
+.driverjs-theme .driver-popover-next-btn:hover {
+  background-color: #1d4ed8 !important;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.6) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Nút "Quay lại" - Sáng, rõ ràng, tương phản cực tốt */
+.driverjs-theme .driver-popover-prev-btn {
+  background-color: #334155 !important; /* Màu xám Slate sáng hơn */
+  color: #f1f5f9 !important; /* Chữ gần như trắng tinh khôi */
+  font-weight: 800 !important;
+  font-size: 0.8125rem !important;
+  padding: 0.625rem 1.25rem !important;
+  border-radius: 9999px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+}
+
+.driverjs-theme .driver-popover-prev-btn:hover {
+  background-color: #475569 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Số chỉ trang "5 of 8" ở góc trái */
+.driverjs-theme .driver-popover-progress-text {
+  color: #94a3b8 !important; /* Màu sáng, to rõ */
+  font-weight: 700 !important;
+  font-size: 0.8125rem !important;
+}
