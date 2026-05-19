@@ -388,7 +388,12 @@ export default function ToeicPart34Player({
   useEffect(() => {
     if (transcriptScrollRef.current) transcriptScrollRef.current.scrollTop = 0;
     if (questionsScrollRef.current) questionsScrollRef.current.scrollTop = 0;
-  }, [currentIndex]);
+    
+    // Reset revealMode when switching group unless it's review mode or already submitted
+    if (!isReviewMode && !isSubmittedInternal) {
+      setRevealMode(false);
+    }
+  }, [currentIndex, isReviewMode, isSubmittedInternal]);
 
   // Nhảy tới câu hỏi từ Full Test Sidebar hoặc Review Center
   useEffect(() => {

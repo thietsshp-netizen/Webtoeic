@@ -171,6 +171,13 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async session({ session, token }) {
+      if (!token || token.error) {
+        return {
+          ...session,
+          user: null,
+          error: token?.error || "InvalidToken"
+        } as any;
+      }
       if (session.user) {
         (session.user as any).id = token.sub;
         (session.user as any).role = token.role;
@@ -209,14 +216,14 @@ export const authOptions: NextAuthOptions = {
             if (user) {
               console.log("JWT Callback - Initial Sign In - Proceeding anyway");
             } else {
-              return null as any;
+              return { ...token, error: "UserNotFound" } as any;
             }
           } else {
             // KIỂM TRA ACTIVE SESSION (CHỐNG HỌC SONG SONG)
             // Nếu sessionId trong token khác với activeSessionId trong DB -> Bị kick
             if (token.sessionId && (dbUser as any).activeSessionId && token.sessionId !== (dbUser as any).activeSessionId) {
               console.log("JWT Callback - Session conflict for User:", token.sub);
-              return null as any;
+              return { ...token, error: "SessionConflict" } as any;
             }
 
             token.role = dbUser.role;
@@ -233,7 +240,7 @@ export const authOptions: NextAuthOptions = {
               // Nếu đã hết hạn (-1) thì hủy session luôn (Trừ ADMIN)
               if (diffDays <= -1 && (dbUser as any).role !== "ADMIN") {
                 console.log("JWT Callback - Account expired for User:", token.sub);
-                return null as any;
+                return { ...token, error: "ExpiredAccount" } as any;
               }
 
               token.daysLeft = diffDays;
