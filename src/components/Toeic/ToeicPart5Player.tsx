@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import { useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
 import {
@@ -535,28 +535,183 @@ export default function ToeicPart5Player({
     );
   }
 
+  interface TokenSegment {
+    type: 'text' | 'vocab' | 'expansion';
+    content: string;
+    data?: any;
+  }
+
   const renderQuestionText = (text: string | null | undefined) => {
     if (!text) return null;
 
-    // Loại bỏ số thứ tự ở đầu nếu có (đã xử lý ở chỗ hiển thị chính)
+    // Loại bỏ số thứ tự ở đầu nếu có
     const raw = text.replace(/^\d+[\.\s]*/, '');
 
-    // Tách câu dựa trên cụm 3 dấu gạch dưới trở lên
-    const parts = raw.split(/(_{3,})/);
+    // Chỉ hiển thị Ruby/Glossing khi đã kích hoạt xem giải thích
+    const isRevealed = revealMode || showExplain[currentQ.id];
+    if (!isRevealed) {
+      const parts = raw.split(/(_{3,})/);
+      return parts.map((part, i) => {
+        if (part.startsWith('_')) {
+          return (
+            <span key={i} className="inline mx-3 text-slate-900 font-bold tracking-tight">
+              {part}
+            </span>
+          );
+        }
+        return <span key={i}>{part}</span>;
+      });
+    }
 
-    return parts.map((part, i) => {
-      if (part.startsWith('_')) {
-        // Biến dấu gạch dưới thành một ô trống có style chuyên nghiệp
+    // LẤY DỮ LIỆU TỪ METADATA (CỰC KỲ AN TOÀN & RỘNG RÃI)
+    const meta = currentQ.metadata as any;
+    const vocabs = meta?.vocabulary || explainData?.vocabulary || [];
+    const expansions = meta?.explanation?.expansion || explainData?.explanation?.expansion || explainData?.expansion || [];
+
+    // Danh sách so khớp
+    const matchers: { text: string; type: 'vocab' | 'expansion'; data: any }[] = [];
+
+    if (Array.isArray(expansions)) {
+      expansions.forEach((ep: any) => {
+        if (ep && ep.phrase) {
+          matchers.push({ text: ep.phrase, type: 'expansion', data: ep });
+        }
+      });
+    }
+
+    if (Array.isArray(vocabs)) {
+      vocabs.forEach((v: any) => {
+        if (v && v.word) {
+          matchers.push({ text: v.word, type: 'vocab', data: v });
+        }
+      });
+    }
+
+    // Sắp xếp các cụm từ/từ cần match theo độ dài giảm dần (Maximal Matching) để ưu tiên match từ dài trước
+    matchers.sort((a, b) => b.text.length - a.text.length);
+
+    let segments: TokenSegment[] = [{ type: 'text', content: raw }];
+
+    matchers.forEach(matcher => {
+      const newSegments: TokenSegment[] = [];
+
+      segments.forEach(seg => {
+        if (seg.type !== 'text') {
+          newSegments.push(seg);
+          return;
+        }
+
+        // Thoát các ký tự đặc biệt trong Regex
+        const escapedText = matcher.text.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        // Sử dụng thuật toán Stemming thông minh để khớp cả số nhiều (s/es), quá khứ (ed), V-ing, so sánh hơn/nhất (er/est)
+        // Nếu từ kết thúc bằng chữ 'e' (như lease, wide, feature), bỏ 'e' đi để khớp được cả leasing, wider, features...
+        const stem = (escapedText.length > 2 && escapedText.toLowerCase().endsWith('e'))
+          ? escapedText.slice(0, -1)
+          : escapedText;
+        const regex = new RegExp(`\\b${stem}[a-zA-Z]*\\b`, 'i');
+        const match = seg.content.match(regex);
+
+        if (match && match.index !== undefined) {
+          const matchedString = match[0];
+          const leftText = seg.content.substring(0, match.index);
+          const rightText = seg.content.substring(match.index + matchedString.length);
+
+          if (leftText) newSegments.push({ type: 'text', content: leftText });
+          newSegments.push({ type: matcher.type, content: matchedString, data: matcher.data });
+          if (rightText) newSegments.push({ type: 'text', content: rightText });
+        } else {
+          newSegments.push(seg);
+        }
+      });
+
+      segments = newSegments;
+    });
+
+    // Render mảng segments ra các thẻ React cao cấp
+    return segments.map((seg, i) => {
+      if (seg.type === 'vocab') {
+        const meaningRaw = String(seg.data.meaning || '');
+        // Tách lấy nghĩa ngắn gọn trước dấu chấm phẩy (;), hai chấm (:), dấu gạch ngang (-), dấu chấm (.), dấu ngoặc đơn hoặc ngoặc vuông
+        const shortMeaning = meaningRaw.split(';')[0].split(':')[0].split('-')[0].split('.')[0].split('(')[0].split('[')[0].trim().toLowerCase();
+
+        // Nếu từ thực tế trong đề khác từ gốc (ví dụ: harvests vs harvest, selected vs select)
+        // thì hiển thị theo định dạng: "từ_gốc = nghĩa" để học sinh dễ học từ gốc
+        const isDifferentForm = seg.content.toLowerCase().trim() !== String(seg.data.word || '').toLowerCase().trim();
+        const displayMeaning = isDifferentForm
+          ? `${String(seg.data.word || '').toLowerCase()} = ${shortMeaning}`
+          : shortMeaning;
+
         return (
-          <span
+          <ruby
             key={i}
-            className="inline mx-3 text-slate-900 font-bold tracking-tight"
+            className="text-emerald-755 font-bold cursor-help transition-all align-baseline mx-0.5"
+            title={`${seg.content} (${seg.data.ipa_uk || seg.data.ipa || ''}): ${seg.data.meaning}`}
           >
-            {part}
-          </span>
+            <span className="border-b border-dashed border-emerald-400 pb-0.5">
+              {seg.content}
+            </span>
+            <rt className="text-[10px] text-emerald-600 font-extrabold tracking-wide select-none lowercase pb-0 text-center">
+              <span className="inline-block max-w-[120px] whitespace-normal break-words text-center leading-tight">
+                {displayMeaning.split(',').map((part, index, arr) => (
+                  <Fragment key={index}>
+                    {index > 0 && <br />}
+                    {part.trim()}
+                    {index < arr.length - 1 && ','}
+                  </Fragment>
+                ))}
+              </span>
+            </rt>
+          </ruby>
         );
       }
-      return <span key={i}>{part}</span>;
+
+      if (seg.type === 'expansion') {
+        const meaningRaw = String(seg.data.meaning || '');
+        // Tách lấy nghĩa ngắn gọn trước dấu chấm phẩy (;), hai chấm (:), dấu gạch ngang (-), dấu chấm (.), dấu ngoặc đơn hoặc ngoặc vuông
+        const shortMeaning = meaningRaw.split(';')[0].split(':')[0].split('-')[0].split('.')[0].split('(')[0].split('[')[0].trim().toLowerCase();
+
+        // Kiểm tra biến thể của cụm từ tương tự từ đơn
+        const isDifferentForm = seg.content.toLowerCase().trim() !== String(seg.data.phrase || '').toLowerCase().trim();
+        const displayMeaning = isDifferentForm
+          ? `${String(seg.data.phrase || '').toLowerCase()} = ${shortMeaning}`
+          : shortMeaning;
+
+        return (
+          <ruby
+            key={i}
+            className="text-purple-755 font-bold cursor-help transition-all align-baseline mx-0.5"
+            title={`Cấu trúc: ${seg.data.phrase} - Nghĩa đầy đủ: ${seg.data.meaning}`}
+          >
+            <span className="border-b border-dashed border-purple-400 pb-0.5">
+              {seg.content}
+            </span>
+            <rt className="text-[10px] text-purple-600 font-extrabold tracking-wide select-none lowercase pb-0 text-center">
+              <span className="inline-block max-w-[280px] whitespace-normal break-words text-center leading-tight">
+                {displayMeaning.split(',').map((part, index, arr) => (
+                  <Fragment key={index}>
+                    {index > 0 && <br />}
+                    {part.trim()}
+                    {index < arr.length - 1 && ','}
+                  </Fragment>
+                ))}
+              </span>
+            </rt>
+          </ruby>
+        );
+      }
+
+      // Đối với text thường, xử lý các ô trống như ban đầu
+      const parts = seg.content.split(/(_{3,})/);
+      return parts.map((part, pi) => {
+        if (part.startsWith('_')) {
+          return (
+            <span key={`${i}-${pi}`} className="inline mx-3 text-slate-900 font-bold tracking-tight">
+              {part}
+            </span>
+          );
+        }
+        return <span key={`${i}-${pi}`}>{part}</span>;
+      });
     });
   };
 
@@ -654,8 +809,8 @@ export default function ToeicPart5Player({
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button 
-              onClick={() => setShowCompletion(false)} 
+            <button
+              onClick={() => setShowCompletion(false)}
               className="w-full sm:w-auto px-10 py-4 rounded-2xl bg-slate-100 text-slate-600 font-black text-sm hover:bg-slate-200 transition-all flex items-center justify-center gap-2 uppercase tracking-wide"
             >
               <CheckCircleIcon className="w-4 h-4" /> Xem lại bài làm

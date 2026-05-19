@@ -71,3 +71,12 @@ batch_14.json
 /tmp/
 /scratch/
 *.bak
+
+# Custom ignores
+/src/scratch/
+/10 gramma lesson/
+/src/components/Toeic/*.backup.tsx
+*.backup.tsx
+/scripts/extract_mdd_audio.py
+/scripts/master_upload.py
+/scripts/upload_audio_to_supabase.py
