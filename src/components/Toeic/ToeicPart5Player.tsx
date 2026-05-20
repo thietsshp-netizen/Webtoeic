@@ -478,7 +478,7 @@ export default function ToeicPart5Player({
     });
   };
 
-  const speak = (text: string, type: 'uk' | 'us' = 'us') => {
+  const fallbackSpeak = (text: string, type: 'uk' | 'us' = 'us') => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
@@ -490,6 +490,57 @@ export default function ToeicPart5Player({
     if (voice) utterance.voice = voice;
     utterance.rate = 0.9;
     window.speechSynthesis.speak(utterance);
+  };
+
+  const speak = (text: string, type: 'uk' | 'us' = 'us') => {
+    if (typeof window === 'undefined') return;
+
+    if (text.trim().includes(' ')) {
+      fallbackSpeak(text, type);
+      return;
+    }
+
+    const cleanWord = text.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    const folder = type === 'us' ? 'ame' : 'bre';
+    const legacySuffix = type === 'us' ? '__us_1' : '__gb_1';
+
+    const urls = [
+      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}.mp3`,
+      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}1.mp3`,
+      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}2.mp3`,
+      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}${legacySuffix}.mp3`
+    ];
+
+    const tryPlay = (index: number) => {
+      if (index >= urls.length) {
+        fallbackSpeak(text, type);
+        return;
+      }
+
+      const audio = new Audio(urls[index]);
+      let hasFailed = false;
+
+      const handleFailure = (err?: any) => {
+        if (hasFailed) return;
+        hasFailed = true;
+        audio.removeEventListener('error', onError);
+        console.warn(`[Audio] Failed to play: ${urls[index]}`, err);
+        tryPlay(index + 1);
+      };
+
+      const onError = (e: any) => {
+        handleFailure(e);
+      };
+
+      audio.addEventListener('error', onError);
+
+      audio.play()
+        .catch((err) => {
+          handleFailure(err);
+        });
+    };
+
+    tryPlay(0);
   };
 
   const isValidData = (val: string | null | undefined) => {

@@ -635,6 +635,50 @@ const injectDriverTheme = () => {
     body.driver-translate-step .tour-translate-tooltip-portal {
       z-index: 9999999 !important;
     }
+
+    /* BƯỚC CHÉP CHÍNH TẢ (PART 1, 2) */
+    body.driver-dictation-step #dictation-mode-btn {
+      position: relative !important;
+      z-index: 9999999 !important;
+      animation: dictationBlinkGlow 1.5s infinite ease-in-out !important;
+    }
+
+    @keyframes dictationBlinkGlow {
+      0% {
+        box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.8) !important;
+        transform: scale(1) !important;
+      }
+      50% {
+        box-shadow: 0 0 18px 6px rgba(236, 72, 153, 0.6) !important;
+        transform: scale(1.06) !important;
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(236, 72, 153, 0) !important;
+        transform: scale(1) !important;
+      }
+    }
+
+    /* BƯỚC GỢI Ý (PART 1, 2) */
+    body.driver-hint-step #hint-mode-btn {
+      position: relative !important;
+      z-index: 9999999 !important;
+      animation: hintBlinkGlow 1.5s infinite ease-in-out !important;
+    }
+
+    @keyframes hintBlinkGlow {
+      0% {
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.8) !important;
+        transform: scale(1) !important;
+      }
+      50% {
+        box-shadow: 0 0 18px 6px rgba(99, 102, 241, 0.6) !important;
+        transform: scale(1.06) !important;
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0) !important;
+        transform: scale(1) !important;
+      }
+    }
   `;
   document.head.appendChild(style);
 };
@@ -740,6 +784,18 @@ export const startToeicPartTour = (partNumber: number, forceRun = false) => {
             document.body.classList.add('driver-dict-save-step');
           } else {
             document.body.classList.remove('driver-dict-save-step');
+          }
+
+          if (isDictationStep) {
+            document.body.classList.add('driver-dictation-step');
+          } else {
+            document.body.classList.remove('driver-dictation-step');
+          }
+
+          if (isHintStep) {
+            document.body.classList.add('driver-hint-step');
+          } else {
+            document.body.classList.remove('driver-hint-step');
           }
           
           if (isEvidenceStep) {
@@ -848,6 +904,9 @@ export const startToeicPartTour = (partNumber: number, forceRun = false) => {
           
           document.body.classList.remove('driver-translate-step');
           window.dispatchEvent(new CustomEvent("toeic-tour-translate-mode", { detail: { open: false } }));
+
+          document.body.classList.remove('driver-dictation-step');
+          document.body.classList.remove('driver-hint-step');
         }
 
         // Lưu trạng thái đã xem hướng dẫn

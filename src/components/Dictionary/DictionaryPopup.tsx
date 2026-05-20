@@ -259,10 +259,64 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
     setActiveSection('meaning-1');
   }, [word]);
 
-  const speak = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    window.speechSynthesis.speak(utterance);
+  const speak = (text: string, type: 'uk' | 'us' = 'us') => {
+    if (typeof window === 'undefined') return;
+
+    const fallbackSpeak = () => {
+      if (typeof window === 'undefined' || !window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = type === 'uk' ? 'en-GB' : 'en-US';
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    };
+
+    if (text.trim().includes(' ')) {
+      fallbackSpeak();
+      return;
+    }
+
+    const cleanWord = text.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    const folder = type === 'us' ? 'ame' : 'bre';
+    const legacySuffix = type === 'us' ? '__us_1' : '__gb_1';
+
+    const urls = [
+      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}.mp3`,
+      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}1.mp3`,
+      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}2.mp3`,
+      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}${legacySuffix}.mp3`
+    ];
+
+    const tryPlay = (index: number) => {
+      if (index >= urls.length) {
+        fallbackSpeak();
+        return;
+      }
+
+      const audio = new Audio(urls[index]);
+      let hasFailed = false;
+
+      const handleFailure = (err?: any) => {
+        if (hasFailed) return;
+        hasFailed = true;
+        audio.removeEventListener('error', onError);
+        console.warn(`[Dict Audio] Failed to play: ${urls[index]}`, err);
+        tryPlay(index + 1);
+      };
+
+      const onError = (e: any) => {
+        handleFailure(e);
+      };
+
+      audio.addEventListener('error', onError);
+
+      audio.play()
+        .catch((err) => {
+          handleFailure(err);
+        });
+    };
+
+    tryPlay(0);
   };
 
   const scrollToSection = (id: string) => {
@@ -453,15 +507,34 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
           <div className="flex-1 flex flex-col bg-white overflow-hidden">
             {/* Header - Draggable Area */}
             <div className="px-5 py-3 border-b border-slate-50 flex items-center justify-between bg-white/80 backdrop-blur-md cursor-grab active:cursor-grabbing shrink-0 z-10">
-              <div className="truncate pr-4 flex items-baseline gap-2">
-                <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none truncate">{data.word}</h2>
+              <div className="min-w-0 flex-1 flex flex-col justify-center gap-1 pr-4">
+                <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none shrink-0">{data.word}</h2>
                 {data.data?.meanings?.[0]?.ipa && (
-                  <p className="text-[10px] text-slate-400 font-mono italic">[{data.data.meanings[0].ipa}]</p>
+                  <p className="text-[11px] text-slate-400 font-mono italic truncate">[{data.data.meanings[0].ipa}]</p>
                 )}
               </div>
-              <div className="flex items-center gap-1 shrink-0">
-                <button onClick={() => speak(data.word)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"><Volume2 size={16} /></button>
-                <button onClick={onClose} className="p-1.5 hover:bg-red-50 hover:text-red-500 rounded-lg text-slate-300"><X size={18} /></button>
+              <div className="flex items-center gap-2 shrink-0">
+                {/* Nút loa giọng Anh (UK) */}
+                <button 
+                  onClick={() => speak(data.word, 'uk')} 
+                  className="px-2 py-1 text-red-500 hover:bg-red-50 active:scale-95 rounded-lg flex items-center gap-1 transition-all border border-red-100/50 hover:border-red-200"
+                  title="Phát âm giọng Anh (UK)"
+                >
+                  <Volume2 size={13} />
+                  <span className="text-[9px] font-black uppercase tracking-wider">uk</span>
+                </button>
+
+                {/* Nút loa giọng Mỹ (US) */}
+                <button 
+                  onClick={() => speak(data.word, 'us')} 
+                  className="px-2 py-1 text-blue-600 hover:bg-blue-50 active:scale-95 rounded-lg flex items-center gap-1 transition-all border border-blue-100/50 hover:border-blue-200"
+                  title="Phát âm giọng Mỹ (US)"
+                >
+                  <Volume2 size={13} />
+                  <span className="text-[9px] font-black uppercase tracking-wider">us</span>
+                </button>
+
+                <button onClick={onClose} className="p-1.5 hover:bg-red-50 hover:text-red-500 rounded-lg text-slate-300 transition-all"><X size={18} /></button>
               </div>
             </div>
 
