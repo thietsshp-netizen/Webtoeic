@@ -265,21 +265,24 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
   const speak = async (text: string, type: 'uk' | 'us' = 'us') => {
     if (typeof window === 'undefined') return;
 
+    // Loại bỏ nhãn từ loại trong dấu ngoặc đơn ở cuối từ (ví dụ: "Bicyclist (n)" -> "Bicyclist")
+    const cleanSpeechText = text.replace(/\s*\([^)]*\)/g, '').trim();
+
     const fallbackSpeak = () => {
       if (typeof window === 'undefined' || !window.speechSynthesis) return;
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
+      const utterance = new SpeechSynthesisUtterance(cleanSpeechText);
       utterance.lang = type === 'uk' ? 'en-GB' : 'en-US';
       utterance.rate = 0.9;
       window.speechSynthesis.speak(utterance);
     };
 
-    if (text.trim().includes(' ')) {
+    if (cleanSpeechText.includes(' ')) {
       fallbackSpeak();
       return;
     }
 
-    const cleanWord = text.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    const cleanWord = cleanSpeechText.toLowerCase().replace(/[^a-z0-9]/g, '');
     const cacheKey = `${cleanWord}_${type}`;
 
     // 1. Kiểm tra cache trước

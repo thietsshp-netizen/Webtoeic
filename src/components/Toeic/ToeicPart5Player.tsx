@@ -498,22 +498,25 @@ export default function ToeicPart5Player({
   const speak = async (text: string, type: 'uk' | 'us' = 'us') => {
     if (typeof window === 'undefined') return;
 
-    if (text.trim().includes(' ')) {
-      fallbackSpeak(text, type);
+    // Loại bỏ nhãn từ loại trong dấu ngoặc đơn ở cuối từ (ví dụ: "Bicyclist (n)" -> "Bicyclist")
+    const cleanSpeechText = text.replace(/\s*\([^)]*\)/g, '').trim();
+
+    if (cleanSpeechText.includes(' ')) {
+      fallbackSpeak(cleanSpeechText, type);
       return;
     }
 
-    const cleanWord = text.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    const cleanWord = cleanSpeechText.toLowerCase().replace(/[^a-z0-9]/g, '');
     const cacheKey = `${cleanWord}_${type}`;
 
     // 1. Kiểm tra cache trước
     if (audioCache.has(cacheKey)) {
       const cachedUrl = audioCache.get(cacheKey)!;
       if (cachedUrl === 'tts') {
-        fallbackSpeak(text, type);
+        fallbackSpeak(cleanSpeechText, type);
       } else {
         const audio = new Audio(cachedUrl);
-        audio.play().catch(() => fallbackSpeak(text, type));
+        audio.play().catch(() => fallbackSpeak(cleanSpeechText, type));
       }
       return;
     }
@@ -560,14 +563,14 @@ export default function ToeicPart5Player({
         audioCache.set(cacheKey, bestUrl);
         
         const audio = new Audio(bestUrl);
-        audio.play().catch(() => fallbackSpeak(text, type));
+        audio.play().catch(() => fallbackSpeak(cleanSpeechText, type));
       } else {
         audioCache.set(cacheKey, 'tts');
-        fallbackSpeak(text, type);
+        fallbackSpeak(cleanSpeechText, type);
       }
     } catch (err) {
       console.warn('[Audio] Error in parallel check:', err);
-      fallbackSpeak(text, type);
+      fallbackSpeak(cleanSpeechText, type);
     } finally {
       controller.abort();
     }
