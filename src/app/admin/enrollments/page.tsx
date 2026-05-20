@@ -425,11 +425,11 @@ export default function EnrollmentMatrix() {
 
       {/* Matrix Table */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-auto max-h-[600px] xl:max-h-[750px] scrollbar-thin relative">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100 text-slate-600 text-xs">
-                <th className="p-4 font-black w-72 border-r border-slate-100 sticky left-0 bg-slate-50 z-10 shadow-[1px_0_0_0_#f1f5f9]">
+                <th className="p-4 font-black w-72 border-r border-slate-100 sticky left-0 top-0 bg-slate-50 z-20 shadow-[1px_1px_0_0_#f1f5f9]">
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
@@ -446,7 +446,7 @@ export default function EnrollmentMatrix() {
                 {data?.courses.map(c => (
                   <th
                     key={c.id}
-                    className="p-4 font-black text-center min-w-[140px] border-r border-slate-100 last:border-r-0 uppercase tracking-wider"
+                    className="p-4 font-black text-center min-w-[140px] border-r border-slate-100 last:border-r-0 uppercase tracking-wider sticky top-0 bg-slate-50 z-10 shadow-[0_1px_0_0_#f1f5f9]"
                   >
                     <div className="flex flex-col items-center gap-1.5">
                       <BookOpen size={14} className="text-blue-400" />
