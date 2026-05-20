@@ -47,6 +47,9 @@ interface ToeicPart5PlayerProps {
   globalTotal?: number;
 }
 
+// Bộ nhớ đệm lưu cache các từ đã kiểm tra và tìm thấy URL thành công
+const audioCache = new Map<string, string>();
+
 export default function ToeicPart5Player({
   content = "{}",
   data: propsData,
@@ -492,7 +495,7 @@ export default function ToeicPart5Player({
     window.speechSynthesis.speak(utterance);
   };
 
-  const speak = (text: string, type: 'uk' | 'us' = 'us') => {
+  const speak = async (text: string, type: 'uk' | 'us' = 'us') => {
     if (typeof window === 'undefined') return;
 
     if (text.trim().includes(' ')) {
@@ -501,6 +504,20 @@ export default function ToeicPart5Player({
     }
 
     const cleanWord = text.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    const cacheKey = `${cleanWord}_${type}`;
+
+    // 1. Kiểm tra cache trước
+    if (audioCache.has(cacheKey)) {
+      const cachedUrl = audioCache.get(cacheKey)!;
+      if (cachedUrl === 'tts') {
+        fallbackSpeak(text, type);
+      } else {
+        const audio = new Audio(cachedUrl);
+        audio.play().catch(() => fallbackSpeak(text, type));
+      }
+      return;
+    }
+
     const folder = type === 'us' ? 'ame' : 'bre';
     const legacySuffix = type === 'us' ? '__us_1' : '__gb_1';
 
@@ -511,36 +528,49 @@ export default function ToeicPart5Player({
       `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}${legacySuffix}.mp3`
     ];
 
-    const tryPlay = (index: number) => {
-      if (index >= urls.length) {
+    // 2. Kiểm tra song song bằng HTTP HEAD
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    try {
+      const checkPromises = urls.map(async (url, index) => {
+        try {
+          const timeoutPromise = new Promise<null>((_, reject) =>
+            setTimeout(() => reject(new Error('timeout')), 1000)
+          );
+          const fetchPromise = fetch(url, { method: 'HEAD', signal });
+          
+          const response = await Promise.race([fetchPromise, timeoutPromise]);
+          if (response && response.status === 200) {
+            return { index, url, exists: true };
+          }
+          return { index, url, exists: false };
+        } catch {
+          return { index, url, exists: false };
+        }
+      });
+
+      const results = await Promise.all(checkPromises);
+      const validResults = results
+        .filter(r => r.exists)
+        .sort((a, b) => a.index - b.index);
+
+      if (validResults.length > 0) {
+        const bestUrl = validResults[0].url;
+        audioCache.set(cacheKey, bestUrl);
+        
+        const audio = new Audio(bestUrl);
+        audio.play().catch(() => fallbackSpeak(text, type));
+      } else {
+        audioCache.set(cacheKey, 'tts');
         fallbackSpeak(text, type);
-        return;
       }
-
-      const audio = new Audio(urls[index]);
-      let hasFailed = false;
-
-      const handleFailure = (err?: any) => {
-        if (hasFailed) return;
-        hasFailed = true;
-        audio.removeEventListener('error', onError);
-        console.warn(`[Audio] Failed to play: ${urls[index]}`, err);
-        tryPlay(index + 1);
-      };
-
-      const onError = (e: any) => {
-        handleFailure(e);
-      };
-
-      audio.addEventListener('error', onError);
-
-      audio.play()
-        .catch((err) => {
-          handleFailure(err);
-        });
-    };
-
-    tryPlay(0);
+    } catch (err) {
+      console.warn('[Audio] Error in parallel check:', err);
+      fallbackSpeak(text, type);
+    } finally {
+      controller.abort();
+    }
   };
 
   const isValidData = (val: string | null | undefined) => {
