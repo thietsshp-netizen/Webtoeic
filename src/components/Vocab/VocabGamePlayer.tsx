@@ -5,6 +5,7 @@ import { Star, Volume2, RotateCcw, ChevronRight, ChevronLeft, BookOpen, Shuffle,
 import confetti from "canvas-confetti";
 import VocabGuideModal from "@/components/Vocab/VocabGuideModal";
 import { startVocabTour } from "@/components/Toeic/toeicTour";
+import { speakVocab } from "@/lib/vocab-audio";
 
 export interface VocabWord {
   id: number | string;
@@ -37,11 +38,7 @@ type Tab = "library" | "scramble" | "fill" | "match" | "synonym";
 type FilterMode = "all" | "starred";
 
 function speak(text: string) {
-  if (typeof window === "undefined") return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = "en-US";
-  window.speechSynthesis.speak(u);
+  speakVocab(text, 'us');
 }
 
 function stripHtml(html: string): string {

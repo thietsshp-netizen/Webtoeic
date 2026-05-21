@@ -9,6 +9,7 @@ import CourseCard from "@/components/Course/CourseCard";
 import PlacementTest from "@/components/PlacementTest/PlacementTest";
 import VocabGuideModal, { VocabGuideContent } from "@/components/Vocab/VocabGuideModal";
 import FloatingMessenger from "@/components/UI/FloatingMessenger";
+import { speakVocab } from "@/lib/vocab-audio";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail } from "lucide-react";
 
@@ -1795,11 +1796,7 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip }: any) {
   }, [globalFlip]);
 
   const speak = (text: string) => {
-    if (typeof window === "undefined") return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "en-US";
-    window.speechSynthesis.speak(u);
+    speakVocab(text, 'us');
   };
 
   const toggleStarred = async (e: React.MouseEvent) => {
