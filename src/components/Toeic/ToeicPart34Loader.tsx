@@ -10,7 +10,8 @@ export default async function ToeicPart34Loader({
   courseId,
   nextLessonId,
   partNumber,
-  jumpToQ
+  jumpToQ,
+  videoExplanation
 }: {
   content: string;
   lessonId: string;
@@ -18,6 +19,7 @@ export default async function ToeicPart34Loader({
   nextLessonId?: string;
   partNumber: number;
   jumpToQ?: string;
+  videoExplanation?: any;
 }) {
   let filterGroups: any[] = [];
   let filters: any = {};
@@ -142,6 +144,7 @@ export default async function ToeicPart34Loader({
       initialProgress={initialProgress}
       targetPart={partNumber}
       jumpTo={jumpToQ ? { id: jumpToQ, ts: Date.now() } : undefined}
+      videoExplanation={videoExplanation}
     />
   );
 }

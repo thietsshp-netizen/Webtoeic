@@ -113,11 +113,16 @@ export async function POST(
                 order: data.order || 0,
                 sectionId: finalSectionId,
                 contentType: data.contentType || "TEXT",
-                content: data.content || ""
+                content: data.content || "",
+                videoUrl: data.videoUrl,
+                videoExplanation: data.videoExplanation,
+                toeicTestId: data.toeicTestId === "" ? null : (data.toeicTestId || undefined),
+                vocabDayId: data.vocabDayId === "" ? null : (data.vocabDayId || undefined),
+                isPreview: data.isPreview || false
               }
             });
           } else {
-            await tx.lesson.updateMany({
+            await tx.lesson.update({
               where: { id },
               data: {
                 title: data.title,
@@ -125,6 +130,7 @@ export async function POST(
                 contentType: data.contentType,
                 content: data.content,
                 videoUrl: data.videoUrl,
+                videoExplanation: data.videoExplanation,
                 toeicTestId: data.toeicTestId === "" ? null : (data.toeicTestId || undefined),
                 vocabDayId: data.vocabDayId === "" ? null : (data.vocabDayId || undefined),
                 isPreview: data.isPreview,

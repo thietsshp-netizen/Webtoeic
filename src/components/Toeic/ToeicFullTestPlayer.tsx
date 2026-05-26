@@ -27,6 +27,7 @@ import ConfirmModal from "@/components/UI/ConfirmModal";
 import { showToast } from "@/components/UI/Toast";
 import Link from "next/link";
 import { FlagColor } from "../Player/FlagSelector";
+import FloatingVideoExplanationPlayer from "../Player/FloatingVideoExplanationPlayer";
 
 interface FullTestPlayerProps {
   book: string;
@@ -37,6 +38,7 @@ interface FullTestPlayerProps {
   nextLessonId?: string;
   initialProgress?: any;
   jumpTo?: { id: string; ts: number } | null;
+  videoExplanation?: any;
 }
 
 export default function ToeicFullTestPlayer({
@@ -47,7 +49,8 @@ export default function ToeicFullTestPlayer({
   courseId,
   nextLessonId,
   initialProgress = {},
-  jumpTo: jumpToProp
+  jumpTo: jumpToProp,
+  videoExplanation
 }: FullTestPlayerProps) {
   const [activePart, setActivePart] = useState<number>(1);
   const [timeLeft, setTimeLeft] = useState(120 * 60); // 120 phút
@@ -59,6 +62,21 @@ export default function ToeicFullTestPlayer({
   const [mounted, setMounted] = useState(false);
   const [activeQuestionNo, setActiveQuestionNo] = useState<number | null>(null);
   const [disableSidebarTransition, setDisableSidebarTransition] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+
+  // Chuẩn hóa videoExplanation thành dạng vừa là Mảng vừa là Đối tượng đơn để tương thích ngược 100% với các Part Players
+  const normalizedExplanation = useMemo(() => {
+    if (!videoExplanation) return null;
+    const array = Array.isArray(videoExplanation)
+      ? videoExplanation
+      : [videoExplanation];
+    
+    return Object.assign([...array], {
+      videoUrl: array[0]?.videoUrl,
+      videoType: array[0]?.videoType,
+      timestamps: array[0]?.timestamps,
+    });
+  }, [videoExplanation]);
 
   // Lắng nghe sự kiện từ Tour để tự động mở bung Sidebar làm ví dụ
   useEffect(() => {
@@ -424,6 +442,18 @@ export default function ToeicFullTestPlayer({
     });
   }, []);
 
+  // Cross-part navigation từ video player
+  const handleVideoQuestionSync = useCallback((questionNo: number) => {
+    const foundQ = allQuestions.find(q => q.questionNo === questionNo);
+    if (foundQ) {
+      if (activePart !== foundQ.part) {
+        setActivePart(foundQ.part);
+      }
+      setActiveQuestionNo(foundQ.questionNo);
+      setJumpTo({ id: String(foundQ.questionNo), ts: Date.now() });
+    }
+  }, [allQuestions, activePart]);
+
   return (
     <div className="flex flex-col h-full bg-slate-50 overflow-hidden relative">
       {/* Hidden button to be clicked programmatically by child Part Players */}
@@ -533,6 +563,10 @@ export default function ToeicFullTestPlayer({
                     handleUpdateProgress({ [qId]: { isFlagged: flag, flagColor: color || null, flagNote: note } });
                   }}
                   globalOffset={partOffsets[1]} globalTotal={allQuestions.length}
+                  videoExplanation={normalizedExplanation}
+                  onVideoQuestionSync={handleVideoQuestionSync}
+                  onToggleVideo={() => setShowVideo(p => !p)}
+                  videoOpen={showVideo}
                 />
               )}
               {activePart === 2 && (
@@ -550,6 +584,10 @@ export default function ToeicFullTestPlayer({
                     setActivePart(1);
                   }}
                   globalOffset={partOffsets[2]} globalTotal={allQuestions.length}
+                  videoExplanation={normalizedExplanation}
+                  onVideoQuestionSync={handleVideoQuestionSync}
+                  onToggleVideo={() => setShowVideo(p => !p)}
+                  videoOpen={showVideo}
                 />
               )}
               {activePart === 3 && (
@@ -567,6 +605,10 @@ export default function ToeicFullTestPlayer({
                     setActivePart(2);
                   }}
                   globalOffset={partOffsets[3]} globalTotal={allQuestions.length}
+                  videoExplanation={normalizedExplanation}
+                  onVideoQuestionSync={handleVideoQuestionSync}
+                  onToggleVideo={() => setShowVideo(p => !p)}
+                  videoOpen={showVideo}
                 />
               )}
               {activePart === 4 && (
@@ -584,6 +626,10 @@ export default function ToeicFullTestPlayer({
                     setActivePart(3);
                   }}
                   globalOffset={partOffsets[4]} globalTotal={allQuestions.length}
+                  videoExplanation={normalizedExplanation}
+                  onVideoQuestionSync={handleVideoQuestionSync}
+                  onToggleVideo={() => setShowVideo(p => !p)}
+                  videoOpen={showVideo}
                 />
               )}
               {activePart === 5 && (
@@ -601,6 +647,10 @@ export default function ToeicFullTestPlayer({
                     setActivePart(4);
                   }}
                   globalOffset={partOffsets[5]} globalTotal={allQuestions.length}
+                  videoExplanation={normalizedExplanation}
+                  onVideoQuestionSync={handleVideoQuestionSync}
+                  onToggleVideo={() => setShowVideo(p => !p)}
+                  videoOpen={showVideo}
                 />
               )}
               {activePart === 6 && (
@@ -618,6 +668,10 @@ export default function ToeicFullTestPlayer({
                     setActivePart(5);
                   }}
                   globalOffset={partOffsets[6]} globalTotal={allQuestions.length}
+                  videoExplanation={normalizedExplanation}
+                  onVideoQuestionSync={handleVideoQuestionSync}
+                  onToggleVideo={() => setShowVideo(p => !p)}
+                  videoOpen={showVideo}
                 />
               )}
               {activePart === 7 && (
@@ -636,6 +690,10 @@ export default function ToeicFullTestPlayer({
                     setActivePart(6);
                   }}
                   globalOffset={partOffsets[7]} globalTotal={allQuestions.length}
+                  videoExplanation={normalizedExplanation}
+                  onVideoQuestionSync={handleVideoQuestionSync}
+                  onToggleVideo={() => setShowVideo(p => !p)}
+                  videoOpen={showVideo}
                 />
               )}
             </div>
@@ -872,6 +930,16 @@ export default function ToeicFullTestPlayer({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Video player quản lý ở level full test để không bị mất khi chuyển part */}
+      {showVideo && videoExplanation && (Array.isArray(videoExplanation) ? videoExplanation.some((v: any) => v.videoUrl) : !!videoExplanation.videoUrl) && (
+        <FloatingVideoExplanationPlayer
+          videoExplanation={videoExplanation}
+          onClose={() => setShowVideo(false)}
+          onQuestionSync={handleVideoQuestionSync}
+          currentIndex={activeQuestionNo ? activeQuestionNo - 1 : 0}
+        />
       )}
 
       {confirmConfig && (

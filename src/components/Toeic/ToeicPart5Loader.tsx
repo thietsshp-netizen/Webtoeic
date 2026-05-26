@@ -8,13 +8,15 @@ export default async function ToeicPart5Loader({
   lessonId,
   courseId,
   nextLessonId,
-  jumpToQ
+  jumpToQ,
+  videoExplanation
 }: {
   content: string;
   lessonId: string;
   courseId?: string;
   nextLessonId?: string;
   jumpToQ?: string;
+  videoExplanation?: any;
 }) {
   // 1. Lấy thông tin phiên đăng nhập
   const session = await getServerSession(authOptions) as any;
@@ -96,6 +98,7 @@ export default async function ToeicPart5Loader({
       nextLessonId={nextLessonId}
       initialProgress={initialProgress}
       jumpTo={jumpToQ ? { id: jumpToQ, ts: Date.now() } : undefined}
+      videoExplanation={videoExplanation}
     />
   );
 }

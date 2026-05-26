@@ -3,7 +3,17 @@
     - [x] Chạy migration để cập nhật database (đảm bảo không mất dữ liệu).
 - [x] **Giai đoạn 2: Xây dựng Logic Backend**
     - [x] Tạo API Route `srs-update` để xử lý việc thăng/giáng cấp Hộp.
-    - [ ] Kiểm tra logic tính toán ngày ôn tập (`nextReviewDate`).
+    - [x] Define the specialized subagent `sub_translator` with write permissions.
+- [/] Spawn 8 subagents concurrently to translate and convert episodes:
+  - [/] Subagent 1: E01, E02, E03 (ID: `57078f52-e5f6-472d-8064-d14d24db94a5`)
+  - [/] Subagent 2: E04, E05, E06 (ID: `1d6060ed-2893-4d80-9885-e854d62c3844`)
+  - [/] Subagent 3: E07, E08, E09 (ID: `0bb097e9-1fc3-4575-ac6e-152ca2d8f275`)
+  - [/] Subagent 4: E10, E11, E12 (ID: `dc5b5ee1-e2a8-4412-b534-2fafb02d1f2c`)
+  - [/] Subagent 5: E13, E14, E15 (ID: `5d22f543-b5eb-480b-81d9-dcc737f4626a`)
+  - [/] Subagent 6: E16-17, E18, E19 (ID: `25f8de2b-b623-4e9a-bc67-70175dc313d1`)
+  - [/] Subagent 7: E20, E21, E22 (ID: `eb73c8a9-3dd4-495c-9615-1725bb40b694`)
+  - [/] Subagent 8: E23, E24 (ID: `27d262d9-d8fe-4679-9baf-a877d953a6f0`)
+- [ ] Monitor progress of subagents.
 - [ ] **Giai đoạn 3: Cập nhật Giao diện Dashboard**
     - [ ] Thêm Tab "CẦN ÔN TẬP" vào Header của Sổ tay.
     - [ ] Cập nhật logic lọc từ vựng theo ngày đến hạn.

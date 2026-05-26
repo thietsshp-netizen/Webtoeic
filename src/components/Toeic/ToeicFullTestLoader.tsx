@@ -16,7 +16,8 @@ export default async function ToeicFullTestLoader({
   courseId,
   nextLessonId,
   toeicTestId, // ID đặc biệt full-test-ets2026-t1
-  jumpToQ
+  jumpToQ,
+  videoExplanation
 }: {
   content?: string;
   lessonId: string;
@@ -24,6 +25,7 @@ export default async function ToeicFullTestLoader({
   nextLessonId?: string;
   toeicTestId?: string | null;
   jumpToQ?: string;
+  videoExplanation?: any;
 }) {
   let book = "";
   let test = "";
@@ -338,6 +340,7 @@ export default async function ToeicFullTestLoader({
       nextLessonId={nextLessonId}
       initialProgress={initialProgress}
       jumpTo={jumpToQ ? { id: jumpToQ } : undefined}
+      videoExplanation={videoExplanation}
     />
   );
 }

@@ -37,13 +37,15 @@ export default async function ToeicPart7LoaderV2({
   lessonId,
   courseId,
   nextLessonId,
-  jumpToQ
+  jumpToQ,
+  videoExplanation
 }: {
   content: string;
   lessonId: string;
   courseId?: string;
   nextLessonId?: string;
   jumpToQ?: string;
+  videoExplanation?: any;
 }) {
   console.log(`[PART7_LOADER] Executing for lesson: ${lessonId}`);
   const globalTargetedIds = new Set<string>();
@@ -320,6 +322,7 @@ export default async function ToeicPart7LoaderV2({
       initialProgress={initialProgress}
       targetQuestionType={baseTargetType}
       jumpTo={jumpToQ ? { id: jumpToQ, ts: Date.now() } : undefined}
+      videoExplanation={videoExplanation}
     />
   );
 }

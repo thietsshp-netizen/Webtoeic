@@ -4,3 +4,4 @@ async function main() {
   console.log("All users", users.map(u => ({ email: u.email, role: u.role })));
 }
 main();
+

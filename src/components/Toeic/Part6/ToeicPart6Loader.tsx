@@ -9,13 +9,15 @@ export default async function ToeicPart6Loader({
   lessonId,
   courseId,
   nextLessonId,
-  jumpToQ
+  jumpToQ,
+  videoExplanation
 }: { 
   content: string; 
   lessonId: string;
   courseId?: string;
   nextLessonId?: string;
   jumpToQ?: string;
+  videoExplanation?: any;
 }) {
   let filterGroups: any[] = [];
   let filters: any = {};
@@ -132,6 +134,7 @@ export default async function ToeicPart6Loader({
       nextLessonId={nextLessonId}
       initialProgress={initialProgress}
       jumpTo={jumpToQ ? { id: jumpToQ, ts: Date.now() } : undefined}
+      videoExplanation={videoExplanation}
     />
   );
 }

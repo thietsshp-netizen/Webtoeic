@@ -9,7 +9,8 @@ export default async function ToeicTestLoader({
   courseId,
   nextLessonId,
   isReviewMode = false,
-  jumpToQ
+  jumpToQ,
+  videoExplanation
 }: { 
   toeicTestId: string | null;
   lessonId: string;
@@ -17,6 +18,7 @@ export default async function ToeicTestLoader({
   nextLessonId?: string;
   isReviewMode?: boolean;
   jumpToQ?: string;
+  videoExplanation?: any;
 }) {
   if (!toeicTestId) return (
     <div className="text-center py-10 text-slate-500 bg-slate-50 border border-dashed rounded-3xl">
@@ -87,6 +89,7 @@ export default async function ToeicTestLoader({
       nextLessonId={nextLessonId}
       isReviewMode={isReviewMode}
       jumpTo={jumpToQ ? { id: jumpToQ, ts: Date.now() } : undefined}
+      videoExplanation={videoExplanation}
     />
   );
 }

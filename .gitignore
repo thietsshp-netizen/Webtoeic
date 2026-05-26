@@ -83,3 +83,13 @@ batch_14.json
 /scripts/master_upload.py
 /scripts/upload_audio_to_supabase.py
 /DICTIONARY_HANDOVER_PLAN.md
+
+# Subtitles and related scripts
+/sub eng-vi-1/
+/sub english1/
+sub_vi_*.json
+*.ass
+compile_all.py
+dump_srt.py
+make_bilingual.py
+to_ass.py

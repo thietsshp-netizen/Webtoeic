@@ -128,6 +128,7 @@ model Lesson {
   content          String?
   videoUrl         String?
   toeicTestId      String?
+  videoExplanation Json?             // Trường mới: Lưu trữ cấu hình video chữa & mốc thời gian dạng tự do (nullable)
   isPreview        Boolean           @default(false)
   order            Int               @default(0)
   createdAt        DateTime          @default(now())

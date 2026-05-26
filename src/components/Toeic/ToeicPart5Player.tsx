@@ -17,6 +17,7 @@ import Link from 'next/link';
 import FlagSelector, { FlagColor } from '../Player/FlagSelector';
 import ConfirmModal from '@/components/UI/ConfirmModal';
 import { startToeicPartTour } from './toeicTour';
+import FloatingVideoExplanationPlayer from '../Player/FloatingVideoExplanationPlayer';
 
 interface ProgressType {
   isCorrect: boolean;
@@ -45,6 +46,10 @@ interface ToeicPart5PlayerProps {
   jumpTo?: { id: string; ts: number } | null;
   globalOffset?: number;
   globalTotal?: number;
+  videoExplanation?: any;
+  onVideoQuestionSync?: (questionNo: number) => void;
+  onToggleVideo?: () => void;
+  videoOpen?: boolean;
 }
 
 // Bộ nhớ đệm lưu cache các từ đã kiểm tra và tìm thấy URL thành công
@@ -68,8 +73,26 @@ export default function ToeicPart5Player({
   onActiveQuestionChange,
   jumpTo,
   globalOffset = 0,
-  globalTotal
+  globalTotal,
+  videoExplanation: videoExplanationRaw,
+  onVideoQuestionSync,
+  onToggleVideo,
+  videoOpen
 }: ToeicPart5PlayerProps) {
+  // Chuẩn hóa videoExplanation thành dạng vừa là Mảng vừa là Đối tượng đơn để tương thích ngược 100%
+  const videoExplanation = (() => {
+    if (!videoExplanationRaw) return null;
+    const array = Array.isArray(videoExplanationRaw)
+      ? videoExplanationRaw
+      : [videoExplanationRaw];
+    if (array.length === 0 || !array[0]?.videoUrl) return null;
+    return Object.assign([...array], {
+      videoUrl: array[0].videoUrl,
+      videoType: array[0].videoType || "youtube",
+      timestamps: array[0].timestamps || [],
+    });
+  })();
+
   // --- STATE ---
   const [questions, setQuestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,6 +104,7 @@ export default function ToeicPart5Player({
   const [revealMode, setRevealMode] = useState(isReviewMode || propsIsSubmitted);
   const [showExplain, setShowExplain] = useState<Record<string, boolean>>({});
   const [confirmConfig, setConfirmConfig] = useState<{ isOpen: boolean, message: string, onConfirm: () => void } | null>(null);
+  const [showVideo, setShowVideo] = useState(false);
 
   // Sync with parent submission state
   useEffect(() => {
@@ -1529,14 +1553,25 @@ export default function ToeicPart5Player({
         if (isFullTest && mounted && typeof document !== "undefined" && document.getElementById("bottom-nav-portal-target")) {
           return createPortal(
             <div className={footerWrapperClass}>
-              <button
-                onClick={() => startToeicPartTour(5, true)}
-                className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
-                title="Khởi động Tour hướng dẫn nhanh"
-              >
-                <HelpCircle size={13} className="animate-pulse" />
-                Hướng dẫn nhanh
-              </button>
+              <div className="absolute left-4 flex gap-2 pointer-events-auto z-[80]">
+                <button
+                  onClick={() => startToeicPartTour(5, true)}
+                  className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5"
+                  title="Khởi động Tour hướng dẫn nhanh"
+                >
+                  <HelpCircle size={13} className="animate-pulse" />
+                  Hướng dẫn nhanh
+                </button>
+                {videoExplanation && videoExplanation.videoUrl && (
+                  <button
+                    onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
+                    className="px-3 py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 border border-[#05b169]/20"
+                    title="Xem video chữa đề / giải thích"
+                  >
+                    🎬 {(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}
+                  </button>
+                )}
+              </div>
               {navContent}
             </div>,
             document.getElementById("bottom-nav-portal-target")!
@@ -1545,14 +1580,25 @@ export default function ToeicPart5Player({
 
         return (
           <div className={footerWrapperClass}>
-            <button
-              onClick={() => startToeicPartTour(5, true)}
-              className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
-              title="Khởi động Tour hướng dẫn nhanh"
-            >
-              <HelpCircle size={13} className="animate-pulse" />
-              Hướng dẫn nhanh
-            </button>
+            <div className="absolute left-4 flex gap-2 pointer-events-auto z-[80]">
+              <button
+                onClick={() => startToeicPartTour(5, true)}
+                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5"
+                title="Khởi động Tour hướng dẫn nhanh"
+              >
+                <HelpCircle size={13} className="animate-pulse" />
+                Hướng dẫn nhanh
+              </button>
+              {videoExplanation && videoExplanation.videoUrl && (
+                <button
+                  onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
+                  className="px-3 py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 border border-[#05b169]/20"
+                  title="Xem video chữa đề / giải thích"
+                >
+                  🎬 {(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}
+                </button>
+              )}
+            </div>
             {navContent}
           </div>
         );
@@ -1575,6 +1621,24 @@ export default function ToeicPart5Player({
           message={confirmConfig.message}
           onConfirm={confirmConfig.onConfirm}
           onCancel={() => setConfirmConfig(null)}
+        />
+      )}
+
+      {/* TRÌNH PHÁT VIDEO CHỮA NỔI */}
+      {!onToggleVideo && showVideo && videoExplanation && videoExplanation.videoUrl && (
+        <FloatingVideoExplanationPlayer
+          videoExplanation={videoExplanation}
+          onClose={() => setShowVideo(false)}
+          onQuestionSync={(targetIndex) => {
+            if (isFullTest && onVideoQuestionSync) {
+              onVideoQuestionSync(targetIndex);
+              return;
+            }
+            if (targetIndex > 0 && targetIndex <= questions.length) {
+              setCurrentIndex(targetIndex - 1);
+            }
+          }}
+          currentIndex={currentIndex}
         />
       )}
     </div>

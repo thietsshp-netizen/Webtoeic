@@ -14,6 +14,103 @@ interface LessonEditorProps {
   onSaveSuccess: () => void;
 }
 
+// Helper to parse MM:SS string to seconds
+const parseMMSS = (str: string): number => {
+  if (!str) return 0;
+  const parts = str.split(':');
+  if (parts.length === 2) {
+    const mins = parseInt(parts[0], 10) || 0;
+    const secs = parseInt(parts[1], 10) || 0;
+    return mins * 60 + secs;
+  }
+  return parseInt(str, 10) || 0;
+};
+
+// Helper to format seconds to MM:SS string
+const formatMMSS = (secs: number): string => {
+  if (typeof secs !== 'number' || isNaN(secs)) return '00:00';
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+};
+
+interface TimeInputProps {
+  value: number;
+  onChange: (val: number) => void;
+}
+
+function TimeInput({ value, onChange }: TimeInputProps) {
+  const initialMins = Math.floor(value / 60);
+  const initialSecs = value % 60;
+
+  const [mins, setMins] = useState(String(initialMins));
+  const [secs, setSecs] = useState(String(initialSecs).padStart(2, '0'));
+
+  useEffect(() => {
+    const m = Math.floor(value / 60);
+    const s = value % 60;
+    setMins(String(m));
+    setSecs(String(s).padStart(2, '0'));
+  }, [value]);
+
+  const handleMinsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setMins(val);
+    const m = parseInt(val, 10) || 0;
+    const s = parseInt(secs, 10) || 0;
+    onChange(m * 60 + s);
+  };
+
+  const handleSecsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSecs(val);
+    const m = parseInt(mins, 10) || 0;
+    const s = parseInt(val, 10) || 0;
+    onChange(m * 60 + s);
+  };
+
+  const handleSecsBlur = () => {
+    let s = parseInt(secs, 10) || 0;
+    let m = parseInt(mins, 10) || 0;
+    
+    if (s >= 60) {
+      m += Math.floor(s / 60);
+      s = s % 60;
+    }
+    
+    setMins(String(m));
+    setSecs(String(s).padStart(2, '0'));
+    onChange(m * 60 + s);
+  };
+
+  return (
+    <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-xl px-2 py-1 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all max-w-[140px] mx-auto">
+      <input
+        type="number"
+        min="0"
+        value={mins}
+        onChange={handleMinsChange}
+        className="w-10 bg-transparent text-center text-xs font-bold text-slate-800 outline-none border-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        placeholder="MM"
+      />
+      <span className="text-[10px] text-slate-400 font-bold">m</span>
+      <span className="text-slate-300 font-medium px-0.5">:</span>
+      <input
+        type="number"
+        min="0"
+        max="59"
+        value={secs}
+        onChange={handleSecsChange}
+        onBlur={handleSecsBlur}
+        className="w-10 bg-transparent text-center text-xs font-bold text-slate-800 outline-none border-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        placeholder="SS"
+      />
+      <span className="text-[10px] text-slate-400 font-bold">s</span>
+    </div>
+  );
+}
+
+
 export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSaveSuccess }: LessonEditorProps) {
   const [lesson, setLesson] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -22,6 +119,28 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
   const [vocabDays, setVocabDays] = useState<any[]>([]);
   const [previewData, setPreviewData] = useState<any>(null);
   const [loadingPreview, setLoadingPreview] = useState(false);
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+  const [questionsList, setQuestionsList] = useState<any[]>([]);
+
+  // Tự động tải danh sách câu hỏi thực tế của bài học này từ database
+  useEffect(() => {
+    let isMounted = true;
+    async function loadQuestions() {
+      if (!lessonId) return;
+      try {
+        const res = await fetch(`/api/admin/lessons/${lessonId}/questions`);
+        const data = await res.json();
+        if (isMounted && data.success) {
+          setQuestionsList(data.questions || []);
+        }
+      } catch (err) {
+        console.warn("Failed to load questions list dynamically:", err);
+      }
+    }
+    loadQuestions();
+    return () => { isMounted = false; };
+  }, [lessonId, lesson?.toeicTestId, lesson?.content, lesson?.contentType]);
+
 
   useEffect(() => {
     async function fetchToeicTests() {
@@ -161,6 +280,20 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
     }
   };
 
+
+
+  const fallbackLength = (() => {
+    if (!lesson) return 50;
+    const isFullTest = lesson.toeicTestId?.startsWith('full-test-') || 
+                       (lesson.contentType === "TOEIC_TEST" && lesson.toeicTestId?.startsWith('full-test-')) ||
+                       lesson.title?.toLowerCase().includes("full test") ||
+                       lesson.title?.toLowerCase().includes("đề thi");
+    if (isFullTest) return 200;
+    
+    // Đối với tất cả bài tập phân dạng, bài học dynamic hoặc riêng lẻ khác, hỗ trợ tối đa 350 câu hỏi
+    return 350;
+  })();
+
   if (loading) return <div className="p-20 text-center text-slate-400 italic">Đang nạp nội dung bài giảng...</div>;
   if (!lesson) return <div className="p-20 text-center text-red-400">Không tìm thấy bài giảng.</div>;
 
@@ -278,7 +411,7 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
                       Đang nạp bản xem trước dữ liệu bài tập...
                    </div>
                 ) : previewData ? (
-                   <div className="rounded-[2.5rem] border border-blue-100 shadow-2xl shadow-blue-50 overflow-hidden bg-white min-h-[500px]">
+                   <div className="rounded-[2.5rem] border border-blue-100 shadow-2xl shadow-blue-50 overflow-hidden bg-white min-h-[400px] max-h-[650px] overflow-y-auto scrollbar-thin">
                       <div className="bg-blue-600 p-3 text-center text-[10px] font-black text-white uppercase tracking-[0.2em]">
                         Chế độ xem trước: Admin Preview Mode {lesson.toeicTestId?.startsWith('full-test-') ? '(Full 7 Parts)' : ''}
                       </div>
@@ -327,7 +460,18 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
                                                   <div className="flex items-center gap-3">
                                                     <span className="text-slate-400 font-mono w-4 italic">{idx + 1}.</span>
                                                     <span className="font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">Câu {range}</span>
-                                                    <span className="text-slate-500 truncate max-w-[300px]">{g.passageText?.substring(0, 50) || "(Không có nội dung)"}...</span>
+                                                    {(() => {
+                                                      const gMeta = g.metadata as any || {};
+                                                      const bookName = gMeta.Book || gMeta.book || "";
+                                                      const testName = gMeta.Test || gMeta.test || "";
+                                                      if (!bookName && !testName) return null;
+                                                      return (
+                                                        <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-tight shrink-0 select-none">
+                                                          {bookName} {testName ? `Test ${testName}` : ""}
+                                                        </span>
+                                                      );
+                                                    })()}
+                                                    <span className="text-slate-500 truncate max-w-[200px]">{g.passageText?.substring(0, 50) || "(Không có nội dung)"}...</span>
                                                   </div>
                                                   <span className="text-slate-300 font-mono text-[9px]">{g.id}</span>
                                                 </div>
@@ -376,6 +520,361 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
             </div>
           </>
         )}
+
+        {/* KHU VỰC CẤU HÌNH VIDEO GIẢI THÍCH ĐỘC LẬP (NON-DESTRUCTIVE ADD-ON) */}
+        {["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC"].includes(lesson.contentType) && (() => {
+          // Trích xuất danh sách video (tự động chuẩn hóa để tương thích ngược)
+          const rawExplanation = lesson.videoExplanation;
+          const videosListRaw: any[] = Array.isArray(rawExplanation)
+            ? rawExplanation
+            : rawExplanation?.videoUrl
+            ? [rawExplanation]
+            : [];
+
+          // Luôn đảm bảo có ít nhất 1 video
+          const videosList = videosListRaw.length > 0
+            ? videosListRaw
+            : [{ title: "Video chính", videoUrl: "", videoType: "direct", timestamps: [] }];
+
+          const activeVideo = videosList[activeVideoIndex] || videosList[0] || {};
+          const timestamps = activeVideo.timestamps || [];
+
+          // Hàm cập nhật các thuộc tính của video đang chọn
+          const updateActiveVideo = (updatedProps: any) => {
+            const updatedVideos = [...videosList];
+            updatedVideos[activeVideoIndex] = {
+              ...updatedVideos[activeVideoIndex],
+              ...updatedProps
+            };
+            updateDraft({ videoExplanation: updatedVideos });
+          };
+
+          // Thêm video mới
+          const handleAddVideo = () => {
+            const updatedVideos = [
+              ...videosList,
+              {
+                title: `Video ${videosList.length + 1}`,
+                videoUrl: "",
+                videoType: "direct",
+                timestamps: []
+              }
+            ];
+            updateDraft({ videoExplanation: updatedVideos });
+            setActiveVideoIndex(updatedVideos.length - 1);
+          };
+
+          // Xóa video
+          const handleDeleteVideo = (idxToDelete: number) => {
+            if (videosList.length <= 1) {
+              updateDraft({
+                videoExplanation: [{ title: "Video chính", videoUrl: "", videoType: "direct", timestamps: [] }]
+              });
+              setActiveVideoIndex(0);
+              return;
+            }
+            const updatedVideos = videosList.filter((_, idx) => idx !== idxToDelete);
+            updateDraft({ videoExplanation: updatedVideos });
+            setActiveVideoIndex(Math.max(0, activeVideoIndex - 1));
+          };
+
+          return (
+            <div className="space-y-6 p-8 bg-slate-50 rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-100 relative overflow-hidden transition-all duration-300">
+              <div className="flex items-center justify-between mb-4 border-b border-slate-200 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                    🎬
+                  </div>
+                  <div>
+                    <h3 className="text-base font-black text-slate-800 uppercase tracking-tight">Cấu hình Video Giải Thích & Lý Thuyết</h3>
+                    <p className="text-xs text-slate-400 font-medium mt-0.5">Thêm nhiều video chữa bài nổi và các mốc thời gian tua câu hỏi riêng cho từng video.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Thanh quản lý các video (Tabs) */}
+              <div className="flex flex-wrap items-center gap-2 bg-slate-100 p-2 rounded-2xl border border-slate-200">
+                {videosList.map((vid, idx) => {
+                  const isActive = activeVideoIndex === idx;
+                  return (
+                    <div key={idx} className="flex items-center gap-1.5 bg-white p-1 rounded-xl shadow-sm border border-slate-150">
+                      <button
+                        type="button"
+                        onClick={() => setActiveVideoIndex(idx)}
+                        className={`px-4 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-2 ${
+                          isActive
+                            ? "bg-blue-600 text-white shadow-md shadow-blue-100"
+                            : "text-slate-600 hover:text-blue-600"
+                        }`}
+                      >
+                        🎥 {vid.title || `Video ${idx + 1}`}
+                      </button>
+                      {videosList.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteVideo(idx)}
+                          className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all text-xs"
+                          title="Xóa video này"
+                        >
+                          ❌
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+                
+                <button
+                  type="button"
+                  onClick={handleAddVideo}
+                  className="px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-extrabold text-xs border border-slate-200 border-dashed transition-all ml-auto"
+                >
+                  ➕ Thêm Video Mới
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4">
+                {/* CỘT TRÁI: THÔNG TIN VIDEO & XEM TRƯỚC */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Tiêu đề Video (Hiển thị ở Tab học viên)</label>
+                    <input
+                      type="text"
+                      value={activeVideo.title || ""}
+                      onChange={(e) => updateActiveVideo({ title: e.target.value })}
+                      className="w-full mt-1.5 p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm font-bold text-slate-800 bg-white transition-all"
+                      placeholder="Ví dụ: Video Chữa Part 5 (Câu 101-110)..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Đường dẫn Video Chữa Đề</label>
+                    <input
+                      type="text"
+                      value={activeVideo.videoUrl || ""}
+                      onChange={(e) => {
+                        const url = e.target.value;
+                        let type = "direct";
+                        if (url.includes("youtube.com") || url.includes("youtu.be")) type = "youtube";
+                        else if (url.includes("drive.google.com")) type = "google-drive";
+                        
+                        updateActiveVideo({
+                          videoUrl: url,
+                          videoType: type
+                        });
+                      }}
+                      className="w-full mt-1.5 p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium bg-white transition-all"
+                      placeholder="Dán link YouTube, Google Drive hoặc file MP4..."
+                    />
+                  </div>
+
+                  {/* KHUNG XEM TRƯỚC VIDEO (PREVIEW PLAYER) */}
+                  {activeVideo.videoUrl ? (
+                    <div className="aspect-video w-full rounded-2xl overflow-hidden shadow-md bg-slate-950 border border-slate-200 mt-4 relative">
+                      {(() => {
+                        const url = activeVideo.videoUrl;
+                        const type = activeVideo.videoType || "direct";
+
+                        if (type === "youtube") {
+                          let videoId = "";
+                          try {
+                            if (url.includes("embed/")) {
+                              videoId = url.split("embed/")[1]?.split("?")[0];
+                            } else if (url.includes("v=")) {
+                              videoId = url.split("v=")[1]?.split("&")[0];
+                            } else if (url.includes("youtu.be/")) {
+                              videoId = url.split("youtu.be/")[1]?.split("?")[0];
+                            }
+                          } catch (e) {}
+
+                          if (videoId) {
+                            return (
+                              <iframe
+                                src={`https://www.youtube.com/embed/${videoId}`}
+                                className="w-full h-full"
+                                allowFullScreen
+                                title="YouTube Preview"
+                              ></iframe>
+                            );
+                          }
+                        }
+
+                        if (type === "google-drive") {
+                          let fileId = "";
+                          try {
+                            if (url.includes("/d/")) {
+                              fileId = url.split("/d/")[1]?.split("/")[0];
+                            } else if (url.includes("id=")) {
+                              fileId = url.split("id=")[1]?.split("&")[0];
+                            }
+                          } catch (e) {}
+
+                          if (fileId) {
+                            return (
+                              <iframe
+                                src={`https://drive.google.com/file/d/${fileId}/preview`}
+                                className="w-full h-full"
+                                allow="autoplay"
+                                title="Google Drive Preview"
+                              ></iframe>
+                            );
+                          }
+                        }
+
+                        return (
+                          <video src={url} className="w-full h-full" controls></video>
+                        );
+                      })()}
+                    </div>
+                  ) : (
+                    <div className="aspect-video w-full rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center text-slate-400 p-6 text-center">
+                      <p className="text-sm font-bold">Chưa có video nhúng.</p>
+                      <p className="text-xs italic mt-1">Dán liên kết video ở trên để xem thử trình phát nhúng.</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* CỘT PHẢI: BẢNG QUẢN LÝ MỐC THỜI GIAN TIMESTAMPS */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Bảng mốc thời gian (Timestamps)</label>
+                    <div className="flex gap-2">
+                      {questionsList.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const autoStamps = questionsList.map((q: any, idx: number) => ({
+                              label: `Câu ${q.questionNo || (idx + 1)}`,
+                              time: 0,
+                              targetIndex: idx + 1
+                            }));
+                            updateActiveVideo({ timestamps: autoStamps });
+                          }}
+                          className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl text-xs font-bold transition-all"
+                          title="Tự động sinh mốc theo đề bài"
+                        >
+                          ⚡ Tự động tạo mốc
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => updateActiveVideo({ timestamps: [] })}
+                        className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-xs font-bold transition-all"
+                      >
+                        Xóa tất cả
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white max-h-[300px] overflow-y-auto scrollbar-thin">
+                    <table className="min-w-full divide-y divide-slate-200 border-collapse">
+                      <thead className="bg-slate-50 text-[10px] font-black text-slate-500 uppercase tracking-wider sticky top-0 z-10 shadow-sm">
+                        <tr>
+                          <th className="px-4 py-3 text-left">Nhãn (Label)</th>
+                          <th className="px-4 py-3 text-left w-36">Liên kết câu</th>
+                          <th className="px-4 py-3 text-left w-24">Thời gian (MM:SS)</th>
+                          <th className="px-4 py-3 text-center w-12">Xóa</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 text-slate-700 text-xs font-medium">
+                        {(!timestamps || timestamps.length === 0) ? (
+                          <tr>
+                            <td colSpan={4} className="px-4 py-8 text-center text-slate-400 italic">
+                              Chưa có mốc thời gian nào. Hãy bấm "Thêm mốc mới" hoặc "Tự động tạo mốc" ở trên.
+                            </td>
+                          </tr>
+                        ) : (
+                          timestamps.map((stamp: any, idx: number) => {
+                            return (
+                              <tr key={idx} className="hover:bg-slate-50/50">
+                                <td className="px-3 py-2">
+                                  <input
+                                    type="text"
+                                    value={stamp.label || ""}
+                                    onChange={(e) => {
+                                      const newStamps = [...timestamps];
+                                      newStamps[idx] = { ...stamp, label: e.target.value };
+                                      updateActiveVideo({ timestamps: newStamps });
+                                    }}
+                                    className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-blue-500 text-xs font-bold text-slate-700"
+                                    placeholder="Ví dụ: Câu 101"
+                                  />
+                                </td>
+                                <td className="px-3 py-2">
+                                  <select
+                                    value={stamp.targetIndex !== undefined && stamp.targetIndex !== null ? stamp.targetIndex : ""}
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      const newStamps = [...timestamps];
+                                      newStamps[idx] = { 
+                                        ...stamp, 
+                                        targetIndex: val === "" ? null : parseInt(val, 10) 
+                                      };
+                                      updateActiveVideo({ timestamps: newStamps });
+                                    }}
+                                    className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-blue-500 text-xs font-bold text-slate-700 bg-white"
+                                  >
+                                    <option value="">Không liên kết</option>
+                                    {(() => {
+                                      const totalQ = questionsList.length > 0 ? questionsList.length : fallbackLength;
+                                      return Array.from({ length: totalQ }).map((_, i) => {
+                                        const idx = i + 1;
+                                        return (
+                                          <option key={idx} value={idx}>
+                                            Câu {idx}/{totalQ}
+                                          </option>
+                                        );
+                                      });
+                                    })()}
+                                  </select>
+                                </td>
+                                <td className="px-3 py-2">
+                                  <TimeInput
+                                    value={stamp.time}
+                                    onChange={(newTime) => {
+                                      const newStamps = [...timestamps];
+                                      newStamps[idx] = { ...stamp, time: newTime };
+                                      updateActiveVideo({ timestamps: newStamps });
+                                    }}
+                                  />
+                                </td>
+                                <td className="px-3 py-2 text-center">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const newStamps = timestamps.filter((_: any, i: number) => i !== idx);
+                                      updateActiveVideo({ timestamps: newStamps });
+                                    }}
+                                    className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg transition-colors"
+                                  >
+                                    ❌
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newStamps = [
+                        ...timestamps,
+                        { label: `Mốc mới ${(timestamps?.length || 0) + 1}`, time: 0, targetIndex: null }
+                      ];
+                      updateActiveVideo({ timestamps: newStamps });
+                    }}
+                    className="w-full py-3 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-2xl border border-slate-200 border-dashed transition-all hover:border-slate-400 text-xs"
+                  >
+                    ➕ Thêm mốc thời gian mới
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

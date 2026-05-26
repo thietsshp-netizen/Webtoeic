@@ -34,7 +34,7 @@ export async function PUT(
     const body = await req.json();
 
     // Chỉ cập nhật các trường cần thiết
-    const { title, sectionId, contentType, content, videoUrl, isPreview, order, toeicTestId, vocabDayId } = body;
+    const { title, sectionId, contentType, content, videoUrl, videoExplanation, isPreview, order, toeicTestId, vocabDayId } = body;
 
     const lesson = await prisma.lesson.update({
       where: { id: lessonId },
@@ -44,6 +44,7 @@ export async function PUT(
         contentType,
         content,
         videoUrl,
+        videoExplanation,
         isPreview,
         order,
         toeicTestId,

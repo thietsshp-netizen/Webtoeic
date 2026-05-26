@@ -10,6 +10,7 @@ import confetti from 'canvas-confetti';
 import Link from 'next/link';
 import FlagSelector, { FlagColor } from '../../Player/FlagSelector';
 import { startToeicPartTour } from '../toeicTour';
+import FloatingVideoExplanationPlayer from '../../Player/FloatingVideoExplanationPlayer';
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
@@ -322,6 +323,10 @@ interface ToeicPart7PlayerProps {
   jumpTo?: { id: string; ts: number } | null;
   globalOffset?: number;
   globalTotal?: number;
+  videoExplanation?: any;
+  onVideoQuestionSync?: (questionNo: number) => void;
+  onToggleVideo?: () => void;
+  videoOpen?: boolean;
 }
 
 export default function ToeicPart7Player({
@@ -344,8 +349,25 @@ export default function ToeicPart7Player({
   onActiveQuestionChange,
   jumpTo,
   globalOffset = 0,
-  globalTotal
+  globalTotal,
+  videoExplanation: videoExplanationRaw,
+  onVideoQuestionSync,
+  onToggleVideo,
+  videoOpen
 }: ToeicPart7PlayerProps) {
+  // Chuẩn hóa videoExplanation thành dạng vừa là Mảng vừa là Đối tượng đơn để tương thích ngược 100%
+  const videoExplanation = (() => {
+    if (!videoExplanationRaw) return null;
+    const array = Array.isArray(videoExplanationRaw)
+      ? videoExplanationRaw
+      : [videoExplanationRaw];
+    if (array.length === 0 || !array[0]?.videoUrl) return null;
+    return Object.assign([...array], {
+      videoUrl: array[0].videoUrl,
+      videoType: array[0].videoType || "youtube",
+      timestamps: array[0].timestamps || [],
+    });
+  })();
 
   // Logic for Clue Connector (Clickable SIDs in explanations)
   useEffect(() => {
@@ -462,6 +484,7 @@ export default function ToeicPart7Player({
 
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showVideo, setShowVideo] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
 
   if (!data || data.length === 0) {
@@ -1745,14 +1768,25 @@ export default function ToeicPart7Player({
           if (target) {
             return createPortal(
               <div className="relative flex-none h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-                <button
-                  onClick={() => startToeicPartTour(7, true)}
-                  className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
-                  title="Khởi động Tour hướng dẫn nhanh"
-                >
-                  <HelpCircle size={13} className="animate-pulse" />
-                  Hướng dẫn nhanh
-                </button>
+                <div className="absolute left-4 flex gap-2 pointer-events-auto z-[80]">
+                  <button
+                    onClick={() => startToeicPartTour(7, true)}
+                    className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+                    title="Khởi động Tour hướng dẫn nhanh"
+                  >
+                    <HelpCircle size={13} className="animate-pulse" />
+                    Hướng dẫn nhanh
+                  </button>
+                  {videoExplanation && videoExplanation.videoUrl && (
+                    <button
+                      onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
+                      className="px-3 py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 border border-[#05b169]/20"
+                      title="Xem video chữa đề / giải thích"
+                    >
+                      🎬 {(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}
+                    </button>
+                  )}
+                </div>
                 {navContent}
               </div>,
               target
@@ -1762,18 +1796,49 @@ export default function ToeicPart7Player({
 
         return (
           <div className="relative flex-none h-16 bg-white border-t border-slate-200 z-[70] flex items-center justify-center">
-            <button
-              onClick={() => startToeicPartTour(7, true)}
-              className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
-              title="Khởi động Tour hướng dẫn nhanh"
-            >
-              <HelpCircle size={13} className="animate-pulse" />
-              Hướng dẫn nhanh
-            </button>
+            <div className="absolute left-4 flex gap-2 pointer-events-auto z-[80]">
+              <button
+                onClick={() => startToeicPartTour(7, true)}
+                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+                title="Khởi động Tour hướng dẫn nhanh"
+              >
+                <HelpCircle size={13} className="animate-pulse" />
+                Hướng dẫn nhanh
+              </button>
+              {videoExplanation && videoExplanation.videoUrl && (
+                <button
+                  onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
+                  className="px-3 py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 border border-[#05b169]/20 animate-pulse"
+                  title="Xem video chữa đề / giải thích"
+                >
+                  🎬 {(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}
+                </button>
+              )}
+            </div>
             {navContent}
           </div>
         );
       })()}
+
+      {!onToggleVideo && showVideo && videoExplanation && videoExplanation.videoUrl && (
+        <FloatingVideoExplanationPlayer
+          videoExplanation={videoExplanation}
+          onClose={() => setShowVideo(false)}
+          onQuestionSync={(targetIndex) => {
+            if (isFullTest && onVideoQuestionSync) {
+              onVideoQuestionSync(targetIndex);
+              return;
+            }
+            const groupIdx = data.findIndex(group => 
+              group.questions?.some((q: any) => q.questionNo === targetIndex)
+            );
+            if (groupIdx !== -1) {
+              setCurrentIndex(groupIdx);
+            }
+          }}
+          currentIndex={currentIndex}
+        />
+      )}
 
       {/* TOOLTIP TRANSLATION */}
       {tooltip && tooltip.rect && tooltip.text && currentGroup && mounted && createPortal(

@@ -21,6 +21,7 @@ interface ToeicPlayerClientProps {
   nextLessonId?: string;
   isReviewMode?: boolean;
   jumpTo?: { id: string; ts: number } | null;
+  videoExplanation?: any;
 }
 
 export default function ToeicPlayerClient({
@@ -32,7 +33,8 @@ export default function ToeicPlayerClient({
   courseId,
   nextLessonId,
   isReviewMode = false,
-  jumpTo
+  jumpTo,
+  videoExplanation
 }: ToeicPlayerClientProps) {
   
   // State for switching parts if it's a full test
@@ -78,7 +80,8 @@ export default function ToeicPlayerClient({
       courseId,
       nextLessonId,
       isReviewMode,
-      jumpTo
+      jumpTo,
+      videoExplanation
     };
 
     switch (activePart) {
