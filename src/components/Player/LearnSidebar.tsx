@@ -35,6 +35,8 @@ interface Lesson {
   contentType: string;
   order: number;
   isPreview: boolean;
+  videoUrl?: string;
+  videoExplanation?: any;
 }
 
 interface Section {
@@ -730,6 +732,14 @@ export default function LearnSidebar() {
                                         }`}>
                                           {lesson.title}
                                         </p>
+                                        {(lesson.contentType === "VIDEO" || !!lesson.videoUrl || (lesson.videoExplanation && (Array.isArray(lesson.videoExplanation) ? lesson.videoExplanation.length > 0 : Object.keys(lesson.videoExplanation as object).length > 0))) && (
+                                          <span 
+                                            className="cursor-help text-xs shrink-0 select-none" 
+                                            title="Bài học có video bài giảng/chữa bài"
+                                          >
+                                            🎬
+                                          </span>
+                                        )}
                                         {!isEnrolled && lesson.isPreview && (
                                           <span className="bg-emerald-500/10 text-emerald-600 text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 shadow-sm border border-emerald-500/10">
                                             Free

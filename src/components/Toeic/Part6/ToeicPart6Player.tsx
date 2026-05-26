@@ -10,6 +10,7 @@ import confetti from 'canvas-confetti';
 import Link from 'next/link';
 import FlagSelector, { FlagColor } from '../../Player/FlagSelector';
 import { startToeicPartTour } from '../toeicTour';
+import FloatingVideoExplanationPlayer from '../../Player/FloatingVideoExplanationPlayer';
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
@@ -257,6 +258,10 @@ interface ToeicPart6PlayerProps {
   jumpTo?: { id: string; ts: number } | null;
   globalOffset?: number;
   globalTotal?: number;
+  videoExplanation?: any;
+  onVideoQuestionSync?: (questionNo: number) => void;
+  onToggleVideo?: () => void;
+  videoOpen?: boolean;
 }
 
 export default function ToeicPart6Player({
@@ -277,8 +282,25 @@ export default function ToeicPart6Player({
   onActiveQuestionChange,
   jumpTo,
   globalOffset = 0,
-  globalTotal
+  globalTotal,
+  videoExplanation: videoExplanationRaw,
+  onVideoQuestionSync,
+  onToggleVideo,
+  videoOpen
 }: ToeicPart6PlayerProps) {
+  // Chuẩn hóa videoExplanation thành dạng vừa là Mảng vừa là Đối tượng đơn để tương thích ngược 100%
+  const videoExplanation = (() => {
+    if (!videoExplanationRaw) return null;
+    const array = Array.isArray(videoExplanationRaw)
+      ? videoExplanationRaw
+      : [videoExplanationRaw];
+    if (array.length === 0 || !array[0]?.videoUrl) return null;
+    return Object.assign([...array], {
+      videoUrl: array[0].videoUrl,
+      videoType: array[0].videoType || "youtube",
+      timestamps: array[0].timestamps || [],
+    });
+  })();
 
   const [activeSid, setActiveSid] = useState<string | null>(null);
 
@@ -296,6 +318,7 @@ export default function ToeicPart6Player({
   }, [rawData]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showVideo, setShowVideo] = useState(false);
   const [answers, setAnswers] = useState<Record<string, string>>(() => {
     let acc: any = {};
     const safeProgress = initialProgress || {};
@@ -731,14 +754,27 @@ export default function ToeicPart6Player({
   const paragraphs: any[][] = [];
   if (parsedPassage) {
     let currentPar: any[] = [];
+    
+    const isEmailHeader = (text: string) => {
+      if (!text) return false;
+      const clean = text.replace(/<[^>]*>/g, '').trim();
+      const headers = ['To:', 'From:', 'Subject:', 'Date:', 'To :', 'From :', 'Subject :', 'Date :'];
+      return headers.some(h => clean.startsWith(h));
+    };
+
     parsedPassage.forEach((s: any, idx: number) => {
       const isHeader = s.type === 'header' || s.type === 'signature' || s.type === 'greeting';
       const prev = idx > 0 ? parsedPassage[idx - 1] : null;
       const prevWasHeader = prev && (prev.type === 'header' || prev.type === 'signature' || prev.type === 'greeting');
       const isSentenceSelection = s.text && s.text.trim().startsWith('**') && s.text.trim().endsWith('**');
+      
+      const isCurrentEmailHeader = isEmailHeader(s.text);
+      const isPrevEmailHeader = prev && isEmailHeader(prev.text);
 
-      if (s.is_new_paragraph && currentPar.length > 0) {
-        if (!isSentenceSelection || isHeader || prevWasHeader) {
+      const shouldBreak = s.is_new_paragraph || isCurrentEmailHeader || isPrevEmailHeader;
+
+      if (shouldBreak && currentPar.length > 0) {
+        if (!isSentenceSelection || isHeader || prevWasHeader || isCurrentEmailHeader || isPrevEmailHeader) {
           paragraphs.push(currentPar);
           currentPar = [];
         }
@@ -1361,14 +1397,25 @@ export default function ToeicPart6Player({
         if (isFullTest && mounted && typeof document !== "undefined" && document.getElementById("bottom-nav-portal-target")) {
           return createPortal(
             <div className="relative flex-none h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-              <button
-                onClick={() => startToeicPartTour(6, true)}
-                className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
-                title="Khởi động Tour hướng dẫn nhanh"
-              >
-                <HelpCircle size={13} className="animate-pulse" />
-                Hướng dẫn nhanh
-              </button>
+              <div className="absolute left-4 flex gap-2 pointer-events-auto z-[80]">
+                <button
+                  onClick={() => startToeicPartTour(6, true)}
+                  className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+                  title="Khởi động Tour hướng dẫn nhanh"
+                >
+                  <HelpCircle size={13} className="animate-pulse" />
+                  Hướng dẫn nhanh
+                </button>
+                {videoExplanation && videoExplanation.videoUrl && (
+                  <button
+                    onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
+                    className="px-3 py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 border border-[#05b169]/20"
+                    title="Xem video chữa đề / giải thích"
+                  >
+                    🎬 {(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}
+                  </button>
+                )}
+              </div>
               {navContent}
             </div>,
             document.getElementById("bottom-nav-portal-target")!
@@ -1377,18 +1424,50 @@ export default function ToeicPart6Player({
 
         return (
           <div className="relative flex-none h-16 bg-white border-t border-slate-200 z-[70] flex items-center justify-center">
-            <button
-              onClick={() => startToeicPartTour(6, true)}
-              className="absolute left-4 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
-              title="Khởi động Tour hướng dẫn nhanh"
-            >
-              <HelpCircle size={13} className="animate-pulse" />
-              Hướng dẫn nhanh
-            </button>
+            <div className="absolute left-4 flex gap-2 pointer-events-auto z-[80]">
+              <button
+                onClick={() => startToeicPartTour(6, true)}
+                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+                title="Khởi động Tour hướng dẫn nhanh"
+              >
+                <HelpCircle size={13} className="animate-pulse" />
+                Hướng dẫn nhanh
+              </button>
+              {videoExplanation && videoExplanation.videoUrl && (
+                <button
+                  onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
+                  className="px-3 py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 border border-[#05b169]/20 animate-pulse"
+                  title="Xem video chữa đề / giải thích"
+                >
+                  🎬 {(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}
+                </button>
+              )}
+            </div>
             {navContent}
           </div>
         );
       })()}
+
+      {!onToggleVideo && showVideo && videoExplanation && videoExplanation.videoUrl && (
+        <FloatingVideoExplanationPlayer
+          videoExplanation={videoExplanation}
+          onClose={() => setShowVideo(false)}
+          onQuestionSync={(targetIndex) => {
+            if (isFullTest && onVideoQuestionSync) {
+              onVideoQuestionSync(targetIndex);
+              return;
+            }
+            const groupIdx = data.findIndex(group => 
+              group.questions?.some((q: any) => q.questionNo === targetIndex)
+            );
+            if (groupIdx !== -1) {
+              setCurrentIndex(groupIdx);
+            }
+          }}
+          currentIndex={currentIndex}
+        />
+      )}
+
       {/* FORCE WORD-LEVEL SELECTION STYLES */}
       <style dangerouslySetInnerHTML={{
         __html: `

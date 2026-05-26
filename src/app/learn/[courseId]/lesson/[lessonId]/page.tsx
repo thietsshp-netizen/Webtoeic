@@ -37,6 +37,24 @@ export default async function LessonDetailPage({
 
   if (!lesson) return notFound();
 
+  // Chuẩn hóa videoExplanation thành dạng vừa là Mảng vừa là Đối tượng đơn để tương thích ngược 100% với học viên
+  let normalizedExplanation: any = null;
+  if (lesson.videoExplanation) {
+    const rawExplanation = lesson.videoExplanation;
+    const array = (Array.isArray(rawExplanation)
+      ? rawExplanation
+      : (rawExplanation as any)?.videoUrl
+      ? [rawExplanation]
+      : []) as any[];
+    if (array.length > 0) {
+      normalizedExplanation = Object.assign([...array], {
+        videoUrl: array[0]?.videoUrl,
+        videoType: array[0]?.videoType,
+        timestamps: array[0]?.timestamps,
+      });
+    }
+  }
+
   // 1. KIỂM TRA QUYỀN TRUY CẬP
   let hasAccess = false;
   if (session?.user?.role === "ADMIN" || lesson.isPreview) {
@@ -164,6 +182,7 @@ export default async function LessonDetailPage({
                       courseId={courseId}
                       nextLessonId={nextLesson?.id}
                       jumpToQ={q}
+                      videoExplanation={normalizedExplanation}
                     />
                   ) : (
                     <ToeicTestLoader
@@ -172,6 +191,7 @@ export default async function LessonDetailPage({
                       courseId={courseId}
                       nextLessonId={nextLesson?.id}
                       jumpToQ={q}
+                      videoExplanation={normalizedExplanation}
                     />
                   )
                 ) : lesson.contentType === "DYNAMIC_PART" ? (
@@ -190,13 +210,13 @@ export default async function LessonDetailPage({
                       const filtersStr = JSON.stringify(filtersObj);
 
 
-                      if (partNum === 5) return <ToeicPart5Loader content={filtersStr} lessonId={lesson.id} courseId={courseId} nextLessonId={nextLesson?.id} jumpToQ={q} />;
-                      if (partNum === 6) return <ToeicPart6Loader content={filtersStr} lessonId={lesson.id} courseId={courseId} nextLessonId={nextLesson?.id} jumpToQ={q} />;
-                      if (partNum === 7) return <ToeicPart7LoaderV2 content={filtersStr} lessonId={lesson.id} courseId={courseId} nextLessonId={nextLesson?.id} jumpToQ={q} />;
+                      if (partNum === 5) return <ToeicPart5Loader content={filtersStr} lessonId={lesson.id} courseId={courseId} nextLessonId={nextLesson?.id} jumpToQ={q} videoExplanation={normalizedExplanation} />;
+                      if (partNum === 6) return <ToeicPart6Loader content={filtersStr} lessonId={lesson.id} courseId={courseId} nextLessonId={nextLesson?.id} jumpToQ={q} videoExplanation={normalizedExplanation} />;
+                      if (partNum === 7) return <ToeicPart7LoaderV2 content={filtersStr} lessonId={lesson.id} courseId={courseId} nextLessonId={nextLesson?.id} jumpToQ={q} videoExplanation={normalizedExplanation} />;
 
-                      if (partNum === 1) return <ToeicPart1Loader content={filtersStr} lessonId={lesson.id} courseId={courseId} nextLessonId={nextLesson?.id} jumpToQ={q} />;
-                      if (partNum === 2) return <ToeicPart2Loader content={filtersStr} lessonId={lesson.id} courseId={courseId} nextLessonId={nextLesson?.id} jumpToQ={q} />;
-                      if (partNum === 3 || partNum === 4) return <ToeicPart34Loader content={filtersStr} lessonId={lesson.id} courseId={courseId} nextLessonId={nextLesson?.id} partNumber={partNum} jumpToQ={q} />;
+                      if (partNum === 1) return <ToeicPart1Loader content={filtersStr} lessonId={lesson.id} courseId={courseId} nextLessonId={nextLesson?.id} jumpToQ={q} videoExplanation={normalizedExplanation} />;
+                      if (partNum === 2) return <ToeicPart2Loader content={filtersStr} lessonId={lesson.id} courseId={courseId} nextLessonId={nextLesson?.id} jumpToQ={q} videoExplanation={normalizedExplanation} />;
+                      if (partNum === 3 || partNum === 4) return <ToeicPart34Loader content={filtersStr} lessonId={lesson.id} courseId={courseId} nextLessonId={nextLesson?.id} partNumber={partNum} jumpToQ={q} videoExplanation={normalizedExplanation} />;
 
                       return <div className="p-8 text-center text-slate-400 font-bold italic">Giao diện học cho Part {partNum} đang được hoàn thiện.</div>;
                     } catch (e) {
@@ -210,6 +230,7 @@ export default async function LessonDetailPage({
                     courseId={courseId}
                     nextLessonId={nextLesson?.id}
                     jumpToQ={q}
+                    videoExplanation={normalizedExplanation}
                   />
                 ) : lesson.contentType === "PART6_DYNAMIC" ? (
                   <ToeicPart6Loader
@@ -218,6 +239,7 @@ export default async function LessonDetailPage({
                     courseId={courseId}
                     nextLessonId={nextLesson?.id}
                     jumpToQ={q}
+                    videoExplanation={normalizedExplanation}
                   />
                 ) : lesson.contentType === "PART7_DYNAMIC" ? (
                   <ToeicPart7LoaderV2
@@ -226,6 +248,7 @@ export default async function LessonDetailPage({
                     courseId={courseId}
                     nextLessonId={nextLesson?.id}
                     jumpToQ={q}
+                    videoExplanation={normalizedExplanation}
                   />
                 ) : (
                   <CourseContentRenderer content={lesson.content} />

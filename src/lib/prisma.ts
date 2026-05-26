@@ -6,7 +6,8 @@ import { PrismaClient } from '@prisma/client'
 const prismaClientSingleton = () => {
   const connectionString = `${process.env.DATABASE_URL}`
 
-  const pool = new Pool({ connectionString })
+  // Giới hạn max: 8 kết nối để tối ưu hiệu năng song song và tránh lỗi quá tải EMAXCONNSESSION
+  const pool = new Pool({ connectionString, max: 8 })
   const adapter = new PrismaPg(pool)
   
   return new PrismaClient({ adapter })
