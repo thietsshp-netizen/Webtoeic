@@ -387,6 +387,7 @@ export default function ToeicPart34Player({
   const containerRef = useRef<HTMLDivElement>(null);
   const [time, setTime] = useState(0);
   const [revealMode, setRevealMode] = useState(isReviewMode || isSubmitted);
+  const [revealPartialMode, setRevealPartialMode] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
   const [isSubmittedInternal, setIsSubmittedInternal] = useState(isSubmitted);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
@@ -416,6 +417,7 @@ export default function ToeicPart34Player({
     // Reset revealMode when switching group unless it's review mode or already submitted
     if (!isReviewMode && !isSubmittedInternal) {
       setRevealMode(false);
+      setRevealPartialMode(false);
     }
   }, [currentIndex, isReviewMode, isSubmittedInternal]);
 
@@ -1084,7 +1086,26 @@ export default function ToeicPart34Player({
       // CTRL/CMD + SHIFT + S: Toggle Reveal Mode
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 's') {
         e.preventDefault();
-        setRevealMode(prev => !prev);
+        setRevealMode(prev => {
+          const next = !prev;
+          if (next) {
+            setRevealPartialMode(false);
+          }
+          return next;
+        });
+        return;
+      }
+
+      // CTRL/CMD + S: Toggle Reveal Partial Mode (Bản dịch câu hỏi/đáp án + Transcript Anh)
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        setRevealPartialMode(prev => {
+          const next = !prev;
+          if (next) {
+            setRevealMode(false);
+          }
+          return next;
+        });
         return;
       }
 
@@ -1338,7 +1359,7 @@ export default function ToeicPart34Player({
               </div>
 
               {parsedTranscript ? (
-                revealMode ? (
+                (revealMode || revealPartialMode) ? (
                   <div className="space-y-2 px-2 pb-20">
                     {(() => {
                       // Group sentences by turn (consecutive sentences with same speaker or continuation)
@@ -1382,7 +1403,7 @@ export default function ToeicPart34Player({
                                   <span
                                     onMouseEnter={() => {
                                       if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-                                      if (revealMode && s.viText) {
+                                      if (revealMode && !revealPartialMode && s.viText) {
                                         setHoveredTranslation({ text: s.viText, sid: s.sid });
                                       }
                                     }}
@@ -1593,7 +1614,7 @@ export default function ToeicPart34Player({
                               </h4>
 
                               {/* Dịch câu hỏi (Vi) */}
-                              {revealMode && qVi && (
+                              {(revealMode || revealPartialMode) && qVi && (
                                 <div className="text-[15px] text-slate-500 italic mt-2 font-medium leading-relaxed">
                                   <AdminInlineEditor
                                     target="question"
@@ -1628,7 +1649,7 @@ export default function ToeicPart34Player({
                                 }
 
                                 let optionVi = "";
-                                if (revealMode) {
+                                if (revealMode || revealPartialMode) {
                                   try {
                                     const meta = q.metadata as any;
                                     if (meta?.explanation_vn?.options_vn?.[opt]) {

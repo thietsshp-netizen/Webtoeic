@@ -103,6 +103,7 @@ export default function ToeicPart5Player({
   const [isSubmitted, setIsSubmitted] = useState(propsIsSubmitted);
   const [revealMode, setRevealMode] = useState(isReviewMode || propsIsSubmitted);
   const [showExplain, setShowExplain] = useState<Record<string, boolean>>({});
+  const [showExplainPartial, setShowExplainPartial] = useState<Record<string, boolean>>({});
   const [confirmConfig, setConfirmConfig] = useState<{ isOpen: boolean, message: string, onConfirm: () => void } | null>(null);
   const [showVideo, setShowVideo] = useState(false);
 
@@ -417,7 +418,29 @@ export default function ToeicPart5Player({
         e.preventDefault();
         const currentQ = questions[currentIndex];
         if (currentQ) {
-          setShowExplain(prev => ({ ...prev, [currentQ.id]: !prev[currentQ.id] }));
+          setShowExplain(prev => {
+            const nextVal = !prev[currentQ.id];
+            if (nextVal) {
+              setShowExplainPartial(p => ({ ...p, [currentQ.id]: false })); // Tắt gợi ý
+            }
+            return { ...prev, [currentQ.id]: nextVal };
+          });
+        }
+        return;
+      }
+
+      // CTRL/CMD + S: Toggle Solution Hint (Gợi ý đầy đủ thông tin nhưng không lộ đáp án đúng/sai)
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        const currentQ = questions[currentIndex];
+        if (currentQ) {
+          setShowExplainPartial(prev => {
+            const nextVal = !prev[currentQ.id];
+            if (nextVal) {
+              setShowExplain(p => ({ ...p, [currentQ.id]: false })); // Tắt chế độ đầy đủ
+            }
+            return { ...prev, [currentQ.id]: nextVal };
+          });
         }
         return;
       }
@@ -656,7 +679,7 @@ export default function ToeicPart5Player({
     const raw = text.replace(/^\d+[\.\s]*/, '');
 
     // Chỉ hiển thị Ruby/Glossing khi đã kích hoạt xem giải thích
-    const isRevealed = revealMode || showExplain[currentQ.id];
+    const isRevealed = revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id];
     if (!isRevealed) {
       const parts = raw.split(/(_{3,})/);
       return parts.map((part, i) => {
@@ -886,6 +909,9 @@ export default function ToeicPart5Player({
     explainData = { overall: currentQ.explanation };
   }
 
+  const hasAnyExplanation = revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id];
+  const revealTrueAnswer = revealMode || showExplain[currentQ.id];
+
   if (showCompletion) {
     return (
       <div className="absolute inset-0 w-full h-full bg-[#f8fafc] z-[200] overflow-y-auto flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
@@ -1008,11 +1034,10 @@ export default function ToeicPart5Player({
                       const qKey = currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`;
                       const isSelected = answers[qKey] === opt;
                       const isCorrect = currentQ.correctAnswer === opt;
-                      const revealed = revealMode || showExplain[currentQ.id];
                       const breakdown = explainData.options_breakdown?.[opt] || {};
                       const value = currentQ[`option${opt}`] || (currentQ as any)[`Option${opt}`] || (currentQ as any).options?.find((o: any) => o.label === opt)?.text || (currentQ as any).options?.find((o: any) => o.label === opt)?.vi;
                       let btnClass = "border-slate-200 bg-white hover:border-blue-300 text-slate-900 shadow-sm";
-                      if (revealed) {
+                      if (revealTrueAnswer) {
                         if (isCorrect) btnClass = "border-emerald-500 bg-emerald-50 text-emerald-900 shadow-sm shadow-emerald-50";
                         else if (isSelected) btnClass = "border-red-500 bg-red-100 text-red-900 shadow-sm shadow-red-50";
                         else btnClass = "border-slate-300 bg-white shadow-none";
@@ -1026,10 +1051,10 @@ export default function ToeicPart5Player({
                           <div
                             onClick={() => {
                               const qKey = currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`;
-                              !revealed && handleSelect(qKey, opt);
+                              !revealTrueAnswer && handleSelect(qKey, opt);
                             }}
-                            className={`w-6 h-6 rounded-full flex items-center justify-center text-xs border-2 transition-all shrink-0 cursor-pointer hover:scale-110 active:scale-95 ${revealed && isCorrect ? 'bg-emerald-500 text-white border-emerald-600' :
-                              revealed && isSelected ? 'bg-red-500 text-white border-red-600' :
+                            className={`w-6 h-6 rounded-full flex items-center justify-center text-xs border-2 transition-all shrink-0 cursor-pointer hover:scale-110 active:scale-95 ${revealTrueAnswer && isCorrect ? 'bg-emerald-500 text-white border-emerald-600' :
+                              revealTrueAnswer && isSelected ? 'bg-red-500 text-white border-red-600' :
                                 isSelected ? 'bg-indigo-600 text-white border-indigo-700' : 'bg-slate-50 text-slate-400 border-slate-100 hover:border-indigo-400'
                               }`}>{opt}</div>
                           <AdminInlineEditor
@@ -1041,13 +1066,13 @@ export default function ToeicPart5Player({
                             <div className="flex flex-col flex-1 py-1">
                               <div className="flex flex-wrap items-baseline gap-2">
                                 <span className="whitespace-normal font-bold">{value}</span>
-                                {revealed && breakdown.meaning && (
+                                {hasAnyExplanation && breakdown.meaning && (
                                   <span className="text-[12px] text-slate-500 font-medium leading-tight">
                                     = {breakdown.meaning}
                                   </span>
                                 )}
                               </div>
-                              {revealed && (isValidData(breakdown.synonyms) || isValidData(breakdown.antonyms)) && (
+                              {hasAnyExplanation && (isValidData(breakdown.synonyms) || isValidData(breakdown.antonyms)) && (
                                 <div className="mt-0.5 flex flex-wrap gap-x-4 gap-y-1 text-[11px]">
                                   {isValidData(breakdown.synonyms) && (
                                     <div className="flex items-center gap-1 group/syn">
@@ -1097,7 +1122,7 @@ export default function ToeicPart5Player({
                 </div>
 
                 {/* TRANSLATION SECTION - MOVED BELOW OPTIONS */}
-                {(revealMode || showExplain[currentQ.id]) && (
+                {(revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id]) && (
                   <div className="mt-6 p-5 bg-slate-50/50 rounded-2xl border border-blue-100/30 animate-in fade-in slide-in-from-top-2 duration-500">
                     <div className="flex items-center gap-2 mb-2 text-slate-400">
                       <BookOpenIcon className="w-4 h-4" />
@@ -1149,7 +1174,7 @@ export default function ToeicPart5Player({
                 )}
               </div>
             </div>
-            {(revealMode || showExplain[currentQ.id]) && (
+            {(revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id]) && (
               <div className="mt-6 h-[700px] shrink-0 relative overflow-hidden bg-white rounded-3xl border border-blue-100 shadow-md flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="px-6 py-3 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-2">
@@ -1160,34 +1185,36 @@ export default function ToeicPart5Player({
                 </div>
                 <div ref={explainScrollRef} className="flex-1 overflow-y-auto pt-10 px-8 pb-40 scrollbar-thin scrollbar-thumb-blue-100 scrollbar-track-transparent">
                   <div className="space-y-10 animate-in slide-in-from-bottom-4 duration-500">
-                    <section className="space-y-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-6 bg-blue-600 rounded-full"></div>
-                        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-900">Đáp án đúng là:</h3>
-                      </div>
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-4">
-                          <p className="text-2xl font-bold text-slate-900">
-                            {currentQ.correctAnswer}. {currentQ[`option${currentQ.correctAnswer}`]}
-                            <CheckCircleIcon className="w-7 h-7 text-emerald-500 inline-block ml-3 mb-1" />
-                          </p>
-                          <button onClick={() => speak(currentQ[`option${currentQ.correctAnswer}`])} className="p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors">
-                            <SpeakerWaveIcon className="w-5 h-5 text-slate-600" />
-                          </button>
+                    {revealTrueAnswer && (
+                      <section className="space-y-6">
+                        <div className="flex items-center gap-3">
+                          <div className="w-1.5 h-6 bg-blue-600 rounded-full"></div>
+                          <h3 className="text-xs font-bold uppercase tracking-widest text-slate-900">Đáp án đúng là:</h3>
                         </div>
-                        <div className="p-6 bg-slate-100/30 rounded-2xl border border-blue-100/30 italic font-bold text-slate-700 leading-relaxed text-lg">
-                          <AdminInlineEditor
-                            target="question"
-                            id={currentQ.id}
-                            field="metadata.translation"
-                            value={currentQ.metadata?.translation || "Đang cập nhật bản dịch chi tiết..."}
-                            multiline
-                          >
-                            "{currentQ.metadata?.translation || "Đang cập nhật bản dịch chi tiết..."}"
-                          </AdminInlineEditor>
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-4">
+                            <p className="text-2xl font-bold text-slate-900">
+                              {currentQ.correctAnswer}. {currentQ[`option${currentQ.correctAnswer}`]}
+                              <CheckCircleIcon className="w-7 h-7 text-emerald-500 inline-block ml-3 mb-1" />
+                            </p>
+                            <button onClick={() => speak(currentQ[`option${currentQ.correctAnswer}`])} className="p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors">
+                              <SpeakerWaveIcon className="w-5 h-5 text-slate-600" />
+                            </button>
+                          </div>
+                          <div className="p-6 bg-slate-100/30 rounded-2xl border border-blue-100/30 italic font-bold text-slate-700 leading-relaxed text-lg">
+                            <AdminInlineEditor
+                              target="question"
+                              id={currentQ.id}
+                              field="metadata.translation"
+                              value={currentQ.metadata?.translation || "Đang cập nhật bản dịch chi tiết..."}
+                              multiline
+                            >
+                              "{currentQ.metadata?.translation || "Đang cập nhật bản dịch chi tiết..."}"
+                            </AdminInlineEditor>
+                          </div>
                         </div>
-                      </div>
-                    </section>
+                      </section>
+                    )}
                     <section className="space-y-6">
                       <div className="flex items-center gap-3">
                         <ListBulletIcon className="w-5 h-5 text-slate-300" />
@@ -1207,19 +1234,20 @@ export default function ToeicPart5Player({
                               <tbody className="bg-white divide-y divide-slate-200">
                                 {['A', 'B', 'C', 'D'].map((opt) => {
                                   const isCorrectRow = opt === currentQ.correctAnswer;
+                                  const showCorrectHighlight = revealTrueAnswer && isCorrectRow;
                                   const breakdown = explainData.options_breakdown?.[opt] || {};
                                   const label = currentQ[`option${opt}`];
                                   return (
-                                    <tr key={opt} className={`transition-colors divide-x divide-slate-100 ${isCorrectRow ? 'bg-emerald-50/30' : 'hover:bg-slate-50/50'}`}>
+                                    <tr key={opt} className={`transition-colors divide-x divide-slate-100 ${showCorrectHighlight ? 'bg-emerald-50/30' : 'hover:bg-slate-50/50'}`}>
                                       <td className="px-5 py-6 whitespace-nowrap">
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold border-2 transition-all shadow-sm ${isCorrectRow ? 'bg-emerald-500 text-white border-emerald-400' : 'bg-slate-50 text-slate-300 border-slate-100'}`}>
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold border-2 transition-all shadow-sm ${showCorrectHighlight ? 'bg-emerald-500 text-white border-emerald-400' : 'bg-slate-50 text-slate-300 border-slate-100'}`}>
                                           {opt}
                                         </div>
                                       </td>
                                       <td className="px-5 py-6 align-top">
                                         <div className="space-y-3">
                                           <div className="flex items-center gap-2 group/word">
-                                            <span className={`text-lg font-bold tracking-tight ${isCorrectRow ? 'text-emerald-700' : 'text-slate-800'}`}>{label}</span>
+                                            <span className={`text-lg font-bold tracking-tight ${showCorrectHighlight ? 'text-emerald-700' : 'text-slate-800'}`}>{label}</span>
                                             <button onClick={() => speak(label)} className="p-1 px-1.5 bg-slate-100 rounded-md hover:bg-blue-600 hover:text-white transition-all text-slate-400" title="Phát âm">
                                               <SpeakerWaveIcon className="w-3.5 h-3.5" />
                                             </button>
