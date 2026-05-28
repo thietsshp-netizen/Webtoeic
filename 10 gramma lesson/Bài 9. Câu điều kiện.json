@@ -1,0 +1,287 @@
+{
+  "layout": "splitscreen",
+  "theory": {
+    "title": "BÀI 9: CÂU ĐIỀU KIỆN",
+    "htmlContent": "<div class=\"grammar-container\" style=\"font-family: 'Inter', sans-serif; color: #000000; line-height: 1.7; padding: 10px; background-color: white;\">\n  \n  <style>\n    .grammar-title {\n      font-size: 22px;\n      font-weight: 800;\n      color: #ff0000;\n      text-transform: uppercase;\n      margin-bottom: 25px;\n      text-align: center;\n    }\n    .pdf-section-title {\n      font-size: 16px;\n      font-weight: 700;\n      color: #ff0000;\n      margin-top: 25px;\n      margin-bottom: 15px;\n    }\n    .pdf-sub-title {\n      font-size: 15px;\n      font-weight: 700;\n      color: #ff0000;\n      margin-top: 25px;\n      margin-bottom: 12px;\n    }\n    .pdf-box {\n      border: 1px solid #7f7f7f;\n      padding: 12px 20px;\n      margin: 10px 0 20px 30px;\n      border-radius: 0px;\n      background-color: #ffffff;\n      width: fit-content;\n      min-width: 60%;\n      line-height: 1.8;\n    }\n    .pdf-table {\n      width: 100%;\n      border-collapse: collapse;\n      margin: 15px 0 20px 0;\n    }\n    .pdf-table th, .pdf-table td {\n      border: 1px solid #7f7f7f;\n      padding: 10px 12px;\n      text-align: left;\n      font-size: 13.5px;\n    }\n    .pdf-table th {\n      background-color: #f2f2f2;\n      font-weight: 700;\n    }\n    .highlight-red {\n      color: #ff0000;\n    }\n    .highlight-red-bold {\n      color: #ff0000;\n      font-weight: 700;\n    }\n    .highlight-red-italic {\n      color: #ff0000;\n      font-style: italic;\n    }\n    .highlight-red-bold-italic {\n      color: #ff0000;\n      font-weight: 700;\n      font-style: italic;\n    }\n    .highlight-grey-bg {\n      background-color: #dcdcdc;\n      padding: 0 4px;\n      border-radius: 2px;\n    }\n  </style>\n\n  <h1 class=\"grammar-title\">BÀI 9: CÂU ĐIỀU KIỆN</h1>\n\n  <div class=\"pdf-section-title\">\n    <span>I. LÝ THUYẾT CHUNG</span>\n  </div>\n  \n  <p style=\"font-size: 14px; margin-bottom: 12px;\">\n    Câu điều kiện về bản chất chính là một câu có 2 mệnh đề được nối với nhau bởi cặp liên từ <strong>“if....then....”</strong>\n  </p>\n\n  <div class=\"pdf-box\" style=\"font-size: 14px;\">\n    <strong>Dạng 1:</strong> &nbsp;&nbsp;<span class=\"highlight-red-bold\">If</span> + Mệnh đề điều kiện, <span class=\"highlight-red\">(then)</span> Mệnh kết quả<br>\n    <strong>Dạng 2:</strong> &nbsp;&nbsp;Mệnh kết quả + <span class=\"highlight-red-bold\">if</span> + Mệnh đề điều kiện\n  </div>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-bottom: 8px;\">Chú ý:</p>\n  <p style=\"font-size: 14px; margin-left: 20px; margin-bottom: 15px;\">\n    - Người ta có thể thay <span class=\"highlight-red\">if</span> bằng: <span class=\"highlight-red\">unless</span> (=if not = trừ phi), <span class=\"highlight-red\">as long as = provited that</span> (miễn là) ....\n  </p>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-bottom: 8px;\">Trong đó:</p>\n  <ul style=\"font-size: 14px; padding-left: 20px; margin-bottom: 20px; list-style-type: none;\">\n    <li style=\"margin-bottom: 6px;\">+ <strong>Mệnh đề điều kiện</strong>: Nêu ra điều kiện để <strong>Mệnh đề kết quả</strong> thành hiện thực</li>\n    <li>+ <strong>Mệnh đề kết quả</strong>: Nêu ra kết quả nếu điều kiện trở thành hiện thực</li>\n  </ul>\n\n  <p style=\"font-size: 14px; margin-bottom: 15px;\">\n    Khi dùng câu điều kiện thì các bạn phải chia động từ theo đúng cấu trúc của câu điều kiện.\n  </p>\n  <p style=\"font-size: 14px; margin-bottom: 15px;\">\n    Có nhiều loại câu điều kiện, nhưng các bạn chỉ cần nắm được <strong>4 loại</strong>: Câu điều kiện loại 0, loại 1, loại 2, loại 3.\n  </p>\n  <p style=\"font-size: 14px; margin-bottom: 25px;\">\n    Bây giờ chúng ta tìm hiểu từng loại câu điều kiện:\n  </p>\n\n  <!-- 1- Câu điều kiện loại 0 -->\n  <div class=\"pdf-sub-title\">1- Câu điều kiện loại 0:</div>\n  \n  <table class=\"pdf-table\" style=\"width: auto; min-width: 80%;\">\n    <thead>\n      <tr style=\"background-color: #ffffff;\">\n        <th style=\"width: 50%; font-weight: 700;\">MỆNH ĐỀ ĐIỀU KIỆN</th>\n        <th style=\"width: 50%; font-weight: 700;\">MỆNH ĐỀ KẾT QUẢ</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td style=\"line-height: 1.8;\">\n          If + S + <span class=\"highlight-red\">V1 (s, es)</span> + (O),<br>\n          (Hiện tại đơn)\n        </td>\n        <td style=\"line-height: 1.8;\">\n          S + <span class=\"highlight-red\">V1 (s, es)</span> + (O)<br>\n          (Hiện tại đơn)\n        </td>\n      </tr>\n    </tbody>\n  </table>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-bottom: 8px;\">Cách dùng:</p>\n  \n  <p style=\"font-size: 14px; font-weight: bold; margin-left: 20px; margin-bottom: 8px;\">C1- Dùng để giải thích những thứ <span class=\"highlight-red-bold-italic\">“luôn đúng”</span> (chân lý và các sự thật hiển nhiên, các quy luật khoa học, thói quen...)</p>\n  <div style=\"font-size: 14px; margin-left: 40px; line-height: 1.8; margin-bottom: 15px;\">\n    VD1. If the temperature falls below zero, water freezes<br>\n    VD2: If you sleep, you dream.<br>\n    VD3. I usually cycle on weekends <span class=\"highlight-grey-bg\">if the weather is good</span>.\n  </div>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-left: 20px; margin-bottom: 8px;\">C2- Dùng để đưa ra các chỉ dẫn, lời đề nghị:</p>\n  <div style=\"font-size: 14px; margin-left: 40px; line-height: 1.8; margin-bottom: 25px;\">\n    VD1: If Bill phones, tell him to meet me at the cinema.<br>\n    VD2: If you want to come, call me before 5:00.\n  </div>\n\n\n  <!-- 2- Câu điều kiện loại 1 -->\n  <div class=\"pdf-sub-title\">2- Câu điều kiện loại 1:</div>\n  \n  <table class=\"pdf-table\" style=\"width: auto; min-width: 80%;\">\n    <thead>\n      <tr style=\"background-color: #ffffff;\">\n        <th style=\"width: 50%; font-weight: 700;\">MỆNH ĐỀ ĐIỀU KIỆN</th>\n        <th style=\"width: 50%; font-weight: 700;\">MỆNH ĐỀ KẾT QUẢ</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td style=\"line-height: 1.8;\">\n          If + S + <span class=\"highlight-red\">V1 (s, es)</span> + (O),<br>\n          (Hiện tại đơn)\n        </td>\n        <td style=\"line-height: 1.8;\">\n          S + <span class=\"highlight-red\">will/can/may... + Vo</span> + (O)<br>\n          (tương lai đơn)\n        </td>\n      </tr>\n    </tbody>\n  </table>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-bottom: 8px;\">Cách dùng:</p>\n  <p style=\"font-size: 14px; margin-left: 20px; margin-bottom: 12px; line-height: 1.6;\">\n    Dùng để diễn tả kết quả của một sự việc có thể xảy ra ở hiện tại hoặc tương lai (Mệnh đề điều kiện là cái có thể xảy ra ở hiện tại hoặc tương lai)\n  </p>\n  <div style=\"font-size: 14px; margin-left: 40px; line-height: 1.8; margin-bottom: 25px;\">\n    VD1: If you don’t hurry, you <strong>will miss</strong> the bus.<br>\n    VD2: If I have time, I’ll finish that letter.\n  </div>\n\n\n  <!-- 3- Câu điều kiện loại 2 -->\n  <div class=\"pdf-sub-title\">3- Câu điều kiện loại 2:</div>\n  \n  <table class=\"pdf-table\" style=\"width: auto; min-width: 80%;\">\n    <thead>\n      <tr style=\"background-color: #ffffff;\">\n        <th style=\"width: 50%; font-weight: 700;\">MỆNH ĐỀ ĐIỀU KIỆN</th>\n        <th style=\"width: 50%; font-weight: 700;\">MỆNH KẾT QUẢ</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td style=\"line-height: 1.8;\">\n          If + S + <span class=\"highlight-red\">V<sub>2</sub><sup>ed</sup></span> + (O),<br>\n          (Quá khứ đơn)<br>\n          <span style=\"font-size: 12.5px; color: #555;\">(Nếu V là “to be” thì dùng were cho mọi ngôi)</span>\n        </td>\n        <td style=\"line-height: 1.8;\">\n          S + <span class=\"highlight-red\">would/could/might... + Vo</span> + (O)<br>\n          (tương trong quá khứ)\n        </td>\n      </tr>\n    </tbody>\n  </table>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-bottom: 8px;\">Cách dùng:</p>\n  <p style=\"font-size: 14px; margin-left: 20px; margin-bottom: 12px; line-height: 1.6;\">\n    Dùng để diễn tả kết quả của một sự việc <strong>không thể xảy ra</strong> ở hiện tại hoặc tương lai (Mệnh đề điều kiện là cái <strong>không đúng</strong> so với sự thật ở hiện tại)\n  </p>\n  <div style=\"font-size: 14px; margin-left: 40px; line-height: 1.8; margin-bottom: 25px;\">\n    <strong>VD1:</strong><br>\n    If <span class=\"highlight-red-bold\">I</span> <span class=\"highlight-grey-bg\">were you</span>, I would marry her!<br>\n    If <span class=\"highlight-red-bold\">he</span> <span class=\"highlight-grey-bg\">were you</span>, he would marry her!<br><br>\n    <strong>VD2:</strong><br>\n    If <span class=\"highlight-grey-bg\">I were rich</span>, I would buy that car &nbsp;&nbsp;(thực tế là mình không giàu có)\n  </div>\n\n\n  <!-- 4- Câu điều kiện loại 3 -->\n  <div class=\"pdf-sub-title\">4. Câu điều kiện loại 3:</div>\n  \n  <table class=\"pdf-table\" style=\"width: auto; min-width: 80%;\">\n    <thead>\n      <tr style=\"background-color: #ffffff;\">\n        <th style=\"width: 50%; font-weight: 700;\">MỆNH ĐỀ ĐIỀU KIỆN</th>\n        <th style=\"width: 50%; font-weight: 700;\">MỆNH KẾT QUẢ</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td style=\"line-height: 1.8;\">\n          If + S + <span class=\"highlight-red\">had V<sub>3</sub><sup>ed</sup></span> + (O),<br>\n          (Quá khứ hoàn thành)\n        </td>\n        <td style=\"line-height: 1.8;\">\n          S + <span class=\"highlight-red\">would/could/might... + have + V<sub>3</sub><sup>ed</sup></span> + (O)<br>\n          (tương hoàn thành trong quá khứ)\n        </td>\n      </tr>\n    </tbody>\n  </table>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-bottom: 8px;\">Cách dùng:</p>\n  <p style=\"font-size: 14px; margin-left: 20px; margin-bottom: 12px; line-height: 1.6;\">\n    Diễn tả kết quả của một điều kiện không thể xảy ra trong quá khứ (Mệnh đề điều kiện là cái <strong>không đúng</strong> so với sự thật ở quá khứ)\n  </p>\n  <div style=\"font-size: 14px; margin-left: 40px; line-height: 1.8; margin-bottom: 25px;\">\n    <strong>VD1.</strong> <span class=\"highlight-grey-bg\">If I had worked harder</span>, I could have passed the exam<br>\n    (Sự thật trong quá khứ là: <span class=\"highlight-grey-bg\">không học hành chăm chỉ</span> nên đã thi rớt)\n  </div>\n\n\n  <!-- II. TÓM TẮT -->\n  <div class=\"pdf-section-title\" style=\"border-top: 1px solid #7f7f7f; padding-top: 15px; margin-top: 30px;\">\n    <span>II. TÓM TẮT</span>\n  </div>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-bottom: 8px;\">1. Để xác định cần dùng câu điều kiện loại 0,1,2 hay 3 thì ta chỉ cần nhìn vào Mệnh đề điều kiện:</p>\n  \n  <table class=\"pdf-table\">\n    <thead>\n      <tr style=\"background-color: #f2f2f2;\">\n        <th style=\"width: 30%;\">LOẠI CÂU ĐK</th>\n        <th style=\"width: 70%;\">MỆNH ĐỀ KIỀU KIỆN</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>Loại 0</strong></td>\n        <td>Diễn tả cái có thể xảy ra (nhưng cả câu diễn tả cái “luôn đúng”)</td>\n      </tr>\n      <tr>\n        <td><strong>Loại 1</strong></td>\n        <td>Diễn tả cái có thể xảy ra</td>\n      </tr>\n      <tr>\n        <td><strong>Loại 2</strong></td>\n        <td>Diễn tả cái không đúng so với sự thật trong hiện tại</td>\n      </tr>\n      <tr>\n        <td><strong>Loại 3</strong></td>\n        <td>Diễn tả cái không đúng so với sự thật trong quá khứ</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-top: 20px; margin-bottom: 8px;\">2. Để nhớ công thức thì rất đơn giản, chỉ cần lùi thì: V1 ➔ V2 ➔ V3</p>\n  \n  <table class=\"pdf-table\" style=\"font-size: 13px;\">\n    <thead>\n      <tr style=\"background-color: #f2f2f2;\">\n        <th style=\"width: 20%;\">LOẠI CÂU ĐK</th>\n        <th style=\"width: 80%;\">CÔNG THỨC</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>Loại 0</strong></td>\n        <td>If + S + <span class=\"highlight-red-bold\">V<sub>1</sub></span> + (O), &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; S + <span class=\"highlight-red-bold\">V<sub>1</sub></span> + (O)</td>\n      </tr>\n      <tr>\n        <td><strong>Loại 1</strong></td>\n        <td>If + S + <span class=\"highlight-red-bold\">V<sub>1</sub></span> + (O), &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; S + <span class=\"highlight-red-bold\">will/can/may... + Vo</span> + (O)</td>\n      </tr>\n      <tr>\n        <td><strong>Loại 2</strong></td>\n        <td>If + S + <span class=\"highlight-red-bold\">V<sub>2</sub><sup>ed</sup></span> + (O), &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; S + <span class=\"highlight-red-bold\">would/could/might... + Vo</span> + (O)</td>\n      </tr>\n      <tr>\n        <td><strong>Loại 3</strong></td>\n        <td>If + S + <span class=\"highlight-red-bold\">had V<sub>3</sub><sup>ed</sup></span> + (O), &nbsp;&nbsp;&nbsp; S + <span class=\"highlight-red-bold\">would/could/might... + have + V<sub>3</sub><sup>ed</sup></span> + (O)</td>\n      </tr>\n    </tbody>\n  </table>\n\n</div>"
+  },
+  "practice": {
+    "parts": [
+      {
+        "partNumber": 1,
+        "title": "Bài tập 1: Bài tập ví dụ (Trên lớp)",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án chia động từ thích hợp nhất để hoàn thành các câu điều kiện sau:",
+        "questions": [
+          {
+            "id": "b9_p1_q1",
+            "questionText": "1. If we meet at 9:30, we (have) plenty of time. [have-had-had]",
+            "options": {
+              "A": "will have",
+              "B": "had",
+              "C": "would have",
+              "D": "have"
+            },
+            "correctAnswer": "A",
+            "explanation": "Mệnh đề điều kiện 'If' chia ở Hiện tại đơn 'meet' (V1). Đây là câu điều kiện loại 1 diễn tả một giả định có thật ở hiện tại/tương lai. Mệnh đề kết quả cần chia 'will + V0'. Chọn 'will have'.",
+            "sentenceTranslation": "Nếu chúng ta gặp nhau lúc 9h30 thì chúng ta có rất nhiều thời gian. [đã-đã-có] (sẽ có)"
+          },
+          {
+            "id": "b9_p1_q2",
+            "questionText": "2. Lisa would find the milk if she (look) in the fridge. [look-looked-looked]",
+            "options": {
+              "A": "looks",
+              "B": "looked",
+              "C": "would look",
+              "D": "had looked"
+            },
+            "correctAnswer": "B",
+            "explanation": "Mệnh đề kết quả chia ở dạng 'would + V0' (would find). Đây là câu điều kiện loại 2 (trái thực tế hiện tại). Mệnh đề 'If' phải chia ở Quá khứ đơn (V2/ed). Chọn 'looked'.",
+            "sentenceTranslation": "Lisa sẽ tìm thấy sữa nếu cô ấy nhìn vào tủ lạnh. [nhìn-nhìn-nhìn] (nhìn)"
+          },
+          {
+            "id": "b9_p1_q3",
+            "questionText": "3. The zookeeper would have punished her with a fine if she (feed) the animals. [feed-fed-fed]",
+            "options": {
+              "A": "feeds",
+              "B": "fed",
+              "C": "would feed",
+              "D": "had fed"
+            },
+            "correctAnswer": "D",
+            "explanation": "Mệnh đề kết quả chia ở dạng 'would have + V3' (would have punished). Đây là câu điều kiện loại 3 (trái thực tế quá khứ). Mệnh đề 'If' phải chia ở Quá khứ hoàn thành (had + V3). Chọn 'had fed'.",
+            "sentenceTranslation": "Người trông coi vườn thú sẽ phạt cô ấy nếu cô ấy (cho) động vật ăn. [feed-cho-cho ăn] (đã cho ăn)"
+          },
+          {
+            "id": "b9_p1_q4",
+            "questionText": "4. If you spoke louder, your classmates (understand) you. [understand-understood-understood]",
+            "options": {
+              "A": "understand",
+              "B": "will understand",
+              "C": "would understand",
+              "D": "had understood"
+            },
+            "correctAnswer": "C",
+            "explanation": "Mệnh đề điều kiện 'If' chia ở Quá khứ đơn 'spoke' (V2). Đây là câu điều kiện loại 2. Mệnh đề kết quả phải chia ở dạng 'would + V0'. Chọn 'would understand'.",
+            "sentenceTranslation": "Nếu bạn nói to hơn, các bạn cùng lớp sẽ hiểu bạn. [hiểu-hiểu-hiểu] (sẽ hiểu)"
+          },
+          {
+            "id": "b9_p1_q5",
+            "questionText": "5. Dan (arrive) safe if he drove slowly. [arrive-arrived-arrived]",
+            "options": {
+              "A": "arrives",
+              "B": "will arrive",
+              "C": "would arrive",
+              "D": "would have arrived"
+            },
+            "correctAnswer": "C",
+            "explanation": "Mệnh đề điều kiện 'If' chia ở Quá khứ đơn 'drove' (V2). Đây là câu điều kiện loại 2. Mệnh đề kết quả phải chia ở dạng 'would + V0'. Chọn 'would arrive'.",
+            "sentenceTranslation": "Dan (đến nơi) an toàn nếu anh ấy lái xe chậm. [đến-đến-đến] (sẽ đến)"
+          },
+          {
+            "id": "b9_p1_q6",
+            "questionText": "6. You (have) no trouble at school if you had done your homework. [have-had-had]",
+            "options": {
+              "A": "will have",
+              "B": "would have",
+              "C": "would have had",
+              "D": "had had"
+            },
+            "correctAnswer": "C",
+            "explanation": "Mệnh đề điều kiện 'If' chia ở Quá khứ hoàn thành 'had done'. Đây là câu điều kiện loại 3. Mệnh đề kết quả cần chia ở dạng 'would have + V3'. Chọn 'would have had'.",
+            "sentenceTranslation": "Bạn (không) gặp rắc rối ở trường nếu bạn đã làm bài tập về nhà. [đã-đã-có] (sẽ có)"
+          },
+          {
+            "id": "b9_p1_q7",
+            "questionText": "7. If you (swim) in this lake, you'll shiver from cold. [swim-swam-swum]",
+            "options": {
+              "A": "swim",
+              "B": "swam",
+              "C": "would swim",
+              "D": "had swum"
+            },
+            "correctAnswer": "A",
+            "explanation": "Mệnh đề kết quả chia ở tương lai đơn 'you'll shiver' (will shiver). Đây là câu điều kiện loại 1. Mệnh đề 'If' phải chia ở Hiện tại đơn (V1). Chọn 'swim'.",
+            "sentenceTranslation": "Nếu bạn (bơi) trong hồ này, bạn sẽ rùng mình vì lạnh. [bơi-bơi-bơi] (bơi)"
+          },
+          {
+            "id": "b9_p1_q8",
+            "questionText": "8. The door will unlock if you (press) the green button. [press-pressed-pressed]",
+            "options": {
+              "A": "press",
+              "B": "pressed",
+              "C": "will press",
+              "D": "would press"
+            },
+            "correctAnswer": "A",
+            "explanation": "Mệnh đề kết quả chia ở dạng 'will + V0' (will unlock). Đây là câu điều kiện loại 1. Mệnh đề 'If' phải chia ở Hiện tại đơn (V1). Đi kèm chủ ngữ 'you' chọn động từ nguyên thể 'press'.",
+            "sentenceTranslation": "Cửa sẽ mở khóa nếu bạn (nhấn) nút màu xanh lá cây. [nhấn-nhấn-nhấn] (nhấn)"
+          },
+          {
+            "id": "b9_p1_q9",
+            "questionText": "9. If Mel (ask) her teacher, he'd have answered her questions. [ask-asked-asked]",
+            "options": {
+              "A": "asks",
+              "B": "asked",
+              "C": "would ask",
+              "D": "had asked"
+            },
+            "correctAnswer": "D",
+            "explanation": "Mệnh đề kết quả viết tắt 'he'd have answered' tương đương với 'he would have answered' (would have + V3). Đây là câu điều kiện loại 3. Mệnh đề 'If' chia ở Quá khứ hoàn thành (had + V3). Chọn 'had asked'.",
+            "sentenceTranslation": "Nếu Mel (hỏi) giáo viên của cô ấy, anh ấy sẽ trả lời các câu hỏi của cô ấy. [ask-ask-ask] (đã hỏi)"
+          },
+          {
+            "id": "b9_p1_q10",
+            "questionText": "10. I (call) the office if I (be) you. [call-called-called | am/is/are-was/were-been]",
+            "options": {
+              "A": "would call / were",
+              "B": "will call / am",
+              "C": "would have called / had been",
+              "D": "called / was"
+            },
+            "correctAnswer": "A",
+            "explanation": "Cụm giả định kinh điển 'If I were you' (Nếu tôi là bạn) - luôn chia động từ 'be' thành 'were' ở loại 2. Mệnh đề kết quả chia 'would + V0' (would call). Chọn đáp án A.",
+            "sentenceTranslation": "Tôi (gọi) văn phòng nếu tôi (là) bạn. [gọi-gọi-gọi | am/is/are-was/were-been] (sẽ gọi / were)"
+          }
+        ]
+      },
+      {
+        "partNumber": 2,
+        "title": "Bài tập 2: Bài tập về nhà",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án chia động từ thích hợp nhất để hoàn thành các câu hỏi tự luyện câu điều kiện sau:",
+        "questions": [
+          {
+            "id": "b9_p2_q1",
+            "questionText": "11. If they (listen) carefully, they might hear the woodpecker. [listen-listened-listened]",
+            "options": {
+              "A": "listen",
+              "B": "listened",
+              "C": "would listen",
+              "D": "had listened"
+            },
+            "correctAnswer": "B",
+            "explanation": "Mệnh đề kết quả có 'might hear' (might + V0). Đây là câu điều kiện loại 2. Mệnh đề 'If' phải chia ở Quá khứ đơn (V2/ed). Chọn 'listened'.",
+            "sentenceTranslation": "Nếu họ (lắng nghe) cẩn thận, họ có thể nghe thấy tiếng chim gõ kiến. [nghe-nghe-nghe] (nghe)"
+          },
+          {
+            "id": "b9_p2_q2",
+            "questionText": "12. If I had lain down on the sofa, I (fall) asleep. [lie-lay-lain | fall-fell-fallen]",
+            "options": {
+              "A": "would fall",
+              "B": "would have fallen",
+              "C": "fell",
+              "D": "will fall"
+            },
+            "correctAnswer": "B",
+            "explanation": "Mệnh đề 'If' chia ở Quá khứ hoàn thành 'had lain' (had + V3 của động từ lie). Đây là câu điều kiện loại 3. Mệnh đề kết quả cần chia ở dạng 'would have + V3'. Chọn 'would have fallen'.",
+            "sentenceTranslation": "Nếu tôi nằm trên ghế sofa, tôi sẽ ngủ. [nói dối-lay-lain | rơi-rơi-rơi] (có lẽ đã rơi)"
+          },
+          {
+            "id": "b9_p2_q3",
+            "questionText": "13. Ngoc could have worked as a model if she (be) taller. [am/is/are-were/was-been]",
+            "options": {
+              "A": "is",
+              "B": "were",
+              "C": "had been",
+              "D": "would be"
+            },
+            "correctAnswer": "C",
+            "explanation": "Mệnh đề kết quả chia ở thể 'could have worked' (could have + V3). Đây là câu điều kiện loại 3. Mệnh đề 'If' phải chia ở Quá khứ hoàn thành (had + V3 của 'be' là 'been'). Chọn 'had been'.",
+            "sentenceTranslation": "Ngọc có thể đã làm người mẫu nếu cô ấy cao hơn. [am/is/are-were/was-been] (đã từng)"
+          },
+          {
+            "id": "b9_p2_q4",
+            "questionText": "14. The soil (not/dry out) if you water the plants regularly. [dry-dried-dried]",
+            "options": {
+              "A": "doesn't dry out",
+              "B": "won't dry out",
+              "C": "wouldn't dry out",
+              "D": "had not dried out"
+            },
+            "correctAnswer": "B",
+            "explanation": "Mệnh đề 'If' chia ở Hiện tại đơn 'water' (V1). Đây là câu điều kiện loại 1. Mệnh đề kết quả chia ở Tương lai đơn dạng phủ định. Chọn 'won't dry out'.",
+            "sentenceTranslation": "Đất (không bị khô) nếu bạn tưới cây thường xuyên. [khô-khô-khô] (không khô)"
+          },
+          {
+            "id": "b9_p2_q5",
+            "questionText": "15. If you (give) the young boy this stick, he'd hurt himself. [give-gave-given | hurt-hurt-hurt]",
+            "options": {
+              "A": "give",
+              "B": "gave",
+              "C": "would give",
+              "D": "had given"
+            },
+            "correctAnswer": "B",
+            "explanation": "Mệnh đề kết quả viết tắt 'he'd hurt' = 'he would hurt' (would + V0). Đây là câu điều kiện loại 2. Mệnh đề 'If' phải chia ở Quá khứ đơn (V2). Chọn 'gave'.",
+            "sentenceTranslation": "Nếu bạn đưa cho cậu bé cây gậy này, cậu ấy sẽ tự làm mình bị thương. [cho-cho-cho | đau-đau-đau] (đã cho)"
+          },
+          {
+            "id": "b9_p2_q6",
+            "questionText": "16. We (not/take) the wrong tram if Joson had asked the policewoman. [take-took-taken]",
+            "options": {
+              "A": "wouldn't take",
+              "B": "won't take",
+              "C": "wouldn't have taken",
+              "D": "didn't take"
+            },
+            "correctAnswer": "C",
+            "explanation": "Mệnh đề 'If' chia ở Quá khứ hoàn thành 'had asked'. Đây là câu điều kiện loại 3. Mệnh đề kết quả phải chia ở thể phủ định 'wouldn't have + V3'. Chọn 'wouldn't have taken'.",
+            "sentenceTranslation": "Chúng tôi (không/đi) nhầm xe điện nếu Joson đã hỏi nữ cảnh sát. [lấy-lấy-lấy] (lẽ ra sẽ không lấy)"
+          },
+          {
+            "id": "b9_p2_q7",
+            "questionText": "17. If the cat hides in the tree, the dog (not/find) it. [hide-hid-hidden | find-found-found]",
+            "options": {
+              "A": "doesn't find",
+              "B": "won't find",
+              "C": "wouldn't find",
+              "D": "didn't find"
+            },
+            "correctAnswer": "B",
+            "explanation": "Mệnh đề 'If' chia ở Hiện tại đơn 'hides' (V1). Đây là câu điều kiện loại 1. Mệnh đề kết quả chia ở dạng phủ định 'will not + V0'. Chọn 'won't find'.",
+            "sentenceTranslation": "Nếu con mèo trốn trên cây thì con chó (không/tìm thấy) nó. [ẩn-ẩn-ẩn | find-found-found] (sẽ không tìm thấy)"
+          },
+          {
+            "id": "b9_p2_q8",
+            "questionText": "18. The students would have solved the problem if they (use) their textbooks. [use-used-used]",
+            "options": {
+              "A": "use",
+              "B": "used",
+              "C": "would use",
+              "D": "had used"
+            },
+            "correctAnswer": "D",
+            "explanation": "Mệnh đề kết quả chia ở thể 'would have solved' (would have + V3). Đây là câu điều kiện loại 3. Mệnh đề 'If' phải chia ở Quá khứ hoàn thành (had + V3). Chọn 'had used'.",
+            "sentenceTranslation": "Học sinh sẽ giải quyết được vấn đề nếu họ (sử dụng) sách giáo khoa của mình. [sử dụng-đã sử dụng-đã sử dụng] (đã sử dụng)"
+          },
+          {
+            "id": "b9_p2_q9",
+            "questionText": "19. If he washed his feet more often, his girlfriend (visit) him more often. [visit-visited-visited]",
+            "options": {
+              "A": "visits",
+              "B": "will visit",
+              "C": "would visit",
+              "D": "would have visited"
+            },
+            "correctAnswer": "C",
+            "explanation": "Mệnh đề 'If' chia ở Quá khứ đơn 'washed' (V2). Đây là câu điều kiện loại 2. Mệnh đề kết quả cần chia ở dạng 'would + V0'. Chọn 'would visit'.",
+            "sentenceTranslation": "Nếu anh ấy rửa chân thường xuyên hơn thì bạn gái anh ấy sẽ đến thăm anh ấy thường xuyên hơn. [thăm-đã thăm-đã ghé thăm] (sẽ ghé thăm)"
+          },
+          {
+            "id": "b9_p2_q10",
+            "questionText": "20. Manh (read) the newspaper if he went by train. [read-read-read]",
+            "options": {
+              "A": "reads",
+              "B": "will read",
+              "C": "would read",
+              "D": "would have read"
+            },
+            "correctAnswer": "C",
+            "explanation": "Mệnh đề 'If' chia ở Quá khứ đơn 'went' (V2). Đây là câu điều kiện loại 2. Mệnh đề kết quả cần chia ở dạng 'would + V0' (đọc là /red/ nhưng viết giống hệt V1). Chọn 'would read'.",
+            "sentenceTranslation": "Mạnh (đọc) tờ báo nếu anh ấy đi bằng tàu hỏa. [đọc-đọc-đọc] (sẽ đọc)"
+          }
+        ]
+      }
+    ]
+  }
+}

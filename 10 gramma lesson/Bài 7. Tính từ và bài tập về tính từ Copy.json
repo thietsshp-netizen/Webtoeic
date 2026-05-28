@@ -1,0 +1,391 @@
+{
+  "layout": "splitscreen",
+  "theory": {
+    "title": "BÀI 7: TÍNH TỪ",
+    "htmlContent": "<div class=\"grammar-container\" style=\"font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.7; padding: 10px; background-color: white;\">\n  \n  <style>\n    .grammar-title {\n      font-size: 22px;\n      font-weight: 800;\n      color: #000000;\n      text-transform: uppercase;\n      margin-bottom: 25px;\n      border-bottom: 2px solid #000000;\n      padding-bottom: 8px;\n    }\n    .pdf-section-title {\n      font-size: 16px;\n      font-weight: 700;\n      color: #000000;\n      margin-top: 25px;\n      margin-bottom: 15px;\n    }\n    .pdf-box {\n      border: 1px solid #7f7f7f;\n      padding: 15px 20px;\n      margin: 10px 0 20px 30px;\n      border-radius: 0px;\n      background-color: #ffffff;\n      width: fit-content;\n      min-width: 75%;\n      box-shadow: none;\n    }\n    .pdf-box-divider {\n      border: 0;\n      border-top: 1px solid #7f7f7f;\n      margin: 12px 0;\n    }\n    .pdf-bullet {\n      margin-left: 20px;\n      font-weight: 700;\n      margin-top: 15px;\n      margin-bottom: 5px;\n    }\n    .pdf-table {\n      width: 100%;\n      border-collapse: collapse;\n      margin: 15px 0 25px 0;\n    }\n    .pdf-table th, .pdf-table td {\n      border: 1px solid #7f7f7f;\n      padding: 12px;\n      text-align: left;\n      font-size: 13.5px;\n    }\n    .pdf-table th {\n      background-color: #f2f2f2;\n      font-weight: 700;\n    }\n    .highlight-red-italic {\n      color: #ff0000;\n      font-style: italic;\n    }\n    .highlight-red {\n      color: #ff0000;\n    }\n  </style>\n\n  <h1 class=\"grammar-title\">BÀI 7: TÍNH TỪ</h1>\n\n  <div class=\"pdf-section-title\">\n    <span>1. Vai trò của tính từ: Bổ nghĩa cho N, linking verb</span>\n  </div>\n  \n  <div class=\"pdf-section-title\" style=\"margin-top: 10px;\">\n    <span>2. Vị trí của tính từ trong câu:</span>\n  </div>\n\n  <div style=\"margin: 20px 0; text-align: center;\">\n    <img src=\"/grammar/Bài_7._Tính_từ_và_bài_tập_về_tính_từ_Copy_p1_1_Im1.jpg\" alt=\"Sơ đồ tổng quan về Tính từ\" style=\"max-width: 75%; height: auto; border: 1px solid #7f7f7f; padding: 4px;\" />\n  </div>\n\n  <!-- Bullet 1 -->\n  <div class=\"pdf-bullet\">- Đứng trước hoặc sau N</div>\n  <div class=\"pdf-box\">\n    <strong>VD:</strong> Some of the <span class=\"highlight-red-italic\">famous</span> hotels <span class=\"highlight-red-italic\">listed</span> may not have rooms available.\n  </div>\n\n  <!-- Bullet 2 -->\n  <div class=\"pdf-bullet\">- Linking Verb + adj:</div>\n  <div class=\"pdf-box\">\n    <div style=\"text-align: center; line-height: 1.8; font-size: 14.5px;\">\n      Be/am/is/are/was/were &nbsp;&nbsp;&nbsp;&nbsp; + Adj<br>\n      Look, feel, smell, sound, taste, seem &nbsp; + Adj<br>\n      Remain, become, stay, prove, appear &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + Adj\n    </div>\n    <hr class=\"pdf-box-divider\">\n    <div style=\"font-size: 14px; line-height: 1.6;\">\n      <strong>VD:</strong><br>\n      - She looks <span class=\"highlight-red\">beautiful</span><br>\n      - The economic remains <span class=\"highlight-red\">stable</span>\n    </div>\n  </div>\n\n  <!-- Bullet 3 -->\n  <div class=\"pdf-bullet\">- Cấu trúc đặc biệt:</div>\n  <div class=\"pdf-box\">\n    <div style=\"text-align: center; font-size: 14.5px; padding: 5px 0;\">\n      make, find, keep + <span class=\"highlight-red\">O</span> + adj\n    </div>\n    <hr class=\"pdf-box-divider\">\n    <div style=\"font-size: 14px; line-height: 1.6;\">\n      <strong>VD:</strong><br>\n      - The doctors worked really hard to <strong>keep</strong> him <span class=\"highlight-red\">alive</span><br>\n      - The news <strong>made</strong> him very <span class=\"highlight-red\">happy</span>.\n    </div>\n  </div>\n\n  <!-- 3. Các từ chỉ số lượng -->\n  <div class=\"pdf-section-title\" style=\"margin-top: 30px; border-bottom: 1px solid #7f7f7f; padding-bottom: 5px;\">\n    <span>3. Các từ chỉ số lượng</span>\n  </div>\n  \n  <table class=\"pdf-table\" style=\"font-size: 12.5px;\">\n    <thead>\n      <tr style=\"background-color: #002060; color: #ffffff;\">\n        <th style=\"width: 35%; color: #ffffff; background-color: #002060; border: 1px solid #7f7f7f;\">TÍNH TỪ CHỈ SỐ LƯỢNG</th>\n        <th style=\"text-align: center; width: 20%; color: #ffffff; background-color: #002060; border: 1px solid #7f7f7f;\">N ít</th>\n        <th style=\"text-align: center; width: 20%; color: #ffffff; background-color: #002060; border: 1px solid #7f7f7f;\">N nhiều</th>\n        <th style=\"text-align: center; width: 25%; color: #ffffff; background-color: #002060; border: 1px solid #7f7f7f;\">N không đếm được</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>a, an (một)<br>this/that = cái này/cái đó<br>each/every = mỗi/mỗi, mọi<br>another = một cái khác</strong></td>\n        <td style=\"text-align: center; color: #ff0000; font-weight: bold; font-size: 14px; vertical-align: middle; background-color: #8faadc;\">x</td>\n        <td></td>\n        <td></td>\n      </tr>\n      <tr>\n        <td><strong>two, three, four.... (các số đếm lớn hơn 1)<br>several = một vài<br>few/a few = vài, một vài<br>many = nhiều<br>these/those = những cái này/những cái đó</strong></td>\n        <td></td>\n        <td style=\"text-align: center; color: #ff0000; font-weight: bold; font-size: 14px; vertical-align: middle; background-color: #8faadc;\">x</td>\n        <td></td>\n      </tr>\n      <tr>\n        <td><strong>little/a little = một chút, một ít, một lượng nhỏ<br>much = nhiều</strong></td>\n        <td></td>\n        <td></td>\n        <td style=\"text-align: center; color: #ff0000; font-weight: bold; font-size: 14px; vertical-align: middle; background-color: #8faadc;\">x</td>\n      </tr>\n      <tr>\n        <td><strong>some = một vài/một lượng nhỏ (không xác định)<br>most = hầu hết<br>a lot of/lot of/plenty of = nhiều<br>other = khác</strong></td>\n        <td></td>\n        <td style=\"text-align: center; color: #ff0000; font-weight: bold; font-size: 14px; vertical-align: middle; background-color: #8faadc;\">x</td>\n        <td style=\"text-align: center; color: #ff0000; font-weight: bold; font-size: 14px; vertical-align: middle; background-color: #8faadc;\">x</td>\n      </tr>\n      <tr>\n        <td><strong>the<br>all = cả (ngày, năm); tất cả, toàn bộ<br>such = như thế, như vậy, như loại đó<br>any = một tí (nào)/bất cứ<br><span style=\"font-weight: normal; font-size: 11.5px; display: block; margin-top: 5px; color: #555;\">+ any + Nnhiều/Nkdd trong câu phủ định và câu hỏi<br>+ any + Nít để chỉ một trong những (người/vật), không quan trọng cái nào ---> mang nghĩa: “bất cứ”</span></strong></td>\n        <td style=\"text-align: center; color: #ff0000; font-weight: bold; font-size: 14px; vertical-align: middle; background-color: #8faadc;\">x</td>\n        <td style=\"text-align: center; color: #ff0000; font-weight: bold; font-size: 14px; vertical-align: middle; background-color: #8faadc;\">x</td>\n        <td style=\"text-align: center; color: #ff0000; font-weight: bold; font-size: 14px; vertical-align: middle; background-color: #8faadc;\">x</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- 4. Tính từ trong câu so sánh -->\n  <div class=\"pdf-section-title\" style=\"margin-top: 30px; border-bottom: 1px solid #7f7f7f; padding-bottom: 5px;\">\n    <span>4. Tính từ trong câu so sánh</span>\n  </div>\n  \n  <table class=\"pdf-table\">\n    <tbody>\n      <tr>\n        <td style=\"font-weight: 700; width: 15%; vertical-align: middle; background-color: #f9f9f9;\">SS bằng</td>\n        <td style=\"font-weight: 700; color: #ff0000; width: 35%; vertical-align: middle;\">as + (adj/ adv) + as</td>\n        <td style=\"line-height: 1.6;\">\n          - Harry is <span class=\"highlight-red-italic\">as beautiful as</span> her sister<br>\n          - Her car runs <span class=\"highlight-red-italic\">as fast as</span> a race car.\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: 700; vertical-align: middle; background-color: #f9f9f9;\">SS hơn</td>\n        <td style=\"line-height: 1.6; width: 35%;\">\n          - Tính từ/Trạng từ ngắn:<br>\n          <span class=\"highlight-red\"><strong>(Adj/Adv) + “-er” + than</strong></span><br><br>\n          - Tính từ/Trạng từ dài:<br>\n          <span class=\"highlight-red\"><strong>more + Adj/Adv + than</strong></span>\n        </td>\n        <td style=\"line-height: 1.6;\">\n          - Today is <span class=\"highlight-red-italic\">colder than</span> yesterday.<br>\n          - My girlfriend came <span class=\"highlight-red-italic\">later than</span> me.<br><br>\n          - This hat is <span class=\"highlight-red-italic\">more expensive than</span> the others.<br>\n          - My father drives <span class=\"highlight-red-italic\">more carefully than</span> my brother.\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: 700; vertical-align: middle; background-color: #f9f9f9;\">SS nhất</td>\n        <td style=\"line-height: 1.6; width: 35%;\">\n          - Tính từ/Trạng từ ngắn:<br>\n          <span class=\"highlight-red\"><strong>the + Adj/Adv + -est</strong></span><br><br>\n          - Tính từ/Trạng từ dài:<br>\n          <span class=\"highlight-red\"><strong>the + most + Adj/Adv</strong></span>\n        </td>\n        <td style=\"line-height: 1.6;\">\n          - My brother is <span class=\"highlight-red-italic\">the tallest</span> in our family.<br>\n          - He runs <span class=\"highlight-red-italic\">the fastest</span> in my city.<br><br>\n          - Lisa is <span class=\"highlight-red-italic\">the most careful</span> person I ever have known.<br>\n          - Of all the students, she does <span class=\"highlight-red-italic\">the most quickly</span>.\n        </td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- 5. Phân biệt tính từ V-ing - V-ed -->\n  <div class=\"pdf-section-title\" style=\"margin-top: 30px; border-bottom: 1px solid #7f7f7f; padding-bottom: 5px;\">\n    <span>5. Phân biệt tính từ V-ing - V-ed</span>\n  </div>\n  \n  <p style=\"font-size: 13.5px; text-indent: 20px; margin-bottom: 15px;\">\n    Trong tiếng Anh, ngoài những tính từ bình thường như: beautiful, ugly, tall, short.....\n  </p>\n  <p style=\"font-size: 13.5px; margin-bottom: 15px;\">\n    Nó còn có những tính từ mượn khác: mượn từ động từ\n  </p>\n  \n  <p style=\"font-size: 14px; font-weight: 700; margin-bottom: 8px;\">VD:</p>\n  \n  <table class=\"pdf-table\" style=\"width: auto; min-width: 60%; margin-left: 20px; margin-bottom: 20px;\">\n    <thead>\n      <tr style=\"background-color: #f2f2f2;\">\n        <th>Động từ</th>\n        <th>Chuyển thành tính từ</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>Interest (v)</strong> làm thích thú</td>\n        <td>➔ interesting/interested</td>\n      </tr>\n      <tr>\n        <td><strong>Excite (v)</strong> làm hứng thú</td>\n        <td>➔ Exciting/excited</td>\n      </tr>\n      <tr>\n        <td><strong>Disappoint (v)</strong> làm thất vọng</td>\n        <td>➔ disappointing/disappointed</td>\n      </tr>\n      <tr>\n        <td><strong>bore (v)</strong> làm buồn</td>\n        <td>➔ boring/bored</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <p style=\"font-size: 13.5px; margin-top: 15px; margin-bottom: 20px;\">\n    Cũng giống các tính từ bình thường, tính từ dạng Ving và Ved cũng đều được dùng để <strong>bổ nghĩa cho Danh từ.</strong>\n  </p>\n  \n  <p style=\"font-size: 14px; font-weight: bold; margin-left: 10px; margin-bottom: 8px;\">Cách phân biệt tính từ Ving/Ved:</p>\n  \n  <table class=\"pdf-table\" style=\"width: auto; min-width: 70%; margin-left: 20px; margin-bottom: 25px;\">\n    <tbody>\n      <tr>\n        <td style=\"font-weight: bold; width: 15%; vertical-align: middle; background-color: #f9f9f9; text-align: center;\">Cách 1</td>\n        <td style=\"line-height: 1.6;\">\n          - Tính từ V-ing: chỉ bản chất<br>\n          - Tính từ V-ed: chỉ cảm xúc của con người\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: bold; vertical-align: middle; background-color: #f9f9f9; text-align: center;\">Cách 2</td>\n        <td style=\"line-height: 1.6;\">\n          - Tính từ V-ing mang nghĩa chủ động<br>\n          - Tính từ V-ed mang nghĩa bị động\n        </td>\n      </tr>\n    </tbody>\n  </table>\n\n  <div style=\"font-size: 14px; line-height: 1.9; margin-left: 20px;\">\n    <strong>VD1:</strong><br>\n    - This book is <span class=\"highlight-red-italic\">interesting</span>. It makes me <span class=\"highlight-red-italic\">interested</span>.<br>\n    ➔ He has an <span class=\"highlight-red-italic\">interesting</span> book<br><br>\n    \n    <strong>VD2:</strong><br>\n    - His job is <span class=\"highlight-red-italic\">boring</span>. It makes him <span class=\"highlight-red-italic\">bored</span><br>\n    ➔ He has a <span class=\"highlight-red-italic\">boring</span> job.<br><br>\n    \n    <strong>VD3:</strong><br>\n    The film was <span class=\"highlight-red-italic\">disappointing</span>. I feel <span class=\"highlight-red-italic\">disappointed</span> ➔ I watched a <span class=\"highlight-red-italic\">disappointing</span> film.<br><br>\n    \n    <strong>VD4 :</strong> - This book is <span class=\"highlight-red-italic\">boring</span>. I am <span class=\"highlight-red-italic\">bored</span>. ➔ This <span class=\"highlight-red-italic\">boring</span> book makes me <span class=\"highlight-red-italic\">bored</span><br><br>\n    \n    <strong>VD5:</strong> Lots of students are <span class=\"highlight-red-italic\">confused</span> by English grammar. It really is so <span class=\"highlight-red-italic\">confusing</span>\n  </div>\n\n</div>"
+  },
+  "practice": {
+    "parts": [
+      {
+        "partNumber": 1,
+        "title": "Bài tập 1: Bài tập về tính từ (ETS 2022)",
+        "type": "multiple_choice",
+        "instruction": "Chọn đáp án thích hợp nhất để hoàn thành các câu trắc nghiệm ngữ pháp tính từ sau:",
+        "questions": [
+          {
+            "id": "b7_p1_q1",
+            "questionText": "1. Mougey Fine Gifts is known for its large range of ------- goods.",
+            "options": {
+              "A": "regional",
+              "B": "regionally",
+              "C": "region",
+              "D": "regions"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đứng trước danh từ 'goods' (hàng hóa), ta cần một tính từ để bổ nghĩa. Chọn tính từ 'regional' (hàng hóa khu vực/địa phương).",
+            "sentenceTranslation": "Mougey Fine Gifts được biết đến với nhiều loại hàng hóa trong khu vực."
+          },
+          {
+            "id": "b7_p1_q2",
+            "questionText": "2. Improving efficiency at Perwon Manufacturing will require a----------- revision of existing processes.",
+            "options": {
+              "A": "create",
+              "B": "creativity",
+              "C": "creation",
+              "D": "creative"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng trước danh từ 'revision' (sự điều chỉnh/sửa đổi) và sau mạo từ 'a', ta cần một tính từ bổ nghĩa cho cụm danh từ. Chọn 'creative' (sự sửa đổi mang tính sáng tạo).",
+            "sentenceTranslation": "Việc nâng cao hiệu quả tại Perwon Manufacturing sẽ yêu cầu sửa đổi sáng tạo các quy trình hiện có."
+          },
+          {
+            "id": "b7_p1_q3",
+            "questionText": "3. The department's most----------- production unit will receive a bonus at the end of the quarter.",
+            "options": {
+              "A": "effective",
+              "B": "effect",
+              "C": "effectively",
+              "D": "effecting"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đứng sau trạng từ chỉ mức độ cực cấp 'most' và trước cụm danh từ 'production unit', ta cần một tính từ để tạo thành so sánh nhất. Chọn 'effective' (bộ phận sản xuất hiệu quả nhất).",
+            "sentenceTranslation": "Đơn vị sản xuất hiệu quả nhất của phòng sẽ được thưởng vào cuối quý."
+          },
+          {
+            "id": "b7_p1_q4",
+            "questionText": "4. Some commuters were late because of the weather, but the road closures affected an even----------- number.",
+            "options": {
+              "A": "great",
+              "B": "greater",
+              "C": "greatest",
+              "D": "greatly"
+            },
+            "correctAnswer": "B",
+            "explanation": "Có trạng từ 'even' dùng để nhấn mạnh cho cấp so sánh hơn. Mệnh đề so sánh ngầm ý số lượng người bị ảnh hưởng bởi đóng đường còn lớn hơn số lượng người muộn do thời tiết. Chọn tính từ so sánh hơn 'greater' (thậm chí là một lượng lớn hơn).",
+            "sentenceTranslation": "Một số người đi làm bị trễ vì thời tiết, nhưng việc đóng đường đã ảnh hưởng đến con số lớn hơn."
+          },
+          {
+            "id": "b7_p1_q5",
+            "questionText": "5. The test group found the illustrations in the appliance users' guide to be highly-----------.",
+            "options": {
+              "A": "inform",
+              "B": "information",
+              "C": "informatively",
+              "D": "informative"
+            },
+            "correctAnswer": "D",
+            "explanation": "Cấu trúc: find + something + to be + Adj (thấy cái gì đó như thế nào). Sau trạng từ mức độ 'highly' ta chọn tính từ 'informative' (cực kỳ nhiều thông tin hữu ích).",
+            "sentenceTranslation": "Nhóm thử nghiệm nhận thấy các hình minh họa trong hướng dẫn sử dụng thiết bị có nhiều thông tin hữu ích."
+          },
+          {
+            "id": "b7_p1_q6",
+            "questionText": "6. Compliance Department officers regularly monitor changes in the----------- framework.",
+            "options": {
+              "A": "regulate",
+              "B": "regulates",
+              "C": "regulator",
+              "D": "regulatory"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng trước danh từ 'framework' (khung/hệ thống) để làm rõ tính chất của khung này, ta cần một tính từ. Chọn 'regulatory' (khung pháp lý/quy định).",
+            "sentenceTranslation": "Các cán bộ của Phòng Tuân thủ thường xuyên theo dõi những thay đổi trong khuôn khổ quy định."
+          },
+          {
+            "id": "b7_p1_q7",
+            "questionText": "7. Hillsdale Fabrics'----------- collection of leathers was imported from Italy.",
+            "options": {
+              "A": "diversity",
+              "B": "diversely",
+              "C": "diversify",
+              "D": "diverse"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng trước danh từ 'collection' (bộ sưu tập), ta cần một tính từ bổ nghĩa cho cụm danh từ. Chọn 'diverse' (bộ sưu tập đa dạng).",
+            "sentenceTranslation": "Bộ sưu tập da đa dạng của Hillsdale Fabrics được nhập khẩu từ Ý."
+          },
+          {
+            "id": "b7_p1_q8",
+            "questionText": "8. At the Morrighan Hotel, addressing customer feedback is of----------- importance.",
+            "options": {
+              "A": "critique",
+              "B": "critic",
+              "C": "critically",
+              "D": "critical"
+            },
+            "correctAnswer": "D",
+            "explanation": "Cấu trúc: 'be of + tính từ + importance' tương đương với 'be + extremely + tính từ'. Chỗ trống đứng trước danh từ 'importance' nên cần tính từ. Chọn 'critical' (tầm quan trọng cực kỳ then chốt/sống còn).",
+            "sentenceTranslation": "Tại Khách sạn Morrighan, việc giải quyết phản hồi của khách hàng có tầm quan trọng đặc biệt."
+          },
+          {
+            "id": "b7_p1_q9",
+            "questionText": "9. Liu's Foods is pleased to reveal the----------- product in its famous soup line: pumpkin soup.",
+            "options": {
+              "A": "popularity of",
+              "B": "as popular as",
+              "C": "most popular",
+              "D": "popular than"
+            },
+            "correctAnswer": "C",
+            "explanation": "Cấu trúc đứng sau mạo từ xác định 'the' và trước danh từ 'product', ta cần dạng so sánh nhất của tính từ dài để bổ nghĩa. Chọn 'most popular' (sản phẩm phổ biến/được yêu thích nhất).",
+            "sentenceTranslation": "Liu's Foods vui mừng giới thiệu sản phẩm phổ biến nhất trong dòng súp nổi tiếng của mình: súp bí ngô."
+          },
+          {
+            "id": "b7_p1_q10",
+            "questionText": "10. Online visitors report that our company's Web site is somewhat-----------.",
+            "options": {
+              "A": "confuse",
+              "B": "confuses",
+              "C": "confusing",
+              "D": "confusion"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng sau động từ liên kết 'is' và trạng từ chỉ mức độ 'somewhat', ta cần điền một tính từ bổ nghĩa cho chủ ngữ chỉ vật là 'our company's Web site'. Vì chỉ bản chất gây khó hiểu của trang web nên ta dùng tính từ đuôi V-ing: 'confusing'.",
+            "sentenceTranslation": "Khách truy cập trực tuyến báo cáo rằng trang web của công ty chúng tôi hơi khó hiểu."
+          },
+          {
+            "id": "b7_p1_q11",
+            "questionText": "11. It is----------- to bring sturdy boots to wear on the hike.",
+            "options": {
+              "A": "advise",
+              "B": "advisor",
+              "C": "advisable",
+              "D": "advises"
+            },
+            "correctAnswer": "C",
+            "explanation": "Cấu trúc giả định chủ ngữ giả: 'It is + Adj + to V' (Thực là thế nào khi làm gì đó). Ta chọn tính từ 'advisable' (khôn ngoan/nên làm).",
+            "sentenceTranslation": "Nên mang theo những đôi ủng chắc chắn để đi khi đi bộ đường dài."
+          },
+          {
+            "id": "b7_p1_q12",
+            "questionText": "12. Although many factors contribute to a successful business, Mr. Lee thinks that keeping customers satisfied is the-----------.",
+            "options": {
+              "A": "essential",
+              "B": "most essential",
+              "C": "essentially",
+              "D": "more essentially"
+            },
+            "correctAnswer": "B",
+            "explanation": "Cấu trúc có 'the' đứng cuối câu ám chỉ so sánh nhất của tính từ ('keeping customers satisfied is the most essential thing'). Chọn tính từ ở dạng so sánh nhất 'most essential'.",
+            "sentenceTranslation": "Dù có nhiều yếu tố góp phần tạo nên sự thành công trong kinh doanh nhưng ông Lee cho rằng việc làm hài lòng khách hàng là điều cần thiết nhất."
+          },
+          {
+            "id": "b7_p1_q13",
+            "questionText": "13. Ms. Ito has----------- suggestions to resolve the computer problems.",
+            "options": {
+              "A": "help",
+              "B": "helper",
+              "C": "helped",
+              "D": "helpful"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng trước danh từ 'suggestions' (những lời gợi ý), ta cần một tính từ bổ nghĩa cho danh từ đó. Chọn 'helpful' (những gợi ý hữu ích).",
+            "sentenceTranslation": "Cô Ito có những gợi ý hữu ích để giải quyết các vấn đề về máy tính."
+          },
+          {
+            "id": "b7_p1_q14",
+            "questionText": "14. The Aznet Foundation is offering three $5,000 grants to entrepreneurs with the most----------- business ideas.",
+            "options": {
+              "A": "imagine",
+              "B": "imagining",
+              "C": "imaginative",
+              "D": "imagination"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng sau trạng từ so sánh nhất 'the most' và trước cụm danh từ 'business ideas', ta cần một tính từ bổ nghĩa. Chọn 'imaginative' (những ý tưởng kinh doanh giàu trí tưởng tượng/độc đáo nhất).",
+            "sentenceTranslation": "Quỹ Aznet đang cung cấp ba khoản tài trợ trị giá 5.000 USD cho các doanh nhân có ý tưởng kinh doanh giàu trí tưởng tượng nhất."
+          },
+          {
+            "id": "b7_p1_q15",
+            "questionText": "15. Mr. Lau looks forward to meeting the----------- students at the Career Day event.",
+            "options": {
+              "A": "ambitious",
+              "B": "ambition",
+              "C": "ambitiously",
+              "D": "ambitions"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đứng trước danh từ 'students' và sau mạo từ 'the', ta cần một tính từ bổ nghĩa cho cụm danh từ chỉ người. Chọn 'ambitious' (những học sinh đầy hoài bão/tham vọng).",
+            "sentenceTranslation": "Thầy Lau mong được gặp gỡ các sinh viên đầy tham vọng tại sự kiện Ngày hội nghề nghiệp."
+          }
+        ]
+      },
+      {
+        "partNumber": 2,
+        "title": "Bài tập 2: Bài tập phân biệt tính từ V-ing - V-ed",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án thích hợp nhất để phân biệt cách dùng tính từ đuôi -ing và -ed trong các câu dưới đây:",
+        "questions": [
+          {
+            "id": "b7_p2_q1",
+            "questionText": "1. Lisarus, a firm------in toy manufacturing, has released its new line of products.",
+            "options": {
+              "A": "Specialized",
+              "B": "Specialize",
+              "C": "Specializing",
+              "D": "Specializes"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đây là mệnh đề quan hệ rút gọn ở thể chủ động bổ nghĩa cho danh từ 'a firm' (a firm which specializes in... -> a firm specializing in...). Chọn 'Specializing' (một công ty chuyên về sản xuất đồ chơi).",
+            "sentenceTranslation": "Lisarus, một công ty chuyên sản xuất đồ chơi, đã cho ra mắt dòng sản phẩm mới."
+          },
+          {
+            "id": "b7_p2_q2",
+            "questionText": "2. To maintain authenticity, the homeowner hired a contractor----in historic home to renovate the property.",
+            "options": {
+              "A": "Specialized",
+              "B": "Specialize",
+              "C": "Specializing",
+              "D": "Speciality"
+            },
+            "correctAnswer": "C",
+            "explanation": "Tương tự câu 1, đây là mệnh đề quan hệ rút gọn dạng chủ động bổ nghĩa cho danh từ chỉ người 'a contractor' (một nhà thầu chuyên về bảo tồn nhà cổ). Chọn 'Specializing'.",
+            "sentenceTranslation": "Để duy trì tính chân thực, chủ nhà đã thuê một nhà thầu Chuyên về ngôi nhà lịch sử để cải tạo lại tài sản."
+          },
+          {
+            "id": "b7_p2_q3",
+            "questionText": "3. The Connection Centers are ______ areas within Best Buy stores that sell various broadband and wireless services to customers.",
+            "options": {
+              "A": "Specialized",
+              "B": "Specialize",
+              "C": "Specializing",
+              "D": "Specialization"
+            },
+            "correctAnswer": "A",
+            "explanation": "Chỗ trống đứng trước danh từ 'areas' (khu vực) đóng vai trò làm tính từ bổ nghĩa. Các khu vực này được thiết kế một cách chuyên biệt cho mục đích cụ thể (mang tính chất bị động tác động từ bên ngoài). Chọn tính từ bị động 'Specialized' (các khu vực chuyên dụng).",
+            "sentenceTranslation": "Trung tâm kết nối là khu vực chuyên biệt trong các cửa hàng Best Buy bán các dịch vụ băng thông rộng và không dây khác nhau cho khách hàng."
+          },
+          {
+            "id": "b7_p2_q4",
+            "questionText": "4. After the ------upgrades have been implemented, the production process should run more efficiently.",
+            "options": {
+              "A": "suggest",
+              "B": "suggested",
+              "C": "suggesting",
+              "D": "suggests"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng trước danh từ 'upgrades' (các nâng cấp), ta cần điền tính từ bổ nghĩa. Những nâng cấp này được đề xuất (bị động tác động). Chọn 'suggested' (những nâng cấp được đề xuất).",
+            "sentenceTranslation": "Sau khi thực hiện các nâng cấp được đề xuất, quy trình sản xuất sẽ hoạt động hiệu quả hơn."
+          },
+          {
+            "id": "b7_p2_q5",
+            "questionText": "5. Customers of Dillon's Furniture can view an ------- delivery date on the checkout page when placing an order online.",
+            "options": {
+              "A": "estimated",
+              "B": "estimating",
+              "C": "estimation",
+              "D": "estimate"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đứng trước danh từ 'delivery date' (ngày giao hàng), ta cần tính từ bổ nghĩa. Ngày giao hàng này được ước tính (mang tính chất bị động). Chọn tính từ 'estimated' (ngày giao hàng dự kiến).",
+            "sentenceTranslation": "Khách hàng của Dillon's Furniture có thể xem ngày giao hàng ước tính trên trang thanh toán khi đặt hàng trực tuyến."
+          },
+          {
+            "id": "b7_p2_q6",
+            "questionText": "6. Loan applications must be filled out -------- before being submitted to our loan office.",
+            "options": {
+              "A": "complete",
+              "B": "completes",
+              "C": "completely",
+              "D": "completed"
+            },
+            "correctAnswer": "C",
+            "explanation": "Động từ chính 'must be filled out' đã đầy đủ. Để bổ nghĩa cho hành động 'điền vào', ta cần một trạng từ chỉ mức độ. Chọn 'completely' (được điền hoàn toàn/đầy đủ).",
+            "sentenceTranslation": "Đơn xin vay phải được điền đầy đủ trước khi nộp cho văn phòng cho vay của chúng tôi."
+          },
+          {
+            "id": "b7_p2_q7",
+            "questionText": "7. Travelers are advised to make reservations for their trip before the -------- rate increase.",
+            "options": {
+              "A": "predict",
+              "B": "predicting",
+              "C": "predicted",
+              "D": "prediction"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng trước cụm danh từ 'rate increase' (sự tăng giá), ta cần một tính từ bổ nghĩa. Việc tăng giá này đã được dự đoán từ trước (bị động). Chọn tính từ V-ed: 'predicted' (được dự đoán trước).",
+            "sentenceTranslation": "Du khách nên đặt chỗ cho chuyến đi của mình trước khi mức giá dự kiến ​​tăng."
+          },
+          {
+            "id": "b7_p2_q8",
+            "questionText": "8. We are working with city officials to identify potential sites for the ------- public library.",
+            "options": {
+              "A": "proposing",
+              "B": "proposed",
+              "C": "propose",
+              "D": "proposal"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng trước cụm danh từ 'public library' (thư viện công cộng), ta cần một tính từ bổ nghĩa. Thư viện này được đề xuất (bị động). Chọn tính từ V-ed: 'proposed' (được đề xuất).",
+            "sentenceTranslation": "Chúng tôi đang làm việc với các quan chức thành phố để xác định các địa điểm tiềm năng cho thư viện công cộng được đề xuất."
+          },
+          {
+            "id": "b7_p2_q9",
+            "questionText": "9. Financial experts agree that the nation's trade deficit is deeply ------- and will have a negative impact on the entire economy.",
+            "options": {
+              "A": "troubled",
+              "B": "trouble",
+              "C": "troubling",
+              "D": "troubles"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng sau động từ liên kết 'is' và trạng từ 'deeply', ta cần điền tính từ bổ nghĩa cho chủ ngữ chỉ vật/sự việc 'trade deficit' (thâm hụt thương mại). Vì chỉ bản chất gây lo ngại/gây rắc rối nên dùng tính từ đuôi V-ing: 'troubling' (đáng lo ngại sâu sắc).",
+            "sentenceTranslation": "Các chuyên gia tài chính đồng ý rằng thâm hụt thương mại của quốc gia đang gây lo ngại sâu sắc và sẽ có tác động tiêu cực đến toàn bộ nền kinh tế."
+          },
+          {
+            "id": "b7_p2_q10",
+            "questionText": "10. The expense for fixing the vehicle was higher than the ------- cost given by the auto mechanic.",
+            "options": {
+              "A": "estimating",
+              "B": "estimated",
+              "C": "estimation",
+              "D": "estimates"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng trước danh từ 'cost' (chi phí), ta cần tính từ bổ nghĩa. Chi phí này được ước tính bởi thợ sửa xe. Chọn tính từ V-ed bị động: 'estimated' (chi phí ước tính).",
+            "sentenceTranslation": "Chi phí sửa chữa xe cao hơn dự toán mà người thợ sửa xe đưa ra."
+          },
+          {
+            "id": "b7_p2_q11",
+            "questionText": "11. The recently-----------mayor said she plans to address the town's traffic problems soon.",
+            "options": {
+              "A": "electing",
+              "B": "election",
+              "C": "elected",
+              "D": "elects"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng trước danh từ 'mayor' (thị trưởng) và sau trạng từ 'recently', ta cần tính từ bổ nghĩa. Vị thị trưởng này được bầu cử (bị động). Chọn tính từ V-ed: 'elected' (được bầu cử).",
+            "sentenceTranslation": "Thị trưởng mới đắc cử cho biết bà có kế hoạch sớm giải quyết vấn đề giao thông của thị trấn."
+          },
+          {
+            "id": "b7_p2_q12",
+            "questionText": "12. For a-----------time, Marco Bank is offering first-time customers a $100 bonus when they open an account.",
+            "options": {
+              "A": "limits",
+              "B": "limiting",
+              "C": "limit",
+              "D": "limited"
+            },
+            "correctAnswer": "D",
+            "explanation": "Cụm từ cố định vô cùng phổ biến trong tiếng Anh: 'For a limited time' (Trong một khoảng thời gian giới hạn/có hạn). Chọn 'limited'.",
+            "sentenceTranslation": "Trong thời gian có hạn, Ngân hàng Marco sẽ tặng khách hàng lần đầu khoản tiền thưởng 100 USD khi họ mở tài khoản."
+          },
+          {
+            "id": "b7_p2_q13",
+            "questionText": "13. Our office offers-----------hours to provide our customers with additional flexibility.",
+            "options": {
+              "A": "extending",
+              "B": "extends",
+              "C": "extend",
+              "D": "extended"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng trước danh từ 'hours' (giờ làm việc), ta cần một tính từ bổ nghĩa. Giờ làm việc được kéo dài/mở rộng thêm (bị động). Chọn 'extended' (giờ làm việc mở rộng).",
+            "sentenceTranslation": "Văn phòng của chúng tôi cung cấp thời gian làm việc kéo dài để mang đến cho khách hàng sự linh hoạt hơn."
+          }
+        ]
+      }
+    ]
+  }
+}

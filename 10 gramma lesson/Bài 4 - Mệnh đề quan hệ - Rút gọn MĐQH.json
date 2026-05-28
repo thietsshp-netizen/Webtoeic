@@ -1,0 +1,451 @@
+{
+  "layout": "splitscreen",
+  "theory": {
+    "title": "BÀI 4: MỆNH ĐỀ QUAN HỆ & RÚT GỌN MĐQH",
+    "htmlContent": "<div class=\"grammar-container\" style=\"font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.7; padding: 10px;\">\n  \n  <style>\n    .grammar-title {\n      font-size: 24px;\n      font-weight: 800;\n      color: #7c2d12;\n      text-transform: uppercase;\n      margin-bottom: 20px;\n      border-bottom: 3px solid #f97316;\n      padding-bottom: 10px;\n      letter-spacing: -0.02em;\n    }\n    .grammar-section-title {\n      font-size: 18px;\n      font-weight: 700;\n      color: #ea580c;\n      margin-top: 30px;\n      margin-bottom: 15px;\n      display: flex;\n      align-items: center;\n      gap: 8px;\n    }\n    .grammar-table {\n      width: auto;\n      min-width: auto;\n      border-collapse: collapse;\n      margin-bottom: 20px;\n      margin-left: auto;\n      margin-right: auto;\n      border: 1px solid #7f7f7f;\n      background-color: #ffffff;\n    }\n    .grammar-table th {\n      background-color: #f2f2f2;\n      color: #000000;\n      font-weight: 700;\n      padding: 10px 14px;\n      text-align: left;\n      font-size: 13.5px;\n      border: 1px solid #7f7f7f;\n    }\n    .grammar-table td {\n      padding: 10px 14px;\n      border: 1px solid #7f7f7f;\n      font-size: 13.5px;\n      color: #000000;\n      background-color: #ffffff;\n    }\n    \n    \n    .highlight-red-italic {\n      color: #ff0000;\n      font-style: italic;\n      font-weight: bold;\n    }\n    .highlight-red {\n      color: #ef4444;\n      font-weight: 700;\n    }\n    .highlight-orange {\n      color: #f97316;\n      font-weight: 700;\n    }\n    .highlight-blue {\n      color: #2563eb;\n      font-weight: 700;\n    }\n    .step-card {\n      background-color: #fff7ed;\n      border-left: 5px solid #ea580c;\n      border-radius: 8px;\n      padding: 16px;\n      margin-bottom: 20px;\n    }\n    .step-badge {\n      display: inline-block;\n      padding: 2px 8px;\n      border-radius: 6px;\n      font-size: 11px;\n      font-weight: bold;\n      background-color: #ea580c;\n      color: white;\n      margin-right: 8px;\n      text-transform: uppercase;\n    }\n    .reduction-comparison {\n      display: flex;\n      flex-direction: column;\n      gap: 10px;\n      background-color: #f8fafc;\n      border: 1px solid #e2e8f0;\n      border-radius: 10px;\n      padding: 15px;\n      font-size: 13px;\n      margin-bottom: 20px;\n    }\n    .compare-line {\n      display: flex;\n      align-items: center;\n      gap: 10px;\n    }\n    .reduction-arrow {\n      color: #f97316;\n      font-weight: bold;\n      font-size: 18px;\n    }\n  </style>\n\n  <h1 class=\"grammar-title\">BÀI 4: MỆNH ĐỀ QUAN HỆ & RÚT GỌN MĐQH</h1>\n\n  <div class=\"grammar-section-title\">\n    <span>I. MỆNH ĐỀ QUAN HỆ</span>\n  </div>\n  \n  <ul style=\"font-size: 14.5px; padding-left: 20px; line-height: 1.8; margin-bottom: 20px;\">\n    <li><strong>Mệnh đề là gì?</strong> Mệnh đề là cụm có <strong>S</strong> và <strong>V chia thì</strong> tương ứng.</li>\n    <li><strong>MĐQH là gì?</strong> Là mệnh đề đóng vai trò như <strong>Tính từ</strong>.</li>\n    <li><strong>Vai trò:</strong> Dùng để bổ nghĩa cho danh từ trong câu (Xem lại cấu trúc câu đơn - Bài 2).</li>\n    <li><strong>Đặc điểm:</strong> Nó được bắt đầu bằng một <strong>Đại từ quan hệ</strong> (who, whom, whose, that, which) hoặc một <strong>Trạng từ quan hệ</strong> (when, where, why) - những từ này liên kết mệnh đề quan hệ với danh từ mà nó bổ nghĩa.</li>\n  </ul>\n\n  <!-- Ví dụ -->\n  <div style=\"background-color: #fffbf7; border: 1px solid #ffedd5; border-radius: 12px; padding: 18px; margin-bottom: 25px;\">\n    <div style=\"font-weight: bold; color: #7c2d12; margin-bottom: 10px;\">Ví dụ minh họa:</div>\n    <ul style=\"font-size: 13.5px; padding-left: 20px; line-height: 1.8; margin: 0;\">\n      <li>VD1: The man <span class=\"highlight-red-italic\">who is standing over there</span> is my father.</li>\n      <li>VD2: Mr. Joy, <span class=\"highlight-red-italic\">who is standing over there</span>, is my father.</li>\n      <li>VD3: The place <span class=\"highlight-red-italic\">where the animals gather to drink</span> is near.</li>\n      <li>VD4: It's the best movie <span class=\"highlight-red-italic\">that I have ever seen</span>.</li>\n      <li>VD5: They're talking about an era <span class=\"highlight-red-italic\">when a promise was a promise</span>.</li>\n      <li>VD6: It is the reason <span class=\"highlight-red-italic\">why I left</span>.</li>\n    </ul>\n  </div>\n\n  <h3 style=\"font-size: 15px; font-weight: bold; color: #7c2d12; margin-bottom: 10px;\">Nghĩa của một số đại từ quan hệ hay gặp:</h3>\n<div class=\"section-lv1\">\n\n  <table class=\"grammar-table\">\n    <thead>\n      <tr style=\"background-color: #fff7ed;\">\n        <th style=\"width: 25%; font-weight: bold; color: #7c2d12;\">ĐẠI TỪ QUAN HỆ</th>\n        <th style=\"width: 25%; font-weight: bold; color: #7c2d12;\">NGHĨA</th>\n        <th style=\"font-weight: bold; color: #7c2d12;\">CÁCH DÙNG</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>who / whom</strong></td>\n        <td>Người mà</td>\n        <td>Đại diện cho người</td>\n      </tr>\n      <tr>\n        <td><strong>which</strong></td>\n        <td>Cái mà</td>\n        <td>Đại diện cho vật</td>\n      </tr>\n      <tr>\n        <td><strong>whose</strong></td>\n        <td>= who's</td>\n        <td>Là tính từ sở hữu của \"who\" ➔ đóng vai trò như một tính từ sở hữu bình thường.</td>\n      </tr>\n      <tr>\n        <td><strong>that</strong></td>\n        <td>Người (cái) mà</td>\n        <td>Đại diện người hoặc vật</td>\n      </tr>\n    </tbody>\n  </table>\n\n  </div><!-- /section-lv1 -->\n<div class=\"grammar-section-title\">\n    <span>II. RÚT GỌN MỆNH ĐỀ QUAN HỆ</span>\n  </div>\n\n  <!-- Cách diễn đạt -->\n  <div style=\"background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 25px;\">\n    <p style=\"font-size: 14px; font-weight: bold; margin-top: 0; color: #1e293b;\">Xét 2 cách diễn đạt sau, là người Việt, bạn thường nói theo cách nào?</p>\n    <div style=\"font-size: 13.5px; line-height: 1.8; color: #475569; padding-left: 10px;\">\n      • <strong>Cách 1:</strong> Người đàn ông <span class=\"highlight-red-italic\">người mà đang đứng ở đằng kia</span> là cha tôi.<br>\n      • <strong>Cách 2:</strong> Người đàn ông <span class=\"highlight-red-italic\">đang đứng ở đằng kia</span> là cha tôi.\n    </div>\n    \n    <p style=\"font-size: 14px; font-weight: bold; margin-top: 15px; color: #1e293b;\">Tương tự trong tiếng Anh:</p>\n    <div style=\"font-size: 13.5px; line-height: 1.8; color: #475569; padding-left: 10px;\">\n      • <strong>Cách 1:</strong> The man <span class=\"highlight-red-italic\">who is standing</span> over there is my father.<br>\n      • <strong>Cách 2:</strong> The man <span class=\"highlight-red-italic\">standing</span> over there is my father.\n    </div>\n    <p style=\"margin-bottom: 0; font-size: 13.5px; font-weight: bold; color: #ea580c; margin-top: 15px;\">\n      ==> Kết luận: Bình thường trong câu, người bản ngữ rất hay dùng mđqh. Tuy nhiên họ thường dùng ở dạng rút gọn chứ rất ít khi viết ở dạng đầy đủ (tương tự như tiếng Việt).\n    </p>\n  </div>\n\n  <h3 style=\"font-size: 15px; font-weight: bold; color: #7c2d12; margin-bottom: 12px;\">Các bước rút gọn MĐQH:</h3>\n<div class=\"section-lv1\">\n\n  \n  <table style=\"margin: 20px auto; width: auto; min-width: 60%; border-collapse: collapse; border: 1px solid #7f7f7f; background-color: #ffffff;\">\n    <tbody>\n      <tr>\n        <td colspan=\"2\" style=\"border: 1px solid #7f7f7f; padding: 10px 15px; color: #ff0000; font-weight: bold; font-size: 14px;\">B1: Bỏ đại từ quan hệ</td>\n      </tr>\n      <tr>\n        <td colspan=\"2\" style=\"border: 1px solid #7f7f7f; padding: 10px 15px; color: #ff0000; font-weight: bold; font-size: 14px;\">B2: Bỏ động từ <strong>to be</strong> (nếu có)</td>\n      </tr>\n      <tr>\n        <td style=\"border: 1px solid #7f7f7f; padding: 10px 15px; color: #ff0000; font-weight: bold; font-size: 14px; vertical-align: middle; width: 40%;\">B3: Đổi động từ chính về</td>\n        <td style=\"padding: 0; border: 1px solid #7f7f7f; width: 60%;\">\n          <table style=\"width: 100%; border-collapse: collapse; border: none; margin: 0;\">\n            <tbody>\n              <tr>\n                <td style=\"border-bottom: 1px solid #7f7f7f; padding: 10px 15px; border-left: none; border-right: none; border-top: none; font-size: 13.5px; color: #000000;\"><strong>Ving</strong> (nếu mệnh đề là câu chủ động)</td>\n              </tr>\n              <tr>\n                <td style=\"padding: 10px 15px; border: none; font-size: 13.5px; color: #000000;\"><strong>V<sub>ed</sub><sup>3</sup></strong> (nếu mệnh đề là câu bị động)</td>\n              </tr>\n            </tbody>\n          </table>\n        </td>\n      </tr>\n    </tbody>\n  </table>\n\n  </div><!-- /section-lv1 -->\n<h3 style=\"font-size: 15px; font-weight: bold; color: #7c2d12; margin-top: 25px; margin-bottom: 12px;\">💡 Ba trường hợp rút gọn kinh điển gặp liên tục trong TOEIC:</h3>\n<div class=\"section-lv1\">\n  <div style=\"display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px;\">\n    \n    <!-- TH1 -->\n    <div style=\"border: 1px solid #fed7aa; border-radius: 8px; padding: 15px; background: white;\">\n      <h4 style=\"margin: 0 0 8px 0; font-size: 14px; color: #ea580c; font-weight: bold;\">TH1: Mệnh đề quan hệ là câu chủ động ➔ Rút về V-ing</h4>\n      <div class=\"section-lv2\">\n        <p style=\"font-size: 13px; margin: 0; line-height: 1.8; color: #475569;\">\n          1. The man <span class=\"highlight-red-italic\">who is standing over there</span> is my father.<br>\n          ➔ The man <span class=\"highlight-red-italic\">standing over there</span> is my father.<br>\n          2. The man <span class=\"highlight-red-italic\">who stands over there</span> is my father.<br>\n          ➔ The man <span class=\"highlight-red-italic\">standing over there</span> is my father.<br>\n          3. The man <span class=\"highlight-red-italic\">who is tired</span> is my brother.<br>\n          ➔ The man <span class=\"highlight-red-italic\">tired</span> is my brother.\n        </p>\n      </div>\n    </div>\n\n    <!-- TH2 -->\n    <div style=\"border: 1px solid #fed7aa; border-radius: 8px; padding: 15px; background: white;\">\n      <h4 style=\"margin: 0 0 8px 0; font-size: 14px; color: #ea580c; font-weight: bold;\">TH2: Mệnh đề quan hệ là câu bị động ➔ Rút về V-ed/V3</h4>\n      <div class=\"section-lv2\">\n        <p style=\"font-size: 13px; margin: 0; line-height: 1.8; color: #475569;\">\n          3. The book <span class=\"highlight-red-italic\">which was bought by my mother</span> is interesting.<br>\n          ➔ <strong>C1:</strong> The book <span class=\"highlight-red-italic\">bought by my mother</span> is interesting.<br>\n          ➔ <strong>C2:</strong> The book <span class=\"highlight-red-italic\">being bought by my mother</span> is interesting.\n        </p>\n      </div>\n    </div>\n\n    <!-- TH3 -->\n    <div style=\"border: 1px solid #fed7aa; border-radius: 8px; padding: 15px; background: white;\">\n      <h4 style=\"margin: 0 0 8px 0; font-size: 14px; color: #ea580c; font-weight: bold;\">TH3: Đại từ quan hệ đóng vai trò là tân ngữ ➔ Bỏ đại từ quan hệ</h4>\n      <div class=\"section-lv2\">\n        <p style=\"font-size: 13px; margin: 0; line-height: 1.8; color: #475569;\">\n          VD: It's the best movie <span class=\"highlight-red-italic\">that I have ever seen</span>.<br>\n          ➔ Rút gọn: It's the best movie <span class=\"highlight-red-italic\">I have ever seen</span>.\n        </p>\n      </div>\n    </div>\n\n  </div>\n</div>\n"
+  },
+  "practice": {
+    "parts": [
+      {
+        "partNumber": 1,
+        "title": "Bài tập 1: Thực hành rút gọn MĐQH (Tự luận chọn đáp án)",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án rút gọn chính xác nhất cho mệnh đề quan hệ được in nghiêng trong các câu dưới đây:",
+        "questions": [
+          {
+            "id": "b4_p1_q1",
+            "questionText": "1. Do you know the woman <span class=\"rc\">who is coming towards us</span>?",
+            "options": {
+              "A": "come towards us",
+              "B": "coming towards us",
+              "C": "came towards us",
+              "D": "to come towards us"
+            },
+            "correctAnswer": "B",
+            "explanation": "Mệnh đề chủ động 'who is coming'. Rút gọn bằng cách bỏ 'who is', giữ nguyên 'coming towards us'. Chọn B.",
+            "sentenceTranslation": "Bạn có biết người phụ nữ _người đang tiến về phía chúng ta_ không? (tiến về phía chúng tôi)"
+          },
+          {
+            "id": "b4_p1_q2",
+            "questionText": "2. The children <span class=\"rc\">who attend that school</span> receive a good education.",
+            "options": {
+              "A": "attending that school",
+              "B": "attended that school",
+              "C": "attend that school",
+              "D": "are attending that school"
+            },
+            "correctAnswer": "A",
+            "explanation": "Mệnh đề chủ động 'who attend'. Rút gọn bằng cách bỏ 'who', chuyển động từ 'attend' về V-ing -> 'attending that school'. Chọn A.",
+            "sentenceTranslation": "Những đứa trẻ _theo học ở trường đó_ nhận được một nền giáo dục tốt. (đang học trường đó)"
+          },
+          {
+            "id": "b4_p1_q3",
+            "questionText": "3. The fence <span class=\"rc\">which surrounds our house</span> is made of wood.",
+            "options": {
+              "A": "surrounding our house",
+              "B": "surrounded our house",
+              "C": "surround our house",
+              "D": "which surrounding our house"
+            },
+            "correctAnswer": "A",
+            "explanation": "Mệnh đề chủ động 'which surrounds'. Rút gọn bằng cách bỏ 'which', chuyển động từ 'surrounds' về V-ing -> 'surrounding our house'. Chọn A.",
+            "sentenceTranslation": "Hàng rào _bao quanh ngôi nhà của chúng tôi_ được làm bằng gỗ. (xung quanh nhà của chúng tôi)"
+          },
+          {
+            "id": "b4_p1_q4",
+            "questionText": "4. They live in the house <span class=\"rc\">that was built in 1890</span>.",
+            "options": {
+              "A": "building in 1890",
+              "B": "built in 1890",
+              "C": "was built in 1890",
+              "D": "to build in 1890"
+            },
+            "correctAnswer": "B",
+            "explanation": "Mệnh đề bị động 'that was built'. Rút gọn bằng cách bỏ 'that was', giữ lại V3 'built in 1890'. Chọn B.",
+            "sentenceTranslation": "Họ sống trong ngôi nhà _được xây vào năm 1890_. (xây dựng năm 1890)"
+          },
+          {
+            "id": "b4_p1_q5",
+            "questionText": "5. The man <span class=\"rc\">who is talking to the policeman</span> is my uncle.",
+            "options": {
+              "A": "talked to the policeman",
+              "B": "talking to the policeman",
+              "C": "talk to the policeman",
+              "D": "to talk to the policeman"
+            },
+            "correctAnswer": "B",
+            "explanation": "Mệnh đề chủ động tiếp diễn 'who is talking'. Rút gọn bỏ 'who is', giữ lại V-ing 'talking to the policeman'. Chọn B.",
+            "sentenceTranslation": "Người đàn ông _người đang nói chuyện với viên cảnh sát_ là chú tôi. (nói chuyện với cảnh sát)"
+          },
+          {
+            "id": "b4_p1_q6",
+            "questionText": "6. The woman <span class=\"rc\">who is responsible for this project</span> is my sister.",
+            "options": {
+              "A": "responsible for this project",
+              "B": "responsibly for this project",
+              "C": "being responsible for this project",
+              "D": "who responsible for this project"
+            },
+            "correctAnswer": "A",
+            "explanation": "Mệnh đề có 'who is + tính từ'. Rút gọn bỏ 'who is', giữ lại tính từ đứng sau danh từ 'responsible for this project'. Chọn A.",
+            "sentenceTranslation": "Người phụ nữ _người chịu trách nhiệm cho dự án này_ là chị gái tôi. (chịu trách nhiệm về dự án này)"
+          },
+          {
+            "id": "b4_p1_q7",
+            "questionText": "7. The employee <span class=\"rc\">who is interested in this program</span> is advised to meet the manager.",
+            "options": {
+              "A": "interested in this program",
+              "B": "interesting in this program",
+              "C": "interest in this program",
+              "D": "who interested in this program"
+            },
+            "correctAnswer": "A",
+            "explanation": "Mệnh đề bị động cảm xúc 'who is interested'. Rút gọn bỏ 'who is', giữ lại V-ed 'interested in this program'. Chọn A.",
+            "sentenceTranslation": "Nhân viên _người quan tâm đến chương trình này_ nên gặp người quản lý. (quan tâm đến chương trình này)"
+          }
+        ]
+      },
+      {
+        "partNumber": 2,
+        "title": "Bài tập 2: MĐQH trên lớp",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án đúng nhất để hoàn tất các câu hỏi trắc nghiệm dưới đây:",
+        "questions": [
+          {
+            "id": "b4_p2_q1",
+            "questionText": "1. Emma Jean, ------- was nominated for an Employee of the Month Award for her exceptional work performance, will deliver a speech this evening.",
+            "options": {
+              "A": "who",
+              "B": "anyone",
+              "C": "whose",
+              "D": "whichever"
+            },
+            "correctAnswer": "A",
+            "explanation": "Chỗ trống làm chủ ngữ chỉ người (Emma Jean) của mệnh đề quan hệ xác định. Ta chọn đại từ quan hệ 'who'.",
+            "sentenceTranslation": "Emma Jean, người được đề cử Giải thưởng Nhân viên của Tháng vì thành tích làm việc xuất sắc của mình, sẽ có bài phát biểu vào tối nay."
+          },
+          {
+            "id": "b4_p2_q2",
+            "questionText": "2. Customers-------wish to return a defective item may do so within twenty days of the date of purchase.",
+            "options": {
+              "A": "who",
+              "B": "which",
+              "C": "whose",
+              "D": "whichever"
+            },
+            "correctAnswer": "A",
+            "explanation": "Chỗ trống bổ nghĩa cho danh từ chỉ người 'Customers' và làm chủ ngữ cho động từ 'wish'. Chọn 'who'.",
+            "sentenceTranslation": "Khách hàng muốn trả lại một mặt hàng bị lỗi có thể làm như vậy trong vòng hai mươi ngày kể từ ngày mua."
+          },
+          {
+            "id": "b4_p2_q3",
+            "questionText": "3. The company you work for is willing to take advantage of new technology, but ------- are concerned about adverse consequences.",
+            "options": {
+              "A": "other",
+              "B": "others",
+              "C": "the other",
+              "D": "another"
+            },
+            "correctAnswer": "B",
+            "explanation": "Dịch nghĩa: '...nhưng NHỮNG NGƯỜI KHÁC / CÁC CÔNG TY KHÁC thì lại lo ngại'. 'others' đóng vai trò làm đại từ số nhiều làm chủ ngữ cho động từ 'are'. Chọn B.",
+            "sentenceTranslation": "Công ty bạn làm việc sẵn sàng tận dụng công nghệ mới, nhưng những công ty khác lại lo ngại về những hậu quả bất lợi."
+          },
+          {
+            "id": "b4_p2_q4",
+            "questionText": "4. The department-wide changes ------- by Ms. Juntasa received unanimous approval from company management.",
+            "options": {
+              "A": "were suggested",
+              "B": "suggested",
+              "C": "suggesting",
+              "D": "has suggested"
+            },
+            "correctAnswer": "B",
+            "explanation": "Câu đã có động từ chính là 'received'. Động từ ở chỗ trống bổ nghĩa cho 'changes' ở thể bị động -> Rút gọn MĐQH bị động (which were suggested by... -> suggested by). Chọn B.",
+            "sentenceTranslation": "Những thay đổi trong toàn bộ phòng ban do bà Juntasa đề xuất đã nhận được sự đồng tình từ ban lãnh đạo công ty."
+          },
+          {
+            "id": "b4_p2_q5",
+            "questionText": "5. The number of students --------- is quite high.",
+            "options": {
+              "A": "counting",
+              "B": "counted",
+              "C": "have counted",
+              "D": "has counted"
+            },
+            "correctAnswer": "B",
+            "explanation": "Động từ chính của câu là 'is'. Động từ ở chỗ trống bổ nghĩa cho 'students' ở thể bị động -> Rút gọn MĐQH dạng bị động (who were counted -> counted = học sinh được đếm/thống kê). Chọn B.",
+            "sentenceTranslation": "Số lượng học sinh đếm được khá cao."
+          },
+          {
+            "id": "b4_p2_q6",
+            "questionText": "6. The library at the Kane-Clark Institute contains numerous items ------- the history of the renowned organization.",
+            "options": {
+              "A": "document",
+              "B": "documents",
+              "C": "documentary",
+              "D": "documenting"
+            },
+            "correctAnswer": "D",
+            "explanation": "Câu đã có động từ chính là 'contains'. Động từ chỗ trống mang nghĩa chủ động bổ nghĩa cho 'items' (những tài liệu ghi chép lại lịch sử... = which document... -> rút gọn thành V-ing: documenting). Chọn D.",
+            "sentenceTranslation": "Thư viện tại Viện Kane-Clark chứa nhiều tài liệu ghi lại lịch sử của tổ chức nổi tiếng này."
+          },
+          {
+            "id": "b4_p2_q7",
+            "questionText": "7. A new system ------- the latest data-analysis methods was implemented this week.",
+            "options": {
+              "A": "is incorporating",
+              "B": "that incorporates",
+              "C": "incorporation of",
+              "D": "had incorporated"
+            },
+            "correctAnswer": "B",
+            "explanation": "was implemented là động từ chính của câu. Chỗ trống ta cần mệnh đề quan hệ đầy đủ làm chủ ngữ chỉ vật bổ nghĩa cho 'A new system' -> 'that incorporates' (hệ thống tích hợp...). Chọn B.",
+            "sentenceTranslation": "Một hệ thống mới kết hợp các phương pháp phân tích dữ liệu mới nhất đã được triển khai trong tuần này."
+          },
+          {
+            "id": "b4_p2_q8",
+            "questionText": "8. ------- in the late 1800's, many of the coastline's lighthouses remain standing today, having withstood the forces of nature for decades.",
+            "options": {
+              "A": "Built",
+              "B": "Building",
+              "C": "Been built",
+              "D": "Having built"
+            },
+            "correctAnswer": "A",
+            "explanation": "Rút gọn mệnh đề trạng ngữ đồng chủ ngữ dạng bị động đứng đầu câu (Các ngọn hải đăng được xây dựng vào cuối những năm 1800 -> Built in...). Chọn A.",
+            "sentenceTranslation": "Được xây dựng vào cuối những năm 1800, nhiều ngọn hải đăng ven biển vẫn đứng vững cho đến ngày nay, đã trụ vững trước các tác động của thiên nhiên trong nhiều thập kỷ."
+          },
+          {
+            "id": "b4_p2_q9",
+            "questionText": "9. Orders ------ the weight limit are subjected to additional shipping fees.",
+            "options": {
+              "A": "exceed",
+              "B": "exceeded",
+              "C": "exceeding",
+              "D": "excessive"
+            },
+            "correctAnswer": "C",
+            "explanation": "are là động từ chính chia thì của câu. Chỗ trống mang nghĩa chủ động bổ nghĩa cho danh từ số nhiều 'Orders' (những đơn hàng vượt quá giới hạn -> which exceed... -> rút gọn thành exceeding). Chọn C.",
+            "sentenceTranslation": "Các đơn hàng vượt quá giới hạn trọng lượng sẽ phải chịu thêm phí vận chuyển."
+          },
+          {
+            "id": "b4_p2_q10",
+            "questionText": "10. A quarter survey ------- by Car Trade magazine shows that customers prefer fuel-efficiency over size or price when purchasing a new automobile.",
+            "options": {
+              "A": "performed",
+              "B": "performs",
+              "C": "had performed",
+              "D": "to perform"
+            },
+            "correctAnswer": "A",
+            "explanation": "shows là động từ chính. Chỗ trống cần dạng bị động bổ nghĩa cho 'A quarter survey' (cuộc khảo sát được thực hiện bởi... = which was performed by... -> rút gọn thành performed by). Chọn A.",
+            "sentenceTranslation": "Một cuộc khảo sát quý do tạp chí Car Trade thực hiện cho thấy khách hàng thích tiết kiệm nhiên liệu hơn kích thước hoặc giá cả khi mua một chiếc ô tô mới."
+          }
+        ]
+      },
+      {
+        "partNumber": 3,
+        "title": "Bài tập 3: MĐQH về nhà (Phần 1 + ETS 2022)",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án đúng nhất để hoàn thành các câu trắc nghiệm tự luyện dưới đây:",
+        "questions": [
+          {
+            "id": "b4_p3_q1",
+            "questionText": "1. Before ------- the envelope, please be sure you have enclosed all of the documents listed in your orientation packet.",
+            "options": {
+              "A": "seal",
+              "B": "sealing",
+              "C": "is sealed",
+              "D": "was sealed"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đằng sau giới từ 'Before' ta cần một Danh động từ V-ing (Trước khi niêm phong phong bì). Chọn 'sealing'.",
+            "sentenceTranslation": "Trước khi niêm phong phong bì, hãy chắc chắn rằng bạn đã gửi kèm tất cả các tài liệu được liệt kê trong gói định hướng của mình."
+          },
+          {
+            "id": "b4_p3_q2",
+            "questionText": "2. Omega Clothes' discount coupons cannot be used in conjunction with any other offer, ------- holiday sales.",
+            "options": {
+              "A": "include",
+              "B": "included",
+              "C": "inclusion",
+              "D": "including"
+            },
+            "correctAnswer": "D",
+            "explanation": "including ở đây đóng vai trò là một giới từ mang ý nghĩa bổ sung (bao gồm cả các đợt giảm giá ngày lễ). Chọn D.",
+            "sentenceTranslation": "Phiếu giảm giá của Omega Clothing không thể được sử dụng cùng với bất kỳ ưu đãi nào khác, bao gồm cả đợt giảm giá trong kỳ nghỉ lễ."
+          },
+          {
+            "id": "b4_p3_q3",
+            "questionText": "3. Ms. Larensky is applying with several different agencies to obtain the permits ------- for the outdoor art event.",
+            "options": {
+              "A": "required",
+              "B": "requiring",
+              "C": "requires",
+              "D": "will require"
+            },
+            "correctAnswer": "A",
+            "explanation": "Permits (giấy phép) là vật nhận tác động bị động của hành động yêu cầu -> Rút gọn bị động (permits which are required -> required). Chọn A.",
+            "sentenceTranslation": "Cô Larensky đang nộp đơn với một số cơ quan khác nhau để xin giấy phép cần thiết cho sự kiện nghệ thuật ngoài trời."
+          },
+          {
+            "id": "b4_p3_q4",
+            "questionText": "4. The Vickwell Historical Museum will be closed for renovations ------- on Monday, September 10.",
+            "options": {
+              "A": "will begin",
+              "B": "has begun",
+              "C": "beginner",
+              "D": "beginning"
+            },
+            "correctAnswer": "D",
+            "explanation": "beginning đóng vai trò phân từ hiện tại bổ nghĩa thời gian (bắt đầu vào thứ Hai, ngày 10/9). Chọn D.",
+            "sentenceTranslation": "Bảo tàng Lịch sử Vickwell sẽ đóng cửa để cải tạo bắt đầu từ Thứ Hai, ngày 10 tháng 9."
+          },
+          {
+            "id": "b4_p3_q5",
+            "questionText": "5. Canada's Pan Rail Corporation will no longer ------- freight into the United States.",
+            "options": {
+              "A": "transport",
+              "B": "transporting",
+              "C": "transports",
+              "D": "transported"
+            },
+            "correctAnswer": "A",
+            "explanation": "Cấu trúc: will no longer + V0 (động từ nguyên thể). Chọn 'transport'.",
+            "sentenceTranslation": "Tập đoàn Pan Rail của Canada sẽ không vận chuyển hàng hóa vào Hoa Kỳ nữa."
+          },
+          {
+            "id": "b4_p3_q6",
+            "questionText": "6. Remember to check the spelling of Mr. Kamashi's name when ------- the document.",
+            "options": {
+              "A": "revising",
+              "B": "revises",
+              "C": "revised",
+              "D": "revise"
+            },
+            "correctAnswer": "A",
+            "explanation": "Cấu trúc rút gọn đồng chủ ngữ sau liên từ: when + V-ing (khi duyệt/soạn lại tài liệu). Chọn A.",
+            "sentenceTranslation": "Hãy nhớ kiểm tra chính tả tên ông Kamashi khi sửa lại tài liệu."
+          },
+          {
+            "id": "b4_p3_q7",
+            "questionText": "7. The team------------completes the online training first will receive a catered lunch.",
+            "options": {
+              "A": "whichever",
+              "B": "it",
+              "C": "that",
+              "D": "either"
+            },
+            "correctAnswer": "C",
+            "explanation": "Chỗ trống cần một đại từ quan hệ chỉ nhóm người/đội làm chủ ngữ cho động từ 'completes' phía sau -> Chọn 'that'.",
+            "sentenceTranslation": "Nhóm hoàn thành khóa đào tạo trực tuyến trước sẽ nhận được bữa trưa phục vụ."
+          },
+          {
+            "id": "b4_p3_q8",
+            "questionText": "8. The spreadsheet------------data on retail sales during the fourth quarter is attached.",
+            "options": {
+              "A": "contains",
+              "B": "contained",
+              "C": "containing",
+              "D": "containable"
+            },
+            "correctAnswer": "C",
+            "explanation": "is attached là động từ chính chia thì của câu. Chỗ trống bổ nghĩa chủ động cho danh từ chỉ vật 'spreadsheet' (bảng tính chứa dữ liệu... = which contains... -> rút gọn thành V-ing: containing). Chọn C.",
+            "sentenceTranslation": "Đính kèm bảng tính số liệu về doanh số bán lẻ trong quý 4."
+          },
+          {
+            "id": "b4_p3_q9",
+            "questionText": "9. If you use online banking, bills can be paid - ----------it is most convenient.",
+            "options": {
+              "A": "whenever",
+              "B": "simply",
+              "C": "accordingly",
+              "D": "quite"
+            },
+            "correctAnswer": "A",
+            "explanation": "Dịch nghĩa: '...hóa đơn có thể được thanh toán BẤT CỨ KHI NÀO (whenever) thuận tiện nhất'. Chọn A.",
+            "sentenceTranslation": "Nếu bạn sử dụng ngân hàng trực tuyến, bạn có thể thanh toán hóa đơn - bất cứ khi nào thuận tiện nhất."
+          },
+          {
+            "id": "b4_p3_q10",
+            "questionText": "10. The proposed city budget outlines various projects,------------renovations of the Fessler Road fire station.",
+            "options": {
+              "A": "these",
+              "B": "including",
+              "C": "even though",
+              "D": "always"
+            },
+            "correctAnswer": "B",
+            "explanation": "Dịch nghĩa: '...phác thảo nhiều dự án khác nhau, BAO GỒM CẢ (including) việc cải tạo trạm cứu hỏa...'. Chọn B.",
+            "sentenceTranslation": "Ngân sách thành phố đề xuất vạch ra nhiều dự án khác nhau, bao gồm cả việc cải tạo trạm cứu hỏa Đường Fessler."
+          },
+          {
+            "id": "b4_p3_q11",
+            "questionText": "11. Profits at Talhee Beverage Co. rose about 4 percent last year, according to new figures -----------by the company.",
+            "options": {
+              "A": "to release",
+              "B": "releasing",
+              "C": "released",
+              "D": "have released"
+            },
+            "correctAnswer": "C",
+            "explanation": "Figures (số liệu) là vật chịu tác động bị động của hành động công bố -> Rút gọn MĐQH dạng bị động (figures which were released by... -> released by). Chọn C.",
+            "sentenceTranslation": "Lợi nhuận tại Công ty Nước giải khát Talhee đã tăng khoảng 4% trong năm ngoái, theo số liệu mới được công ty công bố."
+          },
+          {
+            "id": "b4_p3_q12",
+            "questionText": "12. The obstetrics nurses-----------are working under Dorothy Caramella will now be working for Pierre Cocteau.",
+            "options": {
+              "A": "they",
+              "B": "who",
+              "C": "when",
+              "D": "these"
+            },
+            "correctAnswer": "B",
+            "explanation": "Cần một đại từ quan hệ chỉ người số nhiều ('nurses') làm chủ ngữ cho mệnh đề phụ -> Chọn 'who'.",
+            "sentenceTranslation": "Các y tá sản khoa đang làm việc dưới quyền của Dorothy Caramella giờ sẽ làm việc cho Pierre Cocteau."
+          },
+          {
+            "id": "b4_p3_q13",
+            "questionText": "13. Any letter-----------sensitive information should be sent using a courier service.",
+            "options": {
+              "A": "contains",
+              "B": "containing",
+              "C": "will contain",
+              "D": "has contained"
+            },
+            "correctAnswer": "B",
+            "explanation": "should be sent là động từ chính. Chỗ trống bổ nghĩa chủ động cho danh từ 'letter' (bất kỳ lá thư nào chứa thông tin nhạy cảm = which contains -> containing). Chọn B.",
+            "sentenceTranslation": "Bất kỳ thư nào có chứa thông tin nhạy cảm phải được gửi bằng dịch vụ chuyển phát nhanh."
+          },
+          {
+            "id": "b4_p3_q14",
+            "questionText": "14. Abelos Cafe sources its vegetables and fruit from local farms-----------possible.",
+            "options": {
+              "A": "anyhow",
+              "B": "whenever",
+              "C": "once",
+              "D": "very"
+            },
+            "correctAnswer": "B",
+            "explanation": "Cụm thành ngữ rút gọn chỉ thời gian: whenever possible (bất cứ khi nào có thể). Chọn B.",
+            "sentenceTranslation": "Abelos Cafe lấy nguồn rau và trái cây từ các trang trại địa phương bất cứ khi nào có thể."
+          },
+          {
+            "id": "b4_p3_q15",
+            "questionText": "15. Contact Ms. Meyer if you would like a hard copy of the budget analysis-----------during the president's presentation.",
+            "options": {
+              "A": "occurred",
+              "B": "mentioned",
+              "C": "learned",
+              "D": "served"
+            },
+            "correctAnswer": "B",
+            "explanation": "analysis (bản phân tích) là vật chịu tác động bị động của hành động đề cập -> Rút gọn MĐQH dạng bị động: 'bản phân tích ngân sách ĐƯỢC ĐỀ CẬP trong bài thuyết trình của chủ tịch' (= which was mentioned -> mentioned). Chọn B.",
+            "sentenceTranslation": "Hãy liên hệ với cô Meyer nếu bạn muốn có bản cứng của bản phân tích ngân sách được đề cập trong bài thuyết trình của tổng thống."
+          }
+        ]
+      }
+    ]
+  }
+}

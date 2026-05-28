@@ -1,0 +1,511 @@
+{
+  "layout": "splitscreen",
+  "theory": {
+    "title": "BÀI 3: CÂU GHÉP, LIÊN TỪ, GIỚI TỪ",
+    "htmlContent": "<div class=\"grammar-container\" style=\"font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.7; padding: 10px;\">\n  \n  <style>\n    .grammar-title {\n      font-size: 24px;\n      font-weight: 800;\n      color: #1e3a8a;\n      text-transform: uppercase;\n      margin-bottom: 20px;\n      border-bottom: 3px solid #2563eb;\n      padding-bottom: 10px;\n      letter-spacing: -0.02em;\n    }\n    .grammar-section-title {\n      font-size: 18px;\n      font-weight: 700;\n      color: #2563eb;\n      margin-top: 30px;\n      margin-bottom: 15px;\n      display: flex;\n      align-items: center;\n      gap: 8px;\n    }\n    .grammar-table {\n      width: auto;\n      min-width: auto;\n      border-collapse: collapse;\n      margin-bottom: 20px;\n      margin-left: auto;\n      margin-right: auto;\n      border: 1px solid #7f7f7f; border-collapse: collapse; border-collapse: collapse;\n      background-color: #ffffff;\n    }\n    .grammar-table th {\n      background-color: #f2f2f2;\n      color: #000000;\n      font-weight: 700;\n      padding: 10px 14px;\n      text-align: left;\n      font-size: 13.5px;\n      border: 1px solid #7f7f7f; border-collapse: collapse; border-collapse: collapse;\n    }\n    .grammar-table td {\n      padding: 10px 14px;\n      border: 1px solid #7f7f7f; border-collapse: collapse; border-collapse: collapse;\n      font-size: 13.5px;\n      color: #000000;\n      background-color: #ffffff;\n    }\n    \n    \n    .highlight-red-bold {\n      color: #ff0000;\n      font-weight: 700;\n    }\n    .highlight-red {\n      color: #ef4444;\n      font-weight: 700;\n    }\n    .highlight-blue {\n      color: #2563eb;\n      font-weight: 700;\n    }\n    .highlight-green {\n      color: #16a34a;\n      font-weight: 700;\n    }\n    .warning-box {\n      background-color: #fff2f2;\n      border-left: 5px solid #ef4444;\n      padding: 12px 15px;\n      border-radius: 8px;\n      margin-bottom: 20px;\n      font-size: 13px;\n      color: #b91c1c;\n    }\n    .info-badge {\n      display: inline-block;\n      padding: 2px 6px;\n      border-radius: 4px;\n      font-size: 11px;\n      font-weight: bold;\n      background-color: #e0f2fe;\n      color: #0369a1;\n      margin-right: 5px;\n    }\n  </style>\n\n  <h1 class=\"grammar-title\">BÀI 3: CÂU GHÉP, LIÊN TỪ, GIỚI TỪ</h1>\n\n  <div class=\"grammar-section-title\">\n    <span>I. CÁCH TẠO CÂU GHÉP</span>\n  </div>\n  <p>Để tạo thành câu ghép thì ta chỉ việc nối các câu đơn lại với nhau bằng các từ nối (liên từ) để diễn đạt 1 ý hoàn chỉnh.</p>\n  <ul style=\"font-size: 13.5px; padding-left: 20px; margin-bottom: 20px;\">\n    <li>Mỗi liên từ nó mang ý nghĩa khác nhau (giống như từ mới)</li>\n    <li>Tùy vào ý nghĩa muốn diễn đạt mà dùng liên từ cho phù hợp</li>\n    <li>2 câu đơn sau khi được nối lại thành một câu thì được gọi là 2 mệnh đề.</li>\n  </ul>\n  <p style=\"background-color: #eef2ff; border-left: 4px solid #4f46e5; padding: 10px; border-radius: 4px; font-weight: bold; color: #4338ca;\">\n    ===> Như vậy về bản chất, để tạo thành câu ghép thì ta chỉ cần biết cách sử dụng liên từ cho phù hợp là được.\n  </p>\n  <p>Bây giờ chúng ta sẽ cùng nhau đi tìm hiểu và các từ dùng để nối câu trong tiếng Anh.</p>\n\n  <div class=\"grammar-section-title\">\n    <span>II. LIÊN TỪ VÀ GIỚI TỪ</span>\n  </div>\n\n  <table class=\"grammar-table\" style=\"width: auto; min-width: 70%;\">\n    <thead>\n      <tr style=\"background-color: #f1f5f9;\">\n        <th style=\"width: 50%; font-weight: bold; color: #1e3a8a;\">LIÊN TỪ (Conjunction)</th>\n        <th style=\"width: 50%; font-weight: bold; color: #1e3a8a;\">GIỚI TỪ (Preposition)</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td style=\"vertical-align: top; line-height: 1.8;\">\n          <strong>Chức năng: Nối</strong><br>\n          • Từ --- Từ (1)<br>\n          • Cụm từ --- Cụm từ (2)<br>\n          • Mệnh đề --- Mệnh đề (3)\n        </td>\n        <td style=\"vertical-align: top; line-height: 1.8;\">\n          <strong>Chức năng: Nối</strong><br>\n          • V --- N: <em>He sits <span class=\"highlight-green\">on</span> the table</em><br>\n          • N --- N: <em>The book <span class=\"highlight-green\">on</span> the table is mine</em><br><br>\n          <span class=\"highlight-red\">==> Không dùng để nối 2 mệnh đề.</span><br>\n          <span class=\"highlight-red\">==> Sau giới từ luôn là: N/Ving</span>\n        </td>\n      </tr>\n      <tr style=\"background-color: #fffbeb;\">\n        <td colspan=\"2\" style=\"font-weight: bold; color: #b45309; padding: 12px;\">\n          💡 PHÂN BIỆT CỰC KỲ QUAN TRỌNG:<br>\n          • Theo sau giới từ chỉ có thể là: N/Ving<br>\n          • Theo sau liên từ có thể là: mệnh đề (S + V chia thì)\n        </td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- 4 Loại liên từ -->\n  <h3 style=\"font-size: 15px; font-weight: bold; color: #1e3a8a; margin-top: 25px; margin-bottom: 8px;\">CÓ 4 LOẠI LIÊN TỪ THƯỜNG GẶP:</h3>\n<div class=\"section-lv1\">\n\n  \n  <div style=\"display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;\">\n    <!-- 1 -->\n    <div style=\"background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px;\">\n      <h4 style=\"margin-top: 0; font-size: 14px; font-weight: bold; color: #1e293b;\"><span class=\"info-badge\">1</span> Liên từ đẳng lập:</h4>\n<div class=\"section-lv2\">\n\n      <p style=\"font-size: 13px; margin-bottom: 6px;\">• Gồm các từ: <strong>for, and, nor, but, or, yet, so</strong> (Mẹo nhớ: <strong>\"FANBOYS\"</strong>)</p>\n      <p style=\"font-size: 13px; margin-bottom: 6px;\">• Đặc điểm: nối những thành phần đẳng lập với nhau về mặt ngữ pháp (danh - danh; động - động; trạng - trạng; tính - tính; mệnh đề - mệnh đề.)</p>\n      <small style=\"color: #475569;\">\n        VD:<br>\n        - I like tea and coffee.<br>\n        - She is a diligent and intelligent student.<br>\n        - Ram likes tea, but Anthony likes coffee.\n      </small>\n    </div>\n    \n    <!-- 2 -->\n    <div style=\"background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px;\">\n      </div><!-- /section-lv2 -->\n<h4 style=\"margin-top: 0; font-size: 14px; font-weight: bold; color: #1e293b;\"><span class=\"info-badge\">2</span> Liên từ tương quan:</h4>\n<div class=\"section-lv2\">\n\n      <p style=\"font-size: 13px; margin-bottom: 6px;\">• Đặc điểm: luôn đi theo cặp</p>\n      <ul style=\"font-size: 13px; padding-left: 20px; margin-bottom: 0; line-height: 1.8;\">\n        <li><strong>both</strong>......<strong>and</strong>..... (cả... và...)</li>\n        <li><strong>either</strong> ...... <strong>or</strong>...... (hoặc... hoặc...)</li>\n        <li><strong>neither</strong> ...... <strong>nor</strong>.......... (không... mà cũng không...)</li>\n        <li><strong>whether</strong>........<strong>or</strong>.......... (liệu... hay...)</li>\n        <li><strong>not only</strong>...... <strong>but also</strong>.... (không những... mà còn...)</li>\n        <li><strong>rather</strong>...... <strong>than</strong>.... (thà... hơn là...)</li>\n        <li><strong>not</strong>...... <strong>but</strong>.... (không phải... mà là...)</li>\n        <li><strong>if</strong>...........<strong>then</strong>.... (nếu... thì...)</li>\n      </ul>\n    </div>\n    \n    <!-- 3 -->\n    <div style=\"background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px;\">\n      </div><!-- /section-lv2 -->\n<h4 style=\"margin-top: 0; font-size: 14px; font-weight: bold; color: #1e293b;\"><span class=\"info-badge\">3</span> Liên từ phụ thuộc:</h4>\n<div class=\"section-lv2\">\n\n      <p style=\"font-size: 13px; margin-bottom: 6px;\">• Gồm các từ: <strong>after, although, as, because, before, if, only if, once, since, than, that, though, till, until, unless, when, where, whether, while...</strong></p>\n    </div>\n    \n    <!-- 4 -->\n    <div style=\"background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px;\">\n      </div><!-- /section-lv2 -->\n<h4 style=\"margin-top: 0; font-size: 14px; font-weight: bold; color: #1e293b;\"><span class=\"info-badge\">4</span> Trạng từ nối:</h4>\n<div class=\"section-lv2\">\n\n      <p style=\"font-size: 13px; margin-bottom: 6px;\">• Gồm các từ: <strong>however, nevertheless, therefore, consequently...</strong></p>\n      <p style=\"font-size: 13px; margin-bottom: 6px;\">• Đặc điểm: Trước và sau nó luôn phải có dấu phẩy (hoặc dấu chấm).</p>\n      <div style=\"font-size: 13.5px; color: #000000; margin-top: 10px; line-height: 1.8;\">\n        + I was tired. <span class=\"highlight-red-bold\">Therefore</span>, I went to bed<br>\n        + I worte for 30 minutes. I didn’t, <span class=\"highlight-red-bold\">however</span>, finish my report.<br>\n        + I worte for 30 minutes. I didn’t finish my report, <span class=\"highlight-red-bold\">however</span>.\n      </div>\n    </div>\n  </div>\n\n  <!-- Một số giới từ thường gặp -->\n  </div><!-- /section-lv2 -->\n</div><!-- /section-lv1 -->\n<h3 style=\"font-size: 15px; font-weight: bold; color: #1e3a8a; margin-top: 25px; margin-bottom: 12px;\">MỘT SỐ GIỚI TỪ THƯỜNG GẶP:</h3>\n<div class=\"section-lv1\">\n\n  <div style=\"background-color: #fafafa; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 25px;\">\n    <div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; font-size: 13px; line-height: 1.8;\">\n      <div>\n        • <strong>above, about, across, against</strong><br>\n        • <strong>along, among, around, at</strong><br>\n        • <strong>before, behind, below, beneath</strong><br>\n        • <strong>beside, between, beyond, by</strong>\n      </div>\n      <div>\n        • <strong>down, during, despite, except</strong><br>\n        • <strong>for, from, in, inside, into</strong><br>\n        • <strong>like, near, of, off, on</strong><br>\n        • <strong>since</strong> (từ, từ khi)\n      </div>\n      <div>\n        • <strong>to, toward, through, under</strong><br>\n        • <strong>until, up, upon, with, within</strong><br>\n        • <strong>whereby</strong><br>\n        • <strong>according to</strong> (theo như)\n      </div>\n      <div>\n        • <strong>in addition to</strong> (ngoài, bên cạnh)<br>\n        • <strong>in spite of = despite</strong> (bất chấp)<br>\n        • <strong>in contrast to</strong> (trái ngược với)<br>\n        • <strong>instead of</strong> (thay vì)<br>\n        • <strong>in the event of</strong> (trong trường hợp)\n      </div>\n      <div>\n        • <strong>because of</strong> (bởi vì)<br>\n        • <strong>thanks to = owing to</strong> (nhờ vào)<br>\n        • <strong>by means of</strong> (bằng cách)<br>\n        • <strong>regarding = about = relating to</strong> (về, liên quan tới)\n      </div>\n    </div>\n  </div>\n\n  <div class=\"warning-box\">\n    <h4 style=\"margin-top: 0; font-size: 14px; font-weight: bold;\">⚠️ CHÚ Ý KẺO NHẦM:</h4>\n<div class=\"section-lv2\">\n\n    <ol style=\"font-size: 13px; padding-left: 20px; margin-bottom: 0;\">\n      <li style=\"margin-bottom: 6px;\">Có nhiều từ vừa là liên từ, vừa là giới từ: <strong>before, after, since, until...</strong></li>\n      <li>Chú ý 1 ngoại lệ cực kỳ quan trọng:<br>\n        • <span class=\"highlight-red\">in order to + N/Ving ➔ SAI</span><br>\n        • <span class=\"highlight-green\">in order to + V0 ➔ ĐÚNG</span>\n      </li>\n    </ol>\n  </div>\n\n  <!-- III. BẢNG PHÂN LOẠI CHI TIẾT THEO PDF -->\n  </div><!-- /section-lv2 -->\n</div><!-- /section-lv1 -->\n<div class=\"grammar-section-title\">\n    <span>III. PHÂN LOẠI MỘT SỐ LIÊN TỪ, GIỚI TỪ THEO TỪNG LOẠI CHO DỄ NHỚ:</span>\n  </div>\n  <p style=\"font-size: 13px; margin-bottom: 15px; font-style: italic; color: #b91c1c; font-weight: bold;\">\n    * Chú ý: Liên từ và giới từ trong bảng dưới đây bắt buộc các bạn phải thuộc hết thì mới làm bài tập được - hãy coi nó như những từ mới và học thuộc lòng dần dần. Cố gắng làm bài tập, hiểu nghĩa của câu và ôn tập nhiều lần thì mới nhớ được.\n  </p>\n\n  <table class=\"grammar-table\" style=\"font-size: 12.5px; width: auto; min-width: 70%;\">\n    <thead>\n      <tr style=\"background-color: #f1f5f9;\">\n        <th style=\"width: 20%; font-weight: bold; color: #1e3a8a;\">Loại / Ý nghĩa</th>\n        <th style=\"width: 40%; font-weight: bold; color: #2563eb;\">Liên từ (Clause)</th>\n        <th style=\"width: 40%; font-weight: bold; color: #16a34a;\">Giới từ (N/Ving)</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>Chỉ sự thêm vào</strong></td>\n        <td><strong>and</strong> (và), <strong>moreover</strong> (hơn nữa), <strong>furthermore</strong> (hơn nữa), <strong>besides</strong> (ngoài ra), <strong>in addition</strong> (thêm vào đó)</td>\n        <td><strong>besides</strong> (ngoài), <strong>in addition to</strong> (thêm vào)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ sự lựa chọn</strong></td>\n        <td><strong>or</strong> (hoặc), <strong>either... or</strong> (hoặc... hoặc)</td>\n        <td>-</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ sự đối lập, tương phản</strong></td>\n        <td><strong>but</strong> (nhưng), <strong>yet</strong> (nhưng), <strong>however</strong> (tuy nhiên), <strong>although</strong> (mặc dù), <strong>though</strong> (mặc dù), <strong>whereas</strong> (trong khi), <strong>while</strong> (trong khi)</td>\n        <td><strong>despite</strong> (mặc dù), <strong>in spite of</strong> (mặc dù), <strong>contrary to</strong> (trái với)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ lý do</strong></td>\n        <td><strong>because</strong> (bởi vì), <strong>since</strong> (vì), <strong>as</strong> (vì), <strong>for</strong> (bởi vì)</td>\n        <td><strong>because of</strong> (vì), <strong>due to</strong> (do), <strong>owing to</strong> (do)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ kết quả, hậu quả</strong></td>\n        <td><strong>so</strong> (vì vậy), <strong>therefore</strong> (vì thế), <strong>thus</strong> (do đó), <strong>consequently</strong> (hậu quả là)</td>\n        <td>-</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ mục đích</strong></td>\n        <td><strong>so that</strong> (để), <strong>in order that</strong> (để)</td>\n        <td><strong>for</strong> (cho, để), <strong>in order to</strong> (để - đi với V0)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ điều kiện</strong></td>\n        <td><strong>if</strong> (nếu), <strong>unless</strong> (trừ khi)</td>\n        <td>-</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ thời gian</strong></td>\n        <td><strong>when</strong> (khi), <strong>while</strong> (trong khi), <strong>before</strong> (trước khi), <strong>after</strong> (sau khi), <strong>until</strong> (cho đến khi), <strong>as soon as</strong> (ngay khi), <strong>once</strong> (khi mà)</td>\n        <td><strong>before</strong> (trước), <strong>after</strong> (sau), <strong>during</strong> (trong suốt), <strong>until</strong> (cho đến khi), <strong>till</strong> (cho đến)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ sự nhượng bộ</strong></td>\n        <td><strong>although</strong> (mặc dù), <strong>even though</strong> (mặc dù), <strong>though</strong> (dù cho)</td>\n        <td><strong>despite</strong> (mặc dù), <strong>in spite of</strong> (mặc dù)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ cách thức</strong></td>\n        <td><strong>as</strong> (như), <strong>as if</strong> (như thể là), <strong>as though</strong> (như thể là)</td>\n        <td>-</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ sự so sánh</strong></td>\n        <td><strong>than</strong> (hơn), <strong>as... as</strong> (như... như)</td>\n        <td>-</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ sự ngoại trừ</strong></td>\n        <td><strong>except that</strong> (trừ việc)</td>\n        <td><strong>except for</strong> (trừ), <strong>apart from</strong> (ngoài)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ sự tương quan</strong></td>\n        <td><strong>as... as</strong> (như... như), <strong>not only... but also</strong> (không chỉ... mà còn), <strong>either... or</strong> (hoặc... hoặc), <strong>neither... nor</strong> (không... cũng không)</td>\n        <td>-</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ sự giải thích</strong></td>\n        <td><strong>namely</strong> (tức là), <strong>that is</strong> (đó là)</td>\n        <td>-</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ phương tiện, cách thức</strong></td>\n        <td>-</td>\n        <td><strong>by</strong> (bằng cách), <strong>with</strong> (với)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ nơi chốn</strong></td>\n        <td>-</td>\n        <td><strong>in</strong> (ở trong), <strong>on</strong> (ở trên), <strong>at</strong> (tại), <strong>above</strong> (ở trên), <strong>below</strong> (ở dưới), <strong>between</strong> (giữa hai vật), <strong>among</strong> (giữa nhiều vật)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ phương hướng</strong></td>\n        <td>-</td>\n        <td><strong>to</strong> (đến), <strong>into</strong> (vào), <strong>through</strong> (xuyên qua), <strong>toward</strong> (hướng về), <strong>onto</strong> (lên trên)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ sở hữu</strong></td>\n        <td>-</td>\n        <td><strong>of</strong> (của), <strong>with</strong> (với)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ sự liên quan, về</strong></td>\n        <td>-</td>\n        <td><strong>about</strong> (về), <strong>regarding</strong> (liên quan đến), <strong>concerning</strong> (liên quan đến)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ số lượng</strong></td>\n        <td>-</td>\n        <td><strong>of</strong> (của), <strong>per</strong> (mỗi)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ vị trí</strong></td>\n        <td>-</td>\n        <td><strong>under</strong> (dưới), <strong>over</strong> (trên), <strong>next to</strong> (kế bên), <strong>beside</strong> (bên cạnh), <strong>behind</strong> (phía sau)</td>\n      </tr>\n      <tr>\n        <td><strong>Chỉ thời điểm</strong></td>\n        <td>-</td>\n        <td><strong>at</strong> (vào lúc), <strong>on</strong> (vào ngày), <strong>in</strong> (vào tháng/năm), <strong>by</strong> (trước khi), <strong>before</strong> (trước), <strong>after</strong> (sau)</td>\n      </tr>\n    </tbody>\n  </table>\n\n</div>"
+  },
+  "practice": {
+    "parts": [
+      {
+        "partNumber": 1,
+        "title": "Bài tập 1: Bài tập ví dụ",
+        "type": "multiple_choice",
+        "instruction": "Chọn đáp án đúng nhất để hoàn thành các câu ví dụ ngữ pháp về liên từ và giới từ dưới đây:",
+        "questions": [
+          {
+            "id": "b3_p1_q1",
+            "questionText": "1. This salad is both delicious -------- healthy.",
+            "options": {
+              "A": "or",
+              "B": "and",
+              "C": "nor",
+              "D": "but"
+            },
+            "correctAnswer": "B",
+            "explanation": "Cặp liên từ tương quan đi liền với nhau: both... and (cả... và...). Chọn B.",
+            "sentenceTranslation": "Món salad này vừa ngon vừa tốt cho sức khỏe."
+          },
+          {
+            "id": "b3_p1_q2",
+            "questionText": "2. She is neither polite -------- funny.",
+            "options": {
+              "A": "or",
+              "B": "nor",
+              "C": "not",
+              "D": "yet"
+            },
+            "correctAnswer": "B",
+            "explanation": "Cặp liên từ tương quan phủ định song hành: neither... nor... (không... mà cũng không...). Chọn B.",
+            "sentenceTranslation": "Cô ấy không lịch sự cũng không hài hước."
+          },
+          {
+            "id": "b3_p1_q3",
+            "questionText": "3. -------- we are under a tight deadline on product delivery, we will have to ask for assistance from other departments.",
+            "options": {
+              "A": "Moreover",
+              "B": "Because",
+              "C": "Therefore",
+              "D": "Nevertheless"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng đầu mệnh đề nguyên nhân (S+V: 'we are under...'). Dịch nghĩa: 'Bởi vì chúng ta đang gặp thời hạn giao hàng gấp...' nên chọn liên từ phụ thuộc chỉ lý do là 'Because'. Các phương án còn lại là trạng từ liên kết.",
+            "sentenceTranslation": "Bởi vì chúng tôi đang có thời hạn giao sản phẩm chặt chẽ nên chúng tôi sẽ phải yêu cầu sự hỗ trợ từ các bộ phận khác."
+          },
+          {
+            "id": "b3_p1_q4",
+            "questionText": "4. -------- searching for long-term economic growth, the government intends to study immediate solutions to avoid severe criticism from the public.",
+            "options": {
+              "A": "According to",
+              "B": "Future",
+              "C": "However",
+              "D": "Instead of"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đằng sau là cụm V-ing 'searching...'. Ta cần một giới từ. Dựa vào ý nghĩa đối lập: 'Thay vì tìm kiếm tăng trưởng kinh tế dài hạn, chính phủ định nghiên cứu giải pháp trước mắt...' -> Chọn giới từ 'Instead of'.",
+            "sentenceTranslation": "Thay vì tìm kiếm tăng trưởng kinh tế dài hạn, chính phủ dự định nghiên cứu các giải pháp trước mắt để tránh sự chỉ trích gay gắt từ dư luận."
+          },
+          {
+            "id": "b3_p1_q5",
+            "questionText": "5. People can obtain information ------- an article containing several cases of the implementation of the new technology and its impact.",
+            "options": {
+              "A": "where",
+              "B": "while",
+              "C": "from",
+              "D": "wherever"
+            },
+            "correctAnswer": "C",
+            "explanation": "Cụm 'an article...' là một cụm danh từ, ta cần điền giới từ để nối. Cấu trúc: obtain information from something (lấy thông tin từ cái gì). Chọn giới từ 'from'.",
+            "sentenceTranslation": "Mọi người có thể lấy thông tin từ một bài báo chứa một số trường hợp triển khai công nghệ mới và tác động của nó."
+          },
+          {
+            "id": "b3_p1_q6",
+            "questionText": "6. The chairperson was trying to curtail a lengthy, heated discussion ------- the merits of work ethics due to the time constraint.",
+            "options": {
+              "A": "on",
+              "B": "by",
+              "C": "with",
+              "D": "to"
+            },
+            "correctAnswer": "A",
+            "explanation": "Discussion on/about something (cuộc thảo luận về vấn đề gì). Chọn giới từ 'on' bổ nghĩa chủ đề thảo luận.",
+            "sentenceTranslation": "Chủ tịch đang cố gắng cắt bớt một cuộc thảo luận kéo dài và sôi nổi về giá trị của đạo đức làm việc do hạn chế về thời gian."
+          }
+        ]
+      },
+      {
+        "partNumber": 2,
+        "title": "Bài tập 2: Liên từ trên lớp",
+        "type": "multiple_choice",
+        "instruction": "Chọn liên từ thích hợp để hoàn thành các câu trắc nghiệm ngữ pháp dưới đây:",
+        "questions": [
+          {
+            "id": "b3_p2_q1",
+            "questionText": "1. Proper maintenance of your heating equipment ensures that small issues can be fixed------ they become big ones.",
+            "options": {
+              "A": "as a result",
+              "B": "in addition",
+              "C": "although",
+              "D": "before"
+            },
+            "correctAnswer": "D",
+            "explanation": "Sau chỗ trống là mệnh đề ('they become big ones'). Dịch nghĩa logic: '...đảm bảo các lỗi nhỏ có thể được sửa chữa TRƯỚC KHI chúng trở thành lỗi lớn'. Chọn liên từ 'before'.",
+            "sentenceTranslation": "Bảo trì đúng cách thiết bị sưởi ấm của bạn đảm bảo rằng các vấn đề nhỏ có thể được khắc phục trước khi chúng trở thành vấn đề lớn."
+          },
+          {
+            "id": "b3_p2_q2",
+            "questionText": "2. Satinesse Seat Covers will refund your order-----------you are not completely satisfied.",
+            "options": {
+              "A": "if",
+              "B": "yet",
+              "C": "until",
+              "D": "neither"
+            },
+            "correctAnswer": "A",
+            "explanation": "Sau chỗ trống là một mệnh đề chỉ điều kiện ('bạn không hoàn toàn hài lòng'). Chọn liên từ điều kiện 'if' (nếu... sẽ hoàn tiền).",
+            "sentenceTranslation": "Bọc ghế Satinesse sẽ hoàn lại tiền đơn hàng nếu bạn không hoàn toàn hài lòng."
+          },
+          {
+            "id": "b3_p2_q3",
+            "questionText": "3. -----------Peura Insurance has located a larger office space, it will begin negotiating the rental agreement.",
+            "options": {
+              "A": "Happily",
+              "B": "Now that",
+              "C": "Despite",
+              "D": "In fact"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng trước mệnh đề nguyên nhân/thời gian. 'Now that' nghĩa là 'Vì giờ đây / Bởi vì' (Now that + clause). Dịch nghĩa: 'Vì bây giờ bảo hiểm Peura đã tìm được văn phòng rộng hơn, họ sẽ bắt đầu đàm phán hợp đồng thuê'.",
+            "sentenceTranslation": "Bây giờ Bảo hiểm Peura đã tìm được một không gian văn phòng lớn hơn nên họ sẽ bắt đầu đàm phán hợp đồng cho thuê."
+          },
+          {
+            "id": "b3_p2_q4",
+            "questionText": "4. The community program features classes in photography, drawing,-----------other arts.",
+            "options": {
+              "A": "yet",
+              "B": "but",
+              "C": "and",
+              "D": "thus"
+            },
+            "correctAnswer": "C",
+            "explanation": "Nối các danh từ song hành trong danh sách kê khai (nhiếp ảnh, hội họa và các ngành nghệ thuật khác). Chọn liên từ đẳng lập 'and'.",
+            "sentenceTranslation": "Chương trình cộng đồng có các lớp học về nhiếp ảnh, vẽ và các nghệ thuật khác."
+          },
+          {
+            "id": "b3_p2_q5",
+            "questionText": "5. Mr. Liu will not be in the office this morning ----------he has a dentist appointment.",
+            "options": {
+              "A": "following",
+              "B": "because",
+              "C": "including",
+              "D": "likewise"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đằng sau là mệnh đề chỉ nguyên nhân (he has a dentist appointment). Ta cần liên từ chỉ lý do 'because'. Các từ khác là giới từ hoặc trạng từ.",
+            "sentenceTranslation": "Ông Liu sẽ không có mặt ở văn phòng sáng nay vì ông ấy có cuộc hẹn với nha sĩ."
+          },
+          {
+            "id": "b3_p2_q6",
+            "questionText": "6. Motorbike Unlimited's marketing campaign will begin-------------the terms of the contract are finalized.",
+            "options": {
+              "A": "as well as",
+              "B": "other than",
+              "C": "rather than",
+              "D": "as soon as"
+            },
+            "correctAnswer": "D",
+            "explanation": "Chỗ trống đứng trước mệnh đề chỉ thời gian ('các điều khoản hợp đồng được chốt hạ'). Dịch nghĩa: 'Chiến dịch sẽ bắt đầu NGAY KHI điều khoản được chốt'. Chọn liên từ 'as soon as'.",
+            "sentenceTranslation": "Chiến dịch tiếp thị của Motorbike Unlimited sẽ bắt đầu ngay sau khi các điều khoản của hợp đồng được hoàn tất."
+          },
+          {
+            "id": "b3_p2_q7",
+            "questionText": "7. Rain is predicted this weekend,-----------the office picnic will have to be postponed.",
+            "options": {
+              "A": "so",
+              "B": "for",
+              "C": "but",
+              "D": "nor"
+            },
+            "correctAnswer": "A",
+            "explanation": "Nối hai mệnh đề chỉ quan hệ nguyên nhân - kết quả (Trời dự báo mưa, VÌ VẬY buổi dã ngoại bị hoãn). Có dấu phẩy ngăn cách. Chọn liên từ đẳng lập chỉ kết quả 'so'.",
+            "sentenceTranslation": "Dự báo cuối tuần này sẽ có mưa nên chuyến dã ngoại văn phòng sẽ phải hoãn lại."
+          },
+          {
+            "id": "b3_p2_q8",
+            "questionText": "8. Clydeway, Inc., has grown dramatically-----------its beginnings as a small corner grocery store.",
+            "options": {
+              "A": "since",
+              "B": "such",
+              "C": "except",
+              "D": "however"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đằng sau là cụm danh từ thời gian ('bắt đầu của nó...'). 'since' đóng vai trò giới từ chỉ mốc thời gian (kể từ khi bắt đầu...). Động từ chính ở Hiện tại hoàn thành 'has grown' rất phù hợp đi với since.",
+            "sentenceTranslation": "Clydeway, Inc., đã phát triển vượt bậc kể từ khi khởi đầu là một cửa hàng tạp hóa nhỏ ở góc phố."
+          },
+          {
+            "id": "b3_p2_q9",
+            "questionText": "9. -----------Mr. Kamau has worked for Mombasa Communications for two years, he has never taken time off.",
+            "options": {
+              "A": "Although",
+              "B": "But",
+              "C": "Neither",
+              "D": "Yet"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đứng trước mệnh đề chỉ quan hệ nhượng bộ/đối lập ('làm việc 2 năm' vs 'chưa từng nghỉ phép'). Chọn liên từ nhượng bộ 'Although' (Mặc dù).",
+            "sentenceTranslation": "Mặc dù ông Kamau đã làm việc cho Mombasa Communications được hai năm nhưng ông chưa bao giờ nghỉ phép."
+          },
+          {
+            "id": "b3_p2_q10",
+            "questionText": "10. -----------the rock band Captain Zino decided to offer free tickets to their concert, sales of their album have reached record numbers.",
+            "options": {
+              "A": "Since",
+              "B": "Besides",
+              "C": "As much as",
+              "D": "Not only"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đứng trước mệnh đề nguyên nhân. Dịch nghĩa: 'BỞI VÌ ban nhạc quyết định tặng vé miễn phí, doanh thu album của họ đã đạt mốc kỷ lục'. Chọn liên từ 'Since' (Bởi vì/Kể từ khi).",
+            "sentenceTranslation": "Kể từ khi ban nhạc rock Captain Zino quyết định tặng vé miễn phí cho buổi hòa nhạc của họ, doanh số bán album của họ đã đạt con số kỷ lục."
+          }
+        ]
+      },
+      {
+        "partNumber": 3,
+        "title": "Bài tập 3: Giới từ trên lớp",
+        "type": "multiple_choice",
+        "instruction": "Chọn giới từ thích hợp nhất để hoàn thành các câu trắc nghiệm ngữ pháp dưới đây:",
+        "questions": [
+          {
+            "id": "b3_p3_q1",
+            "questionText": "1. Hotel guests have a lovely view of the ocean--------the south-facing windows.",
+            "options": {
+              "A": "up",
+              "B": "except",
+              "C": "onto",
+              "D": "through"
+            },
+            "correctAnswer": "D",
+            "explanation": "Dịch nghĩa: 'Khách khách sạn có tầm nhìn tuyệt đẹp ra đại dương XUYÊN QUA/QUA những ô cửa sổ hướng nam'. Chọn giới từ 'through' (xuyên qua, qua).",
+            "sentenceTranslation": "Khách nghỉ tại khách sạn có tầm nhìn tuyệt đẹp ra đại dương qua cửa sổ hướng về phía Nam."
+          },
+          {
+            "id": "b3_p3_q2",
+            "questionText": "2. Payments made -----------4:00 P.M. will be processed on the following business day.",
+            "options": {
+              "A": "later",
+              "B": "after",
+              "C": "than",
+              "D": "often"
+            },
+            "correctAnswer": "B",
+            "explanation": "Dịch nghĩa: 'Các khoản thanh toán thực hiện SAU 4 giờ chiều sẽ được xử lý vào ngày làm việc tiếp theo'. Chọn giới từ thời gian 'after'.",
+            "sentenceTranslation": "Các khoản thanh toán được thực hiện sau 4 giờ chiều. sẽ được xử lý vào ngày làm việc tiếp theo."
+          },
+          {
+            "id": "b3_p3_q3",
+            "questionText": "3. After-----------the neighborhood, Mr. Park decided not to move his cafe to Thomasville.",
+            "options": {
+              "A": "evaluation",
+              "B": "evaluate",
+              "C": "evaluating",
+              "D": "evaluated"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng sau giới từ 'After' chỉ có thể là Danh từ hoặc động từ dạng V-ing. 'evaluating' đóng vai trò là động danh từ (sau khi đánh giá khu dân cư). Chọn C.",
+            "sentenceTranslation": "Sau khi đánh giá khu vực lân cận, ông Park quyết định không chuyển quán cà phê của mình đến Thomasville."
+          },
+          {
+            "id": "b3_p3_q4",
+            "questionText": "4. The average precipitation in Campos-----------the past three years has been 22.7 centimeters.",
+            "options": {
+              "A": "on",
+              "B": "for",
+              "C": "to",
+              "D": "under"
+            },
+            "correctAnswer": "B",
+            "explanation": "Cụm thời gian kéo dài: for the past three years (trong vòng 3 năm qua), rất phù hợp với động từ chia Hiện tại hoàn thành 'has been'. Chọn B.",
+            "sentenceTranslation": "Lượng mưa trung bình ở Campos trong ba năm qua là 22,7 cm."
+          },
+          {
+            "id": "b3_p3_q5",
+            "questionText": "5. AI's Cafe will now be open on Sundays -----------the hours of 9 A.M. and 5 P.M.",
+            "options": {
+              "A": "for",
+              "B": "between",
+              "C": "inside",
+              "D": "from"
+            },
+            "correctAnswer": "B",
+            "explanation": "Có liên từ 'and' ở đằng sau làm dấu hiệu. Cấu trúc: between A and B (ở giữa mốc A và mốc B). Chọn B.",
+            "sentenceTranslation": "AI's Cafe hiện sẽ mở cửa vào Chủ Nhật từ 9 giờ sáng. và 5 giờ chiều"
+          },
+          {
+            "id": "b3_p3_q6",
+            "questionText": "6. You must close the application before-----------the installation of the software update.",
+            "options": {
+              "A": "to begin",
+              "B": "beginning",
+              "C": "must begin",
+              "D": "begins"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng sau giới từ 'before' ta cần một V-ing. 'before beginning' có nghĩa là 'trước khi bắt đầu' (rút gọn mệnh đề cùng chủ ngữ). Chọn B.",
+            "sentenceTranslation": "Bạn phải đóng ứng dụng trước khi bắt đầu cài đặt bản cập nhật phần mềm."
+          },
+          {
+            "id": "b3_p3_q7",
+            "questionText": "7. Industry news and upcoming social events are-----------the items featured in the company newsletter.",
+            "options": {
+              "A": "during",
+              "B": "among",
+              "C": "toward",
+              "D": "except"
+            },
+            "correctAnswer": "B",
+            "explanation": "Dịch nghĩa: 'Tin tức ngành và sự kiện xã hội sắp tới nằm TRONG SỐ (among) các hạng mục được đăng tin nổi bật ở bản tin công ty'. Chọn giới từ 'among' (trong số những cái gì số nhiều).",
+            "sentenceTranslation": "Tin tức trong ngành và các sự kiện xã hội sắp tới nằm trong số các mục được nêu trong bản tin của công ty."
+          },
+          {
+            "id": "b3_p3_q8",
+            "questionText": "8. Many customers have remained faithful to Kristiansen Electronics-----------the years because of our excellent customer service.",
+            "options": {
+              "A": "through",
+              "B": "even if",
+              "C": "prior to",
+              "D": "while"
+            },
+            "correctAnswer": "A",
+            "explanation": "Cụm giới từ: through/throughout the years (qua nhiều năm, suốt nhiều năm qua). Chọn A.",
+            "sentenceTranslation": "Nhiều khách hàng vẫn trung thành với Kristiansen Electronics trong nhiều năm qua nhờ dịch vụ khách hàng tuyệt vời của chúng tôi."
+          },
+          {
+            "id": "b3_p3_q9",
+            "questionText": "9. Assistant Director Melissa Arun works-----------the interns to monitor the quality of their work.",
+            "options": {
+              "A": "across",
+              "B": "alongside",
+              "C": "against",
+              "D": "about"
+            },
+            "correctAnswer": "B",
+            "explanation": "Dịch nghĩa: 'Trợ lý giám đốc làm việc BÊN CẠNH / SONG HÀNH CÙNG (alongside) các bạn thực tập sinh'. Chọn B.",
+            "sentenceTranslation": "Trợ lý Giám đốc Melissa Arun làm việc cùng với các thực tập sinh để giám sát chất lượng công việc của họ."
+          },
+          {
+            "id": "b3_p3_q10",
+            "questionText": "10. The cafeteria is featuring dishes-----------different regions of the world this week.",
+            "options": {
+              "A": "over",
+              "B": "through",
+              "C": "into",
+              "D": "from"
+            },
+            "correctAnswer": "D",
+            "explanation": "Dịch nghĩa: 'Căng tin đang giới thiệu các món ăn ĐẾN TỪ (from) các vùng miền khác nhau trên thế giới'. Chọn giới từ 'from'.",
+            "sentenceTranslation": "Quán ăn tự phục vụ tuần này có các món ăn từ các vùng khác nhau trên thế giới."
+          }
+        ]
+      },
+      {
+        "partNumber": 4,
+        "title": "Bài tập 4: Giới từ về nhà",
+        "type": "multiple_choice",
+        "instruction": "Chọn giới từ chính xác nhất để hoàn tất các câu bài tập về nhà dưới đây:",
+        "questions": [
+          {
+            "id": "b3_p4_q1",
+            "questionText": "11. The city council will discuss certain policies, particularly those made-----------the previous administration.",
+            "options": {
+              "A": "any",
+              "B": "by",
+              "C": "to",
+              "D": "and"
+            },
+            "correctAnswer": "B",
+            "explanation": "Câu bị động rút gọn mệnh đề quan hệ ('those made by...'). Dịch nghĩa: '...đặc biệt là những chính sách ĐƯỢC ĐƯA RA BỞI chính quyền nhiệm kỳ trước'. Chọn 'by'.",
+            "sentenceTranslation": "Hội đồng thành phố sẽ thảo luận về một số chính sách nhất định, đặc biệt là những chính sách do chính quyền tiền nhiệm đưa ra."
+          },
+          {
+            "id": "b3_p4_q2",
+            "questionText": "12. Servers' tips are pooled at the end of each shift and divided evenly-----------the entire waitstaff.",
+            "options": {
+              "A": "onto",
+              "B": "among",
+              "C": "beside",
+              "D": "about"
+            },
+            "correctAnswer": "B",
+            "explanation": "Dịch nghĩa: 'Tiền tip được gom cuối ca và chia đều TRONG SỐ (among) toàn bộ nhân viên phục vụ (đây là tập thể nhiều người)'. Chọn giới từ 'among'.",
+            "sentenceTranslation": "Tiền boa của người phục vụ được gộp lại vào cuối mỗi ca và chia đều cho toàn bộ nhân viên phục vụ."
+          },
+          {
+            "id": "b3_p4_q3",
+            "questionText": "13. The ideal operating temperature for the tablet computer is-----------10 and 30 degrees Celsius.",
+            "options": {
+              "A": "between",
+              "B": "above",
+              "C": "in",
+              "D": "off"
+            },
+            "correctAnswer": "A",
+            "explanation": "Dựa vào liên từ 'and' kết nối phía sau. Cấu trúc: between A and B (ở giữa khoảng từ A đến B). Chọn A.",
+            "sentenceTranslation": "Nhiệt độ hoạt động lý tưởng cho máy tính bảng là từ 10 đến 30 độ C."
+          },
+          {
+            "id": "b3_p4_q4",
+            "questionText": "14. Our internship combines lectures with real-world projects to provide formal instruction -----------professional experience.",
+            "options": {
+              "A": "above all",
+              "B": "as well as",
+              "C": "now that",
+              "D": "in order to"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng trước một cụm danh từ ('professional experience'). Ta cần giới từ liên kết ý nghĩa bổ sung: 'hướng dẫn chính quy CŨNG NHƯ kinh nghiệm chuyên môn thực tế'. Chọn giới từ ghép 'as well as'.",
+            "sentenceTranslation": "Chương trình thực tập của chúng tôi kết hợp các bài giảng với các dự án thực tế để cung cấp hướng dẫn chính thức cũng như kinh nghiệm chuyên môn."
+          },
+          {
+            "id": "b3_p4_q5",
+            "questionText": "15. Classes-----------using the new employee scheduling software will begin in December.",
+            "options": {
+              "A": "at",
+              "B": "to",
+              "C": "by",
+              "D": "on"
+            },
+            "correctAnswer": "D",
+            "explanation": "Classes on something (các lớp học về chủ đề gì). Dịch nghĩa: 'Các lớp học VỀ VIỆC SỬ DỤNG phần mềm lập lịch nhân viên mới...'. Chọn giới từ 'on'.",
+            "sentenceTranslation": "Các lớp học sử dụng phần mềm lập kế hoạch nhân viên mới sẽ bắt đầu vào tháng 12."
+          },
+          {
+            "id": "b3_p4_q6",
+            "questionText": "16. -----------her interview, the committee agreed that Ms. Han was the best candidate for the supervisor job.",
+            "options": {
+              "A": "As in",
+              "B": "Just as",
+              "C": "Almost",
+              "D": "After"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đằng sau là một cụm danh từ ('her interview'). Giới từ chỉ mốc thời gian logic: 'SAU (After) cuộc phỏng vấn của cô ấy, ủy ban đồng ý rằng...'. Chọn giới từ 'After'.",
+            "sentenceTranslation": "Sau cuộc phỏng vấn, ủy ban đã nhất trí rằng cô Han là ứng cử viên sáng giá nhất cho vị trí giám sát viên."
+          },
+          {
+            "id": "b3_p4_q7",
+            "questionText": "17. After monitoring the Hasher Corporation's inventory control process-----------several days, the consultant identified the problem.",
+            "options": {
+              "A": "among",
+              "B": "except",
+              "C": "off",
+              "D": "for"
+            },
+            "correctAnswer": "D",
+            "explanation": "Giới từ đi với khoảng thời gian kéo dài: for several days (trong vòng vài ngày). Chọn D.",
+            "sentenceTranslation": "Sau khi theo dõi quy trình kiểm soát hàng tồn kho của Hasher Corporation trong vài ngày, chuyên gia tư vấn đã xác định được vấn đề."
+          },
+          {
+            "id": "b3_p4_q8",
+            "questionText": "18. Revenue growth exceeding 2 percent was seen-----------all business segments this quarter.",
+            "options": {
+              "A": "across",
+              "B": "into",
+              "C": "prior to",
+              "D": "above"
+            },
+            "correctAnswer": "A",
+            "explanation": "Dịch nghĩa: 'Sự tăng trưởng doanh thu vượt mốc 2% được ghi nhận TRÊN KHẮP/Ở TẤT CẢ (across) các phân khúc kinh doanh trong quý này'. Chọn giới từ 'across'.",
+            "sentenceTranslation": "Tăng trưởng doanh thu vượt quá 2 phần trăm đã được nhìn thấy trên tất cả các phân khúc kinh doanh trong quý này."
+          },
+          {
+            "id": "b3_p4_q9",
+            "questionText": "19. After record profits, Golden Shamrock Jewelry's stock price increased-----------our expectations.",
+            "options": {
+              "A": "beside",
+              "B": "beyond",
+              "C": "behind",
+              "D": "between"
+            },
+            "correctAnswer": "B",
+            "explanation": "Dịch nghĩa: '...giá cổ phiếu tăng VƯỢT QUÁ (beyond) những kỳ vọng của chúng tôi'. Chọn giới từ 'beyond'.",
+            "sentenceTranslation": "Sau lợi nhuận kỷ lục, giá cổ phiếu của Golden Shamrock Jewelry tăng vượt mức chúng tôi mong đợi."
+          },
+          {
+            "id": "b3_p4_q10",
+            "questionText": "20. Mumbai Jewel is a widely acclaimed restaurant, mainly-----------its delicious buffet dinners.",
+            "options": {
+              "A": "such as",
+              "B": "not only",
+              "C": "because of",
+              "D": "together with"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng trước cụm danh từ chỉ nguyên nhân ('its delicious buffet dinners'). Ta cần giới từ chỉ lý do 'because of' (bởi vì). Chọn C.",
+            "sentenceTranslation": "Mumbai Jewel là một nhà hàng được đánh giá cao, chủ yếu là nhờ những bữa tối tự chọn ngon miệng."
+          }
+        ]
+      }
+    ]
+  }
+}

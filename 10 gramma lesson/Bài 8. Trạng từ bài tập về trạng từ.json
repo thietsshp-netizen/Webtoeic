@@ -1,0 +1,300 @@
+{
+  "layout": "splitscreen",
+  "theory": {
+    "title": "BÀI 8: TRẠNG TỪ",
+    "htmlContent": "<div class=\"grammar-container\" style=\"font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.7; padding: 10px; background-color: white;\">\n  \n  <style>\n    .grammar-title {\n      font-size: 22px;\n      font-weight: 800;\n      color: #000000;\n      text-transform: uppercase;\n      margin-bottom: 25px;\n      border-bottom: 2px solid #000000;\n      padding-bottom: 8px;\n    }\n    .pdf-section-title {\n      font-size: 16px;\n      font-weight: 700;\n      color: #000000;\n      margin-top: 25px;\n      margin-bottom: 15px;\n    }\n    .pdf-bullet {\n      margin-left: 20px;\n      font-weight: 700;\n      margin-top: 15px;\n      margin-bottom: 5px;\n    }\n    .pdf-box {\n      border: 1px solid #7f7f7f;\n      padding: 15px 20px;\n      margin: 10px 0 20px 30px;\n      border-radius: 0px;\n      background-color: #ffffff;\n      width: fit-content;\n      min-width: 75%;\n    }\n    .pdf-box-divider {\n      border: 0;\n      border-top: 1px solid #7f7f7f;\n      margin: 12px 0;\n    }\n    .pdf-table {\n      width: 100%;\n      border-collapse: collapse;\n      margin: 15px 0 25px 0;\n    }\n    .pdf-table th, .pdf-table td {\n      border: 1px solid #7f7f7f;\n      padding: 12px;\n      text-align: left;\n      font-size: 13.5px;\n    }\n    .pdf-table th {\n      background-color: #f2f2f2;\n      font-weight: 700;\n    }\n    .highlight-red-italic {\n      color: #ff0000;\n      font-style: italic;\n    }\n    .highlight-red {\n      color: #ff0000;\n    }\n  </style>\n\n  <h1 class=\"grammar-title\">BÀI 8: TRẠNG TỪ</h1>\n\n  <div class=\"pdf-section-title\">\n    <span>1. Vai trò:</span>\n  </div>\n  <p style=\"font-size: 14px; margin-left: 20px;\">\n    - Trạng từ là dùng để bổ nghĩa cho: <strong>V, adj, adv, cả câu</strong><br>\n    - Trạng từ <strong>không</strong> bổ nghĩa cho N\n  </p>\n\n  <div class=\"pdf-section-title\">\n    <span>2. Vị trí của trạng từ:</span>\n  </div>\n\n  <div style=\"margin: 25px 0; text-align: center;\">\n    <img src=\"/grammar/Bài_8._Trạng_từ_bài_tập_về_trạng_từ_p1_1_Image23.png\" alt=\"Sơ đồ Vị trí của Trạng từ trong cụm từ\" style=\"max-width: 75%; height: auto; border: 1px solid #7f7f7f; padding: 4px;\" />\n  </div>\n\n  <p style=\"font-size: 13.5px; margin-left: 20px; font-style: italic; color: #555;\">\n    Nhìn vào công thức Cụm N và Cụm V ta thấy trạng từ có thể đứng ở những vị trí sau:\n  </p>\n\n  <!-- Bullet 1 -->\n  <div class=\"pdf-bullet\">1- Đứng ngay trước từ mà nó bổ nghĩa</div>\n  <div class=\"pdf-box\" style=\"font-size: 14px; line-height: 1.8;\">\n    - He <span class=\"highlight-red-italic\">always</span> leaves at 5 o'clock.<br>\n    - She wore a <span class=\"highlight-red-italic\">beautifully</span> designed dress.<br>\n    - Peter Jackson finished his assignment <span class=\"highlight-red-italic\">remarkably</span> quickly.\n  </div>\n\n  <!-- Bullet 2 -->\n  <div class=\"pdf-bullet\">2- Đứng giữa V và trợ động từ:</div>\n  <div class=\"pdf-box\" style=\"font-size: 14px; line-height: 1.8;\">\n    - The hotel is <span class=\"highlight-red-italic\">conveniently</span> located downtown. &nbsp;&nbsp;&nbsp;&nbsp;(--> 100% là adv)\n  </div>\n\n  <!-- Bullet 3 -->\n  <div class=\"pdf-bullet\">3- Nếu bổ nghĩa cho V thì adv còn có thể đứng sau V đó:</div>\n  \n  <p style=\"font-size: 14px; font-weight: bold; margin-left: 30px; margin-bottom: 5px;\">Nếu V không có tân ngữ:</p>\n  <div class=\"pdf-box\" style=\"font-size: 14px; line-height: 1.8; margin-top: 5px;\">\n    - Tara walks <span class=\"highlight-red-italic\">gracefully</span>.<br>\n    - Doubters make me work <span class=\"highlight-red-italic\">harder</span> to prove them wrong\n  </div>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-left: 30px; margin-bottom: 5px;\">Nếu V có tân ngữ:</p>\n  <div class=\"pdf-box\" style=\"font-size: 14px; line-height: 1.8; margin-top: 5px;\">\n    - Before you install this software, please read the directions <span class=\"highlight-red-italic\">carefully</span>\n  </div>\n\n  <!-- 3. Trạng từ trong câu so sánh -->\n  <div class=\"pdf-section-title\" style=\"margin-top: 30px; border-bottom: 1px solid #7f7f7f; padding-bottom: 5px;\">\n    <span>3. Trạng từ trong câu so sánh</span>\n  </div>\n  \n  <table class=\"pdf-table\">\n    <tbody>\n      <tr>\n        <td style=\"font-weight: 700; width: 15%; vertical-align: middle; background-color: #f9f9f9;\">SS bằng</td>\n        <td style=\"font-weight: 700; color: #ff0000; width: 35%; vertical-align: middle;\">as + (adj/ adv) + as</td>\n        <td style=\"line-height: 1.6;\">\n          - Harry is <span class=\"highlight-red-italic\">as beautiful as</span> her sister.<br>\n          - Her car runs <span class=\"highlight-red-italic\">as fast as</span> a race car.\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: 700; vertical-align: middle; background-color: #f9f9f9;\">SS hơn</td>\n        <td style=\"line-height: 1.6; width: 35%;\">\n          - Tính từ/Trạng từ ngắn:<br>\n          <span class=\"highlight-red\"><strong>(Adj/Adv) + “-er” + than</strong></span><br><br>\n          - Tính từ/Trạng từ dài:<br>\n          <span class=\"highlight-red\"><strong>more + Adj/Adv + than</strong></span>\n        </td>\n        <td style=\"line-height: 1.6;\">\n          - Today is <span class=\"highlight-red-italic\">colder than</span> yesterday.<br>\n          - My girlfriend came <span class=\"highlight-red-italic\">later than</span> me.<br><br>\n          - This hat is <span class=\"highlight-red-italic\">more expensive than</span> the others.<br>\n          - My father drives <span class=\"highlight-red-italic\">more carefully than</span> my brother.\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: 700; vertical-align: middle; background-color: #f9f9f9;\">SS nhất</td>\n        <td style=\"line-height: 1.6; width: 35%;\">\n          - Tính từ/Trạng từ ngắn:<br>\n          <span class=\"highlight-red\"><strong>the + Adj/Adv + -est</strong></span><br><br>\n          - Tính từ/Trạng từ dài:<br>\n          <span class=\"highlight-red\"><strong>the + most + Adj/Adv</strong></span>\n        </td>\n        <td style=\"line-height: 1.6;\">\n          - My brother is <span class=\"highlight-red-italic\">the tallest</span> in our family.<br>\n          - He runs <span class=\"highlight-red-italic\">the fastest</span> in my city.<br><br>\n          - Lisa is <span class=\"highlight-red-italic\">the most careful</span> person I ever have known.<br>\n          - Of all the students, she does <span class=\"highlight-red-italic\">the most quickly</span>.\n        </td>\n      </tr>\n    </tbody>\n  </table>\n\n</div>"
+  },
+  "practice": {
+    "parts": [
+      {
+        "partNumber": 1,
+        "title": "Bài tập 1: Bài tập ví dụ (Trên lớp)",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án đúng nhất để hoàn thiện các câu hỏi trắc nghiệm trạng từ trên lớp dưới đây:",
+        "questions": [
+          {
+            "id": "b8_p1_q1",
+            "questionText": "1. When-----------applied, Tilda's Restorative Cream reduces the appearance of fine lines and wrinkles.",
+            "options": {
+              "A": "consistent",
+              "B": "consist",
+              "C": "consistently",
+              "D": "consisting"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng trước tính từ phân từ bị động 'applied' (được bôi/sử dụng) trong mệnh đề rút gọn có 'When', ta cần trạng từ bổ nghĩa. Chọn 'consistently' (khi được bôi một cách đều đặn).",
+            "sentenceTranslation": "Khi thoa đều đặn, Kem phục hồi của Tilda sẽ làm giảm sự xuất hiện của đường nhăn và nếp nhăn."
+          },
+          {
+            "id": "b8_p1_q2",
+            "questionText": "2. Mr. Tanaka's team worked-----------for months to secure a lucrative government contract.",
+            "options": {
+              "A": "readily",
+              "B": "diligently",
+              "C": "curiously",
+              "D": "extremely"
+            },
+            "correctAnswer": "B",
+            "explanation": "Chỗ trống đứng sau động từ thường 'worked' và bổ nghĩa cho hành động làm việc. Chọn trạng từ 'diligently' (làm việc một cách chăm chỉ/nỗ lực).",
+            "sentenceTranslation": "Nhóm của ông Tanaka đã làm việc cần mẫn trong nhiều tháng để giành được một hợp đồng béo bở với chính phủ."
+          },
+          {
+            "id": "b8_p1_q3",
+            "questionText": "3. Glass containers must be-----------secured during transport.",
+            "options": {
+              "A": "safely",
+              "B": "safe",
+              "C": "safety",
+              "D": "safer"
+            },
+            "correctAnswer": "A",
+            "explanation": "Cấu trúc xen giữa: 'be' và động từ phân từ V3 'secured' (được bảo vệ). Ta bắt buộc dùng trạng từ bổ nghĩa. Chọn 'safely' (phải được cố định/neo giữ một cách an toàn).",
+            "sentenceTranslation": "Hộp đựng bằng thủy tinh phải được cố định an toàn trong quá trình vận chuyển."
+          },
+          {
+            "id": "b8_p1_q4",
+            "questionText": "4. Ms. Trinacria's team is developing a kitchen faucet that can-----------respond to voice commands.",
+            "options": {
+              "A": "reliably",
+              "B": "rely",
+              "C": "reliability",
+              "D": "reliable"
+            },
+            "correctAnswer": "A",
+            "explanation": "Chỗ trống xen giữa động từ khuyết thiếu 'can' và động từ chính nguyên mẫu 'respond'. Ta cần điền trạng từ. Chọn 'reliably' (có thể phản hồi một cách đáng tin cậy).",
+            "sentenceTranslation": "Nhóm của cô Trinacria đang phát triển một vòi bếp có thể phản hồi các lệnh thoại một cách đáng tin cậy."
+          },
+          {
+            "id": "b8_p1_q5",
+            "questionText": "5. Amand Corp.'s flexible work policy is-----------beneficial to the company as employee turnover is minimal.",
+            "options": {
+              "A": "financially",
+              "B": "finances",
+              "C": "financial",
+              "D": "to finance"
+            },
+            "correctAnswer": "A",
+            "explanation": "Chỗ trống đứng trước tính từ 'beneficial' (có lợi) để làm rõ mức độ có lợi về mặt nào. Ta cần một trạng từ bổ nghĩa cho tính từ. Chọn 'financially' (có lợi về mặt tài chính).",
+            "sentenceTranslation": "Chính sách làm việc linh hoạt của Amand Corp. mang lại lợi ích tài chính cho công ty vì tỷ lệ luân chuyển nhân viên ở mức tối thiểu."
+          },
+          {
+            "id": "b8_p1_q6",
+            "questionText": "6. Vallentrade manages clients' accounts more-----------than most other brokerage firms.",
+            "options": {
+              "A": "conserves",
+              "B": "conservative",
+              "C": "conservatively",
+              "D": "conserving"
+            },
+            "correctAnswer": "C",
+            "explanation": "Chỗ trống bổ nghĩa cho động từ thường 'manages' (quản lý) trong cấu trúc so sánh hơn 'more... than'. Ta cần dùng trạng từ. Chọn 'conservatively' (quản lý một cách thận trọng hơn).",
+            "sentenceTranslation": "Vallentrade quản lý tài khoản của khách hàng một cách thận trọng hơn hầu hết các công ty môi giới khác."
+          },
+          {
+            "id": "b8_p1_q7",
+            "questionText": "7. Ardentine Realty is-----------seeking new rental properties for its portfolio.",
+            "options": {
+              "A": "actively",
+              "B": "activate",
+              "C": "activity",
+              "D": "active"
+            },
+            "correctAnswer": "A",
+            "explanation": "Cấu trúc xen giữa trợ động từ 'is' và động từ phân từ hiện tại V-ing 'seeking'. Ta điền trạng từ bổ nghĩa cho hành động đang diễn ra. Chọn 'actively' (đang chủ động tìm kiếm).",
+            "sentenceTranslation": "Ardentine Realty đang tích cực tìm kiếm bất động sản cho thuê mới cho danh mục đầu tư của mình."
+          },
+          {
+            "id": "b8_p1_q8",
+            "questionText": "8. Maxwell Copies prints brochures on thick, glossy paper that was-----------selected for its quality and durability.",
+            "options": {
+              "A": "caring",
+              "B": "careful",
+              "C": "carefully",
+              "D": "cares"
+            },
+            "correctAnswer": "C",
+            "explanation": "Chỗ trống nằm xen giữa 'was' (Be) và 'selected' (V3) thể bị động. Ta điền trạng từ. Chọn 'carefully' (được lựa chọn một cách cẩn thận).",
+            "sentenceTranslation": "Maxwell Sao chép tài liệu in trên giấy dày, bóng đã được lựa chọn cẩn thận về chất lượng và độ bền."
+          },
+          {
+            "id": "b8_p1_q9",
+            "questionText": "9. Crane operators must check that all moving parts of the machine are fastened-----------before use.",
+            "options": {
+              "A": "security",
+              "B": "securely",
+              "C": "secures",
+              "D": "securing"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng ở cuối mệnh đề để bổ nghĩa cho động từ bị động 'fastened' (được cố định/buộc chặt). Ta cần điền trạng từ. Chọn 'securely' (được cố định một cách chắc chắn).",
+            "sentenceTranslation": "Người vận hành cần cẩu phải kiểm tra xem tất cả các bộ phận chuyển động của máy đã được gắn chặt chắc chắn trước khi sử dụng."
+          },
+          {
+            "id": "b8_p1_q10",
+            "questionText": "10. Shaloub Hospital wants to hire several more-----------qualified laboratory workers.",
+            "options": {
+              "A": "higher",
+              "B": "highest",
+              "C": "high",
+              "D": "highly"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng trước tính từ 'qualified' (có trình độ chuyên môn) để bổ nghĩa tăng mức độ. Ta dùng trạng từ 'highly' tạo thành cụm từ cố định rất phổ biến: 'highly qualified' (có trình độ chuyên môn cực kỳ cao). Chọn D.",
+            "sentenceTranslation": "Bệnh viện Shaloub muốn thuê thêm một số nhân viên phòng thí nghiệm có trình độ cao."
+          }
+        ]
+      },
+      {
+        "partNumber": 2,
+        "title": "Bài tập 2: Bài tập về nhà",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án đúng nhất để hoàn thiện các câu hỏi trắc nghiệm trạng từ tự luyện tại nhà dưới đây:",
+        "questions": [
+          {
+            "id": "b8_p2_q1",
+            "questionText": "11. Adopting advanced billing software would improve Narrin Group's fiscal-management process-----------.",
+            "options": {
+              "A": "substantial",
+              "B": "substantially",
+              "C": "more substantial",
+              "D": "substances"
+            },
+            "correctAnswer": "B",
+            "explanation": "Chỗ trống đứng cuối câu sau tân ngữ đầy đủ 'Narrin Group's fiscal-management process'. Ta cần một trạng từ để bổ nghĩa cho động từ 'improve'. Chọn 'substantially' (cải thiện một cách đáng kể).",
+            "sentenceTranslation": "Việc áp dụng phần mềm thanh toán tiên tiến sẽ cải thiện đáng kể quy trình quản lý tài chính của Tập đoàn Narrin."
+          },
+          {
+            "id": "b8_p2_q2",
+            "questionText": "12. When processing a medical leave request, the attending physician must fill out a form-----------.",
+            "options": {
+              "A": "completes",
+              "B": "completed",
+              "C": "completely",
+              "D": "completeness"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng ở cuối câu sau tân ngữ 'a form' để bổ nghĩa cho cụm hành động 'fill out' (điền đơn). Ta điền trạng từ 'completely' (điền một cách đầy đủ/hoàn toàn).",
+            "sentenceTranslation": "Khi xử lý yêu cầu nghỉ phép y tế, bác sĩ điều trị phải điền đầy đủ vào biểu mẫu."
+          },
+          {
+            "id": "b8_p2_q3",
+            "questionText": "13. Mr. Kim's research reveals that types of hay differ-----------in their nutritional content.",
+            "options": {
+              "A": "significant",
+              "B": "signify",
+              "C": "significance",
+              "D": "significantly"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng sau động từ thường 'differ' (khác biệt) để bổ nghĩa cho hành động này. Ta cần điền một trạng từ. Chọn 'significantly' (khác biệt một cách đáng kể).",
+            "sentenceTranslation": "Nghiên cứu của ông Kim cho thấy các loại cỏ khô khác nhau đáng kể về hàm lượng dinh dưỡng."
+          },
+          {
+            "id": "b8_p2_q4",
+            "questionText": "14. Corracar Ltd. is-----------looking for new ways to expand its transportation network.",
+            "options": {
+              "A": "continued",
+              "B": "continuation",
+              "C": "continual",
+              "D": "continually"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng xen giữa trợ động từ 'is' và động từ phân từ hiện tại V-ing 'looking'. Ta cần điền trạng từ. Chọn 'continually' (đang liên tục tìm kiếm).",
+            "sentenceTranslation": "Corracar Ltd. liên tục tìm kiếm những cách thức mới để mở rộng mạng lưới vận tải của mình."
+          },
+          {
+            "id": "b8_p2_q5",
+            "questionText": "15. The general manager has implemented a system to fill online orders of costume jewelry lines more-----------.",
+            "options": {
+              "A": "quick",
+              "B": "quickest",
+              "C": "quicker",
+              "D": "quickly"
+            },
+            "correctAnswer": "D",
+            "explanation": "Chỗ trống đứng cuối mệnh đề bổ nghĩa cho động từ 'fill' (hoàn tất/đáp ứng đơn hàng) trong cấu trúc so sánh hơn với 'more'. Ta dùng trạng từ 'quickly'. Chọn D.",
+            "sentenceTranslation": "Tổng giám đốc đã triển khai hệ thống đáp ứng các đơn đặt hàng trực tuyến về các dòng trang sức trang phục nhanh hơn."
+          },
+          {
+            "id": "b8_p2_q6",
+            "questionText": "16. To appeal to younger consumers throughout Asia, the sportswear company is shifting its marketing tactics-----------.",
+            "options": {
+              "A": "drama",
+              "B": "dramatic",
+              "C": "dramatically",
+              "D": "more dramatic"
+            },
+            "correctAnswer": "C",
+            "explanation": "Chỗ trống đứng cuối câu sau cụm tân ngữ 'its marketing tactics'. Ta điền trạng từ bổ nghĩa cho động từ 'shifting' (thay đổi). Chọn 'dramatically' (thay đổi một cách đáng kể/ấn tượng).",
+            "sentenceTranslation": "Để thu hút người tiêu dùng trẻ tuổi trên khắp châu Á, công ty đồ thể thao này đang thay đổi đáng kể các chiến thuật tiếp thị của mình."
+          },
+          {
+            "id": "b8_p2_q7",
+            "questionText": "17. Janet Rhodes was commended for-----------defending the company's reputation.",
+            "options": {
+              "A": "assertively",
+              "B": "assert",
+              "C": "assertive",
+              "D": "assertion"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đứng trước động từ danh động từ V-ing 'defending' bổ nghĩa cho hành động này. Ta cần điền trạng từ. Chọn 'assertively' (vì đã bảo vệ một cách quả quyết/quyết liệt).",
+            "sentenceTranslation": "Janet Rhodes được khen ngợi vì đã quyết đoán bảo vệ danh tiếng của công ty."
+          },
+          {
+            "id": "b8_p2_q8",
+            "questionText": "18. The bridge project bids turned out to be ----------- higher than expected.",
+            "options": {
+              "A": "considering",
+              "B": "consider",
+              "C": "consideration",
+              "D": "considerably"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng trước tính từ so sánh hơn 'higher' để bổ nghĩa mức độ chênh lệch. Ta cần một trạng từ. Chọn 'considerably' (cao hơn đáng kể so với dự kiến).",
+            "sentenceTranslation": "Giá thầu dự án cầu hóa ra cao hơn đáng kể so với dự kiến."
+          },
+          {
+            "id": "b8_p2_q9",
+            "questionText": "19. Greentrim's product sales rose-----------following the introduction of its new shipping policy.",
+            "options": {
+              "A": "sharp",
+              "B": "sharper",
+              "C": "sharply",
+              "D": "sharpest"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng sau và bổ nghĩa cho động từ thường quá khứ 'rose' (tăng lên). Ta cần dùng trạng từ. Chọn 'sharply' (tăng một cách mạnh mẽ/đột ngột).",
+            "sentenceTranslation": "Doanh số bán sản phẩm của Greentrim tăng mạnh sau khi áp dụng chính sách vận chuyển mới."
+          },
+          {
+            "id": "b8_p2_q10",
+            "questionText": "20. Saul's Pizzeria changed its menu options after receiving-----------negative customer feedback.",
+            "options": {
+              "A": "increase",
+              "B": "increases",
+              "C": "to increase",
+              "D": "increasingly"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng trước tính từ 'negative' để bổ nghĩa cho tính từ này. Ta cần dùng một trạng từ. Chọn 'increasingly' (nhận những phản hồi ngày càng tiêu cực từ khách hàng).",
+            "sentenceTranslation": "Saul's Pizzeria đã thay đổi các lựa chọn thực đơn sau khi nhận được phản hồi ngày càng tiêu cực của khách hàng."
+          },
+          {
+            "id": "b8_p2_q11",
+            "questionText": "21. The information on the Web site of Croyell Decorators is-----------organized.",
+            "options": {
+              "A": "clear",
+              "B": "clearing",
+              "C": "clearest",
+              "D": "clearly"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng xen giữa động từ liên kết 'is' và động từ phân từ quá khứ bị động 'organized'. Ta cần trạng từ bổ nghĩa. Chọn 'clearly' (được sắp xếp/tổ chức một cách rõ ràng).",
+            "sentenceTranslation": "Các thông tin trên website của Croyell Decorators được sắp xếp rõ ràng."
+          }
+        ]
+      }
+    ]
+  }
+}

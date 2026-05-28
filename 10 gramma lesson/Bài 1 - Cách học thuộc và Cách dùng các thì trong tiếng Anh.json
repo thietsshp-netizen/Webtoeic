@@ -1,0 +1,569 @@
+{
+  "layout": "splitscreen",
+  "theory": {
+    "title": "BÀI 1: CÁCH HỌC THUỘC CÁC THÌ VÀ CÁCH DÙNG CỦA CÁC THÌ TRONG TIẾNG ANH",
+    "htmlContent": "<div class=\"grammar-container\" style=\"font-family: 'Inter', sans-serif; color: #000000; line-height: 1.7; padding: 10px; background-color: white;\">\n  \n  <style>\n    .grammar-title {\n      font-size: 22px;\n      font-weight: 800;\n      color: #ff0000;\n      text-transform: uppercase;\n      margin-bottom: 25px;\n      text-align: center;\n    }\n    .pdf-section-title {\n      font-size: 16px;\n      font-weight: 700;\n      color: #ff0000;\n      margin-top: 25px;\n      margin-bottom: 15px;\n    }\n    .pdf-sub-title {\n      font-size: 15px;\n      font-weight: 700;\n      color: #ff0000;\n      margin-top: 20px;\n      margin-bottom: 10px;\n    }\n    .pdf-bullet {\n      margin-left: 20px;\n      font-weight: 700;\n      margin-top: 15px;\n      margin-bottom: 5px;\n      color: #ff0000;\n    }\n    .pdf-table {\n      width: auto;\n      border-collapse: collapse;\n      margin: 16px auto 24px auto;\n      border-radius: 8px;\n      overflow: hidden;\n      box-shadow: 0 1px 4px rgba(0,0,0,0.08);\n    }\n    .pdf-table th, .pdf-table td {\n      border: 1px solid rgba(0,0,0,0.08);\n      padding: 10px 16px;\n      text-align: center;\n      font-size: 13.5px;\n      vertical-align: middle;\n    }\n    .pdf-table th {\n      background-color: #e07830;\n      color: #ffffff;\n      font-weight: 700;\n      letter-spacing: 0.02em;\n    }\n    .pdf-table tbody tr td:first-child {\n      background-color: #fff4ec;\n      font-weight: 700;\n      color: #9a3412;\n    }\n    .pdf-table tbody tr:nth-child(even) td:not(:first-child) {\n      background-color: #fafafa;\n    }\n    .pdf-table tbody tr:hover td {\n      background-color: #fef3e8;\n      transition: background 0.15s;\n    }\n    .highlight-red {\n      color: #ff0000;\n    }\n    .highlight-red-bold {\n      color: #ff0000;\n      font-weight: 700;\n    }\n    .highlight-red-italic {\n      color: #ff0000;\n      font-style: italic;\n    }\n    .highlight-red-bold-italic {\n      color: #ff0000;\n      font-weight: 700;\n      font-style: italic;\n    }\n    .highlight-red-underline-bold {\n      color: #ff0000;\n      font-weight: 700;\n      text-decoration: underline;\n    }\n      color: #ff0000;\n      font-weight: 700;\n      font-style: italic;\n    }\n  </style>\n\n  <h1 class=\"grammar-title\">BÀI 1. CÁCH HỌC THUỘC CÁC THÌ VÀ CÁCH DÙNG CỦA CÁC THÌ TRONG TIẾNG ANH</h1>\n\n  <div class=\"pdf-section-title\">\n    <span>I. CÁCH HỌC THUỘC CÁC THÌ TRONG TIẾNG ANH</span>\n  </div>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-bottom: 8px;\">BẢNG 1: BẢNG ĐỘNG TỪ BẤT QUY TẮC:</p>\n  <table class=\"pdf-table\" style=\"min-width: 60%;\">\n    <thead>\n      <tr>\n        <th>Vo</th>\n        <th>V1</th>\n        <th>V2</th>\n        <th>V3</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>be</strong></td>\n        <td>am/is/are</td>\n        <td>was/were</td>\n        <td>been</td>\n      </tr>\n      <tr>\n        <td><strong>have</strong></td>\n        <td>have/has</td>\n        <td>had</td>\n        <td>had</td>\n      </tr>\n      <tr>\n        <td><strong>start</strong></td>\n        <td>starts</td>\n        <td>started</td>\n        <td>started</td>\n      </tr>\n      <tr>\n        <td><strong>watch</strong></td>\n        <td>watches</td>\n        <td>watched</td>\n        <td>watched</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-top: 25px; margin-bottom: 8px;\">BẢNG 2: CÔNG THỨC CÁC THÌ (THỂ CHỦ ĐỘNG)</p>\n  <table class=\"pdf-table\" style=\"min-width: 85%;\">\n    <thead>\n      <tr>\n        <th></th>\n        <th>QUÁ KHỨ</th>\n        <th>HIỆN TẠI</th>\n        <th>TƢƠNG LAI</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>ĐƠN</strong></td>\n        <td>S + V(2,ed) + O</td>\n        <td>S + V(s/es) + O</td>\n        <td>S + WILL + VO + O</td>\n      </tr>\n      <tr>\n        <td><strong>TIẾP DIỄN</strong></td>\n        <td>S + WAS/WERE + Ving + O</td>\n        <td>S + AM/IS/ARE + Ving + O</td>\n        <td>S + WILL + BE + Ving + O</td>\n      </tr>\n      <tr>\n        <td><strong>HOÀN THÀNH</strong></td>\n        <td>S + HAD+ V(3,ed) + O</td>\n        <td>S + HAVE/HAS + V(3,ed) + O</td>\n        <td>S + WILL + HAVE + V(3,ed) + O</td>\n      </tr>\n      <tr>\n        <td><strong>HOÀN THÀNH TIẾP DIỄN</strong></td>\n        <td>S + HAD + BEEN + Ving + O</td>\n        <td>S + HAVE/HAS) + BEEN + Ving + O</td>\n        <td>S + WILL + HAVE + BEEN + Ving + O</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-top: 25px; margin-bottom: 8px;\">BẢNG 3: CÔNG THỨC CÁC THÌ (THỂ BỊ ĐỘNG)</p>\n  <table class=\"pdf-table\" style=\"min-width: 85%;\">\n    <thead>\n      <tr>\n        <th></th>\n        <th>QUÁ KHỨ</th>\n        <th>HIỆN TẠI</th>\n        <th>TƢƠNG LAI</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>ĐƠN</strong></td>\n        <td>S + WAS/WERE + V(3,ed) + O</td>\n        <td>S + AM/IS/ARE + V(3,ed) + O</td>\n        <td>S + WILL + BE + V(3,ed) + O</td>\n      </tr>\n      <tr>\n        <td><strong>TIẾP DIỄN</strong></td>\n        <td>S + WAS/WERE + Being + V(3,ed) + O</td>\n        <td>S + AM/IS/ARE + BEING + V(3,ed) + O</td>\n        <td style=\"color: #ff0000; font-style: italic;\">(Không có quan tâm)</td>\n      </tr>\n      <tr>\n        <td><strong>HOÀN THÀNH</strong></td>\n        <td>S + HAD + BEEN + V(3,ed) + O</td>\n        <td>S + HAVE/HAS + BEEN + V(3,ed) + O</td>\n        <td>S + WILL + HAVE + BEEN + V(3,ed) + O</td>\n      </tr>\n      <tr>\n        <td><strong>HOÀN THÀNH TIẾP DIỄN</strong></td>\n        <td style=\"color: #ff0000; font-style: italic;\">(Không có quan tâm)</td>\n        <td style=\"color: #ff0000; font-style: italic;\">(Không có quan tâm)</td>\n        <td style=\"color: #ff0000; font-style: italic;\">(Không có quan tâm)</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-top: 30px; margin-bottom: 8px; text-transform: uppercase;\">ĐỂ THUỘC LÒNG NHANH CÁC THÌ THÌ CÁC BẠN CHỈ CẦN HỌC THUỘC 2 BẢNG SAU:</p>\n  \n  <p style=\"font-size: 14px; font-weight: bold; margin-bottom: 5px;\">BẢNG 1: BẢNG ĐỘNG TỪ BẤT QUY TẮC:</p>\n  <table class=\"pdf-table\" style=\"min-width: 60%;\">\n    <thead>\n      <tr>\n        <th>Vo</th>\n        <th>V1</th>\n        <th>V2</th>\n        <th>V3</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>be</strong></td>\n        <td>am/is/are</td>\n        <td>was/were</td>\n        <td>been</td>\n      </tr>\n      <tr>\n        <td><strong>have</strong></td>\n        <td>have/has</td>\n        <td>had</td>\n        <td>had</td>\n      </tr>\n      <tr>\n        <td><strong>start</strong></td>\n        <td>starts</td>\n        <td>started</td>\n        <td>started</td>\n      </tr>\n      <tr>\n        <td><strong>watch</strong></td>\n        <td>watches</td>\n        <td>watched</td>\n        <td>watched</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <p style=\"font-size: 14px; font-weight: bold; margin-top: 20px; margin-bottom: 5px;\">BẢNG 2: CÁC KẾT LUẬN RÚT RA TỪ BẢNG CÔNG THỨC CÁC THÌ:</p>\n  <div style=\"font-size: 14px; line-height: 1.9; margin: 12px 0 30px 0; padding: 16px 20px; border: 1.5px solid #555; border-radius: 4px; background: #fff;\">\n    1- Hiện tại &nbsp;&nbsp;- dùng <span class=\"highlight-red\">V1(s/es)</span><br>\n    2- Quá khứ &nbsp;- dùng <span class=\"highlight-red\">V2/ed</span><br>\n    3- Tương lai - có <span class=\"highlight-red\">WILL</span><br>\n    4- Tiếp diễn - có <span class=\"highlight-red\">BE + Ving</span><br>\n    5- Hoàn thành - có <span class=\"highlight-red\">HAVE + V(3,ed)</span><br>\n    6- Sau WILL &nbsp;-- phải là <span class=\"highlight-red\">Vo</span><br>\n    ====<br>\n    7- Thể bị động: phải có <span class=\"highlight-red\">BE + V(3,ed)</span>\n  </div>\n\n\n  <!-- SECTION III -->\n  <div class=\"pdf-section-title\" style=\"border-top: 1px solid #7f7f7f; padding-top: 15px; margin-top: 30px;\">\n    <span>III- CÁCH DÙNG CÁC THÌ QUAN TRỌNG TRONG TIẾNG ANH</span>\n  </div>\n\n  <p style=\"font-size: 14px; margin-bottom: 12px; font-weight: bold;\">\n    Sau khi đã thuộc công thức các thì thì các bạn cần nắm được cách dùng của các thì\n  </p>\n  <p style=\"font-size: 14px; margin-bottom: 12px; font-style: italic; color: #333;\">\n    Các bạn mới học thì không nên tìm hiểu quá sâu về cách dùng các thì\n  </p>\n  <p style=\"font-size: 14px; margin-bottom: 12px; line-height: 1.6;\">\n    Các bạn chỉ cần nắm tổng quan cách dùng của một vài thì hay được sử dụng thôi. Sau này khi đã có nhiều từ vựng, đọc hiểu tốt rồi thì các bạn có thể tìm hiểu thêm về cách dùng các thì nếu muốn\n  </p>\n  <p style=\"font-size: 14px; margin-bottom: 15px; font-weight: bold;\">\n    Bây giờ các bạn chỉ cần nhớ cho mình những kiến thức sau là đủ:\n  </p>\n\n  <!-- 1- Tất cả các thì Đơn -->\n  <div class=\"pdf-bullet\">1- Tất cả các thì Đơn:</div>\n  <p style=\"font-size: 14px; margin-left: 20px; margin-bottom: 8px;\">- Diễn tả hành động mang tính chất thời điểm</p>\n  \n  <table class=\"pdf-table\" style=\"margin-left: 20px; min-width: 65%;\">\n    <thead>\n      <tr style=\"background-color: #ffffff;\">\n        <th style=\"width: 30%; font-weight: 700;\">THÌ NGỮ PHÁP</th>\n        <th style=\"width: 70%; font-weight: 700;\">CÁCH DÙNG</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>HTĐ</strong></td>\n        <td>Diễn tả hành động xảy ra ở hiện tại</td>\n      </tr>\n      <tr>\n        <td><strong>TLĐ</strong></td>\n        <td>Diễn tả hành động sẽ xảy ra trong tương lai</td>\n      </tr>\n      <tr>\n        <td><strong>QKĐ</strong></td>\n        <td>Diễn tả hành động đã xảy ra và kết thúc trong quá khứ</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- 2- Tất cả các thì tiếp diễn -->\n  <div class=\"pdf-bullet\">2- Tất cả các thì tiếp diễn: <span style=\"font-weight: normal; color: #000; font-size: 14px;\">Diễn tả hành động đang diễn ra (ở hiện tại, quá khứ hay tương lai)</span></div>\n  \n  <table class=\"pdf-table\" style=\"margin-left: 20px; min-width: 65%;\">\n    <thead>\n      <tr style=\"background-color: #ffffff;\">\n        <th style=\"width: 30%; font-weight: 700;\">THÌ NGỮ PHÁP</th>\n        <th style=\"width: 70%; font-weight: 700;\">CÁCH DÙNG</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>HTTD</strong></td>\n        <td>Diễn tả hành động đang xảy ra ở hiện tại</td>\n      </tr>\n      <tr>\n        <td><strong>TLTD</strong></td>\n        <td>Diễn tả hành động đang xảy ra ở một thời điểm nào đó trong tương lai</td>\n      </tr>\n      <tr>\n        <td><strong>QKTD</strong></td>\n        <td>Diễn tả hành động đang xảy ra ở một thời điểm nào đó trong quá khứ</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- 3- Tất cả các thì hoàn thành -->\n  <div class=\"pdf-bullet\">3. Tất cả các thì hoàn thành: <span style=\"font-weight: normal; color: #000; font-size: 14px;\">Nhấn mạnh vào tính quá trình (tính kéo dài của hành động)</span></div>\n  \n  <table class=\"pdf-table\" style=\"margin-left: 20px; width: 95%;\">\n    <thead>\n      <tr style=\"background-color: #ffffff;\">\n        <th style=\"width: 12%; font-weight: 700;\">THÌ</th>\n        <th style=\"width: 25%; font-weight: 700;\">DIỄN TẢ HÀNH ĐỘNG</th>\n        <th style=\"width: 23%; font-weight: 700;\">XẢY RA KÉO DÀI TỚI</th>\n        <th style=\"width: 40%; font-weight: 700;\">ĐÃ KẾT THÚC CHƢA?</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>HTHT</strong></td>\n        <td>Tại thời điểm nào đó trong quá khứ (không quan tâm)</td>\n        <td>Tới hiện tại</td>\n        <td style=\"line-height: 1.6;\">\n          - Vừa kết thúc, vẫn để lại hậu quả ở hiện tại<br>\n          - Kết thúc ở hiện tại<br>\n          - Có thể vẫn chưa kết thúc, còn có thể kéo dài tiếp qua tương lai<br><br>\n          <span style=\"font-style: italic; color: #555;\">VD: Cho tới hiện tại, tôi đã dạy tiếng Anh được 20 năm<br>\n          ➔ Until now, I have taught English for ten years.</span>\n        </td>\n      </tr>\n      <tr>\n        <td><strong>QKHT</strong></td>\n        <td>Tại thời điểm nào đó trong quá khứ (không quan tâm)</td>\n        <td>Tới thời điểm nào đó trong quá khứ (thời điểm này thường sẽ được chỉ ra trong câu)</td>\n        <td style=\"line-height: 1.6;\">\n          - Đã kết thúc trước thời điểm nào đó trong quá khứ<br>\n          - Đã kết thúc vào thời điểm trong quá khứ (được nhắc đến trong câu)<br><br>\n          <span style=\"font-style: italic; color: #555;\">VD1: Cho tới năm 2010, tôi đã dạy tiếng Anh được 10 năm<br>\n          ➔ Until 2010, I had taught English for 10 years.<br><br>\n          VD2: Cô ấy đã làm xong bài tập trước khi cô ấy đi ngủ<br>\n          ➔ She had done her homework before she went to bed</span>\n        </td>\n      </tr>\n      <tr>\n        <td><strong>TLHT</strong></td>\n        <td>Tại thời điểm nào đó (trong QK, HT hoặc TL)</td>\n        <td>Tới 1 thời điểm nào đó trong tương lai (thời điểm này thường sẽ được chỉ ra trong câu)</td>\n        <td style=\"line-height: 1.6;\">\n          - Sẽ phải kết thúc vào (trước) thời điểm nào đó trong tương lai (được nhắc đến trong câu)<br><br>\n          <span style=\"font-style: italic; color: #555;\">VD1: Tôi sẽ phải hoàn thành bài tập về nhà vào tuần tới<br>\n          ➔ I will have finished my homework this weekend.<br><br>\n          VD2: Tôi sẽ phải hoàn thành bài tập về nhà trước 3 giờ<br>\n          ➔ I will have finished my homework by 3 o’clock<br><br>\n          VD3: Tôi sẽ phải hoàn thành bài tập về nhà trước khi bạn tới.<br>\n          ➔ I will have finished my homework before you arrive</span>\n        </td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- 4- Cách dùng thì hiện tại đơn -->\n  <div class=\"pdf-bullet\">4- Cách dùng thì hiện tại đơn:</div>\n  <p style=\"font-size: 14px; margin-left: 20px; line-height: 1.6; margin-bottom: 12px;\">\n    Thì này rất hay dùng trong cuộc sống cũng như trong đề thi Toeic nên các bạn cần nắm kỹ mấy đặc điểm sau của nó:\n  </p>\n  <p style=\"font-size: 14px; margin-left: 20px; font-weight: bold; margin-bottom: 8px;\">\n    Nhớ từ khóa: <span class=\"highlight-red-bold-italic\"><span class=\"highlight-red-bold-italic\"><span class=\"highlight-red-bold-italic\">“luôn đúng”</span></span></span> - cứ cái gì luôn đúng thì dùng thì hiện tại đơn:\n  </p>\n  \n  <table class=\"pdf-table\" style=\"margin-left: 20px; min-width: 80%;\">\n    <tbody>\n      <tr>\n        <td style=\"font-weight: 700; width: 40%;\">+ Diễn tả quy luật luôn đúng:</td>\n        <td>The earth <span class=\"highlight-red-underline-bold\">moves</span> around the Sun</td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: 700;\">+ Diễn tả lịch trình bảng biểu, thói quen..</td>\n        <td>My father always <span class=\"highlight-red-underline-bold\">gets up</span> early</td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: 700;\">+ Diễn tả các quy định (tại công ty)</td>\n        <td>All our employees <span class=\"highlight-red-underline-bold\">wear</span> white shirts at work.</td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: 700;\">+ Khi muốn khẳng định rằng điều gì đó là luôn đúng</td>\n        <td>\n          - Công ty chúng tôi luôn cung cấp các sản phẩm tốt nhất<br>\n          ➔ Our company (always) <span class=\"highlight-red-underline-bold\">provides</span> the best products\n        </td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- 5- Ba cách diễn tả hành động sẽ xảy ra trong tương lai -->\n  <div class=\"pdf-bullet\">5- Ba cách diễn tả hành động sẽ xảy ra trong lƣơng lai:</div>\n  <p style=\"font-size: 14px; margin-left: 20px; line-height: 1.6; margin-bottom: 12px;\">\n    Mặc dù là hành động xảy ra trong lương lai, nhưng người ta không chỉ dùng các thì Tương lai.\n  </p>\n  <p style=\"font-size: 14px; margin-left: 20px; line-height: 1.6; margin-bottom: 15px;\">\n    Người ta cũng có thể dùng thì Hiện tại đơn hoặc Hiện tại tiếp diễn để diễn tả hành động sắp xảy ra (trong tương lai gần) ➔ Có 3 thì có thể được sử dụng để diễn tả 1 hành động sẽ xảy ra trong tương lai:\n  </p>\n\n  <table class=\"pdf-table\" style=\"margin-left: 20px; width: 90%;\">\n    <tbody>\n      <tr>\n        <td style=\"font-weight: 700; width: 35%; vertical-align: middle;\">Tƣơng lai đơn</td>\n        <td>\n          - I <span class=\"highlight-red-underline-bold\">will watch</span> TV tomorrow night<br>\n          <span style=\"font-size: 12.5px; color: #555;\">(chỉ nói vu vơ là sẽ xem ti vi vào tối mai)</span>\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: 700; vertical-align: middle;\">\n          Hiện tại tiếp diễn:<br>\n          <span style=\"font-size: 12.5px; color: #555; font-weight: normal;\">- Tương lai gần: be going to<br>\n          - Thì hiện tại tiếp diễn bình thường: be + Ving</span>\n        </td>\n        <td>\n          - I <span class=\"highlight-red-underline-bold\">am going to</span> watch TV tonight<br>\n          <span style=\"font-size: 12.5px; color: #555;\">(Việc xem ti vi là dự định, sẽ xảy ra trong tương lai gần)</span>\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: 700; vertical-align: middle;\">Hiện tại đơn</td>\n        <td>\n          - The plane <span class=\"highlight-red-underline-bold\">lands</span> in 5 minutes.<br>\n          <span style=\"font-size: 12.5px; color: #555;\">(mình biết máy bay sẽ hạ cánh trong 5 phút nữa do biết trước lịch trình)</span>\n        </td>\n      </tr>\n    </tbody>\n  </table>\n\n</div>"
+  },
+  "practice": {
+    "parts": [
+      {
+        "partNumber": 1,
+        "title": "Bài 1: Viết công thức các thì",
+        "type": "formula_construction",
+        "instruction": "Dựa trên 7 Quy tắc vàng ở bên trái, hãy hoàn thành công thức tương ứng cho các thì dưới đây:",
+        "questions": [
+          {
+            "id": "b1_q1",
+            "tenseName": "1. Hiện tại hoàn thành (Thể chủ động)",
+            "options": {
+              "A": "S + AM/IS/ARE + V(3,ed) + O",
+              "B": "S + HAVE/HAS + V(3,ed) + O",
+              "C": "S + HAD + V(3,ed) + O",
+              "D": "S + WILL + HAVE + V(3,ed) + O"
+            },
+            "correctAnswer": "B",
+            "explanation": "Quy tắc: Hiện tại (dùng V1: HAVE/HAS) + Hoàn thành (cần HAVE + V3) => S + HAVE/HAS + V(3,ed) + O."
+          },
+          {
+            "id": "b1_q2",
+            "tenseName": "2. Hiện tại hoàn thành (Thể bị động)",
+            "options": {
+              "A": "S + HAVE/HAS + BEEN + V(3,ed) + O",
+              "B": "S + HAD + BEEN + V(3,ed) + O",
+              "C": "S + HAVE/HAS + Being + V(3,ed) + O",
+              "D": "S + AM/IS/ARE + BEING + V(3,ed) + O"
+            },
+            "correctAnswer": "A",
+            "explanation": "Quy tắc: Hiện tại hoàn thành chủ động là HAVE/HAS + V3. Thêm bị động (BE + V3) -> V3 của BE là BEEN => HAVE/HAS + BEEN + V(3,ed)."
+          },
+          {
+            "id": "b1_q3",
+            "tenseName": "3. Quá khứ hoàn thành (Thể chủ động)",
+            "options": {
+              "A": "S + HAVE/HAS + V(3,ed) + O",
+              "B": "S + HAD + V(3,ed) + O",
+              "C": "S + WAS/WERE + V(3,ed) + O",
+              "D": "S + HAD + BEEN + V(3,ed) + O"
+            },
+            "correctAnswer": "B",
+            "explanation": "Quy tắc: Quá khứ (dùng V2: HAD) + Hoàn thành (cần HAVE + V3) => S + HAD + V(3,ed) + O."
+          },
+          {
+            "id": "b1_q4",
+            "tenseName": "4. Quá khứ hoàn thành (Thể bị động)",
+            "options": {
+              "A": "S + WAS/WERE + Being + V(3,ed) + O",
+              "B": "S + HAD + V(3,ed) + O",
+              "C": "S + HAD + BEEN + V(3,ed) + O",
+              "D": "S + WAS/WERE + V(3,ed) + O"
+            },
+            "correctAnswer": "C",
+            "explanation": "Quy tắc: Quá khứ hoàn thành (HAD + V3) kết hợp Bị động (BE + V3) -> V3 của BE là BEEN => S + HAD + BEEN + V(3,ed) + O."
+          },
+          {
+            "id": "b1_q5",
+            "tenseName": "5. Tương lai hoàn thành (Thể chủ động)",
+            "options": {
+              "A": "S + WILL + HAVE + V(3,ed) + O",
+              "B": "S + WILL + BE + V(3,ed) + O",
+              "C": "S + WILL + HAVE + BEEN + V(3,ed) + O",
+              "D": "S + HAVE/HAS + V(3,ed) + O"
+            },
+            "correctAnswer": "A",
+            "explanation": "Quy tắc: Tương lai (có WILL) + Sau WILL phải là V0 (HAVE) + Hoàn thành (V3) => S + WILL + HAVE + V(3,ed) + O."
+          },
+          {
+            "id": "b1_q6",
+            "tenseName": "6. Quá khứ tiếp diễn (Thể chủ động)",
+            "options": {
+              "A": "S + AM/IS/ARE + Ving + O",
+              "B": "S + WAS/WERE + Ving + O",
+              "C": "S + HAD + BEEN + Ving + O",
+              "D": "S + WAS/WERE + Being + V(3,ed) + O"
+            },
+            "correctAnswer": "B",
+            "explanation": "Quy tắc: Quá khứ (V2 của BE là WAS/WERE) + Tiếp diễn (BE + Ving) => S + WAS/WERE + Ving + O."
+          },
+          {
+            "id": "b1_q7",
+            "tenseName": "7. Hiện tại hoàn thành tiếp diễn",
+            "options": {
+              "A": "S + HAVE/HAS + Ving + O",
+              "B": "S + HAVE/HAS + BEEN + Ving + O",
+              "C": "S + HAD + BEEN + Ving + O",
+              "D": "S + WILL + HAVE + BEEN + Ving + O"
+            },
+            "correctAnswer": "B",
+            "explanation": "Quy tắc: Hiện tại (HAVE/HAS) + Hoàn thành (cần V3 của BE là BEEN) + Tiếp diễn (cần Ving) => S + HAVE/HAS + BEEN + Ving + O."
+          }
+        ]
+      },
+      {
+        "partNumber": 2,
+        "title": "Bài 2: Xác định tên thì của động từ",
+        "type": "multiple_choice",
+        "instruction": "Hãy xác định tên thì và thể (chủ động / bị động) của các cụm động từ sau:",
+        "questions": [
+          {
+            "id": "b2_q1",
+            "questionText": "1. is prevented",
+            "options": {
+              "A": "Hiện tại tiếp diễn - Chủ động",
+              "B": "Hiện tại đơn - Bị động",
+              "C": "Quá khứ đơn - Bị động",
+              "D": "Tương lai đơn - Bị động"
+            },
+            "correctAnswer": "B",
+            "explanation": "is là V1 của BE (Hiện tại đơn) + prevented là V3 (Thể bị động) => Hiện tại đơn - Thể bị động.",
+            "sentenceTranslation": "bị ngăn cản (Show tại đơn - Bị động)"
+          },
+          {
+            "id": "b2_q2",
+            "questionText": "2. was expired",
+            "options": {
+              "A": "Quá khứ tiếp diễn - Chủ động",
+              "B": "Hiện tại đơn - Bị động",
+              "C": "Quá khứ đơn - Bị động",
+              "D": "Quá khứ hoàn thành - Chủ động"
+            },
+            "correctAnswer": "C",
+            "explanation": "was là V2 của BE (Quá khứ đơn) + expired là V3 (Thể bị động) => Quá khứ đơn - Thể bị động.",
+            "sentenceTranslation": "đã hết hạn (Quá khứ đơn - Bị động)"
+          },
+          {
+            "id": "b2_q3",
+            "questionText": "3. will be expiring",
+            "options": {
+              "A": "Tương lai tiếp diễn - Chủ động",
+              "B": "Tương lai đơn - Bị động",
+              "C": "Tương lai hoàn thành - Chủ động",
+              "D": "Tương lai tiếp diễn - Bị động"
+            },
+            "correctAnswer": "A",
+            "explanation": "will (Tương lai) + be + expiring (Tiếp diễn) => Tương lai tiếp diễn - Thể chủ động.",
+            "sentenceTranslation": "sắp hết hạn (Tương lai tiếp diễn - Chủ động)"
+          },
+          {
+            "id": "b2_q4",
+            "questionText": "4. had arisen",
+            "options": {
+              "A": "Hiện tại hoàn thành - Chủ động",
+              "B": "Quá khứ hoàn thành - Chủ động",
+              "C": "Quá khứ hoàn thành - Bị động",
+              "D": "Tương lai hoàn thành - Chủ động"
+            },
+            "correctAnswer": "B",
+            "explanation": "had là V2 của HAVE (Quá khứ) + arisen là V3 của arise (Hoàn thành) => Quá khứ hoàn thành - Thể chủ động.",
+            "sentenceTranslation": "đã phát sinh ( Quá khứ hoàn thành - Chủ động)"
+          },
+          {
+            "id": "b2_q5",
+            "questionText": "5. commented",
+            "options": {
+              "A": "Hiện tại đơn - Chủ động",
+              "B": "Quá khứ đơn - Chủ động",
+              "C": "Quá khứ đơn - Bị động",
+              "D": "Hiện tại hoàn thành - Chủ động"
+            },
+            "correctAnswer": "B",
+            "explanation": "commented là dạng V2 (hoặc V3 nhưng đứng một mình không có HAVE/BE nên chỉ có thể là V2 chia thì Quá khứ đơn) => Quá khứ đơn - Thể chủ động.",
+            "sentenceTranslation": "đã nhận xét (Quá khứ đơn - Chủ động)"
+          },
+          {
+            "id": "b2_q6",
+            "questionText": "6. has been visited",
+            "options": {
+              "A": "Hiện tại hoàn thành - Chủ động",
+              "B": "Quá khứ hoàn thành - Bị động",
+              "C": "Hiện tại hoàn thành tiếp diễn",
+              "D": "Hiện tại hoàn thành - Bị động"
+            },
+            "correctAnswer": "D",
+            "explanation": "has là V1 của HAVE (Hiện tại) + been (Hoàn thành) + visited là V3 (Bị động) => Hiện tại hoàn thành - Thể bị động.",
+            "sentenceTranslation": "đã ghé thăm (Show tại hoàn thành - Bị động)"
+          },
+          {
+            "id": "b2_q7",
+            "questionText": "7. has presented",
+            "options": {
+              "A": "Hiện tại hoàn thành - Chủ động",
+              "B": "Hiện tại tiếp diễn - Chủ động",
+              "C": "Quá khứ hoàn thành - Chủ động",
+              "D": "Hiện tại đơn - Chủ động"
+            },
+            "correctAnswer": "A",
+            "explanation": "has là V1 của HAVE (Hiện tại) + presented là V3 (Hoàn thành) => Hiện tại hoàn thành - Thể chủ động.",
+            "sentenceTranslation": "đã trình bày (Hiện tại hoàn thành - Chủ động)"
+          },
+          {
+            "id": "b2_q8",
+            "questionText": "8. being sought",
+            "options": {
+              "A": "Dạng Ving ở thể Bị động (Không chia thì)",
+              "B": "Hiện tại tiếp diễn - Bị động",
+              "C": "Quá khứ tiếp diễn - Bị động",
+              "D": "Hiện tại hoàn thành - Bị động"
+            },
+            "correctAnswer": "A",
+            "explanation": "being + seeked/sought (V3) là dạng bị động của Ving (dùng làm danh động từ hoặc phân từ, không đứng sau trợ động từ chia thì nên đây là dạng không chia thì).",
+            "sentenceTranslation": "đang được tìm kiếm (Dạng Ving ở thể Bị động (Không chia thì))"
+          },
+          {
+            "id": "b2_q9",
+            "questionText": "9. is regulated",
+            "options": {
+              "A": "Hiện tại tiếp diễn - Bị động",
+              "B": "Hiện tại đơn - Bị động",
+              "C": "Quá khứ đơn - Bị động",
+              "D": "Hiện tại đơn - Chủ động"
+            },
+            "correctAnswer": "B",
+            "explanation": "is (Hiện tại V1) + regulated (V3) => Hiện tại đơn - Thể bị động.",
+            "sentenceTranslation": "được quy định (Show tại đơn - Bị động)"
+          },
+          {
+            "id": "b2_q10",
+            "questionText": "10. supported",
+            "options": {
+              "A": "Hiện tại đơn - Chủ động",
+              "B": "Quá khứ đơn - Chủ động",
+              "C": "Quá khứ đơn - Bị động",
+              "D": "Động từ nguyên thể"
+            },
+            "correctAnswer": "B",
+            "explanation": "supported ở dạng V2 của support đứng độc lập => Quá khứ đơn - Thể chủ động.",
+            "sentenceTranslation": "được hỗ trợ (Quá khứ đơn - Chủ động)"
+          },
+          {
+            "id": "b2_q11",
+            "questionText": "11. exercised",
+            "options": {
+              "A": "Quá khứ đơn - Chủ động",
+              "B": "Hiện tại đơn - Chủ động",
+              "C": "Động từ nguyên thể",
+              "D": "Tương lai đơn - Chủ động"
+            },
+            "correctAnswer": "A",
+            "explanation": "exercised ở dạng V2 đứng độc lập => Quá khứ đơn - Thể chủ động.",
+            "sentenceTranslation": "đã thực hiện (Quá khứ đơn - Chủ động)"
+          },
+          {
+            "id": "b2_q12",
+            "questionText": "12. have left",
+            "options": {
+              "A": "Hiện tại đơn - Chủ động",
+              "B": "Hiện tại hoàn thành - Chủ động",
+              "C": "Quá khứ hoàn thành - Chủ động",
+              "D": "Hiện tại hoàn thành - Bị động"
+            },
+            "correctAnswer": "B",
+            "explanation": "have là V1 (Hiện tại) + left là V3 của leave (Hoàn thành) => Hiện tại hoàn thành - Thể chủ động.",
+            "sentenceTranslation": "đã rời đi (Hiện tại hoàn thành - Chủ động)"
+          },
+          {
+            "id": "b2_q13",
+            "questionText": "13. developed",
+            "options": {
+              "A": "Quá khứ đơn - Chủ động",
+              "B": "Hiện tại đơn - Chủ động",
+              "C": "Hiện tại hoàn thành - Chủ động",
+              "D": "Động từ nguyên thể"
+            },
+            "correctAnswer": "A",
+            "explanation": "developed ở dạng V2 đứng độc lập => Quá khứ đơn - Thể chủ động.",
+            "sentenceTranslation": "đã phát triển (Quá khứ đơn - Chủ động)"
+          },
+          {
+            "id": "b2_q14",
+            "questionText": "14. will be closed",
+            "options": {
+              "A": "Tương lai đơn - Chủ động",
+              "B": "Tương lai tiếp diễn - Bị động",
+              "C": "Tương lai đơn - Bị động",
+              "D": "Hiện tại đơn - Bị động"
+            },
+            "correctAnswer": "C",
+            "explanation": "will (Tương lai) + be (V0 nguyên thể) + closed (V3/ed thể bị động) => Tương lai đơn - Thể bị động.",
+            "sentenceTranslation": "sẽ đóng cửa (Tương lai đơn - Bị động)"
+          },
+          {
+            "id": "b2_q15",
+            "questionText": "15. has overcome",
+            "options": {
+              "A": "Quá khứ hoàn thành - Chủ động",
+              "B": "Hiện tại đơn - Chủ động",
+              "C": "Hiện tại hoàn thành - Bị động",
+              "D": "Hiện tại hoàn thành - Chủ động"
+            },
+            "correctAnswer": "D",
+            "explanation": "has là V1 (Hiện tại) + overcome là V3 của overcome (Hoàn thành) => Hiện tại hoàn thành - Thể chủ động.",
+            "sentenceTranslation": "đã khắc phục (Hiện tại hoàn thành - Chủ động)"
+          }
+        ]
+      },
+      {
+        "partNumber": 3,
+        "title": "Bài 3: Bài tập áp dụng (Chọn động từ)",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án đúng nhất để hoàn thành các câu trắc nghiệm ngữ pháp dưới đây:",
+        "questions": [
+          {
+            "id": "b3_q1",
+            "questionText": "1. We usually _____ some money to help poor students in this area.",
+            "options": {
+              "A": "donate",
+              "B": "donates",
+              "C": "will donate",
+              "D": "are donating"
+            },
+            "correctAnswer": "A",
+            "explanation": "usually (thường xuyên) chỉ thói quen ở Hiện tại đơn. Chủ ngữ 'We' số nhiều nên động từ đi kèm giữ nguyên thể là 'donate'.",
+            "sentenceTranslation": "Chúng tôi thường quyên góp một số tiền để giúp đỡ học sinh nghèo ở khu vực này."
+          },
+          {
+            "id": "b3_q2",
+            "questionText": "2. Mr. Richmond _____ our company five years ago.",
+            "options": {
+              "A": "will join",
+              "B": "joins",
+              "C": "joined",
+              "D": "has joined"
+            },
+            "correctAnswer": "C",
+            "explanation": "Dấu hiệu 'five years ago' (5 năm trước) bắt buộc chia thì Quá khứ đơn. Chọn động từ thêm đuôi -ed là 'joined'.",
+            "sentenceTranslation": "Ông Richmond gia nhập công ty chúng tôi cách đây 5 năm."
+          },
+          {
+            "id": "b3_q3",
+            "questionText": "3. The wages for construction workers _____ steadily over the last few years.",
+            "options": {
+              "A": "rose",
+              "B": "risen",
+              "C": "has risen",
+              "D": "rise"
+            },
+            "correctAnswer": "C",
+            "explanation": "Cụm 'over the last few years' (qua vài năm trở lại đây) là dấu hiệu của Hiện tại hoàn thành. Trong các đáp án chỉ có 'has risen' là dạng hoàn thành.",
+            "sentenceTranslation": "Mức lương của công nhân xây dựng đã tăng đều đặn trong vài năm qua."
+          },
+          {
+            "id": "b3_q4",
+            "questionText": "4. An opening ceremony _____ tomorrow at 10 a.m in Marian Hall.",
+            "options": {
+              "A": "held",
+              "B": "has been held",
+              "C": "will be held",
+              "D": "is held"
+            },
+            "correctAnswer": "C",
+            "explanation": "Dấu hiệu 'tomorrow' chỉ tương lai + lễ khai mạc không tự tổ chức mà phải 'được tổ chức' (Bị động) => Chọn Tương lai đơn bị động: 'will be held'.",
+            "sentenceTranslation": "Lễ khai mạc sẽ được tổ chức vào ngày mai lúc 10 giờ sáng tại Hội trường Thánh Mẫu."
+          },
+          {
+            "id": "b3_q5",
+            "questionText": "5. Many economists have strongly _____ the government’s new bill to raise the property tax.",
+            "options": {
+              "A": "criticism",
+              "B": "criticize",
+              "C": "criticizing",
+              "D": "criticized"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng sau trợ động từ hoàn thành 'have' và trạng từ 'strongly' phải là một động từ ở dạng V3/ed => Chọn 'criticized'.",
+            "sentenceTranslation": "Nhiều nhà kinh tế đã chỉ trích mạnh mẽ dự luật mới của chính phủ nhằm tăng thuế tài sản."
+          },
+          {
+            "id": "b3_q6",
+            "questionText": "6. Please remember that all application materials should _____ by next Friday.",
+            "options": {
+              "A": "send",
+              "B": "be sending",
+              "C": "be sent",
+              "D": "sending"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng sau động từ khuyết thiếu 'should' là V0. Chủ ngữ 'all application materials' (tài liệu đăng ký) là vật nên phải dùng thể bị động (be + V3) => Chọn 'be sent'.",
+            "sentenceTranslation": "Xin nhớ rằng tất cả các tài liệu đăng ký phải được gửi trước thứ Sáu tuần sau."
+          },
+          {
+            "id": "b3_q7",
+            "questionText": "7. Money refunds will _____ into your account within 7 days of your claim.",
+            "options": {
+              "A": "deposited",
+              "B": "to deposit",
+              "C": "depositing",
+              "D": "be deposited"
+            },
+            "correctAnswer": "D",
+            "explanation": "Sau động từ khuyết thiếu 'will' là V0. Chủ ngữ 'Money refunds' (tiền hoàn lại) cần được gửi/gửi tiền (bị động: be + V3) => Chọn 'be deposited'.",
+            "sentenceTranslation": "Tiền hoàn lại sẽ được gửi vào tài khoản của bạn trong vòng 7 ngày kể từ ngày bạn yêu cầu."
+          },
+          {
+            "id": "b3_q8",
+            "questionText": "8. The research institute ________ an increase in the number of foreign workers.",
+            "options": {
+              "A": "expect",
+              "B": "to expect",
+              "C": "expecting",
+              "D": "expects"
+            },
+            "correctAnswer": "D",
+            "explanation": "Chủ ngữ 'The research institute' là danh từ số ít nên động từ chia ở Hiện tại đơn phải thêm đuôi -s => Chọn 'expects'.",
+            "sentenceTranslation": "Viện nghiên cứu mong đợi sự gia tăng số lượng lao động nước ngoài."
+          },
+          {
+            "id": "b3_q9",
+            "questionText": "9. Members who _____ their money to the museum will be eligible for free admission twice a year.",
+            "options": {
+              "A": "donating",
+              "B": "donates",
+              "C": "to donate",
+              "D": "donate"
+            },
+            "correctAnswer": "D",
+            "explanation": "Động từ trong mệnh đề quan hệ bổ nghĩa cho 'Members' (danh từ số nhiều) phải được chia ở dạng số nhiều (không thêm -s) => Chọn 'donate'.",
+            "sentenceTranslation": "Các thành viên quyên góp tiền của mình cho bảo tàng sẽ được vào cửa miễn phí hai lần một năm."
+          }
+        ]
+      },
+      {
+        "partNumber": 4,
+        "title": "Bài 4: Bài tập về nhà",
+        "type": "multiple_choice",
+        "instruction": "Hoàn thành các câu bài tập về nhà dưới đây bằng cách chọn động từ thích hợp nhất:",
+        "questions": [
+          {
+            "id": "b4_q1",
+            "questionText": "11. The information about the upcoming seminars ______ available on the Internet.",
+            "options": {
+              "A": "are",
+              "B": "were",
+              "C": "is",
+              "D": "be"
+            },
+            "correctAnswer": "C",
+            "explanation": "Chủ ngữ chính của câu là danh từ không đếm được 'The information' (tin tức), do đó động từ tobe đi kèm phải chia ở số ít => Chọn 'is'.",
+            "sentenceTranslation": "Thông tin về các hội thảo sắp tới có sẵn trên Internet."
+          },
+          {
+            "id": "b4_q2",
+            "questionText": "12. Almost everyone in the conference _____ agreed to proceed with the construction project.",
+            "options": {
+              "A": "have",
+              "B": "having",
+              "C": "are",
+              "D": "has"
+            },
+            "correctAnswer": "D",
+            "explanation": "Chủ ngữ 'Almost everyone' (hầu như mọi người) là đại từ bất định luôn đi với động từ số ít. Đứng trước động từ 'agreed' (V3) cần trợ động từ hoàn thành => Chọn 'has'.",
+            "sentenceTranslation": "Hầu hết mọi người trong hội nghị đều đồng ý tiến hành dự án xây dựng."
+          },
+          {
+            "id": "b4_q3",
+            "questionText": "13. My colleague and I ______ instructed to prepare a workplace safety workshop for all employees.",
+            "options": {
+              "A": "was",
+              "B": "be",
+              "C": "were",
+              "D": "being"
+            },
+            "correctAnswer": "C",
+            "explanation": "Chủ ngữ 'My colleague and I' (Đồng nghiệp của tôi và tôi) là số nhiều. Câu mang nghĩa bị động 'được hướng dẫn' ở quá khứ => Chọn 'were'.",
+            "sentenceTranslation": "Đồng nghiệp của tôi và tôi được hướng dẫn chuẩn bị một buổi hội thảo về an toàn tại nơi làm việc cho tất cả nhân viên."
+          },
+          {
+            "id": "b4_q4",
+            "questionText": "14. If you _____ any help to organize the meeting, please don’t hesitate to ask me.",
+            "options": {
+              "A": "needs",
+              "B": "needed",
+              "C": "will need",
+              "D": "need"
+            },
+            "correctAnswer": "D",
+            "explanation": "Mệnh đề điều kiện If trong câu điều kiện loại 1 chia ở Hiện tại đơn. Chủ ngữ 'you' đi với động từ nguyên thể => Chọn 'need'.",
+            "sentenceTranslation": "Nếu bạn cần bất kỳ trợ giúp nào để tổ chức cuộc họp, vui lòng hỏi tôi."
+          },
+          {
+            "id": "b4_q5",
+            "questionText": "15. Production of recreational vehicles _____ significantly low this month.",
+            "options": {
+              "A": "are",
+              "B": "have",
+              "C": "is",
+              "D": "be"
+            },
+            "correctAnswer": "C",
+            "explanation": "Chủ ngữ chính là 'Production' (sự sản xuất - số ít), trạng từ chỉ thời gian 'this month' ở hiện tại => Chọn 'is'.",
+            "sentenceTranslation": "Sản lượng phương tiện giải trí thấp đáng kể trong tháng này."
+          },
+          {
+            "id": "b4_q6",
+            "questionText": "16. New vacation policies _____ expected to be introduced early next month.",
+            "options": {
+              "A": "are",
+              "B": "is",
+              "C": "will",
+              "D": "to be"
+            },
+            "correctAnswer": "A",
+            "explanation": "Chủ ngữ 'New vacation policies' (những chính sách nghỉ lễ mới) là số nhiều. Động từ chia ở thể bị động hiện tại => Chọn 'are'.",
+            "sentenceTranslation": "Chính sách nghỉ phép mới dự kiến ​​sẽ được áp dụng vào đầu tháng tới."
+          },
+          {
+            "id": "b4_q7",
+            "questionText": "17. The solutions for the city’s traffic problems _____ to be considered individually.",
+            "options": {
+              "A": "needy",
+              "B": "needs",
+              "C": "needing",
+              "D": "need"
+            },
+            "correctAnswer": "D",
+            "explanation": "Chủ ngữ 'The solutions' (những giải pháp) là số nhiều, do đó động từ chính đi kèm phải chia ở dạng số nhiều nguyên thể => Chọn 'need'.",
+            "sentenceTranslation": "Các giải pháp cho vấn đề giao thông của thành phố cần được xem xét riêng lẻ."
+          },
+          {
+            "id": "b4_q8",
+            "questionText": "18. Following safety precautions _____ workers avoid any injury in the workplace.",
+            "options": {
+              "A": "helping",
+              "B": "helps",
+              "C": "to help",
+              "D": "help"
+            },
+            "correctAnswer": "B",
+            "explanation": "Chủ ngữ là danh động từ 'Following safety precautions' (việc tuân thủ các phòng ngừa an toàn) đóng vai trò là danh từ số ít $\\rightarrow$ Động từ chia thêm đuôi -s => Chọn 'helps'.",
+            "sentenceTranslation": "Việc tuân thủ các biện pháp phòng ngừa an toàn giúp người lao động tránh được mọi thương tích tại nơi làm việc."
+          },
+          {
+            "id": "b4_q9",
+            "questionText": "19. The Sunstar Hotel _____ to attract more tourists in coming years.",
+            "options": {
+              "A": "expects",
+              "B": "expectation",
+              "C": "expecting",
+              "D": "expect"
+            },
+            "correctAnswer": "A",
+            "explanation": "Chủ ngữ 'The Sunstar Hotel' là số ít, động từ chia ở Hiện tại đơn thêm đuôi -s => Chọn 'expects'.",
+            "sentenceTranslation": "Khách sạn Sunstar kỳ vọng sẽ thu hút nhiều khách du lịch hơn trong những năm tới."
+          },
+          {
+            "id": "b4_q10",
+            "questionText": "20. It is a great pleasure to inform you that your company has _____ as our new supplier.",
+            "options": {
+              "A": "selecting",
+              "B": "selected",
+              "C": "be selected",
+              "D": "been selected"
+            },
+            "correctAnswer": "D",
+            "explanation": "Cụm 'has been selected' (được chọn lựa) ở thể bị động Hiện tại hoàn thành là phù hợp nhất về mặt ngữ nghĩa (công ty của bạn đã được lựa chọn làm nhà cung cấp mới).",
+            "sentenceTranslation": "Rất vui mừng được thông báo với bạn rằng công ty của bạn đã được chọn làm nhà cung cấp mới của chúng tôi."
+          }
+        ]
+      }
+    ]
+  }
+}

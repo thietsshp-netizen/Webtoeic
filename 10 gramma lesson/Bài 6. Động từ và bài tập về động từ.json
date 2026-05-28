@@ -1,0 +1,326 @@
+{
+  "layout": "splitscreen",
+  "theory": {
+    "title": "BÀI 6: ĐỘNG TỪ VÀ BÀI TẬP VỀ ĐỘNG TỪ",
+    "htmlContent": "<div class=\"grammar-container\" style=\"font-family: 'Inter', sans-serif; color: #000000; line-height: 1.7; padding: 10px; background-color: #ffffff;\">\n  \n  <style>\n    .grammar-title {\n      font-size: 22px;\n      font-weight: 800;\n      color: #ff0000;\n      text-transform: uppercase;\n      margin-bottom: 25px;\n      text-align: center;\n    }\n    .pdf-section-title {\n      font-size: 16px;\n      font-weight: 700;\n      color: #ff0000;\n      margin-top: 25px;\n      margin-bottom: 15px;\n      text-transform: uppercase;\n    }\n    .pdf-sub-title {\n      font-size: 15px;\n      font-weight: 700;\n      color: #ff0000;\n      margin-top: 20px;\n      margin-bottom: 10px;\n    }\n    .pdf-bullet {\n      font-weight: 700;\n      margin-top: 15px;\n      margin-bottom: 5px;\n      color: #ff0000;\n    }\n    .pdf-table {\n      width: auto;\n      min-width: 60%;\n      border-collapse: collapse;\n      margin: 15px 0 15px 0;\n      background-color: #ffffff;\n    }\n    .pdf-table th, .pdf-table td {\n      border: 1px solid #7f7f7f;\n      padding: 10px 14px;\n      text-align: left;\n      font-size: 13.5px;\n      color: #000000;\n    }\n    .pdf-table th {\n      background-color: #f2f2f2;\n      font-weight: 700;\n    }\n    .highlight-red-bold {\n      color: #ff0000;\n      font-weight: 700;\n    }\n    .highlight-red-italic {\n      color: #ff0000;\n      font-style: italic;\n    }\n    .pdf-example-box {\n      border: 1px solid #7f7f7f;\n      padding: 10px 14px;\n      display: inline-block;\n      min-width: 45%;\n      margin: 10px 0 20px 0;\n      background-color: #ffffff;\n      font-size: 13.5px;\n      color: #000000;\n      line-height: 1.8;\n    }\n  </style>\n\n  <h1 class=\"grammar-title\">BÀI 6. ĐỘNG TỪ</h1>\n\n  <div class=\"pdf-section-title\">\n    <span>I. LÝ THUYẾT</span>\n  </div>\n  \n  <p style=\"font-size: 14px; margin-bottom: 12px; color: #000000;\">\n    Trong một câu tiếng anh bất kỳ, thì nguyên tắc là một chủ ngữ sẽ chỉ có 1 động từ chia thì đi kèm, nếu có thêm động từ thì động từ đó không được chia thì mà nó sẽ đi theo một cấu trúc đặc biệt nào đó:\n  </p>\n  <p style=\"font-size: 14px; font-weight: bold; color: #ff0000; margin-bottom: 15px;\">\n    Động từ không chia thì sẽ có 1 trong 3 dạng: to + V / Ving / V3-ed\n  </p>\n\n  <table class=\"pdf-table\" style=\"min-width: 80%;\">\n    <thead>\n      <tr style=\"background-color: #f2f2f2;\">\n        <th style=\"width: 45%;\">Ví dụ thực tế</th>\n        <th style=\"width: 55%;\">Phân tích ngữ pháp</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td>VD1: I <span class=\"highlight-red-bold\">am watching</span> TV</td>\n        <td>==&gt; Câu này có 1 động từ (<span class=\"highlight-red-bold\">am watching</span>) chia thì theo chủ ngữ \"<span class=\"highlight-red-bold\">I</span>\"</td>\n      </tr>\n      <tr>\n        <td>VD2: The man <span class=\"highlight-red-bold\">who is standing</span> there <span class=\"highlight-red-bold\">is</span> my brother.</td>\n        <td>==&gt; Câu này có 2 động từ chia thì theo hai 2 chủ ngữ khác nhau (vẫn đúng nguyên tắc 1 chủ ngữ một động từ chia thì đi kèm).</td>\n      </tr>\n      <tr>\n        <td>VD3: I <span class=\"highlight-red-bold\">didn't have</span> enough money so I <span class=\"highlight-red-bold\">didn't buy</span> that book</td>\n        <td>==&gt; Câu này có 2 động từ chia thì nhưng là theo 2 chủ ngữ khác nhau (vẫn đúng nguyên tắc 1 chủ ngữ một động từ chia thì đi kèm).</td>\n      </tr>\n      <tr>\n        <td>VD4: The man <span class=\"highlight-red-bold\">standing</span> there <span class=\"highlight-red-bold\">is</span> my brother.</td>\n        <td>==&gt; * \"<span class=\"highlight-red-bold\">is</span>\" là động từ chia thì theo chủ ngữ \"<span class=\"highlight-red-bold\">the man</span>\"<br>\n        * \"<span class=\"highlight-red-bold\">standing</span>\" là động từ không chia thì</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <div class=\"pdf-section-title\" style=\"border-top: 1px solid #7f7f7f; padding-top: 15px; margin-top: 30px;\">\n    <span>II. CÁC CẤU TRÚC CÂU ĐẶC BIỆT</span>\n  </div>\n\n  <!-- 1. Những động từ tình thái -->\n  <p style=\"font-size: 14.5px; font-weight: bold; color: #000000; margin-bottom: 8px;\">\n    1. Những động từ tình thái (modal verb): sau nó phải là động từ nguyên mẫu không \"to\"\n  </p>\n  \n  <table class=\"pdf-table\" style=\"min-width: 45%;\">\n    <tbody>\n      <tr style=\"border-bottom: 1px solid #7f7f7f;\">\n        <td style=\"border-right: 1px solid #7f7f7f; padding: 8px 12px; font-weight: bold;\">Can/ could</td>\n        <td style=\"padding: 8px 12px; font-weight: bold; color: #ff0000;\">+ Vo</td>\n      </tr>\n      <tr style=\"border-bottom: 1px solid #7f7f7f;\">\n        <td style=\"border-right: 1px solid #7f7f7f; padding: 8px 12px; font-weight: bold;\">May/ might; must</td>\n        <td style=\"padding: 8px 12px; font-weight: bold; color: #ff0000;\">+ Vo</td>\n      </tr>\n      <tr>\n        <td style=\"border-right: 1px solid #7f7f7f; padding: 8px 12px; font-weight: bold;\">Will, shall/ would, should</td>\n        <td style=\"padding: 8px 12px; font-weight: bold; color: #ff0000;\">+ Vo</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <div style=\"font-size: 13.5px; font-weight: bold; margin-bottom: 2px;\">VD:</div>\n  <div class=\"pdf-example-box\" style=\"min-width: 45%;\">\n    - I can <span class=\"highlight-red-bold\">do</span> it myself!<br>\n    - You must <span class=\"highlight-red-bold\">finish</span> your homework before 10 p.m.<br>\n    - You should <span class=\"highlight-red-bold\">be</span> home tonight\n  </div>\n\n  <!-- 2. Động từ liên kết -->\n  <p style=\"font-size: 14.5px; font-weight: bold; color: #000000; margin-top: 15px; margin-bottom: 8px;\">\n    2. Động từ liên kết: Theo sau động từ liên kết là tính từ\n  </p>\n  \n  <table class=\"pdf-table\" style=\"min-width: 50%;\">\n    <tbody>\n      <tr style=\"border-bottom: 1px solid #7f7f7f;\">\n        <td style=\"border-right: 1px solid #7f7f7f; padding: 8px 12px; font-weight: bold;\">Be/am/is/are/was/were</td>\n        <td style=\"padding: 8px 12px; font-weight: bold; color: #ff0000;\">+ Adj</td>\n      </tr>\n      <tr style=\"border-bottom: 1px solid #7f7f7f;\">\n        <td style=\"border-right: 1px solid #7f7f7f; padding: 8px 12px; font-weight: bold;\">Look, feel, smell, sound, taste, seem</td>\n        <td style=\"padding: 8px 12px; font-weight: bold; color: #ff0000;\">- Adj</td>\n      </tr>\n      <tr>\n        <td style=\"border-right: 1px solid #7f7f7f; padding: 8px 12px; font-weight: bold;\">Remain, become, stay, prove</td>\n        <td style=\"padding: 8px 12px; font-weight: bold; color: #ff0000;\">+ Adj</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <div style=\"font-size: 13.5px; font-weight: bold; margin-bottom: 2px;\">VD1:</div>\n  <div class=\"pdf-example-box\" style=\"min-width: 40%;\">\n    - She looks <span class=\"highlight-red-bold\">beautiful</span><br>\n    - The economic remains <span class=\"highlight-red-bold\">stable</span>\n  </div>\n\n  <p style=\"font-size: 14px; font-weight: bold; color: #000000; margin-top: 15px; margin-bottom: 8px;\">\n    Chú ý: Có những động từ vừa là động từ liên kết vừa là động từ thường nên theo sau nó ngoài tính từ thì còn có thể là Danh từ:\n  </p>\n  <div style=\"font-size: 13.5px; font-weight: bold; margin-bottom: 2px;\">VD2:</div>\n  <div class=\"pdf-example-box\" style=\"min-width: 35%;\">\n    She is <span class=\"highlight-red-bold\">a teacher</span><br>\n    She becomes <span class=\"highlight-red-bold\">a good teacher</span>\n  </div>\n\n  <!-- 3. Động từ đi kèm \"to V\" -->\n  <p style=\"font-size: 14.5px; font-weight: bold; color: #000000; margin-top: 25px; margin-bottom: 8px;\">\n    3. Có những động từ mà động từ theo sau nó (nếu có) phải là cụm \"to V\"\n  </p>\n  <div style=\"font-size: 14px; line-height: 1.8; color: #000000; margin-bottom: 20px; padding-left: 10px;\">\n    VD1: We decided <span class=\"highlight-red-bold\">to hold</span> the meeting tomorrow.<br>\n    VD2: They <span class=\"highlight-red-bold\">asked</span> him <span class=\"highlight-red-bold\">to attend</span> the meeting tonight.\n  </div>\n\n  <!-- 4. Động từ đi kèm \"Ving\" -->\n  <p style=\"font-size: 14.5px; font-weight: bold; color: #000000; margin-top: 20px; margin-bottom: 8px;\">\n    4. Có những động từ mà động từ theo sau nó (nếu có) phải là \"Ving\"\n  </p>\n  <div style=\"font-size: 14px; line-height: 1.8; color: #000000; margin-bottom: 20px; padding-left: 10px;\">\n    VD: He tried to avoid <span class=\"highlight-red-bold\">paying</span> his taxes and was taken to court.\n  </div>\n\n  <!-- 5. Động từ đi kèm cả \"to V\" và \"Ving\" -->\n  <p style=\"font-size: 14.5px; font-weight: bold; color: #000000; margin-top: 20px; margin-bottom: 8px;\">\n    5. Có những động từ mà động từ theo sau nó (nếu có) vừa có thể là \"to V\" vừa có thể là \"Ving\"\n  </p>\n  <div style=\"font-size: 14px; line-height: 1.8; color: #000000; margin-bottom: 25px; padding-left: 10px;\">\n    VD:<br>\n    - I <span class=\"highlight-red-bold\">recommend</span> <span class=\"highlight-red-bold\">using</span> the latest version of the browser.<br>\n    - We'd <span class=\"highlight-red-bold\">recommend</span> you <span class=\"highlight-red-bold\">to book</span> your flight early.\n  </div>\n\n</div>"
+  },
+  "practice": {
+    "parts": [
+      {
+        "partNumber": 1,
+        "title": "Bài tập 1: Động từ trên lớp",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án chia động từ thích hợp nhất để hoàn tất các câu hỏi dưới đây:",
+        "questions": [
+          {
+            "id": "b6_p1_q1",
+            "questionText": "1. Mr. Kim would like -------a meeting about the Jasper account as soon as possible.",
+            "options": {
+              "A": "to arrange",
+              "B": "arranging",
+              "C": "having arranged",
+              "D": "arrangement"
+            },
+            "correctAnswer": "A",
+            "explanation": "Cấu trúc định sẵn: would like + to V0 (muốn làm cái gì). Chọn 'to arrange'.",
+            "sentenceTranslation": "Ông Kim muốn sắp xếp một cuộc gặp về tài khoản Jasper càng sớm càng tốt."
+          },
+          {
+            "id": "b6_p1_q2",
+            "questionText": "2. Ms. Tsai will-----------the installation of the new workstations with the vendor.",
+            "options": {
+              "A": "coordinated",
+              "B": "to coordinate",
+              "C": "coordination",
+              "D": "be coordinating"
+            },
+            "correctAnswer": "D",
+            "explanation": "Sau động từ khuyết thiếu 'will' ta cần một động từ nguyên mẫu không to (V0). Phương án duy nhất bắt đầu bằng V0 hợp lệ là 'be coordinating' (thì tương lai tiếp diễn). Chọn D.",
+            "sentenceTranslation": "Bà Tsai sẽ điều phối việc lắp đặt các máy trạm mới với nhà cung cấp."
+          },
+          {
+            "id": "b6_p1_q3",
+            "questionText": "3. The release of the earnings report will-----------until the latest company figures are ready.",
+            "options": {
+              "A": "delay",
+              "B": "have delayed",
+              "C": "be delayed",
+              "D": "be delaying"
+            },
+            "correctAnswer": "C",
+            "explanation": "Chủ ngữ 'The release of the earnings report' (việc phát hành báo cáo) là vật, chịu hành động bị trì hoãn -> Cần cấu trúc bị động sau 'will': will be V3/ed -> 'will be delayed'. Chọn C.",
+            "sentenceTranslation": "Việc công bố báo cáo thu nhập sẽ bị trì hoãn cho đến khi có số liệu mới nhất của công ty."
+          },
+          {
+            "id": "b6_p1_q4",
+            "questionText": "4. Vantage Automotive Design has recently -----------with the Pallax Company.",
+            "options": {
+              "A": "merge",
+              "B": "merger",
+              "C": "merged",
+              "D": "merging"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng sau trợ động từ 'has' và trạng từ 'recently', ta cần chia động từ ở dạng quá khứ phân từ V3/ed để tạo thành thì Hiện tại hoàn thành (has merged). Chọn C.",
+            "sentenceTranslation": "Vantage Automotive Design gần đây đã sáp nhập với Công ty Pallax."
+          },
+          {
+            "id": "b6_p1_q5",
+            "questionText": "5. On Thursday, the technician will be on Sratus Road-----------two gas stoves.",
+            "options": {
+              "A": "serviced",
+              "B": "service",
+              "C": "to service",
+              "D": "is servicing"
+            },
+            "correctAnswer": "C",
+            "explanation": "Chỗ trống chỉ mục đích của chuyến đi (sẽ ở đường Sratus để làm gì đó). Cấu trúc chỉ mục đích: to + V0 (để bảo dưỡng/sửa chữa). Chọn C.",
+            "sentenceTranslation": "Vào thứ Năm, kỹ thuật viên sẽ có mặt trên đường Sratus để bảo dưỡng hai bếp gas."
+          },
+          {
+            "id": "b6_p1_q6",
+            "questionText": "6. Questwiz, the library's newest database, -----------a wide range of resource materials.",
+            "options": {
+              "A": "to contain",
+              "B": "contains",
+              "C": "container",
+              "D": "containing"
+            },
+            "correctAnswer": "B",
+            "explanation": "Câu chưa có động từ chính chia thì bổ nghĩa cho chủ ngữ số ít 'Questwiz' (phần ngăn giữa hai dấu phẩy là mệnh đề đồng vị bổ nghĩa). Ta cần động từ chia ở hiện tại đơn số ít: 'contains'. Chọn B.",
+            "sentenceTranslation": "Questwiz, cơ sở dữ liệu mới nhất của thư viện, chứa nhiều loại tài nguyên."
+          },
+          {
+            "id": "b6_p1_q7",
+            "questionText": "7. The First Street Hotel has almost always been fully booked since it-----------last year.",
+            "options": {
+              "A": "had renovated",
+              "B": "renovated",
+              "C": "was renovating",
+              "D": "was renovated"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng sau 'since' nối hai mệnh đề, mệnh đề sau since chỉ mốc thời gian trong quá khứ 'last year'. Khách sạn là vật, phải nhận hành động cải tạo ở thể bị động -> Chọn quá khứ đơn bị động: 'was renovated'.",
+            "sentenceTranslation": "Khách sạn First Street hầu như luôn kín chỗ kể từ khi được cải tạo vào năm ngoái."
+          },
+          {
+            "id": "b6_p1_q8",
+            "questionText": "8. Two associates in the accounting department are being-----------for promotions.",
+            "options": {
+              "A": "consider",
+              "B": "considerable",
+              "C": "considered",
+              "D": "consideration"
+            },
+            "correctAnswer": "C",
+            "explanation": "Cấu trúc bị động tiếp diễn: are + being + V3/ed (đang được cân nhắc cho việc thăng chức). Chọn 'considered'.",
+            "sentenceTranslation": "Hai cộng sự ở bộ phận kế toán đang được xem xét thăng chức."
+          },
+          {
+            "id": "b6_p1_q9",
+            "questionText": "9. -----------Human Resources if you have questions about taking time off from work.",
+            "options": {
+              "A": "Contacting",
+              "B": "Contacted",
+              "C": "Contacts",
+              "D": "Contact"
+            },
+            "correctAnswer": "D",
+            "explanation": "Câu đứng đầu làm mệnh đề chính trước mệnh đề điều kiện 'if', không có chủ ngữ đi kèm. Đây là câu mệnh lệnh bắt đầu bằng một động từ nguyên thể (V0). Chọn 'Contact'.",
+            "sentenceTranslation": "Hãy liên hệ với Phòng Nhân sự nếu bạn có thắc mắc về việc nghỉ làm."
+          },
+          {
+            "id": "b6_p1_q10",
+            "questionText": "10. We cannot-----------the filming of our documentary, Morning after Night, without sufficient funding.",
+            "options": {
+              "A": "completely",
+              "B": "completion",
+              "C": "complete",
+              "D": "completing"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng sau động từ khuyết thiếu phủ định 'cannot' bắt buộc phải là một động từ nguyên mẫu không to (V0). Chọn danh từ/tính từ loại trừ, chọn động từ 'complete'.",
+            "sentenceTranslation": "Chúng tôi không thể hoàn thành việc quay bộ phim tài liệu Morning after Night nếu không có đủ kinh phí."
+          },
+          {
+            "id": "b6_p1_q11",
+            "questionText": "11. By this time next year, Grasswell Industries -----------two new plants in eastern Europe.",
+            "options": {
+              "A": "opens",
+              "B": "will have opened",
+              "C": "is opening",
+              "D": "had opened"
+            },
+            "correctAnswer": "B",
+            "explanation": "Dấu hiệu thời gian: 'By this time next year' (Trước thời điểm này năm tới). Ta bắt buộc chia động từ ở thì Tương lai hoàn thành: will + have + V3/ed. Chọn 'will have opened'.",
+            "sentenceTranslation": "Vào thời điểm này năm sau, Grasswell Industries sẽ mở hai nhà máy mới ở Đông Âu."
+          },
+          {
+            "id": "b6_p1_q12",
+            "questionText": "12. Oil production-----------5 percent from January to February.",
+            "options": {
+              "A": "drop",
+              "B": "to drop",
+              "C": "dropping",
+              "D": "dropped"
+            },
+            "correctAnswer": "D",
+            "explanation": "Câu chỉ mốc thời gian rõ ràng trong quá khứ 'from January to February'. Ta cần một động từ chia ở thì Quá khứ đơn làm động từ chính của câu -> 'dropped'. Chọn D.",
+            "sentenceTranslation": "Sản lượng dầu giảm 5% từ tháng 1 đến tháng 2."
+          }
+        ]
+      },
+      {
+        "partNumber": 2,
+        "title": "Bài tập 2: Động từ về nhà",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án đúng nhất để hoàn thành các câu trắc nghiệm tự luyện về động từ dưới đây:",
+        "questions": [
+          {
+            "id": "b6_p2_q1",
+            "questionText": "13. Ramirez Instruments-----------high-quality acoustic guitars for over a century.",
+            "options": {
+              "A": "to be designed",
+              "B": "has been designing",
+              "C": "was designed",
+              "D": "is designing"
+            },
+            "correctAnswer": "B",
+            "explanation": "Dấu hiệu thời gian kéo dài liên tục: 'for over a century' (trong hơn một thế kỷ qua). Động từ chính chia ở thì Hiện tại hoàn thành tiếp diễn để nhấn mạnh tính liên tục của hành động: 'has been designing'. Chọn B.",
+            "sentenceTranslation": "Ramirez Instruments đã thiết kế đàn guitar acoustic chất lượng cao trong hơn một thế kỷ."
+          },
+          {
+            "id": "b6_p2_q2",
+            "questionText": "14. Ikeda Real Estate Group now-----------text messages to update clients about properties of interest.",
+            "options": {
+              "A": "uses",
+              "B": "users",
+              "C": "useful",
+              "D": "using"
+            },
+            "correctAnswer": "A",
+            "explanation": "Câu có trạng từ 'now' chỉ hiện tại và chưa có động từ chính chia thì. Chủ ngữ 'Ikeda Real Estate Group' là danh từ riêng số ít. Ta cần động từ chia hiện tại đơn số ít: 'uses'. Chọn A.",
+            "sentenceTranslation": "Tập đoàn Bất động sản Ikeda hiện sử dụng tin nhắn văn bản để cập nhật cho khách hàng về các bất động sản quan tâm."
+          },
+          {
+            "id": "b6_p2_q3",
+            "questionText": "15. Please-----------daily spending records, since online balance statements may not reflect recent account activity.",
+            "options": {
+              "A": "kept",
+              "B": "keep",
+              "C": "keeps",
+              "D": "keeping"
+            },
+            "correctAnswer": "B",
+            "explanation": "Cấu trúc câu yêu cầu lịch sự bắt đầu bằng 'Please' đi kèm trực tiếp với động từ nguyên mẫu không to (V0). Chọn 'keep'.",
+            "sentenceTranslation": "Vui lòng lưu giữ hồ sơ chi tiêu hàng ngày vì báo cáo số dư trực tuyến có thể không phản ánh hoạt động tài khoản gần đây."
+          },
+          {
+            "id": "b6_p2_q4",
+            "questionText": "16. The National Health Agency's latest report -----------that recently adopted health-care regulations have been successful.",
+            "options": {
+              "A": "concludes",
+              "B": "concluding",
+              "C": "conclusion",
+              "D": "to conclude"
+            },
+            "correctAnswer": "A",
+            "explanation": "Câu chưa có động từ chính chia thì cho chủ ngữ số ít 'The National Health Agency's latest report'. Ta cần động từ chia ở số ít hiện tại đơn: 'concludes'. Chọn A.",
+            "sentenceTranslation": "Báo cáo mới nhất của Cơ quan Y tế Quốc gia kết luận rằng các quy định chăm sóc sức khỏe được thông qua gần đây đã thành công."
+          },
+          {
+            "id": "b6_p2_q5",
+            "questionText": "17. Join us for dinner on Friday-----------Mr. Yi's promotion to Vice President of Marketing.",
+            "options": {
+              "A": "to celebrate",
+              "B": "celebrates",
+              "C": "will celebrate",
+              "D": "celebrated"
+            },
+            "correctAnswer": "A",
+            "explanation": "Chỗ trống cần một động từ chỉ mục đích hành động (tham gia ăn tối vào thứ Sáu để chúc mừng...). Cấu trúc chỉ mục đích: to + V0 -> 'to celebrate'. Chọn A.",
+            "sentenceTranslation": "Hãy cùng chúng tôi ăn tối vào thứ Sáu để kỷ niệm việc ông Yi được thăng chức lên Phó Giám đốc Tiếp thị."
+          },
+          {
+            "id": "b6_p2_q6",
+            "questionText": "18. The renovated office building did not look the way Ms. Garcia-----------it would.",
+            "options": {
+              "A": "imagine",
+              "B": "imagining",
+              "C": "imagined",
+              "D": "imagination"
+            },
+            "correctAnswer": "C",
+            "explanation": "Mệnh đề so sánh 'the way...' kể về một sự việc xảy ra song hành trong quá khứ (đã diễn ra cùng lúc với động từ chính 'did not look'). Ta chia động từ ở quá khứ đơn 'imagined'. Chọn C.",
+            "sentenceTranslation": "Tòa nhà văn phòng đã được tân trang lại trông không giống như cô Garcia tưởng tượng."
+          },
+          {
+            "id": "b6_p2_q7",
+            "questionText": "19. Marliet Marketing can help any business -----------its products through multimedia advertising packages.",
+            "options": {
+              "A": "promote",
+              "B": "promoted",
+              "C": "promotable",
+              "D": "promoter"
+            },
+            "correctAnswer": "A",
+            "explanation": "Cấu trúc động từ đặc biệt: help + someone + V0/to V0 (giúp ai đó làm gì). Ở đây ta chọn động từ nguyên thể 'promote'. Chọn A.",
+            "sentenceTranslation": "Marliet Marketing có thể giúp bất kỳ doanh nghiệp nào quảng bá sản phẩm của mình thông qua các gói quảng cáo đa phương tiện."
+          },
+          {
+            "id": "b6_p2_q8",
+            "questionText": "20. There is coffee in the break room for anyone who-----------a cup before the meeting.",
+            "options": {
+              "A": "want",
+              "B": "wants",
+              "C": "wanting",
+              "D": "to want"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đại từ quan hệ làm chủ ngữ 'who' đại diện cho danh từ đại từ số ít 'anyone'. Ta chia động từ ở hiện tại đơn số ít: 'wants'. Chọn B.",
+            "sentenceTranslation": "Có cà phê trong phòng nghỉ cho bất cứ ai muốn một tách trước cuộc họp."
+          },
+          {
+            "id": "b6_p2_q9",
+            "questionText": "21. A second order for 500 recycled paper cups -----------last week.",
+            "options": {
+              "A": "was placed",
+              "B": "was placing",
+              "C": "to place",
+              "D": "placed"
+            },
+            "correctAnswer": "A",
+            "explanation": "Mốc thời gian rõ rệt trong quá khứ 'last week'. Đơn hàng (order) là vật, phải nhận hành động đặt mua ở thể bị động -> Cần chia động từ ở quá khứ đơn bị động số ít: 'was placed'. Chọn A.",
+            "sentenceTranslation": "Đơn đặt hàng thứ hai cho 500 cốc giấy tái chế đã được đặt vào tuần trước."
+          },
+          {
+            "id": "b6_p2_q10",
+            "questionText": "22. The lights in the cinema-----------before a movie begins.",
+            "options": {
+              "A": "dim",
+              "B": "dimming",
+              "C": "dimmer",
+              "D": "dims"
+            },
+            "correctAnswer": "A",
+            "explanation": "Câu diễn tả một quy luật/sự thật hiển nhiên ở hiện tại đơn. Chủ ngữ chính 'The lights' là danh từ số nhiều, nên động từ chính phải chia ở dạng nguyên thể không thêm s/es: 'dim' (mờ đi). Chọn A.",
+            "sentenceTranslation": "Ánh đèn trong rạp mờ dần trước khi bộ phim bắt đầu."
+          },
+          {
+            "id": "b6_p2_q11",
+            "questionText": "23. The Liu Supermarket-----------that Jennifer Chan will take over as CEO next month came as a surprise.",
+            "options": {
+              "A": "announced",
+              "B": "announcement",
+              "C": "announcing",
+              "D": "announcer"
+            },
+            "correctAnswer": "B",
+            "explanation": "Động từ chính chia thì của câu là 'came' (came as a surprise). Do đó chủ ngữ chính đứng trước 'came' phải là một cụm danh từ đầy đủ. 'The Liu Supermarket announcement that...' là cụm danh từ hoàn chỉnh (sự thông báo của siêu thị Liu rằng...). Nếu chọn 'announced' câu sẽ có 2 động từ chính chia thì không có từ nối hợp lệ. Chọn danh từ 'announcement'.",
+            "sentenceTranslation": "Thông báo của Siêu thị Liu rằng Jennifer Chan sẽ đảm nhận vị trí CEO vào tháng tới là một điều bất ngờ."
+          }
+        ]
+      }
+    ]
+  }
+}

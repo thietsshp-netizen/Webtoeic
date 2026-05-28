@@ -1,0 +1,324 @@
+{
+  "layout": "splitscreen",
+  "theory": {
+    "title": "BÀI 2. CẤU TRÚC CÂU ĐƠN TRONG TIẾNG ANH - CÁCH PHÂN TÍCH MỘT CÂU VĂN",
+    "htmlContent": "<div class=\"grammar-container\" style=\"font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.7; padding: 10px;\">\n  \n  <style>\n    .grammar-title {\n      font-size: 24px;\n      font-weight: 800;\n      color: #b91c1c;\n      text-transform: uppercase;\n      margin-bottom: 20px;\n      border-bottom: 3px solid #ef4444;\n      padding-bottom: 10px;\n      letter-spacing: -0.02em;\n    }\n    .grammar-section-title {\n      font-size: 18px;\n      font-weight: 700;\n      color: #dc2626;\n      margin-top: 30px;\n      margin-bottom: 15px;\n      display: flex;\n      align-items: center;\n      gap: 8px;\n    }\n    .concept-card {\n      background-color: #f8fafc;\n      border-left: 5px solid #3b82f6;\n      border-radius: 8px;\n      padding: 16px;\n      margin-bottom: 20px;\n      box-shadow: 0 2px 4px rgba(0,0,0,0.02);\n    }\n    .modifier-map-grid {\n      display: flex;\n      flex-direction: column;\n      gap: 20px;\n      margin-top: 25px;\n      margin-bottom: 25px;\n    }\n    .map-card {\n      border: 1px solid #e2e8f0;\n      border-radius: 16px;\n      padding: 20px;\n      background-color: white;\n      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);\n      position: relative;\n    }\n    .map-header {\n      font-size: 16px;\n      font-weight: bold;\n      margin-bottom: 15px;\n      padding-bottom: 8px;\n      border-bottom: 2px solid #cbd5e1;\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n    }\n    .core-element {\n      width: 50px;\n      height: 50px;\n      background-color: #ef4444;\n      color: white;\n      font-size: 24px;\n      font-weight: 900;\n      border-radius: 50%;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      margin: 15px auto;\n      box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);\n    }\n    .modifier-list {\n      list-style-type: none;\n      padding-left: 0;\n      display: flex;\n      flex-direction: column;\n      gap: 10px;\n    }\n    .modifier-item {\n      background-color: #f8fafc;\n      border: 1px solid #e2e8f0;\n      border-radius: 8px;\n      padding: 10px 12px;\n      font-size: 13px;\n      display: flex;\n      align-items: center;\n      gap: 8px;\n    }\n    .arrow-icon {\n      color: #ef4444;\n      font-weight: bold;\n      font-size: 16px;\n    }\n    .highlight-blue { color: #2563eb; font-weight: bold; }\n    .highlight-red { color: #ef4444; font-weight: bold; }\n    .highlight-green { color: #16a34a; font-weight: bold; }\n    .highlight-purple { color: #8b5cf6; font-weight: bold; }\n  </style>\n\n  <h1 class=\"grammar-title\">BÀI 2. CẤU TRÚC CÂU ĐƠN TRONG TIẾNG ANH - CÁCH PHÂN TÍCH MỘT CÂU VĂN</h1>\n\n  <div class=\"concept-card\">\n    <p style=\"margin: 0; font-size: 14px;\">\n      Một câu đơn hoàn chỉnh trong tiếng Anh luôn gồm 2 thành phần cốt lõi: <strong>Chủ ngữ (Subject)</strong> và <strong>Vị ngữ (Predicate)</strong>.\n    </p>\n    <ul style=\"margin-top: 10px; margin-bottom: 0; font-size: 13px; padding-left: 20px;\">\n      <li><strong>Chủ ngữ:</strong> Gồm danh từ chính <span class=\"highlight-red\">N</span> làm chủ ngữ và các thành phần bổ nghĩa bao quanh nó.</li>\n      <li><strong>Vị ngữ:</strong> Gồm động từ chính <span class=\"highlight-green\">V</span> chia thì và các thành phần bổ nghĩa bao quanh nó.</li>\n    </ul>\n  </div>\n\n  <div style=\"text-align: center; margin: 25px 0; background-color: white; padding: 15px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.03);\">\n    <p style=\"font-size: 14px; font-weight: bold; color: #b91c1c; margin-top: 0; text-align: left; border-bottom: 2px solid #fee2e2; padding-bottom: 6px;\">Cụ thể:</p>\n    <img src=\"/grammar/lesson2_img_1_1_Im1.png\" alt=\"Sơ đồ cấu trúc câu đơn\" style=\"max-width: 65%; height: auto; border-radius: 8px;\" />\n  </div>\n\n  <div class=\"grammar-section-title\">\n    <span>🗺️ BẢN ĐỒ CÁC THÀNH PHẦN BỔ NGHĨA (MODIFIERS MAP)</span>\n  </div>\n  \n  <p style=\"font-size: 13px; margin-bottom: 20px;\">Để đọc hiểu và phân tích câu dễ dàng, hãy ghi nhớ bản đồ các thành phần bổ nghĩa cho danh từ chính <strong>N</strong> và động từ chính <strong>V</strong> dưới đây:</p>\n\n  <div class=\"modifier-map-grid\">\n    \n    <!-- KHUNG DANH TỪ (N) -->\n    <div class=\"map-card\" style=\"border-top: 4px solid #ef4444;\">\n      <div class=\"map-header\" style=\"color: #ef4444;\">\n        <span>DANH TỪ CHÍNH</span>\n        <span style=\"font-size: 11px; background: #fee2e2; padding: 2px 6px; border-radius: 4px;\">Noun Map</span>\n      </div>\n      <div class=\"core-element\">N</div>\n      \n      <div style=\"font-size: 12px; font-weight: bold; margin-bottom: 8px; color: #475569;\">Các thành phần bổ nghĩa chỉ mũi tên về N:</div>\n      <ul class=\"modifier-list\">\n        <li class=\"modifier-item\">\n          <span class=\"arrow-icon\">➔</span>\n          <div><strong>Det (Từ hạn định):</strong> <em>a, an, the, this, that, my, your...</em> đứng trước N.</div>\n        </li>\n        <li class=\"modifier-item\">\n          <span class=\"arrow-icon\">➔</span>\n          <div><strong>Adv + Adj:</strong> Trạng từ bổ nghĩa cho Tính từ, Tính từ bổ nghĩa cho N đứng ngay trước N. <br><small class=\"highlight-blue\">Ví dụ: a <span class=\"highlight-purple\">highly</span> <span class=\"highlight-green\">reputable</span> organization</small></div>\n        </li>\n        <li class=\"modifier-item\">\n          <span class=\"arrow-icon\">➔</span>\n          <div><strong>N1 (Danh từ phụ):</strong> Đứng trước N chính tạo thành danh từ ghép. <br><small class=\"highlight-blue\">Ví dụ: security <span class=\"highlight-red\">system</span></small></div>\n        </li>\n        <li class=\"modifier-item\">\n          <span class=\"arrow-icon\">➔</span>\n          <div><strong>Cụm giới từ (Prep + Cụm N):</strong> Đứng sau N chính để bổ nghĩa. <br><small class=\"highlight-blue\">Ví dụ: resources <span class=\"highlight-green\">[for tourists]</span></small></div>\n        </li>\n        <li class=\"modifier-item\">\n          <span class=\"arrow-icon\">➔</span>\n          <div><strong>To + V:</strong> Động từ nguyên thể đứng sau N bổ nghĩa mục đích. <br><small class=\"highlight-blue\">Ví dụ: the code <span class=\"highlight-green\">[to enter the building]</span></small></div>\n        </li>\n        <li class=\"modifier-item\">\n          <span class=\"arrow-icon\">➔</span>\n          <div><strong>Mệnh đề quan hệ (S + V):</strong> Đứng sau N để giải thích rõ hơn. <br><small class=\"highlight-blue\">Ví dụ: distributor <span class=\"highlight-green\">[who wants to sell...]</span></small></div>\n        </li>\n      </ul>\n    </div>\n\n    <!-- KHUNG ĐỘNG TỪ (V) -->\n    <div class=\"map-card\" style=\"border-top: 4px solid #16a34a;\">\n      <div class=\"map-header\" style=\"color: #16a34a;\">\n        <span>ĐỘNG TỪ CHÍNH</span>\n        <span style=\"font-size: 11px; background: #dcfce7; padding: 2px 6px; border-radius: 4px;\">Verb Map</span>\n      </div>\n      <div class=\"core-element\" style=\"background-color: #16a34a; box-shadow: 0 0 15px rgba(22, 163, 74, 0.4);\">V</div>\n      \n      <div style=\"font-size: 12px; font-weight: bold; margin-bottom: 8px; color: #475569;\">Các thành phần đi kèm / bổ nghĩa cho V:</div>\n      <ul class=\"modifier-list\">\n        <li class=\"modifier-item\">\n          <span class=\"arrow-icon\" style=\"color: #16a34a;\">➔</span>\n          <div><strong>Aux (Trợ động từ):</strong> <em>will, can, should, have, has, is, are...</em> đứng trước V.</div>\n        </li>\n        <li class=\"modifier-item\">\n          <span class=\"arrow-icon\" style=\"color: #16a34a;\">➔</span>\n          <div><strong>Adv (Trạng từ):</strong> Đứng trước hoặc sau V để bổ nghĩa tần suất/cách thức. <br><small class=\"highlight-blue\">Ví dụ: was <span class=\"highlight-purple\">carefully</span> selected</small></div>\n        </li>\n        <li class=\"modifier-item\">\n          <span class=\"arrow-icon\" style=\"color: #16a34a;\">➔</span>\n          <div><strong>Cụm danh từ (Tân ngữ - Object):</strong> Nhận tác động của V, đứng sau V.</div>\n        </li>\n        <li class=\"modifier-item\">\n          <span class=\"arrow-icon\" style=\"color: #16a34a;\">➔</span>\n          <div><strong>Cụm giới từ (Prep + Cụm N):</strong> Bổ nghĩa nơi chốn, thời gian, cách thức đứng sau V. <br><small class=\"highlight-blue\">Ví dụ: were sent <span class=\"highlight-green\">[to the factory]</span></small></div>\n        </li>\n        <li class=\"modifier-item\">\n          <span class=\"arrow-icon\" style=\"color: #16a34a;\">➔</span>\n          <div><strong>Adj / Adv + Adj:</strong> Đứng sau các động từ liên kết (Linking verbs: *be, remain, look*...) để bổ nghĩa cho chủ ngữ. <br><small class=\"highlight-blue\">Ví dụ: are <span class=\"highlight-green\">available</span></small></div>\n        </li>\n        <li class=\"modifier-item\">\n          <span class=\"arrow-icon\" style=\"color: #16a34a;\">➔</span>\n          <div><strong>To + V / Ving / Mệnh đề:</strong> Các dạng động từ đi kèm đặc biệt hoặc mệnh đề làm tân ngữ đứng sau V.</div>\n        </li>\n      </ul>\n    </div>\n\n  </div>\n\n</div>"
+  },
+  "practice": {
+    "parts": [
+      {
+        "partNumber": 1,
+        "title": "Bài tập phân tích thành phần câu đơn",
+        "type": "sentence_analysis_mcq",
+        "instruction": "Hãy đối chiếu sơ đồ bổ nghĩa ở cột bên trái và chọn đáp án chính xác nhất để phân tích cấu trúc của các câu dưới đây:",
+        "questions": [
+          {
+            "id": "b2_q1",
+            "questionText": "1. A new security system will be installed soon.",
+            "subQuestions": [
+              {
+                "q": "Đâu là danh từ chính (N) làm chủ ngữ chính của câu?",
+                "options": {
+                  "A": "A",
+                  "B": "new",
+                  "C": "security",
+                  "D": "system"
+                },
+                "correctAnswer": "D",
+                "explanation": "system là danh từ chính của chủ ngữ. 'A' (từ hạn định), 'new' (tính từ), 'security' (danh từ phụ N1) đóng vai trò bổ nghĩa đứng trước system."
+              },
+              {
+                "q": "Thành phần 'will be installed' đóng vai trò gì?",
+                "options": {
+                  "A": "Cụm danh từ chủ ngữ",
+                  "B": "Cụm động từ vị ngữ chính (được chia ở tương lai bị động)",
+                  "C": "Trạng từ bổ nghĩa nơi chốn",
+                  "D": "Mệnh đề bổ nghĩa"
+                },
+                "correctAnswer": "B",
+                "explanation": "will (trợ động từ Aux) + be + installed (động từ chính V ở dạng V3/ed) = cụm động từ vị ngữ ở thể Bị động thì Tương lai đơn."
+              },
+              {
+                "q": "Từ 'soon' là trạng từ (Adv) dùng để bổ nghĩa cho thành phần nào?",
+                "options": {
+                  "A": "Danh từ 'system'",
+                  "B": "Động từ 'installed'",
+                  "C": "Từ hạn định 'A'",
+                  "D": "Tính từ 'new'"
+                },
+                "correctAnswer": "B",
+                "explanation": "soon là trạng từ chỉ thời gian (sắp sửa), bổ nghĩa cho hành động được lắp đặt ('installed soon')."
+              }
+            ],
+            "sentenceTranslation": "Một hệ thống an ninh mới sẽ sớm được cài đặt."
+          },
+          {
+            "id": "b2_q2",
+            "questionText": "2. We need to find another distributor who really wants to sell our products.",
+            "subQuestions": [
+              {
+                "q": "Chủ ngữ (S) và Động từ chính (V) của câu đơn này là gì?",
+                "options": {
+                  "A": "S: We | V: find",
+                  "B": "S: We | V: need",
+                  "C": "S: another distributor | V: wants",
+                  "D": "S: who | V: wants"
+                },
+                "correctAnswer": "B",
+                "explanation": "We là đại từ làm chủ ngữ chính của câu đơn. need là động từ chính được chia thì Hiện tại đơn của câu."
+              },
+              {
+                "q": "Cụm 'to find another distributor...' đứng sau động từ chính 'need' đóng vai trò gì?",
+                "options": {
+                  "A": "Mệnh đề bổ nghĩa cho chủ ngữ",
+                  "B": "Tân ngữ (Object) dạng 'To + V' bổ nghĩa cho V chính 'need'",
+                  "C": "Trạng từ chỉ thời gian",
+                  "D": "Tính từ làm vị ngữ liên kết"
+                },
+                "correctAnswer": "B",
+                "explanation": "Động từ need đi kèm tân ngữ dạng 'to + V' (cần làm gì). Cụm 'to find...' bổ nghĩa trực tiếp cho động từ 'need'."
+              },
+              {
+                "q": "Thành phần 'who really wants to sell our products' đóng vai trò là gì?",
+                "options": {
+                  "A": "Trạng từ bổ nghĩa cho động từ 'sell'",
+                  "B": "Mệnh đề quan hệ (bổ nghĩa cho danh từ đứng trước 'distributor')",
+                  "C": "Danh từ ghép chính",
+                  "D": "Chủ ngữ chính của cả câu"
+                },
+                "correctAnswer": "B",
+                "explanation": "Mệnh đề bắt đầu bằng 'who' là mệnh đề quan hệ đóng vai trò như tính từ dài, bổ nghĩa và giải thích rõ hơn cho danh từ 'distributor' đứng trước nó."
+              }
+            ],
+            "sentenceTranslation": "Chúng tôi cần tìm một nhà phân phối khác thực sự muốn bán sản phẩm của chúng tôi."
+          },
+          {
+            "id": "b2_q3",
+            "questionText": "3. Every employee should enter the access code to enter the building.",
+            "subQuestions": [
+              {
+                "q": "Danh từ chính (N) làm chủ ngữ và động từ chính (V) là gì?",
+                "options": {
+                  "A": "N: employee | V: should enter",
+                  "B": "N: code | V: enter",
+                  "C": "N: building | V: enter",
+                  "D": "N: employee | V: to enter"
+                },
+                "correctAnswer": "A",
+                "explanation": "employee là danh từ chính làm chủ ngữ (được bổ nghĩa bởi 'Every'). should enter (should + enter nguyên thể) là động từ vị ngữ chính."
+              },
+              {
+                "q": "Cụm 'the access code' đứng sau động từ 'should enter' đóng vai trò gì?",
+                "options": {
+                  "A": "Động từ phụ bổ nghĩa",
+                  "B": "Tân ngữ trực tiếp (Object) của hành động 'enter'",
+                  "C": "Trạng từ chỉ thời gian",
+                  "D": "Giới từ liên kết"
+                },
+                "correctAnswer": "B",
+                "explanation": "access (danh từ phụ N1) + code (danh từ chính N) = cụm danh từ 'mã truy cập' làm tân ngữ trực tiếp cho hành động nhập ('enter')."
+              },
+              {
+                "q": "Cụm 'to enter the building' ở cuối câu đóng vai trò bổ nghĩa gì?",
+                "options": {
+                  "A": "Bổ nghĩa cho động từ chính 'should enter' (chỉ mục đích: nhập mã ĐỂ đi vào tòa nhà)",
+                  "B": "Bổ nghĩa cho danh từ 'employee'",
+                  "C": "Chủ ngữ phụ của câu",
+                  "D": "Từ hạn định"
+                },
+                "correctAnswer": "A",
+                "explanation": "Cụm 'to + V' (to enter the building) đóng vai trò là trạng ngữ chỉ mục đích, bổ nghĩa cho hành động nhập mã ('enter the access code')."
+              }
+            ],
+            "sentenceTranslation": "Mọi nhân viên phải nhập mã truy cập để vào tòa nhà."
+          },
+          {
+            "id": "b2_q4",
+            "questionText": "4. We need to complete those reports by Friday.",
+            "subQuestions": [
+              {
+                "q": "Trong cụm danh từ 'those reports', từ 'those' đóng vai trò gì?",
+                "options": {
+                  "A": "Danh từ chính",
+                  "B": "Từ hạn định (Det - chỉ định số nhiều) bổ nghĩa đứng trước cho 'reports'",
+                  "C": "Động từ chia thì",
+                  "D": "Trạng từ"
+                },
+                "correctAnswer": "B",
+                "explanation": "those là đại từ chỉ định số nhiều đứng trước danh từ reports để làm từ hạn định (Det) xác định rõ 'những báo cáo đó'."
+              },
+              {
+                "q": "Cụm giới từ 'by Friday' bổ nghĩa cho thành phần nào?",
+                "options": {
+                  "A": "Đại từ 'We'",
+                  "B": "Động từ 'complete' (chỉ thời hạn hoàn thành: trước thứ Sáu)",
+                  "C": "Từ hạn định 'those'",
+                  "D": "Động từ 'need'"
+                },
+                "correctAnswer": "B",
+                "explanation": "by Friday (trước thứ Sáu) là cụm giới từ chỉ thời gian, bổ nghĩa trực tiếp cho hành động hoàn thành báo cáo ('complete ... by Friday')."
+              }
+            ],
+            "sentenceTranslation": "Chúng ta cần hoàn thành những báo cáo đó trước thứ Sáu."
+          },
+          {
+            "id": "b2_q5",
+            "questionText": "5. Several inspectors who were carefully selected were sent to the factory to examine the facility.",
+            "subQuestions": [
+              {
+                "q": "Đâu là cụm chủ ngữ đầy đủ của câu văn này?",
+                "options": {
+                  "A": "Several inspectors",
+                  "B": "Several inspectors who were carefully selected",
+                  "C": "who were carefully selected",
+                  "D": "Several inspectors who were carefully selected were sent"
+                },
+                "correctAnswer": "B",
+                "explanation": "Toàn bộ cụm từ đầu câu đến trước động từ chia thì chính 'were sent' là cụm chủ ngữ, bao gồm danh từ chính 'inspectors', từ hạn định 'Several' và mệnh đề quan hệ bổ nghĩa 'who were carefully selected'."
+              },
+              {
+                "q": "Động từ chính chia thì (V) của câu này là gì?",
+                "options": {
+                  "A": "were selected",
+                  "B": "were sent",
+                  "C": "examine",
+                  "D": "selected"
+                },
+                "correctAnswer": "B",
+                "explanation": "were sent (được gửi đi - chia ở quá khứ bị động) là động từ chia thì chính của câu. Động từ 'were selected' nằm trong mệnh đề quan hệ phụ."
+              },
+              {
+                "q": "Cụm 'to the factory' và 'to examine the facility' bổ nghĩa cho thành phần nào?",
+                "options": {
+                  "A": "Bổ nghĩa cho động từ chính 'were sent' (gửi ĐI ĐÂU và ĐỂ LÀM GÌ)",
+                  "B": "Bổ nghĩa cho danh từ 'inspectors'",
+                  "C": "Bổ nghĩa cho mệnh đề 'who were...'",
+                  "D": "Không bổ nghĩa cho cái gì cả"
+                },
+                "correctAnswer": "A",
+                "explanation": "Cụm giới từ chỉ nơi chốn 'to the factory' và cụm 'To-V' chỉ mục đích 'to examine...' bổ nghĩa bổ sung trạng thái cho hành động gửi đi ('were sent')."
+              }
+            ],
+            "sentenceTranslation": "Một số thanh tra viên được lựa chọn cẩn thận đã được cử đến nhà máy để kiểm tra cơ sở vật chất."
+          },
+          {
+            "id": "b2_q6",
+            "questionText": "6. Maps and other resources for tourists are available from the tourist information center.",
+            "subQuestions": [
+              {
+                "q": "Chủ ngữ chính của câu này gồm những danh từ chính nào nối với nhau?",
+                "options": {
+                  "A": "tourists",
+                  "B": "Maps và resources",
+                  "C": "tourist information center",
+                  "D": "Maps"
+                },
+                "correctAnswer": "B",
+                "explanation": "Đây là chủ ngữ kép gồm hai danh từ chính nối bằng 'and': 'Maps' và 'resources'."
+              },
+              {
+                "q": "Từ 'available' đứng sau động từ liên kết 'are' thuộc loại từ gì và bổ nghĩa cho ai?",
+                "options": {
+                  "A": "Danh từ bổ nghĩa cho tourists",
+                  "B": "Tính từ (Adj) làm bổ ngữ cho chủ ngữ (Maps & resources)",
+                  "C": "Động từ chính chia thì",
+                  "D": "Trạng từ bổ nghĩa cho are"
+                },
+                "correctAnswer": "B",
+                "explanation": "available là tính từ đứng sau động từ tobe 'are' (động từ liên kết) để bổ nghĩa trạng thái cho chủ ngữ chính 'Bản đồ và các tài nguyên khác'."
+              }
+            ],
+            "sentenceTranslation": "Bản đồ và các nguồn thông tin khác dành cho khách du lịch có sẵn tại trung tâm thông tin du lịch."
+          },
+          {
+            "id": "b2_q7",
+            "questionText": "7. The Tonsin Writers League is a reputable organization with highly accomplished members.",
+            "subQuestions": [
+              {
+                "q": "Thành phần 'a reputable organization' là cụm danh từ làm bổ ngữ đứng sau động từ liên kết 'is'. Đâu là danh từ chính trong cụm này?",
+                "options": {
+                  "A": "a",
+                  "B": "reputable",
+                  "C": "organization",
+                  "D": "Writers League"
+                },
+                "correctAnswer": "C",
+                "explanation": "organization là danh từ chính (N) đứng ở cuối cụm danh từ. 'reputable' là tính từ đứng trước để bổ nghĩa cho nó."
+              },
+              {
+                "q": "Trong cụm giới từ 'with highly accomplished members', từ 'highly' bổ nghĩa cho từ nào?",
+                "options": {
+                  "A": "Giới từ 'with'",
+                  "B": "Danh từ 'members'",
+                  "C": "Tính từ 'accomplished' (thành tựu cao / tài năng)",
+                  "D": "Động từ 'is'"
+                },
+                "correctAnswer": "C",
+                "explanation": "highly là trạng từ (Adv) đứng trước để bổ nghĩa mức độ cho tính từ 'accomplished', và cả cụm 'highly accomplished' bổ nghĩa cho danh từ đứng sau 'members'."
+              }
+            ],
+            "sentenceTranslation": "Liên đoàn Nhà văn Tonsin là một tổ chức có uy tín với các thành viên có thành tích cao."
+          },
+          {
+            "id": "b2_q8",
+            "questionText": "8. Our conference room, which was recently renovated, can be booked for meetings now.",
+            "subQuestions": [
+              {
+                "q": "Mệnh đề nằm giữa 2 dấu phẩy 'which was recently renovated' có vai trò gì?",
+                "options": {
+                  "A": "Mệnh đề danh từ làm tân ngữ chính",
+                  "B": "Mệnh đề quan hệ không xác định, đóng vai trò như tính từ bổ nghĩa thêm thông tin cho danh từ 'room'",
+                  "C": "Chủ ngữ của câu",
+                  "D": "Trạng từ chỉ thời gian"
+                },
+                "correctAnswer": "B",
+                "explanation": "Mệnh đề quan hệ kẹp giữa hai dấu phẩy bổ nghĩa giải thích thêm thông tin cho danh từ phòng hội nghị ('room')."
+              },
+              {
+                "q": "Cụm động từ chính chia thì (vị ngữ chính) của toàn câu này là gì?",
+                "options": {
+                  "A": "was recently renovated",
+                  "B": "can be booked",
+                  "C": "for meetings",
+                  "D": "renovated"
+                },
+                "correctAnswer": "B",
+                "explanation": "can be booked (can + be + booked - động từ khuyết thiếu + bị động) là động từ chính chia thì của cả câu. Động từ 'was renovated' chỉ là động từ phụ trong mệnh đề bổ nghĩa."
+              }
+            ],
+            "sentenceTranslation": "Phòng hội nghị của chúng tôi, mới được cải tạo gần đây, hiện có thể đặt trước để tổ chức các cuộc họp."
+          },
+          {
+            "id": "b2_q9",
+            "questionText": "10. Camion Vehicles will add more features to its sedans over the next few months.",
+            "subQuestions": [
+              {
+                "q": "Đâu là danh từ chính làm tân ngữ trực tiếp nhận tác động của hành động thêm ('will add')?",
+                "options": {
+                  "A": "Camion Vehicles",
+                  "B": "features (tính năng)",
+                  "C": "sedans (dòng xe)",
+                  "D": "months"
+                },
+                "correctAnswer": "B",
+                "explanation": "features là danh từ chính làm tân ngữ trực tiếp (add more features - thêm nhiều tính năng)."
+              },
+              {
+                "q": "Hai cụm giới từ 'to its sedans' và 'over the next few months' bổ nghĩa cho thành phần nào?",
+                "options": {
+                  "A": "Bổ nghĩa cho động từ chính 'will add' (thêm vào cái gì và thêm trong thời gian nào)",
+                  "B": "Bổ nghĩa cho danh từ 'Camion Vehicles'",
+                  "C": "Bổ nghĩa cho tính từ 'more'",
+                  "D": "Không có vai trò bổ nghĩa"
+                },
+                "correctAnswer": "A",
+                "explanation": "Cụm giới từ chỉ đối tượng 'to its sedans' và cụm giới từ chỉ thời gian 'over the next few months' bổ nghĩa chi tiết trạng thái cho hành động thêm ('will add')."
+              }
+            ],
+            "sentenceTranslation": "Camion Vehicles sẽ bổ sung thêm nhiều tính năng hơn cho các mẫu xe sedan của mình trong vài tháng tới."
+          }
+        ]
+      }
+    ]
+  }
+}

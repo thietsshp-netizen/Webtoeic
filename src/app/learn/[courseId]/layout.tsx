@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import LearnSidebar from "@/components/Player/LearnSidebar";
+import GrammarHandbook from "@/components/Player/GrammarHandbook";
 import { useRouter, useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { ChevronLeft, Share2, HelpCircle, ChevronRight, Menu } from "lucide-react";
@@ -176,6 +177,9 @@ export default function LearnLayout({
             {children}
           </main>
         </div>
+        
+        {/* Sổ tay Ngữ pháp nổi */}
+        <GrammarHandbook />
       </div>
     </AdminEditProvider>
   );

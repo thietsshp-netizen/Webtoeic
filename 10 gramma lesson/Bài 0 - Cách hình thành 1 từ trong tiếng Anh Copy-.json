@@ -1,0 +1,425 @@
+{
+  "layout": "splitscreen",
+  "theory": {
+    "title": "Bài 0: CÁCH HÌNH THÀNH MỘT TỪ TRONG TIẾNG ANH",
+    "htmlContent": "<div class=\"grammar-container\" style=\"font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.7; padding: 10px;\">\n  \n  <style>\n    .grammar-title {\n      font-size: 24px;\n      font-weight: 800;\n      color: #b91c1c;\n      text-transform: uppercase;\n      margin-bottom: 20px;\n      border-bottom: 3px solid #ef4444;\n      padding-bottom: 10px;\n      letter-spacing: -0.02em;\n    }\n    .grammar-section-title {\n      font-size: 18px;\n      font-weight: 700;\n      color: #dc2626;\n      margin-top: 30px;\n      margin-bottom: 15px;\n      display: flex;\n      align-items: center;\n      gap: 8px;\n    }\n    .grammar-table {\n      width: auto;\n      border-collapse: collapse;\n      margin-bottom: 20px;\n      margin-left: auto;\n      margin-right: auto;\n      border-radius: 10px;\n      overflow: hidden;\n      box-shadow: 0 1px 4px rgba(0,0,0,0.07);\n      background-color: #ffffff;\n    }\n    .grammar-table th {\n      background-color: #eef2ff;\n      color: #3730a3;\n      font-weight: 700;\n      padding: 11px 16px;\n      text-align: center;\n      font-size: 13px;\n      border-bottom: 2px solid #c7d2fe;\n      border-right: 1px solid #e0e7ff;\n      letter-spacing: 0.01em;\n    }\n    .grammar-table th:last-child { border-right: none; }\n    .grammar-table td {\n      padding: 10px 16px;\n      font-size: 13.5px;\n      color: #1e293b;\n      border-bottom: 1px solid #f1f5f9;\n      border-right: 1px solid #f1f5f9;\n      background-color: #ffffff;\n      text-align: center;\n      vertical-align: middle;\n    }\n    .grammar-table td:last-child { border-right: none; }\n    .grammar-table tbody tr:nth-child(even) td { background-color: #f8fafc; }\n    .grammar-table tbody tr:hover td { background-color: #eef2ff; transition: background 0.15s; }\n    .grammar-table tbody tr:last-child td { border-bottom: none; }\n    .suffix-table th {\n      text-align: center !important;\n    }\n    .suffix-table td {\n      text-align: center !important;\n    }\n    \n    \n    .highlight-red {\n      color: #ef4444;\n      font-weight: 700;\n    }\n    .highlight-blue {\n      color: #2563eb;\n      font-weight: 700;\n    }\n    .highlight-green {\n      color: #16a34a;\n      font-weight: 700;\n    }\n    .highlight-yellow {\n      color: #ca8a04;\n      font-weight: 700;\n    }\n  \n    .cell-en {\n      font-weight: inherit;\n      line-height: 1.4;\n    }\n    .cell-vi {\n      font-size: 12px;\n      color: #64748b;\n      margin-top: 3px;\n      line-height: 1.3;\n    }\n  </style>\n\n  <h1 class=\"grammar-title\">Bài 0: CÁCH HÌNH THÀNH MỘT TỪ TRONG TIẾNG ANH</h1>\n\n  <p>Trong tiếng Anh, từ một <strong>gốc từ</strong> (root word) hoặc một <strong>từ cơ sở</strong> (base word) chúng ta có thể tạo ra những từ mới theo những cách khác nhau.</p>\n  <p>Việc nắm được các gốc từ, các từ cơ sở và cách biến đổi chúng giúp chúng ta <strong>nâng cao vốn từ một cách nhanh chóng</strong> (học 1 từ có thể biết hoặc đoán nghĩa của nhiều từ liên quan).</p>\n\n  <div class=\"grammar-section-title\">\n    <span>I- CÁC CÁCH ĐỂ HÌNH THÀNH 1 TỪ MỚI TRONG TIẾNG ANH</span>\n  </div>\n\n  <!-- 1. Từ ghép -->\n  <h3 style=\"font-size: 15px; font-weight: bold; color: #b91c1c; margin-bottom: 8px;\">1. Tạo từ mới bằng cách ghép các từ cơ bản với nhau:</h3>\n<div class=\"section-lv1\">\n\n  <table class=\"grammar-table\">\n    <thead>\n      <tr>\n        <th style=\"width: 50%; font-weight: bold; color: #1e3a8a;\">Từ ghép</th>\n        <th style=\"width: 50%; font-weight: bold; color: #1e3a8a;\">Nghĩa tiếng Việt</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr><td><strong>backache</strong></td><td>➔ đau lưng</td></tr>\n      <tr><td><strong>postcard</strong></td><td>➔ bưu thiếp</td></tr>\n      <tr><td><strong>heartbreaking</strong></td><td>➔ đau lòng</td></tr>\n      <tr><td><strong>carsick</strong></td><td>➔ say xe</td></tr>\n      <tr><td><strong>car park</strong></td><td>➔ bãi đỗ xe</td></tr>\n      <tr><td><strong>rock band</strong></td><td>➔ ban nhạc rốc</td></tr>\n      <tr><td><strong>sugar-free</strong></td><td>➔ không đường</td></tr>\n      <tr><td><strong>father-in-law</strong></td><td>➔ cha chồng, cha vợ</td></tr>\n      <tr><td><strong>text-message</strong></td><td>➔ tin nhắn văn bản</td></tr>\n    </tbody>\n  </table>\n\n  <!-- 2. Biến đổi loại từ -->\n  </div><!-- /section-lv1 -->\n<h3 style=\"font-size: 15px; font-weight: bold; color: #b91c1c; margin-top: 25px; margin-bottom: 8px;\">2. Tạo từ mới bằng cách biến đổi loại từ</h3>\n<div class=\"section-lv1\">\n\n  <table class=\"grammar-table\">\n    <thead>\n      <tr>\n        <th style=\"width: 30%; font-weight: bold; color: #1e3a8a;\">Từ (Word)</th>\n        <th style=\"width: 35%; font-weight: bold; color: #1e3a8a;\">Danh từ (Noun)</th>\n        <th style=\"width: 35%; font-weight: bold; color: #1e3a8a;\">Động từ (Verb)</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr><td><strong>text</strong></td><td>chữ viết</td><td>nhắn tin</td></tr>\n      <tr><td><strong>order</strong></td><td>đơn hàng</td><td>đặt hàng</td></tr>\n      <tr><td><strong>help</strong></td><td>sự giúp đỡ</td><td>giúp đỡ</td></tr>\n      <tr><td><strong>hand</strong></td><td>tay</td><td><div class=\"cell-en\">trao tay</div><div class=\"cell-vi\">(cho ai cái gì)</div></td></tr>\n      <tr><td><strong>water</strong></td><td>nước</td><td>tưới nước</td></tr>\n    </tbody>\n  </table>\n\n  <!-- 3. Thêm tiền tố / hậu tố -->\n  </div><!-- /section-lv1 -->\n<h3 style=\"font-size: 15px; font-weight: bold; color: #b91c1c; margin-top: 25px; margin-bottom: 8px;\">3. Tạo từ mới bằng cách thêm TIỀN TỐ hoặc HẬU TỐ</h3>\n<div class=\"section-lv1\">\n\n  \n  <!-- VD1 -->\n  <h4 style=\"font-size: 14px; font-weight: bold; color: #475569; margin-bottom: 8px;\">VD1: Thêm tiền tố (Prefix)</h4>\n<div class=\"section-lv2\">\n\n  <table class=\"grammar-table\">\n    <thead>\n      <tr>\n        <th style=\"width: 25%; font-weight: bold; color: #1e3a8a;\">Tiền tố (prefix)</th>\n        <th style=\"width: 35%; font-weight: bold; color: #1e3a8a;\">Gốc từ, từ cơ sở (root word)</th>\n        <th style=\"width: 40%; font-weight: bold; color: #1e3a8a;\">Từ mới tạo thành</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><div class=\"cell-en\"><span class=\"highlight-red\">un-</span></div><div class=\"cell-vi\">(không)</div></td>\n        <td><div class=\"cell-en\">happy</div><div class=\"cell-vi\">(vui vẻ)</div></td>\n        <td><div class=\"cell-en\"><span class=\"highlight-red\">un</span>happy</div><div class=\"cell-vi\">(không vui)</div></td>\n      </tr>\n      <tr>\n        <td><div class=\"cell-en\"><span class=\"highlight-red\">pre-</span></div><div class=\"cell-vi\">(trước)</div></td>\n        <td><div class=\"cell-en\">view</div><div class=\"cell-vi\">(nhìn, xem)</div></td>\n        <td><div class=\"cell-en\"><span class=\"highlight-red\">pre</span>view</div><div class=\"cell-vi\">(xem trước)</div></td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- VD2 -->\n  </div><!-- /section-lv2 -->\n<h4 style=\"font-size: 14px; font-weight: bold; color: #475569; margin-top: 15px; margin-bottom: 8px;\">VD2: Thêm hậu tố (Suffix)</h4>\n<div class=\"section-lv2\">\n\n  <table class=\"grammar-table suffix-table\">\n    <thead>\n      <tr>\n        <th style=\"width: 35%; font-weight: bold; color: #1e3a8a;\">Gốc từ, từ cơ sở (root word)</th>\n        <th style=\"width: 25%; font-weight: bold; color: #1e3a8a;\">Hậu tố (suffix)</th>\n        <th style=\"width: 40%; font-weight: bold; color: #1e3a8a;\">Từ mới tạo thành</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><div class=\"cell-en\">punish</div><div class=\"cell-vi\">(trừng phạt)</div></td>\n        <td><span class=\"highlight-red\">-ment</span></td>\n        <td><div class=\"cell-en\">punish<span class=\"highlight-red\">ment</span></div><div class=\"cell-vi\">(sự trừng phạt, hình phạt)</div></td>\n      </tr>\n      <tr>\n        <td><div class=\"cell-en\">danger</div><div class=\"cell-vi\">(N. nguy hiểm)</div></td>\n        <td><span class=\"highlight-red\">-ous</span></td>\n        <td><div class=\"cell-en\">danger<span class=\"highlight-red\">ous</span></div><div class=\"cell-vi\">(adj. nguy hiểm)</div></td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- VD3 -->\n  </div><!-- /section-lv2 -->\n<h4 style=\"font-size: 14px; font-weight: bold; color: #475569; margin-top: 15px; margin-bottom: 8px;\">VD3: Thêm cả tiền tố và hậu tố</h4>\n<div class=\"section-lv2\">\n\n  <table class=\"grammar-table\">\n    <thead>\n      <tr>\n        <th style=\"width: 20%; font-weight: bold; color: #1e3a8a;\">Tiền tố (prefix)</th>\n        <th style=\"width: 30%; font-weight: bold; color: #1e3a8a;\">Gốc từ, từ cơ sở (root word)</th>\n        <th style=\"width: 20%; font-weight: bold; color: #1e3a8a;\">Hậu tố (suffix)</th>\n        <th style=\"width: 30%; font-weight: bold; color: #1e3a8a;\">Từ mới tạo thành</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><div class=\"cell-en\"><span class=\"highlight-red\">im-</span></div><div class=\"cell-vi\">(không)</div></td>\n        <td><div class=\"cell-en\">pass</div><div class=\"cell-vi\">(vượt qua)</div></td>\n        <td><div class=\"cell-en\"><span class=\"highlight-red\">-able</span></div><div class=\"cell-vi\">(có thể)</div></td>\n        <td><div class=\"cell-en\"><span class=\"highlight-red\">im</span>pass<span class=\"highlight-red\">able</span></div><div class=\"cell-vi\">(không thể vượt qua)</div></td>\n      </tr>\n      <tr>\n        <td><div class=\"cell-en\"><span class=\"highlight-red\">un-</span></div><div class=\"cell-vi\">(không)</div></td>\n        <td><div class=\"cell-en\">accept</div><div class=\"cell-vi\">(chấp nhận)</div></td>\n        <td><div class=\"cell-en\"><span class=\"highlight-red\">-able</span></div><div class=\"cell-vi\">(có thể)</div></td>\n        <td><div class=\"cell-en\"><span class=\"highlight-red\">un</span>accept<span class=\"highlight-red\">able</span></div><div class=\"cell-vi\">(không thể chấp nhận)</div></td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- VD4 -->\n  </div><!-- /section-lv2 -->\n<h4 style=\"font-size: 15px; font-weight: bold; color: #b91c1c; margin-top: 25px; margin-bottom: 8px;\">VD4: Những từ xuất phát từ cùng 1 Gốc từ</h4>\n<div class=\"section-lv2\">\n\n  <p style=\"font-size: 13.5px; margin-bottom: 12px;\">(Bằng cách thêm tiền tố hoặc hậu tố vào 1 gốc từ có thể tạo ra những từ mang nghĩa khác nhau)</p>\n  \n  <table class=\"grammar-table\" style=\"font-size: 12.5px; width: auto; min-width: 70%;\">\n    <thead>\n      <tr>\n        <th style=\"width: 15%; font-weight: bold; color: #1e3a8a;\">GỐC TỪ</th>\n        <th style=\"width: 20%; font-weight: bold; color: #1e3a8a;\">NGHĨA</th>\n        <th style=\"width: 20%; font-weight: bold; color: #1e3a8a;\">VÍ DỤ</th>\n        <th style=\"width: 45%; font-weight: bold; color: #1e3a8a;\">GIẢI THÍCH</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td rowspan=\"11\" style=\"font-weight: bold; color: #b91c1c; vertical-align: top; background-color: #fef2f2; padding: 12px; border-right: 1px solid #e2e8f0;\">-vis-, -vid-</td>\n        <td rowspan=\"11\" style=\"vertical-align: top; background-color: #fef2f2; padding: 12px; border-right: 1px solid #e2e8f0;\">to see, to look</td>\n        <td>1. <strong><span style=\"color: #b91c1c;\">vis</span>ible</strong></td>\n        <td>có thể \"nhìn\" thấy được</td>\n      </tr>\n      <tr>\n        <td>2. <strong>in<span style=\"color: #b91c1c;\">vis</span>ible</strong></td>\n        <td>không thể 'nhìn' thấy = vô hình</td>\n      </tr>\n      <tr>\n        <td>3. <strong>ad<span style=\"color: #b91c1c;\">vis</span>e</strong></td>\n        <td><strong>ad- = to, -vis- = to see</strong><br>Trao cho ai góc nhìn của mình để họ 'nhìn' vào đó và cân nhắc = khuyên, lời khuyên</td>\n      </tr>\n      <tr>\n        <td>4. <strong><span style=\"color: #b91c1c;\">vis</span>ual</strong></td>\n        <td>việc 'nhìn', thuộc về thị giác</td>\n      </tr>\n      <tr>\n        <td>5. <strong><span style=\"color: #b91c1c;\">vis</span>ion</strong></td>\n        <td><strong>power of 'seeing'</strong> = tầm nhìn, sức tưởng tượng</td>\n      </tr>\n      <tr>\n        <td>6. <strong>tele<span style=\"color: #b91c1c;\">vis</span>ion</strong></td>\n        <td><strong>device on which pictures are 'seen' from far away</strong> = vô tuyến, truyền hình</td>\n      </tr>\n      <tr>\n        <td>7. <strong><span style=\"color: #b91c1c;\">vis</span>it</strong></td>\n        <td>to go to 'see' sb = tới thăm, chuyến thăm</td>\n      </tr>\n      <tr>\n        <td>8. <strong><span style=\"color: #b91c1c;\">vis</span>itor</strong></td>\n        <td>người tới thăm</td>\n      </tr>\n      <tr>\n        <td>9. <strong><span style=\"color: #b91c1c;\">vid</span>eo</strong></td>\n        <td>moving picture 'seen' on a screen</td>\n      </tr>\n      <tr>\n        <td>10. <strong>e<span style=\"color: #b91c1c;\">vid</span>ence</strong></td>\n        <td>những thứ được 'seen' trong 1 vụ án</td>\n      </tr>\n      <tr>\n        <td>11. <strong>re<span style=\"color: #b91c1c;\">vis</span>e</strong></td>\n        <td>to 'see' to again = xem lại, sửa lại</td>\n      </tr>\n\n      <tr style=\"border-top: 2px solid #cbd5e1;\">\n        <td rowspan=\"5\" style=\"font-weight: bold; color: #d97706; vertical-align: top; background-color: #fffbeb; padding: 12px; border-right: 1px solid #e2e8f0;\">-cura-, -cur-</td>\n        <td rowspan=\"5\" style=\"vertical-align: top; background-color: #fffbeb; padding: 12px; border-right: 1px solid #e2e8f0;\">care, manage</td>\n        <td>1. <strong><span style=\"color: #d97706;\">cur</span>e</strong></td>\n        <td>chữa bệnh</td>\n      </tr>\n      <tr>\n        <td>2. <strong>se<span style=\"color: #d97706;\">cur</span>e</strong></td>\n        <td>\"take care\" để mọi thứ được an toàn = đảm bảo, an toàn</td>\n      </tr>\n      <tr>\n        <td>3. <strong>ac<span style=\"color: #d97706;\">cur</span>ate</strong></td>\n        <td>hành động (ac-) và \"manage\" để mọi thứ diễn ra đúng như dự tính = chính xác</td>\n      </tr>\n      <tr>\n        <td>4. <strong><span style=\"color: #d97706;\">cur</span>ator</strong></td>\n        <td>người quản lý, người trông nom</td>\n      </tr>\n      <tr>\n        <td>5. <strong><span style=\"color: #d97706;\">cur</span>ious</strong></td>\n        <td>rất 'care' tới điều gì = tò mò</td>\n      </tr>\n\n      <tr style=\"border-top: 2px solid #cbd5e1;\">\n        <td rowspan=\"6\" style=\"font-weight: bold; color: #16a34a; vertical-align: top; background-color: #f0fdf4; padding: 12px; border-right: 1px solid #e2e8f0;\">trans-</td>\n        <td rowspan=\"6\" style=\"vertical-align: top; background-color: #f0fdf4; padding: 12px; border-right: 1px solid #e2e8f0;\">across, through</td>\n        <td>1. <strong><span style=\"color: #16a34a;\">trans</span>it</strong></td>\n        <td>đi qua, sự đi qua</td>\n      </tr>\n      <tr>\n        <td>2. <strong><span style=\"color: #16a34a;\">trans</span>late</strong></td>\n        <td>chuyển từ ngôn ngữ này 'across' ngôn ngữ khác = dịch, phiên dịch</td>\n      </tr>\n      <tr>\n        <td>3. <strong><span style=\"color: #16a34a;\">trans</span>form</strong></td>\n        <td>biến từ form này 'across' form khác = biến đổi</td>\n      </tr>\n      <tr>\n        <td>4. <strong><span style=\"color: #16a34a;\">trans</span>port</strong></td>\n        <td>chở cái gì từ nơi này 'across' nơi khác = sự vận tải, sự chuyên chở</td>\n      </tr>\n      <tr>\n        <td>5. <strong><span style=\"color: #16a34a;\">trans</span>parent</strong></td>\n        <td>việc ánh sáng có thể 'go through' = trong suốt</td>\n      </tr>\n      <tr>\n        <td>6. <strong><span style=\"color: #16a34a;\">trans</span>fer</strong></td>\n        <td>chuyển, dời; sự di chuyển, sự dời chỗ</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- II. GIỚI THIỆU TIỀN TỐ & HẬU TỐ -->\n  </div><!-- /section-lv2 -->\n</div><!-- /section-lv1 -->\n<div class=\"grammar-section-title\">\n    <span>II. GIỚI THIỆU MỘT SỐ TIỀN TỐ VÀ HẬU TỐ TRONG TIẾNG ANH</span>\n  </div>\n\n  <!-- 1. Tiền tố -->\n  <h3 style=\"font-size: 15px; font-weight: bold; color: #b91c1c; margin-bottom: 8px;\">1. Một số TIỀN TỐ (Prefix) hay gặp:</h3>\n<div class=\"section-lv1\">\n\n  <table class=\"grammar-table\" style=\"font-size: 12.5px; width: auto; min-width: 70%;\">\n    <thead>\n      <tr>\n        <th style=\"width: 20%; font-weight: bold; color: #1e3a8a;\">Tiền tố</th>\n        <th style=\"width: 25%; font-weight: bold; color: #1e3a8a;\">Nghĩa</th>\n        <th style=\"font-weight: bold; color: #1e3a8a;\">Ví dụ minh họa</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td style=\"font-weight: bold; color: #b91c1c;\">un-<br>dis-<br>im-<br>ir-<br>in-</td>\n        <td><div class=\"cell-en\">not<br></div><div class=\"cell-vi\">(không)</div></td>\n        <td style=\"line-height: 1.8;\">\n          • happy ➔ <span class=\"highlight-red\">un</span>happy (vui ➔ không vui)<br>\n          • comfort ➔ <span class=\"highlight-red\">dis</span>comfort (thoải mái ➔ không thoải mái)<br>\n          • polite ➔ <span class=\"highlight-red\">im</span>polite (lịch sự ➔ bất lịch sự)<br>\n          • responsible ➔ <span class=\"highlight-red\">ir</span>responsible (có trách nhiệm ➔ vô trách nhiệm)<br>\n          • experience ➔ <span class=\"highlight-red\">in</span>experience (giàu kinh nghiệm ➔ thiếu kinh nghiệm)\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: bold; color: #b91c1c;\">pre-</td>\n        <td><div class=\"cell-en\">before<br></div><div class=\"cell-vi\">(trước)</div></td>\n        <td style=\"line-height: 1.8;\">\n          • view ➔ <span class=\"highlight-red\">pre</span>view (xem ➔ xem trước)\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: bold; color: #b91c1c;\">non-</td>\n        <td><div class=\"cell-en\">not, without<br></div><div class=\"cell-vi\">(không, không có)</div></td>\n        <td style=\"line-height: 1.8;\">\n          • existent ➔ <span class=\"highlight-red\">non</span>existent (tồn tại ➔ không tồn tại)\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: bold; color: #b91c1c;\">mis-</td>\n        <td><div class=\"cell-en\">wrongly<br></div><div class=\"cell-vi\">(sai, lỗi)</div></td>\n        <td style=\"line-height: 1.8;\">\n          • understand ➔ <span class=\"highlight-red\">mis</span>understand (hiểu ➔ hiểu sai)<br>\n          • conduct ➔ <span class=\"highlight-red\">mis</span>conduct (quản lý ➔ quản lý kém)\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: bold; color: #b91c1c;\">re-</td>\n        <td><div class=\"cell-en\">again<br></div><div class=\"cell-vi\">(lần nữa, làm lại lần nữa)</div></td>\n        <td style=\"line-height: 1.8;\">\n          • write ➔ <span class=\"highlight-red\">re</span>write (viết ➔ viết lại)<br>\n          • view ➔ <span class=\"highlight-red\">re</span>view (xem ➔ xem lại)\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: bold; color: #b91c1c;\">mid-</td>\n        <td><div class=\"cell-en\">middle<br></div><div class=\"cell-vi\">(ở giữa)</div></td>\n        <td style=\"line-height: 1.8;\">\n          • day ➔ <span class=\"highlight-red\">mid</span>day (ngày ➔ giữa ngày)<br>\n          • night ➔ <span class=\"highlight-red\">mid</span>night (đêm ➔ giữa đêm)\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: bold; color: #b91c1c;\">mono-</td>\n        <td><div class=\"cell-en\">one<br></div><div class=\"cell-vi\">(một)</div></td>\n        <td style=\"line-height: 1.8;\">\n          • rail ➔ <span class=\"highlight-red\">mono</span>rail (đường ray tàu ➔ tàu 1 đường ray)<br>\n          • lingual ➔ <span class=\"highlight-red\">mono</span>lingual (ngôn ngữ ➔ người nói một ngôn ngữ)\n        </td>\n      </tr>\n      <tr>\n        <td style=\"font-weight: bold; color: #b91c1c;\">multi-</td>\n        <td><div class=\"cell-en\">many<br></div><div class=\"cell-vi\">(nhiều)</div></td>\n        <td style=\"line-height: 1.8;\">\n          • nation ➔ <span class=\"highlight-red\">multi</span>nation (quốc gia ➔ đa quốc gia)<br>\n          • purpose ➔ <span class=\"highlight-red\">multi</span>purpose (mục đích ➔ vạn năng)\n        </td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- 2. Hậu tố -->\n  </div><!-- /section-lv1 -->\n<h3 style=\"font-size: 15px; font-weight: bold; color: #b91c1c; margin-top: 25px; margin-bottom: 12px;\">2. Một số HẬU TỐ (Suffix) hay gặp</h3>\n<div class=\"section-lv1\">\n\n  <table class=\"grammar-table suffix-table\" style=\"font-size: 12px; width: auto; min-width: 70%;\">\n    <thead>\n      <tr>\n        <th colspan=\"2\" style=\"text-align: center; font-weight: bold; color: #b91c1c; border-right: 1px solid #cbd5e1;\">Đuôi Danh từ (Noun)</th>\n        <th rowspan=\"2\" style=\"text-align: center; font-weight: bold; color: #15803d; border-right: 1px solid #cbd5e1; vertical-align: middle;\">Đuôi Động từ (Verb)</th>\n        <th rowspan=\"2\" style=\"text-align: center; font-weight: bold; color: #0369a1; border-right: 1px solid #cbd5e1; vertical-align: middle;\">Đuôi Tính từ (Adj)</th>\n        <th rowspan=\"2\" style=\"text-align: center; font-weight: bold; color: #6b21a8; vertical-align: middle;\">Đuôi Trạng từ (Adv)</th>\n      </tr>\n      <tr style=\"background-color: #f8fafc;\">\n        <th style=\"font-weight: bold; color: #b91c1c; border-right: 1px solid #e2e8f0; width: 22%;\">N vật/sự việc</th>\n        <th style=\"font-weight: bold; color: #b91c1c; border-right: 1px solid #cbd5e1; width: 20%;\">N chỉ người</th>\n      </tr>\n    </thead>\n    <tbody>\n      <!-- Hàng 1 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(sự điều chỉnh) altera<span class=\"highlight-red\">tion</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(người lái xe) driv<span class=\"highlight-red\">er</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(làm cho vững chắc) stabil<span class=\"highlight-red\">ise</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(thu hút) attrac<span class=\"highlight-red\">tive</span></td>\n        <td>(trễ) late<span class=\"highlight-red\">ly</span></td>\n      </tr>\n      <!-- Hàng 2 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(sự mở rộng) expan<span class=\"highlight-red\">sion</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(bác sĩ) doct<span class=\"highlight-red\">or</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(làm cho thành hiện thực) reali<span class=\"highlight-red\">ze</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(đẹp) beauti<span class=\"highlight-red\">ful</span></td>\n        <td>(thật sự) real<span class=\"highlight-red\">ly</span></td>\n      </tr>\n      <!-- Hàng 3 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(sự phát triển) develop<span class=\"highlight-red\">ment</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(nhân viên) employ<span class=\"highlight-red\">ee</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(làm cho gấp đôi) duplic<span class=\"highlight-red\">ate</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(đặc biệt) speci<span class=\"highlight-red\">al</span></td>\n        <td>(một cách tức giận) angri<span class=\"highlight-red\">ly</span></td>\n      </tr>\n      <!-- Hàng 4 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(sự phụ thuộc) dependen<span class=\"highlight-red\">ce</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(người trợ lý) assist<span class=\"highlight-yellow\">ant</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(làm đơn giản hóa) simpl<span class=\"highlight-red\">ify</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(khác) differ<span class=\"highlight-red\">ent</span></td>\n        <td>(một cách bình thường) normal<span class=\"highlight-red\">ly</span></td>\n      </tr>\n      <!-- Hàng 5 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(lò bánh mỳ) baker<span class=\"highlight-red\">y</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(người học) stud<span class=\"highlight-red\">ent</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(làm ngắn lại) short<span class=\"highlight-red\">en</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(đếm được) count<span class=\"highlight-red\">able</span></td>\n        <td>(một cách cẩn thận) careful<span class=\"highlight-red\">ly</span></td>\n      </tr>\n      <!-- Hàng 6 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(hành lý) bagga<span class=\"highlight-red\">ge</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(tình bạn) friend<span class=\"highlight-red\">ship</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(thành lập) establish</td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(liên tục) continu<span class=\"highlight-red\">ous</span></td>\n        <td style=\"color: #6b21a8; font-style: italic;\">* Đa số tính từ thêm đuôi -ly sẽ biến thành trạng từ.</td>\n      </tr>\n      <!-- Hàng 7 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(năng lực) abili<span class=\"highlight-red\">ty</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(vô tận) end<span class=\"highlight-red\">less</span></td>\n        <td></td>\n      </tr>\n      <!-- Hàng 8 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(bóng đêm) dark<span class=\"highlight-red\">ness</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(thân thiện) friend<span class=\"highlight-blue\">ly</span></td>\n        <td></td>\n      </tr>\n      <!-- Hàng 9 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(sự khẩn cấp) urgen<span class=\"highlight-red\">cy</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(thú vị) interest<span class=\"highlight-yellow\">ing</span></td>\n        <td></td>\n      </tr>\n      <!-- Hàng 10 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(buổi khai trương) open<span class=\"highlight-yellow\">ing</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(mệt mỏi) tir<span class=\"highlight-red\">ed</span></td>\n        <td></td>\n      </tr>\n      <!-- Hàng 11 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(chủ nghĩa Mac) Marx<span class=\"highlight-red\">ism</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(vui vẻ) happ<span class=\"highlight-red\">y</span></td>\n        <td></td>\n      </tr>\n      <!-- Hàng 12 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(người đại diện) representat<span class=\"highlight-green\">ive</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(cơ bản) bas<span class=\"highlight-red\">ic</span></td>\n        <td></td>\n      </tr>\n      <!-- Hàng 13 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(chuyên gia) profession<span class=\"highlight-green\">al</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(phong phú) abund<span class=\"highlight-red\">ant</span></td>\n        <td></td>\n      </tr>\n      <!-- Hàng 14 -->\n      <tr>\n        <td style=\"border-right: 1px solid #e2e8f0;\">(sự lắp ráp) assembl<span class=\"highlight-blue\">y</span></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\"></td>\n        <td style=\"border-right: 1px solid #cbd5e1;\">(ngu ngốc) fool<span class=\"highlight-red\">ish</span></td>\n        <td></td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- 3. Ngoại lệ cần lưu ý -->\n  </div><!-- /section-lv1 -->\n<h3 style=\"font-size: 15px; font-weight: bold; color: #b91c1c; margin-top: 25px; margin-bottom: 8px;\">3. Một số ngoại lệ cần lưu ý</h3>\n<div class=\"section-lv1\">\n\n  \n  <!-- 3-1 -->\n  <h4 style=\"font-size: 14px; font-weight: bold; color: #1e3a8a; margin-bottom: 8px;\">3-1. Danh từ đuôi -ing/-tive</h4>\n<div class=\"section-lv2\">\n\n  <table class=\"grammar-table\" style=\"font-size: 12.5px; width: auto; min-width: 70%;\">\n    <thead>\n      <tr>\n        <th style=\"width: 40%; font-weight: bold; color: #1e3a8a;\">TỪ VỰNG</th>\n        <th style=\"width: 60%; font-weight: bold; color: #1e3a8a;\">NGHĨA</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr><td><strong>building</strong></td><td>tòa nhà</td></tr>\n      <tr><td><strong>marketing</strong></td><td>sự tiếp thị</td></tr>\n      <tr><td><strong>opening</strong></td><td>- vị trí trống (= job opportunity; position)<br>- lễ khai trương</td></tr>\n      <tr><td><strong>packaging</strong></td><td>bao bì</td></tr>\n      <tr><td><strong>meeting</strong></td><td>cuộc họp</td></tr>\n      <tr><td><strong>earning</strong></td><td>tiền lãi</td></tr>\n      <tr><td><strong>housing</strong></td><td><div class=\"cell-en\">nhà ở</div><div class=\"cell-vi\">(nói chung)</div></td></tr>\n      <tr><td><strong>advertising</strong></td><td>quảng cáo</td></tr>\n      <tr><td><strong>training</strong></td><td>sự đào tạo</td></tr>\n      <tr><td><strong>funding</strong></td><td>Tiền tài trợ, tiền cấp vốn</td></tr>\n      <tr><td><strong>drawing</strong></td><td>Bản vẽ</td></tr>\n      <tr><td><strong>painting</strong></td><td>Bức tranh</td></tr>\n      <tr><td><strong>carpooling</strong></td><td>Việc đi chung xe</td></tr>\n      <tr><td style=\"background-color: #fffbeb;\"><strong>representative</strong></td><td style=\"background-color: #fffbeb;\">người đại diện</td></tr>\n      <tr><td style=\"background-color: #fffbeb;\"><strong>alternative</strong></td><td style=\"background-color: #fffbeb;\">người/vật thay thế</td></tr>\n    </tbody>\n  </table>\n\n  <!-- 3-2 -->\n  </div><!-- /section-lv2 -->\n<h4 style=\"font-size: 14px; font-weight: bold; color: #1e3a8a; margin-top: 20px; margin-bottom: 8px;\">3-2. Những từ đuôi -ly nhưng có thể không phải trạng từ:</h4>\n<div class=\"section-lv2\">\n\n  <p style=\"font-size: 13px; font-weight: bold; color: #b91c1c; margin-bottom: 8px;\">Nhớ quy tắc: V + ly ➔ N | N + ly ➔ Adj | Adj + ly ➔ Adv</p>\n  <table class=\"grammar-table\" style=\"font-size: 12.5px; width: auto; min-width: 70%;\">\n    <thead>\n      <tr>\n        <th style=\"width: 45%; font-weight: bold; color: #1e3a8a;\">TỪ VỰNG</th>\n        <th style=\"width: 55%; font-weight: bold; color: #1e3a8a;\">NGHĨA</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>assembly</strong> (<span style=\"color: #ef4444; font-weight: bold;\">n</span>)</td>\n        <td>sự lắp ráp <br><small style=\"color: #64748b;\">(Động từ <strong>assemble</strong> + <strong>ly</strong> ➔ assembly)</small></td>\n      </tr>\n      <tr>\n        <td><strong>daily</strong> (<span style=\"color: #2563eb; font-weight: bold;\">adj</span>, <span style=\"color: #8b5cf6; font-weight: bold;\">adv</span>)</td>\n        <td>hàng ngày <br><small style=\"color: #64748b;\">(Danh từ <strong>day</strong> + <strong>ly</strong> ➔ daily)</small></td>\n      </tr>\n      <tr>\n        <td><strong>friendly</strong> (<span style=\"color: #2563eb; font-weight: bold;\">adj</span>)</td>\n        <td>thân thiện <br><small style=\"color: #64748b;\">(Danh từ <strong>friend</strong> + <strong>ly</strong> ➔ friendly)</small></td>\n      </tr>\n      <tr>\n        <td><strong>monthly</strong> (<span style=\"color: #2563eb; font-weight: bold;\">adj</span>)</td>\n        <td>hàng tháng <br><small style=\"color: #64748b;\">(Danh từ <strong>month</strong> + <strong>ly</strong> ➔ monthly)</small></td>\n      </tr>\n      <tr>\n        <td><strong>weekly</strong> (<span style=\"color: #2563eb; font-weight: bold;\">adj</span>)</td>\n        <td>hàng tuần <br><small style=\"color: #64748b;\">(Danh từ <strong>week</strong> + <strong>ly</strong> ➔ weekly)</small></td>\n      </tr>\n      <tr>\n        <td><strong>costly</strong> (<span style=\"color: #2563eb; font-weight: bold;\">adj</span>)</td>\n        <td>đắt đỏ, tốn tiền <br><small style=\"color: #64748b;\">(Danh từ <strong>cost</strong> + <strong>ly</strong> ➔ costly)</small></td>\n      </tr>\n    </tbody>\n  </table>\n\n  <!-- 3-3 -->\n  </div><!-- /section-lv2 -->\n<h4 style=\"font-size: 14px; font-weight: bold; color: #1e3a8a; margin-top: 20px; margin-bottom: 8px;\">3-3. Những từ không có đuôi -ly nhưng vẫn là Trạng từ</h4>\n<div class=\"section-lv2\">\n\n  <table class=\"grammar-table\" style=\"font-size: 12.5px; width: auto; min-width: 70%;\">\n    <thead>\n      <tr>\n        <th style=\"width: 40%; font-weight: bold; color: #1e3a8a;\">TỪ VỰNG</th>\n        <th style=\"width: 60%; font-weight: bold; color: #1e3a8a;\">NGHĨA</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr><td><strong>fast</strong></td><td>nhanh</td></tr>\n      <tr><td><strong>hard</strong></td><td><div class=\"cell-en\">chăm chỉ</div><div class=\"cell-vi\">(work hard = làm việc chăm chỉ)</div></td></tr>\n      <tr><td><strong>late</strong></td><td>trễ</td></tr>\n      <tr><td><strong>near</strong></td><td><div class=\"cell-en\">gần, gần như</div><div class=\"cell-vi\">(near-perfect = gần như hoàn hảo)</div></td></tr>\n      <tr><td><strong>pretty</strong></td><td><div class=\"cell-en\">rất</div><div class=\"cell-vi\">(pretty difficult = rất khó)</div></td></tr>\n      <tr><td><strong>right</strong></td><td><div class=\"cell-en\">đúng</div><div class=\"cell-vi\">(Do it right = Làm đúng)</div></td></tr>\n    </tbody>\n  </table>\n\n  <!-- III. CÁCH NHẬN DIỆN TRONG CÂU -->\n  </div><!-- /section-lv2 -->\n</div><!-- /section-lv1 -->\n<div class=\"grammar-section-title\">\n    <span>III. CÁCH NHẬN DIỆN LOẠI TỪ CỦA MỘT TỪ TRONG CÂU VĂN</span>\n  </div>\n  \n  <p>Khi gặp một từ lạ trong bài thi, hãy dùng 3 yếu tố sau để xác định từ loại theo thứ tự ưu tiên:</p>\n  <div style=\"display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px;\">\n    <div style=\"background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 15px;\">\n      <span style=\"background: #ef4444; color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase;\">Yếu tố 1</span>\n      <span style=\"font-size: 13px;\">Dựa vào <strong>NGHĨA của từ</strong> (Đây là yếu tố tiên quyết và chính xác nhất - Ưu tiên hàng đầu).</span>\n    </div>\n    <div style=\"background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 15px;\">\n      <span style=\"background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase;\">Yếu tố 2</span>\n      <span style=\"font-size: 13px;\">Dựa vào <strong>VỊ TRÍ của từ trong câu</strong> (Chúng ta sẽ học kỹ vị trí của N, V, Adj, Adv trong các bài tiếp theo).</span>\n    </div>\n    <div style=\"background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 15px;\">\n      <span style=\"background: #94a3b8; color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase;\">Yếu tố 3</span>\n      <span style=\"font-size: 13px;\">Dựa vào <strong>ĐUÔI nhận diện</strong> (Cần cẩn thận đối chiếu với các từ ngoại lệ để tránh bị bẫy).</span>\n    </div>\n  </div>\n\n</div>"
+  },
+  "practice": {
+    "parts": [
+      {
+        "partNumber": 1,
+        "title": "Bài 1: Hãy đoán nghĩa của các từ sau",
+        "type": "multiple_choice",
+        "instruction": "Dựa trên các tiền tố, hậu tố và phương thức ghép từ đã học, hãy chọn nghĩa chính xác nhất của các từ dưới đây:",
+        "questions": [
+          {
+            "id": "b1_q1",
+            "questionText": "1. textbook",
+            "options": {
+              "A": "Vở viết bài",
+              "B": "Sách giáo khoa",
+              "C": "Truyện đọc",
+              "D": "Từ điển"
+            },
+            "correctAnswer": "B",
+            "explanation": "text (chữ viết) + book (sách) = sách giáo khoa.",
+            "sentenceTranslation": "SGK (Sách giáo khoa)"
+          },
+          {
+            "id": "b1_q2",
+            "questionText": "2. blackboard",
+            "options": {
+              "A": "Bảng phấn đen",
+              "B": "Thước kẻ",
+              "C": "Bản đồ",
+              "D": "Phấn viết"
+            },
+            "correctAnswer": "A",
+            "explanation": "black (màu đen) + board (tấm bảng) = bảng viết phấn đen.",
+            "sentenceTranslation": "bảng đen (Bảng phấn màu)"
+          },
+          {
+            "id": "b1_q3",
+            "questionText": "3. cupboard",
+            "options": {
+              "A": "Tủ chén / tủ đựng đồ",
+              "B": "Bàn học",
+              "C": "Giá sách",
+              "D": "Giường ngủ"
+            },
+            "correctAnswer": "A",
+            "explanation": "cup (cái chén/ly) + board (tấm ván kệ) = tủ đựng chén bát, tủ đồ.",
+            "sentenceTranslation": "tủ chén (Tủ chén/tủ đựng đồ)"
+          },
+          {
+            "id": "b1_q4",
+            "questionText": "4. shorthand",
+            "options": {
+              "A": "Viết tắt / tốc ký",
+              "B": "Bàn tay ngắn",
+              "C": "Sự thiếu thốn nhân lực",
+              "D": "Không kịp chuẩn bị"
+            },
+            "correctAnswer": "A",
+            "explanation": "short (ngắn) + hand (bàn tay/nét chữ) = tốc ký (viết cực nhanh bằng ký hiệu rút gọn).",
+            "sentenceTranslation": "viết tắt (Viết tắt / tốc ký)"
+          },
+          {
+            "id": "b1_q5",
+            "questionText": "5. sunrise",
+            "options": {
+              "A": "Bình minh / mặt trời mọc",
+              "B": "Hoàng hôn / mặt trời lặn",
+              "C": "Ban ngày",
+              "D": "Nắng ban trưa"
+            },
+            "correctAnswer": "A",
+            "explanation": "sun (mặt trời) + rise (mọc lên, nâng lên) = bình minh.",
+            "sentenceTranslation": "mặt trời mọc (Bình minh/mặt trời mọc)"
+          },
+          {
+            "id": "b1_q6",
+            "questionText": "6. countdown",
+            "options": {
+              "A": "Tăng giá",
+              "B": "Đếm ngược",
+              "C": "Hạ nhiệt",
+              "D": "Tính toán"
+            },
+            "correctAnswer": "B",
+            "explanation": "count (đếm) + down (xuống) = đếm ngược thời gian.",
+            "sentenceTranslation": "đếm ngược (Đếm ngược)"
+          },
+          {
+            "id": "b1_q7",
+            "questionText": "7. overconfident",
+            "options": {
+              "A": "Tự ti, nhút nhát",
+              "B": "Tự tin thái quá / ngạo mạn",
+              "C": "Cẩn thận",
+              "D": "Được tin tưởng"
+            },
+            "correctAnswer": "B",
+            "explanation": "tiền tố over- (quá mức) + confident (tự tin) = tự tin thái quá.",
+            "sentenceTranslation": "tự tin thái quá (Tự tin thái quá / kiêu ngạo)"
+          },
+          {
+            "id": "b1_q8",
+            "questionText": "8. nonexistent",
+            "options": {
+              "A": "Không tồn tại",
+              "B": "Đang phát triển",
+              "C": "Có thật",
+              "D": "Đặc biệt"
+            },
+            "correctAnswer": "A",
+            "explanation": "tiền tố non- (không) + existent (tồn tại) = không tồn tại.",
+            "sentenceTranslation": "không tồn tại (Không tồn tại)"
+          },
+          {
+            "id": "b1_q9",
+            "questionText": "9. misunderstand",
+            "options": {
+              "A": "Hiểu lầm / hiểu sai ý",
+              "B": "Hiểu rõ",
+              "C": "Không thèm hiểu",
+              "D": "Giải thích"
+            },
+            "correctAnswer": "A",
+            "explanation": "tiền tố mis- (sai, lỗi) + understand (hiểu) = hiểu lầm, hiểu sai.",
+            "sentenceTranslation": "hiểu sai (Hiểu dư / hiểu sai ý)"
+          },
+          {
+            "id": "b1_q10",
+            "questionText": "10. rewrite",
+            "options": {
+              "A": "Viết lại / sửa đổi lại",
+              "B": "Đọc to",
+              "C": "Xóa đi",
+              "D": "Xuất bản"
+            },
+            "correctAnswer": "A",
+            "explanation": "tiền tố re- (lặp lại, làm lại) + write (viết) = viết lại.",
+            "sentenceTranslation": "viết lại (Viết lại / sửa đổi lại)"
+          },
+          {
+            "id": "b1_q11",
+            "questionText": "11. midnight",
+            "options": {
+              "A": "Nửa đêm (12 giờ đêm)",
+              "B": "Chạng vạng",
+              "C": "Nửa ngày (12 giờ trưa)",
+              "D": "Bình minh"
+            },
+            "correctAnswer": "A",
+            "explanation": "tiền tố mid- (ở giữa) + night (đêm) = nửa đêm.",
+            "sentenceTranslation": "nửa đêm (Nửa đêm (12 giờ đêm))"
+          },
+          {
+            "id": "b1_q12",
+            "questionText": "12. multination",
+            "options": {
+              "A": "Một quốc gia duy nhất",
+              "B": "Đa quốc gia (nhiều nước)",
+              "C": "Biên giới quốc tế",
+              "D": "Đồng bào"
+            },
+            "correctAnswer": "B",
+            "explanation": "tiền tố multi- (nhiều) + nation (quốc gia) = đa quốc gia.",
+            "sentenceTranslation": "đa quốc gia (Đa quốc gia (nhiều nước))"
+          },
+          {
+            "id": "b1_q13",
+            "questionText": "13. preference",
+            "options": {
+              "A": "Sự yêu thích hơn / sự ưu tiên",
+              "B": "Sự phản đối",
+              "C": "Hành vi giới thiệu",
+              "D": "Tham khảo"
+            },
+            "correctAnswer": "A",
+            "explanation": "prefer (thích hơn) + hậu tố danh từ -ence = sự yêu thích hơn, sự ưu tiên.",
+            "sentenceTranslation": "ưa thích (Yêu thích hơn / mức độ ưu tiên)"
+          },
+          {
+            "id": "b1_q14",
+            "questionText": "14. hopeless",
+            "options": {
+              "A": "Đầy hy vọng",
+              "B": "Vô vọng / tuyệt vọng",
+              "C": "Đang chờ đợi",
+              "D": "May mắn"
+            },
+            "correctAnswer": "B",
+            "explanation": "hope (hy vọng) + hậu tố -less (không có, vô) = vô vọng, tuyệt vọng.",
+            "sentenceTranslation": "vô vọng (Vô vang/tuyệt vọng)"
+          },
+          {
+            "id": "b1_q15",
+            "questionText": "15. reasonable",
+            "options": {
+              "A": "Không có lý do",
+              "B": "Có lý / hợp lý (giá cả phải chăng)",
+              "C": "Mơ hồ",
+              "D": "Đắt đỏ"
+            },
+            "correctAnswer": "B",
+            "explanation": "reason (lý do/lẽ phải) + hậu tố -able (có thể) = có lý, hợp lý.",
+            "sentenceTranslation": "hợp lý (Có lý / hợp lý (giá cả phải chăng))"
+          }
+        ]
+      },
+      {
+        "partNumber": 2,
+        "title": "Bài 2: Hãy đoán nghĩa của các từ cùng gốc",
+        "type": "multiple_choice",
+        "instruction": "Dựa vào ý nghĩa của gốc từ (word root) được cung cấp, hãy đoán nghĩa của các từ phái sinh sau:",
+        "questions": [
+          {
+            "id": "b2_q1",
+            "questionText": "1. Gốc từ '-ject-' có nghĩa là 'throw' (ném/đẩy). Từ 'reject' mang ý nghĩa là gì?",
+            "options": {
+              "A": "Đồng ý nhận vào",
+              "B": "Bác bỏ / từ chối / loại ra",
+              "C": "Trình chiếu bản vẽ",
+              "D": "Thiết kế"
+            },
+            "correctAnswer": "B",
+            "explanation": "re- (ngược lại) + ject (ném/đẩy) = đẩy ngược lại → bác bỏ, từ chối.",
+            "sentenceTranslation": "Gốc từ '-ject-' có nghĩa là 'ném' (ném/đẩy). Từ 'reject' mang ý nghĩa là gì? (Bỏ / từ chối / loại ra)"
+          },
+          {
+            "id": "b2_q2",
+            "questionText": "2. Gốc từ '-rupt-' có nghĩa là 'to break' (làm vỡ/gãy/đứt đoạn). Từ 'disruption' mang nghĩa là gì?",
+            "options": {
+              "A": "Sự kết nối liên tục",
+              "B": "Sự gián đoạn / đứt quãng / hỗn loạn",
+              "C": "Vay tiền ngân hàng",
+              "D": "Sự tuân thủ luật lệ"
+            },
+            "correctAnswer": "B",
+            "explanation": "dis- (rời ra) + rupt (vỡ/đứt) + ion = sự làm gián đoạn, sự đứt quãng.",
+            "sentenceTranslation": "Gốc từ '-rupt-' có nghĩa là 'phá vỡ' (làm gãy/gãy/đứt đoạn). Từ 'disruption' mang nghĩa là gì? ( Giai đoạn / giai đoạn / khối loạn)"
+          },
+          {
+            "id": "b2_q3",
+            "questionText": "3. Gốc từ '-spect-' có nghĩa là 'to look' (nhìn, xem). Từ 'inspect' mang nghĩa là gì?",
+            "options": {
+              "A": "Nhìn ra bên ngoài",
+              "B": "Xem xét kỹ / thanh tra / kiểm tra",
+              "C": "Nhắm mắt làm ngơ",
+              "D": "Trông đợi tương lai"
+            },
+            "correctAnswer": "B",
+            "explanation": "in- (vào trong) + spect (nhìn) = nhìn sâu vào trong để xem xét kỹ → kiểm tra, thanh tra.",
+            "sentenceTranslation": "Gốc từ '-spect-' có nghĩa là 'nhìn, xem). Từ 'inspect' mang nghĩa là gì? (Xem xét kỹ/thanh trà/kiểm tra)"
+          },
+          {
+            "id": "b2_q4",
+            "questionText": "4. Gốc từ '-struc-' có nghĩa là 'to build' (xây dựng). Từ 'restructure' mang nghĩa là gì?",
+            "options": {
+              "A": "Tàn phá hoàn toàn",
+              "B": "Tái cấu trúc / xây dựng lại",
+              "C": "Giữ nguyên hiện trạng",
+              "D": "Mua lại tòa nhà"
+            },
+            "correctAnswer": "B",
+            "explanation": "re- (lại) + structure (cấu trúc/xây dựng) = tái cấu trúc, xây dựng lại hệ thống.",
+            "sentenceTranslation": "Gốc từ '-struc-' có nghĩa là 'to build' (xây dựng). Từ 'restructure' mang nghĩa là gì? (Cấu trúc / xây dựng lại)"
+          },
+          {
+            "id": "b2_q5",
+            "questionText": "5. Gốc từ '-voc-' có nghĩa là 'voice, to call' (tiếng nói, gọi). Từ 'advocate' mang nghĩa là gì?",
+            "options": {
+              "A": "Ủng hộ / biện hộ / lên tiếng vì ai đó",
+              "B": "Im lặng phản đối",
+              "C": "Gọi điện thoại",
+              "D": "Khiêu khích, chọc giận"
+            },
+            "correctAnswer": "A",
+            "explanation": "ad- (hướng tới) + voc (lên tiếng/gọi) = lên tiếng ủng hộ, bảo vệ quyền lợi cho ai đó.",
+            "sentenceTranslation": "Gốc từ '-voc-' có nghĩa là 'tiếng nói, gọi' (tiếng nói, gọi). Từ 'advocate' mang nghĩa là gì? (Ủng hộ / biện hộ / lên tiếng vì ai đó)"
+          }
+        ]
+      },
+      {
+        "partNumber": 3,
+        "title": "Bài 3: Nhận diện từ loại (N, V, Adj, Adv)",
+        "type": "multiple_choice",
+        "instruction": "Dựa vào các đuôi nhận diện từ loại (Suffixes) đã học ở cột lý thuyết bên trái, hãy xác định chính xác từ loại của các từ sau:",
+        "questions": [
+          {
+            "id": "b3_q1",
+            "questionText": "1. Từ 'shortage' thuộc từ loại gì?",
+            "options": {
+              "A": "Noun (Danh từ)",
+              "B": "Verb (Động từ)",
+              "C": "Adjective (Tính từ)",
+              "D": "Adverb (Trạng từ)"
+            },
+            "correctAnswer": "A",
+            "explanation": "Từ có đuôi -age (short + age = sự thiếu hụt) là đuôi Danh từ chỉ sự việc.",
+            "sentenceTranslation": "Từ 'thiếu hụt' thuộc về loại gì? (Danh từ (Danh từ))"
+          },
+          {
+            "id": "b3_q2",
+            "questionText": "2. Từ 'shorten' thuộc từ loại gì?",
+            "options": {
+              "A": "Noun (Danh từ)",
+              "B": "Verb (Động từ)",
+              "C": "Adjective (Tính từ)",
+              "D": "Adverb (Trạng từ)"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đuôi -en (short + en = làm cho ngắn lại) là đuôi đặc trưng của Động từ.",
+            "sentenceTranslation": "Từ 'rút gọn' thuộc về loại gì? (Động từ (Động từ))"
+          },
+          {
+            "id": "b3_q3",
+            "questionText": "3. Từ 'shortly' thuộc từ loại gì?",
+            "options": {
+              "A": "Noun (Danh từ)",
+              "B": "Verb (Động từ)",
+              "C": "Adjective (Tính từ)",
+              "D": "Adverb (Trạng từ)"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đuôi -ly (short + ly = sớm/ngay sau đó) là trạng từ chỉ thời gian.",
+            "sentenceTranslation": "Từ 'ngắn' thuộc về loại gì? (Trạng từ))"
+          },
+          {
+            "id": "b3_q4",
+            "questionText": "4. Từ 'differentiate' thuộc từ loại gì?",
+            "options": {
+              "A": "Noun (Danh từ)",
+              "B": "Verb (Động từ)",
+              "C": "Adjective (Tính từ)",
+              "D": "Adverb (Trạng từ)"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đuôi -ate (different + ate = phân biệt) là đuôi động từ.",
+            "sentenceTranslation": "Từ 'khác biệt' thuộc về loại gì? (Động từ (Động từ))"
+          },
+          {
+            "id": "b3_q5",
+            "questionText": "5. Từ 'examination' thuộc từ loại gì?",
+            "options": {
+              "A": "Noun (Danh từ)",
+              "B": "Verb (Động từ)",
+              "C": "Adjective (Tính từ)",
+              "D": "Adverb (Trạng từ)"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đuôi -tion (examine + ation = kỳ thi, sự kiểm tra) là đuôi Danh từ rất phổ biến.",
+            "sentenceTranslation": "Từ 'kiểm tra' thuộc về loại gì? (Danh từ (Danh từ))"
+          },
+          {
+            "id": "b3_q6",
+            "questionText": "6. Từ 'expectancy' thuộc từ loại gì?",
+            "options": {
+              "A": "Noun (Danh từ)",
+              "B": "Verb (Động từ)",
+              "C": "Adjective (Tính từ)",
+              "D": "Adverb (Trạng từ)"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đuôi -cy (expect + ancy = tuổi thọ / kỳ vọng) là đuôi Danh từ chỉ trạng thái.",
+            "sentenceTranslation": "Từ 'expectancy' thuộc về loại gì? (Danh từ (Danh từ))"
+          },
+          {
+            "id": "b3_q7",
+            "questionText": "7. Từ 'expectant' thuộc từ loại gì?",
+            "options": {
+              "A": "Noun (Danh từ)",
+              "B": "Verb (Động từ)",
+              "C": "Adjective (Tính từ)",
+              "D": "Adverb (Trạng từ)"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đuôi -ant (expect + ant = mong đợi / có mang) là đuôi Tính từ.",
+            "sentenceTranslation": "Từ ' mong đợi' thuộc về loại gì? (Tính từ ( Tính từ))"
+          },
+          {
+            "id": "b3_q8",
+            "questionText": "8. Từ 'unemployment' thuộc từ loại gì?",
+            "options": {
+              "A": "Noun (Danh từ)",
+              "B": "Verb (Động từ)",
+              "C": "Adjective (Tính từ)",
+              "D": "Adverb (Trạng từ)"
+            },
+            "correctAnswer": "A",
+            "explanation": "un- (tiền tố) + employ + -ment (hậu tố danh từ = sự thất nghiệp) -> Danh từ.",
+            "sentenceTranslation": "Từ 'thất nghiệp' thuộc về loại gì? (Danh từ (Danh từ))"
+          },
+          {
+            "id": "b3_q9",
+            "questionText": "9. Từ 'manageable' thuộc từ loại gì?",
+            "options": {
+              "A": "Noun (Danh từ)",
+              "B": "Verb (Động từ)",
+              "C": "Adjective (Tính từ)",
+              "D": "Adverb (Trạng từ)"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đuôi -able (manage + able = có thể kiểm soát/quản lý được) là đuôi Tính từ chỉ khả năng.",
+            "sentenceTranslation": "Từ 'manageable' thuộc về loại gì? (Tính từ ( Tính từ))"
+          },
+          {
+            "id": "b3_q10",
+            "questionText": "10. Từ 'manageability' thuộc từ loại gì?",
+            "options": {
+              "A": "Noun (Danh từ)",
+              "B": "Verb (Động từ)",
+              "C": "Adjective (Tính từ)",
+              "D": "Adverb (Trạng từ)"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đuôi -ity (manage + ability = khả năng quản lý) là đuôi Danh từ chỉ phẩm chất.",
+            "sentenceTranslation": "Từ 'manageability' thuộc về loại gì? (Danh từ (Danh từ))"
+          }
+        ]
+      }
+    ]
+  }
+}

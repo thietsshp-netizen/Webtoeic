@@ -571,6 +571,14 @@ export default function LearnSidebar() {
             </h2>
             <div className="flex items-center gap-2">
               <button 
+                id="grammar-handbook-toggle-btn"
+                onClick={() => window.dispatchEvent(new CustomEvent("toggle-grammar-handbook"))}
+                className="p-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-lg transition-all active:scale-95 shadow-sm shadow-indigo-100"
+                title="Mở sổ tay ngữ pháp ôn tập"
+              >
+                <BookOpen size={16} />
+              </button>
+              <button 
                 id="review-center-toggle-btn"
                 onClick={() => setIsDrawerOpen(true)}
                 className="p-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-lg transition-all active:scale-95 shadow-sm shadow-indigo-100"

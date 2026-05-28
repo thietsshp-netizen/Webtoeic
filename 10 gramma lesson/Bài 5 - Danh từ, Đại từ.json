@@ -1,0 +1,550 @@
+{
+  "layout": "splitscreen",
+  "theory": {
+    "title": "BÀI 5: DANH TỪ, ĐẠI TỪ",
+    "htmlContent": "<div class=\"grammar-container\" style=\"font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.7; padding: 10px;\">\n  \n  <style>\n    .grammar-title {\n      font-size: 24px;\n      font-weight: 800;\n      color: #b91c1c;\n      text-transform: uppercase;\n      margin-bottom: 20px;\n      border-bottom: 3px solid #ef4444;\n      padding-bottom: 10px;\n      letter-spacing: -0.02em;\n    }\n    .grammar-section-title {\n      font-size: 18px;\n      font-weight: 700;\n      color: #dc2626;\n      margin-top: 30px;\n      margin-bottom: 15px;\n      display: flex;\n      align-items: center;\n      gap: 8px;\n    }\n    .grammar-table {\n      width: auto;\n      min-width: auto;\n      border-collapse: collapse;\n      margin-bottom: 20px;\n      margin-left: auto;\n      margin-right: auto;\n      border: 1px solid #7f7f7f;\n      background-color: #ffffff;\n    }\n    .grammar-table th {\n      background-color: #f2f2f2;\n      color: #000000;\n      font-weight: 700;\n      padding: 10px 14px;\n      text-align: left;\n      font-size: 13.5px;\n      border: 1px solid #7f7f7f;\n    }\n    .grammar-table td {\n      padding: 10px 14px;\n      border: 1px solid #7f7f7f;\n      font-size: 13.5px;\n      color: #000000;\n      background-color: #ffffff;\n    }\n    \n    .highlight-grey-bg {\n      background-color: #e2e8f0;\n      padding: 2px 6px;\n      border-radius: 4px;\n      font-weight: bold;\n      color: #000000;\n      display: inline-block;\n    }\n    .highlight-red { color: #ef4444; font-weight: 700; }\n    .highlight-blue { color: #2563eb; font-weight: 700; }\n    .highlight-green { color: #16a34a; font-weight: 700; }\n    \n    .pronoun-grid {\n      overflow-x: auto;\n      margin-bottom: 25px;\n      border-radius: 12px;\n      border: 1px solid #cbd5e1;\n      box-shadow: 0 4px 6px rgba(0,0,0,0.02);\n    }\n    .pronoun-table {\n      width: 100%;\n      border-collapse: collapse;\n      font-size: 12px;\n      text-align: center;\n      background-color: white;\n    }\n    .pronoun-table th {\n      padding: 12px;\n      font-weight: bold;\n      border-bottom: 2px solid #cbd5e1;\n      text-transform: uppercase;\n    }\n    .pronoun-table td {\n      padding: 12px;\n      border-bottom: 1px solid #e2e8f0;\n    }\n    .pronoun-table tr:hover {\n      background-color: #f8fafc;\n    }\n    \n    .warning-box {\n      background-color: #fffbeb;\n      border-left: 5px solid #d97706;\n      padding: 12px 15px;\n      border-radius: 8px;\n      margin-bottom: 20px;\n      font-size: 13px;\n      color: #92400e;\n    }\n\n    /* Tooltip Cell & Text */\n    .tooltip-cell {\n      position: relative;\n      cursor: pointer;\n      display: block;\n      width: 100%;\n      height: 100%;\n      padding: 12px 6px;\n      box-sizing: border-box;\n    }\n    .tooltip-text {\n      visibility: hidden;\n      width: 220px;\n      background-color: #1e293b; /* Premium slate dark mode */\n      color: #ffffff;\n      text-align: left;\n      border-radius: 8px;\n      padding: 10px 14px;\n      position: absolute;\n      z-index: 999;\n      bottom: 130%;\n      left: 50%;\n      transform: translateX(-50%);\n      opacity: 0;\n      transition: opacity 0.2s, visibility 0.2s, transform 0.2s;\n      font-size: 12px;\n      font-weight: normal;\n      line-height: 1.5;\n      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);\n      border: 1px solid #475569;\n      pointer-events: none;\n      white-space: normal;\n    }\n    /* Small arrow */\n    .tooltip-text::after {\n      content: \"\";\n      position: absolute;\n      top: 100%;\n      left: 50%;\n      margin-left: -6px;\n      border-width: 6px;\n      border-style: solid;\n      border-color: #1e293b transparent transparent transparent;\n    }\n    /* Hover effects */\n    .tooltip-cell:hover {\n      background-color: #f1f5f9;\n      color: #b91c1c;\n    }\n    .tooltip-cell:hover .tooltip-text {\n      visibility: visible;\n      opacity: 1;\n      transform: translateX(-50%) translateY(-2px);\n    }\n    .pronoun-table td {\n      padding: 0 !important; /* delegate padding to tooltip-cell */\n    }\n  </style>\n\n  <h1 class=\"grammar-title\">BÀI 5: DANH TỪ, ĐẠI TỪ</h1>\n\n  <div class=\"grammar-section-title\">\n    <span>I. DANH TỪ (Nouns)</span>\n  </div>\n  \n  <div class=\"section-lv1\">\n    <p style=\"font-size: 14px;\"><strong>1. Vai trò chính:</strong> Đóng vai trò làm <strong>Chủ ngữ (S)</strong> hoặc <strong>Tân ngữ (O)</strong> trong câu văn.<br>\n    • <em>VD: <span class=\"highlight-red\">She</span> eats <span class=\"highlight-blue\">a cake</span>.</em></p>\n\n    <p style=\"font-size: 14px; margin-top: 20px; font-weight: bold;\">2. Các hình thức tồn tại của Danh từ:</p>\n    <table class=\"grammar-table\">\n      <thead>\n        <tr>\n          <th style=\"width: 40%;\">Hình thức</th>\n          <th style=\"width: 60%;\">Ví dụ thực tế</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td><strong>1 từ</strong></td>\n          <td><span style=\"color: #ff0000; font-style: italic; font-weight: bold;\">Cars</span> are expensive</td>\n        </tr>\n        <tr>\n          <td><strong>1 cụm từ (danh từ ghép)</strong></td>\n          <td>This <span style=\"color: #ff0000; font-style: italic; font-weight: bold;\">MBW car</span> is my favorite</td>\n        </tr>\n        <tr>\n          <td><strong>Ving (danh động từ)</strong></td>\n          <td>\n            <span style=\"color: #ff0000; font-style: italic; font-weight: bold;\">Swimming</span> takes a lot of efforts<br>\n            <span style=\"color: #ff0000; font-style: italic; font-weight: bold;\">Learning English</span> takes a lot of efforts\n          </td>\n        </tr>\n        <tr>\n          <td><strong>1 mệnh đề</strong></td>\n          <td>\n            I like <span style=\"color: #ff0000; font-style: italic; font-weight: bold;\">what I see.</span><br>\n            <span style=\"color: #ff0000; font-style: italic; font-weight: bold;\">What I say</span> is true.\n          </td>\n        </tr>\n      </tbody>\n    </table>\n    \n    <p style=\"font-size: 14px; margin-top: 25px; font-weight: bold;\">3. Cấu trúc của một cụm danh từ:</p>\n    <div style=\"margin: 15px 0; background-color: white; padding: 15px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.03); text-align: center;\">\n      <img src=\"/grammar/Bài_5._Danh_từ_-_Đại_từ_p1_1_Image46.png\" alt=\"Cấu trúc của một cụm danh từ\" style=\"max-width: 100%; height: auto; border-radius: 8px;\" />\n    </div>\n    \n    <div class=\"section-lv2\">\n      <h4 style=\"font-size: 14px; font-weight: bold; color: #b91c1c; margin-top: 20px; margin-bottom: 10px; text-transform: uppercase;\">➔ CÁC LƯU Ý QUAN TRỌNG:</h4>\n      \n      <p style=\"font-size: 13.5px; font-weight: bold; margin-bottom: 8px; color: #000000;\">\n        a. Danh từ (đếm được) số ít thì bắt buộc phải có hạn định từ đi kèm\n      </p>\n      \n      <table style=\"width: auto; min-width: 65%; border-collapse: collapse; border: 1px solid #7f7f7f; margin-bottom: 25px; background-color: #ffffff;\">\n        <tbody>\n          <tr style=\"border-bottom: 1px solid #7f7f7f;\">\n            <td style=\"border-right: 1px solid #7f7f7f; padding: 10px 14px; font-size: 13.5px; color: #000000;\">\n              - <span style=\"color: #ff0000; font-weight: bold;\">Car</span> is expensive\n            </td>\n            <td style=\"padding: 10px 14px; font-size: 13.5px; color: #000000; line-height: 1.6;\">\n              --&gt; <strong>Sai</strong><br>\n              (\"car\" là danh từ đếm được, đang ở dạng số ít nên không được đứng trơ trơ như vậy.)\n            </td>\n          </tr>\n          <tr>\n            <td style=\"border-right: 1px solid #7f7f7f; padding: 10px 14px; font-size: 13.5px; color: #000000; line-height: 1.6;\">\n              - <span style=\"color: #ff0000; font-weight: bold;\">My</span> car is expensive<br>\n              - Car<span style=\"color: #ff0000; font-weight: bold;\">s</span> are expensive\n            </td>\n            <td style=\"padding: 10px 14px; font-size: 13.5px; color: #000000; vertical-align: middle;\">\n              --&gt; <strong>Đúng</strong>\n            </td>\n          </tr>\n        </tbody>\n      </table>\n\n      <p style=\"font-size: 13.5px; font-weight: bold; margin-top: 20px; margin-bottom: 8px; color: #000000;\">\n        b. Chia số ít, số nhiều theo danh từ chính:\n      </p>\n      \n      <table style=\"width: auto; min-width: 65%; border-collapse: collapse; border: 1px solid #7f7f7f; background-color: #ffffff; margin-bottom: 25px;\">\n        <tbody>\n          <tr style=\"border-bottom: 1px solid #7f7f7f;\">\n            <td style=\"border-right: 1px solid #7f7f7f; padding: 10px 14px; font-size: 13.5px; color: #000000;\">\n              His collection <span class=\"highlight-grey-bg\">of coins</span> <span style=\"color: #ff0000; font-weight: bold;\">are</span> valuable.\n            </td>\n            <td style=\"padding: 10px 14px; font-size: 13.5px; color: #000000; vertical-align: middle;\">\n              --&gt; <strong>sai</strong>\n            </td>\n          </tr>\n          <tr>\n            <td style=\"border-right: 1px solid #7f7f7f; padding: 10px 14px; font-size: 13.5px; color: #000000; line-height: 1.6;\">\n              His collection <span class=\"highlight-grey-bg\">of coins</span> <span style=\"color: #ff0000; font-weight: bold;\">is</span> valuable<br>\n              His collections <span class=\"highlight-grey-bg\">of coins</span> <span style=\"color: #ff0000; font-weight: bold;\">are</span> valuable\n            </td>\n            <td style=\"padding: 10px 14px; font-size: 13.5px; color: #000000; vertical-align: middle;\">\n              --&gt; <strong>đúng</strong>\n            </td>\n          </tr>\n        </tbody>\n      </table>\n\n      <p style=\"font-size: 13.5px; font-weight: bold; margin-top: 20px; margin-bottom: 8px; color: #000000;\">\n        c. Nhìn vào công thức cụm danh từ, có thể thấy dấu hiệu để nhận biết 1 cụm danh từ:\n      </p>\n      <ul style=\"font-size: 13.5px; padding-left: 0; margin-bottom: 20px; line-height: 1.8; list-style-type: none;\">\n        <li style=\"margin-bottom: 15px;\">\n          <strong>- Dấu hiệu 1: Bắt đầu bằng từ hạn định</strong><br>\n          <div style=\"margin-top: 8px; margin-bottom: 8px; border: 1px solid #7f7f7f; padding: 10px 15px; border-radius: 2px; display: inline-block; min-width: 55%; background-color: #ffffff;\">\n            <div style=\"font-size: 13.5px; line-height: 1.8; color: #000000;\">\n              + <strong>Mạo từ:</strong> a, an, the<br>\n              + <strong>Tính từ sở hữu:</strong> my, your, her, his....<br>\n              + <strong>Tính từ chỉ số lượng:</strong> some, few, little, such....<br>\n              + <strong>Đại từ chỉ định:</strong> this/these, that/those...\n            </div>\n          </div>\n        </li>\n        <li style=\"margin-bottom: 12px;\">\n          <strong>- Dấu hiệu 2: Giới từ luôn đứng trước cụm danh từ</strong> (sau giới từ là N/Ving)\n        </li>\n        <li>\n          <strong>- Dấu hiệu 3: Dựa vào vai trò của cụm danh từ:</strong>\n          <div style=\"padding-left: 15px; margin-top: 5px;\">\n            + <strong>Làm chủ ngữ</strong> --&gt; thường đứng đầu câu<br>\n            + <strong>Làm tân ngữ</strong> ---&gt; thường theo sau động từ\n          </div>\n        </li>\n      </ul>\n    </div>\n  </div>\n\n  <div class=\"grammar-section-title\">\n    <span>II. ĐẠI TỪ (Pronouns)</span>\n  </div>\n  \n  <div class=\"section-lv1\">\n    <div style=\"font-size: 14.5px; line-height: 1.8; color: #000000; margin-bottom: 25px; font-family: 'Inter', sans-serif;\">\n      <strong>- Đại từ là từ đại diện cho danh từ, dùng để thay thế cho danh từ trong câu</strong><br>\n      <span style=\"color: #000000;\">==&gt; Như vậy về bản chất, đại từ chính là <strong>danh từ</strong></span><br><br>\n      \n      <strong>- Tại sao cần dùng đại từ để thay thế cho danh từ trong câu?</strong><br>\n      <span style=\"color: #000000;\">==&gt; Một danh từ mà xuất hiện quá nhiều lần trong 1 đoạn văn, hay trong 1 câu văn thì nó gây nhàm chán. Do đó người ta thay danh từ đó bằng một đại từ, mục đích là để câu văn nó hay hơn)</span><br><br>\n      \n      <strong>VD1: <span class=\"highlight-grey-bg\">Marry</span> is beautiful. <span class=\"highlight-grey-bg\">Marry</span> loves seafoods</strong><br>\n      <strong>==&gt; <span class=\"highlight-grey-bg\">Marry</span> is beautiful. <span class=\"highlight-grey-bg\">She</span> loves seafoods</strong><br><br>\n      \n      <strong>VD2:</strong><br>\n      <strong><span class=\"highlight-grey-bg\">Marry and Sara</span> are beautiful girls. <span class=\"highlight-grey-bg\">Marry and Sara</span> are deligent students. I like <span class=\"highlight-grey-bg\">Marry and Sara</span></strong><br>\n      <strong>==&gt; <span class=\"highlight-grey-bg\">Marry and Sara</span> are beautiful girls. <span class=\"highlight-grey-bg\">They</span> are deligent students. I like <span class=\"highlight-grey-bg\">them</span></strong>\n    </div>\n  </div>\n\n  <h3 style=\"font-size: 15px; font-weight: bold; color: #b91c1c; margin-bottom: 12px;\">📊 Bảng hệ thống đại từ hoàn chỉnh trong tiếng Anh:</h3>\n  <div class=\"section-lv1\">\n    <div class=\"pronoun-grid\" style=\"margin: 20px 0; overflow: visible; border: 2px solid #7f7f7f; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background-color: #ffffff;\">\n      <table class=\"pronoun-table\" style=\"width: 100%; border-collapse: collapse; text-align: center; font-family: 'Inter', sans-serif;\">\n        <thead>\n          <tr style=\"border-bottom: 2px solid #7f7f7f;\">\n            <th style=\"background-color: #ffd966; color: #000000; font-weight: 800; font-size: 13.5px; padding: 14px 10px; border-right: 1px solid #7f7f7f; width: 20%;\">ĐẠI TỪ<br>LÀM CHỦ NGỮ</th>\n            <th style=\"background-color: #a9d08e; color: #000000; font-weight: 800; font-size: 13.5px; padding: 14px 10px; border-right: 1px solid #7f7f7f; width: 20%;\">ĐẠI TỪ<br>LÀM TÂN NGỮ</th>\n            <th style=\"background-color: #ff0000; color: #ffffff; font-weight: 800; font-size: 13.5px; padding: 14px 10px; border-right: 1px solid #7f7f7f; width: 20%;\">TÍNH TỪ<br>SỞ HỮU</th>\n            <th style=\"background-color: #b4c6e7; color: #000000; font-weight: 800; font-size: 13.5px; padding: 14px 10px; border-right: 1px solid #7f7f7f; width: 20%;\">ĐẠI TỪ SỞ<br>HỮU</th>\n            <th style=\"background-color: #dfc99e; color: #000000; font-weight: 800; font-size: 13.5px; padding: 14px 10px; width: 20%;\">ĐẠI TỪ PHẢN<br>THÂN</th>\n          </tr>\n        </thead>\n        <tbody style=\"font-size: 14px; font-weight: bold; color: #000000;\">\n          <!-- Row 1: I, me, my, mine, myself -->\n          <tr style=\"border-bottom: 1px solid #7f7f7f;\">\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">I\n                <span class=\"tooltip-text\">\n                  <strong>I</strong> want to learn English.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(<strong>Tôi</strong> muốn học tiếng Anh.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">me\n                <span class=\"tooltip-text\">\n                  She called <strong>me</strong> yesterday.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Cô ấy đã gọi cho <strong>tôi</strong> ngày hôm qua.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">my\n                <span class=\"tooltip-text\">\n                  This is <strong>my</strong> new car.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Đây là chiếc xe mới của <strong>tôi</strong>.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">mine\n                <span class=\"tooltip-text\">\n                  That blue car is <strong>mine</strong>.<br>\n                  <span style=\"color: #38bdf8; font-size: 11px; font-weight: bold;\">(mine = my car)</span><br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Chiếc xe màu xanh đó là của <strong>tôi</strong>.)</span>\n                </span>\n              </div>\n            </td>\n            <td>\n              <div class=\"tooltip-cell\">myself\n                <span class=\"tooltip-text\">\n                  I did the homework by <strong>myself</strong>.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Tự <strong>tôi</strong> đã làm bài tập về nhà.)</span>\n                </span>\n              </div>\n            </td>\n          </tr>\n\n          <!-- Row 2: you, you, your, yours, yourself -->\n          <tr style=\"border-bottom: 1px solid #7f7f7f;\">\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">you\n                <span class=\"tooltip-text\">\n                  <strong>You</strong> are a good student.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(<strong>Bạn</strong> là một học sinh tốt.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">you\n                <span class=\"tooltip-text\">\n                  I will help <strong>you</strong> with this.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Tôi sẽ giúp <strong>bạn</strong> việc này.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">your\n                <span class=\"tooltip-text\">\n                  What is <strong>your</strong> phone number?<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Số điện thoại của <strong>bạn</strong> là gì?)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">yours\n                <span class=\"tooltip-text\">\n                  Is this pen <strong>yours</strong>?<br>\n                  <span style=\"color: #38bdf8; font-size: 11px; font-weight: bold;\">(yours = your pen)</span><br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Chiếc bút này có phải của <strong>bạn</strong> không?)</span>\n                </span>\n              </div>\n            </td>\n            <td>\n              <div class=\"tooltip-cell\">yourself\n                <span class=\"tooltip-text\">\n                  Please take care of <strong>yourself</strong>.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Hãy tự chăm sóc bản thân <strong>bạn</strong> nhé.)</span>\n                </span>\n              </div>\n            </td>\n          </tr>\n\n          <!-- Row 3: he, him, his, his, himself -->\n          <tr style=\"border-bottom: 1px solid #7f7f7f;\">\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">he\n                <span class=\"tooltip-text\">\n                  <strong>He</strong> is a famous doctor.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(<strong>Anh ấy</strong> là một bác sĩ nổi tiếng.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">him\n                <span class=\"tooltip-text\">\n                  We saw <strong>him</strong> at the park.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Chúng tôi đã thấy <strong>anh ấy</strong> ở công viên.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">his\n                <span class=\"tooltip-text\">\n                  <strong>His</strong> father is a teacher.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Bố của <strong>anh ấy</strong> là một giáo viên.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">his\n                <span class=\"tooltip-text\">\n                  The choice was <strong>his</strong>.<br>\n                  <span style=\"color: #38bdf8; font-size: 11px; font-weight: bold;\">(his = his choice)</span><br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Lựa chọn đó là của <strong>anh ấy</strong>.)</span>\n                </span>\n              </div>\n            </td>\n            <td>\n              <div class=\"tooltip-cell\">himself\n                <span class=\"tooltip-text\">\n                  He repaired the bicycle <strong>himself</strong>.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Tự <strong>anh ấy</strong> đã sửa chiếc xe đạp.)</span>\n                </span>\n              </div>\n            </td>\n          </tr>\n\n          <!-- Row 4: she, her, her, hers, herself -->\n          <tr style=\"border-bottom: 1px solid #7f7f7f;\">\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">she\n                <span class=\"tooltip-text\">\n                  <strong>She</strong> loves reading books.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(<strong>Cô ấy</strong> thích đọc sách.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">her\n                <span class=\"tooltip-text\">\n                  I met <strong>her</strong> at the library.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Tôi đã gặp <strong>cô ấy</strong> ở thư viện.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">her\n                <span class=\"tooltip-text\">\n                  <strong>Her</strong> smile is very beautiful.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Nụ cười của <strong>cô ấy</strong> rất đẹp.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">hers\n                <span class=\"tooltip-text\">\n                  This bag is <strong>hers</strong>.<br>\n                  <span style=\"color: #38bdf8; font-size: 11px; font-weight: bold;\">(hers = her bag)</span><br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Chiếc túi này là của <strong>cô ấy</strong>.)</span>\n                </span>\n              </div>\n            </td>\n            <td>\n              <div class=\"tooltip-cell\">herself\n                <span class=\"tooltip-text\">\n                  She cooked the dinner <strong>herself</strong>.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Tự <strong>cô ấy</strong> đã nấu bữa tối.)</span>\n                </span>\n              </div>\n            </td>\n          </tr>\n\n          <!-- Row 5: it, it, its, (not used), itself -->\n          <tr style=\"border-bottom: 1px solid #7f7f7f;\">\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">it\n                <span class=\"tooltip-text\">\n                  <strong>It</strong> is a lovely day today.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(<strong>Nó</strong> là một ngày đáng yêu hôm nay.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">it\n                <span class=\"tooltip-text\">\n                  I bought <strong>it</strong> at the store.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Tôi đã mua <strong>nó</strong> ở cửa hàng.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">its\n                <span class=\"tooltip-text\">\n                  The dog wagged <strong>its</strong> tail.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Con chó vẫy cái đuôi của <strong>nó</strong>.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f; color: #7f7f7f; font-style: italic; font-weight: normal; padding: 12px 6px !important;\">\n              (not used)\n            </td>\n            <td>\n              <div class=\"tooltip-cell\">itself\n                <span class=\"tooltip-text\">\n                  The door closed by <strong>itself</strong>.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Cánh cửa tự <strong>nó</strong> đóng lại.)</span>\n                </span>\n              </div>\n            </td>\n          </tr>\n\n          <!-- Row 6: we, us, our, ours, ourselves -->\n          <tr style=\"border-bottom: 1px solid #7f7f7f;\">\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">we\n                <span class=\"tooltip-text\">\n                  <strong>We</strong> enjoy playing soccer.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(<strong>Chúng tôi</strong> thích chơi bóng đá.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">us\n                <span class=\"tooltip-text\">\n                  They invited <strong>us</strong> to the party.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Họ đã mời <strong>chúng tôi</strong> đến bữa tiệc.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">our\n                <span class=\"tooltip-text\">\n                  This is <strong>our</strong> classroom.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Đây là lớp học của <strong>chúng tôi</strong>.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">ours\n                <span class=\"tooltip-text\">\n                  The victory is <strong>ours</strong>.<br>\n                  <span style=\"color: #38bdf8; font-size: 11px; font-weight: bold;\">(ours = our victory)</span><br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Chiến thắng này là của <strong>chúng tôi</strong>.)</span>\n                </span>\n              </div>\n            </td>\n            <td>\n              <div class=\"tooltip-cell\">ourselves\n                <span class=\"tooltip-text\">\n                  We can protect <strong>ourselves</strong>.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Chúng ta có thể tự bảo vệ bản thân <strong>chúng ta</strong>.)</span>\n                </span>\n              </div>\n            </td>\n          </tr>\n\n          <!-- Row 7: they, them, their, theirs, themselves -->\n          <tr style=\"border-bottom: 1px solid #7f7f7f; background-color: #fdf2e9;\">\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">they\n                <span class=\"tooltip-text\">\n                  <strong>They</strong> work in the same office.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(<strong>Họ</strong> làm việc trong cùng một văn phòng.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">them\n                <span class=\"tooltip-text\">\n                  I will meet <strong>them</strong> tonight.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Tôi sẽ gặp <strong>họ</strong> tối nay.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">their\n                <span class=\"tooltip-text\">\n                  <strong>Their</strong> house is very large.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Ngôi nhà của <strong>họ</strong> rất lớn.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f;\">\n              <div class=\"tooltip-cell\">theirs\n                <span class=\"tooltip-text\">\n                  That project is <strong>theirs</strong>.<br>\n                  <span style=\"color: #38bdf8; font-size: 11px; font-weight: bold;\">(theirs = their project)</span><br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Dự án đó là của <strong>họ</strong>.)</span>\n                </span>\n              </div>\n            </td>\n            <td>\n              <div class=\"tooltip-cell\">themselves\n                <span class=\"tooltip-text\">\n                  They solved the problem <strong>themselves</strong>.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Tự <strong>họ</strong> đã giải quyết vấn đề.)</span>\n                </span>\n              </div>\n            </td>\n          </tr>\n\n          <!-- Row 8: who, whom, whose, whose, (not used) -->\n          <tr style=\"background-color: #f0fdf4; border-top: 2px solid #7f7f7f;\">\n            <td style=\"border-right: 1px solid #7f7f7f; color: #16a34a; font-weight: 800;\">\n              <div class=\"tooltip-cell\">who\n                <span class=\"tooltip-text\">\n                  The girl <strong>who</strong> is singing is my sister.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Cô gái <strong>người mà</strong> đang hát là em gái tôi.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f; color: #16a34a; font-weight: 800;\">\n              <div class=\"tooltip-cell\">whom\n                <span class=\"tooltip-text\">\n                  The man <strong>whom</strong> you met is my teacher.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Người đàn ông <strong>người mà</strong> bạn gặp là thầy giáo tôi.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f; color: #16a34a; font-weight: 800;\">\n              <div class=\"tooltip-cell\">whose\n                <span class=\"tooltip-text\">\n                  The boy <strong>whose</strong> dog died was very sad.<br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Cậu bé <strong>có</strong> con chó bị chết đã rất buồn.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"border-right: 1px solid #7f7f7f; color: #16a34a; font-weight: 800;\">\n              <div class=\"tooltip-cell\">whose\n                <span class=\"tooltip-text\">\n                  This is a book, but I don't know <strong>whose</strong> it is.<br>\n                  <span style=\"color: #38bdf8; font-size: 11px; font-weight: bold;\">(whose = whose book)</span><br>\n                  <span style=\"color: #cbd5e1; font-style: italic;\">(Đây là một cuốn sách, nhưng tôi không biết nó là của <strong>ai</strong>.)</span>\n                </span>\n              </div>\n            </td>\n            <td style=\"color: #7f7f7f; font-style: italic; font-weight: normal; padding: 12px 6px !important;\">\n              (not used)\n            </td>\n          </tr>\n        </tbody>\n      </table>\n    </div>\n  </div>\n\n  <h3 style=\"font-size: 15px; font-weight: bold; color: #1e293b; margin-top: 25px; margin-bottom: 10px;\">- Đại từ phản thân: có 2 cách dùng:</h3>\n  <div class=\"section-lv1\">\n    <div style=\"margin: 15px 0; overflow-x: auto; border-radius: 4px;\">\n      <table style=\"width: 100%; border-collapse: collapse; border: 1px solid #7f7f7f; background-color: #ffffff; font-family: 'Inter', sans-serif;\">\n        <tbody>\n          <tr style=\"border-bottom: 1px solid #7f7f7f;\">\n            <td style=\"width: 40%; border-right: 1px solid #7f7f7f; padding: 10px 14px; font-size: 13.5px; color: #000000; font-weight: bold; vertical-align: top; line-height: 1.6;\">\n              C1: Dùng để nhấn mạnh\n            </td>\n            <td style=\"width: 60%; padding: 10px 14px; font-size: 13.5px; color: #000000; vertical-align: top;\">\n              She did it <strong>herself</strong>\n            </td>\n          </tr>\n          <tr>\n            <td style=\"border-right: 1px solid #7f7f7f; padding: 10px 14px; font-size: 13.5px; color: #000000; font-weight: bold; vertical-align: top; line-height: 1.6;\">\n              C2: Dùng làm tân ngữ khi chủ ngữ và tân ngữ là cùng một người\n            </td>\n            <td style=\"padding: 10px 14px; font-size: 13.5px; color: #000000; vertical-align: top; line-height: 1.8;\">\n              1- <span style=\"color: #ff0000; background-color: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-weight: bold;\">Cô ấy</span> nhìn <span style=\"color: #ff0000; background-color: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-weight: bold;\">cô ấy</span> trong gương<br>\n              --&gt; <strong>She</strong> looks at <strong>herself</strong> in the mirror &nbsp;(đúng)<br>\n              <br>\n              2- <span style=\"color: #ff0000; background-color: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-weight: bold;\">Tôi</span> nhìn <span style=\"color: #ff0000; background-color: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-weight: bold;\">cô ấy</span> trong gương<br>\n              --&gt; <strong>I</strong> look at <strong>her</strong> in the mirror &nbsp;(đúng)\n            </td>\n          </tr>\n        </tbody>\n      </table>\n    </div>\n  </div>\n\n  <h3 style=\"font-size: 15px; font-weight: bold; color: #b91c1c; margin-bottom: 10px;\">🌟 Một số đại từ chỉ định và phân bổ đặc biệt khác hay xuất hiện trong đề thi TOEIC:</h3>\n  <div class=\"section-lv1\">\n    <table class=\"grammar-table\" style=\"font-size: 12.5px;\">\n      <thead>\n        <tr>\n          <th style=\"width: 25%;\">Đại từ</th>\n          <th style=\"width: 35%;\">Ý nghĩa</th>\n          <th>Ví dụ thực tế</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td><strong>this / these</strong></td>\n          <td>Cái này / Những cái này</td>\n          <td>Of all the books I have read, <strong>this</strong> is my favorite!</td>\n        </tr>\n        <tr>\n          <td><strong>that / those</strong></td>\n          <td>Cái đó / Những cái đó</td>\n          <td>This year's pay raise is similar to <strong>that</strong> of last year. (that thay thế cho danh từ số ít 'pay raise').</td>\n        </tr>\n        <tr>\n          <td><strong>those who</strong></td>\n          <td>Những người mà</td>\n          <td>For <strong>those who</strong> reserve early, additional discounts will be given.</td>\n        </tr>\n        <tr>\n          <td><strong>another</strong></td>\n          <td>Một cái khác (số ít)</td>\n          <td>There is a fee to transfer funds from one account to <strong>another</strong>.</td>\n        </tr>\n        <tr>\n          <td><strong>the other</strong></td>\n          <td>Cái/Người còn lại duy nhất</td>\n          <td>Of the three meeting rooms, two are reserved while <strong>the other</strong> is available.</td>\n        </tr>\n        <tr>\n          <td><strong>the others</strong></td>\n          <td>Những cái/người còn lại</td>\n          <td>Of the ten meeting rooms, two are reserved while <strong>the others</strong> are available.</td>\n        </tr>\n        <tr>\n          <td><strong>others</strong></td>\n          <td>Những cái/người khác nói chung</td>\n          <td>If he treats me differently than <strong>others</strong>, I'm sure it's because we are married.</td>\n        </tr>\n        <tr>\n          <td><strong>other</strong></td>\n          <td>khác (tính từ)</td>\n          <td>Do you have any <strong>other</strong> suggestions?</td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n"
+  },
+  "practice": {
+    "parts": [
+      {
+        "partNumber": 1,
+        "title": "Bài tập 1: Bài tập về Đại từ (Trên lớp)",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án thích hợp để hoàn thành các câu trắc nghiệm Đại từ trên lớp dưới đây:",
+        "questions": [
+          {
+            "id": "b5_p1_q1",
+            "questionText": "1. Since we had a recent rate change, expect ------ next electricity bill to be slightly lower.",
+            "options": {
+              "A": "you",
+              "B": "yours",
+              "C": "yourself",
+              "D": "your"
+            },
+            "correctAnswer": "D",
+            "explanation": "Chỗ trống đứng trước cụm danh từ 'next electricity bill'. Ta cần một tính từ sở hữu để bổ nghĩa. Chọn 'your' (hóa đơn tiền điện tiếp theo của bạn).",
+            "sentenceTranslation": "Vì gần đây chúng tôi đã có thay đổi về giá nên dự kiến ​​hóa đơn tiền điện tiếp theo của bạn sẽ thấp hơn một chút."
+          },
+          {
+            "id": "b5_p1_q2",
+            "questionText": "2. Though Sendark Agency's travel insurance can be purchased over the phone, most of -------- plans are bought online.",
+            "options": {
+              "A": "whose",
+              "B": "his",
+              "C": "its",
+              "D": "this"
+            },
+            "correctAnswer": "C",
+            "explanation": "Chỗ trống đứng trước danh từ 'plans' và cần thay thế sở hữu cho danh từ chỉ vật số ít đi trước 'Sendark Agency'. Ta chọn tính từ sở hữu 'its' (hầu hết các kế hoạch bảo hiểm của nó).",
+            "sentenceTranslation": "Mặc dù bảo hiểm du lịch của Cơ quan Sendark có thể được mua qua điện thoại nhưng hầu hết các gói của nó đều được mua trực tuyến."
+          },
+          {
+            "id": "b5_p1_q3",
+            "questionText": "3. Ms. Budrow was promoted after-----------group recorded the highest revenue growth for the year.",
+            "options": {
+              "A": "her",
+              "B": "hers",
+              "C": "herself",
+              "D": "she"
+            },
+            "correctAnswer": "A",
+            "explanation": "Chỗ trống đứng trước danh từ 'group' nên cần một tính từ sở hữu bổ nghĩa. Chọn 'her' (nhóm của cô ấy).",
+            "sentenceTranslation": "Bà Budrow được thăng chức sau khi nhóm của bà ghi nhận mức tăng trưởng doanh thu cao nhất trong năm."
+          },
+          {
+            "id": "b5_p1_q4",
+            "questionText": "4. Use an alternative shipping firm if Greer Freight is unable to expedite delivery of -----------order.",
+            "options": {
+              "A": "you",
+              "B": "your",
+              "C": "yours",
+              "D": "yourselves"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng trước danh từ 'order'. Ta cần tính từ sở hữu 'your' (đơn hàng của bạn). Chọn B.",
+            "sentenceTranslation": "Hãy sử dụng hãng vận chuyển thay thế nếu Greer Freight không thể đẩy nhanh việc giao đơn hàng của bạn."
+          },
+          {
+            "id": "b5_p1_q5",
+            "questionText": "5. Ms. Daly will prepare a marketing budget and propose-----------during the client meeting.",
+            "options": {
+              "A": "those",
+              "B": "its",
+              "C": "it",
+              "D": "her"
+            },
+            "correctAnswer": "C",
+            "explanation": "Động từ 'propose' cần một tân ngữ (Object) thay thế cho danh từ số ít 'a marketing budget' đã đề cập ở mệnh đề trước. Chọn đại từ tân ngữ 'it'.",
+            "sentenceTranslation": "Cô Daly sẽ chuẩn bị ngân sách tiếp thị và đề xuất trong cuộc gặp gỡ khách hàng."
+          },
+          {
+            "id": "b5_p1_q6",
+            "questionText": "6. Of the people who have publicly introduced ----------at the Carpentry Club meetings, about half are commercial contractors.",
+            "options": {
+              "A": "their",
+              "B": "their own",
+              "C": "they",
+              "D": "themselves"
+            },
+            "correctAnswer": "D",
+            "explanation": "Chủ ngữ của mệnh đề quan hệ phụ là 'who' (đại diện cho 'the people'). Hành động giới thiệu hướng về chính chủ ngữ -> Cần đại từ phản thân 'themselves' (tự giới thiệu bản thân họ).",
+            "sentenceTranslation": "Trong số những người đã công khai giới thiệu mình tại các cuộc họp của Câu lạc bộ Mộc, khoảng một nửa là các nhà thầu thương mại."
+          },
+          {
+            "id": "b5_p1_q7",
+            "questionText": "7. Mr. Akagi was unable to buy tickets for the concert because-----------was sold out.",
+            "options": {
+              "A": "it",
+              "B": "others",
+              "C": "any",
+              "D": "they"
+            },
+            "correctAnswer": "A",
+            "explanation": "Chỗ trống làm chủ ngữ cho động từ 'was sold out' ở mệnh đề nguyên nhân. Để thay thế cho danh từ số ít chỉ vật 'the concert', ta chọn đại từ chủ ngữ 'it'.",
+            "sentenceTranslation": "Ông Akagi không thể mua được vé cho buổi hòa nhạc vì đã bán hết vé."
+          },
+          {
+            "id": "b5_p1_q8",
+            "questionText": "8. Before a job interview, it is critical to prepare-----------for answering the most commonly asked questions.",
+            "options": {
+              "A": "whose",
+              "B": "whichever",
+              "C": "theirs",
+              "D": "oneself"
+            },
+            "correctAnswer": "D",
+            "explanation": "Chủ từ giả định ở đây là người nói chung (khuyết chủ từ cụ thể). Cấu trúc: prepare oneself (tự chuẩn bị bản thân mình). Chọn đại từ phản thân bất định 'oneself'.",
+            "sentenceTranslation": "Trước một cuộc phỏng vấn xin việc, điều quan trọng là bạn phải chuẩn bị sẵn sàng để trả lời những câu hỏi thường gặp nhất."
+          },
+          {
+            "id": "b5_p1_q9",
+            "questionText": "9. Chef Daniels impresses customers with ----------sophisticated entrees.",
+            "options": {
+              "A": "his",
+              "B": "him",
+              "C": "himself",
+              "D": "he"
+            },
+            "correctAnswer": "A",
+            "explanation": "Chỗ trống đứng trước cụm danh từ 'sophisticated entrees' và chỉ sở hữu của người nam 'Chef Daniels'. Ta cần tính từ sở hữu 'his'. Chọn A.",
+            "sentenceTranslation": "Đầu bếp Daniels gây ấn tượng với thực khách bằng những món khai vị tinh tế."
+          },
+          {
+            "id": "b5_p1_q10",
+            "questionText": "10. Please direct all questions about-----------recent order to the customer care center.",
+            "options": {
+              "A": "yours",
+              "B": "your",
+              "C": "yourself",
+              "D": "you"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng trước cụm danh từ 'recent order', ta cần điền tính từ sở hữu 'your' (đơn hàng gần đây của bạn). Chọn B.",
+            "sentenceTranslation": "Vui lòng gửi tất cả các câu hỏi về đơn hàng gần đây của bạn đến trung tâm chăm sóc khách hàng."
+          }
+        ]
+      },
+      {
+        "partNumber": 2,
+        "title": "Bài tập 1: Bài tập về Đại từ (Về nhà)",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án đúng nhất để hoàn tất các câu hỏi Đại từ tự luyện ở nhà dưới đây:",
+        "questions": [
+          {
+            "id": "b5_p2_q1",
+            "questionText": "11. Sharik Pharmaceuticals will host a company picnic for-----------employees at Hain Park.",
+            "options": {
+              "A": "them",
+              "B": "its",
+              "C": "itself",
+              "D": "themselves"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng trước danh từ 'employees'. 'its' là tính từ sở hữu thay thế cho công ty số ít 'Sharik Pharmaceuticals' (nhân viên của công ty).",
+            "sentenceTranslation": "Sharik Pharmaceuticals sẽ tổ chức buổi dã ngoại của công ty cho nhân viên của mình tại Hain Park."
+          },
+          {
+            "id": "b5_p2_q2",
+            "questionText": "12. -----------who wants to attend the luncheon next week must tell Ms. Hasegawa by noon tomorrow.",
+            "options": {
+              "A": "Anyone",
+              "B": "Some",
+              "C": "Those",
+              "D": "Other"
+            },
+            "correctAnswer": "A",
+            "explanation": "Động từ theo sau là số ít 'wants'. Cấu trúc: 'Anyone who + động từ số ít' (Bất cứ ai người mà...). 'Those who' bắt buộc đi với động từ số nhiều. Chọn A.",
+            "sentenceTranslation": "Ai muốn tham dự tiệc trưa tuần sau phải báo cho cô Hasegawa trước trưa mai."
+          },
+          {
+            "id": "b5_p2_q3",
+            "questionText": "13. Mr. Pierce requested that all employees meet in-----------office at noon.",
+            "options": {
+              "A": "himself",
+              "B": "his",
+              "C": "him",
+              "D": "he"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng trước danh từ 'office', ta cần tính từ sở hữu 'his' để bổ nghĩa (văn phòng của anh ấy). Chọn B.",
+            "sentenceTranslation": "Ông Pierce yêu cầu tất cả nhân viên gặp nhau tại văn phòng của ông vào buổi trưa."
+          },
+          {
+            "id": "b5_p2_q4",
+            "questionText": "14. Ms. Chu will explain how the factory workers can protect-----------equipment from damage.",
+            "options": {
+              "A": "theirs",
+              "B": "them",
+              "C": "themselves",
+              "D": "their"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng trước danh từ 'equipment', ta cần tính từ sở hữu để chỉ thiết bị thuộc về chủ ngữ số nhiều 'the factory workers'. Chọn tính từ sở hữu 'their' (thiết bị của họ).",
+            "sentenceTranslation": "Cô Chu sẽ giải thích cách công nhân nhà máy có thể bảo vệ thiết bị của họ khỏi bị hư hỏng."
+          },
+          {
+            "id": "b5_p2_q5",
+            "questionText": "15. For questions about your hotel reservation, please telephone-----------booking department at 555-0109.",
+            "options": {
+              "A": "we",
+              "B": "us",
+              "C": "our",
+              "D": "ourselves"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng trước cụm danh từ 'booking department', ta cần một tính từ sở hữu. Chọn 'our' (phòng đặt chỗ của chúng tôi).",
+            "sentenceTranslation": "Nếu có thắc mắc về việc đặt phòng khách sạn, vui lòng gọi điện đến bộ phận đặt phòng của chúng tôi theo số 555-0109."
+          },
+          {
+            "id": "b5_p2_q6",
+            "questionText": "16. Former Sendai Company CEO Ken Nakata spoke about ------- career experiences.",
+            "options": {
+              "A": "he",
+              "B": "his",
+              "C": "him",
+              "D": "himself"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng trước danh từ 'career experiences', ta cần tính từ sở hữu chỉ của cựu CEO 'Ken Nakata'. Chọn 'his' (kinh nghiệm nghề nghiệp của ông ấy).",
+            "sentenceTranslation": "Cựu Giám đốc điều hành Công ty Sendai Ken Nakata nói về kinh nghiệm nghề nghiệp của mình."
+          },
+          {
+            "id": "b5_p2_q7",
+            "questionText": "17. Yong-Soo Cosmetics will not charge for items on back order until ------- have left our warehouse.",
+            "options": {
+              "A": "them",
+              "B": "they",
+              "C": "themselves",
+              "D": "their"
+            },
+            "correctAnswer": "B",
+            "explanation": "Chỗ trống làm chủ ngữ cho động từ chia số nhiều ở thì hiện tại hoàn thành 'have left'. Để thay thế cho danh từ chỉ vật số nhiều 'items', ta chọn đại từ chủ ngữ 'they'.",
+            "sentenceTranslation": "Mỹ phẩm Yong-Soo sẽ không tính phí cho các mặt hàng được đặt hàng trở lại cho đến khi chúng rời khỏi kho của chúng tôi."
+          },
+          {
+            "id": "b5_p2_q8",
+            "questionText": "18. Next month, Barder House Books will be holding ------- third author's hour in Cleveland.",
+            "options": {
+              "A": "it",
+              "B": "itself",
+              "C": "its own",
+              "D": "its"
+            },
+            "correctAnswer": "D",
+            "explanation": "Đứng trước cụm danh từ 'third author's hour'. Ta cần tính từ sở hữu bổ nghĩa cho danh từ số ít chỉ vật 'Barder House Books'. Chọn 'its'.",
+            "sentenceTranslation": "Tháng tới, Barder House Books sẽ tổ chức giờ tác giả thứ ba tại Cleveland."
+          },
+          {
+            "id": "b5_p2_q9",
+            "questionText": "19. Dr. Cho will visit the Teledarr Lab during the annual open house, since ------- may not have another chance to see it.",
+            "options": {
+              "A": "hers",
+              "B": "she",
+              "C": "her",
+              "D": "herself"
+            },
+            "correctAnswer": "B",
+            "explanation": "Làm chủ ngữ cho mệnh đề nguyên nhân đứng trước động từ khiếm khuyết 'may not have'. Để thay thế cho danh từ riêng chỉ người nữ 'Dr. Cho', ta chọn đại từ 'she'.",
+            "sentenceTranslation": "Tiến sĩ Cho sẽ đến thăm Phòng thí nghiệm Teledarr trong buổi khai mạc hàng năm vì cô ấy có thể không có cơ hội khác để xem nó."
+          },
+          {
+            "id": "b5_p2_q10",
+            "questionText": "20. The annual report will be ready after ------- make the necessary revisions.",
+            "options": {
+              "A": "I",
+              "B": "me",
+              "C": "myself",
+              "D": "my"
+            },
+            "correctAnswer": "A",
+            "explanation": "Làm chủ ngữ trong mệnh đề trạng ngữ chỉ thời gian đứng trước động từ nguyên thể 'make'. Ta chọn đại từ chủ ngữ 'I'.",
+            "sentenceTranslation": "Báo cáo thường niên sẽ sẵn sàng sau khi tôi thực hiện những sửa đổi cần thiết."
+          }
+        ]
+      },
+      {
+        "partNumber": 3,
+        "title": "Bài tập 2: Bài tập về Danh từ (Trên lớp)",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án cấu trúc danh từ chính xác nhất để hoàn thành các câu trắc nghiệm dưới đây:",
+        "questions": [
+          {
+            "id": "b5_p3_q1",
+            "questionText": "1. Because of transportation -----------due to winter weather, some conference participants may arrive late.",
+            "options": {
+              "A": "are delayed",
+              "B": "to delay",
+              "C": "delays",
+              "D": "had delayed"
+            },
+            "correctAnswer": "C",
+            "explanation": "Sau giới từ 'Because of' ta cần một cụm danh từ. 'transportation delays' là một cụm danh từ ghép có nghĩa là 'sự trì hoãn giao thông/vận chuyển'. Chọn danh từ 'delays'.",
+            "sentenceTranslation": "Vì sự chậm trễ trong vận chuyển do thời tiết mùa đông nên một số người tham gia hội nghị có thể đến muộn."
+          },
+          {
+            "id": "b5_p3_q2",
+            "questionText": "2. To receive-----------, please be sure the appropriate box is checked on the magazine order form.",
+            "options": {
+              "A": "renew",
+              "B": "renewed",
+              "C": "renewals",
+              "D": "to renew"
+            },
+            "correctAnswer": "C",
+            "explanation": "Động từ 'receive' cần một tân ngữ ở dạng Danh từ phía sau. Chọn danh từ 'renewals' (sự gia hạn). Chọn C.",
+            "sentenceTranslation": "Để nhận được gia hạn, vui lòng đảm bảo đánh dấu vào ô thích hợp trên mẫu đặt hàng tạp chí."
+          },
+          {
+            "id": "b5_p3_q3",
+            "questionText": "3. The Rustic Diner's chef does allow patrons to make menu-----------.",
+            "options": {
+              "A": "substituted",
+              "B": "substituting",
+              "C": "substitutions",
+              "D": "substitute"
+            },
+            "correctAnswer": "C",
+            "explanation": "Sau danh từ 'menu' bổ nghĩa, ta cần danh từ chính để tạo thành cụm danh từ ghép đóng vai trò làm tân ngữ cho động từ 'make'. Chọn danh từ 'substitutions' (sự thay thế thực đơn).",
+            "sentenceTranslation": "Đầu bếp của Rustic Diner cho phép khách hàng thay thế thực đơn."
+          },
+          {
+            "id": "b5_p3_q5",
+            "questionText": "5. This month's-----------figures have increased five percent over the last month.",
+            "options": {
+              "A": "selling",
+              "B": "sold",
+              "C": "to sell",
+              "D": "sales"
+            },
+            "correctAnswer": "D",
+            "explanation": "Ta cần một danh từ đứng trước 'figures' tạo thành cụm danh từ ghép quen thuộc trong TOEIC: 'sales figures' (số liệu doanh thu/doanh số bán hàng). Chọn D.",
+            "sentenceTranslation": "Số liệu bán hàng của tháng này đã tăng 5% so với tháng trước."
+          },
+          {
+            "id": "b5_p3_q6",
+            "questionText": "6. Eastington University just announced the -----------of all foods containing artificial preservatives from its cafeteria menu.",
+            "options": {
+              "A": "eliminate",
+              "B": "eliminated",
+              "C": "elimination",
+              "D": "eliminates"
+            },
+            "correctAnswer": "C",
+            "explanation": "Cấu trúc: the + Noun + of. Chỗ trống cần điền một danh từ. Chọn 'elimination' (sự loại bỏ).",
+            "sentenceTranslation": "Đại học Eastington vừa tuyên bố loại bỏ tất cả các loại thực phẩm có chứa chất bảo quản nhân tạo khỏi thực đơn căng tin của trường."
+          },
+          {
+            "id": "b5_p3_q7",
+            "questionText": "7. Ragini Kumari has published a book about the history of agricultural-----------in the region.",
+            "options": {
+              "A": "practical",
+              "B": "practices",
+              "C": "practiced",
+              "D": "is practicing"
+            },
+            "correctAnswer": "B",
+            "explanation": "Đứng sau tính từ 'agricultural' bổ nghĩa và giới từ 'of', ta cần một danh từ làm tân ngữ của giới từ. Chọn danh từ 'practices' (các hoạt động/tập quán nông nghiệp).",
+            "sentenceTranslation": "Ragini Kumari đã xuất bản một cuốn sách về lịch sử hoạt động nông nghiệp trong khu vực."
+          },
+          {
+            "id": "b5_p3_q8",
+            "questionText": "8. Ms. Patel is coming to Delhi today to visit possible-----------for her company's new warehouse.",
+            "options": {
+              "A": "locating",
+              "B": "locations",
+              "C": "located",
+              "D": "locate"
+            },
+            "correctAnswer": "B",
+            "explanation": "Sau tính từ 'possible' và đóng vai trò làm tân ngữ của động từ 'visit', ta cần một danh từ số nhiều phù hợp. Chọn 'locations' (các địa điểm khả thi).",
+            "sentenceTranslation": "Hôm nay cô Patel sẽ tới Delhi để thăm những địa điểm khả thi cho nhà kho mới của công ty cô."
+          },
+          {
+            "id": "b5_p3_q9",
+            "questionText": "9. Costpa Analytics Ltd. has made successful -----------in two emerging data companies.",
+            "options": {
+              "A": "investments",
+              "B": "invested",
+              "C": "invest",
+              "D": "investor"
+            },
+            "correctAnswer": "A",
+            "explanation": "Cấu trúc: make + successful (tính từ) + Noun. Ta cần danh từ số nhiều đóng vai trò tân ngữ. Chọn 'investments' (các khoản đầu tư thành công).",
+            "sentenceTranslation": "Costpa Analytics Ltd. đã đầu tư thành công vào hai công ty dữ liệu mới nổi."
+          },
+          {
+            "id": "b5_p3_q10",
+            "questionText": "10. Employee-----------at Medmile Ventures include share options and scheduled raises.",
+            "options": {
+              "A": "beneficial",
+              "B": "beneficially",
+              "C": "benefits",
+              "D": "benefited"
+            },
+            "correctAnswer": "C",
+            "explanation": "Chỗ trống làm chủ ngữ cho động từ số nhiều 'include'. Ta cần danh từ số nhiều đứng sau 'Employee' tạo thành cụm danh từ ghép 'Employee benefits' (các phúc lợi nhân viên). Chọn C.",
+            "sentenceTranslation": "Lợi ích của nhân viên tại Medmile Ventures bao gồm quyền chọn chia sẻ và tăng lương theo lịch trình."
+          },
+          {
+            "id": "b5_p3_q11",
+            "questionText": "11. The Ambury Prize recognizes research that is notable for its-----------and innovation.",
+            "options": {
+              "A": "creative",
+              "B": "creatively",
+              "C": "creativity",
+              "D": "creates"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng sau tính từ sở hữu 'its' và song hành với danh từ 'innovation' qua liên từ 'and', ta cần một danh từ. Chọn 'creativity' (sự sáng tạo).",
+            "sentenceTranslation": "Giải thưởng Ambury công nhận những nghiên cứu nổi bật về tính sáng tạo và đổi mới."
+          }
+        ]
+      },
+      {
+        "partNumber": 4,
+        "title": "Bài tập 2: Bài tập về Danh từ (Về nhà)",
+        "type": "multiple_choice",
+        "instruction": "Chọn phương án đúng nhất để hoàn thành các câu trắc nghiệm Danh từ tự luyện dưới đây:",
+        "questions": [
+          {
+            "id": "b5_p4_q1",
+            "questionText": "12. Trelmoni Corporation has just released its -----------of the global stock market.",
+            "options": {
+              "A": "analysis",
+              "B": "analytical",
+              "C": "analyze",
+              "D": "analyzed"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đứng sau tính từ sở hữu 'its', ta cần điền một danh từ làm tân ngữ cho động từ 'released'. Chọn danh từ 'analysis' (sự phân tích của nó).",
+            "sentenceTranslation": "Tập đoàn Trelmoni vừa công bố phân tích về thị trường chứng khoán toàn cầu."
+          },
+          {
+            "id": "b5_p4_q2",
+            "questionText": "13. By testing the-----------of the vehicle in desert terrain, the designers proved that it works perfectly in harsh conditions.",
+            "options": {
+              "A": "enduring",
+              "B": "endurance",
+              "C": "endures",
+              "D": "endure"
+            },
+            "correctAnswer": "B",
+            "explanation": "Cấu trúc: the + Noun + of. Ta cần điền danh từ vào chỗ trống làm tân ngữ của giới từ 'by testing'. Chọn 'endurance' (sức bền/độ bền bỉ).",
+            "sentenceTranslation": "Bằng cách thử nghiệm khả năng chịu đựng của xe trên địa hình sa mạc, các nhà thiết kế đã chứng minh rằng nó hoạt động hoàn hảo trong điều kiện khắc nghiệt."
+          },
+          {
+            "id": "b5_p4_q3",
+            "questionText": "14. Following a brief-----------with the chief technician, Mr. Moore agreed to update the operations manual.",
+            "options": {
+              "A": "converses",
+              "B": "conversation",
+              "C": "conversational",
+              "D": "conversationally"
+            },
+            "correctAnswer": "B",
+            "explanation": "Sau mạo từ 'a' và tính từ 'brief', ta cần một danh từ đếm được số ít. Chọn danh từ 'conversation' (một cuộc hội thoại/trò chuyện ngắn).",
+            "sentenceTranslation": "Sau cuộc trò chuyện ngắn với kỹ thuật viên trưởng, ông Moore đã đồng ý cập nhật sổ tay vận hành."
+          },
+          {
+            "id": "b5_p4_q4",
+            "questionText": "15. Zhang Cleaning takes great care to ensure that all its employees follow specific cleaning-----------",
+            "options": {
+              "A": "proceeds",
+              "B": "procedures",
+              "C": "procedural",
+              "D": "proceeding"
+            },
+            "correctAnswer": "B",
+            "explanation": "Sau danh từ bổ nghĩa 'cleaning', ta cần danh từ chính để tạo thành cụm danh từ ghép quen thuộc 'cleaning procedures' (các quy trình dọn dẹp). Chọn B.",
+            "sentenceTranslation": "Zhang Cleaning rất cẩn thận để đảm bảo rằng tất cả nhân viên của mình tuân theo các quy trình vệ sinh cụ thể"
+          },
+          {
+            "id": "b5_p4_q5",
+            "questionText": "16. Samidu Communications is soliciting suggestions from its staff about ways of improving employee -----------.",
+            "options": {
+              "A": "produced",
+              "B": "productive",
+              "C": "productivity",
+              "D": "productively"
+            },
+            "correctAnswer": "C",
+            "explanation": "Đứng sau danh từ bổ nghĩa 'employee' và giới từ 'of improving', ta cần một danh từ để tạo thành cụm danh từ ghép 'employee productivity' (năng suất nhân viên). Chọn danh từ 'productivity'.",
+            "sentenceTranslation": "Samidu Communications đang lấy ý kiến ​​từ nhân viên của mình về các cách cải thiện năng suất của nhân viên."
+          },
+          {
+            "id": "b5_p4_q6",
+            "questionText": "17. Pennypack Markets soon plans to break ground on its largest ----------- center in the area.",
+            "options": {
+              "A": "distributive",
+              "B": "distribute",
+              "C": "distributable",
+              "D": "distribution"
+            },
+            "correctAnswer": "D",
+            "explanation": "Ta cần một danh từ bổ nghĩa đứng trước 'center' tạo thành danh từ ghép chỉ một loại trung tâm đặc thù: 'distribution center' (trung tâm phân phối). Chọn D.",
+            "sentenceTranslation": "Pennypack Markets sớm có kế hoạch động thổ trung tâm phân phối lớn nhất trong khu vực."
+          },
+          {
+            "id": "b5_p4_q7",
+            "questionText": "18. The ----------- of a parking structure for Huron General Hospital will begin on June 1.",
+            "options": {
+              "A": "construct",
+              "B": "constructed",
+              "C": "construction",
+              "D": "constructs"
+            },
+            "correctAnswer": "C",
+            "explanation": "Cấu trúc: The + Noun + of. Chỗ trống làm chủ ngữ chính cho động từ chia thì tương lai 'will begin'. Chọn danh từ 'construction' (việc xây dựng).",
+            "sentenceTranslation": "Việc xây dựng bãi đậu xe cho Bệnh viện Đa khoa Huron sẽ bắt đầu vào ngày 1 tháng Sáu."
+          },
+          {
+            "id": "b5_p4_q8",
+            "questionText": "19. The three-day workshop focuses on the public speaking ----------- that are central to delivering memorable presentations.",
+            "options": {
+              "A": "strategies",
+              "B": "strategized",
+              "C": "strategically",
+              "D": "strategic"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đứng sau tính từ/cụm bổ nghĩa 'public speaking', làm danh từ chính chịu tác động của giới từ 'on'. Mệnh đề quan hệ bổ nghĩa phía sau có 'that are' (số nhiều), nên ta cần chọn danh từ số nhiều 'strategies' (các chiến lược diễn thuyết trước công chúng).",
+            "sentenceTranslation": "Hội thảo kéo dài ba ngày tập trung vào các chiến lược nói trước công chúng, yếu tố then chốt để mang đến những bài thuyết trình đáng nhớ."
+          },
+          {
+            "id": "b5_p4_q9",
+            "questionText": "20. Rayel Pharmaceutical provides a list of its ----------- and their affiliations on its Web site.",
+            "options": {
+              "A": "research",
+              "B": "researching",
+              "C": "researched",
+              "D": "researchers"
+            },
+            "correctAnswer": "D",
+            "explanation": "Cụm danh từ sở hữu 'its...' song hành với đại từ chỉ người số nhiều 'their affiliations' (tổ chức liên kết của họ) qua liên từ 'and'. Do đó, ta cần danh từ chỉ người số nhiều để tương thích. Chọn 'researchers' (danh sách các nhà nghiên cứu của công ty).",
+            "sentenceTranslation": "Rayel Pharmaceutical cung cấp danh sách các nhà nghiên cứu và các chi nhánh của họ trên trang web của mình."
+          }
+        ]
+      }
+    ]
+  }
+}
