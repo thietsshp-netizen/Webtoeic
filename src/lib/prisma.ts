@@ -1,22 +1,27 @@
 import { Pool } from 'pg'
 import { PrismaPg } from '@prisma/adapter-pg'
-// Forced Schema Sync: 2026-05-13
 import { PrismaClient } from '@prisma/client'
 
-const prismaClientSingleton = () => {
-  const connectionString = `${process.env.DATABASE_URL}`
-
-  // Giới hạn max: 8 kết nối để tối ưu hiệu năng song song và tránh lỗi quá tải EMAXCONNSESSION
-  const pool = new Pool({ connectionString, max: 8 })
-  const adapter = new PrismaPg(pool)
-  
-  return new PrismaClient({ adapter })
-}
-
-type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>
+const connectionString = `${process.env.DATABASE_URL}`
+const isDev = process.env.NODE_ENV !== 'production'
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClientSingleton | undefined
+  prisma: PrismaClient | undefined
+  pgPool: Pool | undefined
+}
+
+// 1. Chỉ khởi tạo PG Pool một lần duy nhất và lưu vào global để tránh rò rỉ kết nối khi hot-reload
+const pool = globalForPrisma.pgPool ?? new Pool({ 
+  connectionString, 
+  max: isDev ? 2 : 8 
+})
+
+if (isDev) globalForPrisma.pgPool = pool
+
+// 2. Chỉ khởi tạo Prisma Client một lần duy nhất
+const prismaClientSingleton = () => {
+  const adapter = new PrismaPg(pool)
+  return new PrismaClient({ adapter })
 }
 
 export const prisma = globalForPrisma.prisma ?? prismaClientSingleton()

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
+import { useSession } from "next-auth/react";
 import {
   Timer,
   Send,
@@ -15,7 +16,11 @@ import {
   Clock,
   Trophy,
   RotateCcw,
-  Check
+  Check,
+  Play,
+  Square,
+  Pause,
+  X
 } from "lucide-react";
 import ToeicPart1Player from "@/components/Toeic/ToeicPart1Player";
 import ToeicPart2Player from "@/components/Toeic/ToeicPart2Player";
@@ -63,6 +68,26 @@ export default function ToeicFullTestPlayer({
   const [activeQuestionNo, setActiveQuestionNo] = useState<number | null>(null);
   const [disableSidebarTransition, setDisableSidebarTransition] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const { data: session } = useSession();
+  const isAdmin = (session?.user as any)?.role === 'ADMIN';
+
+  type RecTimestamp = { label: string; time: number; targetIndex: number };
+  const [isTeachingMode, setIsTeachingMode] = useState(false);
+  const [showTeachSetup, setShowTeachSetup] = useState(false);
+  const [showTeachFinish, setShowTeachFinish] = useState(false);
+  const [isTeachPaused, setIsTeachPaused] = useState(false);
+
+  const [teachingTitle, setTeachingTitle] = useState(`Chữa đề ${book} - ${test}`);
+  const [teachingStartNo, setTeachingStartNo] = useState<number>(101);
+  const [teachingVideoUrl, setTeachingVideoUrl] = useState("");
+  const [teachingVideoType, setTeachingVideoType] = useState<"youtube" | "google-drive" | "direct">("direct");
+  const [teachingSaveType, setTeachingSaveType] = useState<"new" | "overwrite">("new");
+  const [teachingOverwriteIndex, setTeachingOverwriteIndex] = useState<number>(0);
+
+  const [teachStartTime, setTeachStartTime] = useState<number | null>(null);
+  const [recTimestamps, setRecTimestamps] = useState<RecTimestamp[]>([]);
+  const [recElapsed, setRecElapsed] = useState(0);
+  const [isSavingRec, setIsSavingRec] = useState(false);
 
   // Chuẩn hóa videoExplanation thành dạng vừa là Mảng vừa là Đối tượng đơn để tương thích ngược 100% với các Part Players
   const normalizedExplanation = useMemo(() => {
@@ -265,6 +290,145 @@ export default function ToeicFullTestPlayer({
     });
     return offsets;
   }, [data]);
+
+  // Đồng hồ chạy ngầm tăng giây mỗi giây khi không Pause
+  useEffect(() => {
+    if (!isTeachingMode || teachStartTime === null || isTeachPaused) return;
+    const timer = setInterval(() => {
+      setRecElapsed(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [isTeachingMode, teachStartTime, isTeachPaused]);
+
+  // Phím tắt vạn năng cho Admin (Space/Enter)
+  useEffect(() => {
+    const handleRecKeyDown = (e: KeyboardEvent) => {
+      if (!isTeachingMode || showTeachSetup || showTeachFinish) return;
+
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        
+        const lastStamp = recTimestamps[recTimestamps.length - 1];
+        const nextNo = lastStamp ? lastStamp.targetIndex + 1 : teachingStartNo;
+        const totalQs = allQuestions.length || 200;
+        const label = `${nextNo}/${totalQs}`;
+
+        setRecTimestamps(ts => {
+          if (ts.some(t => t.targetIndex === nextNo)) return ts;
+          return [
+            ...ts,
+            { label, time: recElapsed, targetIndex: nextNo }
+          ];
+        });
+
+        showToast(`Đã ghi nhận mốc Câu ${nextNo}!`, "success");
+      }
+    };
+
+    window.addEventListener('keydown', handleRecKeyDown);
+    return () => window.removeEventListener('keydown', handleRecKeyDown);
+  }, [isTeachingMode, recTimestamps, recElapsed, teachingStartNo, allQuestions, showTeachSetup, showTeachFinish]);
+
+  const handleNextStampClick = () => {
+    const lastStamp = recTimestamps[recTimestamps.length - 1];
+    const nextNo = lastStamp ? lastStamp.targetIndex + 1 : teachingStartNo;
+    const totalQs = allQuestions.length || 200;
+    const label = `${nextNo}/${totalQs}`;
+
+    setRecTimestamps(ts => {
+      if (ts.some(t => t.targetIndex === nextNo)) return ts;
+      return [
+        ...ts,
+        { label, time: recElapsed, targetIndex: nextNo }
+      ];
+    });
+
+    showToast(`Đã ghi nhận mốc Câu ${nextNo}!`, "success");
+  };
+
+  const handleStartTeaching = () => {
+    const now = Date.now();
+    setTeachStartTime(now);
+    setRecTimestamps([]);
+    setRecElapsed(0);
+    setIsTeachPaused(false);
+    setIsTeachingMode(true);
+    setShowTeachSetup(false);
+
+    // Ghi mốc đầu tiên của câu bắt đầu tại 0s
+    const totalQs = allQuestions.length || 200;
+    const label = `${teachingStartNo}/${totalQs}`;
+    setRecTimestamps([{ label, time: 0, targetIndex: teachingStartNo }]);
+  };
+
+  const handleFinishTeaching = async () => {
+    setIsSavingRec(true);
+    try {
+      const newVideoEntry = {
+        title: teachingTitle.trim() || `Chữa đề ${book} - ${test}`,
+        videoUrl: teachingVideoUrl.trim(),
+        videoType: teachingVideoType,
+        timestamps: recTimestamps.map(t => ({
+          label: t.label,
+          time: t.time,
+          targetIndex: t.targetIndex
+        }))
+      };
+
+      let updatedExplanation: any[] = [];
+      const currentRaw = videoExplanation;
+      const currentArray = Array.isArray(currentRaw)
+        ? currentRaw
+        : currentRaw?.videoUrl
+        ? [currentRaw]
+        : [];
+
+      if (teachingSaveType === "overwrite" && currentArray.length > 0) {
+        updatedExplanation = [...currentArray];
+        const idx = Math.min(teachingOverwriteIndex, updatedExplanation.length - 1);
+        if (idx >= 0) {
+          updatedExplanation[idx] = {
+            ...updatedExplanation[idx],
+            title: newVideoEntry.title,
+            videoUrl: newVideoEntry.videoUrl || updatedExplanation[idx].videoUrl,
+            videoType: newVideoEntry.videoType,
+            timestamps: newVideoEntry.timestamps
+          };
+        }
+      } else {
+        updatedExplanation = [...currentArray, newVideoEntry];
+      }
+
+      const res = await fetch(`/api/lessons/${lessonId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          videoExplanation: updatedExplanation
+        })
+      });
+
+      if (!res.ok) throw new Error("API call failed");
+
+      showToast("Đã lưu mốc bài giảng thành công!", "success");
+      setIsTeachingMode(false);
+      setShowTeachFinish(false);
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      showToast("Gặp lỗi khi lưu mốc bài giảng!", "error");
+    } finally {
+      setIsSavingRec(false);
+    }
+  };
+
+  const formatRec = (s: number) => {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+  };
 
   const getListeningScore = (correct: number) => {
     if (correct >= 91) return 495;
@@ -543,6 +707,81 @@ export default function ToeicFullTestPlayer({
             <CheckCircle2 size={13} className="text-green-500" />
             {stats.answered}/{stats.total}
           </div>
+
+          {/* Admin Teaching Mode Controls */}
+          {isAdmin && (
+            <>
+              <div className="h-5 w-[1.5px] bg-slate-200"></div>
+              {!isTeachingMode ? (
+                <button
+                  onClick={() => {
+                    let suggestedNo = 1;
+                    if (activePart === 5) suggestedNo = 101;
+                    else if (activePart === 6) suggestedNo = 131;
+                    else if (activePart === 7) suggestedNo = 147;
+                    else if (activeQuestionNo) suggestedNo = activeQuestionNo;
+                    setTeachingStartNo(suggestedNo);
+                    setShowTeachSetup(true);
+                  }}
+                  className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all shadow-sm shadow-amber-500/20 flex items-center gap-1.5 active:scale-95"
+                >
+                  <Play size={10} className="fill-white text-white" /> Giảng bài
+                </button>
+              ) : (
+                <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 duration-200">
+                  <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl shadow-sm border transition-all ${
+                    isTeachPaused ? "bg-yellow-50 border-yellow-100 text-yellow-600" : "bg-red-50 border-red-100 text-red-600"
+                  }`}>
+                    <span className={`w-2 h-2 rounded-full ${isTeachPaused ? "bg-yellow-500" : "bg-red-500 animate-ping"}`} />
+                    <span className="text-[10px] font-black font-mono">
+                      {isTeachPaused ? "PAUSE" : "REC"} {formatRec(recElapsed)}
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => setIsTeachPaused(!isTeachPaused)}
+                    className={`p-1.5 rounded-xl border transition-all ${
+                      isTeachPaused
+                        ? "bg-emerald-50 hover:bg-emerald-100 border-emerald-100 text-emerald-600"
+                        : "bg-yellow-50 hover:bg-yellow-100 border-yellow-100 text-yellow-600"
+                    }`}
+                    title={isTeachPaused ? "Tiếp tục" : "Tạm dừng"}
+                  >
+                    {isTeachPaused ? <Play size={10} className="fill-emerald-600 text-emerald-600" /> : <Pause size={10} className="fill-yellow-600 text-yellow-600" />}
+                  </button>
+
+                  {(() => {
+                    const lastStamp = recTimestamps[recTimestamps.length - 1];
+                    const currentNo = lastStamp ? lastStamp.targetIndex : teachingStartNo;
+                    const nextNo = lastStamp ? lastStamp.targetIndex + 1 : teachingStartNo;
+                    const totalQs = allQuestions.length || 200;
+                    return (
+                      <>
+                        <div className="bg-blue-50 border border-blue-100 text-blue-700 px-2.5 py-1 rounded-xl text-[10px] font-extrabold">
+                          Đang giảng {currentNo}/{totalQs}
+                        </div>
+                        <button
+                          onClick={handleNextStampClick}
+                          disabled={isTeachPaused}
+                          className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all shadow-md shadow-blue-500/20 active:scale-95 disabled:opacity-50"
+                        >
+                          Next
+                        </button>
+                      </>
+                    );
+                  })()}
+
+                  <button
+                    onClick={() => setShowTeachFinish(true)}
+                    className="p-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-all active:scale-95"
+                    title="Kết thúc ghi mốc"
+                  >
+                    <Square size={10} className="fill-white text-white" />
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>,
         document.getElementById("header-extra-portal")!
       )}
@@ -949,6 +1188,237 @@ export default function ToeicFullTestPlayer({
           onConfirm={confirmConfig.onConfirm}
           onCancel={() => setConfirmConfig(null)}
         />
+      )}
+
+      {/* ── Setup Modal ── */}
+      {showTeachSetup && (
+        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-100">
+            <div className="bg-gradient-to-r from-amber-500 to-orange-600 p-6 text-white">
+              <h3 className="text-xl font-black">Thiết lập phiên Giảng bài</h3>
+              <p className="text-xs text-white/80 mt-1">Đồng hồ tự động sẽ bắt đầu chạy để anh dễ dàng ghi mốc câu.</p>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Tiêu đề video bài giảng</label>
+                <input
+                  type="text"
+                  value={teachingTitle}
+                  onChange={e => setTeachingTitle(e.target.value)}
+                  onKeyDown={e => e.stopPropagation()}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 font-bold text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50"
+                  placeholder="Ví dụ: Chữa Part 5 đề ETS 2024"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div className="col-span-1">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Loại nguồn</label>
+                  <select
+                    value={teachingVideoType}
+                    onChange={e => setTeachingVideoType(e.target.value as any)}
+                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-bold text-xs text-slate-850 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  >
+                    <option value="direct">Chưa xác định / Khác</option>
+                    <option value="youtube">YOUTUBE</option>
+                    <option value="google-drive">Google Drive</option>
+                  </select>
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Đường dẫn Video giải thích (Link)</label>
+                  <input
+                    type="text"
+                    value={teachingVideoUrl}
+                    onChange={e => setTeachingVideoUrl(e.target.value)}
+                    onKeyDown={e => e.stopPropagation()}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 font-bold text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50"
+                    placeholder="Dán link video tại đây (nếu có)"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Câu bắt đầu</label>
+                  <input
+                    type="number"
+                    value={teachingStartNo}
+                    onChange={e => setTeachingStartNo(parseInt(e.target.value) || 1)}
+                    onKeyDown={e => e.stopPropagation()}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 font-bold text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Phương thức lưu</label>
+                  <select
+                    value={teachingSaveType}
+                    onChange={e => setTeachingSaveType(e.target.value as any)}
+                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-bold text-xs text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  >
+                    <option value="new">Tạo Video mới</option>
+                    {Array.isArray(videoExplanation) && videoExplanation.length > 0 && (
+                      <option value="overwrite">Ghi đè Video sẵn có</option>
+                    )}
+                  </select>
+                </div>
+              </div>
+
+              {teachingSaveType === "overwrite" && Array.isArray(videoExplanation) && videoExplanation.length > 0 && (
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Chọn video ghi đè</label>
+                  <select
+                    value={teachingOverwriteIndex}
+                    onChange={e => setTeachingOverwriteIndex(parseInt(e.target.value))}
+                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-bold text-xs text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  >
+                    {videoExplanation.map((v: any, i: number) => (
+                      <option key={i} value={i}>{v.title || `Video ${i + 1}`}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+            <div className="p-6 bg-slate-50 border-t border-slate-100 flex gap-3">
+              <button
+                onClick={() => setShowTeachSetup(false)}
+                className="flex-1 py-3 bg-white border border-slate-200 text-slate-600 font-black text-xs rounded-xl hover:bg-slate-100 transition-all uppercase tracking-wider"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                onClick={handleStartTeaching}
+                className="flex-1 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black text-xs rounded-xl hover:opacity-90 transition-all uppercase tracking-wider shadow-md shadow-amber-500/20"
+              >
+                Bắt đầu giảng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Finish/Review Modal ── */}
+      {showTeachFinish && (
+        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-100 flex flex-col max-h-[85vh]">
+            <div className="bg-gradient-to-r from-red-500 to-rose-600 p-6 text-white shrink-0">
+              <h3 className="text-xl font-black">Xác nhận Lưu mốc Bài giảng</h3>
+              <p className="text-xs text-white/80 mt-1">Rà soát lại mốc và nhãn tự động trước khi ghi nhận lên Database.</p>
+            </div>
+
+            <div className="p-6 overflow-y-auto flex-1 space-y-4 scrollbar-thin">
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs font-bold text-slate-600 space-y-1">
+                <div>Tiêu đề: <span className="text-slate-800 font-black">{teachingTitle}</span></div>
+                <div>Loại nguồn: <span className="text-slate-800 font-black uppercase">{teachingVideoType === "direct" ? "CHƯA XÁC ĐỊNH / KHÁC" : teachingVideoType}</span></div>
+                <div className="truncate">Link: <span className="text-slate-800 font-black">{teachingVideoUrl || "(Trống, sẽ dán sau ở Editor)"}</span></div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between items-center px-1">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Danh sách mốc ({recTimestamps.length})</span>
+                  <button 
+                    onClick={() => {
+                      if (window.confirm("Bạn có muốn xoá tất cả các mốc vừa ghi?")) setRecTimestamps([]);
+                    }}
+                    className="text-[10px] font-black text-red-500 hover:text-red-700 uppercase tracking-wider"
+                  >
+                    Xoá tất cả
+                  </button>
+                </div>
+
+                <div className="border border-slate-200/60 rounded-2xl overflow-hidden bg-white max-h-[300px] overflow-y-auto scrollbar-thin">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50/80 text-[10px] font-black text-slate-400 uppercase tracking-wider border-b border-slate-100 sticky top-0">
+                      <tr>
+                        <th className="p-3">#</th>
+                        <th className="p-3">Mốc</th>
+                        <th className="p-3">Nhãn hiển thị</th>
+                        <th className="p-3">targetIndex</th>
+                        <th className="p-3 text-center">Xóa</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-semibold text-slate-700">
+                      {recTimestamps.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="p-8 text-center text-slate-400 font-bold italic">
+                            Chưa ghi nhận mốc nào. Nhấn các phím tắt/Space để ghi mốc!
+                          </td>
+                        </tr>
+                      ) : (
+                        recTimestamps.map((t, idx) => (
+                          <tr key={idx} className="hover:bg-slate-50/50">
+                            <td className="p-3 text-slate-400 font-bold">{idx + 1}</td>
+                            <td className="p-3 font-mono font-bold text-blue-600">
+                              <input 
+                                type="text"
+                                defaultValue={formatRec(t.time)}
+                                onBlur={e => {
+                                  const parts = e.target.value.split(':');
+                                  if (parts.length === 2) {
+                                    const m = parseInt(parts[0]) || 0;
+                                    const s = parseInt(parts[1]) || 0;
+                                    const newTime = m * 60 + s;
+                                    setRecTimestamps(ts => {
+                                      const next = [...ts];
+                                      next[idx] = { ...next[idx], time: newTime };
+                                      return next;
+                                    });
+                                  }
+                                }}
+                                onKeyDown={e => e.stopPropagation()}
+                                className="w-16 bg-slate-50 border border-slate-200 rounded-lg py-1 px-2 text-center font-mono font-bold text-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                              />
+                            </td>
+                            <td className="p-3">
+                              <input 
+                                type="text"
+                                value={t.label}
+                                onChange={e => {
+                                  const val = e.target.value;
+                                  setRecTimestamps(ts => {
+                                    const next = [...ts];
+                                    next[idx] = { ...next[idx], label: val };
+                                    return next;
+                                  });
+                                }}
+                                onKeyDown={e => e.stopPropagation()}
+                                className="w-full bg-slate-50 border border-slate-200 rounded-lg py-1 px-3 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                              />
+                            </td>
+                            <td className="p-3 font-mono text-slate-400">{t.targetIndex}</td>
+                            <td className="p-3 text-center">
+                              <button 
+                                onClick={() => setRecTimestamps(ts => ts.filter((_, i) => i !== idx))}
+                                className="p-1 text-slate-400 hover:text-red-500 rounded-lg transition-colors"
+                              >
+                                <X size={14} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 bg-slate-50 border-t border-slate-100 shrink-0 flex gap-3">
+              <button
+                onClick={() => setShowTeachFinish(false)}
+                className="flex-1 py-3.5 bg-white border border-slate-200 text-slate-600 font-black text-xs rounded-xl hover:bg-slate-100 transition-all uppercase tracking-wider"
+              >
+                Quay lại
+              </button>
+              <button
+                onClick={handleFinishTeaching}
+                disabled={isSavingRec}
+                className="flex-1 py-3.5 bg-gradient-to-r from-red-500 to-rose-600 text-white font-black text-xs rounded-xl hover:opacity-90 disabled:opacity-50 transition-all uppercase tracking-wider shadow-md shadow-red-500/20 flex items-center justify-center gap-2"
+              >
+                {isSavingRec ? "Đang lưu..." : "Xác nhận & Lưu dữ liệu"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

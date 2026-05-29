@@ -214,6 +214,10 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
         const res = await fetch(`/api/lessons/${lessonId}`);
         const data = await res.json();
 
+        if (!res.ok || data.success === false) {
+          throw new Error(data.error || "Failed to load lesson");
+        }
+
         if (data && typeof data.content === 'string' && data.content.startsWith('{') && !['DYNAMIC_PART', 'VOCAB_GAME'].includes(data.contentType)) {
           // data.content = "<p><em>⚠️ Nội dung này được tạo bởi trình soạn thảo cũ. Vui lòng soạn thảo lại.</em></p>";
         }
@@ -223,6 +227,7 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
         setLesson(mergedData);
       } catch (err) {
         console.error("Failed to fetch lesson", err);
+        setLesson(null);
       } finally {
         setLoading(false);
       }
@@ -632,9 +637,10 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
                 </button>
               </div>
 
+              {/* DÒNG TRÊN: INPUTS (TRÁI) & XEM TRƯỚC VIDEO (PHẢI) */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4">
-                {/* CỘT TRÁI: THÔNG TIN VIDEO & XEM TRƯỚC */}
-                <div className="space-y-4">
+                {/* CỘT TRÁI: THÔNG TIN VIDEO */}
+                <div className="space-y-4 flex flex-col justify-center">
                   <div>
                     <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Tiêu đề Video (Hiển thị ở Tab học viên)</label>
                     <input
@@ -666,10 +672,12 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
                       placeholder="Dán link YouTube, Google Drive hoặc file MP4..."
                     />
                   </div>
+                </div>
 
-                  {/* KHUNG XEM TRƯỚC VIDEO (PREVIEW PLAYER) */}
+                {/* CỘT PHẢI: KHUNG XEM TRƯỚC VIDEO (PREVIEW PLAYER) */}
+                <div>
                   {activeVideo.videoUrl ? (
-                    <div className="aspect-video w-full rounded-2xl overflow-hidden shadow-md bg-slate-950 border border-slate-200 mt-4 relative">
+                    <div className="aspect-video w-full rounded-2xl overflow-hidden shadow-md bg-slate-950 border border-slate-200 relative">
                       {(() => {
                         const url = activeVideo.videoUrl;
                         const type = activeVideo.videoType || "direct";
@@ -732,145 +740,146 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
                     </div>
                   )}
                 </div>
+              </div>
 
-                {/* CỘT PHẢI: BẢNG QUẢN LÝ MỐC THỜI GIAN TIMESTAMPS */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Bảng mốc thời gian (Timestamps)</label>
-                    <div className="flex gap-2">
-                      {questionsList.length > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const autoStamps = questionsList.map((q: any, idx: number) => ({
-                              label: `Câu ${q.questionNo || (idx + 1)}`,
-                              time: 0,
-                              targetIndex: idx + 1
-                            }));
-                            updateActiveVideo({ timestamps: autoStamps });
-                          }}
-                          className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl text-xs font-bold transition-all"
-                          title="Tự động sinh mốc theo đề bài"
-                        >
-                          ⚡ Tự động tạo mốc
-                        </button>
-                      )}
+              {/* DÒNG DƯỚI: BẢNG QUẢN LÝ MỐC THỜI GIAN TIMESTAMPS (FULL WIDTH) */}
+              <div className="space-y-4 pt-6 border-t border-slate-200/60 mt-6">
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Bảng mốc thời gian (Timestamps)</label>
+                  <div className="flex gap-2">
+                    {questionsList.length > 0 && (
                       <button
                         type="button"
-                        onClick={() => updateActiveVideo({ timestamps: [] })}
-                        className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-xs font-bold transition-all"
+                        onClick={() => {
+                          const autoStamps = questionsList.map((q: any, idx: number) => ({
+                            label: `Câu ${q.questionNo || (idx + 1)}`,
+                            time: 0,
+                            targetIndex: idx + 1
+                          }));
+                          updateActiveVideo({ timestamps: autoStamps });
+                        }}
+                        className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl text-xs font-bold transition-all"
+                        title="Tự động sinh mốc theo đề bài"
                       >
-                        Xóa tất cả
+                        ⚡ Tự động tạo mốc
                       </button>
-                    </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => updateActiveVideo({ timestamps: [] })}
+                      className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-xs font-bold transition-all"
+                    >
+                      Xóa tất cả
+                    </button>
                   </div>
-
-                  <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white max-h-[300px] overflow-y-auto scrollbar-thin">
-                    <table className="min-w-full divide-y divide-slate-200 border-collapse">
-                      <thead className="bg-slate-50 text-[10px] font-black text-slate-500 uppercase tracking-wider sticky top-0 z-10 shadow-sm">
-                        <tr>
-                          <th className="px-4 py-3 text-left">Nhãn (Label)</th>
-                          <th className="px-4 py-3 text-left w-36">Liên kết câu</th>
-                          <th className="px-4 py-3 text-left w-24">Thời gian (MM:SS)</th>
-                          <th className="px-4 py-3 text-center w-12">Xóa</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 text-slate-700 text-xs font-medium">
-                        {(!timestamps || timestamps.length === 0) ? (
-                          <tr>
-                            <td colSpan={4} className="px-4 py-8 text-center text-slate-400 italic">
-                              Chưa có mốc thời gian nào. Hãy bấm "Thêm mốc mới" hoặc "Tự động tạo mốc" ở trên.
-                            </td>
-                          </tr>
-                        ) : (
-                          timestamps.map((stamp: any, idx: number) => {
-                            return (
-                              <tr key={idx} className="hover:bg-slate-50/50">
-                                <td className="px-3 py-2">
-                                  <input
-                                    type="text"
-                                    value={stamp.label || ""}
-                                    onChange={(e) => {
-                                      const newStamps = [...timestamps];
-                                      newStamps[idx] = { ...stamp, label: e.target.value };
-                                      updateActiveVideo({ timestamps: newStamps });
-                                    }}
-                                    className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-blue-500 text-xs font-bold text-slate-700"
-                                    placeholder="Ví dụ: Câu 101"
-                                  />
-                                </td>
-                                <td className="px-3 py-2">
-                                  <select
-                                    value={stamp.targetIndex !== undefined && stamp.targetIndex !== null ? stamp.targetIndex : ""}
-                                    onChange={(e) => {
-                                      const val = e.target.value;
-                                      const newStamps = [...timestamps];
-                                      newStamps[idx] = { 
-                                        ...stamp, 
-                                        targetIndex: val === "" ? null : parseInt(val, 10) 
-                                      };
-                                      updateActiveVideo({ timestamps: newStamps });
-                                    }}
-                                    className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-blue-500 text-xs font-bold text-slate-700 bg-white"
-                                  >
-                                    <option value="">Không liên kết</option>
-                                    {(() => {
-                                      const totalQ = questionsList.length > 0 ? questionsList.length : fallbackLength;
-                                      return Array.from({ length: totalQ }).map((_, i) => {
-                                        const idx = i + 1;
-                                        return (
-                                          <option key={idx} value={idx}>
-                                            Câu {idx}/{totalQ}
-                                          </option>
-                                        );
-                                      });
-                                    })()}
-                                  </select>
-                                </td>
-                                <td className="px-3 py-2">
-                                  <TimeInput
-                                    value={stamp.time}
-                                    onChange={(newTime) => {
-                                      const newStamps = [...timestamps];
-                                      newStamps[idx] = { ...stamp, time: newTime };
-                                      updateActiveVideo({ timestamps: newStamps });
-                                    }}
-                                  />
-                                </td>
-                                <td className="px-3 py-2 text-center">
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      const newStamps = timestamps.filter((_: any, i: number) => i !== idx);
-                                      updateActiveVideo({ timestamps: newStamps });
-                                    }}
-                                    className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg transition-colors"
-                                  >
-                                    ❌
-                                  </button>
-                                </td>
-                              </tr>
-                            );
-                          })
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const newStamps = [
-                        ...timestamps,
-                        { label: `Mốc mới ${(timestamps?.length || 0) + 1}`, time: 0, targetIndex: null }
-                      ];
-                      updateActiveVideo({ timestamps: newStamps });
-                    }}
-                    className="w-full py-3 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-2xl border border-slate-200 border-dashed transition-all hover:border-slate-400 text-xs"
-                  >
-                    ➕ Thêm mốc thời gian mới
-                  </button>
                 </div>
+
+                <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white max-h-[450px] overflow-y-auto scrollbar-thin">
+                  <table className="min-w-full divide-y divide-slate-200 border-collapse">
+                    <thead className="bg-slate-50 text-[10px] font-black text-slate-500 uppercase tracking-wider sticky top-0 z-10 shadow-sm">
+                      <tr>
+                        <th className="px-4 py-3 text-left">Nhãn (Label)</th>
+                        <th className="px-4 py-3 text-left w-64">Liên kết câu</th>
+                        <th className="px-4 py-3 text-left w-48">Thời gian (MM:SS)</th>
+                        <th className="px-4 py-3 text-center w-24">Xóa</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 text-slate-700 text-xs font-medium">
+                      {(!timestamps || timestamps.length === 0) ? (
+                        <tr>
+                          <td colSpan={4} className="px-4 py-12 text-center text-slate-400 italic">
+                            Chưa có mốc thời gian nào. Hãy bấm "Thêm mốc mới" hoặc "Tự động tạo mốc" ở trên.
+                          </td>
+                        </tr>
+                      ) : (
+                        timestamps.map((stamp: any, idx: number) => {
+                          return (
+                            <tr key={idx} className="hover:bg-slate-50/50">
+                              <td className="px-4 py-3">
+                                <input
+                                  type="text"
+                                  value={stamp.label || ""}
+                                  onChange={(e) => {
+                                    const newStamps = [...timestamps];
+                                    newStamps[idx] = { ...stamp, label: e.target.value };
+                                    updateActiveVideo({ timestamps: newStamps });
+                                  }}
+                                  className="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-blue-500 text-xs font-bold text-slate-700"
+                                  placeholder="Ví dụ: Câu 101"
+                                />
+                              </td>
+                              <td className="px-4 py-3">
+                                <select
+                                  value={stamp.targetIndex !== undefined && stamp.targetIndex !== null ? stamp.targetIndex : ""}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    const newStamps = [...timestamps];
+                                    newStamps[idx] = { 
+                                      ...stamp, 
+                                      targetIndex: val === "" ? null : parseInt(val, 10) 
+                                    };
+                                    updateActiveVideo({ newStamps });
+                                    updateActiveVideo({ timestamps: newStamps });
+                                  }}
+                                  className="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-blue-500 text-xs font-bold text-slate-700 bg-white"
+                                >
+                                  <option value="">Không liên kết</option>
+                                  {(() => {
+                                    const totalQ = questionsList.length > 0 ? questionsList.length : fallbackLength;
+                                    return Array.from({ length: totalQ }).map((_, i) => {
+                                      const idx = i + 1;
+                                      return (
+                                        <option key={idx} value={idx}>
+                                          Câu {idx}/{totalQ}
+                                        </option>
+                                      );
+                                    });
+                                  })()}
+                                </select>
+                              </td>
+                              <td className="px-4 py-3">
+                                <TimeInput
+                                  value={stamp.time}
+                                  onChange={(newTime) => {
+                                    const newStamps = [...timestamps];
+                                    newStamps[idx] = { ...stamp, time: newTime };
+                                    updateActiveVideo({ timestamps: newStamps });
+                                  }}
+                                />
+                              </td>
+                              <td className="px-4 py-3 text-center">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newStamps = timestamps.filter((_: any, i: number) => i !== idx);
+                                    updateActiveVideo({ timestamps: newStamps });
+                                  }}
+                                  className="p-2 text-red-400 hover:bg-red-50 rounded-xl transition-colors"
+                                >
+                                  ❌
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newStamps = [
+                      ...timestamps,
+                      { label: `Mốc mới ${(timestamps?.length || 0) + 1}`, time: 0, targetIndex: null }
+                    ];
+                    updateActiveVideo({ timestamps: newStamps });
+                  }}
+                  className="w-full py-4 bg-white hover:bg-slate-50 text-slate-700 font-extrabold rounded-2xl border border-slate-200 border-dashed transition-all hover:border-slate-400 text-xs shadow-sm"
+                >
+                  ➕ Thêm mốc thời gian mới
+                </button>
               </div>
             </div>
           );
