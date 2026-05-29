@@ -609,7 +609,7 @@ export default function GrammarHandbook() {
             top: `${position.y}px`,
             width: `${width}px`,
             height: `${height}px`,
-            zIndex: 100,
+            zIndex: 9999,
           }}
           className="bg-white/95 backdrop-blur-md border border-slate-100 rounded-3xl shadow-[0_20px_60px_rgba(79,70,229,0.18)] flex flex-col overflow-hidden select-none"
         >
