@@ -51,7 +51,8 @@ export default function GrammarHandbook() {
   const [splitMode, setSplitMode] = useState<"none" | "vertical" | "horizontal">("none");
   const [zoom1, setZoom1] = useState(100);
   const [zoom2, setZoom2] = useState(100);
-  const [activeTab, setActiveTab] = useState<"theory" | "practice">("theory");
+  const [pane1Tab, setPane1Tab] = useState<"theory" | "practice">("theory");
+  const [pane2Tab, setPane2Tab] = useState<"theory" | "practice">("practice");
   const [selectedPartIdx, setSelectedPartIdx] = useState<Record<number, number>>({});
   const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
 
@@ -595,6 +596,115 @@ export default function GrammarHandbook() {
     return <>{parts}</>;
   };
 
+  const renderPane = (
+    paneId: 1 | 2,
+    tab: "theory" | "practice",
+    setTab: (t: "theory" | "practice") => void,
+    zoomValue: number,
+    setZoomValue: React.Dispatch<React.SetStateAction<number>>
+  ) => {
+    if (!activeLesson) {
+      return (
+        <div className="flex flex-col items-center justify-center h-full text-slate-400">
+          <BookOpen size={48} className="text-slate-200 mb-3" />
+          <p className="text-sm font-semibold">Vui lòng chọn bài học từ thanh cuộn phía trên.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex-1 relative flex flex-col overflow-hidden w-full h-full">
+        {/* Header bar cho từng Pane */}
+        <div className="flex items-center justify-between px-3 py-1.5 border-b border-slate-100 bg-slate-50/30 shrink-0 select-none gap-2">
+          {/* Left: Lý thuyết / Bài tập toggle */}
+          <div className="flex p-0.5 bg-slate-100/80 rounded-lg border border-slate-200/30 gap-0.5 min-w-[140px] shrink-0">
+            <button
+              onClick={() => setTab("theory")}
+              className={`flex-1 py-0.5 rounded-md text-[10px] font-black transition-all ${
+                tab === "theory"
+                  ? "bg-white text-indigo-600 shadow-sm"
+                  : "text-slate-500 hover:text-slate-800"
+              }`}
+            >
+              Lý thuyết
+            </button>
+            <button
+              onClick={() => setTab("practice")}
+              className={`flex-1 py-0.5 rounded-md text-[10px] font-black transition-all ${
+                tab === "practice"
+                  ? "bg-white text-indigo-600 shadow-sm"
+                  : "text-slate-500 hover:text-slate-800"
+              }`}
+            >
+              Bài tập
+            </button>
+          </div>
+
+          {/* Middle: BT Selector tabs - only shown when in practice tab and has parts */}
+          {tab === "practice" && activeLesson.practice?.parts && activeLesson.practice.parts.length > 0 && (
+            <div className="flex flex-wrap gap-1 items-center justify-end overflow-hidden">
+              {activeLesson.practice.parts.map((part, idx) => {
+                const currentPartIdx = selectedPartIdx[activeLesson.id] || 0;
+                const isActive = currentPartIdx === idx;
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedPartIdx(prev => ({ ...prev, [activeLesson.id]: idx }))}
+                    className={`px-2 py-0.5 rounded-lg text-[9px] font-bold border transition-all active:scale-95 shrink-0 ${
+                      isActive
+                        ? "bg-indigo-600 border-indigo-600 text-white shadow-sm"
+                        : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+                    }`}
+                  >
+                    {part.title.replace("Bài tập", "BT")}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Floating Zoom Control ở góc trên bên phải trong mỗi Pane */}
+        <div className="absolute top-12 right-4 z-10 flex items-center gap-1 bg-slate-900/80 backdrop-blur-md border border-slate-700/50 px-1.5 py-0.5 rounded-lg shadow-md select-none">
+          <button
+            onClick={() => setZoomValue(prev => Math.max(70, prev - 10))}
+            className="p-1 text-slate-300 hover:text-white rounded active:scale-95 transition-all"
+            title="Thu nhỏ chữ"
+          >
+            <ZoomOut size={12} />
+          </button>
+          <span className="text-[9px] font-black text-slate-200 min-w-[24px] text-center">
+            {zoomValue}%
+          </span>
+          <button
+            onClick={() => setZoomValue(prev => Math.min(150, prev + 10))}
+            className="p-1 text-slate-300 hover:text-white rounded active:scale-95 transition-all"
+            title="Phóng to chữ"
+          >
+            <ZoomIn size={12} />
+          </button>
+        </div>
+
+        {/* Content area */}
+        <div className={`flex-1 overflow-y-auto p-6 custom-vertical-scrollbar w-full ${tab === 'practice' ? 'bg-slate-50/50' : ''}`}>
+          {tab === "theory" ? (
+            <>
+              <div
+                className="grammar-handbook-content select-text text-slate-700 w-full"
+                style={{ zoom: zoomValue / 100 }}
+                dangerouslySetInnerHTML={{ __html: activeLesson.htmlContent }}
+              />
+              {/* Khoảng trống 1/2 trang ở cuối */}
+              <div className="h-[40vh] w-full shrink-0" />
+            </>
+          ) : (
+            renderPractice(activeLesson, zoomValue, false)
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -706,270 +816,28 @@ export default function GrammarHandbook() {
               <>
                 {/* Cột trái */}
                 <div className="flex-1 relative flex flex-col overflow-hidden border-r-2 border-slate-300">
-                  {activeLesson && (
-                    <div className="absolute top-4 right-4 z-10 flex items-center gap-1 bg-slate-900/80 backdrop-blur-md border border-slate-700/50 px-1.5 py-0.5 rounded-lg shadow-md select-none">
-                      <button
-                        onClick={() => setZoom1(prev => Math.max(70, prev - 10))}
-                        className="p-1 text-slate-300 hover:text-white rounded active:scale-95 transition-all"
-                        title="Thu nhỏ chữ"
-                      >
-                        <ZoomOut size={12} />
-                      </button>
-                      <span className="text-[9px] font-black text-slate-200 min-w-[24px] text-center">
-                        {zoom1}%
-                      </span>
-                      <button
-                        onClick={() => setZoom1(prev => Math.min(150, prev + 10))}
-                        className="p-1 text-slate-300 hover:text-white rounded active:scale-95 transition-all"
-                        title="Phóng to chữ"
-                      >
-                        <ZoomIn size={12} />
-                      </button>
-                    </div>
-                  )}
-                  <div className="flex-1 overflow-y-auto p-6 custom-vertical-scrollbar w-full">
-                    {activeLesson ? (
-                      <>
-                        <div
-                          className="grammar-handbook-content select-text text-slate-700 w-full"
-                          style={{ zoom: zoom1 / 100 }}
-                          dangerouslySetInnerHTML={{ __html: activeLesson.htmlContent }}
-                        />
-                        {/* Khoảng trống 1/2 trang ở cuối */}
-                        <div className="h-[40vh] w-full shrink-0" />
-                      </>
-                    ) : (
-                      !loading && (
-                        <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                          <BookOpen size={48} className="text-slate-200 mb-3" />
-                          <p className="text-sm font-semibold">Vui lòng chọn bài học từ thanh cuộn phía trên.</p>
-                        </div>
-                      )
-                    )}
-                  </div>
+                  {renderPane(1, pane1Tab, setPane1Tab, zoom1, setZoom1)}
                 </div>
 
-                {/* Cột phải (Hiển thị bài tập luyện tập) */}
+                {/* Cột phải */}
                 <div className="flex-1 relative flex flex-col overflow-hidden">
-                  {activeLesson && (
-                    <div className="absolute top-4 right-4 z-10 flex items-center gap-1 bg-slate-900/80 backdrop-blur-md border border-slate-700/50 px-1.5 py-0.5 rounded-lg shadow-md select-none">
-                      <button
-                        onClick={() => setZoom2(prev => Math.max(70, prev - 10))}
-                        className="p-1 text-slate-300 hover:text-white rounded active:scale-95 transition-all"
-                        title="Thu nhỏ chữ"
-                      >
-                        <ZoomOut size={12} />
-                      </button>
-                      <span className="text-[9px] font-black text-slate-200 min-w-[24px] text-center">
-                        {zoom2}%
-                      </span>
-                      <button
-                        onClick={() => setZoom2(prev => Math.min(150, prev + 10))}
-                        className="p-1 text-slate-300 hover:text-white rounded active:scale-95 transition-all"
-                        title="Phóng to chữ"
-                      >
-                        <ZoomIn size={12} />
-                      </button>
-                    </div>
-                  )}
-                  <div className="flex-1 overflow-y-auto pt-0 px-6 pb-6 custom-vertical-scrollbar w-full bg-slate-50/50">
-                    {activeLesson ? (
-                      renderPractice(activeLesson, zoom2)
-                    ) : (
-                      !loading && (
-                        <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                          <BookOpen size={48} className="text-slate-200 mb-3" />
-                          <p className="text-sm font-semibold">Vui lòng chọn bài học từ thanh cuộn phía trên.</p>
-                        </div>
-                      )
-                    )}
-                  </div>
+                  {renderPane(2, pane2Tab, setPane2Tab, zoom2, setZoom2)}
                 </div>
               </>
             ) : splitMode === "horizontal" ? (
               <div className="flex-1 flex flex-col overflow-hidden w-full">
                 {/* Phần trên */}
                 <div className="flex-1 relative flex flex-col overflow-hidden border-b-2 border-slate-300">
-                  {activeLesson && (
-                    <div className="absolute top-4 right-4 z-10 flex items-center gap-1 bg-slate-900/80 backdrop-blur-md border border-slate-700/50 px-1.5 py-0.5 rounded-lg shadow-md select-none">
-                      <button
-                        onClick={() => setZoom1(prev => Math.max(70, prev - 10))}
-                        className="p-1 text-slate-300 hover:text-white rounded active:scale-95 transition-all"
-                        title="Thu nhỏ chữ"
-                      >
-                        <ZoomOut size={12} />
-                      </button>
-                      <span className="text-[9px] font-black text-slate-200 min-w-[24px] text-center">
-                        {zoom1}%
-                      </span>
-                      <button
-                        onClick={() => setZoom1(prev => Math.min(150, prev + 10))}
-                        className="p-1 text-slate-300 hover:text-white rounded active:scale-95 transition-all"
-                        title="Phóng to chữ"
-                      >
-                        <ZoomIn size={12} />
-                      </button>
-                    </div>
-                  )}
-                  <div className="flex-1 overflow-y-auto p-6 custom-vertical-scrollbar w-full">
-                    {activeLesson ? (
-                      <>
-                        <div
-                          className="grammar-handbook-content select-text text-slate-700 w-full"
-                          style={{ zoom: zoom1 / 100 }}
-                          dangerouslySetInnerHTML={{ __html: activeLesson.htmlContent }}
-                        />
-                        {/* Khoảng trống 1/2 trang ở cuối */}
-                        <div className="h-[40vh] w-full shrink-0" />
-                      </>
-                    ) : (
-                      !loading && (
-                        <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                          <BookOpen size={48} className="text-slate-200 mb-3" />
-                          <p className="text-sm font-semibold">Vui lòng chọn bài học từ thanh cuộn phía trên.</p>
-                        </div>
-                      )
-                    )}
-                  </div>
+                  {renderPane(1, pane1Tab, setPane1Tab, zoom1, setZoom1)}
                 </div>
 
-                {/* Phần dưới (Hiển thị bài tập luyện tập) */}
+                {/* Phần dưới */}
                 <div className="flex-1 relative flex flex-col overflow-hidden">
-                  {activeLesson && (
-                    <div className="absolute top-4 right-4 z-10 flex items-center gap-1 bg-slate-900/80 backdrop-blur-md border border-slate-700/50 px-1.5 py-0.5 rounded-lg shadow-md select-none">
-                      <button
-                        onClick={() => setZoom2(prev => Math.max(70, prev - 10))}
-                        className="p-1 text-slate-300 hover:text-white rounded active:scale-95 transition-all"
-                        title="Thu nhỏ chữ"
-                      >
-                        <ZoomOut size={12} />
-                      </button>
-                      <span className="text-[9px] font-black text-slate-200 min-w-[24px] text-center">
-                        {zoom2}%
-                      </span>
-                      <button
-                        onClick={() => setZoom2(prev => Math.min(150, prev + 10))}
-                        className="p-1 text-slate-300 hover:text-white rounded active:scale-95 transition-all"
-                        title="Phóng to chữ"
-                      >
-                        <ZoomIn size={12} />
-                      </button>
-                    </div>
-                  )}
-                  <div className="flex-1 overflow-y-auto pt-0 px-6 pb-6 custom-vertical-scrollbar w-full bg-slate-50/50">
-                    {activeLesson ? (
-                      renderPractice(activeLesson, zoom2)
-                    ) : (
-                      !loading && (
-                        <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                          <BookOpen size={48} className="text-slate-200 mb-3" />
-                          <p className="text-sm font-semibold">Vui lòng chọn bài học từ thanh cuộn phía trên.</p>
-                        </div>
-                      )
-                    )}
-                  </div>
+                  {renderPane(2, pane2Tab, setPane2Tab, zoom2, setZoom2)}
                 </div>
               </div>
             ) : (
-              <div className="flex-1 relative flex flex-col overflow-hidden w-full">
-                {activeLesson && (
-                  <>
-                    {/* Segmented Control & BT Part Selector in ONE row */}
-                    <div className="flex items-center justify-between px-4 py-1.5 border-b border-slate-100 bg-slate-50/30 shrink-0 select-none gap-4">
-                      {/* Left: Lý thuyết / Bài tập toggle */}
-                      <div className="flex p-0.5 bg-slate-100/80 rounded-lg border border-slate-200/30 gap-0.5 min-w-[180px] shrink-0">
-                        <button
-                          onClick={() => setActiveTab("theory")}
-                          className={`flex-1 py-0.5 rounded-md text-[10px] font-black transition-all ${
-                            activeTab === "theory"
-                              ? "bg-white text-indigo-600 shadow-sm"
-                              : "text-slate-500 hover:text-slate-800"
-                          }`}
-                        >
-                          Lý thuyết
-                        </button>
-                        <button
-                          onClick={() => setActiveTab("practice")}
-                          className={`flex-1 py-0.5 rounded-md text-[10px] font-black transition-all ${
-                            activeTab === "practice"
-                              ? "bg-white text-indigo-600 shadow-sm"
-                              : "text-slate-500 hover:text-slate-800"
-                          }`}
-                        >
-                          Bài tập
-                        </button>
-                      </div>
-
-                      {/* Right: BT Selector tabs - only shown when in practice tab and has parts */}
-                      {activeTab === "practice" && activeLesson.practice?.parts && activeLesson.practice.parts.length > 0 && (
-                        <div className="flex flex-wrap gap-1 items-center justify-end overflow-hidden">
-                          {activeLesson.practice.parts.map((part, idx) => {
-                            const currentPartIdx = selectedPartIdx[activeLesson.id] || 0;
-                            const isActive = currentPartIdx === idx;
-                            return (
-                              <button
-                                key={idx}
-                                onClick={() => setSelectedPartIdx(prev => ({ ...prev, [activeLesson.id]: idx }))}
-                                className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all active:scale-95 shrink-0 ${
-                                  isActive
-                                    ? "bg-indigo-600 border-indigo-600 text-white shadow-sm"
-                                    : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
-                                }`}
-                              >
-                                {part.title.replace("Bài tập", "BT")}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="absolute top-11 right-4 z-10 flex items-center gap-1 bg-slate-900/80 backdrop-blur-md border border-slate-700/50 px-1.5 py-0.5 rounded-lg shadow-md select-none">
-                      <button
-                        onClick={() => setZoom1(prev => Math.max(70, prev - 10))}
-                        className="p-1 text-slate-300 hover:text-white rounded active:scale-95 transition-all"
-                        title="Thu nhỏ chữ"
-                      >
-                        <ZoomOut size={12} />
-                      </button>
-                      <span className="text-[9px] font-black text-slate-200 min-w-[24px] text-center">
-                        {zoom1}%
-                      </span>
-                      <button
-                        onClick={() => setZoom1(prev => Math.min(150, prev + 10))}
-                        className="p-1 text-slate-300 hover:text-white rounded active:scale-95 transition-all"
-                        title="Phóng to chữ"
-                      >
-                        <ZoomIn size={12} />
-                      </button>
-                    </div>
-                  </>
-                )}
-                <div className={`flex-1 overflow-y-auto p-6 custom-vertical-scrollbar w-full ${activeTab === 'practice' ? 'bg-slate-50/50' : ''}`}>
-                  {activeLesson ? (
-                    activeTab === "theory" ? (
-                      <>
-                        <div
-                          className="grammar-handbook-content select-text text-slate-700 w-full"
-                          style={{ zoom: zoom1 / 100 }}
-                          dangerouslySetInnerHTML={{ __html: activeLesson.htmlContent }}
-                        />
-                        {/* Khoảng trống 1/2 trang ở cuối */}
-                        <div className="h-[40vh] w-full shrink-0" />
-                      </>
-                    ) : (
-                      renderPractice(activeLesson, zoom1, false)
-                    )
-                  ) : (
-                    !loading && (
-                      <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                        <BookOpen size={48} className="text-slate-200 mb-3" />
-                        <p className="text-sm font-semibold">Vui lòng chọn bài học từ thanh cuộn phía trên.</p>
-                      </div>
-                    )
-                  )}
-                </div>
-              </div>
+              renderPane(1, pane1Tab, setPane1Tab, zoom1, setZoom1)
             )}
           </div>
 
