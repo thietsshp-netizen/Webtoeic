@@ -1547,7 +1547,15 @@ export default function ToeicPart5Player({
             </div>
 
             <div className="px-8 font-black text-slate-600 text-sm border-x border-slate-100 min-w-[120px] text-center">
-              {currentIndex + 1} <span className="mx-1 text-slate-300">/</span> {questions.length}
+              {isFullTest ? (
+                <>
+                  {globalOffset + currentIndex + 1} <span className="mx-1 text-slate-300">/</span> {globalTotal || 200}
+                </>
+              ) : (
+                <>
+                  {currentIndex + 1} <span className="mx-1 text-slate-300">/</span> {questions.length}
+                </>
+              )}
             </div>
 
             {currentIndex === questions.length - 1 ? (
