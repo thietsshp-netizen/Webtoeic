@@ -6,6 +6,8 @@ import { DictionaryProvider } from "@/components/Dictionary/DictionaryProvider";
 import FingerprintInitializer from "@/components/Auth/FingerprintInitializer";
 import SessionGuard from "@/components/Auth/SessionGuard";
 
+import { GlobalScreenDraw } from "@/components/Common/GlobalScreenDraw";
+
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
   variable: "--font-inter",
@@ -31,6 +33,7 @@ export default function RootLayout({
           <SessionGuard />
           <DictionaryProvider>
             {children}
+            <GlobalScreenDraw />
           </DictionaryProvider>
         </AuthProvider>
       </body>

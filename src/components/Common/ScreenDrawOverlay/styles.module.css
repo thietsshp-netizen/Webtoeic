@@ -1,0 +1,290 @@
+/* src/components/Common/ScreenDrawOverlay/styles.module.css */
+
+.canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9998;
+  display: block;
+}
+
+/* Kính mờ Glassmorphism cho Toolbar */
+.toolbar {
+  position: fixed;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.85); /* Slate 900 với độ mờ */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 9999px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 
+              0 8px 10px -6px rgba(0, 0, 0, 0.3),
+              0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  user-select: none;
+}
+
+.toolbar:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 
+              0 10px 10px -5px rgba(0, 0, 0, 0.4);
+}
+
+/* Vùng tay nắm kéo thả (Drag Handle) */
+.dragHandle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: move;
+  padding: 0 4px;
+  margin-right: 4px;
+  transition: color 0.2s;
+}
+
+.dragHandle:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Nút công cụ */
+.btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btnActive {
+  background: #2563eb !important; /* Blue 600 */
+  color: #fff !important;
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
+}
+
+/* Chấm màu tròn tối giản xếp 2 dòng */
+.colorPicker {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  margin: 0 4px;
+}
+
+.colorRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.colorDot {
+  width: 10px; /* Nhỏ bằng 1/2 kích thước cũ (16px) */
+  height: 10px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+}
+
+.colorDot:hover {
+  transform: scale(1.3);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+}
+
+.colorDotActive {
+  border-color: #ffffff !important;
+  transform: scale(1.2);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 0 1px rgba(0, 0, 0, 0.5);
+}
+
+/* Bộ điều chỉnh size nét vẽ trực quan */
+.sizeIndicator {
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 0 6px;
+  gap: 4px;
+}
+
+/* Thùng rác & nút Close */
+.btnTrash {
+  color: rgba(239, 68, 68, 0.8);
+}
+
+.btnTrash:hover {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444;
+}
+
+.btnClose {
+  color: rgba(255, 255, 255, 0.5);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 10px;
+  margin-left: 4px;
+}
+
+.btnClose:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444;
+}
+
+/* Tooltip Premium tự thiết kế */
+.btn[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  background: rgba(15, 23, 42, 0.95);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn[data-tooltip]:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* CSS cho Textarea tạm thời khi gõ text */
+.textInput {
+  position: fixed;
+  z-index: 20000;
+  background: transparent !important; /* Không nền để không che thông tin phía sau */
+  border: 1px dashed rgba(59, 130, 246, 0.6) !important; /* Viền nét đứt cực nhẹ màu xanh dương */
+  outline: none;
+  overflow: hidden;
+  resize: none;
+  font-family: inherit;
+  padding: 2px 4px;
+  margin: 0;
+  box-shadow: none !important; /* Không có bóng mờ cồng kềnh */
+  border-radius: 4px;
+  line-height: 1.2;
+  caret-color: currentColor; /* Con trỏ nhập nháy cùng màu chữ đang chọn */
+  white-space: pre !important; /* Chỉ xuống dòng khi có ký tự xuống dòng thực tế (Shift+Enter) */
+}
+
+/* ===== Shape Recognition Flash Animation ===== */
+@keyframes shapeFlashOverlay {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  70%  { opacity: 0.4; }
+  100% { opacity: 0; }
+}
+
+@keyframes shapePendingPulse {
+  0%, 100% { opacity: 0.45; transform: translateX(-50%) scale(1); }
+  50%       { opacity: 1;    transform: translateX(-50%) scale(1.35); }
+}
+
+.shapeFlash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9997;
+  background: radial-gradient(ellipse at center, rgba(99,217,124,0.20) 0%, transparent 68%);
+  animation: shapeFlashOverlay 0.55s ease-out forwards;
+}
+
+.shapePendingDot {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%) scale(1);
+  z-index: 10001;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(99, 217, 124, 0.95);
+  box-shadow: 0 0 10px rgba(99, 217, 124, 0.7), 0 0 0 3px rgba(99, 217, 124, 0.25);
+  animation: shapePendingPulse 0.55s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ===== Pencil Group Dropdown PenTip Styles ===== */
+.pencilGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.penStyleMenu {
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 20002;
+  min-width: 150px;
+}
+
+.penStyleItem {
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.penStyleItem:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.penStyleItemActive {
+  background: #2563eb !important;
+  color: #fff !important;
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+}
+

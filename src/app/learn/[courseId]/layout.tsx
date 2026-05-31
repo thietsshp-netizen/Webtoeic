@@ -5,8 +5,9 @@ import LearnSidebar from "@/components/Player/LearnSidebar";
 import GrammarHandbook from "@/components/Player/GrammarHandbook";
 import { useRouter, useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { ChevronLeft, Share2, HelpCircle, ChevronRight, Menu } from "lucide-react";
+import { ChevronLeft, Share2, HelpCircle, ChevronRight, Menu, Pencil } from "lucide-react";
 import { AdminEditProvider } from "@/components/Admin/AdminEditProvider";
+import { ScreenDrawOverlay } from "@/components/Common/ScreenDrawOverlay";
 
 export default function LearnLayout({
   children,
@@ -16,6 +17,7 @@ export default function LearnLayout({
   const router = useRouter();
   const params = useParams();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isDrawingActive, setIsDrawingActive] = useState(false);
   const [courseTitle, setCourseTitle] = useState("Đang tải...");
 
   useEffect(() => {
@@ -38,6 +40,16 @@ export default function LearnLayout({
     };
     window.addEventListener("toeic-tour-course-sidebar", handleTourCourseSidebar);
     return () => window.removeEventListener("toeic-tour-course-sidebar", handleTourCourseSidebar);
+  }, []);
+
+  // Lắng nghe sự kiện đồng bộ trạng thái vẽ viết từ cọ vẽ toàn cục
+  useEffect(() => {
+    const handleGlobalDrawState = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setIsDrawingActive(customEvent.detail.active);
+    };
+    window.addEventListener("webtoeic-toggle-global-draw-state", handleGlobalDrawState);
+    return () => window.removeEventListener("webtoeic-toggle-global-draw-state", handleGlobalDrawState);
   }, []);
 
   // Tự động ẩn sidebar khi màn hình nhỏ (< 1280px)
@@ -108,7 +120,26 @@ export default function LearnLayout({
             </h1>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* Nút bật/tắt công cụ vẽ viết - CHỈ HIỂN THỊ CHO ADMIN */}
+            {session?.user && (session.user as any).role === "ADMIN" && (
+              <button
+                onClick={() => {
+                  const nextActive = !isDrawingActive;
+                  setIsDrawingActive(nextActive);
+                  window.dispatchEvent(new CustomEvent("webtoeic-toggle-global-draw", { detail: { active: nextActive } }));
+                }}
+                className={`p-2 rounded-full transition-all flex items-center justify-center border ${
+                  isDrawingActive 
+                    ? "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20 scale-105" 
+                    : "text-slate-300 border-white/20 hover:text-white hover:bg-white/10"
+                }`}
+                title="Bật/Tắt công cụ vẽ viết lên màn hình (Ctrl+Shift+B)"
+              >
+                <Pencil size={15} />
+              </button>
+            )}
+
             <a 
               href="https://m.me/101690955494114" 
               target="_blank" 
@@ -180,6 +211,7 @@ export default function LearnLayout({
         
         {/* Sổ tay Ngữ pháp nổi */}
         <GrammarHandbook />
+
       </div>
     </AdminEditProvider>
   );
