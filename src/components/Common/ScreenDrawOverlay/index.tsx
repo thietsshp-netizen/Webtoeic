@@ -19,7 +19,26 @@ import {
 import styles from "./styles.module.css";
 
 export type DrawTool = 'pencil' | 'highlight' | 'eraser' | 'rectangle' | 'circle' | 'text' | 'cursor' | 'hand';
-export type DrawColor = '#EF4444' | '#3B82F6' | '#8B5CF6' | '#10B981' | '#F59E0B' | '#5C4033'; // Đỏ, Xanh dương, Tím, Xanh lá, Cam, Nâu đen
+export type DrawColor = string; // Hex color string
+const DEFAULT_COLOR_SLOTS: DrawColor[] = ['#EF4444', '#3B82F6', '#8B5CF6', '#10B981', '#F59E0B', '#5C4033'];
+const COLOR_SLOT_KEYS = ['Q', 'A', 'Z', 'W', 'S', 'X'];
+const COLOR_SLOT_NAMES = ['Đỏ', 'Xanh dương', 'Tím', 'Xanh lá', 'Cam', 'Nâu đen'];
+
+// Bảng màu preset Apple-style (48 màu, 8 cột × 6 hàng)
+const PALETTE_COLORS: string[] = [
+  // Đỏ & Hồng
+  '#FF3B30','#FF6B6B','#FF2D55','#FF375F','#D70015','#C41230','#FFCDD2','#FF8A80',
+  // Cam & Đào
+  '#FF9500','#FF9F0A','#FF6000','#FF8C42','#FFA07A','#FFAB40','#FF7043','#BF360C',
+  // Vàng & Amber
+  '#FFCC00','#FFD60A','#FFB300','#FFCA28','#F9A825','#FFF176','#FFF9C4','#FF8F00',
+  // Xanh lá & Teal
+  '#34C759','#30D158','#00C853','#43A047','#2E7D32','#00BFA5','#26C6DA','#1B5E20',
+  // Xanh dương & Indigo
+  '#007AFF','#0A84FF','#5AC8FA','#1E88E5','#1565C0','#5856D6','#3949AB','#0D47A1',
+  // Tím & Nâu & Trắng/Đen
+  '#AF52DE','#BF5AF2','#8E24AA','#A2845E','#6D4C41','#5C4033','#000000','#FFFFFF',
+];
 
 export interface DrawElement {
   id: string;
@@ -49,6 +68,13 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 }) => {
   const [tool, setTool] = useState<DrawTool>('pencil');
   const [color, setColor] = useState<DrawColor>('#EF4444');
+
+  // 6 slot màu tùy chỉnh - load từ localStorage khi khởi tạo
+  const [colorSlots, setColorSlots] = useState<DrawColor[]>(DEFAULT_COLOR_SLOTS);
+  // State mở/đóng palette popup (null = đóng, số = chỉ số slot đang chỉnh)
+  const [colorPaletteSlot, setColorPaletteSlot] = useState<number | null>(null);
+  const palettePopupRef = useRef<HTMLDivElement>(null);
+  const editingSlotRef = useRef<number>(-1);
   const [pencilSize, setPencilSize] = useState(2);
   const [highlightSize, setHighlightSize] = useState(16);
   
@@ -161,7 +187,18 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     if (storedFontSize) setFontSize(parseFloat(storedFontSize));
 
     const storedColor = localStorage.getItem('webtoeic_draw_color');
-    if (storedColor) setColor(storedColor as DrawColor);
+    if (storedColor) setColor(storedColor);
+
+    // Load custom color slots
+    const storedSlots = localStorage.getItem('webtoeic_color_slots');
+    if (storedSlots) {
+      try {
+        const parsed = JSON.parse(storedSlots);
+        if (Array.isArray(parsed) && parsed.length === 6) {
+          setColorSlots(parsed);
+        }
+      } catch (e) { /* bỏ qua */ }
+    }
 
     const storedElements = localStorage.getItem('webtoeic_canvas_elements');
     if (storedElements) {
@@ -172,6 +209,18 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       }
     }
   }, []);
+
+  // Đóng palette popup khi click ra ngoài
+  useEffect(() => {
+    if (colorPaletteSlot === null) return;
+    const handleOutside = (e: MouseEvent) => {
+      if (palettePopupRef.current && !palettePopupRef.current.contains(e.target as Node)) {
+        setColorPaletteSlot(null);
+      }
+    };
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, [colorPaletteSlot]);
 
   // Đóng menu chọn đầu bút khi click ra ngoài vùng cọ vẽ
   useEffect(() => {
@@ -298,14 +347,28 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
         if (el.points.length > 0) {
           if (el.points.length === 1) {
+            // Dot Event: chỉ 1 điểm (tap/dot) -> vẽ hình tròn nhỏ
+            ctx.beginPath();
+            const dotR = (el.size / 2) * (el.points[0].pressure ?? 0.5);
+            ctx.arc(el.points[0].x, el.points[0].y, Math.max(0.8, dotR), 0, 2 * Math.PI);
+            ctx.fill();
+          } else if (el.points.length === 2) {
+            // 2 điểm sát nhau (micro-stroke) -> vẽ thẳng đơn giản
+            const style = el.type === 'pencil' ? (el.penStyle || 'ballpoint') : 'ballpoint';
+            const pressure = el.points[1].pressure ?? 0.5;
+            let thickness = el.size;
+            if (style === 'ballpoint') thickness = el.size * (0.85 + pressure * 0.15);
+            else if (style === 'fountain') thickness = el.size * (0.45 + pressure * 0.95);
+            else if (style === 'brush') thickness = el.size * (0.1 + pressure * 2.1);
+            ctx.lineWidth = el.type === 'pencil' ? thickness : el.size;
             ctx.beginPath();
             ctx.moveTo(el.points[0].x, el.points[0].y);
-            ctx.lineTo(el.points[0].x + 0.1, el.points[0].y + 0.1);
+            ctx.lineTo(el.points[1].x, el.points[1].y);
             ctx.stroke();
           } else {
             if (el.type === 'pencil') {
               const style = el.penStyle || 'ballpoint';
-              // Vẽ từng phân đoạn nhỏ với độ nhạy lực nhấn Wacom và kiểu đầu bút được bảo lưu nguyên vẹn!
+              // Bezier bậc 2: vẽ mỗi segment qua điểm trung điểm làm anchor -> nét cực mượt
               for (let i = 1; i < el.points.length; i++) {
                 const ptPrev = el.points[i - 1];
                 const ptCurr = el.points[i];
@@ -323,17 +386,30 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 ctx.lineWidth = thickness;
                 ctx.beginPath();
                 ctx.moveTo(ptPrev.x, ptPrev.y);
-                ctx.lineTo(ptCurr.x, ptCurr.y);
+
+                // Nếu có điểm kế tiếp, dùng midpoint làm điểm đích Bezier
+                if (i < el.points.length - 1) {
+                  const ptNext = el.points[i + 1];
+                  const midX = (ptCurr.x + ptNext.x) / 2;
+                  const midY = (ptCurr.y + ptNext.y) / 2;
+                  ctx.quadraticCurveTo(ptCurr.x, ptCurr.y, midX, midY);
+                } else {
+                  ctx.lineTo(ptCurr.x, ptCurr.y);
+                }
                 ctx.stroke();
               }
             } else {
-              // Highlight vẽ đường dẫn đồng nhất để tránh răng cưa chồng lấn
+              // Highlight: Bezier nhẹ qua midpoints để tránh răng cưa góc cạnh
               ctx.lineWidth = el.size;
               ctx.beginPath();
               ctx.moveTo(el.points[0].x, el.points[0].y);
-              for (let i = 1; i < el.points.length; i++) {
-                ctx.lineTo(el.points[i].x, el.points[i].y);
+              for (let i = 1; i < el.points.length - 1; i++) {
+                const midX = (el.points[i].x + el.points[i + 1].x) / 2;
+                const midY = (el.points[i].y + el.points[i + 1].y) / 2;
+                ctx.quadraticCurveTo(el.points[i].x, el.points[i].y, midX, midY);
               }
+              const last = el.points[el.points.length - 1];
+              ctx.lineTo(last.x, last.y);
               ctx.stroke();
             }
           }
@@ -522,6 +598,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     elements,
     textInput,
     isGrabbingPage,
+    colorSlots,
   });
 
   useEffect(() => {
@@ -532,6 +609,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       elements,
       textInput,
       isGrabbingPage,
+      colorSlots,
     };
   });
 
@@ -671,17 +749,17 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         const activeType = currentTool === 'eraser' ? 'eraser' : currentTool === 'text' ? 'text' : currentTool === 'highlight' ? 'highlight' : 'pencil';
         updateSize(activeType, 'increase');
       } else if (key === 'q' || code === 'KeyQ') {
-        updateColor('#EF4444');
+        updateColor(stateRef.current.colorSlots[0]);
       } else if (key === 'a' || code === 'KeyA') {
-        updateColor('#3B82F6');
+        updateColor(stateRef.current.colorSlots[1]);
       } else if (key === 'z' || code === 'KeyZ') {
-        updateColor('#8B5CF6');
+        updateColor(stateRef.current.colorSlots[2]);
       } else if (key === 'w' || code === 'KeyW') {
-        updateColor('#10B981'); // Xanh lá
+        updateColor(stateRef.current.colorSlots[3]);
       } else if (key === 's' || code === 'KeyS') {
-        updateColor('#F59E0B'); // Cam
+        updateColor(stateRef.current.colorSlots[4]);
       } else if (key === 'x' || code === 'KeyX') {
-        updateColor('#5C4033'); // Nâu đen
+        updateColor(stateRef.current.colorSlots[5]);
       }
 
       // Nhấn Backspace / Delete đơn lẻ để xoá duy nhất phần tử đang chọn
@@ -996,10 +1074,25 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           ctx.lineCap = 'round';
           ctx.lineJoin = 'round';
 
-          ctx.beginPath();
-          ctx.moveTo(pt.x, pt.y);
-          ctx.lineTo(ex, ey);
-          ctx.stroke();
+          // Bezier bậc 2: dùng điểm trước làm control point, midpoint làm điểm đích
+          // -> nét mượt hơn lineTo rất nhiều, đặc biệt với nét nhỏ và chữ viết
+          const pts = activePointsRef.current;
+          if (pts.length >= 3) {
+            const prev2 = pts[pts.length - 3];
+            const prev1 = pts[pts.length - 2];
+            const curr  = pts[pts.length - 1];
+            const midX = (prev1.x + curr.x) / 2;
+            const midY = (prev1.y + curr.y) / 2;
+            ctx.beginPath();
+            ctx.moveTo((prev2.x + prev1.x) / 2, (prev2.y + prev1.y) / 2);
+            ctx.quadraticCurveTo(prev1.x, prev1.y, midX, midY);
+            ctx.stroke();
+          } else {
+            ctx.beginPath();
+            ctx.moveTo(pt.x, pt.y);
+            ctx.lineTo(ex, ey);
+            ctx.stroke();
+          }
 
           lastPointRef.current = { x: ex, y: ey };
         } 
@@ -1110,6 +1203,51 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const rect = canvas?.getBoundingClientRect();
       const ex = e.clientX - (rect?.left || 0);
       const ey = e.clientY - (rect?.top || 0);
+
+      // ── DOT EVENT HANDLER ──────────────────────────────────────────────────
+      // Khi người dùng chỉ tap (không di chuyển) -> points <= 2, không có điểm
+      // đủ để vẽ Bezier. Vẽ hình tròn nhỏ ngay tại điểm đó.
+      if ((tool === 'pencil' || tool === 'highlight') && points.length <= 2) {
+        const dotX = points[0].x;
+        const dotY = points[0].y;
+        const pressure = points[0].pressure ?? 0.5;
+        const ctx = ctxRef.current;
+        if (ctx) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.globalAlpha = tool === 'highlight' ? 0.35 : 1.0;
+          ctx.fillStyle = color;
+          const baseSize = tool === 'highlight' ? highlightSize : pencilSize;
+          let dotR = (baseSize / 2) * pressure;
+          if (penStyle === 'brush') dotR = (baseSize / 2) * (0.1 + pressure * 2.1);
+          else if (penStyle === 'fountain') dotR = (baseSize / 2) * (0.45 + pressure * 0.95);
+          ctx.beginPath();
+          ctx.arc(dotX, dotY, Math.max(0.8, dotR), 0, 2 * Math.PI);
+          ctx.fill();
+          ctx.restore();
+        }
+        // Lưu điểm dot vào Vector state để có thể undo/redraw
+        const dotElement: DrawElement = {
+          id: Date.now().toString(),
+          type: tool,
+          points: [{ x: dotX, y: dotY, pressure }],
+          color: color,
+          size: tool === 'highlight' ? highlightSize : pencilSize,
+          penStyle: tool === 'pencil' ? penStyle : undefined,
+        };
+        setElements(prev => [...prev, dotElement]);
+        // Reset state và thoát sớm - không xử lý tiếp
+        isGrabbingPageRef.current = false;
+        setIsGrabbingPage(false);
+        lastPointRef.current = null;
+        startPointRef.current = null;
+        canvasSnapshotRef.current = null;
+        hasSnappedRef.current = false;
+        recognizedShapeRef.current = null;
+        activePointsRef.current = [];
+        return;
+      }
+      // ── END DOT EVENT HANDLER ──────────────────────────────────────────────
 
       // Thêm phần tử vừa hoàn thành vẽ vào Vector state
       let newElement: DrawElement | null = null;
@@ -1619,7 +1757,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             setSelectedId(null);
             setTool('cursor');
           }}
-          data-tooltip="Chuột làm bài (Ctrl+M)"
+          data-tooltip="Chuột làm bài — phím tắt: Ctrl+M"
         >
           <MousePointer size={18} />
         </button>
@@ -1628,7 +1766,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         <button
           className={`${styles.btn} ${tool === 'hand' ? styles.btnActive : ''}`}
           onClick={() => setTool('hand')}
-          data-tooltip="Bàn tay chọn di chuyển nét vẽ (Esc)"
+          data-tooltip="Bàn tay: chọn & di chuyển nét vẽ — phím tắt: Esc"
         >
           <Hand size={18} />
         </button>
@@ -1641,7 +1779,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               setSelectedId(null);
               setTool('pencil');
             }}
-            data-tooltip={`Cọ vẽ: ${penStyle === 'ballpoint' ? 'Bút bi' : penStyle === 'fountain' ? 'Bút máy' : 'Bút lông'} (B)`}
+            data-tooltip={`Cọ vẽ: ${penStyle === 'ballpoint' ? 'Bút bi' : penStyle === 'fountain' ? 'Bút máy' : 'Bút lông'} — phím tắt: B · Ctrl+Shift+B`}
             style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
           >
             <Pencil size={18} />
@@ -1722,7 +1860,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             setSelectedId(null);
             setTool('highlight');
           }}
-          data-tooltip="Bút highlight (H)"
+          data-tooltip="Bút highlight — phím tắt: H · Ctrl+Shift+H"
         >
           <Highlighter size={18} />
         </button>
@@ -1734,7 +1872,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             setSelectedId(null);
             setTool('eraser');
           }}
-          data-tooltip="Cục tẩy nét vẽ (E)"
+          data-tooltip="Cục tẩy — phím tắt: E"
         >
           <Eraser size={18} />
         </button>
@@ -1746,7 +1884,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             setSelectedId(null);
             setTool('rectangle');
           }}
-          data-tooltip="Hình chữ nhật (R)"
+          data-tooltip="Hình chữ nhật — phím tắt: R"
         >
           <Square size={18} />
         </button>
@@ -1758,7 +1896,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             setSelectedId(null);
             setTool('circle');
           }}
-          data-tooltip="Hình tròn (C)"
+          data-tooltip="Hình tròn — phím tắt: C"
         >
           <CircleIcon size={18} />
         </button>
@@ -1770,54 +1908,80 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             setSelectedId(null);
             setTool('text');
           }}
-          data-tooltip="Viết chữ nháp (T)"
+          data-tooltip="Viết chữ nháp — phím tắt: T"
         >
           <Type size={18} />
         </button>
 
-        {/* 6 chấm chọn màu nhỏ gọn xếp thành 2 dòng */}
-        <div className={styles.colorPicker}>
-          {/* Hàng 1 */}
+        {/* 6 chấm màu: click = chọn màu, double-click = mở bảng màu preset để đổi slot */}
+        <div className={styles.colorPicker} style={{ position: 'relative' }}>
+          {/* Palette popup Apple-style */}
+          {colorPaletteSlot !== null && (
+            <div
+              ref={palettePopupRef}
+              className={styles.colorPalettePopup}
+              style={{
+                bottom: toolbarPos.y < 160 ? 'auto' : '130%',
+                top: toolbarPos.y < 160 ? '130%' : 'auto',
+              }}
+            >
+              <div className={styles.colorPaletteTitle}>
+                Đổi màu ô {COLOR_SLOT_KEYS[colorPaletteSlot]} — chọn màu:
+              </div>
+              <div className={styles.colorPaletteGrid}>
+                {PALETTE_COLORS.map((c, idx) => (
+                  <div
+                    key={idx}
+                    className={styles.colorSwatch}
+                    style={{ backgroundColor: c }}
+                    onClick={() => {
+                      const slot = colorPaletteSlot;
+                      setColorSlots(prev => {
+                        const next = [...prev];
+                        next[slot] = c;
+                        localStorage.setItem('webtoeic_color_slots', JSON.stringify(next));
+                        return next;
+                      });
+                      updateColor(c);
+                      setColorPaletteSlot(null);
+                    }}
+                    title={c}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          {/* Hàng 1: slot 0,1,2 */}
           <div className={styles.colorRow}>
-            <div 
-              className={`${styles.colorDot} ${color === '#EF4444' ? styles.colorDotActive : ''}`}
-              style={{ backgroundColor: '#EF4444' }}
-              onClick={() => updateColor('#EF4444')}
-              title="Đỏ (Q)"
-            />
-            <div 
-              className={`${styles.colorDot} ${color === '#3B82F6' ? styles.colorDotActive : ''}`}
-              style={{ backgroundColor: '#3B82F6' }}
-              onClick={() => updateColor('#3B82F6')}
-              title="Xanh dương (A)"
-            />
-            <div 
-              className={`${styles.colorDot} ${color === '#8B5CF6' ? styles.colorDotActive : ''}`}
-              style={{ backgroundColor: '#8B5CF6' }}
-              onClick={() => updateColor('#8B5CF6')}
-              title="Tím (Z)"
-            />
+            {[0, 1, 2].map(i => (
+              <div
+                key={i}
+                className={`${styles.colorDot} ${color === colorSlots[i] ? styles.colorDotActive : ''}`}
+                style={{ backgroundColor: colorSlots[i] }}
+                onClick={() => updateColor(colorSlots[i])}
+                onDoubleClick={(e) => {
+                  e.stopPropagation();
+                  setColorPaletteSlot(prev => prev === i ? null : i);
+                }}
+                title={`${COLOR_SLOT_NAMES[i]} (${COLOR_SLOT_KEYS[i]}) — double-click để đổi màu`}
+              />
+            ))}
           </div>
-          {/* Hàng 2 */}
+          {/* Hàng 2: slot 3,4,5 */}
           <div className={styles.colorRow}>
-            <div 
-              className={`${styles.colorDot} ${color === '#10B981' ? styles.colorDotActive : ''}`}
-              style={{ backgroundColor: '#10B981' }}
-              onClick={() => updateColor('#10B981')}
-              title="Xanh lá (W)"
-            />
-            <div 
-              className={`${styles.colorDot} ${color === '#F59E0B' ? styles.colorDotActive : ''}`}
-              style={{ backgroundColor: '#F59E0B' }}
-              onClick={() => updateColor('#F59E0B')}
-              title="Cam (S)"
-            />
-            <div 
-              className={`${styles.colorDot} ${color === '#5C4033' ? styles.colorDotActive : ''}`}
-              style={{ backgroundColor: '#5C4033' }}
-              onClick={() => updateColor('#5C4033')}
-              title="Nâu đen (X)"
-            />
+            {[3, 4, 5].map(i => (
+              <div
+                key={i}
+                className={`${styles.colorDot} ${color === colorSlots[i] ? styles.colorDotActive : ''}`}
+                style={{ backgroundColor: colorSlots[i] }}
+                onClick={() => updateColor(colorSlots[i])}
+                onDoubleClick={(e) => {
+                  e.stopPropagation();
+                  setColorPaletteSlot(prev => prev === i ? null : i);
+                }}
+                title={`${COLOR_SLOT_NAMES[i]} (${COLOR_SLOT_KEYS[i]}) — double-click để đổi màu`}
+              />
+            ))}
           </div>
         </div>
 
