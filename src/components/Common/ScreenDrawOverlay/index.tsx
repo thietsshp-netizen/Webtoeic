@@ -18,6 +18,27 @@ import {
 } from "lucide-react";
 import styles from "./styles.module.css";
 
+const FlashIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    width="18"
+    height="18"
+    stroke="currentColor"
+    strokeWidth="2"
+    fill="none"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M15 4V2a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v2" />
+    <path d="M8 4h8v4H8z" />
+    <path d="M16 8l-2 5v8a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-8l-2-5" />
+    <line x1="6" y1="6" x2="18" y2="6" />
+    <line x1="12" y1="12" x2="12" y2="12.01" />
+  </svg>
+);
+
+
 export type DrawTool = 'pencil' | 'highlight' | 'eraser' | 'rectangle' | 'circle' | 'text' | 'cursor' | 'hand';
 export type DrawColor = string; // Hex color string
 const DEFAULT_COLOR_SLOTS: DrawColor[] = ['#EF4444', '#3B82F6', '#8B5CF6', '#10B981', '#F59E0B', '#5C4033'];
@@ -133,6 +154,13 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [textInput, setTextInput] = useState<{ x: number; y: number } | null>(null);
   const textInputValRef = useRef("");
   const textInputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Đèn chiếu (Flashlight / Spotlight)
+  const [isFlashlightActive, setIsFlashlightActive] = useState(false);
+  const [flashlightSize, setFlashlightSize] = useState(100);
+  const [flashlightShape, setFlashlightShape] = useState<'circle' | 'rectangle'>('circle');
+  const mousePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+
 
   // Đặt vị trí mặc định thông minh khi thay đổi trang học tập hoặc trang ngoài
   useEffect(() => {
@@ -314,16 +342,91 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     };
   }, [isActive]);
 
+  // Vẽ lại canvas khi biến đèn chiếu thay đổi
+  useEffect(() => {
+    drawAllElements();
+  }, [isFlashlightActive, flashlightSize, flashlightShape]);
+
+  // Lắng nghe di chuyển chuột toàn màn hình cho Đèn chiếu (kể cả khi không vẽ)
+  useEffect(() => {
+    if (!isFlashlightActive || !isActive) return;
+
+    const handleWindowPointerMove = (e: PointerEvent) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      mousePosRef.current = { x, y };
+      drawAllElements();
+    };
+
+    window.addEventListener("pointermove", handleWindowPointerMove);
+    return () => {
+      window.removeEventListener("pointermove", handleWindowPointerMove);
+    };
+  }, [isFlashlightActive, isActive]);
+
+
   // Hàm Redraw toàn bộ đối tượng Vector vẽ trên màn hình
   const drawAllElements = () => {
     const canvas = canvasRef.current;
     const ctx = ctxRef.current;
     if (!canvas || !ctx) return;
 
+    // Destructure all needed states from stateRef.current to avoid stale closure issues (e.g. inside pointer move listeners)
+    const {
+      isFlashlightActive,
+      flashlightSize,
+      flashlightShape,
+      elements,
+      selectedId,
+      color,
+      tool,
+      pencilSize,
+      highlightSize,
+      eraserSize,
+      penStyle,
+    } = stateRef.current;
+
     // 1. Dọn dẹp canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 2. Vẽ tuần tự từng đối tượng trong danh sách
+    // Bắt buộc reset các trạng thái đồ hoạ mặc định để tránh lỗi rò rỉ độ mờ/màu của bút dạ quang!
+    ctx.globalAlpha = 1.0;
+    ctx.globalCompositeOperation = 'source-over';
+
+    // 2. NẾU ĐANG BẬT CHẾ ĐỘ ĐÈN CHIẾU (Flashlight / Spotlight) -> Vẽ Đèn chiếu TRƯỚC TIÊN
+    if (isFlashlightActive) {
+      ctx.save();
+      
+      // Tạo lớp phủ mờ toàn màn hình bằng màu tối
+      ctx.fillStyle = "rgba(15, 23, 42, 0.65)"; // Màu tối mờ đẹp (Slate 900)
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+      // Đục lỗ sáng (Spotlight cutout) tại vị trí trỏ chuột
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = "#000000"; // Dùng màu opaque (alpha = 1.0) để đục lỗ sạch hoàn toàn 100%!
+      ctx.beginPath();
+      
+      const { x, y } = mousePosRef.current;
+      const size = flashlightSize; // Bán kính hình tròn hoặc nửa chiều rộng hình chữ nhật
+      
+      if (flashlightShape === 'circle') {
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // Vẽ hình chữ nhật bo góc rải sáng tại tâm trỏ chuột
+        const rx = size * 1.5; // Rộng hơn cao một chút để rọi sáng văn bản
+        const ry = size * 0.8;
+        ctx.roundRect(x - rx, y - ry, rx * 2, ry * 2, 8);
+        ctx.fill();
+      }
+      
+      ctx.restore();
+    }
+
+    // 3. Vẽ tuần tự từng đối tượng nét vẽ cũ TRÊN NỀN ĐÈN CHIẾU
     elements.forEach((el) => {
       ctx.strokeStyle = el.color;
       ctx.fillStyle = el.color;
@@ -532,7 +635,85 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         ctx.restore();
       }
     });
+
+    // 4. Vẽ nét vẽ nháp đang di chuột (Active Stroke) nếu đang vẽ trong chế độ Đèn chiếu
+    if (isFlashlightActive && isDrawingRef.current && activePointsRef.current.length > 0) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.globalCompositeOperation = 'source-over';
+
+      if (tool === 'pencil') {
+        ctx.globalAlpha = 1.0;
+        ctx.lineWidth = pencilSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(activePointsRef.current[0].x, activePointsRef.current[0].y);
+        for (let i = 1; i < activePointsRef.current.length; i++) {
+          ctx.lineTo(activePointsRef.current[i].x, activePointsRef.current[i].y);
+        }
+        ctx.stroke();
+      } else if (tool === 'highlight') {
+        ctx.globalAlpha = 0.35;
+        ctx.lineWidth = highlightSize;
+        ctx.lineCap = 'square';
+        ctx.lineJoin = 'miter';
+        ctx.beginPath();
+        ctx.moveTo(activePointsRef.current[0].x, activePointsRef.current[0].y);
+        for (let i = 1; i < activePointsRef.current.length; i++) {
+          ctx.lineTo(activePointsRef.current[i].x, activePointsRef.current[i].y);
+        }
+        ctx.stroke();
+      } else if (tool === 'eraser') {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.globalAlpha = 1.0;
+        ctx.lineWidth = eraserSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(activePointsRef.current[0].x, activePointsRef.current[0].y);
+        for (let i = 1; i < activePointsRef.current.length; i++) {
+          ctx.lineTo(activePointsRef.current[i].x, activePointsRef.current[i].y);
+        }
+        ctx.stroke();
+      } else if (tool === 'rectangle' || tool === 'circle') {
+        ctx.lineWidth = pencilSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        const startPoint = activePointsRef.current[0];
+        const lastPoint = activePointsRef.current[activePointsRef.current.length - 1];
+        const w = lastPoint.x - startPoint.x;
+        const h = lastPoint.y - startPoint.y;
+
+        ctx.beginPath();
+        if (tool === 'rectangle') {
+          ctx.rect(startPoint.x, startPoint.y, w, h);
+          ctx.save();
+          ctx.globalAlpha = 0.3;
+          ctx.fillStyle = color;
+          ctx.fill();
+          ctx.restore();
+
+          ctx.save();
+          ctx.globalAlpha = 0.6;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+          ctx.restore();
+        } else {
+          ctx.globalAlpha = 1.0;
+          const cx = startPoint.x + w / 2;
+          const cy = startPoint.y + h / 2;
+          const radius = Math.min(Math.abs(w), Math.abs(h)) / 2;
+          ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+    }
   };
+
+
 
   // Thuật toán Hit Testing tìm đối tượng gần click chuột nhất
   const findElementAtPosition = (x: number, y: number): DrawElement | null => {
@@ -599,19 +780,35 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     textInput,
     isGrabbingPage,
     colorSlots,
+    isFlashlightActive,
+    flashlightSize,
+    flashlightShape,
+    color,
+    pencilSize,
+    highlightSize,
+    eraserSize,
+    penStyle,
   });
 
-  useEffect(() => {
-    stateRef.current = {
-      isActive,
-      tool,
-      selectedId,
-      elements,
-      textInput,
-      isGrabbingPage,
-      colorSlots,
-    };
-  });
+  // Cập nhật đồng bộ ngay trong render body để bảo đảm stateRef.current luôn có giá trị mới nhất trước khi bất kỳ useEffect hay render nào diễn ra
+  stateRef.current = {
+    isActive,
+    tool,
+    selectedId,
+    elements,
+    textInput,
+    isGrabbingPage,
+    colorSlots,
+    isFlashlightActive,
+    flashlightSize,
+    flashlightShape,
+    color,
+    pencilSize,
+    highlightSize,
+    eraserSize,
+    penStyle,
+  };
+
 
   // Đồng bộ màu sắc nhanh khi chọn phần tử bằng Bàn tay
   const updateColor = (newColor: DrawColor) => {
@@ -737,17 +934,28 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       } else if (key === 't' || code === 'KeyT') {
         setTool('text');
         setSelectedId(null);
+      } else if (key === 'f' || code === 'KeyF') {
+        e.preventDefault();
+        setIsFlashlightActive(prev => !prev);
       } else if (e.key === 'Escape' || code === 'Escape') {
         e.preventDefault();
         setTool('hand'); // Bàn tay chọn đối tượng (Esc)
       } else if (key === '[' || code === 'BracketLeft') {
         e.preventDefault();
-        const activeType = currentTool === 'eraser' ? 'eraser' : currentTool === 'text' ? 'text' : currentTool === 'highlight' ? 'highlight' : 'pencil';
-        updateSize(activeType, 'decrease');
+        if (stateRef.current.isFlashlightActive) {
+          setFlashlightSize(prev => Math.max(30, prev - 10));
+        } else {
+          const activeType = currentTool === 'eraser' ? 'eraser' : currentTool === 'text' ? 'text' : currentTool === 'highlight' ? 'highlight' : 'pencil';
+          updateSize(activeType, 'decrease');
+        }
       } else if (key === ']' || code === 'BracketRight') {
         e.preventDefault();
-        const activeType = currentTool === 'eraser' ? 'eraser' : currentTool === 'text' ? 'text' : currentTool === 'highlight' ? 'highlight' : 'pencil';
-        updateSize(activeType, 'increase');
+        if (stateRef.current.isFlashlightActive) {
+          setFlashlightSize(prev => Math.min(300, prev + 10));
+        } else {
+          const activeType = currentTool === 'eraser' ? 'eraser' : currentTool === 'text' ? 'text' : currentTool === 'highlight' ? 'highlight' : 'pencil';
+          updateSize(activeType, 'increase');
+        }
       } else if (key === 'q' || code === 'KeyQ') {
         updateColor(stateRef.current.colorSlots[0]);
       } else if (key === 'a' || code === 'KeyA') {
@@ -929,11 +1137,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (!isDrawingRef.current || !ctxRef.current || !canvasRef.current) return;
-    if (hasSnappedRef.current) return; // Đã snap xong hình đẹp, bỏ qua nét vẽ nháp tiếp theo
-
     const canvas = canvasRef.current;
     const ctx = ctxRef.current;
+    if (!canvas || !ctx) return;
     const rect = canvas.getBoundingClientRect();
 
     const nativeEvent = e.nativeEvent as unknown as any;
@@ -943,11 +1149,31 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     const lastEvent = events[events.length - 1];
     const x = lastEvent.clientX - rect.left;
     const y = lastEvent.clientY - rect.top;
-    
+
+    // CHẾ ĐỘ ĐÈN CHIẾU: Bỏ qua hoàn toàn vẽ trực tiếp và chụp snapshot để tránh đơ/khựng/sai lệch tọa độ
+    if (stateRef.current.isFlashlightActive) {
+      mousePosRef.current = { x, y };
+      if (isDrawingRef.current && lastPointRef.current) {
+        events.forEach((evt: any) => {
+          const ex = evt.clientX - rect.left;
+          const ey = evt.clientY - rect.top;
+          const startPressure = evt.pressure !== undefined && evt.pressure > 0 ? evt.pressure : 0.5;
+          activePointsRef.current.push({ x: ex, y: ey, pressure: startPressure });
+          lastPointRef.current = { x: ex, y: ey };
+        });
+      }
+      drawAllElements();
+      return;
+    }
+
+    if (!isDrawingRef.current) return;
+    if (hasSnappedRef.current) return; // Đã snap xong hình đẹp, bỏ qua nét vẽ nháp tiếp theo
+
     const lastPoint = lastPointRef.current;
     if (!lastPoint || !startPointRef.current) return;
 
     const dist = ptDist({ x, y }, lastMovePosRef.current);
+
     if (dist > 2) {
       lastMovePosRef.current = { x, y };
       lastMoveTimeRef.current = Date.now();
@@ -1359,6 +1585,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     canvasSnapshotRef.current = null;
     hasSnappedRef.current = false;
     recognizedShapeRef.current = null;
+    activePointsRef.current = [];
   };
 
   // Tự động focus vào ô nhập văn bản khi được tạo ra
@@ -1864,6 +2091,39 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         >
           <Highlighter size={18} />
         </button>
+
+        {/* Nút Đèn chiếu (Flashlight / Spotlight) */}
+        <div className={styles.pencilGroup}>
+          <button
+            className={`${styles.btn} ${isFlashlightActive ? styles.btnActive : ''}`}
+            onClick={() => {
+              setIsFlashlightActive(prev => !prev);
+            }}
+            data-tooltip="Tiêu điểm đèn chiếu — phím tắt: F"
+            style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+          >
+            <FlashIcon />
+          </button>
+          <button
+            className={`${styles.btn} ${isFlashlightActive ? styles.btnActive : ''}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setFlashlightShape(prev => prev === 'circle' ? 'rectangle' : 'circle');
+            }}
+            style={{ 
+              width: '16px', 
+              padding: 0, 
+              borderTopLeftRadius: 0, 
+              borderBottomLeftRadius: 0,
+              marginLeft: '-1px',
+              borderLeft: '1px solid rgba(255,255,255,0.1)'
+            }}
+            title="Đổi hình dạng đèn chiếu (Tròn / Chữ nhật)"
+          >
+            {flashlightShape === 'circle' ? <CircleIcon size={8} /> : <Square size={8} />}
+          </button>
+        </div>
 
         {/* Cục tẩy */}
         <button
