@@ -14,7 +14,9 @@ import {
   MousePointer,
   Eraser,
   Hand,
-  ChevronDown
+  ChevronDown,
+  Settings,
+  Plus
 } from "lucide-react";
 import styles from "./styles.module.css";
 
@@ -41,6 +43,53 @@ const FlashIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export type DrawTool = 'pencil' | 'highlight' | 'eraser' | 'rectangle' | 'circle' | 'text' | 'cursor' | 'hand';
 export type DrawColor = string; // Hex color string
+
+export interface ClonedTool {
+  id: string;
+  baseType: 'pencil' | 'highlight' | 'rectangle';
+  name: string;
+  color: string;
+  hotkey: string;
+}
+
+export const DEFAULT_HOTKEYS: Record<string, string> = {
+  cursor: 'ctrl+m',
+  hand: 'escape',
+  pencil: 'b',
+  highlight: 'h',
+  flashlight: 'f',
+  eraser: 'e',
+  rectangle: 'r',
+  circle: 'c',
+  text: 't',
+  color1: 'q',
+  color2: 'a',
+  color3: 'z',
+  color4: 'w',
+  color5: 's',
+  color6: 'x',
+  clear: 'ctrl+backspace'
+};
+
+export const HOTKEY_NAMES: Record<string, string> = {
+  cursor: 'Chuột tương tác',
+  hand: 'Bàn tay (Di chuyển)',
+  pencil: 'Bút chì vẽ',
+  highlight: 'Bút highlight',
+  flashlight: 'Đèn chiếu spotlight',
+  eraser: 'Cục tẩy xóa',
+  rectangle: 'Hình chữ nhật',
+  circle: 'Hình tròn',
+  text: 'Viết chữ nháp',
+  color1: 'Ô màu 1',
+  color2: 'Ô màu 2',
+  color3: 'Ô màu 3',
+  color4: 'Ô màu 4',
+  color5: 'Ô màu 5',
+  color6: 'Ô màu 6',
+  clear: 'Xóa sạch màn hình'
+};
+
 const DEFAULT_COLOR_SLOTS: DrawColor[] = ['#EF4444', '#3B82F6', '#8B5CF6', '#10B981', '#F59E0B', '#5C4033'];
 const COLOR_SLOT_KEYS = ['Q', 'A', 'Z', 'W', 'S', 'X'];
 const COLOR_SLOT_NAMES = ['Đỏ', 'Xanh dương', 'Tím', 'Xanh lá', 'Cam', 'Nâu đen'];
@@ -161,6 +210,23 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [flashlightShape, setFlashlightShape] = useState<'circle' | 'rectangle'>('circle');
   const mousePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isShiftPressed, setIsShiftPressed] = useState(false); // Trạng thái nhấn giữ Shift tạm thời tương tác web bên dưới (Ghost mode)
+  const [customHotkeys, setCustomHotkeys] = useState<Record<string, string>>(DEFAULT_HOTKEYS);
+  const [clonedTools, setClonedTools] = useState<ClonedTool[]>([]);
+  const [activeCloneId, setActiveCloneId] = useState<string | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
+
+  // Draft states for settings modal
+  const [draftHotkeys, setDraftHotkeys] = useState<Record<string, string>>(DEFAULT_HOTKEYS);
+  const [draftClonedTools, setDraftClonedTools] = useState<ClonedTool[]>([]);
+  const [activeTab, setActiveTab] = useState<'shortcuts' | 'clones'>('shortcuts');
+  const [listeningKeyFor, setListeningKeyFor] = useState<string | null>(null);
+
+  // Form states for creating a new clone
+  const [newCloneName, setNewCloneName] = useState('');
+  const [newCloneBaseType, setNewCloneBaseType] = useState<'pencil' | 'highlight' | 'rectangle'>('pencil');
+  const [newCloneColor, setNewCloneColor] = useState('#EF4444');
+  const [newCloneHotkey, setNewCloneHotkey] = useState('');
 
 
   // Đặt vị trí mặc định thông minh khi thay đổi trang học tập hoặc trang ngoài
@@ -299,6 +365,116 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       localStorage.setItem(storageKey, JSON.stringify(toolbarPos));
     }
   }, [toolbarPos, isLearnPage]);
+  // Tải cấu hình phím tắt và bút clone từ Database (hoặc LocalStorage dự phòng) khi công cụ vẽ kích hoạt
+  useEffect(() => {
+    if (!isActive) return;
+
+    const loadDrawSettings = async () => {
+      try {
+        const res = await fetch("/api/admin/draw-settings");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.drawSettings) {
+            const { customHotkeys: dbHotkeys, clonedTools: dbCloned } = data.drawSettings;
+            if (dbHotkeys) {
+              setCustomHotkeys(dbHotkeys);
+              localStorage.setItem('webtoeic_custom_hotkeys', JSON.stringify(dbHotkeys));
+            }
+            if (dbCloned) {
+              setClonedTools(dbCloned);
+              localStorage.setItem('webtoeic_cloned_tools', JSON.stringify(dbCloned));
+            }
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Lỗi lấy cấu hình đám mây:", err);
+      }
+
+      // Fallback nếu không có mạng / DB rỗng
+      const localHotkeys = localStorage.getItem('webtoeic_custom_hotkeys');
+      const localClones = localStorage.getItem('webtoeic_cloned_tools');
+      if (localHotkeys) setCustomHotkeys(JSON.parse(localHotkeys));
+      if (localClones) setClonedTools(JSON.parse(localClones));
+    };
+
+    loadDrawSettings();
+  }, [isActive]);
+
+  // Capture key for customized hotkey or new clone hotkey
+  useEffect(() => {
+    if (!listeningKeyFor) return;
+
+    const getEventHotkeyString = (ev: KeyboardEvent): string => {
+      const parts: string[] = [];
+      if (ev.ctrlKey || ev.metaKey) parts.push('ctrl');
+      if (ev.shiftKey && ev.key !== 'Shift') parts.push('shift');
+      if (ev.altKey) parts.push('alt');
+      
+      const k = ev.key.toLowerCase();
+      if (k !== 'control' && k !== 'meta' && k !== 'shift' && k !== 'alt') {
+        if (ev.code === 'Space') parts.push('space');
+        else parts.push(k);
+      }
+      return parts.join('+');
+    };
+
+    const handleListenKey = (e: KeyboardEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const pressed = getEventHotkeyString(e);
+      if (!pressed) return;
+
+      if (listeningKeyFor === 'newClone') {
+        setNewCloneHotkey(pressed);
+      } else {
+        setDraftHotkeys(prev => ({
+          ...prev,
+          [listeningKeyFor]: pressed
+        }));
+      }
+      setListeningKeyFor(null);
+    };
+
+    window.addEventListener('keydown', handleListenKey, true);
+    return () => {
+      window.removeEventListener('keydown', handleListenKey, true);
+    };
+  }, [listeningKeyFor]);
+
+  const handleSaveSettings = async () => {
+    setIsSavingSettings(true);
+    try {
+      const payload = {
+        customHotkeys: draftHotkeys,
+        clonedTools: draftClonedTools
+      };
+      
+      const res = await fetch("/api/admin/draw-settings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ drawSettings: payload })
+      });
+
+      if (res.ok) {
+        setCustomHotkeys(draftHotkeys);
+        setClonedTools(draftClonedTools);
+        localStorage.setItem('webtoeic_custom_hotkeys', JSON.stringify(draftHotkeys));
+        localStorage.setItem('webtoeic_cloned_tools', JSON.stringify(draftClonedTools));
+        setShowSettings(false);
+      } else {
+        alert("Lưu cài đặt thất bại! Hãy chắc chắn bạn đã đăng nhập tài khoản Admin.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Đã xảy ra lỗi khi lưu cấu hình.");
+    } finally {
+      setIsSavingSettings(false);
+    }
+  };
 
   // Khởi tạo Canvas size toàn màn hình sắc nét hỗ trợ Retina
   const initCanvas = () => {
@@ -822,6 +998,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     highlightSize,
     eraserSize,
     penStyle,
+    customHotkeys,
+    clonedTools,
+    activeCloneId,
+    showSettings,
   });
 
   // Cập nhật đồng bộ ngay trong render body để bảo đảm stateRef.current luôn có giá trị mới nhất trước khi bất kỳ useEffect hay render nào diễn ra
@@ -841,12 +1021,17 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     highlightSize,
     eraserSize,
     penStyle,
+    customHotkeys,
+    clonedTools,
+    activeCloneId,
+    showSettings,
   };
 
 
   // Đồng bộ màu sắc nhanh khi chọn phần tử bằng Bàn tay
   const updateColor = (newColor: DrawColor) => {
     setColor(newColor);
+    setActiveCloneId(null); // Hủy kích hoạt bút clone nếu chọn màu thủ công để quay về trạng thái cọ mặc định
     const { selectedId: currentSelectedId } = stateRef.current;
     if (currentSelectedId) {
       setElements(prev => prev.map(el => el.id === currentSelectedId ? { ...el, color: newColor } : el));
@@ -894,7 +1079,26 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   // Phím tắt bàn phím thông minh (IME-proof) - BIND DUY NHẤT 1 LẦN để đạt độ nhạy phản hồi 100%
   useEffect(() => {
+    const getEventHotkeyString = (ev: KeyboardEvent): string => {
+      const parts: string[] = [];
+      if (ev.ctrlKey || ev.metaKey) parts.push('ctrl');
+      if (ev.shiftKey && ev.key !== 'Shift') parts.push('shift');
+      if (ev.altKey) parts.push('alt');
+      
+      const k = ev.key.toLowerCase();
+      if (k !== 'control' && k !== 'meta' && k !== 'shift' && k !== 'alt') {
+        if (ev.code === 'Space') parts.push('space');
+        else parts.push(k);
+      }
+      return parts.join('+');
+    };
+
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Nếu đang mở Modal cài đặt phím tắt, chặn hoàn toàn phím tắt toàn cục để tránh ghi đè/gõ chữ
+      if (stateRef.current.showSettings) {
+        return;
+      }
+
       // 0. CHỨC NĂNG GHOST MODE (Shift): Tạm thời tắt vẽ để tương tác click/hover web bên dưới
       if (e.key === 'Shift') {
         const target = e.target as HTMLElement;
@@ -910,36 +1114,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
       const { isActive: currentIsActive, tool: currentTool, selectedId: currentSelectedId, textInput: currentTextInput } = stateRef.current;
       const target = e.target as HTMLElement;
-      
-      // 1. PHÍM TẮT TOÀN CỤC (Kích hoạt nhanh khi làm bài trắc nghiệm):
-      // Ctrl+Shift+B (Pencil), Ctrl+Shift+H (Highlight), Ctrl+M (Mouse cursor)
-      const isM = e.key.toLowerCase() === 'm' || e.code === 'KeyM';
-      if ((e.ctrlKey || e.metaKey) && isM) {
-        e.preventDefault();
-        setIsActive(true);
-        setTool('cursor');
-        return;
-      }
 
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey) {
-        const isB = e.key.toLowerCase() === 'b' || e.code === 'KeyB';
-        const isH = e.key.toLowerCase() === 'h' || e.code === 'KeyH';
-        
-        if (isB) {
-          e.preventDefault();
-          setIsActive(true);
-          setTool('pencil');
-          return;
-        }
-        if (isH) {
-          e.preventDefault();
-          setIsActive(true);
-          setTool('highlight');
-          return;
-        }
-      }
-
-      // 2. KIỂM TRA INPUT SOẠN THẢO NHÁP ĐANG ACTIVE:
+      // 1. KIỂM TRA INPUT SOẠN THẢO NHÁP ĐANG ACTIVE:
       const isInput = 
         target.tagName === 'INPUT' || 
         target.tagName === 'TEXTAREA' || 
@@ -960,34 +1136,92 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         return;
       }
 
-      const key = e.key.toLowerCase();
-      const code = e.code;
+      // Tính chuỗi phím tắt được nhấn
+      const pressedHotkey = getEventHotkeyString(e);
 
-      if (key === 'b' || code === 'KeyB') {
+      // A. KIỂM TRA PHÍM TẮT BÚT CLONE TRƯỚC (Để ghi đè lên các bút gốc nếu trùng phím)
+      const matchedClone = stateRef.current.clonedTools.find(
+        clone => pressedHotkey === clone.hotkey.toLowerCase()
+      );
+      if (matchedClone) {
+        e.preventDefault();
+        setTool(matchedClone.baseType);
+        setColor(matchedClone.color);
+        setActiveCloneId(matchedClone.id);
+        setSelectedId(null);
+        return;
+      }
+
+      // B. DÒ TÌM PHÍM TẮT TÙY CHỈNH (Custom Hotkeys)
+      const hotkeys = stateRef.current.customHotkeys;
+
+      if (pressedHotkey === hotkeys.cursor) {
+        e.preventDefault();
+        setTool('cursor');
+        setSelectedId(null);
+        setActiveCloneId(null);
+      } else if (pressedHotkey === hotkeys.hand) {
+        e.preventDefault();
+        setTool('hand');
+        setActiveCloneId(null);
+      } else if (pressedHotkey === hotkeys.pencil) {
+        e.preventDefault();
         setTool('pencil');
         setSelectedId(null);
-      } else if (key === 'e' || code === 'KeyE') {
-        setTool('eraser');
-        setSelectedId(null);
-      } else if (key === 'h' || code === 'KeyH') {
+        setActiveCloneId(null);
+      } else if (pressedHotkey === hotkeys.highlight) {
+        e.preventDefault();
         setTool('highlight');
         setSelectedId(null);
-      } else if (key === 'r' || code === 'KeyR') {
-        setTool('rectangle');
-        setSelectedId(null);
-      } else if (key === 'c' || code === 'KeyC') {
-        setTool('circle');
-        setSelectedId(null);
-      } else if (key === 't' || code === 'KeyT') {
-        setTool('text');
-        setSelectedId(null);
-      } else if (key === 'f' || code === 'KeyF') {
+        setActiveCloneId(null);
+      } else if (pressedHotkey === hotkeys.flashlight) {
         e.preventDefault();
         setIsFlashlightActive(prev => !prev);
-      } else if (e.key === 'Escape' || code === 'Escape') {
+      } else if (pressedHotkey === hotkeys.eraser) {
         e.preventDefault();
-        setTool('hand'); // Bàn tay chọn đối tượng (Esc)
-      } else if (key === '[' || code === 'BracketLeft') {
+        setTool('eraser');
+        setSelectedId(null);
+        setActiveCloneId(null);
+      } else if (pressedHotkey === hotkeys.rectangle) {
+        e.preventDefault();
+        setTool('rectangle');
+        setSelectedId(null);
+        setActiveCloneId(null);
+      } else if (pressedHotkey === hotkeys.circle) {
+        e.preventDefault();
+        setTool('circle');
+        setSelectedId(null);
+        setActiveCloneId(null);
+      } else if (pressedHotkey === hotkeys.text) {
+        e.preventDefault();
+        setTool('text');
+        setSelectedId(null);
+        setActiveCloneId(null);
+      } else if (pressedHotkey === hotkeys.color1) {
+        e.preventDefault();
+        updateColor(stateRef.current.colorSlots[0]);
+      } else if (pressedHotkey === hotkeys.color2) {
+        e.preventDefault();
+        updateColor(stateRef.current.colorSlots[1]);
+      } else if (pressedHotkey === hotkeys.color3) {
+        e.preventDefault();
+        updateColor(stateRef.current.colorSlots[2]);
+      } else if (pressedHotkey === hotkeys.color4) {
+        e.preventDefault();
+        updateColor(stateRef.current.colorSlots[3]);
+      } else if (pressedHotkey === hotkeys.color5) {
+        e.preventDefault();
+        updateColor(stateRef.current.colorSlots[4]);
+      } else if (pressedHotkey === hotkeys.color6) {
+        e.preventDefault();
+        updateColor(stateRef.current.colorSlots[5]);
+      } else if (pressedHotkey === hotkeys.clear) {
+        e.preventDefault();
+        clearCanvas();
+      }
+      
+      // Xử lý tăng giảm kích thước qua các phím chuẩn [ và ]
+      else if (pressedHotkey === '[') {
         e.preventDefault();
         if (stateRef.current.isFlashlightActive) {
           setFlashlightSize(prev => Math.max(30, prev - 10));
@@ -995,7 +1229,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           const activeType = currentTool === 'eraser' ? 'eraser' : currentTool === 'text' ? 'text' : currentTool === 'highlight' ? 'highlight' : 'pencil';
           updateSize(activeType, 'decrease');
         }
-      } else if (key === ']' || code === 'BracketRight') {
+      } else if (pressedHotkey === ']') {
         e.preventDefault();
         if (stateRef.current.isFlashlightActive) {
           setFlashlightSize(prev => Math.min(300, prev + 10));
@@ -1003,18 +1237,6 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           const activeType = currentTool === 'eraser' ? 'eraser' : currentTool === 'text' ? 'text' : currentTool === 'highlight' ? 'highlight' : 'pencil';
           updateSize(activeType, 'increase');
         }
-      } else if (key === 'q' || code === 'KeyQ') {
-        updateColor(stateRef.current.colorSlots[0]);
-      } else if (key === 'a' || code === 'KeyA') {
-        updateColor(stateRef.current.colorSlots[1]);
-      } else if (key === 'z' || code === 'KeyZ') {
-        updateColor(stateRef.current.colorSlots[2]);
-      } else if (key === 'w' || code === 'KeyW') {
-        updateColor(stateRef.current.colorSlots[3]);
-      } else if (key === 's' || code === 'KeyS') {
-        updateColor(stateRef.current.colorSlots[4]);
-      } else if (key === 'x' || code === 'KeyX') {
-        updateColor(stateRef.current.colorSlots[5]);
       }
 
       // Nhấn Backspace / Delete đơn lẻ để xoá duy nhất phần tử đang chọn
@@ -1024,10 +1246,6 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           e.preventDefault();
           setElements(prev => prev.filter(el => el.id !== currentSelectedId));
           setSelectedId(null);
-        } else if ((e.ctrlKey || e.metaKey)) {
-          // Nhấn Cmd/Ctrl + Backspace để xoá sạch tất cả
-          e.preventDefault();
-          clearCanvas();
         }
       }
     };
@@ -2077,10 +2295,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         {/* Bút chì vẽ tự do kèm dropdown chọn đầu bút */}
         <div className={styles.pencilGroup}>
           <button
-            className={`${styles.btn} ${tool === 'pencil' ? styles.btnActive : ''}`}
+            className={`${styles.btn} ${tool === 'pencil' && !activeCloneId ? styles.btnActive : ''}`}
             onClick={() => {
               setSelectedId(null);
               setTool('pencil');
+              setActiveCloneId(null);
             }}
             data-tooltip={`Cọ vẽ: ${penStyle === 'ballpoint' ? 'Bút bi' : penStyle === 'fountain' ? 'Bút máy' : 'Bút lông'} — phím tắt: B · Ctrl+Shift+B`}
             style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
@@ -2088,7 +2307,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             <Pencil size={18} />
           </button>
           <button
-            className={`${styles.btn} ${tool === 'pencil' ? styles.btnActive : ''}`}
+            className={`${styles.btn} ${tool === 'pencil' && !activeCloneId ? styles.btnActive : ''}`}
             onPointerDown={(e) => {
               e.stopPropagation();
               e.preventDefault();
@@ -2124,6 +2343,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                   setPenStyle('ballpoint');
                   setShowPenStyleMenu(false);
                   setTool('pencil');
+                  setActiveCloneId(null);
                 }}
               >
                 <span>✒️ Bút bi (Đều nét)</span>
@@ -2136,6 +2356,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                   setPenStyle('fountain');
                   setShowPenStyleMenu(false);
                   setTool('pencil');
+                  setActiveCloneId(null);
                 }}
               >
                 <span>🖋️ Bút máy (Thanh đậm vừa)</span>
@@ -2148,6 +2369,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                   setPenStyle('brush');
                   setShowPenStyleMenu(false);
                   setTool('pencil');
+                  setActiveCloneId(null);
                 }}
               >
                 <span>🖌️ Bút lông (Cực nhạy lực)</span>
@@ -2156,17 +2378,56 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           )}
         </div>
 
+        {/* Các bút chì clone */}
+        {clonedTools.filter(c => c.baseType === 'pencil').map(clone => (
+          <button
+            key={clone.id}
+            className={`${styles.btnClone} ${activeCloneId === clone.id ? styles.btnCloneActive : ''}`}
+            style={{ '--clone-color': clone.color } as React.CSSProperties}
+            onClick={() => {
+              setSelectedId(null);
+              setTool('pencil');
+              setColor(clone.color);
+              setActiveCloneId(clone.id);
+            }}
+            data-tooltip={`${clone.name} (${clone.hotkey.toUpperCase()})`}
+          >
+            <Pencil size={12} style={{ color: clone.color }} />
+            <div className={styles.cloneColorBadge} style={{ backgroundColor: clone.color }} />
+          </button>
+        ))}
+
         {/* Bút highlight */}
         <button
-          className={`${styles.btn} ${tool === 'highlight' ? styles.btnActive : ''}`}
+          className={`${styles.btn} ${tool === 'highlight' && !activeCloneId ? styles.btnActive : ''}`}
           onClick={() => {
             setSelectedId(null);
             setTool('highlight');
+            setActiveCloneId(null);
           }}
           data-tooltip="Bút highlight — phím tắt: H · Ctrl+Shift+H"
         >
           <Highlighter size={18} />
         </button>
+
+        {/* Các highlight clone */}
+        {clonedTools.filter(c => c.baseType === 'highlight').map(clone => (
+          <button
+            key={clone.id}
+            className={`${styles.btnClone} ${activeCloneId === clone.id ? styles.btnCloneActive : ''}`}
+            style={{ '--clone-color': clone.color } as React.CSSProperties}
+            onClick={() => {
+              setSelectedId(null);
+              setTool('highlight');
+              setColor(clone.color);
+              setActiveCloneId(clone.id);
+            }}
+            data-tooltip={`${clone.name} (${clone.hotkey.toUpperCase()})`}
+          >
+            <Highlighter size={12} style={{ color: clone.color }} />
+            <div className={styles.cloneColorBadge} style={{ backgroundColor: clone.color }} />
+          </button>
+        ))}
 
         {/* Nút Đèn chiếu (Flashlight / Spotlight) */}
         <div className={styles.pencilGroup}>
@@ -2207,6 +2468,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           onClick={() => {
             setSelectedId(null);
             setTool('eraser');
+            setActiveCloneId(null);
           }}
           data-tooltip="Cục tẩy — phím tắt: E"
         >
@@ -2215,15 +2477,35 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
         {/* Vẽ Rectangle */}
         <button
-          className={`${styles.btn} ${tool === 'rectangle' ? styles.btnActive : ''}`}
+          className={`${styles.btn} ${tool === 'rectangle' && !activeCloneId ? styles.btnActive : ''}`}
           onClick={() => {
             setSelectedId(null);
             setTool('rectangle');
+            setActiveCloneId(null);
           }}
           data-tooltip="Hình chữ nhật — phím tắt: R"
         >
           <Square size={18} />
         </button>
+
+        {/* Các rectangle clone */}
+        {clonedTools.filter(c => c.baseType === 'rectangle').map(clone => (
+          <button
+            key={clone.id}
+            className={`${styles.btnClone} ${activeCloneId === clone.id ? styles.btnCloneActive : ''}`}
+            style={{ '--clone-color': clone.color } as React.CSSProperties}
+            onClick={() => {
+              setSelectedId(null);
+              setTool('rectangle');
+              setColor(clone.color);
+              setActiveCloneId(clone.id);
+            }}
+            data-tooltip={`${clone.name} (${clone.hotkey.toUpperCase()})`}
+          >
+            <Square size={12} style={{ color: clone.color }} />
+            <div className={styles.cloneColorBadge} style={{ backgroundColor: clone.color }} />
+          </button>
+        ))}
 
         {/* Vẽ Circle */}
         <button
@@ -2231,6 +2513,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           onClick={() => {
             setSelectedId(null);
             setTool('circle');
+            setActiveCloneId(null);
           }}
           data-tooltip="Hình tròn — phím tắt: C"
         >
@@ -2243,6 +2526,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           onClick={() => {
             setSelectedId(null);
             setTool('text');
+            setActiveCloneId(null);
           }}
           data-tooltip="Viết chữ nháp — phím tắt: T"
         >
@@ -2292,7 +2576,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             {[0, 1, 2].map(i => (
               <div
                 key={i}
-                className={`${styles.colorDot} ${color === colorSlots[i] ? styles.colorDotActive : ''}`}
+                className={`${styles.colorDot} ${color === colorSlots[i] && !activeCloneId ? styles.colorDotActive : ''}`}
                 style={{ backgroundColor: colorSlots[i] }}
                 onClick={() => updateColor(colorSlots[i])}
                 onDoubleClick={(e) => {
@@ -2308,7 +2592,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             {[3, 4, 5].map(i => (
               <div
                 key={i}
-                className={`${styles.colorDot} ${color === colorSlots[i] ? styles.colorDotActive : ''}`}
+                className={`${styles.colorDot} ${color === colorSlots[i] && !activeCloneId ? styles.colorDotActive : ''}`}
                 style={{ backgroundColor: colorSlots[i] }}
                 onClick={() => updateColor(colorSlots[i])}
                 onDoubleClick={(e) => {
@@ -2344,6 +2628,25 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           <Trash2 size={18} />
         </button>
 
+        {/* Nút Cài đặt Gear */}
+        <button
+          className={`${styles.btn} ${styles.btnGear}`}
+          onClick={() => {
+            setDraftHotkeys({ ...customHotkeys });
+            setDraftClonedTools([...clonedTools]);
+            setShowSettings(true);
+            setActiveTab('shortcuts');
+            setListeningKeyFor(null);
+            setNewCloneName('');
+            setNewCloneBaseType('pencil');
+            setNewCloneColor('#EF4444');
+            setNewCloneHotkey('');
+          }}
+          data-tooltip="Cấu hình phím tắt & Bút vẽ"
+        >
+          <Settings size={18} />
+        </button>
+
         {/* Nút Đóng hoàn toàn công cụ */}
         <button
           className={`${styles.btn} ${styles.btnClose}`}
@@ -2353,6 +2656,264 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           <X size={18} />
         </button>
       </div>
+
+      {/* 4. Settings Modal Glassmorphism (Admin-Only) */}
+      {showSettings && (
+        <div className={styles.settingsModalOverlay}>
+          <div className={styles.settingsModal}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>
+                <Settings size={18} style={{ color: '#38bdf8' }} />
+                <span>Cấu hình công cụ vẽ màn hình (Admin)</span>
+              </h3>
+              <button 
+                className={styles.btnCloseModal} 
+                onClick={() => setShowSettings(false)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className={styles.modalTabs}>
+              <button 
+                className={`${styles.modalTab} ${activeTab === 'shortcuts' ? styles.modalTabActive : ''}`}
+                onClick={() => {
+                  setActiveTab('shortcuts');
+                  setListeningKeyFor(null);
+                }}
+              >
+                Phím tắt công cụ
+              </button>
+              <button 
+                className={`${styles.modalTab} ${activeTab === 'clones' ? styles.modalTabActive : ''}`}
+                onClick={() => {
+                  setActiveTab('clones');
+                  setListeningKeyFor(null);
+                }}
+              >
+                Quản lý Bút vẽ clone
+              </button>
+            </div>
+
+            <div className={styles.modalContent}>
+              {activeTab === 'shortcuts' && (
+                <div className={styles.hotkeyList}>
+                  {Object.keys(draftHotkeys).map((key) => (
+                    <div key={key} className={styles.hotkeyItem}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {key.startsWith('color') && (
+                          <div 
+                            style={{ 
+                              width: '12px', 
+                              height: '12px', 
+                              borderRadius: '50%', 
+                              backgroundColor: colorSlots[parseInt(key.replace('color', '')) - 1],
+                              border: '1px solid rgba(255,255,255,0.2)'
+                            }} 
+                          />
+                        )}
+                        <span className={styles.hotkeyLabel}>{HOTKEY_NAMES[key] || key}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <button 
+                          className={`${styles.hotkeyButton} ${listeningKeyFor === key ? styles.hotkeyListeningActive : ''}`}
+                          onClick={() => setListeningKeyFor(key)}
+                        >
+                          {listeningKeyFor === key ? 'NHẤN PHÍM...' : (draftHotkeys[key] || 'KHÔNG DÙNG')}
+                        </button>
+                        {draftHotkeys[key] && (
+                          <button
+                            style={{
+                              background: 'rgba(239, 68, 68, 0.15)',
+                              border: 'none',
+                              color: '#ef4444',
+                              cursor: 'pointer',
+                              padding: '6px',
+                              borderRadius: '6px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              transition: 'all 0.15s ease'
+                            }}
+                            onClick={() => {
+                              setDraftHotkeys(prev => ({
+                                ...prev,
+                                [key]: ''
+                              }));
+                            }}
+                            title="Xóa phím tắt"
+                          >
+                            <X size={14} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {activeTab === 'clones' && (
+                <div>
+                  <div className={styles.cloneForm}>
+                    <div className={styles.cloneFormRow}>
+                      <input 
+                        type="text" 
+                        placeholder="Tên bút clone (vd: Bút vẽ đỏ 4px)..." 
+                        value={newCloneName} 
+                        onChange={(e) => setNewCloneName(e.target.value)}
+                        className={styles.cloneInput}
+                      />
+                      <select 
+                        value={newCloneBaseType} 
+                        onChange={(e) => setNewCloneBaseType(e.target.value as any)}
+                        className={styles.cloneSelect}
+                      >
+                        <option value="pencil">Bút chì gốc</option>
+                        <option value="highlight">Highlight gốc</option>
+                        <option value="rectangle">Hình chữ nhật</option>
+                      </select>
+                    </div>
+
+                    <div className={styles.cloneColorGrid}>
+                      {PALETTE_COLORS.map((c) => (
+                        <div 
+                          key={c}
+                          className={`${styles.cloneColorSelectDot} ${newCloneColor === c ? styles.cloneColorSelectDotActive : ''}`}
+                          style={{ backgroundColor: c }}
+                          onClick={() => setNewCloneColor(c)}
+                          title={c}
+                        />
+                      ))}
+                      {/* Nút chọn màu custom bằng bảng màu hệ thống */}
+                      <label 
+                        className={`${styles.cloneColorSelectDot}`}
+                        style={{ 
+                          background: 'linear-gradient(135deg, red, orange, yellow, green, blue, purple)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: '10px',
+                          color: '#fff',
+                          textShadow: '0 1px 2px rgba(0,0,0,0.8)'
+                        }}
+                        title="Chọn màu tự do..."
+                      >
+                        +
+                        <input 
+                          type="color" 
+                          value={newCloneColor} 
+                          onChange={(e) => setNewCloneColor(e.target.value)}
+                          style={{ display: 'none' }}
+                        />
+                      </label>
+                    </div>
+
+                    <div className={styles.cloneFormRow}>
+                      <button 
+                        className={`${styles.hotkeyButton} ${listeningKeyFor === 'newClone' ? styles.hotkeyListeningActive : ''}`}
+                        onClick={() => setListeningKeyFor('newClone')}
+                        style={{ flex: 1 }}
+                      >
+                        {listeningKeyFor === 'newClone' 
+                          ? 'NHẤN PHÍM TẮT...' 
+                          : newCloneHotkey 
+                            ? `Phím tắt: ${newCloneHotkey.toUpperCase()}` 
+                            : 'Gán phím tắt...'}
+                      </button>
+                      
+                      <button 
+                        className={styles.btnCreateClone}
+                        onClick={() => {
+                          if (!newCloneName.trim()) {
+                            alert("Vui lòng nhập tên bút clone");
+                            return;
+                          }
+                          if (!newCloneHotkey) {
+                            alert("Vui lòng gán phím tắt cho bút clone");
+                            return;
+                          }
+                          // Tránh trùng phím tắt với phím tắt gốc
+                          const duplicateOriginal = Object.values(draftHotkeys).includes(newCloneHotkey);
+                          const duplicateClone = draftClonedTools.some(c => c.hotkey === newCloneHotkey);
+                          if (duplicateOriginal || duplicateClone) {
+                            alert("Phím tắt này đã được sử dụng! Vui lòng chọn phím khác.");
+                            return;
+                          }
+
+                          const newClone: ClonedTool = {
+                            id: Date.now().toString(),
+                            baseType: newCloneBaseType,
+                            name: newCloneName,
+                            color: newCloneColor,
+                            hotkey: newCloneHotkey
+                          };
+                          setDraftClonedTools(prev => [...prev, newClone]);
+                          setNewCloneName('');
+                          setNewCloneHotkey('');
+                        }}
+                      >
+                        Thêm Bút
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className={styles.cloneList}>
+                    {draftClonedTools.length === 0 ? (
+                      <div style={{ textAlign: 'center', opacity: 0.5, padding: '16px 0' }}>
+                        Chưa có bút vẽ clone nào được tạo.
+                      </div>
+                    ) : (
+                      draftClonedTools.map((clone) => (
+                        <div key={clone.id} className={styles.cloneItem}>
+                          <div className={styles.cloneItemLeft}>
+                            <div className={styles.cloneItemColorDot} style={{ backgroundColor: clone.color }} />
+                            <div>
+                              <div className={styles.cloneItemName}>{clone.name}</div>
+                              <div className={styles.cloneItemMeta}>
+                                {clone.baseType === 'pencil' ? 'Bút chì' : clone.baseType === 'highlight' ? 'Highlight' : 'Hình chữ nhật'}
+                              </div>
+                            </div>
+                          </div>
+                          <div className={styles.cloneItemRight}>
+                            <span className={styles.cloneItemHotkey}>{clone.hotkey}</span>
+                            <button 
+                              className={styles.btnDeleteClone}
+                              onClick={() => {
+                                setDraftClonedTools(prev => prev.filter(c => c.id !== clone.id));
+                              }}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button 
+                className={styles.btnCancel} 
+                onClick={() => setShowSettings(false)}
+                disabled={isSavingSettings}
+              >
+                Hủy
+              </button>
+              <button 
+                className={styles.btnSave} 
+                onClick={handleSaveSettings}
+                disabled={isSavingSettings}
+              >
+                {isSavingSettings ? 'Đang lưu...' : 'Lưu cài đặt'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

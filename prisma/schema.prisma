@@ -30,6 +30,7 @@ model User {
   devices          UserDevice[]
   userVocabs       UserVocabulary[]
   vocabBookmarks   VocabBookmark[]
+  drawSettings     Json?             // Cấu hình phím tắt và bút clone của admin (cho phép null)
 }
 
 model Account {
