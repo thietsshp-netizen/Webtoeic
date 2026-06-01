@@ -160,6 +160,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [flashlightSize, setFlashlightSize] = useState(100);
   const [flashlightShape, setFlashlightShape] = useState<'circle' | 'rectangle'>('circle');
   const mousePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isShiftPressed, setIsShiftPressed] = useState(false); // Trạng thái nhấn giữ Shift tạm thời tương tác web bên dưới (Ghost mode)
 
 
   // Đặt vị trí mặc định thông minh khi thay đổi trang học tập hoặc trang ngoài
@@ -400,28 +401,27 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     if (isFlashlightActive) {
       ctx.save();
       
-      // Tạo lớp phủ mờ toàn màn hình bằng màu tối
-      ctx.fillStyle = "rgba(15, 23, 42, 0.65)"; // Màu tối mờ đẹp (Slate 900)
-      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
-
-      // Đục lỗ sáng (Spotlight cutout) tại vị trí trỏ chuột
-      ctx.globalCompositeOperation = "destination-out";
-      ctx.fillStyle = "#000000"; // Dùng màu opaque (alpha = 1.0) để đục lỗ sạch hoàn toàn 100%!
       ctx.beginPath();
-      
+      // Vẽ hình chữ nhật bao phủ toàn bộ màn hình (Outer path)
+      ctx.rect(0, 0, window.innerWidth, window.innerHeight);
+
+      // Vẽ hình học đèn chiếu bên trong (Inner path) tại vị trí trỏ chuột
       const { x, y } = mousePosRef.current;
       const size = flashlightSize; // Bán kính hình tròn hoặc nửa chiều rộng hình chữ nhật
       
       if (flashlightShape === 'circle') {
         ctx.arc(x, y, size, 0, Math.PI * 2);
-        ctx.fill();
       } else {
         // Vẽ hình chữ nhật bo góc rải sáng tại tâm trỏ chuột
         const rx = size * 1.5; // Rộng hơn cao một chút để rọi sáng văn bản
         const ry = size * 0.8;
         ctx.roundRect(x - rx, y - ry, rx * 2, ry * 2, 8);
-        ctx.fill();
       }
+
+      // Tô màu tối phủ ngoài bằng quy tắc 'evenodd' (Outer path XOR Inner path)
+      // Giúp đục lỗ sáng 100% trong veo tự nhiên, tránh được mọi lỗi GPU/Alpha Composition của trình duyệt
+      ctx.fillStyle = "rgba(15, 23, 42, 0.65)"; // Màu tối mờ đẹp (Slate 900)
+      ctx.fill('evenodd');
       
       ctx.restore();
     }
@@ -643,7 +643,41 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       ctx.fillStyle = color;
       ctx.globalCompositeOperation = 'source-over';
 
-      if (tool === 'pencil') {
+      if (hasSnappedRef.current && recognizedShapeRef.current) {
+        // Nếu đã nhận dạng và snap hình học chuẩn đẹp thành công dưới đèn chiếu
+        const shape = recognizedShapeRef.current;
+        ctx.lineWidth = tool === 'highlight' ? highlightSize : pencilSize;
+        ctx.globalAlpha = tool === 'highlight' ? 0.35 : 1.0;
+        ctx.lineCap = tool === 'highlight' ? 'square' : 'round';
+        ctx.lineJoin = tool === 'highlight' ? 'miter' : 'round';
+
+        ctx.beginPath();
+        if (shape.type === 'rectangle' && shape.rect) {
+          ctx.rect(shape.rect.x, shape.rect.y, shape.rect.w, shape.rect.h);
+          
+          ctx.save();
+          ctx.globalAlpha = tool === 'highlight' ? 0.35 : 0.3; // giữ độ trong suốt mờ highlight chuẩn
+          ctx.fillStyle = color;
+          ctx.fill();
+          ctx.restore();
+
+          ctx.save();
+          ctx.globalAlpha = 0.6;
+          ctx.lineWidth = 0.5; // viền siêu mảnh
+          ctx.stroke();
+          ctx.restore();
+        } else if (shape.type === 'circle' && shape.circle) {
+          ctx.arc(shape.circle.cx, shape.circle.cy, shape.circle.radius, 0, 2 * Math.PI);
+          ctx.stroke();
+        } else if (shape.type === 'ellipse' && shape.ellipse) {
+          ctx.ellipse(shape.ellipse.cx, shape.ellipse.cy, shape.ellipse.rx, shape.ellipse.ry, 0, 0, 2 * Math.PI);
+          ctx.stroke();
+        } else if (shape.type === 'line' && shape.line) {
+          ctx.moveTo(shape.line.start.x, shape.line.start.y);
+          ctx.lineTo(shape.line.end.x, shape.line.end.y);
+          ctx.stroke();
+        }
+      } else if (tool === 'pencil') {
         ctx.globalAlpha = 1.0;
         ctx.lineWidth = pencilSize;
         ctx.lineCap = 'round';
@@ -861,6 +895,19 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   // Phím tắt bàn phím thông minh (IME-proof) - BIND DUY NHẤT 1 LẦN để đạt độ nhạy phản hồi 100%
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // 0. CHỨC NĂNG GHOST MODE (Shift): Tạm thời tắt vẽ để tương tác click/hover web bên dưới
+      if (e.key === 'Shift') {
+        const target = e.target as HTMLElement;
+        const isInput = 
+          target.tagName === 'INPUT' || 
+          target.tagName === 'TEXTAREA' || 
+          target.isContentEditable ||
+          stateRef.current.textInput !== null;
+        if (!isInput) {
+          setIsShiftPressed(true);
+        }
+      }
+
       const { isActive: currentIsActive, tool: currentTool, selectedId: currentSelectedId, textInput: currentTextInput } = stateRef.current;
       const target = e.target as HTMLElement;
       
@@ -985,8 +1032,24 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       }
     };
 
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') {
+        setIsShiftPressed(false);
+      }
+    };
+
+    const handleBlur = () => {
+      setIsShiftPressed(false);
+    };
+ 
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("blur", handleBlur);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("blur", handleBlur);
+    };
   }, []);
 
   // Xử lý kéo thả Toolbar di động
@@ -1157,6 +1220,14 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         events.forEach((evt: any) => {
           const ex = evt.clientX - rect.left;
           const ey = evt.clientY - rect.top;
+          
+          // Lọc khoảng cách tối thiểu giữa các điểm để tránh răng cưa góc cạnh và tích tụ độ mờ (opacity accumulation)
+          const lastPt = activePointsRef.current[activePointsRef.current.length - 1];
+          if (lastPt) {
+            const d = Math.sqrt((ex - lastPt.x) ** 2 + (ey - lastPt.y) ** 2);
+            if (d < 2) return; // Bỏ qua điểm nếu di chuyển quá ngắn (< 2px)
+          }
+
           const startPressure = evt.pressure !== undefined && evt.pressure > 0 ? evt.pressure : 0.5;
           activePointsRef.current.push({ x: ex, y: ey, pressure: startPressure });
           lastPointRef.current = { x: ex, y: ey };
@@ -1787,8 +1858,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       // Restore snapshot & vẽ đè hình đã nhận dạng lên canvas để người dùng nhìn thấy ngay lập tức
       const canvas = canvasRef.current;
       const ctx = ctxRef.current;
-      if (canvas && ctx && canvasSnapshotRef.current) {
-        ctx.putImageData(canvasSnapshotRef.current, 0, 0);
+      if (canvas && ctx) {
+        if (stateRef.current.isFlashlightActive) {
+          drawAllElements();
+        } else if (canvasSnapshotRef.current) {
+          ctx.putImageData(canvasSnapshotRef.current, 0, 0);
+        }
         ctx.strokeStyle = color;
         ctx.fillStyle = color;
         ctx.lineWidth = tool === 'highlight' ? highlightSize : pencilSize;
@@ -1841,6 +1916,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   // Tính cursor string thông qua useMemo – luôn cập nhật đúng khi state thay đổi
   const cursorStyle = useMemo(() => {
+    if (isShiftPressed) return 'default'; // Hiện con trỏ chuột mặc định khi đang kích hoạt Ghost Mode
     if (tool === 'cursor') return 'default';
     if (tool === 'hand') return (selectedId || isGrabbingPage) ? 'grabbing' : 'grab';
 
@@ -1872,7 +1948,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     if (tool === 'text') return 'text';
     return 'crosshair';
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tool, eraserSize, color, selectedId, isGrabbingPage]);
+  }, [tool, eraserSize, color, selectedId, isGrabbingPage, isShiftPressed]);
 
   // Set cursor trực tiếp lên DOM canvas mỗi khi cursorStyle thay đổi
   useEffect(() => {
@@ -1904,7 +1980,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         }}
         style={{ 
           cursor: cursorStyle,
-          pointerEvents: (tool === 'cursor' || textInput) ? 'none' : 'auto'
+          pointerEvents: (tool === 'cursor' || textInput || isShiftPressed) ? 'none' : 'auto'
         }}
       />
 
