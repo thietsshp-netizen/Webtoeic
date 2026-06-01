@@ -42,6 +42,7 @@ interface FullTestPlayerProps {
   courseId?: string;
   nextLessonId?: string;
   initialProgress?: any;
+  initialIsSubmitted?: boolean;
   jumpTo?: { id: string; ts: number } | null;
   videoExplanation?: any;
 }
@@ -54,12 +55,13 @@ export default function ToeicFullTestPlayer({
   courseId,
   nextLessonId,
   initialProgress = {},
+  initialIsSubmitted = false,
   jumpTo: jumpToProp,
   videoExplanation
 }: FullTestPlayerProps) {
   const [activePart, setActivePart] = useState<number>(1);
   const [timeLeft, setTimeLeft] = useState(120 * 60); // 120 phút
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(initialIsSubmitted);
   const [showResults, setShowResults] = useState(false);
   const [userProgress, setUserProgress] = useState(initialProgress);
   const [jumpTo, setJumpTo] = useState<{ id: string; ts: number } | null>(null);
@@ -1118,14 +1120,24 @@ export default function ToeicFullTestPlayer({
               </div>
             </div>
             <div className="p-8 max-h-[70vh] overflow-y-auto">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
                 <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100 flex flex-col items-center justify-center">
-                  <div className="text-emerald-600 font-black text-2xl">{stats.parts[1].correct + stats.parts[2].correct + stats.parts[3].correct + stats.parts[4].correct + stats.parts[5].correct + stats.parts[6].correct + stats.parts[7].correct}</div>
+                  <div className="text-emerald-600 font-black text-2xl">
+                    {Object.values(stats.parts).reduce((sum: number, p: any) => sum + p.correct, 0)}
+                  </div>
                   <div className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mt-1">Câu đúng</div>
                 </div>
                 <div className="bg-red-50 p-4 rounded-2xl border border-red-100 flex flex-col items-center justify-center">
-                  <div className="text-red-600 font-black text-2xl">{stats.total - (stats.parts[1].correct + stats.parts[2].correct + stats.parts[3].correct + stats.parts[4].correct + stats.parts[5].correct + stats.parts[6].correct + stats.parts[7].correct)}</div>
+                  <div className="text-red-600 font-black text-2xl">
+                    {Object.values(stats.parts).reduce((sum: number, p: any) => sum + p.incorrect, 0)}
+                  </div>
                   <div className="text-[9px] font-black text-red-500 uppercase tracking-widest mt-1">Câu sai</div>
+                </div>
+                <div className="bg-slate-100 p-4 rounded-2xl border border-slate-200 flex flex-col items-center justify-center">
+                  <div className="text-slate-600 font-black text-2xl">
+                    {Object.values(stats.parts).reduce((sum: number, p: any) => sum + p.unanswered, 0)}
+                  </div>
+                  <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1">Chưa làm</div>
                 </div>
                 <div className="bg-amber-50 p-4 rounded-2xl border border-amber-100 flex flex-col items-center justify-center">
                   <div className="text-amber-600 font-black text-2xl">{Object.values(userProgress).filter((p: any) => p.isFlagged).length}</div>

@@ -304,6 +304,7 @@ export default async function ToeicFullTestLoader({
   // 4. Tải tiến độ làm bài của học viên
   const session = await getServerSession(authOptions) as any;
   let initialProgress = {};
+  let isSubmittedInitial = false;
 
   if (session?.user?.id && Object.keys(aggregatedData).length > 0) {
     const allQIds = Object.values(aggregatedData).flatMap(partData =>
@@ -327,6 +328,17 @@ export default async function ToeicFullTestLoader({
       };
       return acc;
     }, {});
+
+    // Kiểm tra xem đã từng nộp đề thi này chưa (Full Test Attempt)
+    const testAttempt = await prisma.fullTestAttempt.findFirst({
+      where: {
+        userId: session.user.id,
+        lessonId: lessonId || null
+      }
+    });
+    if (testAttempt) {
+      isSubmittedInitial = true;
+    }
   }
 
   return (
@@ -339,6 +351,7 @@ export default async function ToeicFullTestLoader({
       courseId={courseId}
       nextLessonId={nextLessonId}
       initialProgress={initialProgress}
+      initialIsSubmitted={isSubmittedInitial}
       jumpTo={jumpToQ ? { id: jumpToQ } : undefined}
       videoExplanation={videoExplanation}
     />
