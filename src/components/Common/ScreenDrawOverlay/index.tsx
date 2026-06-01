@@ -375,7 +375,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         if (res.ok) {
           const data = await res.json();
           if (data.drawSettings) {
-            const { customHotkeys: dbHotkeys, clonedTools: dbCloned } = data.drawSettings;
+            // Hỗ trợ cả hai dạng: lồng nhau (data.drawSettings.drawSettings) hoặc phẳng (data.drawSettings)
+            const settings = data.drawSettings.drawSettings || data.drawSettings;
+            const { customHotkeys: dbHotkeys, clonedTools: dbCloned } = settings;
             if (dbHotkeys) {
               setCustomHotkeys(dbHotkeys);
               localStorage.setItem('webtoeic_custom_hotkeys', JSON.stringify(dbHotkeys));
@@ -456,7 +458,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ drawSettings: payload })
+        body: JSON.stringify(payload)
       });
 
       if (res.ok) {
