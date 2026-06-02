@@ -129,6 +129,7 @@ export default function LearnLayout({
                   setIsDrawingActive(nextActive);
                   window.dispatchEvent(new CustomEvent("webtoeic-toggle-global-draw", { detail: { active: nextActive } }));
                 }}
+                style={{ zIndex: 99999, position: "relative" }}
                 className={`p-2 rounded-full transition-all flex items-center justify-center border ${
                   isDrawingActive 
                     ? "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20 scale-105" 

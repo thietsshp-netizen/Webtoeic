@@ -4,7 +4,7 @@
   position: fixed;
   top: 14px;
   right: 14px;
-  z-index: 20002; /* Nổi đè lên trên tất cả mọi thành phần của trang */
+  z-index: 99999; /* Nổi đè lên trên tất cả mọi thành phần của trang bao gồm cả canvas */
   display: flex;
   align-items: center;
   justify-content: center;

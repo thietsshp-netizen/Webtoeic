@@ -151,6 +151,143 @@ export const getElementFont = (size: number, textStyle?: string): string => {
   return `${stylePart} ${size}px sans-serif`;
 };
 
+export const checkIntersection = (ex: number, ey: number, el: DrawElement, eraserRadius: number): boolean => {
+  const buffer = eraserRadius + 6; // Extra buffer to make it easy to hit
+
+  if (el.type === 'pencil' || el.type === 'highlight') {
+    return el.points.some(pt => {
+      const dx = pt.x - ex;
+      const dy = pt.y - ey;
+      return (dx * dx + dy * dy) <= buffer * buffer;
+    });
+  }
+
+  if (el.type === 'rectangle') {
+    if (el.x === undefined || el.y === undefined || el.width === undefined || el.height === undefined) return false;
+    const xMin = Math.min(el.x, el.x + el.width);
+    const xMax = Math.max(el.x, el.x + el.width);
+    const yMin = Math.min(el.y, el.y + el.height);
+    const yMax = Math.max(el.y, el.y + el.height);
+    return ex >= xMin - buffer && ex <= xMax + buffer && ey >= yMin - buffer && ey <= yMax + buffer;
+  }
+
+  if (el.type === 'circle') {
+    if (el.x === undefined || el.y === undefined || el.radius === undefined) return false;
+    const dx = el.x - ex;
+    const dy = el.y - ey;
+    const distSq = dx * dx + dy * dy;
+    return distSq <= (el.radius + buffer) * (el.radius + buffer);
+  }
+
+  if (el.type === 'ellipse') {
+    if (el.x === undefined || el.y === undefined || el.rx === undefined || el.ry === undefined) return false;
+    const xMin = el.x - el.rx;
+    const xMax = el.x + el.rx;
+    const yMin = el.y - el.ry;
+    const yMax = el.y + el.ry;
+    return ex >= xMin - buffer && ex <= xMax + buffer && ey >= yMin - buffer && ey <= yMax + buffer;
+  }
+
+  if (el.type === 'text') {
+    if (el.x === undefined || el.y === undefined || !el.text) return false;
+    const lines = el.text.split('\n');
+    const linesCount = lines.length;
+    let maxLineLen = 0;
+    lines.forEach(l => {
+      const clean = l.replace(/\*\*/g, "");
+      if (clean.length > maxLineLen) maxLineLen = clean.length;
+    });
+    const estWidth = maxLineLen * el.size * 0.65 + 16;
+    const estHeight = el.size * linesCount * 1.3 + 12;
+
+    const xMin = el.x - buffer;
+    const xMax = el.x + estWidth + buffer;
+    const yMin = el.y - buffer;
+    const yMax = el.y + estHeight + buffer;
+
+    return ex >= xMin && ex <= xMax && ey >= yMin && ey <= yMax;
+  }
+
+  return false;
+};
+
+export const erasePixelFromElements = (
+  ex: number,
+  ey: number,
+  eraserRadius: number,
+  elements: DrawElement[],
+  eraserTargets: { pencil: boolean; highlight: boolean; shapes: boolean; text: boolean }
+): DrawElement[] => {
+  const nextElements: DrawElement[] = [];
+
+  const pencilErasable = eraserTargets?.pencil ?? true;
+  const highlightErasable = eraserTargets?.highlight ?? true;
+  const shapesErasable = eraserTargets?.shapes ?? true;
+  const textErasable = eraserTargets?.text ?? true;
+  const buffer = eraserRadius + 5; // collision buffer
+
+  elements.forEach(el => {
+    if (el.type === 'eraser') {
+      return; // Do not preserve any pixel eraser mask elements!
+    }
+
+    let isTarget = false;
+    if (el.type === 'pencil') isTarget = pencilErasable;
+    else if (el.type === 'highlight') isTarget = highlightErasable;
+    else if (el.type === 'rectangle' || el.type === 'circle' || el.type === 'ellipse') isTarget = shapesErasable;
+    else if (el.type === 'text') isTarget = textErasable;
+
+    if (!isTarget) {
+      nextElements.push(el);
+      return;
+    }
+
+    if (el.type === 'pencil' || el.type === 'highlight') {
+      // Split the stroke at the intersection point!
+      const subStrokes: { x: number; y: number; pressure?: number }[][] = [];
+      let currentSub: { x: number; y: number; pressure?: number }[] = [];
+
+      el.points.forEach(pt => {
+        const dx = pt.x - ex;
+        const dy = pt.y - ey;
+        const distSq = dx * dx + dy * dy;
+
+        if (distSq <= buffer * buffer) {
+          // This point falls within eraser radius -> cut the line here
+          if (currentSub.length > 0) {
+            subStrokes.push(currentSub);
+            currentSub = [];
+          }
+        } else {
+          currentSub.push(pt);
+        }
+      });
+
+      if (currentSub.length > 0) {
+        subStrokes.push(currentSub);
+      }
+
+      // Re-add the split strokes as new individual elements!
+      subStrokes.forEach((pts, idx) => {
+        if (pts.length === 0) return;
+        nextElements.push({
+          ...el,
+          id: `${el.id}_split_${idx}_${Date.now()}`,
+          points: pts
+        });
+      });
+    } else {
+      // Atom objects (shapes/text) - if they touch the eraser, delete them completely!
+      const intersects = checkIntersection(ex, ey, el, eraserRadius);
+      if (!intersects) {
+        nextElements.push(el);
+      }
+    }
+  });
+
+  return nextElements;
+};
+
 export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({ 
   isActive, 
   setIsActive 
@@ -182,6 +319,26 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [eraserSize, setEraserSize] = useState(24);
   const [fontSize, setFontSize] = useState(20);
   const [lastActiveTool, setLastActiveTool] = useState<DrawTool>('pencil');
+
+  const [eraserTargets, setEraserTargets] = useState<{
+    pencil: boolean;
+    highlight: boolean;
+    shapes: boolean;
+    text: boolean;
+  }>({
+    pencil: true,
+    highlight: true,
+    shapes: true,
+    text: true
+  });
+  const [draftEraserTargets, setDraftEraserTargets] = useState({
+    pencil: true,
+    highlight: true,
+    shapes: true,
+    text: true
+  });
+  const [eraserMode, setEraserMode] = useState<'stroke' | 'pixel'>('pixel');
+  const [draftEraserMode, setDraftEraserMode] = useState<'stroke' | 'pixel'>('pixel');
 
   // Quản lý kéo thả Toolbar và Vị trí mặc định thông minh
   const [toolbarPos, setToolbarPos] = useState({ x: 200, y: 120 }); // Giá trị khởi tạo tạm thời
@@ -265,7 +422,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [draftHotkeys, setDraftHotkeys] = useState<Record<string, string>>(DEFAULT_HOTKEYS);
   const [draftClonedTools, setDraftClonedTools] = useState<ClonedTool[]>([]);
   const [draftFontSize, setDraftFontSize] = useState(20);
-  const [activeTab, setActiveTab] = useState<'shortcuts' | 'clones'>('shortcuts');
+  const [activeTab, setActiveTab] = useState<'shortcuts' | 'clones' | 'eraser'>('shortcuts');
   const [listeningKeyFor, setListeningKeyFor] = useState<string | null>(null);
 
   // Form states for creating a new clone
@@ -331,6 +488,21 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     const storedColor = localStorage.getItem('webtoeic_draw_color');
     if (storedColor) setColor(storedColor);
+
+    const storedEraserTargets = localStorage.getItem('webtoeic_eraser_targets');
+    if (storedEraserTargets) {
+      try {
+        const parsed = JSON.parse(storedEraserTargets);
+        if (parsed && typeof parsed === 'object') {
+          setEraserTargets(prev => ({ ...prev, ...parsed }));
+        }
+      } catch (e) { /* bỏ qua */ }
+    }
+
+    const storedEraserMode = localStorage.getItem('webtoeic_eraser_mode');
+    if (storedEraserMode === 'stroke' || storedEraserMode === 'pixel') {
+      setEraserMode(storedEraserMode);
+    }
 
     // Load custom color slots
     const storedSlots = localStorage.getItem('webtoeic_color_slots');
@@ -425,7 +597,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           if (data.drawSettings) {
             // Hỗ trợ cả hai dạng: lồng nhau (data.drawSettings.drawSettings) hoặc phẳng (data.drawSettings)
             const settings = data.drawSettings.drawSettings || data.drawSettings;
-            const { customHotkeys: dbHotkeys, clonedTools: dbCloned } = settings;
+            const { customHotkeys: dbHotkeys, clonedTools: dbCloned, eraserTargets: dbEraserTargets, eraserMode: dbEraserMode } = settings;
             if (dbHotkeys) {
               const merged = { ...DEFAULT_HOTKEYS, ...dbHotkeys };
               setCustomHotkeys(merged);
@@ -434,6 +606,14 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             if (dbCloned) {
               setClonedTools(dbCloned);
               localStorage.setItem('webtoeic_cloned_tools', JSON.stringify(dbCloned));
+            }
+            if (dbEraserTargets) {
+              setEraserTargets(dbEraserTargets);
+              localStorage.setItem('webtoeic_eraser_targets', JSON.stringify(dbEraserTargets));
+            }
+            if (dbEraserMode) {
+              setEraserMode(dbEraserMode);
+              localStorage.setItem('webtoeic_eraser_mode', dbEraserMode);
             }
             return;
           }
@@ -445,11 +625,21 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       // Fallback nếu không có mạng / DB rỗng
       const localHotkeys = localStorage.getItem('webtoeic_custom_hotkeys');
       const localClones = localStorage.getItem('webtoeic_cloned_tools');
+      const localEraserTargets = localStorage.getItem('webtoeic_eraser_targets');
+      const localEraserMode = localStorage.getItem('webtoeic_eraser_mode');
       if (localHotkeys) {
         const mergedLocal = { ...DEFAULT_HOTKEYS, ...JSON.parse(localHotkeys) };
         setCustomHotkeys(mergedLocal);
       }
       if (localClones) setClonedTools(JSON.parse(localClones));
+      if (localEraserTargets) {
+        try {
+          setEraserTargets(JSON.parse(localEraserTargets));
+        } catch (e) {}
+      }
+      if (localEraserMode === 'stroke' || localEraserMode === 'pixel') {
+        setEraserMode(localEraserMode);
+      }
     };
 
     loadDrawSettings();
@@ -502,7 +692,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     try {
       const payload = {
         customHotkeys: draftHotkeys,
-        clonedTools: draftClonedTools
+        clonedTools: draftClonedTools,
+        eraserTargets: draftEraserTargets,
+        eraserMode: draftEraserMode
       };
       
       const res = await fetch("/api/admin/draw-settings", {
@@ -516,9 +708,13 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (res.ok) {
         setCustomHotkeys(draftHotkeys);
         setClonedTools(draftClonedTools);
+        setEraserTargets(draftEraserTargets);
+        setEraserMode(draftEraserMode);
         setFontSize(draftFontSize);
         localStorage.setItem('webtoeic_custom_hotkeys', JSON.stringify(draftHotkeys));
         localStorage.setItem('webtoeic_cloned_tools', JSON.stringify(draftClonedTools));
+        localStorage.setItem('webtoeic_eraser_targets', JSON.stringify(draftEraserTargets));
+        localStorage.setItem('webtoeic_eraser_mode', draftEraserMode);
         localStorage.setItem('webtoeic_font_size', draftFontSize.toString());
         setShowSettings(false);
       } else {
@@ -620,6 +816,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       highlightSize,
       eraserSize,
       penStyle,
+      eraserTargets,
+      eraserMode,
     } = stateRef.current;
 
     // 1. Dọn dẹp canvas
@@ -658,8 +856,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       ctx.restore();
     }
 
-    // 3. Vẽ tuần tự từng đối tượng nét vẽ cũ TRÊN NỀN ĐÈN CHIẾU
-    elements.forEach((el) => {
+    const drawElement = (el: DrawElement) => {
       ctx.strokeStyle = el.color;
       ctx.fillStyle = el.color;
       ctx.lineWidth = el.size;
@@ -949,8 +1146,44 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           });
         }
       }
+    };
 
+    // Phân loại nét vẽ dựa trên cấu hình cục tẩy chọn lọc
+    const erasableElements: DrawElement[] = [];
+    const eraserElements: DrawElement[] = [];
+    const nonErasableElements: DrawElement[] = [];
+
+    const pencilErasable = eraserTargets?.pencil ?? true;
+    const highlightErasable = eraserTargets?.highlight ?? true;
+    const shapesErasable = eraserTargets?.shapes ?? true;
+    const textErasable = eraserTargets?.text ?? true;
+
+    elements.forEach(el => {
+      if (el.type === 'eraser') {
+        eraserElements.push(el);
+      } else {
+        let isErasable = false;
+        if (el.type === 'pencil') isErasable = pencilErasable;
+        else if (el.type === 'highlight') isErasable = highlightErasable;
+        else if (el.type === 'rectangle' || el.type === 'circle' || el.type === 'ellipse') isErasable = shapesErasable;
+        else if (el.type === 'text') isErasable = textErasable;
+
+        if (isErasable) {
+          erasableElements.push(el);
+        } else {
+          nonErasableElements.push(el);
+        }
+      }
     });
+
+    // 1. Vẽ toàn bộ đối tượng được phép tẩy trước
+    erasableElements.forEach(drawElement);
+
+    // 2. Vẽ đè các nét tẩy lên (sẽ tẩy sạch các phần tử ở bước 1)
+    eraserElements.forEach(drawElement);
+
+    // 3. Vẽ đè toàn bộ đối tượng KHÔNG được phép tẩy lên trên cùng (hoàn toàn nguyên vẹn)
+    nonErasableElements.forEach(drawElement);
 
     // 4. Vẽ nét vẽ nháp đang di chuột (Active Stroke) nếu đang vẽ trong chế độ Đèn chiếu
     if (isFlashlightActive && isDrawingRef.current && activePointsRef.current.length > 0) {
@@ -1224,6 +1457,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     activeCloneId: string | null;
     showSettings: boolean;
     lastActiveTool: DrawTool;
+    eraserTargets: { pencil: boolean; highlight: boolean; shapes: boolean; text: boolean };
+    eraserMode: 'stroke' | 'pixel';
   }>({
     isActive,
     tool,
@@ -1246,6 +1481,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     activeCloneId,
     showSettings,
     lastActiveTool,
+    eraserTargets: { pencil: true, highlight: true, shapes: true, text: true },
+    eraserMode: 'pixel'
   });
 
   // Cập nhật đồng bộ ngay trong render body để bảo đảm stateRef.current luôn có giá trị mới nhất trước khi bất kỳ useEffect hay render nào diễn ra
@@ -1271,6 +1508,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     activeCloneId,
     showSettings,
     lastActiveTool,
+    eraserTargets,
+    eraserMode,
   };
 
 
@@ -1688,6 +1927,42 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     else {
       // 2. Chế độ vẽ vẽ: Chụp snapshot canvas và khởi tạo toạ độ kèm lực nhấn ban đầu
       setSelectedId(null);
+
+      // Nếu là Eraser, lập tức kiểm tra va chạm để xóa nét luôn khi click xuống
+      const { eraserMode, eraserTargets } = stateRef.current;
+      if (tool === 'eraser') {
+        const eraserRadius = eraserSize / 2;
+        if (eraserMode === 'stroke') {
+          const toDeleteIds = new Set<string>();
+
+          const pencilErasable = eraserTargets?.pencil ?? true;
+          const highlightErasable = eraserTargets?.highlight ?? true;
+          const shapesErasable = eraserTargets?.shapes ?? true;
+          const textErasable = eraserTargets?.text ?? true;
+
+          elements.forEach(el => {
+            if (el.type === 'eraser') return;
+            
+            let isTarget = false;
+            if (el.type === 'pencil') isTarget = pencilErasable;
+            else if (el.type === 'highlight') isTarget = highlightErasable;
+            else if (el.type === 'rectangle' || el.type === 'circle' || el.type === 'ellipse') isTarget = shapesErasable;
+            else if (el.type === 'text') isTarget = textErasable;
+
+            if (isTarget && checkIntersection(x, y, el, eraserRadius)) {
+              toDeleteIds.add(el.id);
+            }
+          });
+
+          if (toDeleteIds.size > 0) {
+            setElements(prev => prev.filter(el => !toDeleteIds.has(el.id)));
+          }
+        } else {
+          // Pixel Eraser - thực hiện chia nét / xóa vật thể thật luôn
+          setElements(prev => erasePixelFromElements(x, y, eraserRadius, prev, eraserTargets));
+        }
+      }
+
       canvasSnapshotRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const startPressure = e.pressure !== undefined && e.pressure > 0 ? e.pressure : 0.5;
       lastWidthFactorRef.current = startPressure;
@@ -1996,16 +2271,37 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           lastPointRef.current = { x: ex, y: ey };
         } 
         else if (tool === 'eraser') {
-          ctx.globalCompositeOperation = 'destination-out';
-          ctx.globalAlpha = 1.0;
-          ctx.lineWidth = eraserSize;
-          ctx.lineCap = 'round';
-          ctx.lineJoin = 'round';
+          const { eraserMode, eraserTargets } = stateRef.current;
+          if (eraserMode === 'stroke') {
+            const eraserRadius = eraserSize / 2;
+            const toDeleteIds = new Set<string>();
 
-          ctx.beginPath();
-          ctx.moveTo(pt.x, pt.y);
-          ctx.lineTo(ex, ey);
-          ctx.stroke();
+            const pencilErasable = eraserTargets?.pencil ?? true;
+            const highlightErasable = eraserTargets?.highlight ?? true;
+            const shapesErasable = eraserTargets?.shapes ?? true;
+            const textErasable = eraserTargets?.text ?? true;
+
+            elements.forEach(el => {
+              if (el.type === 'eraser') return;
+              
+              let isTarget = false;
+              if (el.type === 'pencil') isTarget = pencilErasable;
+              else if (el.type === 'highlight') isTarget = highlightErasable;
+              else if (el.type === 'rectangle' || el.type === 'circle' || el.type === 'ellipse') isTarget = shapesErasable;
+              else if (el.type === 'text') isTarget = textErasable;
+
+              if (isTarget && checkIntersection(ex, ey, el, eraserRadius)) {
+                toDeleteIds.add(el.id);
+              }
+            });
+
+            if (toDeleteIds.size > 0) {
+              setElements(prev => prev.filter(el => !toDeleteIds.has(el.id)));
+            }
+          } else {
+            const eraserRadius = eraserSize / 2;
+            setElements(prev => erasePixelFromElements(ex, ey, eraserRadius, prev, eraserTargets));
+          }
 
           lastPointRef.current = { x: ex, y: ey };
         }
@@ -2211,14 +2507,18 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       } else {
         // Nhấc bút lên luôn mà KHÔNG giữ 1s -> lưu nét vẽ tay tự do ban đầu (không nhận dạng gì hết)
         if (tool === 'pencil' || tool === 'highlight' || tool === 'eraser') {
-          newElement = {
-            id: elementId,
-            type: tool,
-            points: [...points],
-            color: color,
-            size: tool === 'eraser' ? eraserSize : tool === 'highlight' ? highlightSize : pencilSize,
-            penStyle: tool === 'pencil' ? penStyle : undefined
-          };
+          if (tool === 'eraser' && stateRef.current.eraserMode === 'stroke') {
+            newElement = null; // Bỏ qua không lưu nét vẽ của stroke eraser vào vector list
+          } else {
+            newElement = {
+              id: elementId,
+              type: tool,
+              points: [...points],
+              color: color,
+              size: tool === 'eraser' ? eraserSize : tool === 'highlight' ? highlightSize : pencilSize,
+              penStyle: tool === 'pencil' ? penStyle : undefined
+            };
+          }
         } 
         else if (tool === 'rectangle' || tool === 'circle') {
           const startPoint = points[0];
@@ -3050,6 +3350,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               setDraftHotkeys({ ...customHotkeys });
               setDraftClonedTools([...clonedTools]);
               setDraftFontSize(fontSize);
+              setDraftEraserTargets({ ...eraserTargets });
+              setDraftEraserMode(eraserMode);
               setShowSettings(true);
               setActiveTab('shortcuts');
               setListeningKeyFor(null);
@@ -3217,6 +3519,15 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 }}
               >
                 Quản lý Bút vẽ clone
+              </button>
+              <button 
+                className={`${styles.modalTab} ${activeTab === 'eraser' ? styles.modalTabActive : ''}`}
+                onClick={() => {
+                  setActiveTab('eraser');
+                  setListeningKeyFor(null);
+                }}
+              >
+                Cấu hình Cục tẩy
               </button>
             </div>
 
@@ -3522,6 +3833,96 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                         </div>
                       ))
                     )}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'eraser' && (
+                <div className={styles.hotkeyList}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '12px' }}>
+                    <span className={styles.hotkeyLabel} style={{ fontWeight: 'bold', fontSize: '13px', color: '#38bdf8' }}>Chế độ hoạt động của tẩy</span>
+                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)' }}>Chọn cách thức hoạt động khi di chuột tẩy xóa.</span>
+                    <div style={{ display: 'flex', gap: '16px', marginTop: '10px' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: '600' }}>
+                        <input 
+                          type="radio" 
+                          name="eraserMode" 
+                          value="pixel" 
+                          checked={draftEraserMode === 'pixel'} 
+                          onChange={() => setDraftEraserMode('pixel')}
+                          style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                        />
+                        <span>Xóa điểm như hiện tại (Pixel Eraser)</span>
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: '600' }}>
+                        <input 
+                          type="radio" 
+                          name="eraserMode" 
+                          value="stroke" 
+                          checked={draftEraserMode === 'stroke'} 
+                          onChange={() => setDraftEraserMode('stroke')}
+                          style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                        />
+                        <span>Xóa toàn bộ nét 1 lần (Stroke Eraser)</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '8px' }}>
+                    <span className={styles.hotkeyLabel} style={{ fontWeight: 'bold', fontSize: '13px', color: '#38bdf8' }}>Chọn đối tượng tẩy xóa</span>
+                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)' }}>Tích chọn loại nét vẽ/comment mà cục tẩy được phép xóa. Khi không chọn, tẩy sẽ bỏ qua loại đó.</span>
+                  </div>
+
+                  <div className={styles.hotkeyItem}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <Pencil size={16} style={{ color: 'rgba(255,255,255,0.4)' }} />
+                      <span className={styles.hotkeyLabel}>Nét vẽ bút chì (Pencil)</span>
+                    </div>
+                    <input 
+                      type="checkbox" 
+                      checked={draftEraserTargets.pencil} 
+                      onChange={(e) => setDraftEraserTargets(prev => ({ ...prev, pencil: e.target.checked }))}
+                      style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                    />
+                  </div>
+
+                  <div className={styles.hotkeyItem}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <Highlighter size={16} style={{ color: 'rgba(255,255,255,0.4)' }} />
+                      <span className={styles.hotkeyLabel}>Bút dạ quang (Highlight)</span>
+                    </div>
+                    <input 
+                      type="checkbox" 
+                      checked={draftEraserTargets.highlight} 
+                      onChange={(e) => setDraftEraserTargets(prev => ({ ...prev, highlight: e.target.checked }))}
+                      style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                    />
+                  </div>
+
+                  <div className={styles.hotkeyItem}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <Square size={16} style={{ color: 'rgba(255,255,255,0.4)' }} />
+                      <span className={styles.hotkeyLabel}>Hình học (Hình vuông, hình tròn)</span>
+                    </div>
+                    <input 
+                      type="checkbox" 
+                      checked={draftEraserTargets.shapes} 
+                      onChange={(e) => setDraftEraserTargets(prev => ({ ...prev, shapes: e.target.checked }))}
+                      style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                    />
+                  </div>
+
+                  <div className={styles.hotkeyItem}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <Type size={16} style={{ color: 'rgba(255,255,255,0.4)' }} />
+                      <span className={styles.hotkeyLabel}>Văn bản (Text)</span>
+                    </div>
+                    <input 
+                      type="checkbox" 
+                      checked={draftEraserTargets.text} 
+                      onChange={(e) => setDraftEraserTargets(prev => ({ ...prev, text: e.target.checked }))}
+                      style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                    />
                   </div>
                 </div>
               )}
