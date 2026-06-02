@@ -58,6 +58,10 @@ export interface ClonedTool {
   hotkey: string;
   textSize?: number;
   textStyle?: 'normal' | 'bold' | 'italic' | 'bold-italic';
+  textHasBorder?: boolean;
+  textBorderWidth?: number;
+  textBgColor?: string;
+  textBgOpacity?: number;
 }
 
 export const DEFAULT_HOTKEYS: Record<string, string> = {
@@ -136,6 +140,10 @@ export interface DrawElement {
   ry?: number;
   text?: string;
   textStyle?: string;
+  textHasBorder?: boolean;
+  textBorderWidth?: number;
+  textBgColor?: string;
+  textBgOpacity?: number;
 }
 
 interface ScreenDrawOverlayProps {
@@ -197,8 +205,8 @@ export const checkIntersection = (ex: number, ey: number, el: DrawElement, erase
       const clean = l.replace(/\*\*/g, "");
       if (clean.length > maxLineLen) maxLineLen = clean.length;
     });
-    const estWidth = maxLineLen * el.size * 0.65 + 16;
-    const estHeight = el.size * linesCount * 1.3 + 12;
+    const estWidth = maxLineLen * el.size * 0.65 + 24;
+    const estHeight = el.size * linesCount * 1.3 + 24;
 
     const xMin = el.x - buffer;
     const xMax = el.x + estWidth + buffer;
@@ -432,6 +440,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [newCloneHotkey, setNewCloneHotkey] = useState('');
   const [newCloneTextSize, setNewCloneTextSize] = useState<number>(20);
   const [newCloneTextStyle, setNewCloneTextStyle] = useState<'normal' | 'bold' | 'italic' | 'bold-italic'>('normal');
+  const [newCloneTextHasBorder, setNewCloneTextHasBorder] = useState<boolean>(false);
+  const [newCloneTextBorderWidth, setNewCloneTextBorderWidth] = useState<number>(1);
+  const [newCloneTextBgColor, setNewCloneTextBgColor] = useState<string>('#FFFFFF');
+  const [newCloneTextBgOpacity, setNewCloneTextBgOpacity] = useState<number>(30);
+  const [editingCloneId, setEditingCloneId] = useState<string | null>(null);
+
 
 
   // Đặt vị trí mặc định thông minh khi thay đổi trang học tập hoặc trang ngoài
@@ -1028,25 +1042,62 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
         if (el.x !== undefined && el.y !== undefined && el.text) {
           const lines = el.text.split('\n');
+          let maxLineWidth = 0;
+          ctx.save();
+          lines.forEach(line => {
+            const cleanLine = line.replace(/\*\*/g, "");
+            ctx.font = getElementFont(el.size, el.textStyle);
+            const w = ctx.measureText(cleanLine).width;
+            if (w > maxLineWidth) maxLineWidth = w;
+          });
+          ctx.restore();
+          
+          const linesCount = lines.length;
+          const paddingX = 8;
+          const paddingY = 8;
+          const rectX = el.x;
+          const rectY = el.y;
+          const rectW = maxLineWidth + paddingX * 2;
+          const rectH = el.size * linesCount * 1.3 + paddingY * 2;
+
+          // 1. Vẽ màu nền nếu có cấu hình
+          if (el.textBgColor) {
+            ctx.save();
+            ctx.fillStyle = el.textBgColor;
+            ctx.globalAlpha = el.textBgOpacity !== undefined ? el.textBgOpacity : 1.0;
+            ctx.beginPath();
+            ctx.roundRect(rectX, rectY, rectW, rectH, 6);
+            ctx.fill();
+            ctx.restore();
+          }
+
+          // 2. Vẽ viền nếu có cấu hình
+          if (el.textHasBorder) {
+            ctx.save();
+            ctx.strokeStyle = el.color; // sử dụng màu chữ để vẽ viền hài hoà
+            ctx.lineWidth = el.textBorderWidth || 1;
+            ctx.beginPath();
+            ctx.roundRect(rectX, rectY, rectW, rectH, 6);
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          // 3. Vẽ chữ nháp
           lines.forEach((line, lineIndex) => {
-            const startX = el.x! + 4;
-            const startY = el.y! + 4 + lineIndex * (el.size * 1.3);
+            const startX = el.x! + paddingX;
+            const startY = el.y! + paddingY + lineIndex * (el.size * 1.3);
 
             // Parse markdown in đậm **text**
-            // Regex phân tách chuỗi có giữ lại các dấu phân tách
             const parts = line.split(/(\*\*[^*]+\*\*)/g);
-            
             let currentX = startX;
 
             parts.forEach((part) => {
               if (part.startsWith('**') && part.endsWith('**')) {
-                // In đậm
                 const cleanText = part.slice(2, -2);
                 ctx.font = `bold ${el.size}px sans-serif`;
                 ctx.fillText(cleanText, currentX, startY);
                 currentX += ctx.measureText(cleanText).width;
               } else if (part) {
-                // Chữ thường (Ở đây bảng vẽ để font in đậm nhẹ mặc định sans-serif để dễ nhìn hoặc normal)
                 ctx.font = getElementFont(el.size, el.textStyle);
                 ctx.fillText(part, currentX, startY);
                 currentX += ctx.measureText(part).width;
@@ -1103,8 +1154,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           const linesCount = lines.length;
           bx1 = el.x - 2;
           by1 = el.y - 2;
-          bx2 = el.x + maxLineWidth + 12;
-          by2 = el.y + el.size * linesCount * 1.3 + 8;
+          bx2 = el.x + maxLineWidth + 18;
+          by2 = el.y + el.size * linesCount * 1.3 + 18;
           ctx.rect(bx1, by1, bx2 - bx1, by2 - by1);
         } else if (el.points.length > 0) {
           // Bounding box giả lập cho nét vẽ tự do khi được chọn
@@ -2623,6 +2674,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         color: isTextClone ? activeClone.color : color,
         size: (isTextClone && activeClone.textSize) ? activeClone.textSize : fontSize,
         textStyle: isTextClone ? activeClone.textStyle : undefined,
+        textHasBorder: isTextClone ? activeClone.textHasBorder : undefined,
+        textBorderWidth: isTextClone ? activeClone.textBorderWidth : undefined,
+        textBgColor: isTextClone ? activeClone.textBgColor : undefined,
+        textBgOpacity: isTextClone ? activeClone.textBgOpacity : undefined,
         x: x,
         y: y,
         text: textInputValRef.current
@@ -2989,6 +3044,26 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             editingTextId
               ? elements.find(el => el.id === editingTextId)?.textStyle
               : clonedTools.find(c => c.id === activeCloneId)?.textStyle
+          }
+          textHasBorder={
+            editingTextId
+              ? elements.find(el => el.id === editingTextId)?.textHasBorder
+              : clonedTools.find(c => c.id === activeCloneId)?.textHasBorder
+          }
+          textBorderWidth={
+            editingTextId
+              ? elements.find(el => el.id === editingTextId)?.textBorderWidth
+              : clonedTools.find(c => c.id === activeCloneId)?.textBorderWidth
+          }
+          textBgColor={
+            editingTextId
+              ? elements.find(el => el.id === editingTextId)?.textBgColor
+              : clonedTools.find(c => c.id === activeCloneId)?.textBgColor
+          }
+          textBgOpacity={
+            editingTextId
+              ? elements.find(el => el.id === editingTextId)?.textBgOpacity
+              : clonedTools.find(c => c.id === activeCloneId)?.textBgOpacity
           }
           style={{
             left: textInput.x,
@@ -3359,6 +3434,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               setNewCloneBaseType('pencil');
               setNewCloneColor('#EF4444');
               setNewCloneHotkey('');
+              setNewCloneTextHasBorder(false);
+              setNewCloneTextBorderWidth(1);
+              setNewCloneTextBgColor('#FFFFFF');
+              setNewCloneTextBgOpacity(30);
+              setEditingCloneId(null);
             }}
             data-tooltip="Cấu hình phím tắt & Bút vẽ"
           >
@@ -3676,35 +3756,95 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                     </div>
 
                     {newCloneBaseType === 'text' && (
-                      <div className={styles.cloneFormRow} style={{ marginTop: '0px', gap: '10px', marginBottom: '12px' }}>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>Cỡ chữ:</span>
-                          <select
-                            value={newCloneTextSize}
-                            onChange={(e) => setNewCloneTextSize(parseInt(e.target.value))}
-                            className={styles.cloneSelect}
-                            style={{ width: '100%' }}
-                          >
-                            {[12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 64].map(sz => (
-                              <option key={sz} value={sz}>{sz}px</option>
-                            ))}
-                          </select>
+                      <>
+                        <div className={styles.cloneFormRow} style={{ marginTop: '0px', gap: '10px', marginBottom: '12px' }}>
+                          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>Cỡ chữ:</span>
+                            <select
+                              value={newCloneTextSize}
+                              onChange={(e) => setNewCloneTextSize(parseInt(e.target.value))}
+                              className={styles.cloneSelect}
+                              style={{ width: '100%' }}
+                            >
+                              {[12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 64].map(sz => (
+                                <option key={sz} value={sz}>{sz}px</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>Kiểu chữ:</span>
+                            <select
+                              value={newCloneTextStyle}
+                              onChange={(e) => setNewCloneTextStyle(e.target.value as any)}
+                              className={styles.cloneSelect}
+                              style={{ width: '100%' }}
+                            >
+                              <option value="normal">Thường (500)</option>
+                              <option value="bold">In đậm (Bold)</option>
+                              <option value="italic">Nghiêng (Italic)</option>
+                              <option value="bold-italic">Đậm & Nghiêng</option>
+                            </select>
+                          </div>
                         </div>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>Kiểu chữ:</span>
-                          <select
-                            value={newCloneTextStyle}
-                            onChange={(e) => setNewCloneTextStyle(e.target.value as any)}
-                            className={styles.cloneSelect}
-                            style={{ width: '100%' }}
-                          >
-                            <option value="normal">Thường (500)</option>
-                            <option value="bold">In đậm (Bold)</option>
-                            <option value="italic">Nghiêng (Italic)</option>
-                            <option value="bold-italic">Đậm & Nghiêng</option>
-                          </select>
+
+                        {/* Các cài đặt khung viền và màu nền */}
+                        <div className={styles.cloneFormRow} style={{ marginTop: '0px', gap: '12px', marginBottom: '12px', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '11px', color: 'rgba(255,255,255,0.8)' }}>
+                              <input 
+                                type="checkbox" 
+                                checked={newCloneTextHasBorder} 
+                                onChange={(e) => setNewCloneTextHasBorder(e.target.checked)}
+                                style={{ width: '15px', height: '15px', cursor: 'pointer' }}
+                              />
+                              <span>Đóng khung viền (Border)</span>
+                            </label>
+                            
+                            {newCloneTextHasBorder && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingLeft: '23px' }}>
+                                <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)' }}>Độ dày:</span>
+                                <input 
+                                  type="number" 
+                                  min="1" 
+                                  max="10" 
+                                  value={newCloneTextBorderWidth} 
+                                  onChange={(e) => setNewCloneTextBorderWidth(Math.max(1, parseInt(e.target.value) || 1))}
+                                  className={styles.cloneSelect}
+                                  style={{ width: '60px', padding: '3px 6px', textAlign: 'center' }}
+                                />
+                                <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)' }}>px</span>
+                              </div>
+                            )}
+                          </div>
+
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1, borderLeft: '1px solid rgba(255,255,255,0.08)', paddingLeft: '12px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{ fontSize: '11px', fontWeight: 'bold', color: 'rgba(255,255,255,0.8)' }}>Tô màu nền:</span>
+                              <input 
+                                type="color" 
+                                value={newCloneTextBgColor} 
+                                onChange={(e) => setNewCloneTextBgColor(e.target.value)}
+                                style={{ width: '26px', height: '20px', border: '1px solid rgba(255,255,255,0.2)', padding: 0, borderRadius: '4px', cursor: 'pointer', background: 'none' }}
+                              />
+                            </div>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                              <div style={{ display: 'flex', justifyContent: 'between', fontSize: '10px', color: 'rgba(255,255,255,0.5)' }}>
+                                <span>Độ trong suốt nền:</span>
+                                <span style={{ marginLeft: 'auto', color: '#38bdf8', fontWeight: 'bold' }}>{newCloneTextBgOpacity}%</span>
+                              </div>
+                              <input 
+                                type="range" 
+                                min="0" 
+                                max="100" 
+                                value={newCloneTextBgOpacity} 
+                                onChange={(e) => setNewCloneTextBgOpacity(parseInt(e.target.value))}
+                                style={{ width: '100%', cursor: 'pointer', height: '4px' }}
+                              />
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      </>
                     )}
 
                     <div className={styles.cloneColorGrid}>
@@ -3743,11 +3883,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                       </label>
                     </div>
 
-                    <div className={styles.cloneFormRow}>
+                    <div className={styles.cloneFormRow} style={{ gap: '10px' }}>
                       <button 
                         className={`${styles.hotkeyButton} ${listeningKeyFor === 'newClone' ? styles.hotkeyListeningActive : ''}`}
                         onClick={() => setListeningKeyFor('newClone')}
-                        style={{ flex: 1 }}
+                        style={{ flex: 2 }}
                       >
                         {listeningKeyFor === 'newClone' 
                           ? 'NHẤN PHÍM TẮT...' 
@@ -3756,8 +3896,27 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                             : 'Gán phím tắt...'}
                       </button>
                       
+                      {editingCloneId && (
+                        <button
+                          className={styles.btnCancel}
+                          onClick={() => {
+                            setEditingCloneId(null);
+                            setNewCloneName('');
+                            setNewCloneHotkey('');
+                            setNewCloneTextHasBorder(false);
+                            setNewCloneTextBorderWidth(1);
+                            setNewCloneTextBgColor('#FFFFFF');
+                            setNewCloneTextBgOpacity(30);
+                          }}
+                          style={{ padding: '0 12px', fontSize: '12px', whiteSpace: 'nowrap' }}
+                        >
+                          Hủy sửa
+                        </button>
+                      )}
+
                       <button 
                         className={styles.btnCreateClone}
+                        style={{ flex: 3 }}
                         onClick={() => {
                           if (!newCloneName.trim()) {
                             alert("Vui lòng nhập tên bút clone");
@@ -3769,27 +3928,60 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                           }
                           // Tránh trùng phím tắt với phím tắt gốc
                           const duplicateOriginal = Object.values(draftHotkeys).includes(newCloneHotkey);
-                          const duplicateClone = draftClonedTools.some(c => c.hotkey === newCloneHotkey);
+                          const duplicateClone = draftClonedTools.some(c => c.hotkey === newCloneHotkey && c.id !== editingCloneId);
                           if (duplicateOriginal || duplicateClone) {
                             alert("Phím tắt này đã được sử dụng! Vui lòng chọn phím khác.");
                             return;
                           }
 
-                          const newClone: ClonedTool = {
-                            id: Date.now().toString(),
-                            baseType: newCloneBaseType,
-                            name: newCloneName,
-                            color: newCloneColor,
-                            hotkey: newCloneHotkey,
-                            textSize: newCloneBaseType === 'text' ? newCloneTextSize : undefined,
-                            textStyle: newCloneBaseType === 'text' ? newCloneTextStyle : undefined
-                          };
-                          setDraftClonedTools(prev => [...prev, newClone]);
+                          if (editingCloneId) {
+                            // Cập nhật bút clone đã chọn
+                            setDraftClonedTools(prev => prev.map(c => {
+                              if (c.id === editingCloneId) {
+                                return {
+                                  ...c,
+                                  baseType: newCloneBaseType,
+                                  name: newCloneName,
+                                  color: newCloneColor,
+                                  hotkey: newCloneHotkey,
+                                  textSize: newCloneBaseType === 'text' ? newCloneTextSize : undefined,
+                                  textStyle: newCloneBaseType === 'text' ? newCloneTextStyle : undefined,
+                                  textHasBorder: newCloneBaseType === 'text' ? newCloneTextHasBorder : undefined,
+                                  textBorderWidth: newCloneBaseType === 'text' ? newCloneTextBorderWidth : undefined,
+                                  textBgColor: newCloneBaseType === 'text' ? newCloneTextBgColor : undefined,
+                                  textBgOpacity: newCloneBaseType === 'text' ? (newCloneTextBgOpacity / 100) : undefined
+                                };
+                              }
+                              return c;
+                            }));
+                            setEditingCloneId(null);
+                          } else {
+                            // Tạo mới bút clone
+                            const newClone: ClonedTool = {
+                              id: Date.now().toString(),
+                              baseType: newCloneBaseType,
+                              name: newCloneName,
+                              color: newCloneColor,
+                              hotkey: newCloneHotkey,
+                              textSize: newCloneBaseType === 'text' ? newCloneTextSize : undefined,
+                              textStyle: newCloneBaseType === 'text' ? newCloneTextStyle : undefined,
+                              textHasBorder: newCloneBaseType === 'text' ? newCloneTextHasBorder : undefined,
+                              textBorderWidth: newCloneBaseType === 'text' ? newCloneTextBorderWidth : undefined,
+                              textBgColor: newCloneBaseType === 'text' ? newCloneTextBgColor : undefined,
+                              textBgOpacity: newCloneBaseType === 'text' ? (newCloneTextBgOpacity / 100) : undefined
+                            };
+                            setDraftClonedTools(prev => [...prev, newClone]);
+                          }
+                          
                           setNewCloneName('');
                           setNewCloneHotkey('');
+                          setNewCloneTextHasBorder(false);
+                          setNewCloneTextBorderWidth(1);
+                          setNewCloneTextBgColor('#FFFFFF');
+                          setNewCloneTextBgOpacity(30);
                         }}
                       >
-                        Thêm Bút
+                        {editingCloneId ? 'Lưu Thay Đổi' : 'Thêm Bút'}
                       </button>
                     </div>
                   </div>
@@ -3801,11 +3993,37 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                       </div>
                     ) : (
                       draftClonedTools.map((clone) => (
-                        <div key={clone.id} className={styles.cloneItem}>
+                        <div 
+                          key={clone.id} 
+                          className={`${styles.cloneItem} ${editingCloneId === clone.id ? styles.cloneItemEditing : ''}`}
+                          onClick={() => {
+                            setEditingCloneId(clone.id);
+                            setNewCloneName(clone.name);
+                            setNewCloneBaseType(clone.baseType);
+                            setNewCloneColor(clone.color);
+                            setNewCloneHotkey(clone.hotkey);
+                            if (clone.baseType === 'text') {
+                              setNewCloneTextSize(clone.textSize || 20);
+                              setNewCloneTextStyle(clone.textStyle || 'normal');
+                              setNewCloneTextHasBorder(!!clone.textHasBorder);
+                              setNewCloneTextBorderWidth(clone.textBorderWidth || 1);
+                              setNewCloneTextBgColor(clone.textBgColor || '#FFFFFF');
+                              setNewCloneTextBgOpacity(clone.textBgOpacity !== undefined ? Math.round(clone.textBgOpacity * 100) : 30);
+                            }
+                          }}
+                          title="Nhấp vào để sửa thông số"
+                        >
                           <div className={styles.cloneItemLeft}>
                             <div className={styles.cloneItemColorDot} style={{ backgroundColor: clone.color }} />
                             <div>
-                              <div className={styles.cloneItemName}>{clone.name}</div>
+                              <div className={styles.cloneItemName}>
+                                {clone.name} 
+                                {editingCloneId === clone.id && (
+                                  <span style={{ fontSize: '10px', color: '#38bdf8', marginLeft: '6px', fontStyle: 'italic', fontWeight: 'normal' }}>
+                                    (Đang sửa)
+                                  </span>
+                                )}
+                              </div>
                               <div className={styles.cloneItemMeta}>
                                 {clone.baseType === 'pencil' 
                                   ? 'Bút chì' 
@@ -3823,7 +4041,13 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                             <span className={styles.cloneItemHotkey}>{clone.hotkey}</span>
                             <button 
                               className={styles.btnDeleteClone}
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (editingCloneId === clone.id) {
+                                  setEditingCloneId(null);
+                                  setNewCloneName('');
+                                  setNewCloneHotkey('');
+                                }
                                 setDraftClonedTools(prev => prev.filter(c => c.id !== clone.id));
                               }}
                             >
@@ -3834,6 +4058,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                       ))
                     )}
                   </div>
+
                 </div>
               )}
 

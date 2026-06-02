@@ -10,7 +10,23 @@ interface RichTextInputProps {
   fontSize: number;
   style?: React.CSSProperties;
   textStyle?: string;
+  textHasBorder?: boolean;
+  textBorderWidth?: number;
+  textBgColor?: string;
+  textBgOpacity?: number;
 }
+
+export const hexToRgba = (hex: string, opacity: number): string => {
+  if (!hex) return 'transparent';
+  let cleanHex = hex.replace('#', '');
+  if (cleanHex.length === 3) {
+    cleanHex = cleanHex.split('').map(c => c + c).join('');
+  }
+  const r = parseInt(cleanHex.substring(0, 2), 16);
+  const g = parseInt(cleanHex.substring(2, 4), 16);
+  const b = parseInt(cleanHex.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
 
 export const MarkdownTextarea: React.FC<RichTextInputProps> = ({
   value,
@@ -21,6 +37,10 @@ export const MarkdownTextarea: React.FC<RichTextInputProps> = ({
   fontSize,
   style,
   textStyle,
+  textHasBorder,
+  textBorderWidth,
+  textBgColor,
+  textBgOpacity,
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -99,6 +119,14 @@ export const MarkdownTextarea: React.FC<RichTextInputProps> = ({
     }
   };
 
+  const borderStyle = textHasBorder 
+    ? `${textBorderWidth || 1}px solid ${color}` 
+    : '1px dashed rgba(59, 130, 246, 0.6)';
+
+  const bgStyle = textBgColor 
+    ? hexToRgba(textBgColor, textBgOpacity !== undefined ? textBgOpacity : 1.0) 
+    : 'transparent';
+
   return (
     <div
       ref={editorRef}
@@ -114,6 +142,10 @@ export const MarkdownTextarea: React.FC<RichTextInputProps> = ({
         color: color,
         fontWeight: textStyle === 'bold' || textStyle === 'bold-italic' ? 'bold' : '500',
         fontStyle: textStyle === 'italic' || textStyle === 'bold-italic' ? 'italic' : 'normal',
+        border: borderStyle,
+        backgroundColor: bgStyle,
+        padding: "8px",
+        borderRadius: "6px",
         lineHeight: 1.3,
         fontFamily: "inherit",
         boxSizing: "border-box",

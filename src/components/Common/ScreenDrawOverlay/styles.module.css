@@ -676,7 +676,22 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   padding: 8px 16px;
   border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.cloneItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.cloneItemEditing {
+  background: rgba(56, 189, 248, 0.06) !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
+}
+
 
 .cloneItemLeft {
   display: flex;
