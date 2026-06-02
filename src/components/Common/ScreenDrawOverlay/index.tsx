@@ -359,6 +359,14 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   // Khai báo state lưu nét vẽ vector và các refs vẽ nháp chuyên biệt
   const [elements, setElements] = useState<DrawElement[]>([]);
+  const [undoStack, setUndoStack] = useState<DrawElement[][]>([]);
+  const [redoStack, setRedoStack] = useState<DrawElement[][]>([]);
+
+  const saveToUndoStack = (currentElements: DrawElement[]) => {
+    setUndoStack(prev => [...prev.slice(-49), currentElements]);
+    setRedoStack([]);
+  };
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isGrabbingPage, setIsGrabbingPage] = useState(false);
   const isGrabbingPageRef = useRef(false);
@@ -1510,11 +1518,15 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     lastActiveTool: DrawTool;
     eraserTargets: { pencil: boolean; highlight: boolean; shapes: boolean; text: boolean };
     eraserMode: 'stroke' | 'pixel';
+    undoStack: DrawElement[][];
+    redoStack: DrawElement[][];
   }>({
     isActive,
     tool,
     selectedId,
     elements,
+    undoStack: [],
+    redoStack: [],
     textInput,
     editingTextId,
     isGrabbingPage,
@@ -1561,6 +1573,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     lastActiveTool,
     eraserTargets,
     eraserMode,
+    undoStack,
+    redoStack,
   };
 
 
@@ -1570,6 +1584,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     setActiveCloneId(null); // Hủy kích hoạt bút clone nếu chọn màu thủ công để quay về trạng thái cọ mặc định
     const { selectedId: currentSelectedId } = stateRef.current;
     if (currentSelectedId) {
+      saveToUndoStack(elements);
       setElements(prev => prev.map(el => el.id === currentSelectedId ? { ...el, color: newColor } : el));
     }
   };
@@ -1578,6 +1593,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const updateSize = (type: 'pencil' | 'highlight' | 'eraser' | 'text', action: 'increase' | 'decrease') => {
     const isInc = action === 'increase';
     const { selectedId: currentSelectedId } = stateRef.current;
+    if (currentSelectedId) {
+      saveToUndoStack(elements);
+    }
     if (type === 'pencil') {
       setPencilSize(prev => {
         const next = parseFloat((isInc ? Math.min(40, prev + 0.5) : Math.max(1, prev - 0.5)).toFixed(1));
@@ -1793,14 +1811,47 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         if (!(e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)) {
           if (currentSelectedId) {
             e.preventDefault();
+            saveToUndoStack(elements);
             setElements(prev => prev.filter(el => el.id !== currentSelectedId));
             setSelectedId(null);
           } else if (currentTool && currentTool !== 'cursor' && currentTool !== 'hand' && currentTool !== 'eraser') {
             e.preventDefault();
+            saveToUndoStack(elements);
             // Xóa toàn bộ phần tử thuộc loại công cụ đang kích hoạt trên toolbar
             setElements(prev => prev.filter(el => el.type !== currentTool));
           }
         }
+      }
+
+      // Nhấn Ctrl+Z / Cmd+Z để Undo
+      const isUndo = (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.shiftKey;
+      if (isUndo) {
+        e.preventDefault();
+        const { undoStack: currentUndoStack, redoStack: currentRedoStack } = stateRef.current;
+        if (currentUndoStack.length > 0) {
+          const prevState = currentUndoStack[currentUndoStack.length - 1];
+          setUndoStack(prev => prev.slice(0, -1));
+          setRedoStack(prev => [...prev, elements]);
+          setElements(prevState);
+          setSelectedId(null);
+        }
+        return;
+      }
+
+      // Nhấn Ctrl+Y / Cmd+Y hoặc Ctrl+Shift+Z / Cmd+Shift+Z để Redo
+      const isRedo = ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') ||
+                     ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'z');
+      if (isRedo) {
+        e.preventDefault();
+        const { undoStack: currentUndoStack, redoStack: currentRedoStack } = stateRef.current;
+        if (currentRedoStack.length > 0) {
+          const nextState = currentRedoStack[currentRedoStack.length - 1];
+          setRedoStack(prev => prev.slice(0, -1));
+          setUndoStack(prev => [...prev, elements]);
+          setElements(nextState);
+          setSelectedId(null);
+        }
+        return;
       }
     };
 
@@ -1917,6 +1968,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         if (selectedEl) {
           const handle = getResizeHandleAtPosition(x, y, selectedEl);
           if (handle) {
+            saveToUndoStack(elements);
             canvas.setPointerCapture(e.pointerId);
             setResizingInfo({
               elementId: selectedEl.id,
@@ -1938,6 +1990,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       // 1. Chế độ Bàn tay: Tìm đối tượng được chọn dưới ngòi chuột
       const clickedElement = findElementAtPosition(x, y);
       if (clickedElement) {
+        saveToUndoStack(elements);
         setSelectedId(clickedElement.id);
         isGrabbingPageRef.current = false;
         setIsGrabbingPage(false);
@@ -1982,6 +2035,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       }
     } 
     else {
+      saveToUndoStack(elements);
       // 2. Chế độ vẽ vẽ: Chụp snapshot canvas và khởi tạo toạ độ kèm lực nhấn ban đầu
       setSelectedId(null);
 
@@ -2640,6 +2694,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     if (!value) {
       if (editingTextId) {
         // Nếu đang sửa và xoá sạch chữ, tiến hành xoá phần tử khỏi danh sách
+        saveToUndoStack(elements);
         setElements(prev => prev.filter(el => el.id !== editingTextId));
       }
       setTextInput(null);
@@ -2647,6 +2702,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       return;
     }
 
+    saveToUndoStack(elements);
     let targetId = editingTextId;
 
     if (editingTextId) {
@@ -2702,6 +2758,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   // Xoá sạch canvas và state
   const clearCanvas = () => {
+    saveToUndoStack(elements);
     setElements([]);
     setSelectedId(null);
     const canvas = canvasRef.current;
