@@ -1787,13 +1787,19 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         }
       }
 
-      // Nhấn Backspace / Delete đơn lẻ để xoá duy nhất phần tử đang chọn
+      // Nhấn Backspace / Delete đơn lẻ để xoá duy nhất phần tử đang chọn hoặc tất cả nét vẽ của công cụ đang kích hoạt
       const isBackspaceOrDelete = e.key === 'Backspace' || e.key === 'Delete' || e.code === 'Backspace' || e.code === 'Delete';
       if (isBackspaceOrDelete) {
-        if (currentSelectedId && !(e.ctrlKey || e.metaKey)) {
-          e.preventDefault();
-          setElements(prev => prev.filter(el => el.id !== currentSelectedId));
-          setSelectedId(null);
+        if (!(e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)) {
+          if (currentSelectedId) {
+            e.preventDefault();
+            setElements(prev => prev.filter(el => el.id !== currentSelectedId));
+            setSelectedId(null);
+          } else if (currentTool && currentTool !== 'cursor' && currentTool !== 'hand' && currentTool !== 'eraser') {
+            e.preventDefault();
+            // Xóa toàn bộ phần tử thuộc loại công cụ đang kích hoạt trên toolbar
+            setElements(prev => prev.filter(el => el.type !== currentTool));
+          }
         }
       }
     };
