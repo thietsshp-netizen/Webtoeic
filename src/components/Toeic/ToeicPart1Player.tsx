@@ -520,7 +520,7 @@ export default function ToeicPart1Player({
         setMode('practice');
       }
     };
-    
+
     const handleHintMode = (e: Event) => {
       const customEvent = e as CustomEvent;
       setIsHintMode(customEvent.detail.open);
@@ -1267,8 +1267,8 @@ export default function ToeicPart1Player({
                                   playSegment(opt);
                                 }}
                                 className={`part1-option-audio-btn p-1 rounded-md transition-all duration-300 ${playingSegmentLabel === opt
-                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
-                                    : 'hover:bg-slate-100 text-slate-400 hover:text-indigo-600'
+                                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
+                                  : 'hover:bg-slate-100 text-slate-400 hover:text-indigo-600'
                                   }`}
                                 title={`Nghe phương án ${opt} (Phím tắt: phím số ${['A', 'B', 'C', 'D'].indexOf(opt) + 1})`}
                               >
@@ -1639,7 +1639,7 @@ export default function ToeicPart1Player({
               onVideoQuestionSync(targetIndex);
               return;
             }
-            const groupIdx = data.findIndex(group => 
+            const groupIdx = data.findIndex(group =>
               group.questions?.some((q: any) => q.questionNo === targetIndex)
             );
             if (groupIdx !== -1) {

@@ -52,10 +52,12 @@ export type DrawColor = string; // Hex color string
 
 export interface ClonedTool {
   id: string;
-  baseType: 'pencil' | 'highlight' | 'rectangle';
+  baseType: 'pencil' | 'highlight' | 'rectangle' | 'text';
   name: string;
   color: string;
   hotkey: string;
+  textSize?: number;
+  textStyle?: 'normal' | 'bold' | 'italic' | 'bold-italic';
 }
 
 export const DEFAULT_HOTKEYS: Record<string, string> = {
@@ -133,12 +135,21 @@ export interface DrawElement {
   rx?: number;
   ry?: number;
   text?: string;
+  textStyle?: string;
 }
 
 interface ScreenDrawOverlayProps {
   isActive: boolean;
   setIsActive: (active: boolean) => void;
 }
+
+export const getElementFont = (size: number, textStyle?: string): string => {
+  let stylePart = '500';
+  if (textStyle === 'bold') stylePart = 'bold';
+  else if (textStyle === 'italic') stylePart = 'italic 500';
+  else if (textStyle === 'bold-italic') stylePart = 'bold italic';
+  return `${stylePart} ${size}px sans-serif`;
+};
 
 export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({ 
   isActive, 
@@ -222,6 +233,21 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [activeTextVal, setActiveTextVal] = useState("");
   const textInputValRef = useRef("");
 
+  // Trạng thái phóng to/thu nhỏ (Resize) các hình vẽ/text ở chế độ Bàn tay
+  const [resizingInfo, setResizingInfo] = useState<{
+    elementId: string;
+    handle: 'nw' | 'ne' | 'se' | 'sw';
+    startX: number;
+    startY: number;
+    startElX: number;
+    startElY: number;
+    startWidth: number;
+    startHeight: number;
+    startRadius: number;
+    startSize: number;
+  } | null>(null);
+  const [hoveredResizeHandle, setHoveredResizeHandle] = useState<'nw' | 'ne' | 'se' | 'sw' | null>(null);
+
   // Đèn chiếu (Flashlight / Spotlight)
   const [isFlashlightActive, setIsFlashlightActive] = useState(false);
   const [flashlightSize, setFlashlightSize] = useState(100);
@@ -244,9 +270,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   // Form states for creating a new clone
   const [newCloneName, setNewCloneName] = useState('');
-  const [newCloneBaseType, setNewCloneBaseType] = useState<'pencil' | 'highlight' | 'rectangle'>('pencil');
+  const [newCloneBaseType, setNewCloneBaseType] = useState<'pencil' | 'highlight' | 'rectangle' | 'text'>('pencil');
   const [newCloneColor, setNewCloneColor] = useState('#EF4444');
   const [newCloneHotkey, setNewCloneHotkey] = useState('');
+  const [newCloneTextSize, setNewCloneTextSize] = useState<number>(20);
+  const [newCloneTextStyle, setNewCloneTextStyle] = useState<'normal' | 'bold' | 'italic' | 'bold-italic'>('normal');
 
 
   // Đặt vị trí mặc định thông minh khi thay đổi trang học tập hoặc trang ngoài
@@ -822,7 +850,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 currentX += ctx.measureText(cleanText).width;
               } else if (part) {
                 // Chữ thường (Ở đây bảng vẽ để font in đậm nhẹ mặc định sans-serif để dễ nhìn hoặc normal)
-                ctx.font = `500 ${el.size}px sans-serif`;
+                ctx.font = getElementFont(el.size, el.textStyle);
                 ctx.fillText(part, currentX, startY);
                 currentX += ctx.measureText(part).width;
               }
@@ -840,13 +868,27 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         ctx.lineWidth = 1.2;
         ctx.setLineDash([4, 4]);
         ctx.globalAlpha = 0.8;
-        
+
+        let bx1 = 0, by1 = 0, bx2 = 0, by2 = 0; // bounding box corners
+
         ctx.beginPath();
         if (el.type === 'rectangle' && el.x !== undefined && el.y !== undefined && el.width !== undefined && el.height !== undefined) {
-          ctx.rect(el.x - 4, el.y - 4, el.width + 8, el.height + 8);
+          bx1 = Math.min(el.x, el.x + el.width) - 4;
+          by1 = Math.min(el.y, el.y + el.height) - 4;
+          bx2 = Math.max(el.x, el.x + el.width) + 4;
+          by2 = Math.max(el.y, el.y + el.height) + 4;
+          ctx.rect(bx1, by1, bx2 - bx1, by2 - by1);
         } else if (el.type === 'circle' && el.x !== undefined && el.y !== undefined && el.radius !== undefined) {
+          bx1 = el.x - el.radius - 4;
+          by1 = el.y - el.radius - 4;
+          bx2 = el.x + el.radius + 4;
+          by2 = el.y + el.radius + 4;
           ctx.arc(el.x, el.y, el.radius + 4, 0, 2 * Math.PI);
         } else if (el.type === 'ellipse' && el.x !== undefined && el.y !== undefined && el.rx !== undefined && el.ry !== undefined) {
+          bx1 = el.x - el.rx - 4;
+          by1 = el.y - el.ry - 4;
+          bx2 = el.x + el.rx + 4;
+          by2 = el.y + el.ry + 4;
           ctx.ellipse(el.x, el.y, el.rx + 4, el.ry + 4, 0, 0, 2 * Math.PI);
         } else if (el.type === 'text' && el.x !== undefined && el.y !== undefined && el.text) {
           const lines = el.text.split('\n');
@@ -855,14 +897,18 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           lines.forEach(line => {
             // Loại bỏ dấu sao khi đo chiều rộng thực tế của chữ
             const cleanLine = line.replace(/\*\*/g, "");
-            ctx.font = `500 ${el.size}px sans-serif`;
+            ctx.font = getElementFont(el.size, el.textStyle);
             const w = ctx.measureText(cleanLine).width;
             if (w > maxLineWidth) maxLineWidth = w;
           });
           ctx.restore();
           
           const linesCount = lines.length;
-          ctx.rect(el.x - 2, el.y - 2, maxLineWidth + 12, el.size * linesCount * 1.3 + 8);
+          bx1 = el.x - 2;
+          by1 = el.y - 2;
+          bx2 = el.x + maxLineWidth + 12;
+          by2 = el.y + el.size * linesCount * 1.3 + 8;
+          ctx.rect(bx1, by1, bx2 - bx1, by2 - by1);
         } else if (el.points.length > 0) {
           // Bounding box giả lập cho nét vẽ tự do khi được chọn
           let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
@@ -872,11 +918,38 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             minY = Math.min(minY, pt.y);
             maxY = Math.max(maxY, pt.y);
           });
-          ctx.rect(minX - 4, minY - 4, (maxX - minX) + 8, (maxY - minY) + 8);
+          bx1 = minX - 4; by1 = minY - 4; bx2 = maxX + 4; by2 = maxY + 4;
+          ctx.rect(bx1, by1, bx2 - bx1, by2 - by1);
         }
         ctx.stroke();
         ctx.restore();
+
+        // Vẽ 4 nút kéo phóng to/thu nhỏ tại 4 góc bounding box (chỉ với hình học và text)
+        const canResize = el.type === 'rectangle' || el.type === 'circle' || el.type === 'ellipse' || el.type === 'text';
+        if (canResize && bx1 !== 0 || by1 !== 0 || bx2 !== 0 || by2 !== 0) {
+          const handles = [
+            { x: bx1, y: by1 }, // nw
+            { x: bx2, y: by1 }, // ne
+            { x: bx2, y: by2 }, // se
+            { x: bx1, y: by2 }, // sw
+          ];
+          handles.forEach(h => {
+            ctx.save();
+            ctx.globalAlpha = 1.0;
+            ctx.setLineDash([]);
+            // Vòng ngoài màu xanh
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#3B82F6';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(h.x - 5, h.y - 5, 10, 10, 3);
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+          });
+        }
       }
+
     });
 
     // 4. Vẽ nét vẽ nháp đang di chuột (Active Stroke) nếu đang vẽ trong chế độ Đèn chiếu
@@ -1045,7 +1118,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             tempCtx.save();
             lines.forEach(line => {
               const cleanLine = line.replace(/\*\//g, "");
-              tempCtx.font = `500 ${el.size}px sans-serif`;
+              tempCtx.font = getElementFont(el.size, el.textStyle);
               const w = tempCtx.measureText(cleanLine).width;
               if (w > maxLineWidth) maxLineWidth = w;
             });
@@ -1062,6 +1135,69 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         }
       }
     }
+    return null;
+  };
+
+  // Thuật toán kiểm tra chuột có nằm trên 4 góc kéo dãn (Resize Handle) của phần tử đang chọn hay không
+  const getResizeHandleAtPosition = (x: number, y: number, el: DrawElement): 'nw' | 'ne' | 'se' | 'sw' | null => {
+    if (!el) return null;
+    
+    let x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+    if (el.type === 'rectangle') {
+      x1 = Math.min(el.x!, el.x! + el.width!);
+      y1 = Math.min(el.y!, el.y! + el.height!);
+      x2 = Math.max(el.x!, el.x! + el.width!);
+      y2 = Math.max(el.y!, el.y! + el.height!);
+    } else if (el.type === 'circle') {
+      x1 = el.x! - el.radius!;
+      y1 = el.y! - el.radius!;
+      x2 = el.x! + el.radius!;
+      y2 = el.y! + el.radius!;
+    } else if (el.type === 'ellipse') {
+      x1 = el.x! - el.rx!;
+      y1 = el.y! - el.ry!;
+      x2 = el.x! + el.rx!;
+      y2 = el.y! + el.ry!;
+    } else if (el.type === 'text') {
+      x1 = el.x!;
+      y1 = el.y!;
+      
+      const lines = el.text!.split('\n');
+      let maxLineWidth = 0;
+      const canvas = canvasRef.current;
+      const tempCtx = canvas?.getContext('2d');
+      if (tempCtx) {
+        tempCtx.save();
+        lines.forEach(line => {
+          const cleanLine = line.replace(/\*\*/g, "");
+          tempCtx.font = getElementFont(el.size, el.textStyle);
+          const w = tempCtx.measureText(cleanLine).width;
+          if (w > maxLineWidth) maxLineWidth = w;
+        });
+        tempCtx.restore();
+      } else {
+        maxLineWidth = el.size * 0.6 * el.text!.length;
+      }
+      const width = maxLineWidth + 12;
+      const height = el.size * lines.length * 1.3 + 8;
+      
+      x2 = el.x! + width;
+      y2 = el.y! + height;
+    } else {
+      return null;
+    }
+
+    const handleSize = 8; // Vùng sai số click node (8px)
+    
+    // Check Top-Left (nw)
+    if (Math.abs(x - x1) <= handleSize && Math.abs(y - y1) <= handleSize) return 'nw';
+    // Check Top-Right (ne)
+    if (Math.abs(x - x2) <= handleSize && Math.abs(y - y1) <= handleSize) return 'ne';
+    // Check Bottom-Right (se)
+    if (Math.abs(x - x2) <= handleSize && Math.abs(y - y2) <= handleSize) return 'se';
+    // Check Bottom-Left (sw)
+    if (Math.abs(x - x1) <= handleSize && Math.abs(y - y2) <= handleSize) return 'sw';
+
     return null;
   };
 
@@ -1262,6 +1398,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         setColor(matchedClone.color);
         setActiveCloneId(matchedClone.id);
         setSelectedId(null);
+        if (matchedClone.baseType === 'text' && matchedClone.textSize) {
+          setFontSize(matchedClone.textSize);
+        }
         return;
       }
 
@@ -1477,6 +1616,29 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     }
 
     if (tool === 'hand') {
+      if (selectedId) {
+        const selectedEl = elements.find(el => el.id === selectedId);
+        if (selectedEl) {
+          const handle = getResizeHandleAtPosition(x, y, selectedEl);
+          if (handle) {
+            canvas.setPointerCapture(e.pointerId);
+            setResizingInfo({
+              elementId: selectedEl.id,
+              handle: handle,
+              startX: x,
+              startY: y,
+              startElX: selectedEl.x || 0,
+              startElY: selectedEl.y || 0,
+              startWidth: selectedEl.width || 0,
+              startHeight: selectedEl.height || 0,
+              startRadius: selectedEl.radius || 0,
+              startSize: selectedEl.size || 14
+            });
+            return;
+          }
+        }
+      }
+
       // 1. Chế độ Bàn tay: Tìm đối tượng được chọn dưới ngòi chuột
       const clickedElement = findElementAtPosition(x, y);
       if (clickedElement) {
@@ -1551,6 +1713,107 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     const lastEvent = events[events.length - 1];
     const x = lastEvent.clientX - rect.left;
     const y = lastEvent.clientY - rect.top;
+
+    // --- CHECK FOR RESIZE HANDLE HOVER ---
+    if (tool === 'hand' && selectedId && !resizingInfo && !isDrawingRef.current) {
+      const selectedEl = elements.find(el => el.id === selectedId);
+      if (selectedEl) {
+        const handle = getResizeHandleAtPosition(x, y, selectedEl);
+        setHoveredResizeHandle(handle);
+      } else {
+        setHoveredResizeHandle(null);
+      }
+    } else if (tool === 'hand' && !selectedId) {
+      if (hoveredResizeHandle !== null) setHoveredResizeHandle(null);
+    }
+
+    // --- ACTIVE RESIZE ACTION ---
+    if (resizingInfo) {
+      const { elementId, handle, startX, startY, startElX, startElY, startWidth, startHeight, startRadius, startSize } = resizingInfo;
+      const dx = x - startX;
+      const dy = y - startY;
+
+      setElements(prev => prev.map(el => {
+        if (el.id !== elementId) return el;
+
+        if (el.type === 'rectangle') {
+          let newWidth = startWidth;
+          let newHeight = startHeight;
+          let newX = startElX;
+          let newY = startElY;
+
+          if (handle === 'nw') {
+            newWidth = startWidth - dx;
+            newHeight = startHeight - dy;
+            newX = startElX + dx;
+            newY = startElY + dy;
+          } else if (handle === 'ne') {
+            newWidth = startWidth + dx;
+            newHeight = startHeight - dy;
+            newX = startElX;
+            newY = startElY + dy;
+          } else if (handle === 'se') {
+            newWidth = startWidth + dx;
+            newHeight = startHeight + dy;
+            newX = startElX;
+            newY = startElY;
+          } else if (handle === 'sw') {
+            newWidth = startWidth - dx;
+            newHeight = startHeight + dy;
+            newX = startElX + dx;
+            newY = startElY;
+          }
+
+          if (newWidth < 10) {
+            newX = el.x!; // giữ nguyên
+            newWidth = 10;
+          }
+          if (newHeight < 10) {
+            newY = el.y!; // giữ nguyên
+            newHeight = 10;
+          }
+
+          return {
+            ...el,
+            x: newX,
+            y: newY,
+            width: newWidth,
+            height: newHeight
+          };
+        }
+        else if (el.type === 'circle') {
+          const newRadius = Math.max(5, Math.sqrt((el.x! - x) ** 2 + (el.y! - y) ** 2));
+          return {
+            ...el,
+            radius: newRadius
+          };
+        }
+        else if (el.type === 'ellipse') {
+          const newRx = Math.max(5, Math.abs(x - el.x!));
+          const newRy = Math.max(5, Math.abs(y - el.y!));
+          return {
+            ...el,
+            rx: newRx,
+            ry: newRy
+          };
+        }
+        else if (el.type === 'text') {
+          const origDiagonal = Math.sqrt((startX - el.x!) ** 2 + (startY - el.y!) ** 2);
+          const currDiagonal = Math.sqrt((x - el.x!) ** 2 + (y - el.y!) ** 2);
+          if (origDiagonal > 0) {
+            const scale = currDiagonal / origDiagonal;
+            const newSize = Math.min(120, Math.max(8, Math.round(startSize * scale)));
+            return {
+              ...el,
+              size: newSize
+            };
+          }
+        }
+
+        return el;
+      }));
+      return;
+    }
 
     // CHẾ ĐỘ ĐÈN CHIẾU: Bỏ qua hoàn toàn vẽ trực tiếp và chụp snapshot để tránh đơ/khựng/sai lệch tọa độ
     if (stateRef.current.isFlashlightActive) {
@@ -1813,6 +2076,15 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (resizingInfo) {
+      setResizingInfo(null);
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.releasePointerCapture(e.pointerId);
+      }
+      return;
+    }
+
     if (!isDrawingRef.current) return;
     isDrawingRef.current = false;
 
@@ -2001,7 +2273,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
 
   // Hoàn thành nhập text và vẽ lưu vào Vector state
-  const handleTextSubmit = () => {
+  const handleTextSubmit = (shouldSwitchToHand = false) => {
     if (!textInput) {
       setEditingTextId(null);
       return;
@@ -2017,6 +2289,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       setEditingTextId(null);
       return;
     }
+
+    let targetId = editingTextId;
 
     if (editingTextId) {
       setElements(prev => prev.map(el => {
@@ -2036,12 +2310,19 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const x = textInput.x - rect.left;
       const y = textInput.y - rect.top;
 
+      const newId = Date.now().toString();
+      targetId = newId;
+
+      const activeClone = stateRef.current.clonedTools.find(c => c.id === stateRef.current.activeCloneId);
+      const isTextClone = activeClone && activeClone.baseType === 'text';
+
       const newElement: DrawElement = {
-        id: Date.now().toString(),
+        id: newId,
         type: 'text',
         points: [],
-        color: color,
-        size: fontSize,
+        color: isTextClone ? activeClone.color : color,
+        size: (isTextClone && activeClone.textSize) ? activeClone.textSize : fontSize,
+        textStyle: isTextClone ? activeClone.textStyle : undefined,
         x: x,
         y: y,
         text: textInputValRef.current
@@ -2051,6 +2332,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     setTextInput(null);
     setEditingTextId(null);
+
+    if (shouldSwitchToHand && targetId) {
+      setTool('hand');
+      setSelectedId(targetId);
+    }
   };
 
   // Xoá sạch canvas và state
@@ -2273,7 +2559,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const cursorStyle = useMemo(() => {
     if (isShiftPressed) return 'default'; // Hiện con trỏ chuột mặc định khi đang kích hoạt Ghost Mode
     if (tool === 'cursor') return 'default';
-    if (tool === 'hand') return (selectedId || isGrabbingPage) ? 'grabbing' : 'grab';
+    if (tool === 'hand') {
+      if (hoveredResizeHandle === 'nw' || hoveredResizeHandle === 'se') return 'nwse-resize';
+      if (hoveredResizeHandle === 'ne' || hoveredResizeHandle === 'sw') return 'nesw-resize';
+      return (selectedId || isGrabbingPage) ? 'grabbing' : 'grab';
+    }
 
     if (tool === 'eraser') {
       const size = eraserSize + 2;
@@ -2305,7 +2595,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     if (tool === 'text') return 'text';
     return 'crosshair';
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tool, eraserSize, color, selectedId, isGrabbingPage, isShiftPressed]);
+  }, [tool, eraserSize, color, selectedId, isGrabbingPage, isShiftPressed, hoveredResizeHandle]);
 
   // Set cursor trực tiếp lên DOM canvas mỗi khi cursorStyle thay đổi
   useEffect(() => {
@@ -2367,7 +2657,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             if (tool === 'text') {
               setSelectedId(null);
               setEditingTextId(null);
-              setTextInput({ x: e.clientX, y: e.clientY });
+              // Căn chỉnh chính xác vị trí gõ chữ vào đúng điểm click chuột
+              const offsetX = 7; // padding-left + border-left
+              const offsetY = 5 + (fontSize / 2); // padding-top + border-top + 1/2 cỡ chữ
+              setTextInput({ x: e.clientX - offsetX, y: e.clientY - offsetY });
               textInputValRef.current = "";
               setActiveTextVal("");
             }
@@ -2379,12 +2672,24 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         }}
       />
 
-      {/* 2. Ô nhập Text nổi hỗ trợ định dạng in đậm thời gian thực */}
       {textInput && (
         <MarkdownTextarea
           value={activeTextVal}
-          color={color}
-          fontSize={fontSize}
+          color={
+            editingTextId
+              ? (elements.find(el => el.id === editingTextId)?.color || color)
+              : (clonedTools.find(c => c.id === activeCloneId)?.color || color)
+          }
+          fontSize={
+            editingTextId
+              ? (elements.find(el => el.id === editingTextId)?.size || fontSize)
+              : (clonedTools.find(c => c.id === activeCloneId)?.textSize || fontSize)
+          }
+          textStyle={
+            editingTextId
+              ? elements.find(el => el.id === editingTextId)?.textStyle
+              : clonedTools.find(c => c.id === activeCloneId)?.textStyle
+          }
           style={{
             left: textInput.x,
             top: textInput.y,
@@ -2393,20 +2698,20 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             textInputValRef.current = newVal;
             setActiveTextVal(newVal);
           }}
-          onBlur={handleTextSubmit}
+          onBlur={() => handleTextSubmit(false)}
           onKeyDown={(e) => {
             // Nhấn phím Enter (không kèm Shift): Lưu và kết thúc nhập
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
-              handleTextSubmit();
+              handleTextSubmit(false);
             }
             // Nhấn Shift+Enter: Cho phép xuống dòng bên trong textarea
             else if (e.key === 'Enter' && e.shiftKey) {
               // Cho phép chèn ký tự \n bình thường
             }
             else if (e.key === 'Escape') {
-              setTextInput(null);
-              setEditingTextId(null);
+              e.preventDefault();
+              handleTextSubmit(true); // Lưu chữ đã gõ và tự động chuyển sang Bàn tay để di chuyển ngay!
             }
           }}
         />
@@ -2851,6 +3156,28 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 <div className={styles.cloneColorBadge} style={{ backgroundColor: clone.color }} />
               </button>
             ))}
+
+            {/* Cloned Texts */}
+            {clonedTools.filter(c => c.baseType === 'text').map(clone => (
+              <button
+                key={clone.id}
+                className={`${styles.btnClone} ${activeCloneId === clone.id ? styles.btnCloneActive : ''}`}
+                style={{ '--clone-color': clone.color } as React.CSSProperties}
+                onClick={() => {
+                  setSelectedId(null);
+                  setTool('text');
+                  setColor(clone.color);
+                  setActiveCloneId(clone.id);
+                  if (clone.textSize) {
+                    setFontSize(clone.textSize);
+                  }
+                }}
+                data-tooltip={`${clone.name} (${clone.hotkey.toUpperCase()})`}
+              >
+                <Type size={10} style={{ color: clone.color }} />
+                <div className={styles.cloneColorBadge} style={{ backgroundColor: clone.color }} />
+              </button>
+            ))}
           </div>
         )}
       </div>
@@ -3033,8 +3360,41 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                         <option value="pencil">Bút chì gốc</option>
                         <option value="highlight">Highlight gốc</option>
                         <option value="rectangle">Hình chữ nhật</option>
+                        <option value="text">Chữ viết</option>
                       </select>
                     </div>
+
+                    {newCloneBaseType === 'text' && (
+                      <div className={styles.cloneFormRow} style={{ marginTop: '0px', gap: '10px', marginBottom: '12px' }}>
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>Cỡ chữ:</span>
+                          <select
+                            value={newCloneTextSize}
+                            onChange={(e) => setNewCloneTextSize(parseInt(e.target.value))}
+                            className={styles.cloneSelect}
+                            style={{ width: '100%' }}
+                          >
+                            {[12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 64].map(sz => (
+                              <option key={sz} value={sz}>{sz}px</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>Kiểu chữ:</span>
+                          <select
+                            value={newCloneTextStyle}
+                            onChange={(e) => setNewCloneTextStyle(e.target.value as any)}
+                            className={styles.cloneSelect}
+                            style={{ width: '100%' }}
+                          >
+                            <option value="normal">Thường (500)</option>
+                            <option value="bold">In đậm (Bold)</option>
+                            <option value="italic">Nghiêng (Italic)</option>
+                            <option value="bold-italic">Đậm & Nghiêng</option>
+                          </select>
+                        </div>
+                      </div>
+                    )}
 
                     <div className={styles.cloneColorGrid}>
                       {PALETTE_COLORS.map((c) => (
@@ -3109,7 +3469,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                             baseType: newCloneBaseType,
                             name: newCloneName,
                             color: newCloneColor,
-                            hotkey: newCloneHotkey
+                            hotkey: newCloneHotkey,
+                            textSize: newCloneBaseType === 'text' ? newCloneTextSize : undefined,
+                            textStyle: newCloneBaseType === 'text' ? newCloneTextStyle : undefined
                           };
                           setDraftClonedTools(prev => [...prev, newClone]);
                           setNewCloneName('');
@@ -3134,7 +3496,15 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                             <div>
                               <div className={styles.cloneItemName}>{clone.name}</div>
                               <div className={styles.cloneItemMeta}>
-                                {clone.baseType === 'pencil' ? 'Bút chì' : clone.baseType === 'highlight' ? 'Highlight' : 'Hình chữ nhật'}
+                                {clone.baseType === 'pencil' 
+                                  ? 'Bút chì' 
+                                  : clone.baseType === 'highlight' 
+                                    ? 'Highlight' 
+                                    : clone.baseType === 'rectangle' 
+                                      ? 'Hình chữ nhật' 
+                                      : `Chữ viết (${clone.textSize}px, ${
+                                          clone.textStyle === 'bold' ? 'Đậm' : clone.textStyle === 'italic' ? 'Nghiêng' : clone.textStyle === 'bold-italic' ? 'Đậm & Nghiêng' : 'Thường'
+                                        })`}
                               </div>
                             </div>
                           </div>

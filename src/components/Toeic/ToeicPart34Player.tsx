@@ -413,7 +413,7 @@ export default function ToeicPart34Player({
   useEffect(() => {
     if (transcriptScrollRef.current) transcriptScrollRef.current.scrollTop = 0;
     if (questionsScrollRef.current) questionsScrollRef.current.scrollTop = 0;
-    
+
     // Reset revealMode when switching group unless it's review mode or already submitted
     if (!isReviewMode && !isSubmittedInternal) {
       setRevealMode(false);
@@ -2089,7 +2089,7 @@ export default function ToeicPart34Player({
               onVideoQuestionSync(targetIndex);
               return;
             }
-            const groupIdx = data.findIndex(group => 
+            const groupIdx = data.findIndex(group =>
               group.questions?.some((q: any) => q.questionNo === targetIndex)
             );
             if (groupIdx !== -1) {

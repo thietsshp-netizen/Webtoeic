@@ -9,6 +9,7 @@ interface RichTextInputProps {
   color: string;
   fontSize: number;
   style?: React.CSSProperties;
+  textStyle?: string;
 }
 
 export const MarkdownTextarea: React.FC<RichTextInputProps> = ({
@@ -19,6 +20,7 @@ export const MarkdownTextarea: React.FC<RichTextInputProps> = ({
   color,
   fontSize,
   style,
+  textStyle,
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -110,6 +112,8 @@ export const MarkdownTextarea: React.FC<RichTextInputProps> = ({
         ...style,
         fontSize: `${fontSize}px`,
         color: color,
+        fontWeight: textStyle === 'bold' || textStyle === 'bold-italic' ? 'bold' : '500',
+        fontStyle: textStyle === 'italic' || textStyle === 'bold-italic' ? 'italic' : 'normal',
         lineHeight: 1.3,
         fontFamily: "inherit",
         boxSizing: "border-box",

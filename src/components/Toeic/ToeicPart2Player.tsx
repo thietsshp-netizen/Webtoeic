@@ -531,7 +531,7 @@ export default function ToeicPart2Player({
         setMode('practice');
       }
     };
-    
+
     const handleHintMode = (e: Event) => {
       const customEvent = e as CustomEvent;
       setIsHintMode(customEvent.detail.open);
@@ -1733,7 +1733,7 @@ export default function ToeicPart2Player({
               onVideoQuestionSync(targetIndex);
               return;
             }
-            const groupIdx = data.findIndex(group => 
+            const groupIdx = data.findIndex(group =>
               group.questions?.some((q: any) => q.questionNo === targetIndex)
             );
             if (groupIdx !== -1) {
