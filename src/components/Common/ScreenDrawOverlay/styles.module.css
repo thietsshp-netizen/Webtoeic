@@ -6,14 +6,14 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 9998;
+  z-index: 99998; /* Đặt canvas vẽ nháp trên cùng tất cả (Video giải thích z-index 9998, Sổ tay ngữ pháp z-index 9999) */
   display: block;
 }
 
 /* Kính mờ Glassmorphism cho Toolbar */
 .toolbar {
   position: fixed;
-  z-index: 9999;
+  z-index: 99999; /* Thanh điều khiển công cụ vẽ trên cả canvas */
   display: flex;
   align-items: center;
   gap: 6px;
@@ -58,8 +58,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 24px;
+  height: 24px;
   border-radius: 9999px;
   border: none;
   background: transparent;
@@ -81,7 +81,7 @@
 .btnActive {
   background: #2563eb !important; /* Blue 600 */
   color: #fff !important;
-  box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
 }
 
 /* Chấm màu tròn tối giản xếp 2 dòng */
@@ -185,22 +185,19 @@
 }
 
 /* CSS cho Textarea tạm thời khi gõ text */
-.textInput {
+.richTextInput {
   position: fixed;
-  z-index: 20000;
-  background: transparent !important; /* Không nền để không che thông tin phía sau */
-  border: 1px dashed rgba(59, 130, 246, 0.6) !important; /* Viền nét đứt cực nhẹ màu xanh dương */
-  outline: none;
-  overflow: hidden;
-  resize: none;
-  font-family: inherit;
-  padding: 2px 4px;
-  margin: 0;
-  box-shadow: none !important; /* Không có bóng mờ cồng kềnh */
+  z-index: 99999;
+  background: transparent !important;
+  border: 1px dashed rgba(59, 130, 246, 0.6) !important;
+  outline: none !important;
   border-radius: 4px;
-  line-height: 1.2;
-  caret-color: currentColor; /* Con trỏ nhập nháy cùng màu chữ đang chọn */
-  white-space: pre !important; /* Chỉ xuống dòng khi có ký tự xuống dòng thực tế (Shift+Enter) */
+  padding: 4px 6px;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: none !important;
+  caret-color: currentColor;
 }
 
 /* ===== Shape Recognition Flash Animation ===== */
@@ -355,7 +352,7 @@
   background: rgba(15, 23, 42, 0.45);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  z-index: 30000;
+  z-index: 999999; /* Đặt lớp phủ modal cao nhất trên cả canvas (99998) và toolbar (99999) */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -514,6 +511,7 @@
   flex-direction: column;
   gap: 6px;
   max-height: 40vh;
+  overflow-y: auto;
   padding-right: 4px;
 }
 
