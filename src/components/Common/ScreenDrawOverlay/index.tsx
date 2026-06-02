@@ -418,6 +418,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     startHeight: number;
     startRadius: number;
     startSize: number;
+    startPoints?: { x: number; y: number; pressure?: number }[];
+    startBBox?: { minX: number; minY: number; maxX: number; maxY: number };
   } | null>(null);
   const [hoveredResizeHandle, setHoveredResizeHandle] = useState<'nw' | 'ne' | 'se' | 'sw' | null>(null);
 
@@ -1180,8 +1182,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         ctx.stroke();
         ctx.restore();
 
-        // Vẽ 4 nút kéo phóng to/thu nhỏ tại 4 góc bounding box (chỉ với hình học và text)
-        const canResize = el.type === 'rectangle' || el.type === 'circle' || el.type === 'ellipse' || el.type === 'text';
+        // Vẽ 4 nút kéo phóng to/thu nhỏ tại 4 góc bounding box (với hình học, text, bút chì, highlight)
+        const canResize = el.type === 'rectangle' || el.type === 'circle' || el.type === 'ellipse' || el.type === 'text' || el.type === 'pencil' || el.type === 'highlight';
         if (canResize && bx1 !== 0 || by1 !== 0 || bx2 !== 0 || by2 !== 0) {
           const handles = [
             { x: bx1, y: by1 }, // nw
@@ -1475,6 +1477,19 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       
       x2 = el.x! + width;
       y2 = el.y! + height;
+    } else if (el.type === 'pencil' || el.type === 'highlight') {
+      if (!el.points || el.points.length === 0) return null;
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      el.points.forEach(pt => {
+        if (pt.x < minX) minX = pt.x;
+        if (pt.y < minY) minY = pt.y;
+        if (pt.x > maxX) maxX = pt.x;
+        if (pt.y > maxY) maxY = pt.y;
+      });
+      x1 = minX - 4;
+      y1 = minY - 4;
+      x2 = maxX + 4;
+      y2 = maxY + 4;
     } else {
       return null;
     }
@@ -1970,6 +1985,19 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           if (handle) {
             saveToUndoStack(elements);
             canvas.setPointerCapture(e.pointerId);
+
+            // Tính toán bounding box ban đầu cho bút chì / highlight
+            let minX = 0, minY = 0, maxX = 0, maxY = 0;
+            if ((selectedEl.type === 'pencil' || selectedEl.type === 'highlight') && selectedEl.points?.length > 0) {
+              minX = Infinity; minY = Infinity; maxX = -Infinity; maxY = -Infinity;
+              selectedEl.points.forEach(pt => {
+                if (pt.x < minX) minX = pt.x;
+                if (pt.y < minY) minY = pt.y;
+                if (pt.x > maxX) maxX = pt.x;
+                if (pt.y > maxY) maxY = pt.y;
+              });
+            }
+
             setResizingInfo({
               elementId: selectedEl.id,
               handle: handle,
@@ -1980,7 +2008,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               startWidth: selectedEl.width || 0,
               startHeight: selectedEl.height || 0,
               startRadius: selectedEl.radius || 0,
-              startSize: selectedEl.size || 14
+              startSize: selectedEl.size || 14,
+              startPoints: selectedEl.points ? [...selectedEl.points.map(pt => ({ ...pt }))] : undefined,
+              startBBox: (selectedEl.type === 'pencil' || selectedEl.type === 'highlight') ? { minX, minY, maxX, maxY } : undefined
             });
             return;
           }
@@ -2115,7 +2145,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     // --- ACTIVE RESIZE ACTION ---
     if (resizingInfo) {
-      const { elementId, handle, startX, startY, startElX, startElY, startWidth, startHeight, startRadius, startSize } = resizingInfo;
+      const { elementId, handle, startX, startY, startElX, startElY, startWidth, startHeight, startRadius, startSize, startPoints, startBBox } = resizingInfo;
       const dx = x - startX;
       const dy = y - startY;
 
@@ -2194,6 +2224,56 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               size: newSize
             };
           }
+        }
+        else if (el.type === 'pencil' || el.type === 'highlight') {
+          if (!startPoints || startPoints.length === 0 || !startBBox) return el;
+          
+          const { minX, minY, maxX, maxY } = startBBox;
+          const startW = maxX - minX;
+          const startH = maxY - minY;
+          if (startW <= 0 || startH <= 0) return el;
+
+          let anchorX = minX;
+          let anchorY = minY;
+          let newW = startW;
+          let newH = startH;
+
+          if (handle === 'nw') {
+            anchorX = maxX;
+            anchorY = maxY;
+            newW = startW - dx;
+            newH = startH - dy;
+          } else if (handle === 'ne') {
+            anchorX = minX;
+            anchorY = maxY;
+            newW = startW + dx;
+            newH = startH - dy;
+          } else if (handle === 'sw') {
+            anchorX = maxX;
+            anchorY = minY;
+            newW = startW - dx;
+            newH = startH + dy;
+          } else if (handle === 'se') {
+            anchorX = minX;
+            anchorY = minY;
+            newW = startW + dx;
+            newH = startH + dy;
+          }
+
+          if (newW < 5) newW = 5;
+          if (newH < 5) newH = 5;
+
+          const scaleX = newW / startW;
+          const scaleY = newH / startH;
+
+          return {
+            ...el,
+            points: startPoints.map(pt => ({
+              ...pt,
+              x: anchorX + (pt.x - anchorX) * scaleX,
+              y: anchorY + (pt.y - anchorY) * scaleY
+            }))
+          };
         }
 
         return el;
@@ -2485,6 +2565,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (resizingInfo) {
       setResizingInfo(null);
+      isDrawingRef.current = false; // Sửa lỗi giải phóng: Reset trạng thái kéo vẽ vẽ
       const canvas = canvasRef.current;
       if (canvas) {
         canvas.releasePointerCapture(e.pointerId);
