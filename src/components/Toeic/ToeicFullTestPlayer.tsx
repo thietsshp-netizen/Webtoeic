@@ -302,7 +302,7 @@ export default function ToeicFullTestPlayer({
     return () => clearInterval(timer);
   }, [isTeachingMode, teachStartTime, isTeachPaused]);
 
-  // Phím tắt vạn năng cho Admin (Space/Enter)
+  // Phím tắt vạn năng cho Admin (Enter)
   useEffect(() => {
     const handleRecKeyDown = (e: KeyboardEvent) => {
       if (!isTeachingMode || showTeachSetup || showTeachFinish) return;
@@ -310,7 +310,7 @@ export default function ToeicFullTestPlayer({
       const target = e.target as HTMLElement;
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
 
-      if (e.key === ' ' || e.key === 'Enter') {
+      if (e.key === 'Enter') {
         e.preventDefault();
         
         const lastStamp = recTimestamps[recTimestamps.length - 1];
