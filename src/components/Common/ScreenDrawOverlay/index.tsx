@@ -593,22 +593,22 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     localStorage.setItem('webtoeic_font_size', fontSize.toString());
   }, [fontSize]);
 
-  // Lưu các phần tử vẽ vector và tự động vẽ lại
+  // 1. Redraw canvas ngay lập tức khi phần tử thay đổi
   useEffect(() => {
-    localStorage.setItem('webtoeic_canvas_elements', JSON.stringify(elements));
     drawAllElements();
   }, [elements, selectedId, editingTextId]);
+
+  // 2. Trì hoãn lưu xuống localStorage (Debounce 800ms) để tránh nghẽn CPU
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      localStorage.setItem('webtoeic_canvas_elements', JSON.stringify(elements));
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [elements]);
 
   useEffect(() => {
     localStorage.setItem('webtoeic_draw_color', color);
   }, [color]);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storageKey = isLearnPage ? 'webtoeic_toolbar_pos_learn' : 'webtoeic_toolbar_pos_global';
-      localStorage.setItem(storageKey, JSON.stringify(toolbarPos));
-    }
-  }, [toolbarPos, isLearnPage]);
   // Tải cấu hình phím tắt và bút clone từ Database (hoặc LocalStorage dự phòng) khi công cụ vẽ kích hoạt
   useEffect(() => {
     if (!isActive) return;
@@ -1063,12 +1063,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           ctx.restore();
           
           const linesCount = lines.length;
-          const paddingX = 8;
-          const paddingY = 8;
+          const paddingX = 6;
+          const paddingY = 3;
           const rectX = el.x;
           const rectY = el.y;
           const rectW = maxLineWidth + paddingX * 2;
-          const rectH = el.size * linesCount * 1.3 + paddingY * 2;
+          const rectH = el.size * linesCount * 1.2 + paddingY * 2;
 
           // 1. Vẽ màu nền nếu có cấu hình
           if (el.textBgColor) {
@@ -1076,7 +1076,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.fillStyle = el.textBgColor;
             ctx.globalAlpha = el.textBgOpacity !== undefined ? el.textBgOpacity : 1.0;
             ctx.beginPath();
-            ctx.roundRect(rectX, rectY, rectW, rectH, 6);
+            ctx.roundRect(rectX, rectY, rectW, rectH, 4);
             ctx.fill();
             ctx.restore();
           }
@@ -1087,7 +1087,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.strokeStyle = el.color; // sử dụng màu chữ để vẽ viền hài hoà
             ctx.lineWidth = el.textBorderWidth || 1;
             ctx.beginPath();
-            ctx.roundRect(rectX, rectY, rectW, rectH, 6);
+            ctx.roundRect(rectX, rectY, rectW, rectH, 4);
             ctx.stroke();
             ctx.restore();
           }
@@ -1095,7 +1095,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           // 3. Vẽ chữ nháp
           lines.forEach((line, lineIndex) => {
             const startX = el.x! + paddingX;
-            const startY = el.y! + paddingY + lineIndex * (el.size * 1.3);
+            const startY = el.y! + paddingY + lineIndex * (el.size * 1.2);
 
             // Parse markdown in đậm **text**
             const parts = line.split(/(\*\*[^*]+\*\*)/g);
@@ -1162,10 +1162,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           ctx.restore();
           
           const linesCount = lines.length;
-          bx1 = el.x - 2;
-          by1 = el.y - 2;
-          bx2 = el.x + maxLineWidth + 18;
-          by2 = el.y + el.size * linesCount * 1.3 + 18;
+          const paddingX = 6;
+          const paddingY = 3;
+          bx1 = el.x;
+          by1 = el.y;
+          bx2 = el.x + maxLineWidth + paddingX * 2;
+          by2 = el.y + el.size * linesCount * 1.2 + paddingY * 2;
           ctx.rect(bx1, by1, bx2 - bx1, by2 - by1);
         } else if (el.points.length > 0) {
           // Bounding box giả lập cho nét vẽ tự do khi được chọn
@@ -1200,7 +1202,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.strokeStyle = '#3B82F6';
             ctx.lineWidth = 1.5;
             ctx.beginPath();
-            ctx.roundRect(h.x - 5, h.y - 5, 10, 10, 3);
+            ctx.arc(h.x, h.y, 4.5, 0, 2 * Math.PI);
             ctx.fill();
             ctx.stroke();
             ctx.restore();
@@ -1438,20 +1440,20 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     
     let x1 = 0, y1 = 0, x2 = 0, y2 = 0;
     if (el.type === 'rectangle') {
-      x1 = Math.min(el.x!, el.x! + el.width!);
-      y1 = Math.min(el.y!, el.y! + el.height!);
-      x2 = Math.max(el.x!, el.x! + el.width!);
-      y2 = Math.max(el.y!, el.y! + el.height!);
+      x1 = Math.min(el.x!, el.x! + el.width!) - 4;
+      y1 = Math.min(el.y!, el.y! + el.height!) - 4;
+      x2 = Math.max(el.x!, el.x! + el.width!) + 4;
+      y2 = Math.max(el.y!, el.y! + el.height!) + 4;
     } else if (el.type === 'circle') {
-      x1 = el.x! - el.radius!;
-      y1 = el.y! - el.radius!;
-      x2 = el.x! + el.radius!;
-      y2 = el.y! + el.radius!;
+      x1 = el.x! - el.radius! - 4;
+      y1 = el.y! - el.radius! - 4;
+      x2 = el.x! + el.radius! + 4;
+      y2 = el.y! + el.radius! + 4;
     } else if (el.type === 'ellipse') {
-      x1 = el.x! - el.rx!;
-      y1 = el.y! - el.ry!;
-      x2 = el.x! + el.rx!;
-      y2 = el.y! + el.ry!;
+      x1 = el.x! - el.rx! - 4;
+      y1 = el.y! - el.ry! - 4;
+      x2 = el.x! + el.rx! + 4;
+      y2 = el.y! + el.ry! + 4;
     } else if (el.type === 'text') {
       x1 = el.x!;
       y1 = el.y!;
@@ -1472,8 +1474,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       } else {
         maxLineWidth = el.size * 0.6 * el.text!.length;
       }
-      const width = maxLineWidth + 12;
-      const height = el.size * lines.length * 1.3 + 8;
+      const paddingX = 6;
+      const paddingY = 3;
+      const width = maxLineWidth + paddingX * 2;
+      const height = el.size * lines.length * 1.2 + paddingY * 2;
       
       x2 = el.x! + width;
       y2 = el.y! + height;
@@ -1535,6 +1539,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     eraserMode: 'stroke' | 'pixel';
     undoStack: DrawElement[][];
     redoStack: DrawElement[][];
+    toolbarPos: { x: number; y: number };
   }>({
     isActive,
     tool,
@@ -1560,7 +1565,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     showSettings,
     lastActiveTool,
     eraserTargets: { pencil: true, highlight: true, shapes: true, text: true },
-    eraserMode: 'pixel'
+    eraserMode: 'pixel',
+    toolbarPos: { x: 200, y: 120 }
   });
 
   // Cập nhật đồng bộ ngay trong render body để bảo đảm stateRef.current luôn có giá trị mới nhất trước khi bất kỳ useEffect hay render nào diễn ra
@@ -1590,6 +1596,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     eraserMode,
     undoStack,
     redoStack,
+    toolbarPos,
   };
 
 
@@ -1917,6 +1924,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     const handleMouseUp = () => {
       setIsDraggingToolbar(false);
+      if (typeof window !== 'undefined') {
+        const storageKey = isLearnPage ? 'webtoeic_toolbar_pos_learn' : 'webtoeic_toolbar_pos_global';
+        localStorage.setItem(storageKey, JSON.stringify(stateRef.current.toolbarPos));
+      }
     };
 
     if (isDraggingToolbar) {
