@@ -159,6 +159,52 @@ const FormattedText = ({ text, revealed, initialBold = false, questions = [], qN
   return <>{content}</>;
 };
 
+const translateSpeakerToEnglish = (speaker: string) => {
+  if (!speaker) return "";
+  let s = speaker.trim();
+  const dict: Record<string, string> = {
+    "nam (trung quốc)": "M-Cn",
+    "nữ (trung quốc)": "W-Cn",
+    "nam (mỹ)": "M-Am",
+    "nữ (mỹ)": "W-Am",
+    "nam (anh)": "M-Br",
+    "nữ (anh)": "W-Br",
+    "nam (úc)": "M-Au",
+    "nữ (úc)": "W-Au",
+    "nam (canada)": "M-Ca",
+    "nữ (canada)": "W-Ca",
+    "nam": "M",
+    "nữ": "W",
+    "người nam": "M",
+    "người nữ": "W",
+  };
+  const key = s.toLowerCase();
+  if (dict[key]) return dict[key];
+
+  let result = s;
+  result = result.replace(/Nam/gi, "M");
+  result = result.replace(/Nữ/gi, "W");
+  result = result.replace(/Trung Quốc/gi, "Cn");
+  result = result.replace(/Mỹ/gi, "Am");
+  result = result.replace(/Anh/gi, "Br");
+  result = result.replace(/Úc/gi, "Au");
+  result = result.replace(/Canada/gi, "Ca");
+
+  return result.split('-').map((p: string) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join('-');
+};
+
+const moveSuperscriptToEnd = (htmlStr: string) => {
+  if (!htmlStr) return "";
+  const supRegex = /<sup[^>]*>([\s\S]*?)<\/sup>/i;
+  const match = htmlStr.match(supRegex);
+  if (match) {
+    const supContent = match[1].trim();
+    const cleanStr = htmlStr.replace(supRegex, "").trim();
+    return `${cleanStr} <sup>${supContent}</sup>`;
+  }
+  return htmlStr;
+};
+
 const InteractiveTranscript = ({ passages, revealed }: any) => {
   if (!passages || !passages.length) return null;
 
@@ -188,7 +234,7 @@ const InteractiveTranscript = ({ passages, revealed }: any) => {
                   {revealed && translation && (
                     <div
                       className="mt-1 text-[13px] text-slate-500 italic pl-4 border-l-2 border-slate-200 group-hover:border-blue-300 transition-colors leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: translation }}
+                      dangerouslySetInnerHTML={{ __html: moveSuperscriptToEnd(translation) }}
                     />
                   )}
                 </div>
@@ -535,11 +581,14 @@ export default function ToeicPart34Player({
             .replace(/<[^>]*>/g, "")
             .trim();
 
+          const rawTranslation = tMap[match[1]] || "";
+          const processedTranslation = moveSuperscriptToEnd(rawTranslation);
+
           sentences.push({
             id: match[1],
             speaker,
             english: cleanEnglish,
-            viText: (tMap[match[1]] || "").replace(/<[^>]*>/g, "").trim()
+            viText: processedTranslation.replace(/<[^>]*>/g, "").trim()
           });
         }
         if (sentences.length > 0) return sentences;
@@ -556,11 +605,19 @@ export default function ToeicPart34Player({
       if (t && t.english && Array.isArray(t.english)) {
         return t.english.map((enObj: any) => {
           const viMatch = t.vietnamese?.find((v: any) => v.sentenceID === enObj.sentenceID);
-          return { ...enObj, viText: viMatch?.text || "" };
+          const rawVi = viMatch?.text || "";
+          const processedVi = moveSuperscriptToEnd(rawVi);
+          return { ...enObj, viText: processedVi.replace(/<[^>]*>/g, "").trim() };
         });
       }
 
-      if (Array.isArray(t)) return t.map(item => ({ ...item, viText: item.vietnamese || "" }));
+      if (Array.isArray(t)) {
+        return t.map(item => {
+          const rawVi = item.vietnamese || "";
+          const processedVi = moveSuperscriptToEnd(rawVi);
+          return { ...item, viText: processedVi.replace(/<[^>]*>/g, "").trim() };
+        });
+      }
       return [];
     } catch (e) {
       console.error("Error parsing transcript:", e);
@@ -1390,8 +1447,17 @@ export default function ToeicPart34Player({
                           {turn.speaker && (
                             <div className="flex items-center gap-1.5 shrink-0 pt-1.5 w-[75px]">
                               <div className="w-1 h-1 rounded-full bg-indigo-400"></div>
-                              <span className="text-[12px] font-black text-indigo-900/70 tracking-tight whitespace-nowrap">
-                                {turn.speaker.split('-').map((p: string) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join('-')}
+                              <span
+                                onMouseEnter={() => {
+                                  if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+                                  setHoveredTranslation({ text: turn.speaker, sid: `speaker-${tIdx}` });
+                                }}
+                                onMouseLeave={() => {
+                                  setHoveredTranslation(null);
+                                }}
+                                className="text-[12px] font-black text-indigo-900/70 tracking-tight whitespace-nowrap cursor-help hover:text-indigo-600 transition-colors"
+                              >
+                                {translateSpeakerToEnglish(turn.speaker)}
                               </span>
                             </div>
                           )}
@@ -1458,9 +1524,9 @@ export default function ToeicPart34Player({
             </div>
 
             {/* GLOBAL TRANSLATION PORTAL (FLOATING OVERLAY - NO JUMPING) */}
-            {revealMode && hoveredTranslation && (
+            {(revealMode || revealPartialMode) && hoveredTranslation && (
               <div
-                className={`fixed z-[9999] transition-opacity duration-200 ${isAdminMode ? 'pointer-events-auto' : 'pointer-events-none'}`}
+                className={`fixed z-[9999] transition-opacity duration-200 ${isAdminMode && hoveredTranslation.sid !== 'speaker' && !hoveredTranslation.sid.startsWith('speaker-') ? 'pointer-events-auto' : 'pointer-events-none'}`}
                 onMouseEnter={() => {
                   if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
                 }}
@@ -1476,30 +1542,39 @@ export default function ToeicPart34Player({
                 }}
               >
                 <div className="relative group">
-                  {isAdminMode && (
-                    <div className="absolute -top-3 left-2 bg-indigo-600 text-[8px] text-white px-2 py-0.5 rounded-full font-black uppercase tracking-tighter z-10 shadow-lg">
-                      Sửa bản dịch ({hoveredTranslation.sid})
-                    </div>
-                  )}
-                  <span
-                    className={`text-white px-4 py-2 rounded-lg shadow-xl border border-white/10 animate-in fade-in zoom-in-95 duration-200 text-[14px] leading-relaxed font-bold inline ${isAdminMode ? 'cursor-edit' : ''}`}
-                    style={{
-                      boxDecorationBreak: "clone",
-                      WebkitBoxDecorationBreak: "clone",
-                      backgroundColor: "rgba(0, 0, 0, 0.8)"
-                    }}
-                  >
-                    <AdminInlineEditor
-                      target="group"
-                      id={currentGroup.id}
-                      field="translation_map"
-                      sid={hoveredTranslation.sid}
-                      value={hoveredTranslation.text}
-                      multiline
+                  {isAdminMode && hoveredTranslation.sid !== 'speaker' && !hoveredTranslation.sid.startsWith('speaker-') ? (
+                    <>
+                      <div className="absolute -top-3 left-2 bg-indigo-600 text-[8px] text-white px-2 py-0.5 rounded-full font-black uppercase tracking-tighter z-10 shadow-lg">
+                        Sửa bản dịch ({hoveredTranslation.sid})
+                      </div>
+                      <span
+                        className="text-white px-3 py-1.5 rounded-lg shadow-xl border border-white/10 animate-in fade-in zoom-in-95 duration-200 text-[14px] leading-normal font-bold inline-block cursor-edit"
+                        style={{
+                          backgroundColor: "rgba(0, 0, 0, 0.85)"
+                        }}
+                      >
+                        <AdminInlineEditor
+                          target="group"
+                          id={currentGroup.id}
+                          field="translation_map"
+                          sid={hoveredTranslation.sid}
+                          value={hoveredTranslation.text}
+                          multiline
+                        >
+                          {hoveredTranslation.text}
+                        </AdminInlineEditor>
+                      </span>
+                    </>
+                  ) : (
+                    <span
+                      className="text-white px-3 py-1.5 rounded-lg shadow-xl border border-white/10 animate-in fade-in zoom-in-95 duration-200 text-[14px] leading-normal font-bold inline-block"
+                      style={{
+                        backgroundColor: "rgba(0, 0, 0, 0.85)"
+                      }}
                     >
                       {hoveredTranslation.text}
-                    </AdminInlineEditor>
-                  </span>
+                    </span>
+                  )}
                 </div>
               </div>
             )}
