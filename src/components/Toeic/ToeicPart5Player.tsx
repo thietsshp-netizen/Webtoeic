@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, Fragment } from "react";
+import wordFamiliesData from "@/data/word_families.json";
 import { useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
 import {
@@ -167,6 +168,10 @@ export default function ToeicPart5Player({
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  // --- WORD FAMILY STATE ---
+  const [activeWordFamily, setActiveWordFamily] = useState<any[]>([]);
+  const [popoverPos, setPopoverPos] = useState({ x: 200, y: 200 });
+
   // Lắng nghe sự kiện từ Tour để tự động mở bung Sidebar làm ví dụ
   useEffect(() => {
     const handleTourSidebar = (e: Event) => {
@@ -179,9 +184,10 @@ export default function ToeicPart5Player({
   const { isAdminMode } = useAdminEdit();
   const explainScrollRef = useRef<HTMLDivElement>(null);
 
-  // Tự động cuộn lên đầu khi chuyển câu
+  // Tự động cuộn lên đầu khi chuyển câu và đóng cửa sổ từ điển nổi của câu cũ
   useEffect(() => {
     if (explainScrollRef.current) explainScrollRef.current.scrollTop = 0;
+    setActiveWordFamily([]);
   }, [currentIndex]);
 
   useEffect(() => {
@@ -672,6 +678,341 @@ export default function ToeicPart5Player({
     data?: any;
   }
 
+  const renderWordFamilyCloud = (text: string, children?: React.ReactNode, sentenceText?: string) => {
+    const isRevealed = revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id];
+    if (!isRevealed) return children || text;
+
+    const getMainKeys = (keyStr: string): string[] => {
+      const clean = keyStr.replace(/\s*\([^)]*\)/g, '');
+      return clean.split(/[,/]/)
+        .map(k => k.trim().toLowerCase())
+        .filter(k => k.length > 0);
+    };
+
+    const isWordMatch = (memberLower: string, wordLower: string): boolean => {
+      if (memberLower === wordLower) return true;
+
+      const endsWithE = memberLower.length > 2 && memberLower.endsWith('e');
+      const stem = endsWithE ? memberLower.slice(0, -1) : memberLower;
+
+      // Suffix matching (e.g. budgets, budgeting, budgeted, wider...)
+      if (wordLower.startsWith(stem)) {
+        const suffix = wordLower.substring(stem.length);
+        if (endsWithE) {
+          if (/^(e|es|ed|ing|er|est|y|ely)$/.test(suffix)) return true;
+        } else {
+          if (/^(s|es|ed|ing|er|est|ly|y)?$/.test(suffix)) return true;
+        }
+      }
+
+      // Safe prefixes only (underbudgeted, overpriced...) to prevent wrong matches like returns -> turn
+      const safePrefixes = ['under', 'over', 'counter', 'multi', 'semi', 'out', 'sub', 'super', 'inter'];
+      for (const prefix of safePrefixes) {
+        if (wordLower.startsWith(prefix)) {
+          const rest = wordLower.substring(prefix.length);
+          if (rest === memberLower || rest === stem) return true;
+          if (rest.startsWith(stem)) {
+            const restSuffix = rest.substring(stem.length);
+            if (endsWithE) {
+              if (/^(e|es|ed|ing|er|est|y|ely)$/.test(restSuffix)) return true;
+            } else {
+              if (/^(s|es|ed|ing|er|est|ly|y)?$/.test(restSuffix)) return true;
+            }
+          }
+        }
+      }
+
+      return false;
+    };
+
+    const isRelatedWordMatch = (memberLower: string, wordLower: string): boolean => {
+      if (memberLower === wordLower) return true;
+      const stem = (memberLower.length > 2 && memberLower.endsWith('e'))
+        ? memberLower.slice(0, -1)
+        : memberLower;
+      if (wordLower.startsWith(stem)) {
+        const suffix = wordLower.substring(stem.length);
+        return suffix.length <= 3 && /^(s|es|ed|ing|er|est|ly|y)?$/.test(suffix);
+      }
+      return false;
+    };
+
+    // Entry được coi là "gốc từ" nếu type==='root' HOẶC nội dung bắt đầu bằng "Gốc:"
+    const isRootEntry = (fam: any): boolean =>
+      fam.type === 'root' || (typeof fam.originalValue === 'string' && fam.originalValue.trimStart().startsWith('Gốc:'));
+
+
+    if (children) {
+      const cleanText = text.trim();
+      // Tìm cả best word match VÀ best root match riêng biệt
+      let bestWordFam: any = null;
+      let bestRootFam: any = null;
+      let bestWordMemberLen = -1;
+      let bestRootMemberLen = -1;
+      let bestWordDbIdx = Infinity;
+      let bestRootDbIdx = Infinity;
+      let bestWordIsColA = false;
+
+      for (let i = 0; i < wordFamiliesData.length; i++) {
+        const fam = wordFamiliesData[i];
+        if (!fam.words) continue;
+        const isRoot = isRootEntry(fam);
+        const colAWords = isRoot ? [] : getMainKeys(fam.key);
+
+        // 1. Thử tìm khớp trong Cột A trước (với word entry)
+        let foundMember = fam.words.find((member: string) => {
+          const mLower = member.toLowerCase();
+          if (!isRoot && !colAWords.includes(mLower)) return false;
+
+          const lower = cleanText.toLowerCase();
+          if (mLower.includes(' ')) {
+            return mLower === lower;
+          } else {
+            return isWordMatch(mLower, lower);
+          }
+        });
+        let matchedAsColA = !isRoot && !!foundMember;
+
+        // 2. Nếu không khớp cột A, thử tìm khớp trong cột B (với word entry) hoặc toàn bộ (với root entry)
+        if (!foundMember) {
+          foundMember = fam.words.find((member: string) => {
+            const mLower = member.toLowerCase();
+            const lower = cleanText.toLowerCase();
+            if (mLower.includes(' ')) {
+              return mLower === lower;
+            } else {
+              return isRoot ? isWordMatch(mLower, lower) : isRelatedWordMatch(mLower, lower);
+            }
+          });
+          matchedAsColA = false;
+        }
+
+        if (foundMember) {
+          const memberLen = foundMember.length;
+          if (isRoot) {
+            if (memberLen > bestRootMemberLen || (memberLen === bestRootMemberLen && i < bestRootDbIdx)) {
+              bestRootMemberLen = memberLen;
+              bestRootDbIdx = i;
+              bestRootFam = fam;
+            }
+          } else {
+            // Ưu tiên khớp từ Cột A hơn Cột B
+            const shouldReplace = !bestWordFam || 
+              (matchedAsColA && !bestWordIsColA) || 
+              (matchedAsColA === bestWordIsColA && (memberLen > bestWordMemberLen || (memberLen === bestWordMemberLen && i < bestWordDbIdx)));
+
+            if (shouldReplace) {
+              bestWordMemberLen = memberLen;
+              bestWordDbIdx = i;
+              bestWordFam = fam;
+              bestWordIsColA = matchedAsColA;
+            }
+          }
+        }
+      }
+
+      // Gộp kết quả: word trước, root sau
+      const matchedFamilies: any[] = [];
+      if (bestWordFam) matchedFamilies.push({ ...bestWordFam, matchedWord: cleanText });
+      if (bestRootFam) matchedFamilies.push({ ...bestRootFam, matchedWord: cleanText });
+
+      if (matchedFamilies.length > 0) {
+        const primaryFam = matchedFamilies[0];
+        return (
+          <span className="relative inline-block group/cloud mx-0.5 select-text">
+            {children}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (activeWordFamily.length > 0 && activeWordFamily[0].id === primaryFam.id) {
+                  setActiveWordFamily([]);
+                  return;
+                }
+                const rect = e.currentTarget.getBoundingClientRect();
+                const parentRect = e.currentTarget.parentElement?.getBoundingClientRect() || rect;
+                setPopoverPos({
+                  x: Math.min(window.innerWidth - 370, Math.max(20, parentRect.left)),
+                  y: Math.min(window.innerHeight - 420, parentRect.bottom + window.scrollY + 8)
+                });
+                setActiveWordFamily(matchedFamilies);
+              }}
+              className="absolute -top-[5px] -right-[6px] text-blue-400 hover:text-blue-600 transition-colors z-10 p-0 m-0 cursor-pointer"
+              title={`Xem họ từ/gốc từ: ${primaryFam.key}`}
+            >
+              <svg className="w-2.5 h-2.5 fill-blue-100 stroke-blue-500 stroke-[1.5]" viewBox="0 0 24 24">
+                <path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z" />
+              </svg>
+            </button>
+          </span>
+        );
+      }
+      return children;
+    }
+
+    // Nếu không có children (text thường), ta sử dụng thuật toán cắt cụm từ trước (Phrase-First)
+    interface MatchCandidate {
+      start: number;
+      end: number;
+      length: number;
+      family: any;
+      matchedWord: string;
+      isPhrase: boolean;
+      isRoot: boolean;
+      isColA: boolean;
+      indexInDb: number;
+      memberLength: number;
+    }
+
+    const candidates: MatchCandidate[] = [];
+
+    wordFamiliesData.forEach((fam, dbIdx) => {
+      if (!fam.words) return;
+      fam.words.forEach((member: string) => {
+        const isPhrase = member.includes(' ');
+        const escaped = member.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        let regex: RegExp;
+
+        if (isPhrase) {
+          regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+        } else {
+          const mLower = member.toLowerCase();
+          if (mLower.length >= 4) {
+            regex = new RegExp(`\\b[a-zA-Z]*${escaped}[a-zA-Z]*\\b`, 'gi');
+          } else {
+            regex = new RegExp(`\\b${escaped}[a-zA-Z]{0,3}\\b`, 'gi');
+          }
+        }
+
+        let match;
+        regex.lastIndex = 0;
+        while ((match = regex.exec(text)) !== null) {
+          const matchedStr = match[0];
+          if (!isPhrase) {
+            const mainKeys = isRootEntry(fam) ? [] : getMainKeys(fam.key);
+            const isMain = isRootEntry(fam) || mainKeys.includes(member.toLowerCase());
+            const matches = isMain 
+              ? isWordMatch(member.toLowerCase(), matchedStr.toLowerCase())
+              : isRelatedWordMatch(member.toLowerCase(), matchedStr.toLowerCase());
+            if (!matches) continue;
+          }
+          const isColA = !isRootEntry(fam) && getMainKeys(fam.key).includes(member.toLowerCase());
+          candidates.push({
+            start: match.index,
+            end: match.index + matchedStr.length,
+            length: matchedStr.length,
+            family: fam,
+            matchedWord: matchedStr,
+            isPhrase,
+            isRoot: isRootEntry(fam),
+            isColA,
+            indexInDb: dbIdx,
+            memberLength: member.length
+          });
+          if (match.index === regex.lastIndex) {
+            regex.lastIndex++;
+          }
+        }
+      });
+    });
+
+    // Sắp xếp: Cụm từ > Cột A > Gốc từ (root) > dài hơn > member dài hơn > xuất hiện sớm trong db
+    candidates.sort((a, b) => {
+      if (a.isPhrase !== b.isPhrase) return a.isPhrase ? -1 : 1;
+      if (a.isColA !== b.isColA) return a.isColA ? -1 : 1;
+      if (a.isRoot !== b.isRoot) return a.isRoot ? -1 : 1;
+      if (b.length !== a.length) return b.length - a.length;
+      if (b.memberLength !== a.memberLength) return b.memberLength - a.memberLength;
+      return a.indexInDb - b.indexInDb;
+    });
+
+    const selectedMatches: MatchCandidate[] = [];
+    const isOccupied = new Array(text.length).fill(false);
+
+    candidates.forEach(cand => {
+      let occupied = false;
+      for (let i = cand.start; i < cand.end; i++) {
+        if (isOccupied[i]) {
+          occupied = true;
+          break;
+        }
+      }
+      if (!occupied) {
+        for (let i = cand.start; i < cand.end; i++) {
+          isOccupied[i] = true;
+        }
+        selectedMatches.push(cand);
+      }
+    });
+
+    selectedMatches.sort((a, b) => a.start - b.start);
+
+    const resultElements: React.ReactNode[] = [];
+    let lastIdx = 0;
+
+    selectedMatches.forEach((match, idx) => {
+      if (match.start > lastIdx) {
+        resultElements.push(<Fragment key={`t-${idx}`}>{text.substring(lastIdx, match.start)}</Fragment>);
+      }
+      // Với mỗi match, tìm thêm root match (nếu có) cho cùng từ đó
+      const extraRootForMatch = (() => {
+        const wordLower = match.matchedWord.toLowerCase();
+        let bestRoot: any = null;
+        let bestLen = -1;
+        wordFamiliesData.forEach((fam: any, di: number) => {
+          if (!isRootEntry(fam) || !fam.words) return;
+          if (fam.id === match.family.id) return;
+          const found = fam.words.find((m: string) => isWordMatch(m.toLowerCase(), wordLower) || isRelatedWordMatch(m.toLowerCase(), wordLower));
+          if (found && found.length > bestLen) { bestLen = found.length; bestRoot = { ...fam, matchedWord: match.matchedWord }; }
+        });
+        return bestRoot;
+      })();
+
+      const famList = [{ ...match.family, matchedWord: match.matchedWord }];
+      if (extraRootForMatch && !famList.some((f: any) => f.id === extraRootForMatch.id)) {
+        famList.push(extraRootForMatch);
+      }
+      // Sắp xếp: word trước, root sau
+      famList.sort((a: any, b: any) => (a.type === 'root' ? 1 : 0) - (b.type === 'root' ? 1 : 0));
+
+      resultElements.push(
+        <span key={`m-${idx}`} className="relative inline-block group/cloud mx-0.5 select-text">
+          {text.substring(match.start, match.end)}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (activeWordFamily.length > 0 && activeWordFamily[0].id === famList[0].id) {
+                setActiveWordFamily([]);
+                return;
+              }
+              const rect = e.currentTarget.getBoundingClientRect();
+              const parentRect = e.currentTarget.parentElement?.getBoundingClientRect() || rect;
+              setPopoverPos({
+                x: Math.min(window.innerWidth - 370, Math.max(20, parentRect.left)),
+                y: Math.min(window.innerHeight - 420, parentRect.bottom + window.scrollY + 8)
+              });
+              setActiveWordFamily(famList);
+            }}
+            className="absolute -top-[5px] -right-[6px] text-blue-400 hover:text-blue-600 transition-colors z-10 p-0 m-0 cursor-pointer"
+            title={`Xem họ từ/gốc từ: ${famList[0].key}`}
+          >
+            <svg className="w-2.5 h-2.5 fill-blue-100 stroke-blue-500 stroke-[1.5]" viewBox="0 0 24 24">
+              <path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z" />
+            </svg>
+          </button>
+        </span>
+      );
+      lastIdx = match.end;
+    });
+
+    if (lastIdx < text.length) {
+      resultElements.push(<Fragment key="t-end">{text.substring(lastIdx)}</Fragment>);
+    }
+
+    return resultElements;
+  };
+
   const renderQuestionText = (text: string | null | undefined) => {
     if (!text) return null;
 
@@ -772,10 +1113,9 @@ export default function ToeicPart5Player({
           ? `${String(seg.data.word || '').toLowerCase()} = ${shortMeaning}`
           : shortMeaning;
 
-        return (
+        const rubyNode = (
           <ruby
-            key={i}
-            className="text-emerald-755 font-bold cursor-help transition-all align-baseline mx-0.5"
+            className="text-emerald-755 font-bold cursor-help transition-all align-baseline mx-0.5 whitespace-nowrap"
             title={`${seg.content} (${seg.data.ipa_uk || seg.data.ipa || ''}): ${seg.data.meaning}`}
           >
             <span className="border-b border-dashed border-emerald-400 pb-0.5">
@@ -794,6 +1134,8 @@ export default function ToeicPart5Player({
             </rt>
           </ruby>
         );
+
+        return <Fragment key={i}>{renderWordFamilyCloud(seg.content, rubyNode, raw)}</Fragment>;
       }
 
       if (seg.type === 'expansion') {
@@ -807,10 +1149,9 @@ export default function ToeicPart5Player({
           ? `${String(seg.data.phrase || '').toLowerCase()} = ${shortMeaning}`
           : shortMeaning;
 
-        return (
+        const rubyNode = (
           <ruby
-            key={i}
-            className="text-purple-755 font-bold cursor-help transition-all align-baseline mx-0.5"
+            className="text-purple-755 font-bold cursor-help transition-all align-baseline mx-0.5 whitespace-nowrap"
             title={`Cấu trúc: ${seg.data.phrase} - Nghĩa đầy đủ: ${seg.data.meaning}`}
           >
             <span className="border-b border-dashed border-purple-400 pb-0.5">
@@ -829,6 +1170,8 @@ export default function ToeicPart5Player({
             </rt>
           </ruby>
         );
+
+        return <Fragment key={i}>{renderWordFamilyCloud(seg.content, rubyNode, raw)}</Fragment>;
       }
 
       // Đối với text thường, xử lý các ô trống như ban đầu
@@ -841,7 +1184,7 @@ export default function ToeicPart5Player({
             </span>
           );
         }
-        return <span key={`${i}-${pi}`}>{part}</span>;
+        return <Fragment key={`${i}-${pi}`}>{renderWordFamilyCloud(part, null, raw)}</Fragment>;
       });
     });
   };
@@ -1677,6 +2020,297 @@ export default function ToeicPart5Player({
           currentIndex={currentIndex}
         />
       )}
+
+      {/* WORD FAMILY POPOVER DICTIONARY */}
+      {activeWordFamily.length > 0 && (
+        <WordFamilyPopover
+          wordFamilies={activeWordFamily}
+          position={popoverPos}
+          onClose={() => setActiveWordFamily([])}
+          onPositionChange={(pos) => setPopoverPos(pos)}
+        />
+      )}
+    </div>
+  );
+}
+
+interface WordFamilyEntry {
+  key: string;
+  originalValue: string;
+  type: string;
+  roots?: string[];
+  matchedWord?: string;
+}
+
+interface DraggablePopoverProps {
+  wordFamilies: WordFamilyEntry[];
+  position: { x: number; y: number };
+  onClose: () => void;
+  onPositionChange: (pos: { x: number; y: number }) => void;
+}
+
+function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }: DraggablePopoverProps) {
+  const wordFamily = wordFamilies[0]; // primary entry for display
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('.popover-header')) {
+      e.preventDefault();
+      setDragStart({ x: e.clientX, y: e.clientY });
+      setStartPos({ x: position.x, y: position.y });
+    }
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (dragStart) {
+        const dx = e.clientX - dragStart.x;
+        const dy = e.clientY - dragStart.y;
+        onPositionChange({
+          x: startPos.x + dx,
+          y: startPos.y + dy
+        });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setDragStart(null);
+    };
+
+    if (dragStart) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [dragStart, startPos, onPositionChange]);
+
+  const formatContent = (val: string, key: string, type: string, roots?: string[], displayTitle?: string) => {
+    const lines = val.split('\n');
+
+    // Helper: render a raw string fragment with rich inline styling
+    const renderRichText = (raw: string, termRegex: RegExp | null, termLower: string): React.ReactNode[] => {
+      // Step 1: split by bracket groups [...]
+      const bracketSplit = /([\[（][^\]）]*[\]）])/g;
+      const bracketParts = raw.split(bracketSplit);
+
+      const result: React.ReactNode[] = [];
+      bracketParts.forEach((seg, bIdx) => {
+        if ((seg.startsWith('[') && seg.endsWith(']')) || (seg.startsWith('（') && seg.endsWith('）'))) {
+          // Bracket explanation: teal color for easy reading
+          result.push(
+            <span key={`br-${bIdx}`} className="text-teal-600 text-[0.82em] font-normal">
+              {seg}
+            </span>
+          );
+          return;
+        }
+
+        // Step 2: highlight prefix/suffix tokens like "as-", "-sign-", "re-"
+        // Detect tokens that start and/or end with a hyphen (affix markers)
+        // Split by spaces to get tokens, then check each token's shape
+        const isAffixToken = (tok: string) => {
+          const t = tok.replace(/[().,!?;:'"]/g, '');
+          // Must start with "-" or end with "-" and have alphabetic content
+          return /^-[a-zA-Z]{2,10}-?$/.test(t) || /^[a-zA-Z]{1,6}-$/.test(t);
+        };
+
+        // Split segment into affix-aware parts by looking at space-separated tokens
+        const words = seg.split(/(\s+)/);
+        words.forEach((tok, wIdx) => {
+          if (/^\s+$/.test(tok)) {
+            result.push(tok);
+            return;
+          }
+          if (isAffixToken(tok)) {
+            result.push(
+              <span key={`af-${bIdx}-${wIdx}`} className="text-amber-600 font-semibold">
+                {tok}
+              </span>
+            );
+            return;
+          }
+
+          // Step 3: highlight the root/key term inside normal text
+          if (!termRegex) {
+            result.push(tok);
+            return;
+          }
+          termRegex.lastIndex = 0;
+          const subParts = tok.split(termRegex);
+          subParts.forEach((sub, sIdx) => {
+            if (sub.toLowerCase() === termLower) {
+              result.push(
+                <span key={`term-${bIdx}-${wIdx}-${sIdx}`} className="text-amber-600 font-semibold">
+                  {sub}
+                </span>
+              );
+            } else {
+              result.push(sub);
+            }
+          });
+        });
+      });
+
+      return result;
+    };
+
+
+    return lines.map((line, idx) => {
+      const trimmed = line.trim();
+      if (trimmed.length === 0) return null;
+
+      let lineClass = "text-slate-700 text-sm leading-relaxed my-1.5 font-medium";
+      const lowerTrimmed = trimmed.toLowerCase();
+      if (
+        lowerTrimmed.startsWith('gốc:') || 
+        lowerTrimmed.startsWith('goc:') || 
+        lowerTrimmed.startsWith('tiền tố:') || 
+        lowerTrimmed.startsWith('tien to:') ||
+        lowerTrimmed.startsWith('hậu tố:') || 
+        lowerTrimmed.startsWith('hau to:')
+      ) {
+        lineClass = "text-red-600 text-sm leading-relaxed my-1.5 font-bold";
+      } else if (trimmed.startsWith('=') || trimmed.startsWith('~')) {
+        lineClass = "text-emerald-700 text-sm leading-relaxed my-1.5 font-bold";
+      } else if (trimmed.startsWith('><')) {
+        lineClass = "text-red-600 text-sm leading-relaxed my-1.5 font-bold";
+      } else if (trimmed.includes('->') || trimmed.startsWith('-')) {
+        lineClass = "text-indigo-700 text-sm leading-relaxed my-1.5 font-semibold";
+      }
+
+      // Build term matching info
+      const searchTerms = type === 'root' && roots
+        ? roots
+        : [displayTitle ? displayTitle.toLowerCase() : key.replace(/[\/,]/g, ' ').split(' ')[0]];
+
+      // For bullet lines (starting with • or *), bold the example word before the first colon
+      const isBullet = trimmed.startsWith('•') || trimmed.startsWith('*') || trimmed.startsWith('·');
+
+      // We process the entire line by applying all search terms sequentially
+      // For simplicity, use the first term for coloring (roots handled separately)
+      const firstTerm = searchTerms[0] || '';
+      const termLower = firstTerm.toLowerCase();
+      const termRegex = firstTerm.length >= 2
+        ? (type === 'root'
+          ? new RegExp(`(${firstTerm})`, 'gi')
+          : new RegExp(`\\b(${firstTerm})\\b`, 'gi'))
+        : null;
+
+      if (isBullet) {
+        // Split: bullet marker + example word(s) before first ":" + rest
+        // Pattern: "• word(s) pos:" or "• word / word:"
+        const bulletMatch = trimmed.match(/^([•*·]\s*)([\w\s/,'-]+?)(\s*(?:v|n|adj|adv|prep|conj|phr|phrase)?\.?:)([\s\S]*)/);
+        if (bulletMatch) {
+          const [, marker, exWord, colon, rest] = bulletMatch;
+          return (
+            <div key={idx} className={lineClass}>
+              <span>{marker}</span>
+              <span className="font-bold text-slate-900">{exWord}</span>
+              <span className="font-semibold text-slate-600">{colon}</span>
+              {renderRichText(rest, termRegex, termLower)}
+            </div>
+          );
+        }
+      }
+
+      // Default: render with rich inline styling
+      const richParts = renderRichText(line, termRegex, termLower);
+      return <div key={idx} className={lineClass}>{richParts}</div>;
+    });
+  };
+
+  const getDisplayTitle = (key: string, matchedWord?: string): string => {
+    if (!matchedWord) return key;
+    // Bỏ qua chú thích trong ngoặc đơn ở cuối key như (prep.), (v),...
+    const clean = key.replace(/\s*\([^)]*\)/g, '');
+    const items = clean.split(/[,/]/).map(item => item.trim());
+    
+    if (items.length === 1) {
+      return items[0].charAt(0).toUpperCase() + items[0].slice(1);
+    }
+
+    const target = matchedWord.toLowerCase().trim();
+    let bestItem = items[0];
+    let bestScore = -1;
+
+    items.forEach(item => {
+      const itemLower = item.toLowerCase();
+      if (itemLower === target) {
+        bestItem = item;
+        bestScore = 100;
+        return;
+      }
+
+      if (target.startsWith(itemLower) || itemLower.startsWith(target)) {
+        const score = Math.min(itemLower.length, target.length) / Math.max(itemLower.length, target.length);
+        if (score > bestScore) {
+          bestScore = score;
+          bestItem = item;
+        }
+      } else if (target.includes(itemLower) || itemLower.includes(target)) {
+        const score = 0.5 * (Math.min(itemLower.length, target.length) / Math.max(itemLower.length, target.length));
+        if (score > bestScore) {
+          bestScore = score;
+          bestItem = item;
+        }
+      }
+    });
+
+    return bestItem.charAt(0).toUpperCase() + bestItem.slice(1);
+  };
+
+  return (
+    <div
+      ref={popoverRef}
+      style={{ left: `${position.x}px`, top: `${position.y}px` }}
+      className="fixed z-[9999] w-fit min-w-[350px] max-w-[650px] max-h-[400px] overflow-hidden bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/80 flex flex-col animate-in zoom-in-95 duration-200"
+    >
+      <div
+        onMouseDown={handleMouseDown}
+        className="popover-header px-4 py-2.5 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 flex items-center justify-between cursor-move select-none shrink-0"
+      >
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+          <span className="font-bold text-xs uppercase tracking-wider text-slate-500">Mở rộng vốn từ</span>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-1 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
+        >
+          <XMarkIcon className="w-4 h-4" />
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4 select-text">
+        {wordFamilies.map((fam, famIdx) => {
+          const displayTitle = getDisplayTitle(fam.key, fam.matchedWord);
+          const isRoot = fam.type === 'root' || (typeof fam.originalValue === 'string' && fam.originalValue.trimStart().startsWith('Gốc:'));
+          return (
+            <div key={famIdx}>
+              {famIdx > 0 && (
+                <div className="flex items-center gap-2 my-3">
+                  <div className="flex-1 h-px bg-slate-200" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Gốc từ</span>
+                  <div className="flex-1 h-px bg-slate-200" />
+                </div>
+              )}
+              <h4 className={`text-lg font-black mb-2 border-b pb-1.5 capitalize ${isRoot && famIdx > 0 ? 'text-amber-700 border-amber-100' : 'text-slate-800 border-slate-100'}`}>
+                {displayTitle}
+              </h4>
+              <div className="space-y-1">
+                {formatContent(fam.originalValue, fam.key, fam.type, fam.roots, displayTitle)}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

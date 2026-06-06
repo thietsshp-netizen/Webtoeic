@@ -1,0 +1,5158 @@
+[
+  {
+    "id": "row-1",
+    "type": "word",
+    "key": "identify",
+    "words": [
+      "identify",
+      "identification card"
+    ],
+    "originalValue": "identify (v): Nhận dạng\r\nidentification card = ID card = thẻ nhận dạng\r\nidentifying information (n): Thông tin nhận dạng ~ personal details\r\nbrand identity n. nhận diện thương hiệu\r\nidentical (adj): Giống hệt nhau"
+  },
+  {
+    "id": "row-2",
+    "type": "word",
+    "key": "express",
+    "words": [
+      "express",
+      "express train",
+      "express mail"
+    ],
+    "originalValue": "express v. bảy tỏ ~ convey \r\nexpress train = tàu tốc hành \r\nexpress mail ~ thư chuyển phát nhanh >< standard mail"
+  },
+  {
+    "id": "row-3",
+    "type": "word",
+    "key": "cover",
+    "words": [
+      "cover"
+    ],
+    "originalValue": "- The table was covered with a white cloth ~ phủ, che phủ \r\n- Can you cover my shift? ~ làm thay \r\n- This book cover all aspects of markting ~ bao gồm, đề cập đến \r\n- This insurance cover all the damage ~ chi trả"
+  },
+  {
+    "id": "row-4",
+    "type": "word",
+    "key": "open",
+    "words": [
+      "open",
+      "open mind",
+      "opening ceremony",
+      "job opening"
+    ],
+    "originalValue": "open v. mở >< close, shut\r\nopen mind ~ adj. công khai, mở >< secretive\r\nopening ceremony ~ lễ khai mạc/trương\r\njob opening = vacant position"
+  },
+  {
+    "id": "row-5",
+    "type": "word",
+    "key": "certain",
+    "words": [
+      "certain",
+      "certainly",
+      "a certain guy"
+    ],
+    "originalValue": "certainly, definitely \r\n- It is certain that...~ chắc chắn \r\n- A certain guy ~ nào đó"
+  },
+  {
+    "id": "row-6",
+    "type": "word",
+    "key": "allow",
+    "words": [
+      "allow"
+    ],
+    "originalValue": "allow, = permit, authorize, agree, grant \r\n>< prevent, forbid"
+  },
+  {
+    "id": "row-7",
+    "type": "word",
+    "key": "base",
+    "words": [
+      "base"
+    ],
+    "originalValue": "- His company is based in HCM\r\n- His novel is based on a true story"
+  },
+  {
+    "id": "row-8",
+    "type": "word",
+    "key": "reduce",
+    "words": [
+      "reduce"
+    ],
+    "originalValue": "giảm = reduce, decrease, shrink, shorten, curtail\r\ntăng = increase, raise, extend, expand, enlarge, wide"
+  },
+  {
+    "id": "row-9",
+    "type": "word",
+    "key": "current",
+    "words": [
+      "current"
+    ],
+    "originalValue": "current\r\n- previous/past/last year, năm trước \r\n- next/following year, năm tới"
+  },
+  {
+    "id": "row-10",
+    "type": "word",
+    "key": "publication",
+    "words": [
+      "publication",
+      "publishment"
+    ],
+    "originalValue": "publish v. xuất bản \r\npublisher - nhà xuất bản \r\npublishment ~ publication, sự xuất bản \r\npublishing - nghề xuất bản, việc xuất bản \r\n-> a publishing company/house, công ty xuất bản"
+  },
+  {
+    "id": "row-11",
+    "type": "word",
+    "key": "department",
+    "words": [
+      "department",
+      "sales department",
+      "legal department",
+      "marketing department",
+      "accounting department"
+    ],
+    "originalValue": "~ division\r\nsales/legal/marketing/accounting + department"
+  },
+  {
+    "id": "row-12",
+    "type": "word",
+    "key": "apply",
+    "words": [
+      "apply"
+    ],
+    "originalValue": "- apply\r\nv1. ứng tuyển: - apply for a job || apply to a company \r\n->applicant, candidate; application: hồ sơ ứng tuyển\r\n\r\nv2. sử dụng, áp dụng: apply a new technology, use, implement\r\n-> (phone) application: ứng dụng (điện thoại), sự sd\r\n-> (kitchen) appliance ~ thiết bị ~ device"
+  },
+  {
+    "id": "row-13",
+    "type": "word",
+    "key": "among",
+    "words": [
+      "among"
+    ],
+    "originalValue": "- My house is among the trees ~ ở giữa\r\n- We divided the money among the staff ~ trong số"
+  },
+  {
+    "id": "row-14",
+    "type": "word",
+    "key": "beside",
+    "words": [
+      "beside"
+    ],
+    "originalValue": "beside, = by, next to, adjacent to \r\n# besides, in addition, also \r\nI don't really want to go. Besides, it's too late now"
+  },
+  {
+    "id": "row-16",
+    "type": "word",
+    "key": "interview",
+    "words": [
+      "interview"
+    ],
+    "originalValue": "interviewer/interviewee"
+  },
+  {
+    "id": "row-17",
+    "type": "word",
+    "key": "deliver",
+    "words": [
+      "deliver",
+      "to deliver goods",
+      "to deliver letter",
+      "to deliver a speech",
+      "to deliver a talk"
+    ],
+    "originalValue": "- to deliver goods/letter ~ giao hàng\r\n-> delivery date/truck/driver ~ việc giao hàng, chuyến hàng\r\n- to deliver a speech/talk ~ thực hiện ~ give a speech/talk"
+  },
+  {
+    "id": "row-18",
+    "type": "word",
+    "key": "free",
+    "words": [
+      "free",
+      "free of charge"
+    ],
+    "originalValue": ", complimentary; free of charge\r\n-> free time ~ leisure time\r\n-> sugar-free; tax-free (-free, not containing, not having)"
+  },
+  {
+    "id": "row-19",
+    "type": "word",
+    "key": "install",
+    "words": [
+      "install"
+    ],
+    "originalValue": "- install: nắp đặt, cài đặt (to install a fence/software)\r\n- installation: việc nắp đặt\r\n- to pay sth in installments, trả làm nhiều lần\r\n- a story published in installments"
+  },
+  {
+    "id": "row-20",
+    "type": "word",
+    "key": "supply",
+    "words": [
+      "supply",
+      "office supply",
+      "supply caninet",
+      "supply closet"
+    ],
+    "originalValue": "v. cung cấp ~ provide, give, grant, equip\r\nn. office supply, supply caninet/closet\r\n-> supply\r\n-> supplier\r\n-> supplement (phần bổ sung)"
+  },
+  {
+    "id": "row-21",
+    "type": "word",
+    "key": "offer",
+    "words": [
+      "offer"
+    ],
+    "originalValue": "v. cung cấp ~ provide, offer, give, grant, equip \r\n- provider: nhà cung cấp ~ supplier \r\n-> service provider \r\n-> mobile phone/software/health care + provider"
+  },
+  {
+    "id": "row-22",
+    "type": "word",
+    "key": "immediately",
+    "words": [
+      "immediately"
+    ],
+    "originalValue": "right away, immediately, now, promptly, instantly, at once"
+  },
+  {
+    "id": "row-23",
+    "type": "word",
+    "key": "access",
+    "words": [
+      "access",
+      "internet access",
+      "access code",
+      "to access a website",
+      "to access a account"
+    ],
+    "originalValue": "n. -> internet access; access code ~ quyền truy cập; lối vào\r\nv. -> to access a website/account ~ truy cập\r\n-> accessible\r\n-> (clothing) accessory: phụ kiện, phụ tùng\r\n# assess ~ measure"
+  },
+  {
+    "id": "row-24",
+    "type": "word",
+    "key": "previous",
+    "words": [
+      "previous",
+      "preceding"
+    ],
+    "originalValue": ", trước, cũ ~ earlier, preceding, prior, past, former\r\n>< sau, mới: \r\n- next/later/following day \r\n- succeeding (-> successor - người kế nhiệm);\r\n- subsequent/succeed generation"
+  },
+  {
+    "id": "row-25",
+    "type": "word",
+    "key": "yet",
+    "words": [
+      "yet"
+    ],
+    "originalValue": "- It is a challenging job, yet I love it ~ nhưng, but\r\n- I haven't met her yet ~ (vẫn) chưa"
+  },
+  {
+    "id": "row-26",
+    "type": "word",
+    "key": "by",
+    "words": [],
+    "originalValue": "- A house by the river ~ bên cạnh ~ next to, adjacent, alongside, near, beside, next door, close to \r\n- I go to school by bus/car ~ bằng \r\n- You have to finish this by tomorrow ~ before, no later than"
+  },
+  {
+    "id": "row-28",
+    "type": "word",
+    "key": "image",
+    "words": [
+      "image"
+    ],
+    "originalValue": "- image: hình ảnh \r\n- imagine: tưởng tượng \r\n- imagination: sức tưởng tượng, sự tưởng tượng \r\n- imaginable: có thể tưởng tượng được \r\n- imaginative: giàu sức tưởng tượng \r\n- unimaginable: không thể tưởng tượng nổi"
+  },
+  {
+    "id": "row-29",
+    "type": "word",
+    "key": "premium",
+    "words": [
+      "premium"
+    ],
+    "originalValue": "adj., superior, of high quality; very high (and higher than usual)\r\n-> premium version vs free version"
+  },
+  {
+    "id": "row-30",
+    "type": "word",
+    "key": "store",
+    "words": [
+      "store",
+      "cold storage",
+      "restore"
+    ],
+    "originalValue": "- storage: kho, nơi trữ hàng \r\n- cold storage, kho lạnh \r\n- restore, phục hồi (dữ liệu)"
+  },
+  {
+    "id": "row-31",
+    "type": "word",
+    "key": "receive",
+    "words": [
+      "receive",
+      "recipient"
+    ],
+    "originalValue": "- nhận: receive \r\n- người nhận: receiver, recipient\r\n- receptive: người dễ tiếp thu\r\n- reception: tiệc chiêu đãi, đón (nhận) khách\r\n-> reception desk/staff: nv tiếp tân\r\n- tặng, trao: give, present, offer, grant"
+  },
+  {
+    "id": "row-32",
+    "type": "word",
+    "key": "review",
+    "words": [
+      "review",
+      "preview"
+    ],
+    "originalValue": "- view, see\r\n- in my view, in my opinion \r\n- interview\r\n- preview\r\n- viewer, watcher, observer, audience \r\n= người quan sát, người xem, khán giả\r\n- review -> reviewer (nhà phê bình) ~ critic\r\n- overview, n. tổng quan\r\n- viewpoint, point of view, opinion"
+  },
+  {
+    "id": "row-34",
+    "type": "word",
+    "key": "tree",
+    "words": [
+      "tree"
+    ],
+    "originalValue": "- lá cây: leaf \r\n- cành cây: branch \r\n- thân cây: stem, trunk \r\n- rễ cây: root \r\n- bụi cây: bush, shrub, hedge \r\n--> cắt tỉa: cut, trim, prune, mow"
+  },
+  {
+    "id": "row-35",
+    "type": "word",
+    "key": "market",
+    "words": [
+      "market",
+      "market share",
+      "hit the market"
+    ],
+    "originalValue": "v. market, promote, advertise, publicize\r\n--> marketing (department) ~ n. làm thị trường\r\nn. market: chợ, thị trường\r\nmarket share\r\nhit the market, come on the market"
+  },
+  {
+    "id": "row-36",
+    "type": "word",
+    "key": "corporate",
+    "words": [
+      "corporate"
+    ],
+    "originalValue": "- corporate adj đoàn thể, tập thể; thuộc về liên hiệp công ty\r\n- công ty: corporation, company, firm, business, organization, enterprise, agency, group, service"
+  },
+  {
+    "id": "row-37",
+    "type": "word",
+    "key": "accidentally",
+    "words": [
+      "accidentally"
+    ],
+    "originalValue": "tình cờ, ngẫu nhiên \r\n= unintentionally, unexpectedly, incidentally, by chance \r\n<=> deliberately, consciously, on purpose"
+  },
+  {
+    "id": "row-38",
+    "type": "word",
+    "key": "claim",
+    "words": [
+      "claim"
+    ],
+    "originalValue": "- đòi, yêu cầu: demand, insist: to claim the right \r\n- khẳng định, quả quyết, say"
+  },
+  {
+    "id": "row-39",
+    "type": "word",
+    "key": "critic",
+    "words": [
+      "critic"
+    ],
+    "originalValue": "- a music/food critic: nhà phê bình ~ reviewer, judge, commentator \r\n- critical: phê bình; quan trọng, then chốt \r\n-> a critical decision - then chốt \r\n-> a critical condition ~ thời điểm nguy kịch \r\n-> a critical temperature ~ nhiệt độ tới hạn \r\n- chỉ trích, chê bai \r\n-> a critical report ~ báo cáo phê phán \r\n- a critically important decision ~ một cách then chốt"
+  },
+  {
+    "id": "row-40",
+    "type": "word",
+    "key": "certain",
+    "words": [
+      "certain",
+      "a certain guy",
+      "uncertain"
+    ],
+    "originalValue": "a certain guy, một gã nào đó \r\nIt is certain that..., Chắc chắn rằng...= sure, positive, confident, indisputable \r\n>< uncertain, boubtful, unsure, disputable"
+  },
+  {
+    "id": "row-41",
+    "type": "word",
+    "key": "start",
+    "words": [
+      "start",
+      "start to do sth"
+    ],
+    "originalValue": "- embark on/upon sth \r\n= commence/start to do sth, dấn thân vào việc gì\r\n- to embark a ship, to get onto/ board a ship, lên tàu"
+  },
+  {
+    "id": "row-42",
+    "type": "word",
+    "key": "extend",
+    "words": [
+      "extend"
+    ],
+    "originalValue": "- kéo dài ~ last, lengthen, prolong \r\n- mở rộng ~ spread out, stretch out, widen, increase, enlarge, broaden"
+  },
+  {
+    "id": "row-43",
+    "type": "word",
+    "key": "project",
+    "words": [
+      "project",
+      "projector",
+      "protest"
+    ],
+    "originalValue": "projector = máy chiếu\r\nreject = loại bỏ, từ chối\r\nobject = phản đối; đồ vật, tân ngữ\r\nobjection, opposition, protest, sự phản đối >< support"
+  },
+  {
+    "id": "row-44",
+    "type": "word",
+    "key": "since",
+    "words": [
+      "since"
+    ],
+    "originalValue": "- prep: Mr. Barrientos has been working at the company since six years ago\r\n- Conj: Mr. Barrientos has worked at the company since I left\r\n- Mr. Barrientos worked at the company six years ago"
+  },
+  {
+    "id": "row-45",
+    "type": "word",
+    "key": "revision",
+    "words": [
+      "revision"
+    ],
+    "originalValue": "revise - sửa chữa, change, alter, modify, amend, update, edit\r\nvision\r\nvisable/invisable\r\nprovision - sự dự liệu; sự cung cấp (vprovide)"
+  },
+  {
+    "id": "row-46",
+    "type": "word",
+    "key": "ship",
+    "words": [
+      "ship"
+    ],
+    "originalValue": "- ship: giao hàng; con tàu\r\n- shipment: chuyến hàng; sự vận chuyển\r\n--> There is a new shipment coming tomorrow\r\n- shipper: người giao hàng ~ delivery man\r\n- shipping: việc vận chuyển hàng (bằng tàu thuỷ)"
+  },
+  {
+    "id": "row-47",
+    "type": "word",
+    "key": "position",
+    "words": [
+      "position",
+      "job position",
+      "vacant position"
+    ],
+    "originalValue": "n. vị trí \r\n- job position, job opening; vacant position \r\n\r\nv., stand \r\n- The presenter is positioned next to a podium"
+  },
+  {
+    "id": "row-48",
+    "type": "word",
+    "key": "past",
+    "words": [
+      "past",
+      "a past president",
+      "the past month",
+      "the past",
+      "three years past"
+    ],
+    "originalValue": "adj. a past president; the past month || n. the past, the future...|| \r\nadv. three years past, three years ago; prep: He walked past me"
+  },
+  {
+    "id": "row-49",
+    "type": "word",
+    "key": "as",
+    "words": [],
+    "originalValue": "- adv: She is as tall as her sister.|| She is true, as always \r\n- conj: I did as she had asked || I'm watching TV while/as she's talking \r\n- prep:--> trong câu 115 này, as là giới từ"
+  },
+  {
+    "id": "row-50",
+    "type": "word",
+    "key": "office",
+    "words": [
+      "office",
+      "government officials",
+      "official",
+      "office supply"
+    ],
+    "originalValue": "- (police) officer ~ viên chức; sĩ quan (quân đội) \r\n- government officials ~ viên chức, công chức\r\n- official=formal ~ chính thức; trịnh trọng >< informal\r\n-> officially acclaim\r\n- office supply = vpp ~ stationery\r\n-> office clerk;\r\n-> office assistant"
+  },
+  {
+    "id": "row-51",
+    "type": "word",
+    "key": "function",
+    "words": [
+      "function",
+      "malfunction"
+    ],
+    "originalValue": "- function \r\nn. chức năng, nhiệm vụ ~ duty, job, task, mission \r\nv. hoạt động, thực hiện chức năng ~ run, work, operate, perform \r\n- malfunction \r\nn. lỗi ~ failure, fault, defect, flaw \r\nv. hỏng, lỗi ~ fail, break down \r\n- functional (thuộc) chức năng; có thể hoạt động ~ practical, working, workable, usable"
+  },
+  {
+    "id": "row-52",
+    "type": "word",
+    "key": "purchase",
+    "words": [
+      "purchase"
+    ],
+    "originalValue": "- purchase v,n. mua hàng; món hàng\r\n-> người mua: purchaser, buyer, customer, consumer, vendee, client, patron\r\n-> người bán: dealer, vender, seller, salesperson, merchant\r\n- mua, buy, get, acquire \r\n- bán, sell, vend, trade\r\n- giá, chi phí, price, cost, rate \r\n--> estimate; quote (bản định giá) \r\n- mặc cả, bargain, negotiate"
+  },
+  {
+    "id": "row-53",
+    "type": "word",
+    "key": "mark",
+    "words": [
+      "mark",
+      "marker",
+      "remarkable",
+      "landmark"
+    ],
+    "originalValue": "marker, but lông\r\nremarkable, noticeable\r\nlandmark, nơi có giá trị lớn về lịch sử"
+  },
+  {
+    "id": "row-54",
+    "type": "word",
+    "key": "Câu so sánh",
+    "words": [],
+    "originalValue": "Các cấu trúc câu ss: \r\n- bằng: A is as tall as B \r\n- hơn: A is taller than B || A is more expensive than B \r\n- nhất: A is the tallest student in our class \r\nThis this the most expensive car in our showroom"
+  },
+  {
+    "id": "row-55",
+    "type": "word",
+    "key": "following",
+    "words": [
+      "following",
+      "the following"
+    ],
+    "originalValue": "adj: the following day, the next day\r\nn. the following, a group of supports\r\nprep: after or as a result of of a particular event\r\nVD: He took charge the company following his father's death"
+  },
+  {
+    "id": "row-56",
+    "type": "word",
+    "key": "grade",
+    "words": [
+      "grade",
+      "high-grade product",
+      "upgrade",
+      "degrade"
+    ],
+    "originalValue": "- grade n. mức, cấp, loại || grade 6, lớp 6 (trường học) \r\n- high-grade product, sp chất lượng cao \r\n- upgrade >< degrade, downgrade (hạ cấp, giáng chức)"
+  },
+  {
+    "id": "row-57",
+    "type": "word",
+    "key": "increase",
+    "words": [
+      "increase"
+    ],
+    "originalValue": "n =growth, rise, escalation, \r\nexpansion, enlargement \r\n\r\nv. >< decline, shrink, decrease, lessen, diminish"
+  },
+  {
+    "id": "row-58",
+    "type": "word",
+    "key": "education",
+    "words": [
+      "education",
+      "educate",
+      "educated children"
+    ],
+    "originalValue": "- educate, teach, train\r\n- educated children\r\n-> graduate: n,v: tốt nhiệp, người đã tốt nghiệp\r\n- freshman, first-year student, newcomer \r\n- sv đã tốt nghiệp: graduate. postgraduate \r\n- sv chưa tốt nghiệp: undergraduate"
+  },
+  {
+    "id": "row-59",
+    "type": "word",
+    "key": "visit",
+    "words": [
+      "visit"
+    ],
+    "originalValue": "- khách: visitor, guest, tourist\r\n- mời tới thăm: invite; invitation\r\n- chào mừng khách: welcome, greet\r\n- tiệc (mừng): reception, banquet, party, feast"
+  },
+  {
+    "id": "row-60",
+    "type": "word",
+    "key": "care",
+    "words": [
+      "care"
+    ],
+    "originalValue": "Careful – Cẩn thận || Carefully – Một cách cẩn thận \r\nCareless – Bất cẩn -> Carelessness – Sự bất cẩn \r\nCarefree – Vô tư, không lo lắng \r\nCaretaker – Người trông nom, người quản lý \r\nHealthcare – Chăm sóc sức khỏe"
+  },
+  {
+    "id": "row-61",
+    "type": "word",
+    "key": "retail",
+    "words": [
+      "retail"
+    ],
+    "originalValue": "-> retailer;wholesale \r\n-> detail || tailor (thợ may) \r\n- entail (This job entails a lot of hard work ~ involve )"
+  },
+  {
+    "id": "row-62",
+    "type": "word",
+    "key": "offer",
+    "words": [
+      "offer",
+      "offering",
+      "menu offerings",
+      "job offer"
+    ],
+    "originalValue": "- offering, sth that is offered \r\n- menu offerings\r\n- job offer -> lời đề nghị ~ proposal, suggestion\r\n- to offer sb sth -> đề nghị ~ provide, present, give, propose, suggest"
+  },
+  {
+    "id": "row-63",
+    "type": "word",
+    "key": "custom",
+    "words": [
+      "custom",
+      "traditional custom",
+      "customs tax -",
+      "custom-made suit -"
+    ],
+    "originalValue": "- traditional custom ~> phong tục truyền thống \r\n- customs tax --> thuế hải quan \r\n- custom-made suit --> áo véc làm theo yêu cầu \r\n--> v. customize"
+  },
+  {
+    "id": "row-64",
+    "type": "word",
+    "key": "site",
+    "words": [
+      "site",
+      "off-site",
+      "- be sited"
+    ],
+    "originalValue": "n- building/construction/work/camping + site ~ nơi, chỗ ~ place \r\n-> on-site; off-site \r\nv- be sited = be build, be located \r\nvd. The building is sided near a river ~ put, place, set, locate"
+  },
+  {
+    "id": "row-65",
+    "type": "word",
+    "key": "line",
+    "words": [
+      "line",
+      "a telephone line"
+    ],
+    "originalValue": "- to draw a line; to wait in line ~ đường thẳng\r\n- a telephone line ~ đường đây điện thoại\r\n- The actor has forgot his lines ~ lời thoại\r\n- a new line of product ~ dòng (sp)\r\n- v. line (up) = xếp thành hàng\r\nvd: The cups are lined up on the shelf."
+  },
+  {
+    "id": "row-66",
+    "type": "word",
+    "key": "plan",
+    "words": [
+      "plan",
+      "business plan",
+      "building plan",
+      "floor plan",
+      "service plan",
+      "event planner"
+    ],
+    "originalValue": "- business plan ~ kế hoạch \r\n- building/floor plan ~ sơ đồ (map) \r\n- service plan ~ gói dv \r\n- event planner"
+  },
+  {
+    "id": "row-67",
+    "type": "word",
+    "key": "term",
+    "words": [
+      "term",
+      "terms of contract",
+      "summer term",
+      "president's term"
+    ],
+    "originalValue": "- terms of contract ~ điều khoản \r\n- summer term ~ kỳ học \r\n- president's term ~ nhiệm kỳ"
+  },
+  {
+    "id": "row-68",
+    "type": "word",
+    "key": "book",
+    "words": [
+      "book",
+      "bookkeeper",
+      "bookkeeping service"
+    ],
+    "originalValue": "- to book a room \r\n- bookkeeper ~ accountant \r\n- bookkeeping service"
+  },
+  {
+    "id": "row-69",
+    "type": "word",
+    "key": "donate",
+    "words": [
+      "donate"
+    ],
+    "originalValue": "- syn: contribute, give (away), \r\n- nhà tài trợ: sponsor, promoter, patron, supporter \r\n- tiền tài trợ: donation, contribution \r\n- to collect/solicit donation, xin, thu thập tiền tài trợ"
+  },
+  {
+    "id": "row-70",
+    "type": "word",
+    "key": "place",
+    "words": [
+      "place",
+      "marketplace",
+      "workplace"
+    ],
+    "originalValue": "- to place an order ~ order, book, reserve \r\n- the event will take place in ABC hotel \r\n- to put sth in place ~ in order \r\n-> replace; marketplace, workplace"
+  },
+  {
+    "id": "row-71",
+    "type": "word",
+    "key": "hold",
+    "words": [
+      "hold",
+      "ticket holder",
+      "share holder"
+    ],
+    "originalValue": "- hold, ticket holder, share holder ~ cầm nắm \r\n- This room can hold up to 100 people ~ accommodate, contain, seat"
+  },
+  {
+    "id": "row-72",
+    "type": "word",
+    "key": "tend",
+    "words": [
+      "tend"
+    ],
+    "originalValue": "- tend to do sth, likely to do sth \r\n- intend to do sth, chủ đích làm gì ~ plan to do sth"
+  },
+  {
+    "id": "row-73",
+    "type": "word",
+    "key": "install",
+    "words": [
+      "install"
+    ],
+    "originalValue": "- installment: việc nắp đặt \r\n- to pay sth in installments, trả làm nhiều lần \r\n- a story published in installments"
+  },
+  {
+    "id": "row-74",
+    "type": "word",
+    "key": "publish",
+    "words": [
+      "publish",
+      "publishment",
+      "publication"
+    ],
+    "originalValue": "publish v. xuất bản \r\npublisher - nhà xuất bản \r\npublishment ~ publication, sự xuất bản \r\npublishing - nghề xuất bản, việc xuất bản \r\n-> a publishing company/house, công ty xuất bản"
+  },
+  {
+    "id": "row-75",
+    "type": "word",
+    "key": "free",
+    "words": [
+      "free",
+      "free of charge"
+    ],
+    "originalValue": ", complimentary; free of charge\r\n-> free time ~ leisure time\r\n-> sugar-free; tax-free (-free, not containing, not having)"
+  },
+  {
+    "id": "row-76",
+    "type": "word",
+    "key": "date",
+    "words": [
+      "date"
+    ],
+    "originalValue": "delivery date/departure date/expiry date\r\n- up to date - out of date - update\r\n- The house was dated 1900s --> có từ, xây từ"
+  },
+  {
+    "id": "row-77",
+    "type": "word",
+    "key": "technician",
+    "words": [
+      "technician",
+      "a modern technique",
+      "a flawless technique",
+      "a technical school",
+      "a technical training",
+      "information technology",
+      "high tech"
+    ],
+    "originalValue": "a modern technique ~ một kỹ thuật mới\r\na flawless technique ~ kỹ xảo tuyệt hảo\r\na technical school/training ~ adj. (thuộc) kỹ thuật\r\ninformation technology, công nghệ tt\r\na computer/repair technician ~ kỹ thuật viên\r\n-> low-tech, high tech"
+  },
+  {
+    "id": "row-78",
+    "type": "word",
+    "key": "package",
+    "words": [
+      "package",
+      "backpack"
+    ],
+    "originalValue": "- pack: ba lô -> backpack \r\n- to pack a lunch \r\n- package - n.v gói hàng \r\n- packaging - bao bì"
+  },
+  {
+    "id": "row-79",
+    "type": "word",
+    "key": "handle, hand",
+    "words": [
+      "handle",
+      "hand",
+      "second hand"
+    ],
+    "originalValue": "- hand\r\n- to give/lend sb a hand, to help sb\r\n- second hand\r\n- I'll be on hand to help you ~ available, present\r\n- handle, xử lý, address, solve, resolve\r\n--> I can handle this situation"
+  },
+  {
+    "id": "row-80",
+    "type": "word",
+    "key": "shop",
+    "words": [
+      "shop",
+      "shopper",
+      "shopping trend"
+    ],
+    "originalValue": "- v. shop, buy \r\n- n. shop, store \r\n--> retail shop; boutique shop (cửa hàng nhỏ nhưng bán đồ xịn) \r\n- shopper, buyer, customer, client, consumer, purchaser, patron \r\n- shopping + trend/experience/mall"
+  },
+  {
+    "id": "row-81",
+    "type": "word",
+    "key": "warrant",
+    "words": [
+      "warrant"
+    ],
+    "originalValue": "- warrant: v. chứng nhận, đảm bảo; n. giấy chứng nhận \r\n- warranty: sự đảm bảo, giấy bảo hành \r\n- warrantee: người được nhận bảo hành"
+  },
+  {
+    "id": "row-82",
+    "type": "word",
+    "key": "advice",
+    "words": [
+      "advice",
+      "advise",
+      "adviser",
+      "advisor",
+      "advisory council",
+      "advisable"
+    ],
+    "originalValue": "- advise, khuyên; adviser=advisor, cố vấn\r\n- advisory council, hội đồng cố vấn\r\n- advisable, nên làm, thích hợp\r\n--> It is advisable/recommended that"
+  },
+  {
+    "id": "row-83",
+    "type": "word",
+    "key": "reward",
+    "words": [
+      "reward"
+    ],
+    "originalValue": "thưởng (give)/phần thưởng (gift, prize) \r\n-> phạt: fine, punish, penalize \r\n-> hình phạt: fine, punishment, penalty"
+  },
+  {
+    "id": "row-84",
+    "type": "word",
+    "key": "address",
+    "words": [
+      "address",
+      "my hom address"
+    ],
+    "originalValue": "n. my hom address ~ địa chỉ\r\nv1 - to address a letter ~ đề địa chỉ\r\nv2. Please address all the questions to the director ~ gửi ~ send, direct\r\nv3. The president will address the meeting ~ nói truyện, thuyết trình ~ present, talk to, speak to, lecture\r\nv4. Your essay does not address the real issues ~ deal, solve, resolve ~ giải quyết"
+  },
+  {
+    "id": "row-85",
+    "type": "word",
+    "key": "traffic",
+    "words": [
+      "traffic",
+      "traffic accident",
+      "traffic light",
+      "heavy traffic",
+      "light traffic"
+    ],
+    "originalValue": "- traffic accident/light ~ giao thông \r\n- heavy/light traffic ~ mật độ xe đi lại trên đường"
+  },
+  {
+    "id": "row-86",
+    "type": "word",
+    "key": "driver",
+    "words": [
+      "driver",
+      "a network drive",
+      "truck driver",
+      "taxi driver"
+    ],
+    "originalValue": "- to drive a car\r\n- to drive me crazy\r\n- a external hard drive ~> ổ cứng gắn ngoài\r\n- a network drive ~ ổ mạng\r\n- truck/taxi driver ~> tài xế"
+  },
+  {
+    "id": "row-87",
+    "type": "word",
+    "key": "economy",
+    "words": [
+      "economy",
+      "economic growth",
+      "economical car",
+      "economic",
+      "economist"
+    ],
+    "originalValue": "- economic + growth/slowdown ~ (thuộc) kinh tế\r\n- economical car ~ tiết kiệm ~ economic, cheap, reasonable, inexpensive\r\n- to economize on petrol, tiết kiệm xăng\r\n- economist, nhà kinh tế học"
+  },
+  {
+    "id": "row-88",
+    "type": "word",
+    "key": "budget",
+    "words": [
+      "budget",
+      "advertising budget",
+      "budget report",
+      "budget goal",
+      "a light budget",
+      "underbudgeted",
+      "on budget",
+      "out of budget"
+    ],
+    "originalValue": "- advertising budget; budget report; budget goal; a light budget \r\n- underbudgeted, không được cấp đủ kinh phí \r\n- on budget >< out of budget"
+  },
+  {
+    "id": "row-89",
+    "type": "word",
+    "key": "product",
+    "words": [
+      "product",
+      "product  goods",
+      "produce",
+      "producer",
+      "mass production",
+      "a productive worker"
+    ],
+    "originalValue": "- product n. goods, merchandise, item\r\n- produce n,v: sản xuất; sp\r\n- producer ~ maker, manufacturer\r\n- production - sản lượng; sx\r\n-> production line; mass production\r\n- productivity - năng suất\r\n- a productive worker ~ năng xuất"
+  },
+  {
+    "id": "row-90",
+    "type": "word",
+    "key": "physician",
+    "words": [
+      "physician",
+      "physical exercise"
+    ],
+    "originalValue": "physic n. nghề y \r\nphysics n. vật lý # psychology, tâm lý \r\nphysical adj. (thuộc) cơ thể/vật lý -> physical exercise \r\nphysician: bác sĩ ~ doctor \r\nphysicist - nhà vật lý"
+  },
+  {
+    "id": "row-91",
+    "type": "word",
+    "key": "negotiate",
+    "words": [
+      "negotiate",
+      "negotiation skills",
+      "negotiation strategy",
+      "negotiation tactics"
+    ],
+    "originalValue": "negotiate v. đàm phán ~ bargain, deal\r\nnegotiator n. nhà đàm phán\r\nnegotiation skills/strategy/tactics"
+  },
+  {
+    "id": "row-92",
+    "type": "word",
+    "key": "station",
+    "words": [
+      "station",
+      "train station",
+      "police station",
+      "work station",
+      "radio station"
+    ],
+    "originalValue": "- station: trạm, đồn, nơi, đài ~ place, building \r\n-> bus,train/police/work/radio + station \r\n--> stationery = office supply"
+  },
+  {
+    "id": "row-93",
+    "type": "word",
+    "key": "payment",
+    "words": [
+      "payment"
+    ],
+    "originalValue": "- pay - trả tiền\r\n- payment: số tiền (trả công, thanh toán, bồi thường...) ~ wages, salary, conpensation, reimbersement"
+  },
+  {
+    "id": "row-94",
+    "type": "word",
+    "key": "electronics",
+    "words": [
+      "electronics",
+      "electronics store",
+      "electronics manufacturer",
+      "electric guitar",
+      "electric device",
+      "electronic payments",
+      "electrical system",
+      "to pay electronically"
+    ],
+    "originalValue": "electronics store/manufacturer\r\nelectric guitar/device\r\nelectronic payments\r\nelectrician - thợ điện\r\nelectrical system\r\nto pay electronically"
+  },
+  {
+    "id": "row-95",
+    "type": "word",
+    "key": "access",
+    "words": [
+      "access",
+      "internet access",
+      "access code",
+      "to access a website",
+      "to access a account"
+    ],
+    "originalValue": "n. -> internet access; access code ~ quyền truy cập; lối vào\r\nv. -> to access a website/account ~ truy cập\r\n-> accessible\r\n-> (clothing) accessory: phụ kiện, phụ tùng\r\n# assess ~ measure"
+  },
+  {
+    "id": "row-96",
+    "type": "word",
+    "key": "previous",
+    "words": [
+      "previous",
+      "preceding"
+    ],
+    "originalValue": ", trước, cũ ~ earlier, preceding, prior, past, former \r\n>< sau, mới: \r\n- next/later/following day \r\n- succeeding (-> successor - người kế nhiệm); \r\n- subsequent/succeed generation"
+  },
+  {
+    "id": "row-97",
+    "type": "word",
+    "key": "house",
+    "words": [
+      "house"
+    ],
+    "originalValue": "n1- a two-bedroom house ~ nhà \r\nn2- a fashion/publishing/coffee + house ~ công ty, hãng, nhà hàng ~ business, company, firm.... \r\nv. The museum houses an impressive collection ~ chứa ~ contain, cover \r\n- The government promise to house the poor ~ cc chỗ ở ~ provide, accommodate \r\n-> housing market: thị trường nhà ở \r\n-> housing development: sự pt nhà ở"
+  },
+  {
+    "id": "row-98",
+    "type": "word",
+    "key": "Danh - tive",
+    "words": [
+      "danh  tive"
+    ],
+    "originalValue": "N đuôi -tive:\r\nrepresentative: người đại diện \r\nalternative: người/vật thay thế\r\nobjective: mục tiêu\r\nincentive: sự khích lệ\r\nrelative: họ hàng"
+  },
+  {
+    "id": "row-99",
+    "type": "word",
+    "key": "count",
+    "words": [
+      "count",
+      "accounting department"
+    ],
+    "originalValue": "- count: đếm\r\n- discount: giảm giá\r\n- account: tài khoản\r\n- accountant: kế toán\r\n- accounting department, phòng kế toán\r\n- counter: quầy thu tiền, quầy hàng; chống lại\r\n-> countertop: mặt quầy\r\n-> encounter: đương đầu ~ face, suffer, experience, meet, confront"
+  },
+  {
+    "id": "row-100",
+    "type": "word",
+    "key": "dessert",
+    "words": [
+      "dessert"
+    ],
+    "originalValue": "n. [di'zə:t] : món tráng miệng \r\n# desert n. ['dezət]: sa mạc; v. [di'zə:t] rời bỏ ~ leave, abandon"
+  },
+  {
+    "id": "row-101",
+    "type": "word",
+    "key": "register",
+    "words": [
+      "register"
+    ],
+    "originalValue": "-register: đăng ký, ghi vào sổ\r\n-> cash register: máy đếm tiền ('ghi' lại số lượng tiền)\r\n- registration: sự đăng ký, sự ghi vào sổ\r\n--> registration fee: phí ghi danh\r\n--> registration number: số đăng ký (ô tô)"
+  },
+  {
+    "id": "row-102",
+    "type": "word",
+    "key": "cover",
+    "words": [
+      "cover",
+      "discover"
+    ],
+    "originalValue": "- cover: che, phủ >< open, unwrap, unveil, expose\r\n- discover: khám phá, phát hiện ~ reveal, unveil, disclose\r\n- uncover: mở, tiết lộ; khám phá ~ discover\r\n-> discovery: sự khám phá; điều được khám phá"
+  },
+  {
+    "id": "row-103",
+    "type": "word",
+    "key": "print",
+    "words": [
+      "print"
+    ],
+    "originalValue": "- print: in; chữ in, dấu, vết \r\n- printer: máy in \r\n- blueprint: bản thiết kế (bản vẽ kỹ thuật) \r\n- footprint: dấu chân \r\n- fingerprint: dấu vân tay \r\n- reprint: tái bản \r\n- imprint: đóng (dấu), khắc ghi; vết hằn"
+  },
+  {
+    "id": "row-104",
+    "type": "word",
+    "key": "experience",
+    "words": [
+      "experience",
+      "to lack experience"
+    ],
+    "originalValue": "n. to lack experience ~ kinh nghiệm\r\n-> shopping/customer experience ~ trải nghiệm\r\n\r\nv. to experience difficulty situation ~ trải qua, chịu đựng\r\n-> experienced musician ~ giàu kinh nghiệm\r\n\r\n--> experienced adj. giàu kinh nghiệm ~ skilled, skilful, qualified"
+  },
+  {
+    "id": "row-105",
+    "type": "word",
+    "key": "reveal",
+    "words": [
+      "reveal"
+    ],
+    "originalValue": "tiết lộ, để lộ, bộ lộ ~ disclose, publish, leak, announce, unveil,"
+  },
+  {
+    "id": "row-106",
+    "type": "word",
+    "key": "document",
+    "words": [
+      "document"
+    ],
+    "originalValue": "n. tài liệu; \r\nv1. Can you document what you just said? ~ dẫn chứng bằng tài liệu\r\nv2: This book documents a true historic event. ~ ghi lại (làm tài liệu)"
+  },
+  {
+    "id": "row-107",
+    "type": "word",
+    "key": "orient",
+    "words": [
+      "orient"
+    ],
+    "originalValue": "- orient v. định hướng \r\n-> profit-oriented organizations \r\n-> a detail-oriented worker \r\n- orientation: buổi/sự định hướng \r\n-> orientation packet/materials"
+  },
+  {
+    "id": "row-108",
+    "type": "word",
+    "key": "act",
+    "words": [
+      "act",
+      "inactive"
+    ],
+    "originalValue": "act v. hành động \r\nactor: diễn viên \r\naction: hành động \r\nactivate v. kích hoạt -> to activate the system \r\nactive: tích cực, chủ động >< inactive; passive \r\nactivity n. hoạt động"
+  },
+  {
+    "id": "row-109",
+    "type": "word",
+    "key": "record",
+    "words": [
+      "record",
+      "recording equipment"
+    ],
+    "originalValue": "v. The meeting will be recorded\r\n-> recording: sự ghi hình; bản record \r\nvd: a video recording; recording equipment\r\nn1. a record number ~ kỷ lục\r\nn2. the medical records ~ hồ sơ (ghi lại lịch sử của ai/cái gì)\r\nvd: This man has a record of crime/success"
+  },
+  {
+    "id": "row-110",
+    "type": "word",
+    "key": "payroll",
+    "words": [
+      "payroll"
+    ],
+    "originalValue": "- We have 1000 employees on the payroll ~ bảng lương (của cty) \r\n- My company's monthly payroll is 100.000 usd ~ tổng tiền lương trả cho nv \r\n-> 'payroll system' là hệ thống xử lý chấm công, tính lương, thưởng, phúc lợi, khấu trừ.... cho nv Có các công ty chuyên làm việc này thay cho các công ty khác"
+  },
+  {
+    "id": "row-111",
+    "type": "word",
+    "key": "figure",
+    "words": [
+      "figure"
+    ],
+    "originalValue": "n1. - sales figures: số liệu bán hàng ~ doanh số \r\nn2. - an important figure ~ nhân vật quan trọng \r\nv - I try to figure out what she means ~ hiểu ra, đoán ra, luận ra"
+  },
+  {
+    "id": "row-112",
+    "type": "word",
+    "key": "take",
+    "words": [
+      "take"
+    ],
+    "originalValue": "- nghỉ phép =\r\n- to take time off\r\n- to be on leave/holiday/vacaction\r\nvd. He takes 2 weeks leave\r\n- nghỉ ốm: to be sick leave; to be off sick\r\n- nghỉ đẻ: to be on maternity leave (maternity - thiên chức làm mẹ, (thuộc) sản phụ)"
+  },
+  {
+    "id": "row-114",
+    "type": "word",
+    "key": "participate",
+    "words": [
+      "participate",
+      "take part in",
+      "participant",
+      "participator",
+      "party"
+    ],
+    "originalValue": "- participate ~ take part in, attend, join, be involved \r\n- participant, participator, party ~ n. người tham gia \r\n- participation: sự tham gia"
+  },
+  {
+    "id": "row-115",
+    "type": "word",
+    "key": "leave",
+    "words": [
+      "leave",
+      "to be on leave"
+    ],
+    "originalValue": "v. He leaves for HCM ~ đi đâu \r\n- The train leaves at 5 pm ~ rời đi \r\n- You can leave this task to me ~ để lại cái gì cho ai \r\nn. kỳ nghỉ; sự cho phép \r\n- to be on leave/holiday/vacaction \r\nvd. He takes 2 weeks leave \r\n- nghỉ ốm: to be sick leave; to be off sick \r\n- nghỉ đẻ: to be on maternity leave (maternity - thiên chức làm mẹ, (thuộc) sản phụ)"
+  },
+  {
+    "id": "row-116",
+    "type": "word",
+    "key": "dinner",
+    "words": [
+      "dinner",
+      "dine"
+    ],
+    "originalValue": "v. dine = to eat dinner: ăn tối \r\n-> dining room/area \r\n-> ăn trưa: lunch, to eat lunch \r\n-> ăn sáng: breakfast, to eat breakfast"
+  },
+  {
+    "id": "row-117",
+    "type": "word",
+    "key": "adopt",
+    "words": [
+      "adopt"
+    ],
+    "originalValue": "- to adopt a child ~ nhận nuôi ~ foster, nurse, raise, take care of \r\n- to adopt an idea/a new method/a name ~ sd, nhận, chấp nhận ~ select, take, pick, choose; apply, use, implement; accept \r\n- to adopt a new law ~ chấp nhận, thông qua ~ approve"
+  },
+  {
+    "id": "row-118",
+    "type": "word",
+    "key": "celebrate",
+    "words": [
+      "celebrate",
+      "celebrity"
+    ],
+    "originalValue": "- celebrate: kỉ niệm \r\n- celebrity ~ a famous person \r\n- celebration: hoạt động nhân dịp kỉ niệm \r\n-> a grand-opening celebration \r\n-> anniversary celebration: hd kỉ niệm sinh nhật \r\n- opening ceremony: lễ khai trương"
+  },
+  {
+    "id": "row-119",
+    "type": "word",
+    "key": "coffee",
+    "words": [
+      "coffee",
+      "coffeehouse",
+      "to make coffee",
+      "brew coffee"
+    ],
+    "originalValue": "coffee: cà phê \r\n-> coffee been: hạt cà phê \r\n- coffeehouse, cafe ~ nhà hàng bán cà phê và đồ ăn nhẹ ~ restaurant, bistro \r\n-> coffeemaker: máy pha cà phê \r\n-> v. pha (trà, cà phê) = to make/brew + coffee/tea"
+  },
+  {
+    "id": "row-120",
+    "type": "word",
+    "key": "available",
+    "words": [
+      "available"
+    ],
+    "originalValue": "- This book is not available ~ có sẵn (để bán, sd...) ~ ready, accessable, at hand\r\n- This room is available ~ trống ~ vacant, unoccupied\r\n- The manager is available in the afternoon ~ rảnh ~ free >< busy"
+  },
+  {
+    "id": "row-121",
+    "type": "word",
+    "key": "bank",
+    "words": [
+      "bank"
+    ],
+    "originalValue": "- bank: nhà băng; bờ sông\r\n- banking: ngành ngân hàng; hoạt động ngân hàng\r\n-> banking account: tài khoản ngân hàng\r\n-> mobile banking application: ngân hàng di động"
+  },
+  {
+    "id": "row-122",
+    "type": "word",
+    "key": "network",
+    "words": [
+      "network"
+    ],
+    "originalValue": "n. mạng lưới, hệ thống \r\n- a network of railways ~ mạng lưới đường sắt \r\n- a network of canals ~ mạng lưới sông đào \r\n- the computer/internet network = mạng máy tính \r\nv. gặp gỡ, kết nối \r\n- This conference is a good place to network \r\n-> a great networking opportunity"
+  },
+  {
+    "id": "row-123",
+    "type": "word",
+    "key": "hữu ích, giúp ích",
+    "words": [],
+    "originalValue": "helpful, useful, practical, profitable, beneficial, informative"
+  },
+  {
+    "id": "row-124",
+    "type": "word",
+    "key": "found",
+    "words": [
+      "found"
+    ],
+    "originalValue": "- to found a company ~ sáng lập, đặt nền móng ~ create, establish, start, insitute \r\n- founder: nhà sáng lập \r\n- foundation: nền tảng \r\n# find - found - found \r\nfound - founded - founded"
+  },
+  {
+    "id": "row-125",
+    "type": "word",
+    "key": "property",
+    "words": [
+      "property",
+      "property tax",
+      "personal property"
+    ],
+    "originalValue": "- property tax; personal property ~ tài sản, nhà cửa, đất tai ~ possessions, belongings, land, estate\r\n- the chemical properties of iron ~ đặc tính, thuộc tính ~ trait, characteristic, feature"
+  },
+  {
+    "id": "row-126",
+    "type": "word",
+    "key": "should",
+    "words": [],
+    "originalValue": "should = Nên (sd để đưa lời khuyên hoặc hỏi xin ý kiến) \r\n- You should stay at home if you are feeling tired. ~ khuyên \r\n- Should we tell him about our idea? ~ xin ý kiến"
+  },
+  {
+    "id": "row-127",
+    "type": "word",
+    "key": "advise",
+    "words": [
+      "advise"
+    ],
+    "originalValue": "v1. to advise + sb || sb to do sth || doing sth ~ khuyên ~ recommend, suggest, counsel \r\n-> adviser ~ mentor, tutor, counseller, consultant \r\n-> be advisable to do sth ~ nên làm gì \r\nv2. to advise sb of sth ~ thông báo ~ notify, tell, warn, inform \r\nv3. to advise with sb ~ xin lời khuyên từ ai"
+  },
+  {
+    "id": "row-128",
+    "type": "word",
+    "key": "machine",
+    "words": [
+      "machine",
+      "vending machine"
+    ],
+    "originalValue": "- vending machine ~ máy móc\r\n- the machinery of government/a clock ~ bộ máy, cơ cấu (máy móc)\r\n- machinist - người chế tạo máy; thợ máy\r\n- mechanic ~ thợ máy, công nhân cơ khí"
+  },
+  {
+    "id": "row-129",
+    "type": "word",
+    "key": "Estimate",
+    "words": [
+      "estimate"
+    ],
+    "originalValue": "v.ước lượng ~ guess, reckon, assess, evaluate, calculate \r\nn. bản ước lượng ~ quote, quotation, costing"
+  },
+  {
+    "id": "row-130",
+    "type": "word",
+    "key": "limit",
+    "words": [
+      "limit",
+      "speed limit",
+      "weight limit"
+    ],
+    "originalValue": "- n. giới hạn, danh giới ~ boundary -> speed/weight limit \r\n- v. giới hạn ~ restrict, restrain, confine \r\n-> limitation: sự giới hạn, sự hạn chế ~ restriction"
+  },
+  {
+    "id": "row-131",
+    "type": "word",
+    "key": "effect",
+    "words": [
+      "effect",
+      "efficiency"
+    ],
+    "originalValue": "- effect n. tác động (v. affect) \r\n- effective adj. có hiệu quả, có hiệu lực \r\n-> an effective method ~ có hiệu quả \r\n-> The new policy will be effective from today ~ có hiệu lực \r\n- efficiency ~ effectiveness n. hiệu lực; năng suất ~"
+  },
+  {
+    "id": "row-132",
+    "type": "word",
+    "key": "pharmacy",
+    "words": [
+      "pharmacy"
+    ],
+    "originalValue": "pharmacy ~ drugstore: tiệm thuốc\r\npharmacist: dược sĩ; người bán thuốc\r\npharmaceutical: (thuộc) dược; n. liều thuốc ~ medicine, drug, remedy\r\n-> bác sĩ: doctor, physician; surgeon (bs phẫu thuật)\r\n-> đơn thuốc: prescription"
+  },
+  {
+    "id": "row-133",
+    "type": "word",
+    "key": "construct",
+    "words": [
+      "construct",
+      "construct  xd",
+      "a constructive criticism"
+    ],
+    "originalValue": "- construct v. xd ~ build, make, create, manufacture, assemble\r\n- constructor n. người/cty xd\r\n- construction: việc/sự xd\r\n-> construction firm/company/project/material/machinery\r\n-> the building is under construction ~ is being built\r\n- a constructive criticism ~ có tính xd ~ useful, helpful\r\n- constructively adv. có tính xd,"
+  },
+  {
+    "id": "row-134",
+    "type": "word",
+    "key": "park",
+    "words": [
+      "park"
+    ],
+    "originalValue": "- park n. công viên, vườn hoa\r\n--> a national/amusement park\r\n-> car park: bãi đỗ xe\r\n- park. v. đỗ xe\r\n-> parking area: bãi đỗ xe\r\n-> parking permit/pass ~ vé đỗ xe\r\n-> parking ticket ~ vé phạt vì đậu xe sai quy định"
+  },
+  {
+    "id": "row-135",
+    "type": "word",
+    "key": "general",
+    "words": [
+      "general",
+      "general knowledge",
+      "general rule",
+      "general manager"
+    ],
+    "originalValue": "- general knowledge~ chung, tổng quát (không chi tiết) ~ not detailed\r\n-> general hospital: bệnh viện đa khoa >< specialty hospital: bv chuyên khoa\r\n- general rule ~ lệ thường ~ normal, usual\r\n- general manager ~ tổng giám đốc ~ chief, the highest in rank"
+  },
+  {
+    "id": "row-136",
+    "type": "word",
+    "key": "round/around/surround",
+    "words": [
+      "round",
+      "around",
+      "surround",
+      "a round table",
+      "a round ticket",
+      "a round trip"
+    ],
+    "originalValue": "Phân biệt: round/around/surround\r\n1- round = around khi chúng adv/prep:\r\n-> to travel round/around the world ~ prep. khắp, vòng quanh\r\n-> to turn a car round/around ~ adv. đi theo vòng tròn/rẽ hướng khác\r\n2- round có thể là adj (còn around thì không)\r\n- a round table ~ adj. tròn\r\n- a round ticket/trip ~ khứ hồi\r\n3. surround n,v: bao quanh; đường viền bao quanh\r\n- The trees surround the pond"
+  },
+  {
+    "id": "row-137",
+    "type": "word",
+    "key": "once",
+    "words": [
+      "once",
+      "once a day",
+      "once a month"
+    ],
+    "originalValue": "- I've only been there once ~ adv. một lần -> once a day/month\r\n- I once met her ~ adv. đã từng\r\n- Come here at once ~ ngay lập tức\r\n- I can't do two things at once ~ cùng lúc, đồng thời\r\nLiên từ: - Once I finish, I'll call you right a way ~ ngay khi ~ as soon as, when"
+  },
+  {
+    "id": "row-139",
+    "type": "word",
+    "key": "attend",
+    "words": [
+      "attend"
+    ],
+    "originalValue": "= participate in, join, take part in, engage in \r\n-> attendant, attendee: người tham dự\r\n-> attendance: sự tham dự, lượng người tham giự"
+  },
+  {
+    "id": "row-140",
+    "type": "word",
+    "key": "different",
+    "words": [
+      "different",
+      "difference"
+    ],
+    "originalValue": "- different: adj >< similar, identical, like\r\n- difference >< similarity, resemblance\r\n- differentiate v. phân biệt ~ distinguish\r\n-> It's difficult to differentiate between the two of them.\r\n- differ v. khác >< be similar, be identical, be like\r\n-> French and English differ in this respect."
+  },
+  {
+    "id": "row-141",
+    "type": "word",
+    "key": "analyze",
+    "words": [
+      "analyze",
+      "analytic geometry",
+      "a budget analysis",
+      "financial analysis"
+    ],
+    "originalValue": "- analyze (analyse) v. phân tích\r\n- analyst n. người phân tích\r\n-> a financial/food/political/systems + analyst\r\n- analytic adj. (thuộc) phân tích \r\n--> analytic chemistry = hh phân tích; analytic geometry = hình học giải tích\r\n- analytics n. môn phân tích, môn giải tích\r\n- analysis /əˈnælɪsiːz/ bản phân tích --> a budget/financial + analysis"
+  },
+  {
+    "id": "row-142",
+    "type": "word",
+    "key": "issue",
+    "words": [
+      "issue"
+    ],
+    "originalValue": "Danh từ (Noun):\r\n\r\n- Vấn đề → A serious issue (Vấn đề nghiêm trọng)\r\n- Số báo, ấn phẩm → Latest issue of a magazine (Số báo mới nhất)\r\n\r\nĐộng từ (Verb):\r\n\r\n- Phát hành, cấp → Issue a passport (Cấp hộ chiếu)\r\n- Công bố, đưa ra → Issue a warning (Đưa ra cảnh báo)"
+  },
+  {
+    "id": "row-143",
+    "type": "word",
+    "key": "formal",
+    "words": [
+      "formal",
+      "the formal votes",
+      "formal dress",
+      "a formal call",
+      "a formal decision",
+      "formal training"
+    ],
+    "originalValue": "- The formal votes = Những phiếu bầu hợp lệ \r\n- formal dress = lễ phục (formal = trang trọng, theo nghi thức) \r\n- a formal call/decision -> formal = chính thức \r\n- formal training = đào tạo chính quy"
+  },
+  {
+    "id": "row-144",
+    "type": "word",
+    "key": "supervise",
+    "words": [
+      "supervise"
+    ],
+    "originalValue": "N: supervision (sự giám sát) \r\nN. supervisor (người giám sát) \r\nV: supervise (giám sát) \r\nAdj: supervisory (thuộc về giám sát)"
+  },
+  {
+    "id": "row-145",
+    "type": "word",
+    "key": "profession",
+    "words": [
+      "profession"
+    ],
+    "originalValue": "Profession (n.): Nghề nghiệp, chuyên môn ~ career, occupation\r\nProfessional (adj.): Chuyên nghiệp, thuộc về nghề nghiệp ~ expert, skilled\r\nProfessional (n.): Người làm việc chuyên nghiệp ~ specialist, expert\r\nProfessionalism (n.): Sự chuyên nghiệp ~ expertise, competence\r\nProfessionalize (v.): Chuyên nghiệp hóa ~ standardize, optimize\r\nProfessionally (adv.): Một cách chuyên nghiệp ~ expertly, skillfully"
+  },
+  {
+    "id": "row-146",
+    "type": "word",
+    "key": "emerge",
+    "words": [
+      "emerge"
+    ],
+    "originalValue": "Emerge (v) nổi lên\r\nEmergency (n.): Tình trạng khẩn cấp ~ crisis, urgency\r\nEmergent (adj.): Đang nổi lên, khẩn cấp ~ arising, urgent\r\nEmerging (adj.): Mới xuất hiện, đang phát triển ~ developing, growing\r\nEmergently (adv.): Một cách khẩn cấp ~ urgently, critically"
+  },
+  {
+    "id": "row-147",
+    "type": "word",
+    "key": "refer",
+    "words": [
+      "refer"
+    ],
+    "originalValue": "Refer (v.): Đề cập, tham khảo, giới thiệu ~ mention, consult, direct\r\nReference (n.): Sự tham khảo, tài liệu tham khảo ~ citation, source\r\nReferral (n.): Sự giới thiệu, người được giới thiệu ~ recommendation, transfer\r\nReferenced (adj.): Được trích dẫn, được tham khảo ~ cited, mentioned\r\nReferential (adj.): Liên quan đến tham chiếu ~ indicative, allusive"
+  },
+  {
+    "id": "row-148",
+    "type": "word",
+    "key": "expert",
+    "words": [
+      "expert"
+    ],
+    "originalValue": "Expertise (n.) – chuyên môn, sự thành thạo ~ skill, knowledge, proficiency\r\nExpert (n.) – chuyên gia ~ specialist, professional, master\r\nExpert (adj.) – thành thạo, chuyên nghiệp ~ skilled, proficient, knowledgeable\r\nExpertly (adv.) – một cách thành thạo ~ skillfully, proficiently, masterfully"
+  },
+  {
+    "id": "row-149",
+    "type": "word",
+    "key": "sales",
+    "words": [
+      "sales",
+      "sales clerk"
+    ],
+    "originalValue": "sales + clerk/representative/associate/department"
+  },
+  {
+    "id": "row-150",
+    "type": "word",
+    "key": "direct",
+    "words": [
+      "direct",
+      "employee directory"
+    ],
+    "originalValue": "direct v. chỉ đạo, hướng dẫn ~ guide, lead\r\nadj. trực tiếp\r\ndirector n. giám đốc, đạo diễn\r\ndirection n. sự chỉ dẫn, phương hướng\r\nemployee directory = danh bạ nv\r\ndirectly adv. một cách trực tiếp"
+  },
+  {
+    "id": "row-152",
+    "type": "word",
+    "key": "quarter",
+    "words": [
+      "quarter",
+      "quarter n1 1",
+      "quarter n1 4"
+    ],
+    "originalValue": "quarter n1 1/4; 15 phút; 3 tháng (quí) \r\n-> quarterly survey = khảo sát hàng quý \r\n\r\nn2. nơi, khu (phố)(a part of town) \r\n-> headquarters = trụ trở chính"
+  },
+  {
+    "id": "row-153",
+    "type": "word",
+    "key": "employ",
+    "words": [
+      "employ",
+      "employee",
+      "employment law",
+      "employment contract",
+      "employment agency",
+      "employment rate",
+      "unemployment rate"
+    ],
+    "originalValue": "employ, recruit, enroll, hire, enlist\r\nemployee, worker, staff...\r\nemployment law, luật lao động\r\nemployment contract, hợp đồng lao động\r\nemployment agency, đại lý việc làm\r\nemployment rate, tỷ lệ có việc làm \r\nunemployment rate, tỉ lệ thất nghiệp"
+  },
+  {
+    "id": "row-154",
+    "type": "word",
+    "key": "special",
+    "words": [
+      "special"
+    ],
+    "originalValue": "special (adj.): đặc biệt ~ unique, exceptional <=> ordinary, common\r\nspecialist (n.): chuyên gia ~ expert, professional\r\nspecialization (n.): sự chuyên môn hóa\r\nspecialize (v.): chuyên về, chuyên môn hóa\r\nspecially (adv.): một cách đặc biệt ~ specifically <=> generally\r\nspecialty (n.): chuyên môn, đặc sản ~ expertise, forte"
+  },
+  {
+    "id": "row-155",
+    "type": "word",
+    "key": "price",
+    "words": [
+      "price"
+    ],
+    "originalValue": "price (n.): giá cả ~ cost, value, rate, charge \r\npriceless (adj.): vô giá, không thể định giá \r\noverpriced (adj.): quá đắt \r\nunderpriced (adj.): định giá quá thấp \r\npricing strategy n. chiến lược định giá"
+  },
+  {
+    "id": "row-156",
+    "type": "word",
+    "key": "post",
+    "words": [
+      "post",
+      "lamp post",
+      "streetlight post"
+    ],
+    "originalValue": "- post: v. đăng bài; n. bài đăng \r\n-> poster n. tờ áp phích quảng cáo \r\n- post office: bưu điện --> post n2. bưu kiện, thư tín \r\n- lamp/streetlight post: cột đèn --> post n3. cột"
+  },
+  {
+    "id": "row-157",
+    "type": "word",
+    "key": "practice",
+    "words": [
+      "practice",
+      "medical practice",
+      "a legal practice",
+      "agricultural practice",
+      "practice makes perfect"
+    ],
+    "originalValue": "practice = medical practice = phòng khám\r\na legal practice = văn phòng luật\r\nagricultural practice = hđ nông nghiệp\r\npractice makes perfect = có công mài sắt có ngày lên kim"
+  },
+  {
+    "id": "row-158",
+    "type": "word",
+    "key": "lead",
+    "words": [
+      "lead"
+    ],
+    "originalValue": "Leader (n) – người lãnh đạo ~ chief, head (team leader, strong leader) \r\nLeadership (n) – khả năng lãnh đạo ~ guidance, command (good leadership, leadership skills) \r\nLead (v) – dẫn dắt ~ guide, direct (lead a team, lead a meeting) \r\nMislead (v) – đánh lừa ~ deceive, misinform (mislead customers, mislead by ads) \r\nLeading (adj) – hàng đầu ~ top, foremost (leading expert, leading brand)"
+  },
+  {
+    "id": "row-159",
+    "type": "word",
+    "key": "predict, dictionary, contradict",
+    "words": [
+      "predict",
+      "dictionary",
+      "contradict"
+    ],
+    "originalValue": "Gốc: -dict- (to say): nói\r\n\r\n• predict: tiên đoán; dự đoán [pre- (trước) + dict (nói) = nói trước].\r\n\r\n• dictionary n. từ điển [dict (từ/nói) + đuôi danh từ -ary (nơi tập hợp) = tập hợp các từ được nói/dùng để tra cứu].\r\n\r\n• contradict v. phủ nhận [contra- (ngược lại) + dict (nói) = nói ngược lại]."
+  },
+  {
+    "id": "row-160",
+    "type": "word",
+    "key": "emit, emission, submit, submission, admit, admission, permit, permission",
+    "words": [
+      "emit",
+      "emission",
+      "submit",
+      "submission",
+      "admit",
+      "admission",
+      "permit",
+      "permission"
+    ],
+    "originalValue": "Gốc: mit/miss (gửi, thả, phóng)\r\n\r\n• emit v. phát ra, toả ra -> emission (sự phát ra) [e- (ra ngoài) + mit (phóng) = phóng ra ngoài].\r\n\r\n• submit v. nộp (gửi lên lên trên) -> submission n. sự nộp (bài dự thi) [sub- (dưới, hướng lên) + mit (gửi) = gửi từ dưới lên].\r\n\r\n• admit / admission: thừa nhận, nhận vào [ad- (hướng vào) + mit (thả) = cho phép đi vào trong].\r\n\r\n• permit / permission: cho phép [per- (xuyên qua) + mit (thả) = thả cho đi qua thoải mái]."
+  },
+  {
+    "id": "row-161",
+    "type": "word",
+    "key": "Proceed, Precede, predecessor, Exceed, Recede, ancestor, success, necessity, access",
+    "words": [
+      "proceed",
+      "precede",
+      "predecessor",
+      "exceed",
+      "recede",
+      "ancestor",
+      "success",
+      "necessity",
+      "access"
+    ],
+    "originalValue": "Gốc: ced, cess - đi, rời đi (go)\r\n\r\n• Proceed (v): tiếp tục, tiến lên [pro- (tiến về phía trước) + ced (đi) = tiến về phía trước].\r\n\r\n• Precede (v): đi trước, xảy ra trước [pre- (trước) + ced (đi) = đi trước].\r\n\r\n• predecessor (n): người tiền nhiệm [pre- (trước) + ced (đi) + -or (người) = người đi trước mình].\r\n\r\n• Exceed (v): vượt quá, vượt mức [ex- (ra ngoài) + ced (đi) = đi vượt ra ngoài giới hạn].\r\n\r\n• Recede (v): rút lui, suy giảm [re- (lùi lại) + ced (đi) = đi lùi lại].\r\n\r\n• ancestor: tổ tiên [one who has ‘gone’ before you - người đã đi trước bạn từ lâu].\r\n\r\n• success: sự thành công [‘go’ up to a goal - đi tiến lên đạt được mục tiêu].\r\n\r\n• necessity: sự cần thiết [that with which one cannot ‘go’ without - thứ không thể đi tiếp nếu thiếu nó].\r\n\r\n• access: tiếp cận, truy cập [‘going’ towards - đi hướng về phía cái gì]."
+  },
+  {
+    "id": "row-162",
+    "type": "word",
+    "key": "Induce, Deduce, Reduce, Produce, Conduct, Educate",
+    "words": [
+      "induce",
+      "deduce",
+      "reduce",
+      "produce",
+      "conduct",
+      "educate"
+    ],
+    "originalValue": "Gốc: duc, duct ~ 'dẫn dắt, đưa đi'\r\n\r\n• Induce (v.): Gây ra, xui khiến [đưa 'vào' (in-) một trạng thái, dẫn dắt ai vào một hành động].\r\n\r\n• Deduce (v.): Suy luận, suy diễn [dẫn ra một kết luận từ dữ kiện, dẫn từ nguyên lý chung xuống].\r\n\r\n• Reduce (v.): Giảm bớt, hạ thấp [dẫn 'trở lại' (re-) trạng thái nhỏ hơn].\r\n\r\n• Produce (v.): Sản xuất, tạo ra [dẫn ra phía trước, đưa sản phẩm ra trước công chúng].\r\n\r\n• Conduct (v.): Tiến hành, chỉ đạo [con- (cùng nhau) + duct (dẫn) = dẫn dắt mọi người cùng làm].\r\n\r\n• Educate (v.): Giáo dục, dạy dỗ [e- (ra ngoài) + duc (dẫn) = dẫn dắt tri thức, khả năng tiềm ẩn ra ngoài]."
+  },
+  {
+    "id": "row-163",
+    "type": "word",
+    "key": "merchandise, merchant, commerce, commercial",
+    "words": [
+      "merchandise",
+      "merchant",
+      "commerce",
+      "commercial"
+    ],
+    "originalValue": "Gốc: - merc-, trade (buôn bán, thương mại)\r\n\r\n• merchant: nhà buôn [merc (buôn bán) + -ant (người) = người làm nghề buôn bán].\r\n\r\n• merchandise: hàng hoá [những thứ để merchant mang đi buôn bán].\r\n\r\n• commerce n: thương mại, sự buôn bán [com- (cùng nhau) + merc (buôn bán) = cùng nhau buôn bán qua lại].\r\n\r\n• commercial adj: thương mại (thuộc về thương mại)."
+  },
+  {
+    "id": "row-164",
+    "type": "word",
+    "key": "fact, factory, manufacturer, artifact, satisfaction, factor",
+    "words": [
+      "fact",
+      "factory",
+      "manufacturer",
+      "artifact",
+      "satisfaction",
+      "factor"
+    ],
+    "originalValue": "Gốc: fact - made, done (làm, tạo ra)\r\n\r\n• fact: sự thật [thing 'made' - thứ đã xảy ra/được làm ra một cách chắc chắn].\r\n\r\n• factory: nhà máy [fact (làm) + -ory (nơi chốn) = nơi làm ra các sản phẩm].\r\n\r\n• manufacturer: nhà sản xuất [manu (bằng tay) + fact (làm) = chế tạo, sản xuất].\r\n\r\n• artifact: đồ tạo tác [made by human skill - vật do con người khéo léo làm ra].\r\n\r\n• satisfaction: làm thoả mãn [satis (đầy đủ) + fact (làm) = làm cho đầy đủ, không thiếu thốn].\r\n\r\n• factor: yếu tố [thứ góp phần 'làm' ra, cấu thành nên kết quả của thứ khác]."
+  },
+  {
+    "id": "row-165",
+    "type": "word",
+    "key": "fertile, fertilize, fertilizer, suffer, transfer, refer, prefer",
+    "words": [
+      "fertile",
+      "fertilize",
+      "fertilizer",
+      "suffer",
+      "transfer",
+      "refer",
+      "prefer"
+    ],
+    "originalValue": "Gốc: -fer-: carry, bear, bring (mang, chở, chịu)\r\n\r\n• fertile adj. màu mỡ [có thể 'bring' (mang lại) nhiều rau trái, hoa màu].\r\n\r\n• fertilize v. bón phân / fertilizer n. phân bón [làm cho đất mang lại nhiều sản lượng hơn].\r\n\r\n• suffer: chịu đựng [‘carry’ under - mang vác gánh nặng ở bên dưới vai mình].\r\n\r\n• transfer: dời, chuyển [‘carry’ across - mang băng qua, chuyển từ nơi này sang nơi khác].\r\n\r\n• refer: tham khảo, nhắc đến [carry back - mang hoặc dẫn người đọc quay trở lại nguồn thông tin gốc].\r\n\r\n• prefer: thích cái gì hơn [carry before - mang cái mình thích đặt lên trước những cái khác]."
+  },
+  {
+    "id": "row-166",
+    "type": "word",
+    "key": "receive, perceive, conceive, deceive, accept, except, intercept, reception, inconceivable",
+    "words": [
+      "receive",
+      "perceive",
+      "conceive",
+      "deceive",
+      "accept",
+      "except",
+      "intercept",
+      "reception",
+      "inconceivable"
+    ],
+    "originalValue": "Gốc: ceiv, cept -> take, seize (lấy, giữ, bắt)\r\n\r\n• receive: nhận (lấy làm của mình)\r\n-> reception: đón tiếp, tiệc chiêu đãi [to take guests when they first arrive - nhận/đón khách khi họ vừa đến].\r\n\r\n• perceive: nhận thức, lĩnh hội [lấy về sự hiểu biết, lấy hoàn toàn thông tin qua giác quan].\r\n\r\n• conceive: hình thành trong đầu [gom các ý tưởng lại tạo thành suy nghĩ/kế hoạch] \r\n-> inconceivable: không thể tưởng tượng được [không thể lấy vào đầu để nghĩ được].\r\n\r\n• deceive: lừa dối [khiến ai 'lấy' về những thứ không đúng, lấy lòng tin rồi làm chệch hướng].\r\n\r\n• accept: chấp nhận [ad- (hướng tới) + cept (lấy) = chủ động tiến tới để lấy/nhận].\r\n\r\n• except: ngoại trừ [to not take sth - lấy riêng ra ngoài, không gộp chung].\r\n\r\n• intercept: chặn đứng [inter- (ở giữa) + cept (bắt) = lao vào giữa đường để bắt lấy thứ đang di chuyển]."
+  },
+  {
+    "id": "row-167",
+    "type": "word",
+    "key": "serve, server, reserve, reservation, preserve, observe, observer",
+    "words": [
+      "serve",
+      "server",
+      "reserve",
+      "reservation",
+      "preserve",
+      "observe",
+      "observer"
+    ],
+    "originalValue": "Gốc: serv ~ keep, guard, save (giữ gìn, bảo vệ, phục vụ)\r\n\r\n• serve: phục vụ / server: người phục vụ, máy chủ [hành động giữ gìn, chăm sóc sự thoải mái của người khác].\r\n\r\n• reserve: đặt trước ~ book / reservation: sự đặt chỗ [re- (để lại) + serv (giữ) = giữ lại một chỗ cho riêng mình].\r\n\r\n• preserve: bảo tồn, bảo quản [pre- (trước) + serv (giữ) = giữ gìn từ trước để không bị hỏng] ~ conserve.\r\n\r\n• observe: quan sát -> observer: người giám sát [ob- (hướng về) + serv (chú ý) = giữ mắt hướng về để theo dõi]."
+  },
+  {
+    "id": "row-168",
+    "type": "word",
+    "key": "section, sector, intersection, insect",
+    "words": [
+      "section",
+      "sector",
+      "intersection",
+      "insect"
+    ],
+    "originalValue": "Gốc: -sect-, cut (cắt)\r\n\r\n• section: một phần, đoạn [a cut-off part of a whole - một phần được cắt ra từ tổng thể].\r\n\r\n• sector: khu vực, lĩnh vực (ví dụ: manufacturing sector) [như một lát cắt, mảng miếng trong chiếc bánh nền kinh tế].\r\n\r\n• intersection: ngã tư, giao lộ [inter- (giữa) + sect (cắt) = chỗ 2 con đường cắt chéo vào nhau].\r\n\r\n• insect: côn trùng [loài mà thân như thể bị cắt/khía sâu vào bên trong làm 3 phần rõ rệt]."
+  },
+  {
+    "id": "row-169",
+    "type": "word",
+    "key": "construct, destruct, destruction, structure, restructure, instruct, instructor",
+    "words": [
+      "construct",
+      "destruct",
+      "destruction",
+      "structure",
+      "restructure",
+      "instruct",
+      "instructor"
+    ],
+    "originalValue": "Gốc: -struct-, to build (xây dựng)\r\n\r\n• structure: cấu trúc [bản thân việc xây dựng tạo nên một bộ khung].\r\n\r\n• construct v. xây dựng [con- (cùng nhau) + struct (xây) = lắp ghép các phần cùng nhau để xây lên].\r\n\r\n• destruct, destroy v. phá huỷ\r\n-> destruction n. sự phá huỷ [de- (xuống/làm ngược lại) + struct (xây) = đập xuống, làm ngược lại với xây dựng].\r\n\r\n• restructure: tái cấu trúc [re- (lại) + structure (cấu trúc) = xây dựng lại mô hình].\r\n\r\n• instruct: hướng dẫn [\"build\" sb knowledge - xây dựng nền tảng kiến thức vào trong đầu ai đó] / instructor: người hướng dẫn, giáo viên."
+  },
+  {
+    "id": "row-170",
+    "type": "word",
+    "key": "opt, option, optional, optimal, optimize, optimism, optimistic",
+    "words": [
+      "opt",
+      "option",
+      "optional",
+      "optimal",
+      "optimize",
+      "optimism",
+      "optimistic",
+      "menu option"
+    ],
+    "originalValue": "Gốc: -opt-, to choose (Lựa chọn)\r\n\r\n• to opt for sth = choose sth (lựa chọn cái gì).\r\n\r\n• option: lựa chọn, tùy chọn [pricing option, menu option, meal option]. \r\n-> We have no option but to leave (Chúng tôi không có lựa chọn nào khác ngoài việc rời đi).\r\n\r\n• optional adj: tùy ý, không bắt buộc [đuôi -al của tính từ] \r\n-> optional subjects (môn học tự chọn).\r\n\r\n• optimal adj: tối ưu [lựa chọn tốt nhất trong các lựa chọn].\r\n\r\n• optimize v: tối ưu hóa / làm cho lạc quan [hành động chọn lựa/xoay chuyển cục diện theo hướng tốt nhất].\r\n\r\n• optimism n: sự lạc quan, chủ nghĩa lạc quan / optimistic adj: lạc quan [luôn chọn nhìn vào mặt tích cực của vấn đề]."
+  },
+  {
+    "id": "row-171",
+    "type": "word",
+    "key": "eyesight, sightseeing, foresight, insight, in sight, out of sight",
+    "words": [
+      "eyesight",
+      "sightseeing",
+      "foresight",
+      "insight",
+      "in sight",
+      "out of sight"
+    ],
+    "originalValue": "Gốc: sight - nhìn, tầm nhìn\r\n\r\n• eyesight: thị lực [năng lực nhìn của mắt].\r\n\r\n• sightseeing: chuyến tham quan ngắm cảnh, tour, visit [sight (cảnh đẹp) + seeing (ngắm nhìn)].\r\n\r\n• foresight: nhìn trước -> sự tiên tri, dự phòng ~ provision, anticipation [fore- (trước) + sight (nhìn) = nhìn thấy trước tương lai].\r\n\r\n• insight: sự sáng suốt, nhìn thấu [in- (vào trong) + sight (nhìn) = nhìn thấu vào bên trong bản chất].\r\n\r\n• in sight (trong tầm mắt) ; out of sight (ngoài tầm mắt)."
+  },
+  {
+    "id": "row-172",
+    "type": "word",
+    "key": "sign, signature, signal, assign, assignment, design, resign, significant",
+    "words": [
+      "sign",
+      "signature",
+      "signal",
+      "assign",
+      "assignment",
+      "design",
+      "resign",
+      "significant"
+    ],
+    "originalValue": "Gốc: -sign-, mark, seal, sign (Dấu hiệu, ký hiệu, đánh dấu)\r\n\r\n• sign v: ký tên [đóng dấu dấu bản quyền/xác nhận của cá nhân].\r\n\r\n• signature: chữ ký [đuôi danh từ -ature, vết dấu ký cá nhân].\r\n\r\n• signal: tín hiệu [dấu hiệu để thông báo, ra hiệu].\r\n\r\n• assign / assignment: phân công, bổ nhiệm [as- (hướng tới) + sign (đánh dấu) = đóng dấu/giao việc cho ai đó].\r\n\r\n• design: thiết kế, bản thiết kế [de- (xuống, làm rõ) + sign (dấu hiệu) = phác thảo các dấu hiệu đặc trưng để nhận biết].\r\n\r\n• resign: từ chức [re- (ngược lại, hủy bỏ) + sign (đóng dấu/chức danh) = tháo \"biển chức danh\" xuống, trả ấn tín].\r\n\r\n• significant: đáng kể, quan trọng [sign (dấu hiệu) + fic (làm ra) = tạo ra dấu hiệu lớn, có sức ảnh hưởng rõ rệt]."
+  },
+  {
+    "id": "row-173",
+    "type": "word",
+    "key": "tempt, tempting, temperature, temper, temperate, temporary, tempo, contemporary",
+    "words": [
+      "tempt",
+      "tempting",
+      "temperature",
+      "temper",
+      "temperate",
+      "temporary",
+      "tempo",
+      "contemporary"
+    ],
+    "originalValue": "Gốc: tempt (lôi cuốn, quyến rũ - mức độ gợi lên ham muốn) ~ appeal, attract\r\n\r\n• tempting adj: hấp dẫn, quyến rũ [tempting food/offer ; She is hot/tempting].\r\n\r\n• temperature: nhiệt độ [gốc cổ chỉ mức độ pha trộn nhiệt nóng/lạnh].\r\n\r\n• temper: tính tình, tính khí ~ character [mức độ phản ứng, giữ chừng mực của tâm lý].\r\n\r\n• temperate adj: điều độ, có chừng mực; ôn hòa [giữ ở mức độ vừa phải, không cực đoan] \r\n-> temperate zones (vùng ôn đới).\r\n\r\n\r\nGốc: temp ~ time, season (Thời gian, thời điểm, nhịp điệu)\r\n\r\n• temporary job: việc làm tạm thời [chỉ kéo dài một thời gian ngắn] \r\n-> fixed/permanent job: việc làm cố định\r\n\r\n• tempo: nhịp độ âm nhạc, độ nhanh [tốc độ thời gian chuyển động của bản nhạc].\r\n\r\n• contemporary: đương thời ~ modern, current [con- (cùng) + temp (thời gian) = sống/xảy ra cùng một thời điểm]."
+  },
+  {
+    "id": "row-174",
+    "type": "word",
+    "key": "pedal, pedestrian, expedite, multiped, impede",
+    "words": [
+      "pedal",
+      "pedestrian",
+      "expedite",
+      "multiped",
+      "impede"
+    ],
+    "originalValue": "Gốc: -ped- ~ foot (Chân)\r\n\r\n• pedal: bàn đạp [nơi đặt bàn chân để đạp].\r\n\r\n• pedestrian: người đi bộ [người dùng chân để di chuyển trên đường].\r\n\r\n• expedite: xúc tiến, thúc đẩy [ex- (ra ngoài) + ped (chân) = cởi trói cho chân tự do để đi nhanh hơn].\r\n\r\n• multiped: côn trùng nhiều chân [multi- (nhiều) + ped (chân)].\r\n\r\n• impede: ngăn cản [in- (vào trong) + ped (chân) = làm vướng chân ai đó lại khiến họ không đi được]."
+  },
+  {
+    "id": "row-175",
+    "type": "word",
+    "key": "fertile, fertilize, fertilizer, suffer, transfer, refer, prefer",
+    "words": [
+      "fertile",
+      "fertilize",
+      "fertilizer",
+      "suffer",
+      "transfer",
+      "refer",
+      "prefer"
+    ],
+    "originalValue": "Gốc: -fer-: carry, bear, bring (Mang, chở, chịu)\r\n\r\n• fertile adj: màu mỡ [có khả năng \"bring\" mang lại nhiều rau trái].\r\n\r\n• fertilize v: bón phân / fertilizer n: phân bón [làm cho đất tăng khả năng mang lại sản lượng].\r\n\r\n• suffer: chịu đựng [‘carry’ under = mang vác gánh nặng ở bên dưới vai mình].\r\n\r\n• transfer: dời, chuyển [‘carry’ across = mang băng qua từ nơi này sang nơi khác].\r\n\r\n• refer: tham khảo, nhắc đến [carry back = mang/dẫn người đọc quay trở lại nguồn thông tin gốc].\r\n\r\n• prefer: thích cái gì hơn [carry before = mang cái mình thích đặt lên trước các cái khác]."
+  },
+  {
+    "id": "row-176",
+    "type": "word",
+    "key": "event, adventure, prevent, convention, invent, inventor, invention, inventory",
+    "words": [
+      "event",
+      "adventure",
+      "prevent",
+      "convention",
+      "invent",
+      "inventor",
+      "invention",
+      "inventory"
+    ],
+    "originalValue": "Gốc: -vent-: come (Đến, đi đến)\r\n\r\n• event: sự kiện [e- (ra ngoài) + vent (đến) = cái xảy ra, đi đến với thực tế].\r\n\r\n• adventure: chuyến thám hiểm [ad- (hướng tới) + vent (đến) = đi đến để khám phá vùng đất mới].\r\n\r\n• prevent: ngăn cản [pre- (trước) + vent (đến) = chặn trước đường không cho họ đi đến].\r\n\r\n• convention: hội thảo, hiệp ước [con- (cùng nhau) + vent (đến) = mọi người cùng đi đến một nơi để thảo luận].\r\n\r\n• invent: sáng chế [in- (vào trong) + vent (đến) = ý tưởng chợt \"đến vào\" trong đầu (come up with)].\r\n\r\n• inventor / invention: nhà sáng chế / sự sáng chế, vật sáng chế.\r\n\r\n• inventory n, v: kiểm kê, bản kiểm kê [in- (vào trong) + vent (đến) = tìm đến/liệt kê tất cả tài sản đang nằm trong kho]."
+  },
+  {
+    "id": "row-177",
+    "type": "word",
+    "key": "animal, animate, animation, animator, animus, unanimous, magnanimity",
+    "words": [
+      "animal",
+      "animate",
+      "animation",
+      "animator",
+      "animus",
+      "unanimous",
+      "magnanimity"
+    ],
+    "originalValue": "Gốc: anim ~ mind, spirit (Suy nghĩ, linh hồn, hơi thở)\r\n\r\n• animal n: động vật [loài vật có linh hồn, hơi thở và sự sống].\r\n\r\n• animate v: làm sống động (bring to life) [thổi linh hồn/sự sống vào cái gì].\r\n\r\n• animation n: phim hoạt hình ~ cartoon / animator n: người làm phim hoạt hình.\r\n\r\n• animus n: tinh thần phấn chấn, ý chí.\r\n\r\n• unanimous adj: đồng lòng, nhất trí [uni- (một) + anim (suy nghĩ) = có cùng một suy nghĩ/ý chí].\r\n\r\n• magnanimity n: tính hào hiệp, cao thượng [magn- (lớn/vĩ đại) + anim (tâm hồn) = người có tâm hồn lớn lao]."
+  },
+  {
+    "id": "row-178",
+    "type": "word",
+    "key": "inspect, inspector, expect, spectator, suspect, respect, specification, special, specialize",
+    "words": [
+      "inspect",
+      "inspector",
+      "expect",
+      "spectator",
+      "suspect",
+      "respect",
+      "specification",
+      "special",
+      "specialize",
+      "-spec"
+    ],
+    "originalValue": "Gốc: -spect-, -spec = look, see, observe (Nhìn, xem, quan sát)\r\n\r\n• inspect v: thanh tra / inspector n: thanh tra viên [in- (vào trong) + spect (nhìn) = nhìn sâu vào bên trong để xem xét lỗi].\r\n\r\n• expect: trông chờ, mong đợi [ex- (ra ngoài) + spect (nhìn) = hướng mắt nhìn ra bên ngoài chờ đợi ai đó đến].\r\n\r\n• spectator: khán giả, người xem [ở sân vận động, đuôi -ator chỉ người nhìn].\r\n\r\n• suspect: hoài nghi [sub- (ở dưới) + spect (nhìn) = nhìn lén từ dưới lên với ánh mắt không tin tưởng].\r\n\r\n• respect: ngưỡng mộ, tôn trọng [re- (lại) + spect (nhìn) = ngước nhìn lên ai đó nhiều lần với sự kính trọng].\r\n\r\n• specification: đặc điểm/thông số kỹ thuật [những chi tiết cần nhìn kỹ vào để hiểu cách máy móc vận hành].\r\n\r\n• special adj: đặc biệt [nhìn một cái là thấy khác biệt hoàn toàn với những thứ thông thường].\r\n\r\n• specialize (in) v: chuyên về, nổi tiếng về [chỉ tập trung nhìn và làm một thứ duy nhất để thành chuyên gia]."
+  },
+  {
+    "id": "row-179",
+    "type": "word",
+    "key": "perfect, affect, effect, defect, defective",
+    "words": [
+      "perfect",
+      "affect",
+      "effect",
+      "defect",
+      "defective"
+    ],
+    "originalValue": "Gốc: -fect-: make, do (Làm, tạo ra)\r\n\r\n• perfect: hoàn hảo [per- (hoàn toàn) + fect (làm) = được làm ra một cách trọn vẹn, không tì vết].\r\n\r\n• affect v: tác động, ảnh hưởng [ad- (hướng tới) + fect (làm) = làm một việc gì đó hướng tác động lên đối tượng khác].\r\n\r\n• effect n: kết quả, tác động [ex- (ra ngoài) + fect (làm) = cái được làm/sinh ra bên ngoài sau một hành động].\r\n\r\n• defect: nhược điểm, lỗi [de- (xuống, sai lệch) + fect (làm) = sản phẩm bị làm sai quy trình, làm lỗi].\r\n\r\n• defective adj: có nhược điểm, bị lỗi."
+  },
+  {
+    "id": "row-180",
+    "type": "word",
+    "key": "contain, container, retain, entertain, entertainment, detain, obtain, maintain, maintenance",
+    "words": [
+      "contain",
+      "container",
+      "retain",
+      "entertain",
+      "entertainment",
+      "detain",
+      "obtain",
+      "maintain",
+      "maintenance"
+    ],
+    "originalValue": "Gốc: -tain-, hold, have (Cầm, giữ, có)\r\n\r\n• contain: chứa [con- (cùng nhau) + tain (giữ) = giữ tất cả lại cùng một chỗ]. -> container: thùng chứa.\r\n\r\n• retain: giữ lại [re- (lại) + tain (giữ) = tiếp tục giữ lại không để mất đi].\r\n\r\n• entertain: tiếp đãi, giải trí [enter- (ở giữa) + tain (giữ) = giữ sự chú ý của khách ở giữa sự thoải mái/niềm vui]. \r\n-> entertainment: sự hoan nghênh; cuộc tiêu khiển.\r\n\r\n• detain: ngăn cản, cầm chân lại ~ hold, restrain, arrest [de- (xuống, giữ lại) + tain (giữ) = giữ ai đó lại một chỗ].\r\n\r\n• obtain: lấy, giành được [ob- (hướng tới) + tain (có được) = nỗ lực để có được cái gì].\r\n\r\n• maintain: bảo trì, giữ cho luôn hoạt động tốt [main (bàn tay) + tain (giữ) = dùng tay giữ vững/duy trì trạng thái tốt]. \r\n-> maintenance: sự bảo trì."
+  },
+  {
+    "id": "row-181",
+    "type": "word",
+    "key": "corps, corpus, corpse, corporal, corporation, corpulent, incorporate, incorporation",
+    "words": [
+      "corps",
+      "corpus",
+      "corpse",
+      "corporal",
+      "corporation",
+      "corpulent",
+      "incorporate",
+      "incorporation"
+    ],
+    "originalValue": "Gốc: -corp-: body (Thân thể, thể xác, tổ chức)\r\n\r\n• corps: quân đoàn [nhóm người hoạt động phối hợp như một cơ thể 'body'].\r\n\r\n• corpus: tập sao lục [tập hợp các tác phẩm tạo nên 'hình hài' văn học của một tác giả].\r\n\r\n• corpse: xác chết, thi hài [một cơ thể đã mất đi sự sống (a dead body)].\r\n\r\n• corporal: (thuộc) thân thể -> corporal punishment (hình phạt thể xác).\r\n\r\n• corporation: công ty, tập đoàn [nhóm người cùng hợp lại hoạt động pháp lý như một 'body'].\r\n\r\n• corpulent: béo tốt ~ fat [người có cơ thể lớn, thừa cân (a large body, overweight)].\r\n\r\n• incorporate: kết hợp, hợp nhất [in- (vào trong) + corp (thân thể) = gom các phần lại cấu thành một thể thống nhất]. -> incorporation: sự sáp nhập; liên đoàn."
+  },
+  {
+    "id": "row-182",
+    "type": "word",
+    "key": "tractor, attract, attractive, distract, retract, detract, contract",
+    "words": [
+      "tractor",
+      "attract",
+      "attractive",
+      "distract",
+      "retract",
+      "detract",
+      "contract"
+    ],
+    "originalValue": "Gốc: -tract-: drag, pull (Kéo, đẩy)\r\n\r\n• tractor: máy kéo [thiết bị dùng để kéo vật nặng].\r\n\r\n• attract / attractive: thu hút [ad- (hướng tới) + tract (kéo) = kéo ánh nhìn/sự chú ý của người khác về phía mình].\r\n\r\n• distract: làm sao nhãng [dis- (rời ra, sang bên) + tract (kéo) = kéo sự chú ý của họ đi chỗ khác].\r\n\r\n• retract: rút lại lời tuyên bố [re- (lại, ngược về) + tract (kéo) = kéo ngược lời nói trở về].\r\n\r\n• detract: khấu trừ, làm giảm uy tín [de- (xuống, đi) + tract (kéo) = kéo bớt đi, lấy bớt đi].\r\n\r\n• contract: hợp đồng [con- (cùng nhau) + tract (kéo) = văn bản pháp lý mà hai bên 'cò kéo', ràng buộc các điều khoản lại với nhau]."
+  },
+  {
+    "id": "row-183",
+    "type": "word",
+    "key": "transport, transportation, transfer, translate, transparent, transform, transformer",
+    "words": [
+      "transport",
+      "transportation",
+      "transfer",
+      "translate",
+      "transparent",
+      "transform",
+      "transformer"
+    ],
+    "originalValue": "Tiền tố: trans - across, through (Băng qua, xuyên qua, chuyển đổi)\r\n\r\n• transport / transportation: vận tải [trans- (băng qua) + port (mang/chở) = chở hàng băng từ điểm A sang điểm B].\r\n\r\n• transfer: dời, chuyển [trans- (băng qua) + fer (mang) = mang chuyển từ chỗ này sang chỗ khác].\r\n\r\n• translate: phiên dịch [trans- (qua) + late (dịch chuyển) = chuyển ngôn ngữ này sang ngôn ngữ khác].\r\n\r\n• transparent: trong suốt [trans- (xuyên qua) + parere (xuất hiện) = ánh sáng có thể đi xuyên qua để nhìn thấy rõ].\r\n\r\n• transform / transformer: biến hình, máy biến thế [trans- (thay đổi) + form (hình dáng) = thay đổi hình dạng, biến hình]."
+  },
+  {
+    "id": "row-184",
+    "type": "word",
+    "key": "form, uniform, inform, information, conform, transform, formula",
+    "words": [
+      "form",
+      "uniform",
+      "inform",
+      "information",
+      "conform",
+      "transform",
+      "formula"
+    ],
+    "originalValue": "Gốc: form, shape (Hình dáng, khuôn mẫu)\r\n\r\n• form: đơn mẫu, mẫu đơn [tờ khai có hình dáng, bộ khung sẵn, chỉ cần điền vào chỗ trống].\r\n\r\n• uniform: đồng phục [uni- (một) + form (hình dáng) = mọi người mặc chung một kiểu dáng giống nhau].\r\n\r\n• inform / information: thông báo, thông tin [in- (vào trong) + form (hình dáng) = tạo hình dáng kiến thức vào trong tâm trí người khác để cho họ biết rõ bản chất].\r\n\r\n• conform: tuân theo, thích ứng [con- (cùng nhau) + form (hình dáng) = uốn mình đi theo đúng khuôn mẫu/hình dáng của tập thể].\r\n\r\n• transform: biến hình [thay đổi hình dáng cũ sang hình dáng mới].\r\n\r\n• formula: công thức [form (khuôn mẫu) + đuôi chỉ vật nhỏ -ula = một khuôn mẫu toán học/hóa học thu nhỏ để áp dụng chung]."
+  },
+  {
+    "id": "row-185",
+    "type": "word",
+    "key": "project, projector, reject, object, objection",
+    "words": [
+      "project",
+      "projector",
+      "reject",
+      "object",
+      "objection"
+    ],
+    "originalValue": "Gốc: ject - throw (Ném, phóng, đẩy)\r\n\r\n• project: dự án [pro- (về phía trước) + ject (ném) = kế hoạch được phóng/vạch ra trước mắt]. \r\n-> projector: máy chiếu [thiết bị phóng hình ảnh lên tường].\r\n\r\n• reject: loại bỏ, từ chối [re- (ngược lại) + ject (ném) = ném trả ngược lại, không nhận].\r\n\r\n• object: phản đối; đồ vật, tân ngữ [ob- (chống lại) + ject (ném) = ném một ý kiến đối lập để ngăn cản]. \r\n-> objection, opposition, protest: sự phản đối >< support: sự ủng hộ"
+  },
+  {
+    "id": "row-186",
+    "type": "word",
+    "key": "solo fight, isolate, desolate, absolute",
+    "words": [
+      "solo fight",
+      "isolate",
+      "desolate",
+      "absolute"
+    ],
+    "originalValue": "Gốc: sol - alone (Một mình, đơn độc, duy nhất)\r\n\r\n• solo fight: đánh nhau 1-1 [trận đấu đơn độc, một đối một].\r\n\r\n• isolate v: cô lập, cách ly [đặt vào trạng thái đứng một mình].\r\n\r\n• desolate: hoang vắng, tiêu điều [de- (hoàn toàn) + sol (một mình) = bị bỏ rơi hoàn toàn, chỉ còn một mình].\r\n\r\n• absolute: tuyệt đối; nguyên chất [ab- (khỏi, rời ra) + sol (đơn độc/tan chảy) = tách hoàn toàn khỏi các tạp chất khác để đứng độc lập]."
+  },
+  {
+    "id": "row-187",
+    "type": "word",
+    "key": "resident, residence, preside, president, subside, sedentary, sediment, insidious",
+    "words": [
+      "resident",
+      "residence",
+      "preside",
+      "president",
+      "subside",
+      "sedentary",
+      "sediment",
+      "insidious",
+      "sed"
+    ],
+    "originalValue": "Gốc: sid, sed ~ sit, settle (Ngồi, ở, đặt vào vị trí)\r\n\r\n• resident / residence: dân cư, nơi sống [re- (lại) + sid (ngồi/ở) = người ở lại lâu dài tại một vị trí].\r\n\r\n• preside / president: chủ trì, chủ tịch [pre- (trước) + sid (ngồi) = người ngồi ở vị trí trang trọng phía trước để điều hành].\r\n\r\n• subside: chìm xuống, lắng xuống [sub- (ở dưới) + sid (ngồi) = ngồi hẳn phịch xuống đáy].\r\n\r\n• a sedentary job: công việc phải ngồi nhiều một chỗ [gốc sed chỉ hành động ngồi nhiều].\r\n\r\n• sediment: cặn, trầm tích [matter 'sitting' on the bottom of water - vật chất ngồi/lắng tụ ở dưới đáy nước].\r\n\r\n• insidious: quỷ quyệt, xảo quyệt [in- (vào trong) + sid (ngồi) = kẻ ngồi rình rập ở bên trong để hãm hại ngầm]."
+  },
+  {
+    "id": "row-188",
+    "type": "word",
+    "key": "multiple, multiply, multipede, multinational, multimedia, multifunction",
+    "words": [
+      "multiple",
+      "multiply",
+      "multipede",
+      "multinational",
+      "multimedia",
+      "multifunction"
+    ],
+    "originalValue": "Tiền tố: multi - nhiều (Đa, nhiều)\r\n\r\n• multiple + Ns: nhiều, phức hợp.\r\n\r\n• multiply n, v: phép nhân, tăng theo cấp số nhân.\r\n\r\n• multipede = multiped: con vật có nhiều chân [multi- (nhiều) + ped (chân)].\r\n\r\n• multinational organization: tập đoàn đa quốc gia [multi- (nhiều) + national (quốc gia)].\r\n\r\n• multimedia: truyền thông đa phương tiện [multi- (nhiều) + media (phương tiện)].\r\n\r\n• a multifunction machine: máy đa chức năng [multi- (nhiều) + function (chức năng)]."
+  },
+  {
+    "id": "row-189",
+    "type": "word",
+    "key": "visible, invisible, advise, visual, vision, television, visit, visitor, video, evidence, revise, provision",
+    "words": [
+      "visible",
+      "invisible",
+      "advise",
+      "visual",
+      "vision",
+      "television",
+      "visit",
+      "visitor",
+      "video",
+      "evidence",
+      "revise",
+      "provision",
+      "vid"
+    ],
+    "originalValue": "Gốc: vis, vid = to see (Nhìn, trông thấy)\r\n\r\n• visible: có thể nhìn thấy được [đuôi -ible là có thể]. \r\n-> invisible: không thể nhìn thấy, vô hình.\r\n\r\n• advise: khuyên bảo [ad- (hướng tới) + vis (nhìn) = hướng cho người khác thấy góc nhìn của mình để họ cân nhắc].\r\n\r\n• visual: thuộc về thị giác / vision: tầm nhìn, sức tưởng tượng [năng lực nhìn].\r\n\r\n• television: vô tuyến, truyền hình [tele- (ở xa) + vis (nhìn) = thiết bị giúp nhìn thấy hình ảnh từ khoảng cách rất xa].\r\n\r\n• visit / visitor: đi thăm, người thăm [đến tận nơi để nhìn thấy người nào đó].\r\n\r\n• video: phim ảnh di chuyển nhìn thấy được trên màn hình.\r\n\r\n• evidence: chứng cứ [e- (ra ngoài) + vid (nhìn) = những thứ được đưa ra ngoài ánh sáng để ai cũng nhìn thấy rõ].\r\n\r\n• revise: xem lại, sửa lại [re- (lại) + vis (nhìn) = nhìn lại một lần nữa để tìm lỗi sai].\r\n\r\n• provision: sự dự liệu, sự cung cấp [pro- (trước) + vis (nhìn) = nhìn thấy trước nhu cầu tương lai để chuẩn bị]."
+  },
+  {
+    "id": "row-190",
+    "type": "word",
+    "key": "mute, mutate, mutant, mutual, commute, transmute",
+    "words": [
+      "mute",
+      "mutate",
+      "mutant",
+      "mutual",
+      "commute",
+      "transmute"
+    ],
+    "originalValue": "Gốc: mut (change - Thay đổi, dịch chuyển, hoán đổi)\r\n\r\n• mute v: tắt tiếng [bản chất cổ là làm thay đổi/biến đổi giọng nói, nay dùng để ngắt âm].\r\n\r\n• mutate v: thay đổi, biến âm sắc / mutant gen: gen đột biến ; mutants: dị nhân.\r\n\r\n• mutual: chung, lẫn nhau [our mutual friend - có sự hoán đổi, qua lại, chia sẻ giữa hai bên].\r\n\r\n• commute: giảm tội / đi lại giữa nhà và cơ quan [com- (cùng nhau) + mut (thay đổi) = thay đổi hình phạt nhẹ hơn; hoặc liên tục thay đổi vị trí di chuyển qua lại].\r\n\r\n• transmute: chuyển hóa [trans- (xuyên qua, biến đổi) + mut (thay đổi) = biến đổi hoàn toàn về mặt tính chất]."
+  },
+  {
+    "id": "row-191",
+    "type": "word",
+    "key": "involve, evolve, evolution, revolve, revolute, revolution, revolutionize, volume",
+    "words": [
+      "involve",
+      "evolve",
+      "evolution",
+      "revolve",
+      "revolute",
+      "revolution",
+      "revolutionize",
+      "volume"
+    ],
+    "originalValue": "Gốc: volv, volu (roll - Cuộn, lăn, quay tròn)\r\n\r\n• involve: tham gia, bao gồm [in- (vào trong) + volv (cuộn) = bị cuộn vào bên trong một việc gì đó].\r\n\r\n• evolve / evolution: tiến hóa, phát triển [e- (ra ngoài) + volv (lăn) = lăn mở rộng ra phía trước, phát triển dần lên].\r\n\r\n• revolve: nghĩ đi nghĩ lại, quay tròn [re- (lại) + volv (lăn) = trục quay tròn liên tục hoặc suy nghĩ cuộn đi cuộn lại trong đầu].\r\n\r\n• revolute v / revolution n / revolutionize v: làm cách mạng [tập thể cùng quay lưng lại, lật đổ/quay ngược hoàn toàn thể chế cũ].\r\n\r\n• volume: quyển sách, tập sách; âm lượng [ngày xưa sách làm bằng các tấm da dê cuộn tròn lại mà thành]."
+  },
+  {
+    "id": "row-192",
+    "type": "word",
+    "key": "memo, memory, memorable, memorial, commemorative",
+    "words": [
+      "memo",
+      "memory",
+      "memorable",
+      "memorial",
+      "commemorative"
+    ],
+    "originalValue": "Gốc: memor (remembering - Ghi nhớ, ký ức)\r\n\r\n• memo: bản ghi nhớ ~ minute, note [văn bản ngắn giúp gợi nhớ].\r\n\r\n• memory: trí nhớ / memorable: đáng nhớ [có thể ghi nhớ lâu].\r\n\r\n• memorial: vật kỷ niệm, đài tưởng niệm [war memorial: đài tưởng niệm liệt sĩ ; memorial service: lễ truy điệu].\r\n\r\n• a commemorative plaque: tấm bia kỷ niệm [com- (cùng nhau) + memor (nhớ) = cùng nhau lưu giữ lại kỷ niệm]."
+  },
+  {
+    "id": "row-193",
+    "type": "word",
+    "key": "reverse, adverse, version, diverse, universe, versus, anniversary",
+    "words": [
+      "reverse",
+      "adverse",
+      "version",
+      "diverse",
+      "universe",
+      "versus",
+      "anniversary"
+    ],
+    "originalValue": "Gốc: -vers- (turn ~ Xoay, đảo, lộn, biến, chuyển)\r\n\r\n• reverse: mặt trái, ngược lại [re- (ngược lại) + vers (xoay) = xoay ngược hướng lại mình] \r\n-> the reverse direction.\r\n\r\n• adverse adj: ngược, bất lợi [ad- (hướng về) + vers (xoay) = bị xoay đối diện, đối địch lại mình] \r\n-> adverse weather.\r\n\r\n• version: phiên bản [từ một cái gốc xoay chuyển tạo ra nhiều nhánh/biến thể khác nhau].\r\n\r\n• diverse: đa dạng [di- (rời ra, nhiều hướng) + vers (xoay) = xoay đi nhiều hướng khác nhau].\r\n\r\n• universe: vũ trụ [uni- (một) + vers (xoay) = tất cả mọi vật cùng xoay hợp lại làm một].\r\n\r\n• versus: trái lại, chống lại [xoay hướng đối đầu nhau].\r\n\r\n• anniversary: lễ kỷ niệm [annus (năm) + vers (xoay/vòng lại) = thời điểm một năm nữa lại xoay vòng quay trở lại]."
+  },
+  {
+    "id": "row-194",
+    "type": "word",
+    "key": "cure, secure, security, accurate, curator, curious",
+    "words": [
+      "cure",
+      "secure",
+      "security",
+      "accurate",
+      "curator",
+      "curious"
+    ],
+    "originalValue": "Gốc: -cur-, -cura- (care, manage - Chăm sóc, quản lý, cẩn trọng)\r\n\r\n• cure: chữa bệnh [chăm sóc người bệnh cho đến khi khỏe].\r\n\r\n• secure / security: đảm bảo, an toàn [se- (không có) + cure (lo lắng/chăm sóc) = được bảo vệ tốt đến mức không cần phải lo lắng nữa].\r\n\r\n• accurate: chính xác [ad- (hướng tới) + cura (cẩn trọng) = được quản lý, làm một cách cực kỳ cẩn thận để đạt kết quả đúng dự tính].\r\n\r\n• curator: người quản lý, người trông nom (bảo tàng, triển lãm).\r\n\r\n• curious: tò mò [đuôi tính từ -ious, thể hiện sự cực kỳ để tâm, chăm chú, muốn biết]."
+  },
+  {
+    "id": "row-195",
+    "type": "word",
+    "key": "pair, compare, comparable, incomparable, comparison, repair, despair, impair",
+    "words": [
+      "pair",
+      "compare",
+      "comparable",
+      "incomparable",
+      "comparison",
+      "repair",
+      "despair",
+      "impair"
+    ],
+    "originalValue": "Gốc: -pair- (equal, couple - Ngang hàng, bằng nhau, một đôi)\r\n\r\n• a pair of shoes/gloves: một đôi, một cặp.\r\n\r\n• compare / comparison: so sánh [com- (cùng nhau) + pair (ngang hàng) = đặt hai vật ngang hàng cạnh nhau để xem xét]. \r\n-> comparable: có thể sánh được ; incomparable: vô song.\r\n\r\n• repair: sửa chữa [re- (lại) + pair (ghép cặp) = đưa các bộ phận bị hỏng hóc về lại vị trí khớp cặp chuẩn ban đầu].\r\n\r\n• despair: thất vọng, tuyệt vọng [de- (mất đi, không có) + spair/sper (hy vọng) = không còn điểm tựa nào đi cùng mình].\r\n\r\n• impair: làm suy yếu ~ weaken, harm [tiền tố biến thể im- (làm xấu đi) + pair (ngang bằng) = làm lệch lạc, giảm giá trị ngang bằng ban đầu]."
+  },
+  {
+    "id": "row-196",
+    "type": "word",
+    "key": "nurture, nutrient, nutriment, nutrition, nutritional, malnutrition",
+    "words": [
+      "nurture",
+      "nutrient",
+      "nutriment",
+      "nutrition",
+      "nutritional",
+      "malnutrition"
+    ],
+    "originalValue": "Gốc: nutr (nourish = nuôi dưỡng)\r\n\r\n• nurture ~ foster: chăm sóc, nuôi dưỡng.\r\n\r\n• nutrient adj: bổ dưỡng / n: chất dinh dưỡng.\r\n\r\n• nutriment: đồ ăn bổ, chất dinh dưỡng [đuôi -ment chỉ vật chất].\r\n\r\n• nutrition: sự nuôi dưỡng, chế độ dinh dưỡng -> nutritional adj.\r\n\r\n• malnutrition: sự thiếu dinh dưỡng [mal- (xấu, tồi tệ, thiếu) + nutrition = chế độ dinh dưỡng tồi tệ/thiếu thốn]."
+  },
+  {
+    "id": "row-197",
+    "type": "word",
+    "key": "pass, overpass, underpass, surpass, passage, passenger, passageway, passport, compassion",
+    "words": [
+      "pass",
+      "overpass",
+      "underpass",
+      "surpass",
+      "passage",
+      "passenger",
+      "passageway",
+      "passport",
+      "compassion"
+    ],
+    "originalValue": "Gốc: pass (đi qua, vượt qua, trải qua)\r\n\r\n• pass v: đi qua; vượt qua; qua đời.\r\n\r\n• overpass: cầu vượt [over- (ở trên) + pass (đi qua) = lối đi qua ở phía trên].\r\n\r\n• underpass: hầm chui [under- (ở dưới) + pass (đi qua) = lối đi qua ở phía dưới].\r\n\r\n• surpass: vượt qua, vượt trội [sur- (vượt lên trên) + pass (đi qua) = đi vượt lên trên hẳn người khác].\r\n\r\n• passage / passageway: lối đi, hành lang [không gian để đi băng qua].\r\n\r\n• passenger: hành khách [người đi qua các chặng đường bằng phương tiện].\r\n\r\n• passport: hộ chiếu [pass (đi qua) + port (cửa khẩu/cảng) = tài liệu đóng dấu để được đi qua cổng hải quan].\r\n\r\n• compassion: lòng trắc ẩn [gốc gốc từ đồng âm hoặc mượn nghĩa: com- (cùng nhau) + pati/pass (chịu đựng, trải qua) = cùng trải qua nỗi đau, cảm thông với những gì người khác đã \"pass\" qua]."
+  },
+  {
+    "id": "row-198",
+    "type": "word",
+    "key": "complete, complement, compliment, implement, deplete, plenty, accomplish",
+    "words": [
+      "complete",
+      "complement",
+      "compliment",
+      "implement",
+      "deplete",
+      "plenty",
+      "accomplish"
+    ],
+    "originalValue": "Gốc: pli/ple ~ fill (Làm đầy, lấp đầy)\r\n\r\n• complete v: hoàn tất [com- (hoàn toàn) + ple (làm đầy) = làm cho đầy đủ hoàn toàn, không thiếu phần nào].\r\n\r\n• complement n: phần bổ sung [phần thêm vào để cấu trúc trở nên đầy đủ].\r\n\r\n• compliment n: lời khen [trao đi sự tử tế để làm ai đó 'đầy' niềm vui và sự tự hào].\r\n\r\n• implement v: thực hiện, áp dụng [in- (vào trong) + ple (làm đầy) = đưa các bước hành động vào để làm đầy/hoàn thành kế hoạch].\r\n\r\n• deplete v: làm cạn kiệt [de- (làm ngược lại, giảm xuống) + ple (làm đầy) = làm mất đi sự đầy đặn vốn có].\r\n\r\n• plenty adj: nhiều, dồi dào [trạng thái đầy đủ, dư dả].\r\n\r\n• accomplish v: đạt được, hoàn thành [ad- (hướng tới) + com- (hoàn toàn) + pli (làm đầy) = nỗ lực đi đến trạng thái làm đầy trọn vẹn mục tiêu]."
+  },
+  {
+    "id": "row-199",
+    "type": "word",
+    "key": "select, selection, selective, collect, intellect, lecture, neglect",
+    "words": [
+      "select",
+      "selection",
+      "selective",
+      "collect",
+      "intellect",
+      "lecture",
+      "neglect"
+    ],
+    "originalValue": "Gốc: -lect-: chọn, nhặt, thu thập, đọc\r\n\r\n• select v / selection n / selective adj: nhặt, chọn [se- (tách rời) + lect (chọn) = chọn riêng và tách một thứ ra khỏi đám đông] \r\n-> selective school (trường tuyển/chuyên).\r\n\r\n• collect v: sưu tập, thu thập [con- (cùng nhau) + lect (nhặt) = nhặt và gom tất cả lại một chỗ].\r\n\r\n• intellect n: trí tuệ [inter- (ở giữa) + lect (chọn) = khả năng nhìn nhận, phân tích và 'chọn' ra giải pháp đúng giữa các ý kiến].\r\n\r\n• lecture n: bài giảng [nghĩa gốc là việc 'đọc' các tài liệu, sách vở cho người khác nghe để truyền đạt kiến thức].\r\n\r\n• neglect v: sao nhãng, bỏ bê [neg- (không) + lect (chọn) = không chọn, ngó lơ, bỏ qua không chăm sóc]."
+  },
+  {
+    "id": "row-200",
+    "type": "word",
+    "key": "perform",
+    "words": [
+      "perform"
+    ],
+    "originalValue": "v1. thực hiện: Perform, conduct, carry out, do, implement \r\nv2. to perform a play ~ biểu diễn\r\n-> performer: người biểu diễn\r\n-> performance: mà biểu diễn\r\n-> work performance: hiệu xuất làm việc"
+  },
+  {
+    "id": "row-201",
+    "type": "word",
+    "key": "associate",
+    "words": [
+      "associate",
+      "- sales associate",
+      "assistant"
+    ],
+    "originalValue": "v.- I don't like you associating with those people ~ v. kết giao \r\nn. - sales associate ~ cộng tác viên bán hàng \r\n-> association: hội, đoạn để, sự liên kết \r\nadj. phụ, phó (~ assistant, deputy, mate) \r\n-> associate editor/manager ~ phó tổng biên tập/quản lý \r\n-> chief editor/manager ~ tổng biên tập/quản lý"
+  },
+  {
+    "id": "row-202",
+    "type": "word",
+    "key": "manage",
+    "words": [
+      "manage"
+    ],
+    "originalValue": "- manage ~ Supervise, oversee, monitor, administer, govern\r\n-> manager ~ supervisor, overseer, monitor\r\n-> managerial position/experience/skills ~ (thuộc) quản lý\r\n-> management team ~ sự quản lý, ban quản lý"
+  },
+  {
+    "id": "row-203",
+    "type": "word",
+    "key": "resource",
+    "words": [
+      "resource"
+    ],
+    "originalValue": "- (Ns) tài nguyên \r\n-> human/mineral/agricultural + resources\r\n- nguồn (tài nguyên) (cái có thể sd để đạt được mục tiêu)\r\n-> resource material: tài liệu nguồn\r\n-> Time is our most valuable resource"
+  },
+  {
+    "id": "row-204",
+    "type": "word",
+    "key": "source",
+    "words": [
+      "source"
+    ],
+    "originalValue": "n. a source of information/problem ~ nguồn, nguyên nhân\r\nv. to source sth from sb/sth = lấy hàng từ đâu ~ buy, get..."
+  },
+  {
+    "id": "row-205",
+    "type": "word",
+    "key": "such",
+    "words": [
+      "such",
+      "such as"
+    ],
+    "originalValue": "- He noticed her necklace. Such jewels must have cost thousands, he thought ~ (det) như thế, như vậy (of the type already mentioned \r\n\r\n- Such a beautiful house ~ sd để nhấn mạnh ~ so great \r\n- Such as = for example, for instant"
+  },
+  {
+    "id": "row-206",
+    "type": "word",
+    "key": "effective",
+    "words": [
+      "effective",
+      "an effective method",
+      "an effective drug",
+      "take effect",
+      "come into effect"
+    ],
+    "originalValue": "- an effective method/drug ~ hiệu quả \r\n- This new policy will become effective rom May 10 ~ có hiệu lực Become valid/ effective, take effect, come into effect, come into force, come into operation"
+  },
+  {
+    "id": "row-207",
+    "type": "word",
+    "key": "monitor",
+    "words": [
+      "monitor"
+    ],
+    "originalValue": "v. giám sát ~ observe, oversee, supervise, check, watch \r\nn. màn hình ~ monitor, display, screen, desktop"
+  },
+  {
+    "id": "row-208",
+    "type": "word",
+    "key": "regulate",
+    "words": [
+      "regulate"
+    ],
+    "originalValue": "- regulate: điều chỉnh (tốc độ, nhiệt độ....) ~ control \r\n- regular adj. đều đặn; thông thường ~ frequent, periodic; normal, common, ordinary \r\n- regulator: người điều chỉnh \r\n- regulatory adj. bắt buộc ~ compulsory, mandatory, obligatory, required /ɔ'bligətəri/"
+  },
+  {
+    "id": "row-209",
+    "type": "word",
+    "key": "value",
+    "words": [
+      "value"
+    ],
+    "originalValue": "n. This building has a great historic value ~ giá trị \r\nv. to value a good ~ đánh giá \r\nv. We value your service ~ coi trọng, đánh giá cao"
+  },
+  {
+    "id": "row-210",
+    "type": "word",
+    "key": "highly",
+    "words": [
+      "highly"
+    ],
+    "originalValue": "Rất ~ very, greatly, extremely... \r\n-> highly appreciate/encourage/recommend/suggest/value/rate || a highly qualified technician"
+  },
+  {
+    "id": "row-211",
+    "type": "word",
+    "key": "fill",
+    "words": [
+      "fill"
+    ],
+    "originalValue": "- to fill a cup with water ~ làm đầy\r\n- to fill in a job position ~ bổ nhiệm; thế vào, điền vào ~ occupy\r\n- to fill an order/a prescription ~ thực hiện, đáp ứng ~ supply, fulful, perform"
+  },
+  {
+    "id": "row-212",
+    "type": "word",
+    "key": "prescription",
+    "words": [
+      "prescription"
+    ],
+    "originalValue": "- prescribe v. kê đơn\r\n- prescription: đơn kê thuốc\r\n-> thuốc: medicine, remedy, drug..."
+  },
+  {
+    "id": "row-213",
+    "type": "word",
+    "key": "bed",
+    "words": [
+      "bed",
+      "the ocean bed"
+    ],
+    "originalValue": "- a single/double bed ~ cái giường \r\n-> It's time to bed || to go to bed ~ đi ngủ \r\n- the ocean bed ~ đáy (biển, sông, hồ) \r\n- a bed of roses ~ luống (rau) \r\n# bet: cá cược, tiền cá cược \r\nvd. I bet they will win. I put a pet on them"
+  },
+  {
+    "id": "row-214",
+    "type": "word",
+    "key": "advance",
+    "words": [
+      "advance",
+      "advanced technology",
+      "advanced course"
+    ],
+    "originalValue": "n- the recent advances in technology ~ sự tiến bộ, sự cải tiến \r\nv1. He advanced rapidly in his job ~ move forward (tiến bộ, thăng tiến) \r\nv2. Oil price has advanced for decades ~ increase \r\nV3. The deadline has been advanced by one week \r\n~ làm cho xảy ra sớm hơn ~ make earlier >< postpone \r\n-> We request 20% deposit in advance ~ trước ~ beforehand \r\n- advanced technology/course ~ cấp cao, tiên tiến"
+  },
+  {
+    "id": "row-215",
+    "type": "word",
+    "key": "highly, very, extremely, seriously, immensely",
+    "words": [
+      "highly",
+      "very",
+      "extremely",
+      "seriously",
+      "immensely"
+    ],
+    "originalValue": "rất (mức độ)\r\n= highly, very, extremely, seriously, immensely"
+  },
+  {
+    "id": "row-216",
+    "type": "word",
+    "key": "council, board, panel, committee, commission",
+    "words": [
+      "council",
+      "board",
+      "panel",
+      "committee",
+      "commission"
+    ],
+    "originalValue": "hội đồng, uỷ ban\r\n= council, board, panel, committee, commission"
+  },
+  {
+    "id": "row-217",
+    "type": "word",
+    "key": "movie theater/house, cinema,",
+    "words": [
+      "movie theater",
+      "house",
+      "cinema",
+      "movie house"
+    ],
+    "originalValue": "rạp chiếu phim\r\n= movie theater/house, cinema,"
+  },
+  {
+    "id": "row-218",
+    "type": "word",
+    "key": "Abide by, comply with, conform to, adhere to, follow (v)",
+    "words": [
+      "abide by",
+      "comply with",
+      "conform to",
+      "adhere to",
+      "follow"
+    ],
+    "originalValue": "tuân theo\r\n= Abide by, comply with, conform to, adhere to, follow (v)"
+  },
+  {
+    "id": "row-219",
+    "type": "word",
+    "key": "Abroad, overseas, out of the country (adv)",
+    "words": [
+      "abroad",
+      "overseas",
+      "out of the country"
+    ],
+    "originalValue": "ngước ngoài\r\n= Abroad, overseas, out of the country (adv)"
+  },
+  {
+    "id": "row-220",
+    "type": "word",
+    "key": "Access, entrance, entryway/ entry, gate, way in (n)",
+    "words": [
+      "access",
+      "entrance",
+      "entryway",
+      "entry",
+      "gate",
+      "way in",
+      "entryway entry",
+      " entry"
+    ],
+    "originalValue": "lối đi vào\r\n= Access, entrance, entryway/ entry, gate, way in (n)"
+  },
+  {
+    "id": "row-221",
+    "type": "word",
+    "key": "Accident, crash, collision (n)",
+    "words": [
+      "accident",
+      "crash",
+      "collision"
+    ],
+    "originalValue": "tai nạn\r\n= Accident, crash, collision (n)"
+  },
+  {
+    "id": "row-222",
+    "type": "word",
+    "key": "Accommodation, housing, lodging (n)",
+    "words": [
+      "accommodation",
+      "housing",
+      "lodging"
+    ],
+    "originalValue": "chỗ ở\r\n= Accommodation, housing, lodging (n)"
+  },
+  {
+    "id": "row-223",
+    "type": "word",
+    "key": "Additional, extra, added, more, further, supplementary, supplemental (adi):",
+    "words": [
+      "additional",
+      "extra",
+      "added",
+      "more",
+      "further",
+      "supplementary",
+      "supplemental adi"
+    ],
+    "originalValue": "thêm, bổ sung\r\n= Additional, extra, added, more, further, supplementary, supplemental (adi):"
+  },
+  {
+    "id": "row-224",
+    "type": "word",
+    "key": "Adequate, enough, sufficient (adj)",
+    "words": [
+      "adequate",
+      "enough",
+      "sufficient"
+    ],
+    "originalValue": "dù\r\n= Adequate, enough, sufficient (adj)"
+  },
+  {
+    "id": "row-225",
+    "type": "word",
+    "key": "Adjacent, adjoining, neighboring, next to, close to, near, beside",
+    "words": [
+      "adjacent",
+      "adjoining",
+      "neighboring",
+      "next to",
+      "close to",
+      "near",
+      "beside"
+    ],
+    "originalValue": "gần, kế bên\r\n= Adjacent, adjoining, neighboring, next to, close to, near, beside"
+  },
+  {
+    "id": "row-226",
+    "type": "word",
+    "key": "Admission, entrance fee, entry charge, ticket (n)",
+    "words": [
+      "admission",
+      "entrance fee",
+      "entry charge",
+      "ticket"
+    ],
+    "originalValue": "phí vào cửa, vé vào cửa\r\n= Admission, entrance fee, entry charge, ticket (n)"
+  },
+  {
+    "id": "row-227",
+    "type": "word",
+    "key": "Advertise, promote, publicize (v)",
+    "words": [
+      "advertise",
+      "promote",
+      "publicize"
+    ],
+    "originalValue": "quảng cáo\r\n= Advertise, promote, publicize (v)"
+  },
+  {
+    "id": "row-228",
+    "type": "word",
+    "key": "Agreement, contract (n)",
+    "words": [
+      "agreement",
+      "contract"
+    ],
+    "originalValue": "hợp đồng\r\n= Agreement, contract (n)"
+  },
+  {
+    "id": "row-229",
+    "type": "word",
+    "key": "Allowance, benefit, grant (n)",
+    "words": [
+      "allowance",
+      "benefit",
+      "grant"
+    ],
+    "originalValue": "tiền trợ cấp\r\n= Allowance, benefit, grant (n)"
+  },
+  {
+    "id": "row-230",
+    "type": "word",
+    "key": "Alow, permit, enable, authorize, entitle (v)",
+    "words": [
+      "alow",
+      "permit",
+      "enable",
+      "authorize",
+      "entitle"
+    ],
+    "originalValue": "cho phép\r\n= Alow, permit, enable, authorize, entitle (v)"
+  },
+  {
+    "id": "row-231",
+    "type": "word",
+    "key": "Alternative, alternate, replacement, different, other, substitute (adj)",
+    "words": [
+      "alternative",
+      "alternate",
+      "replacement",
+      "different",
+      "other",
+      "substitute"
+    ],
+    "originalValue": "khác, thay thế\r\n= Alternative, alternate, replacement, different, other, substitute (adj)"
+  },
+  {
+    "id": "row-232",
+    "type": "word",
+    "key": "Although, even though, though, notwithstanding that, while (conj.)",
+    "words": [
+      "even though",
+      "notwithstanding that"
+    ],
+    "originalValue": "mặc dù\r\n= Although, even though, though, notwithstanding that, while (conj.)"
+  },
+  {
+    "id": "row-233",
+    "type": "word",
+    "key": "Annually, yearly, once a month, every year, each year, per year (adv)",
+    "words": [
+      "annually",
+      "yearly",
+      "once a month",
+      "every year",
+      "each year",
+      "per year"
+    ],
+    "originalValue": "hàng năm\r\n= Annually, yearly, once a month, every year, each year, per year (adv)"
+  },
+  {
+    "id": "row-234",
+    "type": "word",
+    "key": "Anonymous, unknown, unnamed, nameless (adi)",
+    "words": [
+      "anonymous",
+      "unknown",
+      "unnamed",
+      "nameless adi"
+    ],
+    "originalValue": "ẩn danh\r\n= Anonymous, unknown, unnamed, nameless (adi)"
+  },
+  {
+    "id": "row-235",
+    "type": "word",
+    "key": "Apartment, unit, suit, flat, condominium (n)",
+    "words": [
+      "apartment",
+      "unit",
+      "suit",
+      "flat",
+      "condominium"
+    ],
+    "originalValue": "căn hộ\r\n= Apartment, unit, suit, flat, condominium (n)"
+  },
+  {
+    "id": "row-236",
+    "type": "word",
+    "key": "Appoint, select, elect, choose, name, nominate (v)",
+    "words": [
+      "appoint",
+      "select",
+      "elect",
+      "choose",
+      "name",
+      "nominate"
+    ],
+    "originalValue": "bổ nhiệm, chọn\r\n= Appoint, select, elect, choose, name, nominate (v)"
+  },
+  {
+    "id": "row-237",
+    "type": "word",
+    "key": "Approach, method, strategy, way, measure (n)",
+    "words": [
+      "approach",
+      "method",
+      "strategy",
+      "way",
+      "measure"
+    ],
+    "originalValue": "cách tiếp cận, phương pháp\r\n= Approach, method, strategy, way, measure (n)"
+  },
+  {
+    "id": "row-238",
+    "type": "word",
+    "key": "Approximately, about, around, roughly (adv)",
+    "words": [
+      "approximately",
+      "around",
+      "roughly"
+    ],
+    "originalValue": "xấp xỉ\r\n= Approximately, about, around, roughly (adv)"
+  },
+  {
+    "id": "row-239",
+    "type": "word",
+    "key": "Around-the-clock, day and night, all the time, twenty-four hours",
+    "words": [
+      "aroundtheclock",
+      "day and night",
+      "all the time",
+      "twentyfour hours",
+      "around-the-clock",
+      "twenty-four hours"
+    ],
+    "originalValue": "24/24, suốt ngày\r\n= Around-the-clock, day and night, all the time, twenty-four hours"
+  },
+  {
+    "id": "row-240",
+    "type": "word",
+    "key": "Assist, give/ lend a hand, help, support, aid (v)",
+    "words": [
+      "assist",
+      "give",
+      "lend a hand",
+      "help",
+      "support",
+      "aid",
+      "give lend a hand",
+      " lend a hand"
+    ],
+    "originalValue": "hỗ trợ, giúp đỡ\r\n= Assist, give/ lend a hand, help, support, aid (v)"
+  },
+  {
+    "id": "row-241",
+    "type": "word",
+    "key": "Attend, participate in, join, take part in, engage in (v)",
+    "words": [
+      "attend",
+      "participate in",
+      "join",
+      "take part in",
+      "engage in"
+    ],
+    "originalValue": "giam gia\r\n= Attend, participate in, join, take part in, engage in (v)"
+  },
+  {
+    "id": "row-242",
+    "type": "word",
+    "key": "Attendance, turnout (n)",
+    "words": [
+      "attendance",
+      "turnout"
+    ],
+    "originalValue": "số người tham dự\r\n= Attendance, turnout (n)"
+  },
+  {
+    "id": "row-243",
+    "type": "word",
+    "key": "Attendant, server, waiter (n)",
+    "words": [
+      "attendant",
+      "server",
+      "waiter"
+    ],
+    "originalValue": "người phục vụ\r\n= Attendant, server, waiter (n)"
+  },
+  {
+    "id": "row-244",
+    "type": "word",
+    "key": "Attendee, attendant, participant (n)",
+    "words": [
+      "attendee",
+      "attendant",
+      "participant"
+    ],
+    "originalValue": "người tham dự\r\n= Attendee, attendant, participant (n)"
+  },
+  {
+    "id": "row-245",
+    "type": "word",
+    "key": "Attract, draw, appeal to (v)",
+    "words": [
+      "attract",
+      "draw",
+      "appeal to"
+    ],
+    "originalValue": "thu hút\r\n= Attract, draw, appeal to (v)"
+  },
+  {
+    "id": "row-246",
+    "type": "word",
+    "key": "Attribute A to B, credit A to/with B: cho räng là do B.",
+    "words": [],
+    "originalValue": "cho rằng A có được là nhờ B\r\n= Attribute A to B, credit A to/with B: cho räng là do B."
+  },
+  {
+    "id": "row-247",
+    "type": "word",
+    "key": "Avoid, keep away from, stay away from, refrain from (v)",
+    "words": [
+      "avoid",
+      "keep away from",
+      "stay away from",
+      "refrain from"
+    ],
+    "originalValue": "tránh\r\n= Avoid, keep away from, stay away from, refrain from (v)"
+  },
+  {
+    "id": "row-248",
+    "type": "word",
+    "key": "Banquet, dinner, reception, luncheon (tiêc trua), party (n)",
+    "words": [],
+    "originalValue": "bữa tiệc\r\n= Banquet, dinner, reception, luncheon (tiêc trua), party (n)"
+  },
+  {
+    "id": "row-249",
+    "type": "word",
+    "key": "be located, be situated",
+    "words": [
+      "be located",
+      "be situated"
+    ],
+    "originalValue": "nằm ở\r\n= be located, be situated"
+  },
+  {
+    "id": "row-250",
+    "type": "word",
+    "key": "Because, since, as, for, now that, seeing that, in that (coni)",
+    "words": [
+      "since",
+      "now that",
+      "seeing that",
+      "in that coni"
+    ],
+    "originalValue": "bởi vì\r\n= Because, since, as, for, now that, seeing that, in that (coni)"
+  },
+  {
+    "id": "row-251",
+    "type": "word",
+    "key": "Because of, due to, owing to, thanks to, on account of, in view of, as a result of (prep.)",
+    "words": [
+      "because of",
+      "due to",
+      "owing to",
+      "thanks to",
+      "on account of",
+      "in view of",
+      "as a result of"
+    ],
+    "originalValue": "do, vì\r\n= Because of, due to, owing to, thanks to, on account of, in view of, as a result of (prep.)"
+  },
+  {
+    "id": "row-252",
+    "type": "word",
+    "key": "Become valid/ effective, take effect, come into effect, come into force, come into operation",
+    "words": [
+      "become valid",
+      "effective",
+      "take effect",
+      "come into effect",
+      "come into force",
+      "come into operation"
+    ],
+    "originalValue": "có hiệu lực\r\n= Become valid/ effective, take effect, come into effect, come into force, come into operation"
+  },
+  {
+    "id": "row-253",
+    "type": "word",
+    "key": "Beverage, drink (n)",
+    "words": [
+      "beverage",
+      "drink"
+    ],
+    "originalValue": "đồ uống\r\n= Beverage, drink (n)"
+  },
+  {
+    "id": "row-254",
+    "type": "word",
+    "key": "Booth, counter, stand, stall (n)",
+    "words": [
+      "booth",
+      "counter",
+      "stand",
+      "stall"
+    ],
+    "originalValue": "quầy, gian hàng\r\n= Booth, counter, stand, stall (n)"
+  },
+  {
+    "id": "row-255",
+    "type": "word",
+    "key": "Branch =office =subsidiary =agency =affiliate (n)",
+    "words": [
+      "branch office subsidiary agency affiliate",
+      "branch"
+    ],
+    "originalValue": "chi nhánh, công ty con\r\n= Branch =office =subsidiary =agency =affiliate (n)"
+  },
+  {
+    "id": "row-256",
+    "type": "word",
+    "key": "Brochure, pamphlet, leaflet, flyer, handout (n)",
+    "words": [
+      "brochure",
+      "pamphlet",
+      "leaflet",
+      "flyer",
+      "handout"
+    ],
+    "originalValue": "tờ rơi, tờ quảng cáo\r\n= Brochure, pamphlet, leaflet, flyer, handout (n)"
+  },
+  {
+    "id": "row-257",
+    "type": "word",
+    "key": "Business, firm, company, organization, corporation, enterprise, group, agency, service",
+    "words": [
+      "business",
+      "firm",
+      "company",
+      "organization",
+      "corporation",
+      "enterprise",
+      "group",
+      "agency",
+      "service"
+    ],
+    "originalValue": "tập đoàn\r\n= Business, firm, company, organization, corporation, enterprise, group, agency, service"
+  },
+  {
+    "id": "row-258",
+    "type": "word",
+    "key": "Candidate, applicant, job-seeker, interviewee (n)",
+    "words": [
+      "candidate",
+      "applicant",
+      "jobseeker",
+      "interviewee",
+      "job-seeker"
+    ],
+    "originalValue": "ứng viên xin việc\r\n= Candidate, applicant, job-seeker, interviewee (n)"
+  },
+  {
+    "id": "row-259",
+    "type": "word",
+    "key": "Carpet, rug, mat, floor covering (n)",
+    "words": [
+      "carpet",
+      "rug",
+      "mat",
+      "floor covering"
+    ],
+    "originalValue": "thảm\r\n= Carpet, rug, mat, floor covering (n)"
+  },
+  {
+    "id": "row-260",
+    "type": "word",
+    "key": "Celebrate, mark, commemorate, keep, observe, honor, remember (V)",
+    "words": [
+      "celebrate",
+      "mark",
+      "commemorate",
+      "keep",
+      "observe",
+      "honor",
+      "remember"
+    ],
+    "originalValue": "kỷ niệm, ăn mừng\r\n= Celebrate, mark, commemorate, keep, observe, honor, remember (V)"
+  },
+  {
+    "id": "row-261",
+    "type": "word",
+    "key": "Challenging, difficult, hard, tough (adi)",
+    "words": [
+      "challenging",
+      "difficult",
+      "hard",
+      "tough adi"
+    ],
+    "originalValue": "khó khăn\r\n= Challenging, difficult, hard, tough (adi)"
+  },
+  {
+    "id": "row-262",
+    "type": "word",
+    "key": "Change, modify, adjust, revise, alter, correct (V)",
+    "words": [
+      "change",
+      "modify",
+      "adjust",
+      "revise",
+      "alter",
+      "correct"
+    ],
+    "originalValue": "thay đổi, chỉnh sửa\r\n= Change, modify, adjust, revise, alter, correct (V)"
+  },
+  {
+    "id": "row-263",
+    "type": "word",
+    "key": "Clothes/ clothing, outfit, attire, apparel, garment, uniform, costume =dress",
+    "words": [
+      "clothes",
+      "clothing",
+      "outfit",
+      "attire",
+      "apparel",
+      "garment",
+      "uniform",
+      "costume dress",
+      "clothes clothing",
+      " clothing",
+      "costume"
+    ],
+    "originalValue": "quần áo, trạng phục\r\n= Clothes/ clothing, outfit, attire, apparel, garment, uniform, costume =dress"
+  },
+  {
+    "id": "row-264",
+    "type": "word",
+    "key": "Coincide, occur simultaneously, happen together, be concurrent, concur (v)",
+    "words": [
+      "coincide",
+      "occur simultaneously",
+      "happen together",
+      "be concurrent",
+      "concur"
+    ],
+    "originalValue": "xảy ra (đòng thời)\r\n= Coincide, occur simultaneously, happen together, be concurrent, concur (v)"
+  },
+  {
+    "id": "row-265",
+    "type": "word",
+    "key": "Collaborate with, cooperate with, combine with, work with, team up with (v)",
+    "words": [
+      "collaborate with",
+      "cooperate with",
+      "combine with",
+      "work with",
+      "team up with"
+    ],
+    "originalValue": "hợp tác với\r\n= Collaborate with, cooperate with, combine with, work with, team up with (v)"
+  },
+  {
+    "id": "row-266",
+    "type": "word",
+    "key": "Collaborative, cooperative (adj)",
+    "words": [
+      "collaborative",
+      "cooperative"
+    ],
+    "originalValue": "có tính sáng tạo\r\n= Collaborative, cooperative (adj)"
+  },
+  {
+    "id": "row-267",
+    "type": "word",
+    "key": "Colleaque, coworker, teammate, workmate (n)",
+    "words": [
+      "colleaque",
+      "coworker",
+      "teammate",
+      "workmate"
+    ],
+    "originalValue": "đồng nghiệp\r\n= Colleaque, coworker, teammate, workmate (n)"
+  },
+  {
+    "id": "row-268",
+    "type": "word",
+    "key": "Columnist, reporter, journalist, correspondent (n)",
+    "words": [
+      "columnist",
+      "reporter",
+      "journalist",
+      "correspondent"
+    ],
+    "originalValue": "nhà báo\r\n= Columnist, reporter, journalist, correspondent (n)"
+  },
+  {
+    "id": "row-269",
+    "type": "word",
+    "key": "Commend, praise, compliment, honor (v)",
+    "words": [
+      "commend",
+      "praise",
+      "compliment",
+      "honor"
+    ],
+    "originalValue": "khen ngợi\r\n= Commend, praise, compliment, honor (v)"
+  },
+  {
+    "id": "row-270",
+    "type": "word",
+    "key": "Commercial, promotion, advertisement (n)",
+    "words": [
+      "commercial",
+      "promotion",
+      "advertisement"
+    ],
+    "originalValue": "bài quảng cáo, sự quảng cáo\r\n= Commercial, promotion, advertisement (n)"
+  },
+  {
+    "id": "row-271",
+    "type": "word",
+    "key": "Compensate, refund, reimburse, recompense (v)",
+    "words": [
+      "compensate",
+      "refund",
+      "reimburse",
+      "recompense"
+    ],
+    "originalValue": "đền bù, bồi thường\r\n= Compensate, refund, reimburse, recompense (v)"
+  },
+  {
+    "id": "row-272",
+    "type": "word",
+    "key": "Competitor, rival= opponent, adversary (n)",
+    "words": [
+      "competitor",
+      "rival opponent",
+      "adversary",
+      "rival"
+    ],
+    "originalValue": "đối thủ (cạnh tranh)\r\n= Competitor, rival= opponent, adversary (n)"
+  },
+  {
+    "id": "row-273",
+    "type": "word",
+    "key": "Complaint, grievance, objection, criticism (n)",
+    "words": [
+      "complaint",
+      "grievance",
+      "objection",
+      "criticism"
+    ],
+    "originalValue": "lời phàn nàn\r\n= Complaint, grievance, objection, criticism (n)"
+  },
+  {
+    "id": "row-274",
+    "type": "word",
+    "key": "Complicated, complex, confusing (adj)",
+    "words": [
+      "complicated",
+      "complex",
+      "confusing"
+    ],
+    "originalValue": "phức tạp\r\n= Complicated, complex, confusing (adj)"
+  },
+  {
+    "id": "row-275",
+    "type": "word",
+    "key": "Concerning, regarding, about, relating to, with regard to, with respect to (prep.)",
+    "words": [
+      "concerning",
+      "regarding",
+      "relating to",
+      "with regard to",
+      "with respect to"
+    ],
+    "originalValue": "liên quan tới, về\r\n= Concerning, regarding, about, relating to, with regard to, with respect to (prep.)"
+  },
+  {
+    "id": "row-276",
+    "type": "word",
+    "key": "Conference, meeting, convention, seminar, workshop, assembly, gathering, webinar, session, meeting",
+    "words": [
+      "conference",
+      "meeting",
+      "convention",
+      "seminar",
+      "workshop",
+      "assembly",
+      "gathering",
+      "webinar",
+      "session"
+    ],
+    "originalValue": "hội thảo, cuộc họp\r\n= Conference, meeting, convention, seminar, workshop, assembly, gathering, webinar, session, meeting"
+  },
+  {
+    "id": "row-277",
+    "type": "word",
+    "key": "Confidential, secret, private (adj)",
+    "words": [
+      "confidential",
+      "secret",
+      "private"
+    ],
+    "originalValue": "bí mật, riêng tư\r\n= Confidential, secret, private (adj)"
+  },
+  {
+    "id": "row-278",
+    "type": "word",
+    "key": "Construct, build, put up, erect (v)",
+    "words": [
+      "construct",
+      "build",
+      "put up",
+      "erect"
+    ],
+    "originalValue": "xây dựng\r\n= Construct, build, put up, erect (v)"
+  },
+  {
+    "id": "row-279",
+    "type": "word",
+    "key": "Contact, reach, get in touch with (v)",
+    "words": [
+      "contact",
+      "reach",
+      "get in touch with"
+    ],
+    "originalValue": "liên lạc\r\n= Contact, reach, get in touch with (v)"
+  },
+  {
+    "id": "row-280",
+    "type": "word",
+    "key": "Contest, tournament, competition, race, match (n)",
+    "words": [
+      "contest",
+      "tournament",
+      "competition",
+      "race",
+      "match"
+    ],
+    "originalValue": "cuộc thi, trận đấu\r\n= Contest, tournament, competition, race, match (n)"
+  },
+  {
+    "id": "row-281",
+    "type": "word",
+    "key": "Convert, transform, change, turn (v)",
+    "words": [
+      "convert",
+      "transform",
+      "change",
+      "turn"
+    ],
+    "originalValue": "chuyển đổi\r\n= Convert, transform, change, turn (v)"
+  },
+  {
+    "id": "row-282",
+    "type": "word",
+    "key": "Convince, persuade, induce (v)",
+    "words": [
+      "convince",
+      "persuade",
+      "induce"
+    ],
+    "originalValue": "thuyết phục\r\n= Convince, persuade, induce (v)"
+  },
+  {
+    "id": "row-283",
+    "type": "word",
+    "key": "Cost, expense, overheads, outlay, expenditure (n)",
+    "words": [
+      "cost",
+      "expense",
+      "overheads",
+      "outlay",
+      "expenditure"
+    ],
+    "originalValue": "chi phí, phí tổn\r\n= Cost, expense, overheads, outlay, expenditure (n)"
+  },
+  {
+    "id": "row-284",
+    "type": "word",
+    "key": "Cover, contain, include, consist of, feature (v)",
+    "words": [
+      "cover",
+      "contain",
+      "include",
+      "consist of",
+      "feature"
+    ],
+    "originalValue": "bao gồm\r\n= Cover, contain, include, consist of, feature (v)"
+  },
+  {
+    "id": "row-285",
+    "type": "word",
+    "key": "Create, make, generate, produce (V)",
+    "words": [
+      "create",
+      "make",
+      "generate",
+      "produce"
+    ],
+    "originalValue": "tạo ra\r\n= Create, make, generate, produce (V)"
+  },
+  {
+    "id": "row-286",
+    "type": "word",
+    "key": "Creative, innovative (adi)",
+    "words": [
+      "creative",
+      "innovative adi"
+    ],
+    "originalValue": "sáng tạo\r\n= Creative, innovative (adi)"
+  },
+  {
+    "id": "row-287",
+    "type": "word",
+    "key": "Customer, client, consumer, patron, buyer, purchaser (n)",
+    "words": [
+      "customer",
+      "client",
+      "consumer",
+      "patron",
+      "buyer",
+      "purchaser"
+    ],
+    "originalValue": "khách hàng\r\n= Customer, client, consumer, patron, buyer, purchaser (n)"
+  },
+  {
+    "id": "row-288",
+    "type": "word",
+    "key": "Customize, personalize, tailor (v)",
+    "words": [
+      "customize",
+      "personalize",
+      "tailor"
+    ],
+    "originalValue": "tùy chỉnh (theo ý khách hàng)\r\n= Customize, personalize, tailor (v)"
+  },
+  {
+    "id": "row-289",
+    "type": "word",
+    "key": "Decline, reject, refuse, turn down (v)",
+    "words": [
+      "decline",
+      "reject",
+      "refuse",
+      "turn down"
+    ],
+    "originalValue": "từ chối\r\n= Decline, reject, refuse, turn down (v)"
+  },
+  {
+    "id": "row-290",
+    "type": "word",
+    "key": "Decrease, reduce, decline, lessen, go down (v)",
+    "words": [
+      "decrease",
+      "reduce",
+      "decline",
+      "lessen",
+      "go down"
+    ],
+    "originalValue": "giảm\r\n= Decrease, reduce, decline, lessen, go down (v)"
+  },
+  {
+    "id": "row-291",
+    "type": "word",
+    "key": "Dedicated, devoted, committed (adj)",
+    "words": [
+      "dedicated",
+      "devoted",
+      "committed"
+    ],
+    "originalValue": "tận tâm\r\n= Dedicated, devoted, committed (adj)"
+  },
+  {
+    "id": "row-292",
+    "type": "word",
+    "key": "Delay, postpone, reschedule, put off/over, defer, suspend, hold over, push back (v)",
+    "words": [
+      "delay",
+      "postpone",
+      "reschedule",
+      "put off",
+      "over",
+      "defer",
+      "suspend",
+      "hold over",
+      "push back",
+      "put over"
+    ],
+    "originalValue": "trì hoãn\r\n= Delay, postpone, reschedule, put off/over, defer, suspend, hold over, push back (v)"
+  },
+  {
+    "id": "row-293",
+    "type": "word",
+    "key": "Despite, ni spite of, notwithstanding, regardless of (prep.)",
+    "words": [
+      "despite",
+      "ni spite of",
+      "notwithstanding",
+      "regardless of"
+    ],
+    "originalValue": "mặc dù, bất chấp\r\n= Despite, ni spite of, notwithstanding, regardless of (prep.)"
+  },
+  {
+    "id": "row-294",
+    "type": "word",
+    "key": "Destroy, demolish, knock down, tear down, ruin, put down (v)",
+    "words": [
+      "destroy",
+      "demolish",
+      "knock down",
+      "tear down",
+      "ruin",
+      "put down"
+    ],
+    "originalValue": "phá hủy\r\n= Destroy, demolish, knock down, tear down, ruin, put down (v)"
+  },
+  {
+    "id": "row-295",
+    "type": "word",
+    "key": "Dispute, debate, argument, controversy (n)",
+    "words": [
+      "dispute",
+      "debate",
+      "argument",
+      "controversy"
+    ],
+    "originalValue": "cuộc tranh cãi\r\n= Dispute, debate, argument, controversy (n)"
+  },
+  {
+    "id": "row-296",
+    "type": "word",
+    "key": "Dispute, debate= argue, controvert (v)",
+    "words": [
+      "dispute",
+      "debate argue",
+      "controvert",
+      "debate"
+    ],
+    "originalValue": "tranh cãi\r\n= Dispute, debate= argue, controvert (v)"
+  },
+  {
+    "id": "row-297",
+    "type": "word",
+    "key": "Distribute, deliver, hand out (v)",
+    "words": [
+      "distribute",
+      "deliver",
+      "hand out"
+    ],
+    "originalValue": "phân phát, phân phối\r\n= Distribute, deliver, hand out (v)"
+  },
+  {
+    "id": "row-298",
+    "type": "word",
+    "key": "Donation, contribution (n)",
+    "words": [
+      "donation",
+      "contribution"
+    ],
+    "originalValue": "sự quyên góp\r\n= Donation, contribution (n)"
+  },
+  {
+    "id": "row-299",
+    "type": "word",
+    "key": "Donor, sponsor, supporter, patron, contributor (n)",
+    "words": [
+      "donor",
+      "sponsor",
+      "supporter",
+      "patron",
+      "contributor"
+    ],
+    "originalValue": "nhà tài trợ\r\n= Donor, sponsor, supporter, patron, contributor (n)"
+  },
+  {
+    "id": "row-300",
+    "type": "word",
+    "key": "Drawing, raffle, lottery (n)",
+    "words": [
+      "drawing",
+      "raffle",
+      "lottery"
+    ],
+    "originalValue": "rút thăm trúng thưởng\r\n= Drawing, raffle, lottery (n)"
+  },
+  {
+    "id": "row-301",
+    "type": "word",
+    "key": "Duty, assianment, task, responsibility (n):",
+    "words": [
+      "duty",
+      "assianment",
+      "task",
+      "responsibility"
+    ],
+    "originalValue": "trách nhiệm\r\n= Duty, assianment, task, responsibility (n):"
+  },
+  {
+    "id": "row-302",
+    "type": "word",
+    "key": "Effective, efficient (adi)",
+    "words": [
+      "effective",
+      "efficient adi"
+    ],
+    "originalValue": "có hiệu quả\r\n= Effective, efficient (adi)"
+  },
+  {
+    "id": "row-303",
+    "type": "word",
+    "key": "Efort, attempt, try, strive, endeavor (n)",
+    "words": [
+      "efort",
+      "attempt",
+      "try",
+      "strive",
+      "endeavor"
+    ],
+    "originalValue": "sự cố gắng, nỗ lực\r\n= Efort, attempt, try, strive, endeavor (n)"
+  },
+  {
+    "id": "row-304",
+    "type": "word",
+    "key": "Employees, staff, workers, personnel, workforce (n)",
+    "words": [
+      "employees",
+      "staff",
+      "workers",
+      "personnel",
+      "workforce"
+    ],
+    "originalValue": "nhân viên\r\n= Employees, staff, workers, personnel, workforce (n)"
+  },
+  {
+    "id": "row-305",
+    "type": "word",
+    "key": "Encourage, motivate, stimulate, urge (v)",
+    "words": [
+      "encourage",
+      "motivate",
+      "stimulate",
+      "urge"
+    ],
+    "originalValue": "khuyến khích\r\n= Encourage, motivate, stimulate, urge (v)"
+  },
+  {
+    "id": "row-306",
+    "type": "word",
+    "key": "Equipment, appliances, tools, device, machinery (n)",
+    "words": [
+      "equipment",
+      "appliances",
+      "tools",
+      "device",
+      "machinery"
+    ],
+    "originalValue": "thiết bị, máy móc\r\n= Equipment, appliances, tools, device, machinery (n)"
+  },
+  {
+    "id": "row-307",
+    "type": "word",
+    "key": "Equivalent, equal, comparable, similar (adj)",
+    "words": [
+      "equivalent",
+      "equal",
+      "comparable",
+      "similar"
+    ],
+    "originalValue": "tương đương\r\n= Equivalent, equal, comparable, similar (adj)"
+  },
+  {
+    "id": "row-308",
+    "type": "word",
+    "key": "Estimate, quote, quotation, costing (n)",
+    "words": [
+      "estimate",
+      "quote",
+      "quotation",
+      "costing"
+    ],
+    "originalValue": "bảng báo giá\r\n= Estimate, quote, quotation, costing (n)"
+  },
+  {
+    "id": "row-309",
+    "type": "word",
+    "key": "Evaluate, assess, rate, appraise, estimate (v)",
+    "words": [
+      "evaluate",
+      "assess",
+      "rate",
+      "appraise",
+      "estimate"
+    ],
+    "originalValue": "đánh giá\r\n= Evaluate, assess, rate, appraise, estimate (v)"
+  },
+  {
+    "id": "row-310",
+    "type": "word",
+    "key": "Exactly, correctly, accurately, precisely (adv)",
+    "words": [
+      "exactly",
+      "correctly",
+      "accurately",
+      "precisely"
+    ],
+    "originalValue": "một cách chính xác\r\n= Exactly, correctly, accurately, precisely (adv)"
+  },
+  {
+    "id": "row-311",
+    "type": "word",
+    "key": "Except (for), other than, apart from, aside from, barring, excluding, not including (prep.)",
+    "words": [
+      "except for",
+      "other than",
+      "apart from",
+      "aside from",
+      "barring",
+      "excluding",
+      "not including"
+    ],
+    "originalValue": "ngoại trừ\r\n= Except (for), other than, apart from, aside from, barring, excluding, not including (prep.)"
+  },
+  {
+    "id": "row-312",
+    "type": "word",
+    "key": "Exceptional, excellent, outstanding, special (adj)",
+    "words": [
+      "exceptional",
+      "excellent",
+      "outstanding",
+      "special"
+    ],
+    "originalValue": "đặc biệt, xuất sắc\r\n= Exceptional, excellent, outstanding, special (adj)"
+  },
+  {
+    "id": "row-313",
+    "type": "word",
+    "key": "Existing, present, current (adi): hiên tai",
+    "words": [],
+    "originalValue": "hiện tại\r\n= Existing, present, current (adi): hiên tai"
+  },
+  {
+    "id": "row-314",
+    "type": "word",
+    "key": "Expand, enlarge, widen, broaden (v)",
+    "words": [
+      "expand",
+      "enlarge",
+      "widen",
+      "broaden"
+    ],
+    "originalValue": "mở rộng\r\n= Expand, enlarge, widen, broaden (v)"
+  },
+  {
+    "id": "row-315",
+    "type": "word",
+    "key": "Expensive, costly, high-priced, overpriced, pricey/ pricy, big-ticket (adj)",
+    "words": [
+      "expensive",
+      "costly",
+      "highpriced",
+      "overpriced",
+      "pricey",
+      "pricy",
+      "bigticket",
+      "high-priced",
+      "pricey pricy",
+      " pricy",
+      "big-ticket"
+    ],
+    "originalValue": "đắt tiền, tốn nhiều tiền\r\n= Expensive, costly, high-priced, overpriced, pricey/ pricy, big-ticket (adj)"
+  },
+  {
+    "id": "row-316",
+    "type": "word",
+    "key": "Experience, suffer, encounter, undergo, go through, endure, subject to (v)",
+    "words": [
+      "experience",
+      "suffer",
+      "encounter",
+      "undergo",
+      "go through",
+      "endure",
+      "subject to"
+    ],
+    "originalValue": "trải qua, chịu đựng\r\n= Experience, suffer, encounter, undergo, go through, endure, subject to (v)"
+  },
+  {
+    "id": "row-317",
+    "type": "word",
+    "key": "Experienced, skilled/skillful, well trained, accomplished, practiced, proficient, seasoned (adi)",
+    "words": [
+      "experienced",
+      "skilled",
+      "skillful",
+      "well trained",
+      "accomplished",
+      "practiced",
+      "proficient",
+      "seasoned adi"
+    ],
+    "originalValue": "giỏi, giàu kinh nghiệm\r\n= Experienced, skilled/skillful, well trained, accomplished, practiced, proficient, seasoned (adi)"
+  },
+  {
+    "id": "row-318",
+    "type": "word",
+    "key": "Expert, professional, specialist, authority (n)",
+    "words": [
+      "expert",
+      "professional",
+      "specialist",
+      "authority"
+    ],
+    "originalValue": "chuyên gia\r\n= Expert, professional, specialist, authority (n)"
+  },
+  {
+    "id": "row-319",
+    "type": "word",
+    "key": "Expire, become invalid, run out (v)",
+    "words": [
+      "expire",
+      "become invalid",
+      "run out"
+    ],
+    "originalValue": "hết hạn\r\n= Expire, become invalid, run out (v)"
+  },
+  {
+    "id": "row-320",
+    "type": "word",
+    "key": "Extremely, very, exceptionally, really, exceedingly, truly (adv)",
+    "words": [
+      "extremely",
+      "very",
+      "exceptionally",
+      "really",
+      "exceedingly",
+      "truly"
+    ],
+    "originalValue": "rất\r\n= Extremely, very, exceptionally, really, exceedingly, truly (adv)"
+  },
+  {
+    "id": "row-321",
+    "type": "word",
+    "key": "Factory, manufacturing plant",
+    "words": [
+      "factory",
+      "manufacturing plant"
+    ],
+    "originalValue": "nhà máy\r\n= Factory, manufacturing plant"
+  },
+  {
+    "id": "row-322",
+    "type": "word",
+    "key": "Familiar with, accustomed to, acquainted with (adj.)",
+    "words": [
+      "familiar with",
+      "accustomed to",
+      "acquainted with"
+    ],
+    "originalValue": "quen với, nắm vững\r\n= Familiar with, accustomed to, acquainted with (adj.)"
+  },
+  {
+    "id": "row-323",
+    "type": "word",
+    "key": "Famous, popular, well-known, renowned, prominent, noted, celebrated, distinguished, respected (adi)",
+    "words": [
+      "famous",
+      "popular",
+      "wellknown",
+      "renowned",
+      "prominent",
+      "noted",
+      "celebrated",
+      "distinguished",
+      "respected adi",
+      "well-known"
+    ],
+    "originalValue": "nổi tiếng\r\n= Famous, popular, well-known, renowned, prominent, noted, celebrated, distinguished, respected (adi)"
+  },
+  {
+    "id": "row-324",
+    "type": "word",
+    "key": "Feature, article, story, column, report (n)",
+    "words": [
+      "feature",
+      "article",
+      "story",
+      "column",
+      "report"
+    ],
+    "originalValue": "bài báo\r\n= Feature, article, story, column, report (n)"
+  },
+  {
+    "id": "row-325",
+    "type": "word",
+    "key": "Feature =trait =attribute =property =characteristic (n)",
+    "words": [
+      "feature trait attribute property characteristic",
+      "feature"
+    ],
+    "originalValue": "= Feature =trait =attribute =property =characteristic (n)"
+  },
+  {
+    "id": "row-326",
+    "type": "word",
+    "key": "Fee, charge, fare, due (n)",
+    "words": [
+      "fee",
+      "charge",
+      "fare",
+      "due"
+    ],
+    "originalValue": "phí\r\n= Fee, charge, fare, due (n)"
+  },
+  {
+    "id": "row-327",
+    "type": "word",
+    "key": "Feedback, review, comment, idea, opinion, testimonial (n)",
+    "words": [
+      "feedback",
+      "review",
+      "comment",
+      "idea",
+      "opinion",
+      "testimonial"
+    ],
+    "originalValue": "lời nhận xét, đánh giá\r\n= Feedback, review, comment, idea, opinion, testimonial (n)"
+  },
+  {
+    "id": "row-328",
+    "type": "word",
+    "key": "Forecast, predict, foresee, foretell, prophesy (V)",
+    "words": [
+      "forecast",
+      "predict",
+      "foresee",
+      "foretell",
+      "prophesy"
+    ],
+    "originalValue": "dự đoán\r\n= Forecast, predict, foresee, foretell, prophesy (V)"
+  },
+  {
+    "id": "row-329",
+    "type": "word",
+    "key": "Former, previous, old, past, last, earlier (adj)",
+    "words": [
+      "former",
+      "previous",
+      "old",
+      "past",
+      "last",
+      "earlier"
+    ],
+    "originalValue": "cũ, trước đây\r\n= Former, previous, old, past, last, earlier (adj)"
+  },
+  {
+    "id": "row-330",
+    "type": "word",
+    "key": "Fragile, easily broken/ damaged, breakable, delicate (adi)",
+    "words": [
+      "fragile",
+      "easily broken",
+      "damaged",
+      "breakable",
+      "delicate adi"
+    ],
+    "originalValue": "dễ vỡ\r\n= Fragile, easily broken/ damaged, breakable, delicate (adi)"
+  },
+  {
+    "id": "row-331",
+    "type": "word",
+    "key": "Free, complimentary, free of cost/ charge, without cost/ charge, at no cost, for nothing",
+    "words": [
+      "free",
+      "complimentary",
+      "free of cost",
+      "charge",
+      "without cost",
+      "at no cost",
+      "for nothing"
+    ],
+    "originalValue": "miễn phí\r\n= Free, complimentary, free of cost/ charge, without cost/ charge, at no cost, for nothing"
+  },
+  {
+    "id": "row-332",
+    "type": "word",
+    "key": "Goods, merchandise, item, product (n)",
+    "words": [
+      "goods",
+      "merchandise",
+      "item",
+      "product"
+    ],
+    "originalValue": "sản phẩm\r\n= Goods, merchandise, item, product (n)"
+  },
+  {
+    "id": "row-333",
+    "type": "word",
+    "key": "Guarantee, assure, ensure, make sure, secure, promise (v)",
+    "words": [
+      "guarantee",
+      "assure",
+      "ensure",
+      "make sure",
+      "secure",
+      "promise"
+    ],
+    "originalValue": "đảm bảo\r\n= Guarantee, assure, ensure, make sure, secure, promise (v)"
+  },
+  {
+    "id": "row-334",
+    "type": "word",
+    "key": "Handle, settle, solve, resolve, deal with, process (v)",
+    "words": [
+      "handle",
+      "settle",
+      "solve",
+      "resolve",
+      "deal with",
+      "process"
+    ],
+    "originalValue": "xử lý/giải quyết\r\n= Handle, settle, solve, resolve, deal with, process (v)"
+  },
+  {
+    "id": "row-335",
+    "type": "word",
+    "key": "Headquarters, head office, main office",
+    "words": [
+      "headquarters",
+      "head office",
+      "main office"
+    ],
+    "originalValue": "trụ trở chính\r\n= Headquarters, head office, main office"
+  },
+  {
+    "id": "row-336",
+    "type": "word",
+    "key": "Hold, host, organize, arrange, set up (v)",
+    "words": [
+      "hold",
+      "host",
+      "organize",
+      "arrange",
+      "set up"
+    ],
+    "originalValue": "tổ chức\r\n= Hold, host, organize, arrange, set up (v)"
+  },
+  {
+    "id": "row-337",
+    "type": "word",
+    "key": "Homeowner, landlord, owner, proprietor, possessor (n)",
+    "words": [
+      "homeowner",
+      "landlord",
+      "owner",
+      "proprietor",
+      "possessor"
+    ],
+    "originalValue": "chủ nhà\r\n= Homeowner, landlord, owner, proprietor, possessor (n)"
+  },
+  {
+    "id": "row-338",
+    "type": "word",
+    "key": "However, nonetheless, nevertheless (adv)",
+    "words": [
+      "however",
+      "nonetheless",
+      "nevertheless"
+    ],
+    "originalValue": "tuy nhiên\r\n= However, nonetheless, nevertheless (adv)"
+  },
+  {
+    "id": "row-339",
+    "type": "word",
+    "key": "Immediately, directly, at once, instantly, right away, without delay (adv)",
+    "words": [
+      "immediately",
+      "directly",
+      "at once",
+      "instantly",
+      "right away",
+      "without delay"
+    ],
+    "originalValue": "lập tức, gấp gáp\r\n= Immediately, directly, at once, instantly, right away, without delay (adv)"
+  },
+  {
+    "id": "row-340",
+    "type": "word",
+    "key": "Impact, affect, influence (v): änh huöng, tác dông",
+    "words": [],
+    "originalValue": "ảnh hưởng, tác động\r\n= Impact, affect, influence (v): änh huöng, tác dông"
+  },
+  {
+    "id": "row-341",
+    "type": "word",
+    "key": "Important, vital, crucial, critical, essential, necessary (adi)",
+    "words": [
+      "important",
+      "vital",
+      "crucial",
+      "critical",
+      "essential",
+      "necessary adi"
+    ],
+    "originalValue": "quan trọng\r\n= Important, vital, crucial, critical, essential, necessary (adi)"
+  },
+  {
+    "id": "row-342",
+    "type": "word",
+    "key": "Improve, enhance, promote, make better, advance, boost, further (v)",
+    "words": [
+      "improve",
+      "enhance",
+      "promote",
+      "make better",
+      "advance",
+      "boost",
+      "further"
+    ],
+    "originalValue": "cải thiện, thúc đẩy\r\n= Improve, enhance, promote, make better, advance, boost, further (v)"
+  },
+  {
+    "id": "row-343",
+    "type": "word",
+    "key": "Include, attach, enclose, accompany (v)",
+    "words": [
+      "include",
+      "attach",
+      "enclose",
+      "accompany"
+    ],
+    "originalValue": "đính kèm\r\n= Include, attach, enclose, accompany (v)"
+  },
+  {
+    "id": "row-344",
+    "type": "word",
+    "key": "Increase, rise, raise, go up (v)",
+    "words": [
+      "increase",
+      "rise",
+      "raise",
+      "go up"
+    ],
+    "originalValue": "tăng\r\n= Increase, rise, raise, go up (v)"
+  },
+  {
+    "id": "row-345",
+    "type": "word",
+    "key": "Inspect, examine, check, go over, investigation (v)",
+    "words": [
+      "inspect",
+      "examine",
+      "check",
+      "go over",
+      "investigation"
+    ],
+    "originalValue": "kiểm tra\r\n= Inspect, examine, check, go over, investigation (v)"
+  },
+  {
+    "id": "row-346",
+    "type": "word",
+    "key": "Intend, plan, mean (v)",
+    "words": [
+      "intend",
+      "plan",
+      "mean"
+    ],
+    "originalValue": "dự định\r\n= Intend, plan, mean (v)"
+  },
+  {
+    "id": "row-347",
+    "type": "word",
+    "key": "Interesting =entertaining =fascinating =compelling =attractive (adj)",
+    "words": [
+      "interesting entertaining fascinating compelling attractive",
+      "interesting"
+    ],
+    "originalValue": "thú vị\r\n= Interesting =entertaining =fascinating =compelling =attractive (adj)"
+  },
+  {
+    "id": "row-348",
+    "type": "word",
+    "key": "Interrupt, disrupt, disturb, interfere with, break (v)",
+    "words": [
+      "interrupt",
+      "disrupt",
+      "disturb",
+      "interfere with",
+      "break"
+    ],
+    "originalValue": "làm gián đoạn\r\n= Interrupt, disrupt, disturb, interfere with, break (v)"
+  },
+  {
+    "id": "row-349",
+    "type": "word",
+    "key": "Invoice, receipt, check, bill, proof of purchase (n)",
+    "words": [
+      "invoice",
+      "receipt",
+      "check",
+      "bill",
+      "proof of purchase"
+    ],
+    "originalValue": "hóa đơn\r\n= Invoice, receipt, check, bill, proof of purchase (n)"
+  },
+  {
+    "id": "row-350",
+    "type": "word",
+    "key": "Journal, magazine, periodical, newspaper (n)",
+    "words": [
+      "journal",
+      "magazine",
+      "periodical",
+      "newspaper"
+    ],
+    "originalValue": "tạp chí, báo\r\n= Journal, magazine, periodical, newspaper (n)"
+  },
+  {
+    "id": "row-351",
+    "type": "word",
+    "key": "Keep, maintain, retain (v)",
+    "words": [
+      "keep",
+      "maintain",
+      "retain"
+    ],
+    "originalValue": "giữ, bảo trì\r\n= Keep, maintain, retain (v)"
+  },
+  {
+    "id": "row-352",
+    "type": "word",
+    "key": "Large, huge, sizable, enormous, immense, tremendous, vast (adj)",
+    "words": [
+      "large",
+      "huge",
+      "sizable",
+      "enormous",
+      "immense",
+      "tremendous",
+      "vast"
+    ],
+    "originalValue": "rộng lớn\r\n= Large, huge, sizable, enormous, immense, tremendous, vast (adj)"
+  },
+  {
+    "id": "row-353",
+    "type": "word",
+    "key": "Last, extend, lengthen, prolong (v)",
+    "words": [
+      "last",
+      "extend",
+      "lengthen",
+      "prolong"
+    ],
+    "originalValue": "kéo dài\r\n= Last, extend, lengthen, prolong (v)"
+  },
+  {
+    "id": "row-354",
+    "type": "word",
+    "key": "Launch, release, introduce",
+    "words": [
+      "launch",
+      "release",
+      "introduce"
+    ],
+    "originalValue": "ra mắt, giới thiệu\r\n= Launch, release, introduce"
+  },
+  {
+    "id": "row-355",
+    "type": "word",
+    "key": "License, permit, authorization, permission (n)",
+    "words": [
+      "license",
+      "permit",
+      "authorization",
+      "permission"
+    ],
+    "originalValue": "giấy phép\r\n= License, permit, authorization, permission (n)"
+  },
+  {
+    "id": "row-356",
+    "type": "word",
+    "key": "Limit, restrict, restrain (v)",
+    "words": [
+      "limit",
+      "restrict",
+      "restrain"
+    ],
+    "originalValue": "giới hạn\r\n= Limit, restrict, restrain (v)"
+  },
+  {
+    "id": "row-357",
+    "type": "word",
+    "key": "Luggage, baggage, suitcase, bag, backpack (n)",
+    "words": [
+      "luggage",
+      "baggage",
+      "suitcase",
+      "bag",
+      "backpack"
+    ],
+    "originalValue": "hành lý\r\n= Luggage, baggage, suitcase, bag, backpack (n)"
+  },
+  {
+    "id": "row-358",
+    "type": "word",
+    "key": "Maintenance, upkeep, servicing (n)",
+    "words": [
+      "maintenance",
+      "upkeep",
+      "servicing"
+    ],
+    "originalValue": "sự bảo trì, bảo dưỡng\r\n= Maintenance, upkeep, servicing (n)"
+  },
+  {
+    "id": "row-359",
+    "type": "word",
+    "key": "Malfunction, not function, out of order, go down, stop working, fail, go wrong, break down",
+    "words": [
+      "malfunction",
+      "not function",
+      "out of order",
+      "go down",
+      "stop working",
+      "fail",
+      "go wrong",
+      "break down"
+    ],
+    "originalValue": "bị hỏng\r\n= Malfunction, not function, out of order, go down, stop working, fail, go wrong, break down"
+  },
+  {
+    "id": "row-360",
+    "type": "word",
+    "key": "Manual, instruction book, guidebook, handbook, how-to book (n)",
+    "words": [
+      "manual",
+      "instruction book",
+      "guidebook",
+      "handbook",
+      "howto book",
+      "how-to book"
+    ],
+    "originalValue": "sách hướng dẫn\r\n= Manual, instruction book, guidebook, handbook, how-to book (n)"
+  },
+  {
+    "id": "row-361",
+    "type": "word",
+    "key": "Manufacture, make, produce, create (v)",
+    "words": [
+      "manufacture",
+      "make",
+      "produce",
+      "create"
+    ],
+    "originalValue": "sản xuất\r\n= Manufacture, make, produce, create (v)"
+  },
+  {
+    "id": "row-362",
+    "type": "word",
+    "key": "Measurement, size =dimension (length &width) (n)",
+    "words": [
+      "measurement"
+    ],
+    "originalValue": "kích thước\r\n= Measurement, size =dimension (length &width) (n)"
+  },
+  {
+    "id": "row-363",
+    "type": "word",
+    "key": "Meet, accommodate, satisfy, fulfill, suit (v)",
+    "words": [
+      "meet",
+      "accommodate",
+      "satisfy",
+      "fulfill",
+      "suit"
+    ],
+    "originalValue": "đáp ứng\r\n= Meet, accommodate, satisfy, fulfill, suit (v)"
+  },
+  {
+    "id": "row-364",
+    "type": "word",
+    "key": "Moreover, furthermore, additionally, in addition, besides (adv)",
+    "words": [
+      "moreover",
+      "furthermore",
+      "additionally",
+      "in addition",
+      "besides"
+    ],
+    "originalValue": "ngoài ra\r\n= Moreover, furthermore, additionally, in addition, besides (adv)"
+  },
+  {
+    "id": "row-365",
+    "type": "word",
+    "key": "Move, relocate, transfer (v)",
+    "words": [
+      "move",
+      "relocate",
+      "transfer"
+    ],
+    "originalValue": "chuyển, di dời\r\n= Move, relocate, transfer (v)"
+  },
+  {
+    "id": "row-366",
+    "type": "word",
+    "key": "Neglect, ignore, overlook, pay no attention to, disregard, omit (v)",
+    "words": [
+      "neglect",
+      "ignore",
+      "overlook",
+      "pay no attention to",
+      "disregard",
+      "omit"
+    ],
+    "originalValue": "phớt lờ, lờ đi\r\n= Neglect, ignore, overlook, pay no attention to, disregard, omit (v)"
+  },
+  {
+    "id": "row-367",
+    "type": "word",
+    "key": "Notify, inform, warn, brief (v)",
+    "words": [
+      "notify",
+      "inform",
+      "warn",
+      "brief"
+    ],
+    "originalValue": "thông báo\r\n= Notify, inform, warn, brief (v)"
+  },
+  {
+    "id": "row-368",
+    "type": "word",
+    "key": "Obligate, oblige, force, compel (v)",
+    "words": [
+      "obligate",
+      "oblige",
+      "force",
+      "compel"
+    ],
+    "originalValue": "bắt buộc\r\n= Obligate, oblige, force, compel (v)"
+  },
+  {
+    "id": "row-369",
+    "type": "word",
+    "key": "Obligatory, mandatory, compulsory, required (adj)",
+    "words": [
+      "obligatory",
+      "mandatory",
+      "compulsory",
+      "required"
+    ],
+    "originalValue": "bắt buộc\r\n= Obligatory, mandatory, compulsory, required (adj)"
+  },
+  {
+    "id": "row-370",
+    "type": "word",
+    "key": "Obtain, get, acquire, gain, earn (v)",
+    "words": [
+      "obtain",
+      "get",
+      "acquire",
+      "gain",
+      "earn"
+    ],
+    "originalValue": "lấy, có được\r\n= Obtain, get, acquire, gain, earn (v)"
+  },
+  {
+    "id": "row-371",
+    "type": "word",
+    "key": "On time, on schedule, timely, punctually (adv)",
+    "words": [
+      "on time",
+      "on schedule",
+      "timely",
+      "punctually"
+    ],
+    "originalValue": "đúng giờ\r\n= On time, on schedule, timely, punctually (adv)"
+  },
+  {
+    "id": "row-372",
+    "type": "word",
+    "key": "Opening, vacancy, open position, vacant job/ position (n)",
+    "words": [
+      "opening",
+      "vacancy",
+      "open position",
+      "vacant job",
+      "position"
+    ],
+    "originalValue": "vị trí công việc trống\r\n= Opening, vacancy, open position, vacant job/ position (n)"
+  },
+  {
+    "id": "row-373",
+    "type": "word",
+    "key": "Opportunity, chance (n)",
+    "words": [
+      "opportunity",
+      "chance"
+    ],
+    "originalValue": "cơ hội\r\n= Opportunity, chance (n)"
+  },
+  {
+    "id": "row-374",
+    "type": "word",
+    "key": "Oppose, be against, object to, disagree with (v)",
+    "words": [
+      "oppose",
+      "be against",
+      "object to",
+      "disagree with"
+    ],
+    "originalValue": "phản đối\r\n= Oppose, be against, object to, disagree with (v)"
+  },
+  {
+    "id": "row-375",
+    "type": "word",
+    "key": "Orientation= training (n)",
+    "words": [
+      "orientation training",
+      "orientation"
+    ],
+    "originalValue": "buổi đào tạo\r\n= Orientation= training (n)"
+  },
+  {
+    "id": "row-376",
+    "type": "word",
+    "key": "Originally, initially, first (adv)",
+    "words": [
+      "originally",
+      "initially",
+      "first"
+    ],
+    "originalValue": "ban đầu\r\n= Originally, initially, first (adv)"
+  },
+  {
+    "id": "row-377",
+    "type": "word",
+    "key": "Outline, draft, summary, sketch (n)",
+    "words": [
+      "outline",
+      "draft",
+      "summary",
+      "sketch"
+    ],
+    "originalValue": "bản phác thảo, bản tóm tắt\r\n= Outline, draft, summary, sketch (n)"
+  },
+  {
+    "id": "row-378",
+    "type": "word",
+    "key": "Own, possess, have, enjoy, boast (v)",
+    "words": [
+      "own",
+      "possess",
+      "enjoy",
+      "boast"
+    ],
+    "originalValue": "sở hữu, có\r\n= Own, possess, have, enjoy, boast (v)"
+  },
+  {
+    "id": "row-379",
+    "type": "word",
+    "key": "Penalty, fine (n)",
+    "words": [
+      "penalty",
+      "fine"
+    ],
+    "originalValue": "tiền phạt\r\n= Penalty, fine (n)"
+  },
+  {
+    "id": "row-380",
+    "type": "word",
+    "key": "Perform, conduct, carry out, do, implement (v)",
+    "words": [
+      "perform",
+      "conduct",
+      "carry out",
+      "implement"
+    ],
+    "originalValue": "thực hiện\r\n= Perform, conduct, carry out, do, implement (v)"
+  },
+  {
+    "id": "row-381",
+    "type": "word",
+    "key": "Personnel, HR/ Human Resources",
+    "words": [
+      "personnel",
+      "hr",
+      "human resources",
+      "hr human resources",
+      " human resources"
+    ],
+    "originalValue": "bộ phận nhân sự\r\n= Personnel, HR/ Human Resources"
+  },
+  {
+    "id": "row-382",
+    "type": "word",
+    "key": "Phase, stage, step, period (n)",
+    "words": [
+      "phase",
+      "stage",
+      "step",
+      "period"
+    ],
+    "originalValue": "giai đoạn\r\n= Phase, stage, step, period (n)"
+  },
+  {
+    "id": "row-383",
+    "type": "word",
+    "key": "Photograph, photo, picture, image (n)",
+    "words": [
+      "photograph",
+      "photo",
+      "picture",
+      "image"
+    ],
+    "originalValue": "hình ảnh\r\n= Photograph, photo, picture, image (n)"
+  },
+  {
+    "id": "row-384",
+    "type": "word",
+    "key": "Present, lecture, address, talk, speak (v)",
+    "words": [
+      "present",
+      "lecture",
+      "address",
+      "talk",
+      "speak"
+    ],
+    "originalValue": "thuyết trình\r\n= Present, lecture, address, talk, speak (v)"
+  },
+  {
+    "id": "row-385",
+    "type": "word",
+    "key": "Presentation, lecture, address, talk, speech (n)",
+    "words": [
+      "presentation",
+      "lecture",
+      "address",
+      "talk",
+      "speech"
+    ],
+    "originalValue": "bài thuyết trình\r\n= Presentation, lecture, address, talk, speech (n)"
+  },
+  {
+    "id": "row-386",
+    "type": "word",
+    "key": "Problem, matter, issue, question (n)",
+    "words": [
+      "problem",
+      "matter",
+      "issue",
+      "question"
+    ],
+    "originalValue": "vấn đề\r\n= Problem, matter, issue, question (n)"
+  },
+  {
+    "id": "row-387",
+    "type": "word",
+    "key": "Process, procedure (n)",
+    "words": [
+      "process",
+      "procedure"
+    ],
+    "originalValue": "quy trình\r\n= Process, procedure (n)"
+  },
+  {
+    "id": "row-388",
+    "type": "word",
+    "key": "Profit, earnings, proceeds, receipts, returns (n)",
+    "words": [
+      "profit",
+      "earnings",
+      "proceeds",
+      "receipts",
+      "returns"
+    ],
+    "originalValue": "lợi nhuận\r\n= Profit, earnings, proceeds, receipts, returns (n)"
+  },
+  {
+    "id": "row-389",
+    "type": "word",
+    "key": "Proper, appropriate, suitable, fitting/ fit, adequate (adi)",
+    "words": [
+      "proper",
+      "appropriate",
+      "suitable",
+      "fitting",
+      "fit",
+      "adequate adi",
+      "fitting fit",
+      " fit"
+    ],
+    "originalValue": "thích hợp, phù hợp\r\n= Proper, appropriate, suitable, fitting/ fit, adequate (adi)"
+  },
+  {
+    "id": "row-390",
+    "type": "word",
+    "key": "Provide, supply, offer, stock (v)",
+    "words": [
+      "provide",
+      "supply",
+      "offer",
+      "stock"
+    ],
+    "originalValue": "cung cấp\r\n= Provide, supply, offer, stock (v)"
+  },
+  {
+    "id": "row-391",
+    "type": "word",
+    "key": "Proximity, closeness, nearness, vicinity (n)",
+    "words": [
+      "proximity",
+      "closeness",
+      "nearness",
+      "vicinity"
+    ],
+    "originalValue": "sự gần\r\n= Proximity, closeness, nearness, vicinity (n)"
+  },
+  {
+    "id": "row-392",
+    "type": "word",
+    "key": "Purpose, aim, target, objective, goal, intention, intent (n)",
+    "words": [
+      "purpose",
+      "aim",
+      "target",
+      "objective",
+      "goal",
+      "intention",
+      "intent"
+    ],
+    "originalValue": "mục tiêu, mục đích\r\n= Purpose, aim, target, objective, goal, intention, intent (n)"
+  },
+  {
+    "id": "row-393",
+    "type": "word",
+    "key": "Rapidly, quickly, fast, swiftly, promptly, dramatically, suddenly (adv)",
+    "words": [
+      "rapidly",
+      "quickly",
+      "fast",
+      "swiftly",
+      "promptly",
+      "dramatically",
+      "suddenly"
+    ],
+    "originalValue": "một cách nhanh chóng\r\n= Rapidly, quickly, fast, swiftly, promptly, dramatically, suddenly (adv)"
+  },
+  {
+    "id": "row-394",
+    "type": "word",
+    "key": "Rarely, seldom, infrequently, hardly, scarcely, not often (adv)",
+    "words": [
+      "rarely",
+      "seldom",
+      "infrequently",
+      "hardly",
+      "scarcely",
+      "not often"
+    ],
+    "originalValue": "ít khi\r\n= Rarely, seldom, infrequently, hardly, scarcely, not often (adv)"
+  },
+  {
+    "id": "row-395",
+    "type": "word",
+    "key": "Rather, relatively, quite, fairly, comparatively, somewhat (adv)",
+    "words": [
+      "rather",
+      "relatively",
+      "quite",
+      "fairly",
+      "comparatively",
+      "somewhat"
+    ],
+    "originalValue": "hơi, khá\r\n= Rather, relatively, quite, fairly, comparatively, somewhat (adv)"
+  },
+  {
+    "id": "row-396",
+    "type": "word",
+    "key": "Recently, lately, not long ago, a short time ago (adv)",
+    "words": [
+      "recently",
+      "lately",
+      "not long ago",
+      "a short time ago"
+    ],
+    "originalValue": "gần đây\r\n= Recently, lately, not long ago, a short time ago (adv)"
+  },
+  {
+    "id": "row-397",
+    "type": "word",
+    "key": "Reception area, front desk",
+    "words": [
+      "reception area",
+      "front desk"
+    ],
+    "originalValue": "khu lễ tân\r\n= Reception area, front desk"
+  },
+  {
+    "id": "row-398",
+    "type": "word",
+    "key": "Receptionist, front desk staff",
+    "words": [
+      "receptionist",
+      "front desk staff"
+    ],
+    "originalValue": "nhân viên lễ tân\r\n= Receptionist, front desk staff"
+  },
+  {
+    "id": "row-399",
+    "type": "word",
+    "key": "Recruit, hire, employ, engage (v)",
+    "words": [
+      "recruit",
+      "hire",
+      "employ",
+      "engage"
+    ],
+    "originalValue": "thuê, tuyển dụng\r\n= Recruit, hire, employ, engage (v)"
+  },
+  {
+    "id": "row-400",
+    "type": "word",
+    "key": "Register, enroll in, sign up (v)",
+    "words": [
+      "register",
+      "enroll in",
+      "sign up"
+    ],
+    "originalValue": "đăng ký\r\n= Register, enroll in, sign up (v)"
+  },
+  {
+    "id": "row-401",
+    "type": "word",
+    "key": "Regularly, frequently, often, habitually, routinely (adv)",
+    "words": [
+      "regularly",
+      "frequently",
+      "often",
+      "habitually",
+      "routinely"
+    ],
+    "originalValue": "thường xuyên\r\n= Regularly, frequently, often, habitually, routinely (adv)"
+  },
+  {
+    "id": "row-402",
+    "type": "word",
+    "key": "Reliable, dependable, trustworthy (adi)",
+    "words": [
+      "reliable",
+      "dependable",
+      "trustworthy adi"
+    ],
+    "originalValue": "đáng tin\r\n= Reliable, dependable, trustworthy (adi)"
+  },
+  {
+    "id": "row-403",
+    "type": "word",
+    "key": "Reluctant =hesitant =unwiling (adj)",
+    "words": [
+      "reluctant hesitant unwiling",
+      "reluctant"
+    ],
+    "originalValue": "miễn cưỡng, không sẵn lòng\r\n= Reluctant =hesitant =unwiling (adj)"
+  },
+  {
+    "id": "row-404",
+    "type": "word",
+    "key": "Rely on/ upon, depend on/ upon, count on (v)",
+    "words": [
+      "rely on",
+      "upon",
+      "depend on",
+      "count on"
+    ],
+    "originalValue": "dựa vào, phụ thuộc vào\r\n= Rely on/ upon, depend on/ upon, count on (v)"
+  },
+  {
+    "id": "row-405",
+    "type": "word",
+    "key": "Remove= eliminate =get rid of =dispose of =throw away/out (V)",
+    "words": [
+      "remove eliminate get rid of dispose of throw away",
+      "out",
+      "remove",
+      "throw out"
+    ],
+    "originalValue": "loại bỏ, vứt bỏ\r\n= Remove= eliminate =get rid of =dispose of =throw away/out (V)"
+  },
+  {
+    "id": "row-406",
+    "type": "word",
+    "key": "Renovate, remodel, restore, upgrade, refurbish (v)",
+    "words": [
+      "renovate",
+      "remodel",
+      "restore",
+      "upgrade",
+      "refurbish"
+    ],
+    "originalValue": "nâng cấp, cải tạo\r\n= Renovate, remodel, restore, upgrade, refurbish (v)"
+  },
+  {
+    "id": "row-407",
+    "type": "word",
+    "key": "Rent, lease, hire, sublet (v)",
+    "words": [
+      "rent",
+      "lease",
+      "hire",
+      "sublet"
+    ],
+    "originalValue": "thuê\r\n= Rent, lease, hire, sublet (v)"
+  },
+  {
+    "id": "row-408",
+    "type": "word",
+    "key": "Replace, substitute, exchange, swap (V)",
+    "words": [
+      "replace",
+      "substitute",
+      "exchange",
+      "swap"
+    ],
+    "originalValue": "thay thế\r\n= Replace, substitute, exchange, swap (V)"
+  },
+  {
+    "id": "row-409",
+    "type": "word",
+    "key": "Reply to, respond to, answer (v)",
+    "words": [
+      "reply to",
+      "respond to",
+      "answer"
+    ],
+    "originalValue": "phản hồi, trả lời\r\n= Reply to, respond to, answer (v)"
+  },
+  {
+    "id": "row-410",
+    "type": "word",
+    "key": "Representative, agent, delegate (n)",
+    "words": [
+      "representative",
+      "agent",
+      "delegate"
+    ],
+    "originalValue": "người đại diện\r\n= Representative, agent, delegate (n)"
+  },
+  {
+    "id": "row-411",
+    "type": "word",
+    "key": "Reserve, book, make a reservation (V)",
+    "words": [
+      "reserve",
+      "book",
+      "make a reservation"
+    ],
+    "originalValue": "đặt trước\r\n= Reserve, book, make a reservation (V)"
+  },
+  {
+    "id": "row-412",
+    "type": "word",
+    "key": "Resident, citizen, inhabitant, local (n)",
+    "words": [
+      "resident",
+      "citizen",
+      "inhabitant",
+      "local"
+    ],
+    "originalValue": "cư dân\r\n= Resident, citizen, inhabitant, local (n)"
+  },
+  {
+    "id": "row-413",
+    "type": "word",
+    "key": "Resign, leave, quit, give up, stand/step down (v)",
+    "words": [
+      "resign",
+      "leave",
+      "quit",
+      "give up",
+      "stand",
+      "step down",
+      "stand down"
+    ],
+    "originalValue": "từ chức\r\n= Resign, leave, quit, give up, stand/step down (v)"
+  },
+  {
+    "id": "row-414",
+    "type": "word",
+    "key": "Responsible for, accountable for, in charge of (adj)",
+    "words": [
+      "responsible for",
+      "accountable for",
+      "in charge of"
+    ],
+    "originalValue": "chịu trách nhiệm\r\n= Responsible for, accountable for, in charge of (adj)"
+  },
+  {
+    "id": "row-415",
+    "type": "word",
+    "key": "Rest, remainder, remaining part (n)",
+    "words": [
+      "rest",
+      "remainder",
+      "remaining part"
+    ],
+    "originalValue": "phân công lại\r\n= Rest, remainder, remaining part (n)"
+  },
+  {
+    "id": "row-416",
+    "type": "word",
+    "key": "Routine, regular, normal, usual, ordinary, customary (adj)",
+    "words": [
+      "routine",
+      "regular",
+      "normal",
+      "usual",
+      "ordinary",
+      "customary"
+    ],
+    "originalValue": "thông thường\r\n= Routine, regular, normal, usual, ordinary, customary (adj)"
+  },
+  {
+    "id": "row-417",
+    "type": "word",
+    "key": "Rubbish, garbage, trash, refuse, waste, litter, scraps (n)",
+    "words": [
+      "rubbish",
+      "garbage",
+      "trash",
+      "refuse",
+      "waste",
+      "litter",
+      "scraps"
+    ],
+    "originalValue": "rác\r\n= Rubbish, garbage, trash, refuse, waste, litter, scraps (n)"
+  },
+  {
+    "id": "row-418",
+    "type": "word",
+    "key": "Salary, wage(s), pay/ payment, stipend (n)",
+    "words": [
+      "salary",
+      "wages",
+      "pay",
+      "payment",
+      "stipend",
+      "wage",
+      "pay payment",
+      " payment"
+    ],
+    "originalValue": "tiền lương\r\n= Salary, wage(s), pay/ payment, stipend (n)"
+  },
+  {
+    "id": "row-419",
+    "type": "word",
+    "key": "Sales, revenue (n)",
+    "words": [
+      "sales",
+      "revenue"
+    ],
+    "originalValue": "doanh thu\r\n= Sales, revenue (n)"
+  },
+  {
+    "id": "row-420",
+    "type": "word",
+    "key": "Schedule, itinerary, timetable, timeline, travel plan (n)",
+    "words": [
+      "schedule",
+      "itinerary",
+      "timetable",
+      "timeline",
+      "travel plan"
+    ],
+    "originalValue": "lịch trình\r\n= Schedule, itinerary, timetable, timeline, travel plan (n)"
+  },
+  {
+    "id": "row-421",
+    "type": "word",
+    "key": "Scope, extent, range, scale (n)",
+    "words": [
+      "scope",
+      "extent",
+      "range",
+      "scale"
+    ],
+    "originalValue": "phạm vi\r\n= Scope, extent, range, scale (n)"
+  },
+  {
+    "id": "row-422",
+    "type": "word",
+    "key": "Shortage (of), lack (of), deficit, shortfall (n)",
+    "words": [
+      "shortage of",
+      "lack of",
+      "deficit",
+      "shortfall"
+    ],
+    "originalValue": "sự thiếu hụt\r\n= Shortage (of), lack (of), deficit, shortfall (n)"
+  },
+  {
+    "id": "row-423",
+    "type": "word",
+    "key": "Significantly, considerably, substantially, noticeably, remarkably (adv)",
+    "words": [
+      "significantly",
+      "considerably",
+      "substantially",
+      "noticeably",
+      "remarkably"
+    ],
+    "originalValue": "một cách đáng kể\r\n= Significantly, considerably, substantially, noticeably, remarkably (adv)"
+  },
+  {
+    "id": "row-424",
+    "type": "word",
+    "key": "Simultaneously, at the same time/ moment, at once, concurrently (adv)",
+    "words": [
+      "simultaneously",
+      "at the same time",
+      "moment",
+      "at once",
+      "concurrently"
+    ],
+    "originalValue": "đồng thời\r\n= Simultaneously, at the same time/ moment, at once, concurrently (adv)"
+  },
+  {
+    "id": "row-425",
+    "type": "word",
+    "key": "Sole, only, unique, exclusive (adj)",
+    "words": [
+      "sole",
+      "only",
+      "unique",
+      "exclusive"
+    ],
+    "originalValue": "duy nhất, độc nhất\r\n= Sole, only, unique, exclusive (adj)"
+  },
+  {
+    "id": "row-426",
+    "type": "word",
+    "key": "Specimen, sample, model, pattern, prototype (n)",
+    "words": [
+      "specimen",
+      "sample",
+      "model",
+      "pattern",
+      "prototype"
+    ],
+    "originalValue": "mẫu vật\r\n= Specimen, sample, model, pattern, prototype (n)"
+  },
+  {
+    "id": "row-427",
+    "type": "word",
+    "key": "Start, begin, commence, institute, initiate, embark on/upon",
+    "words": [
+      "start",
+      "begin",
+      "commence",
+      "institute",
+      "initiate",
+      "embark on",
+      "upon",
+      "embark upon"
+    ],
+    "originalValue": "bắt đầu\r\n= Start, begin, commence, institute, initiate, embark on/upon"
+  },
+  {
+    "id": "row-428",
+    "type": "word",
+    "key": "Stationery, office supplies (n)",
+    "words": [
+      "stationery",
+      "office supplies"
+    ],
+    "originalValue": "vật tư văn phòng\r\n= Stationery, office supplies (n)"
+  },
+  {
+    "id": "row-429",
+    "type": "word",
+    "key": "Stress, highlight, emphasize, focus on, concentrate on (v)",
+    "words": [
+      "stress",
+      "highlight",
+      "emphasize",
+      "focus on",
+      "concentrate on"
+    ],
+    "originalValue": "nhấn mạnh, tập trung vào\r\n= Stress, highlight, emphasize, focus on, concentrate on (v)"
+  },
+  {
+    "id": "row-430",
+    "type": "word",
+    "key": "Submit, turn in, hand in, file (v)",
+    "words": [
+      "submit",
+      "turn in",
+      "hand in",
+      "file"
+    ],
+    "originalValue": "trình, nộp\r\n= Submit, turn in, hand in, file (v)"
+  },
+  {
+    "id": "row-431",
+    "type": "word",
+    "key": "Supervise, manage, oversee, monitor, keep track of (v)",
+    "words": [
+      "supervise",
+      "manage",
+      "oversee",
+      "monitor",
+      "keep track of"
+    ],
+    "originalValue": "giám sát, quản lý\r\n= Supervise, manage, oversee, monitor, keep track of (v)"
+  },
+  {
+    "id": "row-432",
+    "type": "word",
+    "key": "Surpass, exceed (v)",
+    "words": [
+      "surpass",
+      "exceed"
+    ],
+    "originalValue": "vượt quá\r\n= Surpass, exceed (v)"
+  },
+  {
+    "id": "row-433",
+    "type": "word",
+    "key": "Take advantage of, make the most/ best of, use up",
+    "words": [
+      "take advantage of",
+      "make the most",
+      "best of",
+      "use up"
+    ],
+    "originalValue": "tận dụng\r\n= Take advantage of, make the most/ best of, use up"
+  },
+  {
+    "id": "row-434",
+    "type": "word",
+    "key": "Tasty, delicious, mouthwatering, toothsome, flavorful (adj)",
+    "words": [
+      "tasty",
+      "delicious",
+      "mouthwatering",
+      "toothsome",
+      "flavorful"
+    ],
+    "originalValue": "ngon\r\n= Tasty, delicious, mouthwatering, toothsome, flavorful (adj)"
+  },
+  {
+    "id": "row-435",
+    "type": "word",
+    "key": "Terminate, stop, conclude, cease, end (v)",
+    "words": [
+      "terminate",
+      "stop",
+      "conclude",
+      "cease",
+      "end"
+    ],
+    "originalValue": "chấm dứt, kết thúc\r\n= Terminate, stop, conclude, cease, end (v)"
+  },
+  {
+    "id": "row-436",
+    "type": "word",
+    "key": "Therefore, as a result, consequently, for that reason, hence, thus, accordingly (adv)",
+    "words": [
+      "therefore",
+      "as a result",
+      "consequently",
+      "for that reason",
+      "hence",
+      "thus",
+      "accordingly"
+    ],
+    "originalValue": "do đó\r\n= Therefore, as a result, consequently, for that reason, hence, thus, accordingly (adv)"
+  },
+  {
+    "id": "row-437",
+    "type": "word",
+    "key": "Total, complete, entire, whole, overall (adj)",
+    "words": [
+      "total",
+      "complete",
+      "entire",
+      "whole",
+      "overall"
+    ],
+    "originalValue": "toàn bộ, hoàn toàn\r\n= Total, complete, entire, whole, overall (adj)"
+  },
+  {
+    "id": "row-438",
+    "type": "word",
+    "key": "Trip, tour, excursion, outing, journey (n)",
+    "words": [
+      "trip",
+      "tour",
+      "excursion",
+      "outing",
+      "journey"
+    ],
+    "originalValue": "chuyến đi chơi\r\n= Trip, tour, excursion, outing, journey (n)"
+  },
+  {
+    "id": "row-439",
+    "type": "word",
+    "key": "Use, utilize, employ, make use of (v)",
+    "words": [
+      "use",
+      "utilize",
+      "employ",
+      "make use of"
+    ],
+    "originalValue": "sử dụng\r\n= Use, utilize, employ, make use of (v)"
+  },
+  {
+    "id": "row-440",
+    "type": "word",
+    "key": "Various, diverse, a variety of, varied",
+    "words": [
+      "various",
+      "diverse",
+      "a variety of",
+      "varied"
+    ],
+    "originalValue": "đa dạng, nhiều\r\n= Various, diverse, a variety of, varied"
+  },
+  {
+    "id": "row-441",
+    "type": "word",
+    "key": "Venue, location, place, space, site (n)",
+    "words": [
+      "venue",
+      "location",
+      "place",
+      "space",
+      "site"
+    ],
+    "originalValue": "vị trí, địa điểm\r\n= Venue, location, place, space, site (n)"
+  },
+  {
+    "id": "row-442",
+    "type": "word",
+    "key": "Voluntary, optional, discretionary (adj)",
+    "words": [
+      "voluntary",
+      "optional",
+      "discretionary"
+    ],
+    "originalValue": "tùy ý, không bắt buộc\r\n= Voluntary, optional, discretionary (adj)"
+  },
+  {
+    "id": "row-443",
+    "type": "word",
+    "key": "Warehouse, storeroom, stockroom, storage, storehouse (n)",
+    "words": [
+      "warehouse",
+      "storeroom",
+      "stockroom",
+      "storage",
+      "storehouse"
+    ],
+    "originalValue": "nhà kho\r\n= Warehouse, storeroom, stockroom, storage, storehouse (n)"
+  }
+]
