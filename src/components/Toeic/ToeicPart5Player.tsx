@@ -1902,7 +1902,20 @@ export default function ToeicPart5Player({
             </div>
 
             {currentIndex === questions.length - 1 ? (
-              !isSubmitted ? (
+              isFullTest ? (
+                <div className="relative group">
+                  <button
+                    onClick={onNextPart}
+                    className="px-10 py-2.5 rounded-full font-bold text-[13px] transition-all bg-emerald-600 text-white shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-2"
+                  >
+                    Tiếp sang Part 6 <ChevronRightIcon className="w-4 h-4" />
+                  </button>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
+                    Phím tắt: Mũi tên phải
+                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+                  </div>
+                </div>
+              ) : !isSubmitted ? (
                 <button
                   onClick={handleFinish}
                   className="px-10 py-2.5 rounded-full font-bold text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
