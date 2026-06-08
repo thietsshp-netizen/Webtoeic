@@ -535,6 +535,7 @@ export default function ToeicPart7Player({
 
   const [hintsActive, setHintsActive] = useState<Record<string, boolean>>({});
   const [showExplainGroups, setShowExplainGroups] = useState<Record<string, boolean>>({});
+  const [showOptionsTranslationGroups, setShowOptionsTranslationGroups] = useState<Record<string, boolean>>({});
   const [time, setTime] = useState(0);
   const [reviewMode, setReviewMode] = useState(isReviewMode || isSubmitted);
   const { isAdminMode } = useAdminEdit();
@@ -708,6 +709,9 @@ export default function ToeicPart7Player({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         if (currentIndex === 0) {
@@ -730,6 +734,13 @@ export default function ToeicPart7Player({
         setShowExplainGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }));
         return;
       }
+
+      // CTRL/CMD + S: Toggle Options Translation
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        setShowOptionsTranslationGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }));
+        return;
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -743,6 +754,7 @@ export default function ToeicPart7Player({
   const groupMetadata = currentGroup.groupMetadata || {};
   const questions = currentGroup.questions || [];
   const isRevealed = reviewMode || !!showExplainGroups[currentGroup.id];
+  const isTranslationRevealed = isRevealed || !!showOptionsTranslationGroups[currentGroup.id];
 
   const getQuestionKey = useCallback((q: any) => {
     return q.id || `${q.groupId || currentGroup?.id}_${q.questionNo}`;
@@ -1511,7 +1523,7 @@ export default function ToeicPart7Player({
                                     <div className={`text-[15px] font-bold leading-snug ${uiState === "CORRECT" ? 'text-emerald-900' : uiState === "SELECTED" ? 'text-indigo-900' : 'text-slate-900'}`}>
                                       <AdminInlineEditor target="question" id={q.id} field={`option${label}`} value={optText}>{optText}</AdminInlineEditor>
                                     </div>
-                                    {isRevealed && q.options_vn?.[label] && (
+                                    {isTranslationRevealed && q.options_vn?.[label] && (
                                       <div className="mt-0.5 text-[14px] text-slate-500 font-medium italic">{q.options_vn[label]}</div>
                                     )}
                                   </div>

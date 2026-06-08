@@ -350,6 +350,7 @@ export default function ToeicPart6Player({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [time, setTime] = useState(0);
   const [showExplainGroups, setShowExplainGroups] = useState<Record<string, boolean>>({});
+  const [showOptionsTranslationGroups, setShowOptionsTranslationGroups] = useState<Record<string, boolean>>({});
   const [showCompletion, setShowCompletion] = useState(false);
   const [isSubmittedInternal, setIsSubmittedInternal] = useState(isSubmitted);
   const [testScore, setTestScore] = useState({ correct: 0, total: 0, incorrect: 0, unanswered: 0 });
@@ -379,6 +380,7 @@ export default function ToeicPart6Player({
   const currentGroup = data[currentIndex] || { questions: [], id: "" };
   const questions = currentGroup.questions || [];
   const isCurrentRevealed = isReviewMode || isSubmittedInternal || !!showExplainGroups[currentGroup.id];
+  const isTranslationRevealed = isCurrentRevealed || !!showOptionsTranslationGroups[currentGroup.id];
   const passages = currentGroup.passages || [];
 
 
@@ -571,6 +573,13 @@ export default function ToeicPart6Player({
         setShowExplainGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }));
         return;
       }
+
+      // CTRL/CMD + S: Toggle Options Translation
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        setShowOptionsTranslationGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }));
+        return;
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -613,6 +622,7 @@ export default function ToeicPart6Player({
     setTime(0);
     setIsSubmittedInternal(false);
     setShowExplainGroups({});
+    setShowOptionsTranslationGroups({});
     setShowCompletion(false);
   };
 
@@ -1091,7 +1101,7 @@ export default function ToeicPart6Player({
                                     >
                                       <span className={`text-[15px] font-bold ${uiState === "CORRECT" ? 'text-emerald-900' : uiState === "SELECTED" ? 'text-blue-900' : 'text-slate-900'} leading-snug`}>{optText}</span>
                                     </AdminInlineEditor>
-                                    {isCurrentRevealed && (q.metadata as any)?.options_vn?.[opt] && (
+                                    {isTranslationRevealed && (q.metadata as any)?.options_vn?.[opt] && (
                                       <div className="text-[14px] text-slate-500 font-medium italic mt-0.5 leading-tight">
                                         <AdminInlineEditor
                                           target="question"
