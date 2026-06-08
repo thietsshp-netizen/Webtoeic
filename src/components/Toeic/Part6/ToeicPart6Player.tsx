@@ -93,6 +93,9 @@ const SentenceItem = React.memo(({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const text = sentence.text || "";
+  const cleanText = text.replace(/<[^>]*>/g, '').trim();
+  const isEmailHeaderLike = ['To:', 'From:', 'Subject:', 'Date:', 'Attachment:', 'Cc:', 'Bcc:'].some(h => cleanText.startsWith(h) || cleanText.startsWith(h + ' '));
+  const isHeaderLike = sentence.type === 'header' || sentence.type === 'signature' || sentence.type === 'signoff' || isEmailHeaderLike;
 
   const parsePart6Text = (rawText: string) => {
     if (!rawText) return null;
@@ -121,7 +124,10 @@ const SentenceItem = React.memo(({
     }
 
     return parts.map((p, i) => {
-      if (p.type === 'text') return <span key={i} dangerouslySetInnerHTML={{ __html: p.content }} />;
+      if (p.type === 'text') {
+        const formattedContent = p.content.replace(/\n/g, '<br />');
+        return <span key={i} dangerouslySetInnerHTML={{ __html: formattedContent }} />;
+      }
       if (p.type === 'blank') {
         if (!revealMode) {
           return (
@@ -169,7 +175,7 @@ const SentenceItem = React.memo(({
             {sentence.sid}
           </span>
         )}
-        <span className="inline leading-loose">
+        <span className={`inline whitespace-pre-line ${sentence.type === 'header' || sentence.type === 'signature' || sentence.type === 'signoff' ? 'leading-normal block' : 'leading-loose'}`}>
           {parsePart6Text(text)}
         </span>
       </span>
@@ -230,7 +236,7 @@ const TranslationPortal = ({ groupId, isAdminMode }: { groupId: string; isAdminM
               sid={data.sid || undefined}
               multiline
             >
-              <div dangerouslySetInnerHTML={{ __html: data.text }} />
+              <div className="whitespace-pre-line" dangerouslySetInnerHTML={{ __html: data.text }} />
             </AdminInlineEditor>
           </div>
         </div>
@@ -449,13 +455,13 @@ export default function ToeicPart6Player({
   useEffect(() => {
     if (jumpTo?.id && data.length > 0) {
       const targetId = String(jumpTo.id);
-      const idx = data.findIndex(g => 
-        g.questions?.some((q: any) => 
-          String(q.questionNo) === targetId || 
+      const idx = data.findIndex(g =>
+        g.questions?.some((q: any) =>
+          String(q.questionNo) === targetId ||
           String(q.id) === targetId
         )
       );
-      
+
       if (idx !== -1) {
         setCurrentIndex(idx);
 
@@ -468,7 +474,7 @@ export default function ToeicPart6Player({
           const el = document.getElementById(`question-${targetId}`) ||
             document.querySelector(`[id$="-${targetId}"]`) ||
             document.querySelector(`[id^="question-"][id$="-${targetId}"]`);
-            
+
           if (el) {
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             // Thêm hiệu ứng highlight
@@ -694,7 +700,7 @@ export default function ToeicPart6Player({
     const allGroupsRevealed: Record<string, boolean> = {};
     data.forEach(g => { if (g.id) allGroupsRevealed[g.id] = true; });
     setShowExplainGroups(allGroupsRevealed);
-    
+
     setShowCompletion(true);
     if (onFinish) onFinish(answers);
     confetti({ particleCount: 150, spread: 80, origin: { y: 0.3 } });
@@ -754,11 +760,11 @@ export default function ToeicPart6Player({
   const paragraphs: any[][] = [];
   if (parsedPassage) {
     let currentPar: any[] = [];
-    
+
     const isEmailHeader = (text: string) => {
       if (!text) return false;
       const clean = text.replace(/<[^>]*>/g, '').trim();
-      const headers = ['To:', 'From:', 'Subject:', 'Date:', 'To :', 'From :', 'Subject :', 'Date :'];
+      const headers = ['To:', 'From:', 'Subject:', 'Date:', 'To :', 'From :', 'Subject :', 'Date :', 'Attachment:', 'Attachment :'];
       return headers.some(h => clean.startsWith(h));
     };
 
@@ -767,7 +773,7 @@ export default function ToeicPart6Player({
       const prev = idx > 0 ? parsedPassage[idx - 1] : null;
       const prevWasHeader = prev && (prev.type === 'header' || prev.type === 'signature' || prev.type === 'greeting');
       const isSentenceSelection = s.text && s.text.trim().startsWith('**') && s.text.trim().endsWith('**');
-      
+
       const isCurrentEmailHeader = isEmailHeader(s.text);
       const isPrevEmailHeader = prev && isEmailHeader(prev.text);
 
@@ -792,35 +798,65 @@ export default function ToeicPart6Player({
     const isHeader = type === 'header' || type === 'signature';
     const nextIsHeader = nextType === 'header' || nextType === 'signature';
 
-    if (isHeader) {
-      if (nextPar && !nextIsHeader) return 'mb-6 indent-0';
-      return 'mb-0 indent-0';
-    }
-
-    if (type === 'greeting' || type === 'signoff') return 'mb-4 indent-0';
-    if (type === 'body') return firstSentence.is_new_paragraph ? 'mb-4' : 'mb-0';
-
-    if (par.length !== 1) return 'mb-6 indent-0';
     const text = (firstSentence.text || "").trim();
     const cleanText = text.replace(/<[^>]*>/g, '').trim();
-    const headers = ['To:', 'From:', 'Subject:', 'Date:', 'Subject :'];
-    const greetingSignoff = ['Dear', 'Sincerely', 'Best regards', 'Best,', 'Regards,', 'Best'];
+    const headers = ['To:', 'From:', 'Subject:', 'Date:', 'Subject :', 'Attachment:', 'Attachment :'];
 
-    const isCurrentHeaderFallback = headers.some(k => cleanText.startsWith(k));
-    if (isCurrentHeaderFallback) {
-      if (nextPar) {
-        const nextText = (nextPar[0]?.text || "").trim();
-        const nextCleanText = nextText.replace(/<[^>]*>/g, '').trim();
-        const isNextHeaderFallback = headers.some(k => nextCleanText.startsWith(k));
-        if (!isNextHeaderFallback) return 'mb-6 indent-0';
+    const style = (() => {
+      if (isHeader) {
+        if (nextPar && !nextIsHeader) return 'mb-6 indent-0';
+        if (nextPar && nextPar[0]?.is_new_paragraph) {
+          const nextText = (nextPar[0]?.text || "").trim();
+          const nextCleanText = nextText.replace(/<[^>]*>/g, '').trim();
+          const isNextEmail = headers.some(k => nextCleanText.startsWith(k));
+          const isCurrentEmail = headers.some(k => cleanText.startsWith(k));
+          if (isNextEmail || isCurrentEmail) {
+            return 'mb-0 indent-0';
+          }
+
+          const isDateText = (t: string) => {
+            const clean = t.toLowerCase();
+            const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december', 'jan', 'feb', 'mar', 'apr', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+            return months.some(m => clean.includes(m)) && (/\d+/.test(clean) || clean.length < 15);
+          };
+
+          if (isDateText(cleanText)) {
+            return 'mb-6 indent-0';
+          }
+
+          if (nextIsHeader) {
+            return 'mb-0 indent-0';
+          }
+
+          return 'mb-6 indent-0';
+        }
+        return 'mb-0 indent-0';
       }
-      return 'mb-0 indent-0';
-    }
 
-    if (greetingSignoff.some(k => cleanText.startsWith(k))) return 'mb-4 indent-0';
-    if (cleanText.length > 0 && cleanText.length < 40) return 'mb-0 indent-0';
+      if (type === 'greeting' || type === 'signoff') return 'mb-4 indent-0';
+      if (type === 'body') return firstSentence.is_new_paragraph ? 'mb-4' : 'mb-0';
 
-    return 'mb-6 indent-0';
+      if (par.length !== 1) return 'mb-6 indent-0';
+      const greetingSignoff = ['Dear', 'Sincerely', 'Best regards', 'Best,', 'Regards,', 'Best'];
+
+      const isCurrentHeaderFallback = headers.some(k => cleanText.startsWith(k));
+      if (isCurrentHeaderFallback) {
+        if (nextPar) {
+          const nextText = (nextPar[0]?.text || "").trim();
+          const nextCleanText = nextText.replace(/<[^>]*>/g, '').trim();
+          const isNextHeaderFallback = headers.some(k => nextCleanText.startsWith(k));
+          if (!isNextHeaderFallback) return 'mb-6 indent-0';
+        }
+        return 'mb-0 indent-0';
+      }
+
+      if (greetingSignoff.some(k => cleanText.startsWith(k))) return 'mb-4 indent-0';
+      if (cleanText.length > 0 && cleanText.length < 40) return 'mb-0 indent-0';
+
+      return 'mb-6 indent-0';
+    })();
+
+    return style;
   };
 
   if (!data || data.length === 0) {
@@ -918,21 +954,26 @@ export default function ToeicPart6Player({
                 <div className="bg-white p-2">
                   {paragraphs.map((par, pIdx) => (
                     <div key={pIdx} className={`${getParagraphStyle(par, paragraphs[pIdx + 1])} last:mb-0`}>
-                      {par.map((s: any, sIdx: number) => (
-                        <span
-                          key={s.sid || sIdx}
-                          ref={el => { if (el && s.sid) passageRefs.current.set(s.sid, el); else if (s.sid) passageRefs.current.delete(s.sid); }}
-                          className="inline"
-                        >
-                          <SentenceItem
-                            sentence={s}
-                            revealMode={isCurrentRevealed}
-                            questions={questions}
-                            activeSid={activeSid}
-                          />
-                          {" "}
-                        </span>
-                      ))}
+                      {par.map((s: any, sIdx: number) => {
+                        const clean = (s.text || "").replace(/<[^>]*>/g, '').trim();
+                        const isEmailHeaderLike = ['To:', 'From:', 'Subject:', 'Date:', 'Attachment:', 'Cc:', 'Bcc:'].some(h => clean.startsWith(h) || clean.startsWith(h + ' '));
+                        const isHeaderLike = s.type === 'header' || s.type === 'signature' || s.type === 'signoff' || isEmailHeaderLike;
+                        return (
+                          <span
+                            key={s.sid || sIdx}
+                            ref={el => { if (el && s.sid) passageRefs.current.set(s.sid, el); else if (s.sid) passageRefs.current.delete(s.sid); }}
+                            className={isHeaderLike ? "block" : "inline"}
+                          >
+                            <SentenceItem
+                              sentence={s}
+                              revealMode={isCurrentRevealed}
+                              questions={questions}
+                              activeSid={activeSid}
+                            />
+                            {" "}
+                          </span>
+                        );
+                      })}
                     </div>
                   ))}
                 </div>
@@ -973,7 +1014,7 @@ export default function ToeicPart6Player({
                 const isFlagged = flags[qKey];
                 const highlightColorClass = getHighlightClass(q.metadata?.highlight_color || "default");
                 const [hText, hBg, hBorder] = highlightColorClass.split(' ');
-                
+
                 return (
                   <div
                     key={q.id || qKey}
@@ -1457,7 +1498,7 @@ export default function ToeicPart6Player({
               onVideoQuestionSync(targetIndex);
               return;
             }
-            const groupIdx = data.findIndex(group => 
+            const groupIdx = data.findIndex(group =>
               group.questions?.some((q: any) => q.questionNo === targetIndex)
             );
             if (groupIdx !== -1) {
