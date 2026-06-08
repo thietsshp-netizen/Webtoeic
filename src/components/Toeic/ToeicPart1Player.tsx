@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo, Fragment } from 'react';
 import { createPortal } from "react-dom";
 import WaveSurfer from 'wavesurfer.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.esm.js';
 import {
   PlayIcon, PauseIcon, ChevronLeftIcon, ChevronRightIcon,
-  CheckCircleIcon, EyeIcon, ClockIcon, FlagIcon, TrophyIcon, ArrowRightOnRectangleIcon
+  CheckCircleIcon, EyeIcon, ClockIcon, FlagIcon, TrophyIcon, ArrowRightOnRectangleIcon,
+  XMarkIcon
 } from '@heroicons/react/24/solid';
 import { Send, LayoutDashboard, ChevronRight, Play, Pause, Volume2, HelpCircle, CheckCircle2, XCircle, Info, Lightbulb, Flag, ChevronsLeftRight } from "lucide-react";
 import { AdminInlineEditor } from "@/components/Admin/AdminInlineEditor";
@@ -16,6 +17,7 @@ import Link from 'next/link';
 import FlagSelector, { FlagColor } from '../Player/FlagSelector';
 import { startToeicPartTour } from './toeicTour';
 import FloatingVideoExplanationPlayer from '../Player/FloatingVideoExplanationPlayer';
+import part1WordFamiliesData from "@/data/part1_word_families.json";
 
 function parseOptionsFromText(text: string) {
   if (!text) return [];
@@ -26,14 +28,94 @@ function parseOptionsFromText(text: string) {
     return { label: '?', text: p };
   });
 }
+const audioCache = new Map<string, string>();
 
-const speak = (text: string) => {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'en-US';
-  utterance.rate = 0.9;
-  window.speechSynthesis.speak(utterance);
+const speak = async (text: string, type: 'uk' | 'us' = 'us') => {
+  if (typeof window === 'undefined') return;
+
+  const fallbackSpeak = (t: string) => {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(t);
+    const voices = window.speechSynthesis.getVoices();
+    const voice = voices.find(v => {
+      if (type === 'uk') return v.lang === 'en-GB';
+      return v.lang === 'en-US' || v.lang === 'en_US';
+    }) || voices.find(v => v.lang.startsWith('en'));
+    if (voice) utterance.voice = voice;
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const cleanSpeechText = text.replace(/\s*\([^)]*\)/g, '').trim();
+  if (cleanSpeechText.includes(' ')) {
+    fallbackSpeak(cleanSpeechText);
+    return;
+  }
+
+  const cleanWord = cleanSpeechText.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const cacheKey = `${cleanWord}_${type}`;
+
+  if (audioCache.has(cacheKey)) {
+    const cachedUrl = audioCache.get(cacheKey)!;
+    if (cachedUrl === 'tts') {
+      fallbackSpeak(cleanSpeechText);
+    } else {
+      const audio = new Audio(cachedUrl);
+      audio.play().catch(() => fallbackSpeak(cleanSpeechText));
+    }
+    return;
+  }
+
+  const folder = type === 'us' ? 'ame' : 'bre';
+  const legacySuffix = type === 'us' ? '__us_1' : '__gb_1';
+
+  const urls = [
+    `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}.mp3`,
+    `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}1.mp3`,
+    `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}2.mp3`,
+    `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}${legacySuffix}.mp3`
+  ];
+
+  const controller = new AbortController();
+  const signal = controller.signal;
+
+  try {
+    const checkPromises = urls.map(async (url, index) => {
+      try {
+        const timeoutPromise = new Promise<null>((_, reject) =>
+          setTimeout(() => reject(new Error('timeout')), 1000)
+        );
+        const fetchPromise = fetch(url, { method: 'HEAD', signal });
+        const response = await Promise.race([fetchPromise, timeoutPromise]);
+        if (response && response.status === 200) {
+          return { index, url, exists: true };
+        }
+        return { index, url, exists: false };
+      } catch {
+        return { index, url, exists: false };
+      }
+    });
+
+    const results = await Promise.all(checkPromises);
+    const validResults = results
+      .filter(r => r.exists)
+      .sort((a, b) => a.index - b.index);
+
+    if (validResults.length > 0) {
+      const bestUrl = validResults[0].url;
+      audioCache.set(cacheKey, bestUrl);
+      const audio = new Audio(bestUrl);
+      audio.play().catch(() => fallbackSpeak(cleanSpeechText));
+    } else {
+      audioCache.set(cacheKey, 'tts');
+      fallbackSpeak(cleanSpeechText);
+    }
+  } catch (err) {
+    fallbackSpeak(cleanSpeechText);
+  } finally {
+    controller.abort();
+  }
 };
 
 const HintPhrase = ({ phrase, isReveal, questionIndex, hintIndex }: { phrase: string, isReveal: boolean, questionIndex: number, hintIndex?: number }) => {
@@ -124,7 +206,7 @@ const InteractiveWord = ({ word, isReveal }: { word: string, isReveal: boolean }
   );
 };
 
-const FormattedInteractiveText = ({ text, revealed, currentIndex, initialBold = false, hintMode = false, wordsToMask = [], startHintIndex = 1 }: { text: string; revealed: boolean, currentIndex: number, initialBold?: boolean, hintMode?: boolean, wordsToMask?: string[], startHintIndex?: number }) => {
+const FormattedInteractiveText = ({ text, revealed, currentIndex, initialBold = false, hintMode = false, wordsToMask = [], startHintIndex = 1, renderWordCloud }: { text: string; revealed: boolean, currentIndex: number, initialBold?: boolean, hintMode?: boolean, wordsToMask?: string[], startHintIndex?: number, renderWordCloud?: (text: string) => React.ReactNode }) => {
   if (!text) return { content: null, finalBold: initialBold };
 
   const parts = text.split(/(\*\*|\$\^\{.*?\}\$|\^\{.*?\}\$|\^\{.*?\}|\|\^\{.*?\}\$\|)/g);
@@ -186,6 +268,17 @@ const FormattedInteractiveText = ({ text, revealed, currentIndex, initialBold = 
       );
     }
 
+    if (revealed && renderWordCloud) {
+      const cloudResult = renderWordCloud(part);
+      return isBold ? (
+        <strong key={index} className="font-bold text-slate-800 underline decoration-blue-200/50 decoration-2 underline-offset-2">
+          {cloudResult}
+        </strong>
+      ) : (
+        <span key={index}>{cloudResult}</span>
+      );
+    }
+
     const subParts = part.split(' ').map((word, wIdx, pArr) => (
       <span key={`std-${currentIndex}-${index}-${wIdx}`} className="inline">
         <InteractiveWord word={word} isReveal={revealed || hintMode} />
@@ -228,8 +321,8 @@ const StaticFormattedText = ({ text, initialBold = false }: { text: string; init
 };
 
 // Wrapper for simple cases where we don't need to track state across components
-const FormattedText = ({ text, revealed, currentIndex, initialBold = false, hintMode = false, wordsToMask = [], startHintIndex = 1 }: { text: string; revealed: boolean, currentIndex: number, initialBold?: boolean, hintMode?: boolean, wordsToMask?: string[], startHintIndex?: number }) => {
-  const { content } = FormattedInteractiveText({ text, revealed, currentIndex, initialBold, hintMode, wordsToMask, startHintIndex });
+const FormattedText = ({ text, revealed, currentIndex, initialBold = false, hintMode = false, wordsToMask = [], startHintIndex = 1, renderWordCloud }: { text: string; revealed: boolean, currentIndex: number, initialBold?: boolean, hintMode?: boolean, wordsToMask?: string[], startHintIndex?: number, renderWordCloud?: (text: string) => React.ReactNode }) => {
+  const { content } = FormattedInteractiveText({ text, revealed, currentIndex, initialBold, hintMode, wordsToMask, startHintIndex, renderWordCloud });
   return <>{content}</>;
 };
 
@@ -413,6 +506,12 @@ export default function ToeicPart1Player({
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
+  const [activeWordFamily, setActiveWordFamily] = useState<any[]>([]);
+  const [popoverPos, setPopoverPos] = useState({ x: 100, y: 100 });
+
+  useEffect(() => {
+    setActiveWordFamily([]);
+  }, [currentIndex]);
 
   const { isAdminMode } = useAdminEdit();
   if (!data || data.length === 0) {
@@ -434,6 +533,316 @@ export default function ToeicPart1Player({
     // Tự động khởi chạy tour hướng dẫn học Part 1 lần đầu
     startToeicPartTour(1);
   }, []);
+
+  const renderWordFamilyCloud = (text: string, children?: React.ReactNode) => {
+    if (!revealMode) return children || text;
+
+    const getMainKeys = (keyStr: string): string[] => {
+      const clean = keyStr.replace(/\s*\([^)]*\)/g, '');
+      return clean.split(/[,/]/)
+        .map(k => k.trim().toLowerCase())
+        .filter(k => k.length > 0);
+    };
+
+    const isWordMatch = (memberLower: string, wordLower: string): boolean => {
+      if (memberLower === wordLower) return true;
+
+      const endsWithE = memberLower.length > 2 && memberLower.endsWith('e');
+      const stem = endsWithE ? memberLower.slice(0, -1) : memberLower;
+
+      const lastChar = memberLower.slice(-1);
+      const isConsonant = /^[bcdfghjklmnpqrstvwxyz]$/i.test(lastChar);
+      
+      if (wordLower.startsWith(stem)) {
+        const suffix = wordLower.substring(stem.length);
+        if (endsWithE) {
+          if (/^(e|es|ed|ing|er|est|y|ely)$/.test(suffix)) return true;
+        } else {
+          if (/^(s|es|ed|ing|er|est|ly|y)?$/.test(suffix)) return true;
+        }
+      }
+
+      if (isConsonant && !endsWithE) {
+        const doubledStem = stem + lastChar;
+        if (wordLower.startsWith(doubledStem)) {
+          const suffix = wordLower.substring(doubledStem.length);
+          if (/^(ed|ing|er|est)$/.test(suffix)) return true;
+        }
+      }
+
+      return false;
+    };
+
+    const isRelatedWordMatch = (memberLower: string, wordLower: string): boolean => {
+      if (memberLower === wordLower) return true;
+      const endsWithE = memberLower.length > 2 && memberLower.endsWith('e');
+      const stem = endsWithE ? memberLower.slice(0, -1) : memberLower;
+      
+      if (wordLower.startsWith(stem)) {
+        const suffix = wordLower.substring(stem.length);
+        return suffix.length <= 3 && /^(s|es|ed|ing|er|est|ly|y)?$/.test(suffix);
+      }
+      
+      const lastChar = memberLower.slice(-1);
+      const isConsonant = /^[bcdfghjklmnpqrstvwxyz]$/i.test(lastChar);
+      if (isConsonant && !endsWithE) {
+        const doubledStem = stem + lastChar;
+        if (wordLower.startsWith(doubledStem)) {
+          const suffix = wordLower.substring(doubledStem.length);
+          return suffix.length <= 3 && /^(ed|ing|er|est)$/.test(suffix);
+        }
+      }
+
+      return false;
+    };
+
+    if (children) {
+      const cleanText = text.trim();
+      let bestWordFams: any[] = [];
+
+      for (let i = 0; i < part1WordFamiliesData.length; i++) {
+        const fam = part1WordFamiliesData[i];
+        if (!fam.words) continue;
+
+        const foundMember = fam.words.find((member: string) => {
+          const mLower = member.toLowerCase();
+          const lower = cleanText.toLowerCase();
+          if (mLower.includes(' ')) {
+            return mLower === lower;
+          } else {
+            return isWordMatch(mLower, lower) || isRelatedWordMatch(mLower, lower);
+          }
+        });
+
+        if (foundMember) {
+          bestWordFams.push({ ...fam, matchedWord: cleanText });
+        }
+      }
+
+      if (bestWordFams.length > 0) {
+        const primaryFam = bestWordFams[0];
+        return (
+          <span className="relative inline-block group/cloud mx-0.5 select-text">
+            {children}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (activeWordFamily.length > 0 && activeWordFamily[0].id === primaryFam.id) {
+                  setActiveWordFamily([]);
+                  return;
+                }
+                const rect = e.currentTarget.getBoundingClientRect();
+                const parentRect = e.currentTarget.parentElement?.getBoundingClientRect() || rect;
+                const popoverHeight = 360;
+                const popoverWidth = 380;
+                let x = parentRect.left;
+                if (x + popoverWidth > window.innerWidth) {
+                  x = Math.max(10, window.innerWidth - popoverWidth - 20);
+                } else {
+                  x = Math.max(10, x);
+                }
+                let y = parentRect.bottom + 8;
+                if (y + popoverHeight > window.innerHeight && parentRect.top > popoverHeight + 20) {
+                  y = parentRect.top - popoverHeight - 8;
+                } else if (y + popoverHeight > window.innerHeight) {
+                  y = Math.max(10, window.innerHeight - popoverHeight - 20);
+                }
+                setPopoverPos({ x, y });
+                setActiveWordFamily(bestWordFams);
+              }}
+              className="absolute -top-[5px] -right-[6px] text-blue-400 hover:text-blue-600 transition-colors z-10 p-0 m-0 cursor-pointer"
+              title={`Xem nhóm từ đồng nghĩa/trái nghĩa: ${primaryFam.key}`}
+            >
+              <svg className="w-2.5 h-2.5 fill-blue-100 stroke-blue-500 stroke-[1.5]" viewBox="0 0 24 24">
+                <path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z" />
+              </svg>
+            </button>
+          </span>
+        );
+      }
+      return children;
+    }
+
+    interface MatchCandidate {
+      start: number;
+      end: number;
+      length: number;
+      family: any;
+      matchedWord: string;
+      isPhrase: boolean;
+      isColA: boolean;
+      indexInDb: number;
+      memberLength: number;
+    }
+
+    const candidates: MatchCandidate[] = [];
+
+    part1WordFamiliesData.forEach((fam, dbIdx) => {
+      if (!fam.words) return;
+      fam.words.forEach((member: string) => {
+        const isPhrase = member.includes(' ');
+        const escaped = member.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        let regex: RegExp;
+
+        if (isPhrase) {
+          const parts = escaped.split('\\s+');
+          const firstWord = parts[0];
+          const rest = parts.slice(1).join('\\s+');
+          const lastChar = member.split(' ')[0].slice(-1);
+          const isConsonant = /^[bcdfghjklmnpqrstvwxyz]$/i.test(lastChar);
+          
+          if (isConsonant && parts.length > 0) {
+            regex = new RegExp(`\\b${firstWord}(?:${lastChar})?(?:ing|ed|s)?\\s+${rest}\\b`, 'gi');
+          } else {
+            regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+          }
+        } else {
+          const lastChar = member.slice(-1);
+          const isConsonant = /^[bcdfghjklmnpqrstvwxyz]$/i.test(lastChar);
+          if (isConsonant && member.length >= 3) {
+            regex = new RegExp(`\\b${escaped}(?:${lastChar})?(?:ing|ed|s|es|er|est|ly|y)?\\b`, 'gi');
+          } else if (member.length >= 4) {
+            regex = new RegExp(`\\b[a-zA-Z]*${escaped}[a-zA-Z]*\\b`, 'gi');
+          } else {
+            regex = new RegExp(`\\b${escaped}[a-zA-Z]{0,3}\\b`, 'gi');
+          }
+        }
+
+        let match;
+        regex.lastIndex = 0;
+        while ((match = regex.exec(text)) !== null) {
+          const matchedStr = match[0];
+          if (!isPhrase) {
+            const matches = isWordMatch(member.toLowerCase(), matchedStr.toLowerCase()) || isRelatedWordMatch(member.toLowerCase(), matchedStr.toLowerCase());
+            if (!matches) continue;
+          }
+          const isColA = getMainKeys(fam.key).includes(member.toLowerCase());
+          candidates.push({
+            start: match.index,
+            end: match.index + matchedStr.length,
+            length: matchedStr.length,
+            family: fam,
+            matchedWord: matchedStr,
+            isPhrase,
+            isColA,
+            indexInDb: dbIdx,
+            memberLength: member.length
+          });
+          if (match.index === regex.lastIndex) {
+            regex.lastIndex++;
+          }
+        }
+      });
+    });
+
+    candidates.sort((a, b) => {
+      if (a.isPhrase !== b.isPhrase) return a.isPhrase ? -1 : 1;
+      if (a.isColA !== b.isColA) return a.isColA ? -1 : 1;
+      if (b.length !== a.length) return b.length - a.length;
+      if (b.memberLength !== a.memberLength) return b.memberLength - a.memberLength;
+      return a.indexInDb - b.indexInDb;
+    });
+
+    const selectedMatches: MatchCandidate[] = [];
+    const isOccupied = new Array(text.length).fill(false);
+
+    candidates.forEach(cand => {
+      let occupied = false;
+      for (let i = cand.start; i < cand.end; i++) {
+        if (isOccupied[i]) {
+          occupied = true;
+          break;
+        }
+      }
+      if (!occupied) {
+        for (let i = cand.start; i < cand.end; i++) {
+          isOccupied[i] = true;
+        }
+        selectedMatches.push(cand);
+      }
+    });
+
+    selectedMatches.sort((a, b) => a.start - b.start);
+
+    const resultElements: React.ReactNode[] = [];
+    let lastIdx = 0;
+
+    selectedMatches.forEach((match, idx) => {
+      if (match.start > lastIdx) {
+        resultElements.push(<React.Fragment key={`t-${idx}`}>{text.substring(lastIdx, match.start)}</React.Fragment>);
+      }
+
+      const wordLower = match.matchedWord.toLowerCase();
+      const matchedFamsForWord: any[] = [];
+      
+      part1WordFamiliesData.forEach((fam: any) => {
+        if (!fam.words) return;
+        const hasWord = fam.words.some((m: string) => {
+          const mLower = m.toLowerCase();
+          if (mLower.includes(' ')) {
+            return mLower === wordLower;
+          } else {
+            return isWordMatch(mLower, wordLower) || isRelatedWordMatch(mLower, wordLower);
+          }
+        });
+        if (hasWord) {
+          matchedFamsForWord.push({ ...fam, matchedWord: match.matchedWord });
+        }
+      });
+
+      if (matchedFamsForWord.length === 0) {
+        matchedFamsForWord.push({ ...match.family, matchedWord: match.matchedWord });
+      }
+
+      resultElements.push(
+        <span key={`m-${idx}`} className="relative inline-block group/cloud mx-0.5 select-text">
+          {text.substring(match.start, match.end)}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (activeWordFamily.length > 0 && activeWordFamily[0].id === matchedFamsForWord[0].id) {
+                setActiveWordFamily([]);
+                return;
+              }
+              const rect = e.currentTarget.getBoundingClientRect();
+              const parentRect = e.currentTarget.parentElement?.getBoundingClientRect() || rect;
+              const popoverHeight = 360;
+              const popoverWidth = 380;
+              let x = parentRect.left;
+              if (x + popoverWidth > window.innerWidth) {
+                x = Math.max(10, window.innerWidth - popoverWidth - 20);
+              } else {
+                x = Math.max(10, x);
+              }
+              let y = parentRect.bottom + 8;
+              if (y + popoverHeight > window.innerHeight && parentRect.top > popoverHeight + 20) {
+                y = parentRect.top - popoverHeight - 8;
+              } else if (y + popoverHeight > window.innerHeight) {
+                y = Math.max(10, window.innerHeight - popoverHeight - 20);
+              }
+              setPopoverPos({ x, y });
+              setActiveWordFamily(matchedFamsForWord);
+            }}
+            className="absolute -top-[5px] -right-[6px] text-blue-400 hover:text-blue-600 transition-colors z-10 p-0 m-0 cursor-pointer"
+            title={`Xem nhóm từ đồng nghĩa/trái nghĩa: ${matchedFamsForWord[0].key}`}
+          >
+            <svg className="w-2.5 h-2.5 fill-blue-100 stroke-blue-500 stroke-[1.5]" viewBox="0 0 24 24">
+              <path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z" />
+            </svg>
+          </button>
+        </span>
+      );
+      lastIdx = match.end;
+    });
+
+    if (lastIdx < text.length) {
+      resultElements.push(<React.Fragment key="t-end">{text.substring(lastIdx)}</React.Fragment>);
+    }
+
+    return resultElements;
+  };
 
   const [answers, setAnswers] = useState<Record<string, string>>(() => {
     let acc: any = {};
@@ -1293,6 +1702,7 @@ export default function ToeicPart1Player({
                                       hintMode={isHintMode}
                                       wordsToMask={hintMasksMap[opt]}
                                       startHintIndex={1 + (['A', 'B', 'C', 'D'].indexOf(opt) * 2)}
+                                      renderWordCloud={renderWordFamilyCloud}
                                     />
                                   </AdminInlineEditor>
                                 </div>
@@ -1650,12 +2060,331 @@ export default function ToeicPart1Player({
         />
       )}
 
+      {/* WORD FAMILY POPOVER DICTIONARY */}
+      {activeWordFamily.length > 0 && (
+        <WordFamilyPopover
+          wordFamilies={activeWordFamily}
+          position={popoverPos}
+          onClose={() => setActiveWordFamily([])}
+          onPositionChange={(pos) => setPopoverPos(pos)}
+        />
+      )}
+
       <style jsx global>{`
         .perspective-1000 { perspective: 1000px; }
         .preserve-3d { transform-style: preserve-3d; }
         .backface-hidden { backface-visibility: hidden; }
         .rotate-y-180 { transform: rotateY(180deg); }
       `}</style>
+    </div>
+  );
+}
+
+interface WordFamilyEntry {
+  key: string;
+  originalValue: string;
+  type: string;
+  roots?: string[];
+  matchedWord?: string;
+}
+
+interface DraggablePopoverProps {
+  wordFamilies: WordFamilyEntry[];
+  position: { x: number; y: number };
+  onClose: () => void;
+  onPositionChange: (pos: { x: number; y: number }) => void;
+}
+
+function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }: DraggablePopoverProps) {
+  const wordFamily = wordFamilies[0];
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('.popover-header')) {
+      e.preventDefault();
+      setDragStart({ x: e.clientX, y: e.clientY });
+      setStartPos({ x: position.x, y: position.y });
+    }
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (dragStart) {
+        const dx = e.clientX - dragStart.x;
+        const dy = e.clientY - dragStart.y;
+        onPositionChange({
+          x: startPos.x + dx,
+          y: startPos.y + dy
+        });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setDragStart(null);
+    };
+
+    if (dragStart) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [dragStart, startPos, onPositionChange]);
+
+  const formatContent = (val: string, key: string, type: string, roots?: string[], displayTitle?: string, matchedWord?: string) => {
+    const lines = val.split('\n');
+
+    // Parse "english word/phrase (translation)" pairs from a text segment and render as 2-column grid
+    const renderSegment = (textStr: string, termLower: string): React.ReactNode => {
+      const regex = /([a-zA-Z0-9\s''\/↔\-]+?)\s*(\((?:"[^"]*"|[^)]+)\))/g;
+      const pairs: { eng: string; trans: string; isMatch: boolean }[] = [];
+      let lastIndex = 0;
+      let prefixText = '';
+      let match;
+
+      regex.lastIndex = 0;
+      while ((match = regex.exec(textStr)) !== null) {
+        const engWord = match[1].trim();
+        const translation = match[2];
+
+        if (pairs.length === 0 && match.index > lastIndex) {
+          // Strip bracket delimiters [ ] （ ） and normalize known label text
+          prefixText = textStr.substring(lastIndex, match.index)
+            .replace(/^\s*[\[（]/, '')
+            .replace(/[\]）]\s*$/, '')
+            .replace(/Đồng nghĩa TOEIC hay gặp/gi, 'Các từ/cụm từ tương tự')
+            .trim();
+        }
+
+        const isMatch = !!(termLower && (
+          engWord.toLowerCase() === termLower.toLowerCase() ||
+          engWord.toLowerCase().includes(termLower.toLowerCase()) ||
+          termLower.toLowerCase().includes(engWord.toLowerCase())
+        ));
+
+        pairs.push({ eng: engWord, trans: translation, isMatch });
+        lastIndex = regex.lastIndex;
+      }
+
+      // Strip trailing bracket delimiter from suffix
+      const suffixText = (lastIndex < textStr.length ? textStr.substring(lastIndex) : '')
+        .replace(/^\s*[\]）]\s*$/, '').trim();
+
+      if (pairs.length === 0) {
+        return <React.Fragment key="raw">{textStr}</React.Fragment>;
+      }
+
+      return (
+        <React.Fragment key="grid">
+          {prefixText && <span className="text-teal-700 font-medium">{prefixText}</span>}
+          <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 mt-1">
+            {pairs.map((p, i) => (
+              <div key={i} className="flex items-start gap-1 min-w-0">
+                {p.isMatch ? (
+                  <span
+                    onClick={() => speak(p.eng)}
+                    className="text-amber-600 font-bold cursor-pointer hover:underline inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap"
+                  >
+                    {p.eng}
+                    <Volume2 className="w-3 h-3 text-amber-500/70 shrink-0" />
+                  </span>
+                ) : (
+                  <strong
+                    onClick={() => speak(p.eng)}
+                    className="font-extrabold text-slate-900 cursor-pointer hover:underline inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap"
+                  >
+                    {p.eng}
+                    <Volume2 className="w-3 h-3 text-slate-400/70 shrink-0" />
+                  </strong>
+                )}
+                <span className="text-slate-500 font-normal text-xs leading-snug">{p.trans}</span>
+              </div>
+            ))}
+          </div>
+          {suffixText && <span className="text-slate-500">{suffixText}</span>}
+        </React.Fragment>
+      );
+    };
+
+    const renderRichText = (raw: string, termLower: string): React.ReactNode[] => {
+      const bracketSplit = /([\[（][^\]）]*[\]）])/g;
+      const bracketParts = raw.split(bracketSplit);
+
+      const result: React.ReactNode[] = [];
+      bracketParts.forEach((seg, bIdx) => {
+        const isBracket = (seg.startsWith('[') && seg.endsWith(']')) || (seg.startsWith('（') && seg.endsWith('）'));
+
+        if (isBracket) {
+          result.push(
+            <span key={`br-${bIdx}`} className="text-teal-600 text-[0.9em] font-normal">
+              {renderSegment(seg, termLower)}
+            </span>
+          );
+        } else {
+          result.push(
+            <React.Fragment key={`seg-${bIdx}`}>
+              {renderSegment(seg, termLower)}
+            </React.Fragment>
+          );
+        }
+      });
+
+      return result;
+    };
+
+    return lines.map((line: string, idx: number) => {
+      const trimmed = line.trim();
+      if (trimmed.length === 0) return null;
+
+      let lineClass = "text-slate-700 text-sm leading-relaxed my-1.5 font-medium";
+      const lowerTrimmed = trimmed.toLowerCase();
+      if (
+        lowerTrimmed.startsWith('gốc:') || 
+        lowerTrimmed.startsWith('goc:') || 
+        lowerTrimmed.startsWith('tiền tố:') || 
+        lowerTrimmed.startsWith('tien to:') ||
+        lowerTrimmed.startsWith('hậu tố:') || 
+        lowerTrimmed.startsWith('hau to:')
+      ) {
+        lineClass = "text-red-600 text-sm leading-relaxed my-1.5 font-bold";
+      } else if (trimmed.startsWith('=') || trimmed.startsWith('~')) {
+        lineClass = "text-emerald-700 text-sm leading-relaxed my-1.5 font-bold";
+      } else if (trimmed.startsWith('><') || trimmed.includes('↔')) {
+        lineClass = "text-red-600 text-sm leading-relaxed my-1.5 font-bold";
+      } else if (trimmed.includes('->') || trimmed.startsWith('-')) {
+        lineClass = "text-indigo-700 text-sm leading-relaxed my-1.5 font-semibold";
+      }
+
+      const searchTerms = type === 'root' && roots
+        ? roots
+        : [matchedWord ? matchedWord.toLowerCase() : (displayTitle ? displayTitle.toLowerCase() : key.replace(/[\/,]/g, ' ').split(' ')[0])];
+
+      const isBullet = trimmed.startsWith('•') || trimmed.startsWith('*') || trimmed.startsWith('·');
+
+      const firstTerm = searchTerms[0] || '';
+      const termLower = firstTerm.toLowerCase();
+      const termRegex = firstTerm.length >= 2
+        ? (type === 'root'
+          ? new RegExp(`(${firstTerm})`, 'gi')
+          : new RegExp(`\\b(${firstTerm})\\b`, 'gi'))
+        : null;
+
+      if (isBullet) {
+        const bulletMatch = trimmed.match(/^([•*·]\s*)([\w\s/,'-]+?)(\s*(?:v|n|adj|adv|prep|conj|phr|phrase)?\.?:)([\s\S]*)/);
+        if (bulletMatch) {
+          const [, marker, exWord, colon, rest] = bulletMatch;
+          return (
+            <div key={idx} className={lineClass}>
+              <span>{marker}</span>
+              <span
+                onClick={() => speak(exWord.trim())}
+                className="font-bold text-slate-900 cursor-pointer hover:underline inline-flex items-center gap-0.5"
+              >
+                {exWord}
+                <Volume2 className="w-3.5 h-3.5 text-slate-400/70 shrink-0" />
+              </span>
+              <span className="font-semibold text-slate-600">{colon}</span>
+              {renderRichText(rest, termLower)}
+            </div>
+          );
+        }
+      }
+
+      const richParts = renderRichText(line, termLower);
+      return <div key={idx} className={lineClass}>{richParts}</div>;
+    });
+  };
+
+  const getDisplayTitle = (key: string, matchedWord?: string): string => {
+    if (!matchedWord) return key;
+    const clean = key.replace(/\s*\([^)]*\)/g, '');
+    const items = clean.split(/[,/]/).map(item => item.trim());
+    
+    if (items.length === 1) {
+      return items[0].charAt(0).toUpperCase() + items[0].slice(1);
+    }
+
+    const target = matchedWord.toLowerCase().trim();
+    let bestItem = items[0];
+    let bestScore = -1;
+
+    items.forEach(item => {
+      const itemLower = item.toLowerCase();
+      if (itemLower === target) {
+        bestItem = item;
+        bestScore = 100;
+        return;
+      }
+
+      if (target.startsWith(itemLower) || itemLower.startsWith(target)) {
+        const score = Math.min(itemLower.length, target.length) / Math.max(itemLower.length, target.length);
+        if (score > bestScore) {
+          bestScore = score;
+          bestItem = item;
+        }
+      } else if (target.includes(itemLower) || itemLower.includes(target)) {
+        const score = 0.5 * (Math.min(itemLower.length, target.length) / Math.max(itemLower.length, target.length));
+        if (score > bestScore) {
+          bestScore = score;
+          bestItem = item;
+        }
+      }
+    });
+
+    return bestItem.charAt(0).toUpperCase() + bestItem.slice(1);
+  };
+
+  return (
+    <div
+      ref={popoverRef}
+      style={{ left: `${position.x}px`, top: `${position.y}px` }}
+      className="fixed z-[9999] w-max max-w-[min(680px,90vw)] max-h-[440px] overflow-hidden bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/80 flex flex-col animate-in zoom-in-95 duration-200"
+    >
+      <div
+        onMouseDown={handleMouseDown}
+        className="popover-header px-4 py-2.5 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 flex items-center justify-between cursor-move select-none shrink-0"
+      >
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+          <span className="font-bold text-xs uppercase tracking-wider text-slate-500">Mở rộng vốn từ Part 1</span>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-1 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
+        >
+          <XMarkIcon className="w-4 h-4" />
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4 select-text">
+        {wordFamilies.map((fam, famIdx) => {
+          const displayTitle = fam.key;
+          const isRoot = fam.type === 'root' || (typeof fam.originalValue === 'string' && fam.originalValue.trimStart().startsWith('Gốc:'));
+          return (
+            <div key={famIdx}>
+              {famIdx > 0 && (
+                <div className="flex items-center gap-2 my-3">
+                  <div className="flex-1 h-px bg-slate-200" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Nhóm khác</span>
+                  <div className="flex-1 h-px bg-slate-200" />
+                </div>
+              )}
+              <h4 className={`text-lg font-black mb-2 border-b pb-1.5 capitalize ${isRoot && famIdx > 0 ? 'text-amber-700 border-amber-100' : 'text-slate-800 border-slate-100'}`}>
+                {displayTitle}
+              </h4>
+              <div className="space-y-1">
+                {formatContent(fam.originalValue, fam.key, fam.type, fam.roots, displayTitle, fam.matchedWord)}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

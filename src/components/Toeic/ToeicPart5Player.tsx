@@ -10,7 +10,7 @@ import {
   InformationCircleIcon, ListBulletIcon, ArrowPathIcon,
   BookOpenIcon, SpeakerWaveIcon
 } from "@heroicons/react/24/solid";
-import { LayoutDashboard, Send, Edit2, Flag, PenLine, HelpCircle } from "lucide-react";
+import { LayoutDashboard, Send, Edit2, Flag, PenLine, HelpCircle, Volume2 } from "lucide-react";
 import { AdminInlineEditor } from "@/components/Admin/AdminInlineEditor";
 import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
 import confetti from 'canvas-confetti';
@@ -171,6 +171,10 @@ export default function ToeicPart5Player({
   // --- WORD FAMILY STATE ---
   const [activeWordFamily, setActiveWordFamily] = useState<any[]>([]);
   const [popoverPos, setPopoverPos] = useState({ x: 200, y: 200 });
+
+  useEffect(() => {
+    setActiveWordFamily([]);
+  }, [currentIndex]);
 
   // Lắng nghe sự kiện từ Tour để tự động mở bung Sidebar làm ví dụ
   useEffect(() => {
@@ -831,10 +835,21 @@ export default function ToeicPart5Player({
                 }
                 const rect = e.currentTarget.getBoundingClientRect();
                 const parentRect = e.currentTarget.parentElement?.getBoundingClientRect() || rect;
-                setPopoverPos({
-                  x: Math.min(window.innerWidth - 370, Math.max(20, parentRect.left)),
-                  y: Math.min(window.innerHeight - 420, parentRect.bottom + window.scrollY + 8)
-                });
+                const popoverHeight = 360;
+                const popoverWidth = 380;
+                let x = parentRect.left;
+                if (x + popoverWidth > window.innerWidth) {
+                  x = Math.max(10, window.innerWidth - popoverWidth - 20);
+                } else {
+                  x = Math.max(10, x);
+                }
+                let y = parentRect.bottom + 8;
+                if (y + popoverHeight > window.innerHeight && parentRect.top > popoverHeight + 20) {
+                  y = parentRect.top - popoverHeight - 8;
+                } else if (y + popoverHeight > window.innerHeight) {
+                  y = Math.max(10, window.innerHeight - popoverHeight - 20);
+                }
+                setPopoverPos({ x, y });
                 setActiveWordFamily(matchedFamilies);
               }}
               className="absolute -top-[5px] -right-[6px] text-blue-400 hover:text-blue-600 transition-colors z-10 p-0 m-0 cursor-pointer"
@@ -988,10 +1003,21 @@ export default function ToeicPart5Player({
               }
               const rect = e.currentTarget.getBoundingClientRect();
               const parentRect = e.currentTarget.parentElement?.getBoundingClientRect() || rect;
-              setPopoverPos({
-                x: Math.min(window.innerWidth - 370, Math.max(20, parentRect.left)),
-                y: Math.min(window.innerHeight - 420, parentRect.bottom + window.scrollY + 8)
-              });
+              const popoverHeight = 360;
+              const popoverWidth = 380;
+              let x = parentRect.left;
+              if (x + popoverWidth > window.innerWidth) {
+                x = Math.max(10, window.innerWidth - popoverWidth - 20);
+              } else {
+                x = Math.max(10, x);
+              }
+              let y = parentRect.bottom + 8;
+              if (y + popoverHeight > window.innerHeight && parentRect.top > popoverHeight + 20) {
+                y = parentRect.top - popoverHeight - 8;
+              } else if (y + popoverHeight > window.innerHeight) {
+                y = Math.max(10, window.innerHeight - popoverHeight - 20);
+              }
+              setPopoverPos({ x, y });
               setActiveWordFamily(famList);
             }}
             className="absolute -top-[5px] -right-[6px] text-blue-400 hover:text-blue-600 transition-colors z-10 p-0 m-0 cursor-pointer"
@@ -2063,6 +2089,94 @@ interface DraggablePopoverProps {
 }
 
 function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }: DraggablePopoverProps) {
+  const speak = async (text: string, type: 'uk' | 'us' = 'us') => {
+    if (typeof window === 'undefined') return;
+
+    const fallbackSpeak = (t: string) => {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(t);
+      const voices = window.speechSynthesis.getVoices();
+      const voice = voices.find(v => {
+        if (type === 'uk') return v.lang === 'en-GB';
+        return v.lang === 'en-US' || v.lang === 'en_US';
+      }) || voices.find(v => v.lang.startsWith('en'));
+      if (voice) utterance.voice = voice;
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    };
+
+    const cleanSpeechText = text.replace(/\s*\([^)]*\)/g, '').trim();
+    if (cleanSpeechText.includes(' ')) {
+      fallbackSpeak(cleanSpeechText);
+      return;
+    }
+
+    const cleanWord = cleanSpeechText.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const cacheKey = `${cleanWord}_${type}`;
+
+    if (audioCache.has(cacheKey)) {
+      const cachedUrl = audioCache.get(cacheKey)!;
+      if (cachedUrl === 'tts') {
+        fallbackSpeak(cleanSpeechText);
+      } else {
+        const audio = new Audio(cachedUrl);
+        audio.play().catch(() => fallbackSpeak(cleanSpeechText));
+      }
+      return;
+    }
+
+    const folder = type === 'us' ? 'ame' : 'bre';
+    const legacySuffix = type === 'us' ? '__us_1' : '__gb_1';
+
+    const urls = [
+      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}.mp3`,
+      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}1.mp3`,
+      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}2.mp3`,
+      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}${legacySuffix}.mp3`
+    ];
+
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    try {
+      const checkPromises = urls.map(async (url, index) => {
+        try {
+          const timeoutPromise = new Promise<null>((_, reject) =>
+            setTimeout(() => reject(new Error('timeout')), 1000)
+          );
+          const fetchPromise = fetch(url, { method: 'HEAD', signal });
+          const response = await Promise.race([fetchPromise, timeoutPromise]);
+          if (response && response.status === 200) {
+            return { index, url, exists: true };
+          }
+          return { index, url, exists: false };
+        } catch {
+          return { index, url, exists: false };
+        }
+      });
+
+      const results = await Promise.all(checkPromises);
+      const validResults = results
+        .filter(r => r.exists)
+        .sort((a, b) => a.index - b.index);
+
+      if (validResults.length > 0) {
+        const bestUrl = validResults[0].url;
+        audioCache.set(cacheKey, bestUrl);
+        const audio = new Audio(bestUrl);
+        audio.play().catch(() => fallbackSpeak(cleanSpeechText));
+      } else {
+        audioCache.set(cacheKey, 'tts');
+        fallbackSpeak(cleanSpeechText);
+      }
+    } catch (err) {
+      fallbackSpeak(cleanSpeechText);
+    } finally {
+      controller.abort();
+    }
+  };
+
   const wordFamily = wordFamilies[0]; // primary entry for display
   const popoverRef = useRef<HTMLDivElement>(null);
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
@@ -2107,80 +2221,50 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
   const formatContent = (val: string, key: string, type: string, roots?: string[], displayTitle?: string) => {
     const lines = val.split('\n');
 
-    // Helper: render a raw string fragment with rich inline styling
-    const renderRichText = (raw: string, termRegex: RegExp | null, termLower: string): React.ReactNode[] => {
-      // Step 1: split by bracket groups [...]
-      const bracketSplit = /([\[（][^\]）]*[\]）])/g;
-      const bracketParts = raw.split(bracketSplit);
+    // Build term matching info
+    const searchTerms = type === 'root' && roots
+      ? roots
+      : [displayTitle ? displayTitle.toLowerCase() : key.replace(/[\/,]/g, ' ').split(' ')[0]];
+    const firstTerm = searchTerms[0] || '';
+    const termLower = firstTerm.toLowerCase();
+    const termRegex = firstTerm.length >= 2
+      ? (type === 'root'
+        ? new RegExp(`(${firstTerm})`, 'gi')
+        : new RegExp(`\\b(${firstTerm})\\b`, 'gi'))
+      : null;
 
-      const result: React.ReactNode[] = [];
-      bracketParts.forEach((seg, bIdx) => {
-        if ((seg.startsWith('[') && seg.endsWith(']')) || (seg.startsWith('（') && seg.endsWith('）'))) {
-          // Bracket explanation: teal color for easy reading
-          result.push(
-            <span key={`br-${bIdx}`} className="text-teal-600 text-[0.82em] font-normal">
-              {seg}
+    const vietnameseRegex = /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễđìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹ]/i;
+
+    const highlightTerm = (text: string) => {
+      if (!termRegex || !text) return text;
+      termRegex.lastIndex = 0;
+      const parts = text.split(termRegex);
+      return parts.map((part, i) => {
+        if (part.toLowerCase() === termLower) {
+          return (
+            <span key={i} className="text-amber-600 font-bold">
+              {part}
             </span>
           );
-          return;
         }
-
-        // Step 2: highlight prefix/suffix tokens like "as-", "-sign-", "re-"
-        // Detect tokens that start and/or end with a hyphen (affix markers)
-        // Split by spaces to get tokens, then check each token's shape
-        const isAffixToken = (tok: string) => {
-          const t = tok.replace(/[().,!?;:'"]/g, '');
-          // Must start with "-" or end with "-" and have alphabetic content
-          return /^-[a-zA-Z]{2,10}-?$/.test(t) || /^[a-zA-Z]{1,6}-$/.test(t);
-        };
-
-        // Split segment into affix-aware parts by looking at space-separated tokens
-        const words = seg.split(/(\s+)/);
-        words.forEach((tok, wIdx) => {
-          if (/^\s+$/.test(tok)) {
-            result.push(tok);
-            return;
-          }
-          if (isAffixToken(tok)) {
-            result.push(
-              <span key={`af-${bIdx}-${wIdx}`} className="text-amber-600 font-semibold">
-                {tok}
-              </span>
-            );
-            return;
-          }
-
-          // Step 3: highlight the root/key term inside normal text
-          if (!termRegex) {
-            result.push(tok);
-            return;
-          }
-          termRegex.lastIndex = 0;
-          const subParts = tok.split(termRegex);
-          subParts.forEach((sub, sIdx) => {
-            if (sub.toLowerCase() === termLower) {
-              result.push(
-                <span key={`term-${bIdx}-${wIdx}-${sIdx}`} className="text-amber-600 font-semibold">
-                  {sub}
-                </span>
-              );
-            } else {
-              result.push(sub);
-            }
-          });
-        });
+        return part;
       });
-
-      return result;
     };
 
+    return lines.map((line: string, idx: number) => {
+      let cleanLine = line.trim();
+      if (cleanLine.length === 0) return null;
 
-    return lines.map((line, idx) => {
-      const trimmed = line.trim();
-      if (trimmed.length === 0) return null;
+      // Strip leading and trailing brackets from the entire line if they wrap the line
+      if (cleanLine.startsWith('[') && cleanLine.endsWith(']')) {
+        cleanLine = cleanLine.slice(1, -1);
+      }
+
+      // Normalize common synonyms labels
+      cleanLine = cleanLine.replace(/Đồng nghĩa TOEIC hay gặp/gi, 'Các từ/cụm từ tương tự');
 
       let lineClass = "text-slate-700 text-sm leading-relaxed my-1.5 font-medium";
-      const lowerTrimmed = trimmed.toLowerCase();
+      const lowerTrimmed = cleanLine.toLowerCase();
       if (
         lowerTrimmed.startsWith('gốc:') || 
         lowerTrimmed.startsWith('goc:') || 
@@ -2190,52 +2274,167 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
         lowerTrimmed.startsWith('hau to:')
       ) {
         lineClass = "text-red-600 text-sm leading-relaxed my-1.5 font-bold";
-      } else if (trimmed.startsWith('=') || trimmed.startsWith('~')) {
+      } else if (cleanLine.startsWith('=') || cleanLine.startsWith('~')) {
         lineClass = "text-emerald-700 text-sm leading-relaxed my-1.5 font-bold";
-      } else if (trimmed.startsWith('><')) {
+      } else if (cleanLine.startsWith('><')) {
         lineClass = "text-red-600 text-sm leading-relaxed my-1.5 font-bold";
-      } else if (trimmed.includes('->') || trimmed.startsWith('-')) {
+      } else if (cleanLine.includes('->') || cleanLine.startsWith('-')) {
         lineClass = "text-indigo-700 text-sm leading-relaxed my-1.5 font-semibold";
       }
 
-      // Build term matching info
-      const searchTerms = type === 'root' && roots
-        ? roots
-        : [displayTitle ? displayTitle.toLowerCase() : key.replace(/[\/,]/g, ' ').split(' ')[0]];
-
-      // For bullet lines (starting with • or *), bold the example word before the first colon
-      const isBullet = trimmed.startsWith('•') || trimmed.startsWith('*') || trimmed.startsWith('·');
-
-      // We process the entire line by applying all search terms sequentially
-      // For simplicity, use the first term for coloring (roots handled separately)
-      const firstTerm = searchTerms[0] || '';
-      const termLower = firstTerm.toLowerCase();
-      const termRegex = firstTerm.length >= 2
-        ? (type === 'root'
-          ? new RegExp(`(${firstTerm})`, 'gi')
-          : new RegExp(`\\b(${firstTerm})\\b`, 'gi'))
-        : null;
-
-      if (isBullet) {
-        // Split: bullet marker + example word(s) before first ":" + rest
-        // Pattern: "• word(s) pos:" or "• word / word:"
-        const bulletMatch = trimmed.match(/^([•*·]\s*)([\w\s/,'-]+?)(\s*(?:v|n|adj|adv|prep|conj|phr|phrase)?\.?:)([\s\S]*)/);
-        if (bulletMatch) {
-          const [, marker, exWord, colon, rest] = bulletMatch;
-          return (
-            <div key={idx} className={lineClass}>
-              <span>{marker}</span>
-              <span className="font-bold text-slate-900">{exWord}</span>
-              <span className="font-semibold text-slate-600">{colon}</span>
-              {renderRichText(rest, termRegex, termLower)}
-            </div>
-          );
+      // Check if it is a list or synonym line that should be displayed in a 2-column grid
+      const isGridLine = cleanLine.startsWith('=') || cleanLine.startsWith('~') || cleanLine.startsWith('><') || cleanLine.includes('↔') || cleanLine.includes('|');
+      if (isGridLine) {
+        const rawItems = cleanLine.includes('↔') 
+          ? cleanLine.split('↔') 
+          : (cleanLine.includes('|') ? cleanLine.split('|') : cleanLine.split(/,(?![^(]*\))/));
+        
+        let prefix = "";
+        const prefixMatch = rawItems[0].match(/^([=~><]+\s*)/);
+        if (prefixMatch) {
+          prefix = prefixMatch[1];
+          rawItems[0] = rawItems[0].slice(prefix.length);
         }
+
+        return (
+          <div key={idx} className={lineClass}>
+            {prefix && <span className="font-bold text-slate-500 mr-2">{prefix}</span>}
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-1">
+              {rawItems.map((item, i) => {
+                const word = item.trim();
+                if (!word) return null;
+
+                const tokens = word.split(/(\[.*?\]|\(.*?\))/g);
+                return (
+                  <div key={i} className="flex items-start gap-1 min-w-0">
+                    {tokens.map((tok, tIdx) => {
+                      if (!tok) return null;
+                      if ((tok.startsWith('[') && tok.endsWith(']')) || (tok.startsWith('(') && tok.endsWith(')'))) {
+                        let displayTok = tok;
+                        if (displayTok.startsWith('[') && displayTok.endsWith(']')) {
+                          displayTok = displayTok.slice(1, -1);
+                          return (
+                            <span key={tIdx} className="text-teal-600 text-[0.85em] font-normal px-1 bg-teal-50/50 rounded whitespace-normal">
+                              {displayTok}
+                            </span>
+                          );
+                        }
+                        return (
+                          <span key={tIdx} className="text-slate-500 font-normal text-xs italic">
+                            {displayTok}
+                          </span>
+                        );
+                      }
+                      
+                      const hasVietnamese = vietnameseRegex.test(tok);
+                      const hasEnglishLetters = /[a-zA-Z0-9]/.test(tok);
+                      if (hasEnglishLetters && !hasVietnamese) {
+                        const cleanSpeech = tok.replace(/\(.*?\)/g, '').trim();
+                        return (
+                          <span
+                            key={tIdx}
+                            onClick={() => speak(cleanSpeech)}
+                            className="cursor-pointer hover:underline text-slate-900 font-semibold inline-flex items-center gap-0.5 shrink-0"
+                            title={`Nghe: ${cleanSpeech}`}
+                          >
+                            <span>{highlightTerm(tok)}</span>
+                            <Volume2 className="w-3.5 h-3.5 text-slate-400/80 hover:text-blue-600 transition-colors shrink-0" />
+                          </span>
+                        );
+                      }
+                      return <span key={tIdx}>{highlightTerm(tok)}</span>;
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
       }
 
-      // Default: render with rich inline styling
-      const richParts = renderRichText(line, termRegex, termLower);
-      return <div key={idx} className={lineClass}>{richParts}</div>;
+      // Default/Normal Line rendering (1 column)
+      const tokens = cleanLine.split(/([,;=~:|]|\->|↔|\[.*?\]|\(.*?\))/g);
+      return (
+        <div key={idx} className={`${lineClass} flex flex-wrap items-center gap-x-1.5 gap-y-0.5`}>
+          {tokens.map((tok: string, tIdx: number) => {
+            if (!tok) return null;
+
+            // 1. Bracketed or parenthesized note
+            if ((tok.startsWith('[') && tok.endsWith(']')) || (tok.startsWith('(') && tok.endsWith(')'))) {
+              let displayTok = tok;
+              if (displayTok.startsWith('[') && displayTok.endsWith(']')) {
+                displayTok = displayTok.slice(1, -1);
+                return (
+                  <span key={tIdx} className="text-teal-600 text-[0.85em] font-normal px-1 bg-teal-50/50 rounded">
+                    {displayTok}
+                  </span>
+                );
+              }
+              return (
+                <span key={tIdx} className="text-slate-500 font-normal text-xs italic">
+                  {displayTok}
+                </span>
+              );
+            }
+
+            // 2. Delimiter or symbol
+            if (/^([,;=~:|]|\->|↔)$/.test(tok.trim())) {
+              return (
+                <span key={tIdx} className="text-slate-400 font-semibold mx-0.5">
+                  {tok}
+                </span>
+              );
+            }
+
+            // 3. Regular text token
+            const trimmedTok = tok.trim();
+            if (trimmedTok.length === 0) {
+              return <span key={tIdx}>&nbsp;</span>;
+            }
+
+            // Strip bullet / dash prefix if present
+            const bulletMatch = tok.match(/^([•*·\-]+\s*)(.*)/);
+            let prefix = "";
+            let coreText = tok;
+            if (bulletMatch) {
+              prefix = bulletMatch[1];
+              coreText = bulletMatch[2];
+            }
+
+            const trimmedCore = coreText.trim();
+            if (trimmedCore.length === 0) {
+              return <span key={tIdx}>{prefix}</span>;
+            }
+
+            const hasVietnamese = vietnameseRegex.test(trimmedCore);
+            const hasEnglishLetters = /[a-zA-Z0-9]/.test(trimmedCore);
+
+            if (hasEnglishLetters && !hasVietnamese) {
+              const cleanSpeech = trimmedCore.replace(/\(.*?\)/g, '').trim();
+              return (
+                <span key={tIdx} className="inline-flex items-center gap-0.5">
+                  {prefix && <span className="text-slate-400 font-bold mr-0.5">{prefix}</span>}
+                  <span
+                    onClick={() => speak(cleanSpeech)}
+                    className="cursor-pointer hover:underline text-slate-900 font-semibold inline-flex items-center gap-0.5"
+                    title={`Nghe: ${cleanSpeech}`}
+                  >
+                    <span>{highlightTerm(coreText)}</span>
+                    <Volume2 className="w-3.5 h-3.5 text-slate-400/80 hover:text-blue-600 transition-colors shrink-0" />
+                  </span>
+                </span>
+              );
+            }
+
+            return (
+              <span key={tIdx}>
+                {prefix && <span className="text-slate-400 font-bold mr-0.5">{prefix}</span>}
+                <span>{highlightTerm(coreText)}</span>
+              </span>
+            );
+          })}
+        </div>
+      );
     });
   };
 

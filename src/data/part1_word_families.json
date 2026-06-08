@@ -1,0 +1,1069 @@
+[
+  {
+    "id": "part1-row-1",
+    "type": "word",
+    "key": "Cắm điện ↔ Rút điện",
+    "words": [
+      "plug",
+      "plug in",
+      "unplug",
+      "insert plug into outlet",
+      "disconnect plug from outlet"
+    ],
+    "originalValue": "plug / plug in (cắm điện, cắm phích cắm), unplug (rút phích cắm, ngắt điện)\r\n[Đồng nghĩa TOEIC hay gặp: insert plug into outlet (\"cắm phích cắm vào ổ điện\") ↔ disconnect plug from outlet (\"rút phích cắm khỏi ổ\")]"
+  },
+  {
+    "id": "part1-row-2",
+    "type": "word",
+    "key": "Bật ↔ Tắt thiết bị điện tử",
+    "words": [
+      "turn on",
+      "switch on",
+      "turn off",
+      "switch off"
+    ],
+    "originalValue": "turn on / switch on (bật thiết bị), turn off / switch off (tắt thiết bị)\r\n[Đồng nghĩa TOEIC hay gặp: switch on (\"bật công tắc\") ↔ switch off (\"tắt công tắc\")]"
+  },
+  {
+    "id": "part1-row-3",
+    "type": "word",
+    "key": "Chất hàng lên ↔ Dỡ hàng xuống",
+    "words": [
+      "load",
+      "unload",
+      "load cargo onto",
+      "remove cargo from"
+    ],
+    "originalValue": "load (chất hàng lên xe), unload (dỡ hàng xuống)\r\n[Đồng nghĩa TOEIC hay gặp: load cargo onto (\"chất hàng lên\") ↔ remove cargo from (\"dỡ hàng xuống\")]"
+  },
+  {
+    "id": "part1-row-4",
+    "type": "word",
+    "key": "Đóng gói vào ↔ Mở gói, tháo dỡ ra",
+    "words": [
+      "pack",
+      "unpack",
+      "wrap up",
+      "open up"
+    ],
+    "originalValue": "pack (đóng gói hàng hóa), unpack (mở gói, tháo dỡ)\r\n[Đồng nghĩa TOEIC hay gặp: wrap up (\"gói quà, bọc kín\") ↔ open up (\"mở tung ra\")]"
+  },
+  {
+    "id": "part1-row-5",
+    "type": "word",
+    "key": "Buộc chặt, thắt chặt ↔ Cởi trói, nới lỏng",
+    "words": [
+      "tie",
+      "fasten",
+      "untie",
+      "loosen",
+      "fasten securely",
+      "undo",
+      "unfasten"
+    ],
+    "originalValue": "tie / fasten (buộc, thắt (dây giày, cà vạt, dây an toàn)), untie / loosen (cởi trói, nới lỏng dây)\r\n[Đồng nghĩa TOEIC hay gặp: fasten securely (\"thắt chặt an toàn\") ↔ undo / unfasten (\"tháo ra, mở ra\")]"
+  },
+  {
+    "id": "part1-row-6",
+    "type": "word",
+    "key": "Mở ↔ Đóng, gài chặt, niêm phong",
+    "words": [
+      "open",
+      "close",
+      "shut",
+      "unseal",
+      "seal"
+    ],
+    "originalValue": "open (mở cửa, mở nắp), close / shut (đóng cửa, gài chặt)\r\n[Đồng nghĩa TOEIC hay gặp: unseal (\"mở niêm phong, khui nắp\") ↔ seal (\"gài chặt, dán kín, niêm phong\")]"
+  },
+  {
+    "id": "part1-row-7",
+    "type": "word",
+    "key": "Đặt, để, định vị trí",
+    "words": [
+      "place",
+      "put",
+      "set",
+      "position",
+      "deposit",
+      "lay",
+      "install",
+      "leave"
+    ],
+    "originalValue": "place (đặt, để), put (đặt, để), set (thiết lập, đặt, bố trí), position (định vị, đặt vào vị trí)\r\n[Đồng nghĩa TOEIC hay gặp: deposit (\"đặt xuống, để lại\"), lay (\"đặt, đặt nằm\"), install (\"lắp đặt, đặt vào\"), leave (\"để lại\")]"
+  },
+  {
+    "id": "part1-row-8",
+    "type": "word",
+    "key": "Nội thất bàn ghế, bục phát biểu",
+    "words": [
+      "chair",
+      "desk",
+      "table",
+      "furniture",
+      "sofa",
+      "bench",
+      "stool",
+      "podium",
+      "armchair",
+      "seating",
+      "furnishings"
+    ],
+    "originalValue": "chair (ghế), desk (bàn làm việc), table (bàn), furniture (đồ nội thất), sofa (ghế sofa), bench (ghế dài), stool (ghế đẩu), podium (bục phát biểu)\r\n[Đồng nghĩa TOEIC hay gặp: armchair (\"ghế bành\"), seating (\"chỗ ngồi\"), furnishings (\"đồ đạc nội thất\")]"
+  },
+  {
+    "id": "part1-row-9",
+    "type": "word",
+    "key": "Cây xanh, thực vật (Cảnh quan)",
+    "words": [
+      "tree",
+      "plant",
+      "flower",
+      "leaf",
+      "bush",
+      "flowerpot",
+      "shrub",
+      "greenery",
+      "foliage",
+      "vegetation"
+    ],
+    "originalValue": "tree (cây cối), plant (cây nhỏ, chậu cây), flower (hoa), leaf (lá cây), bush (bụi cây), flowerpot (chậu hoa), shrub (bụi cây thấp)\r\n[Đồng nghĩa TOEIC hay gặp: greenery (\"mảng xanh, cây cối\"), foliage (\"tán lá, bộ lá\"), vegetation (\"thảm thực vật\")]"
+  },
+  {
+    "id": "part1-row-10",
+    "type": "word",
+    "key": "Trồng trọt, tưới nước, làm vườn, đào đất",
+    "words": [
+      "plant",
+      "water",
+      "pot",
+      "shovel",
+      "dig",
+      "rake",
+      "garden",
+      "seed",
+      "sow",
+      "weed",
+      "repot"
+    ],
+    "originalValue": "plant (trồng cây), water (tưới nước), pot (trồng vào chậu), shovel (xúc (bằng xẻng)), dig (đào đất), rake (cào (lá, cỏ))\r\n[Đồng nghĩa TOEIC hay gặp: garden (\"làm vườn\"), seed / sow (\"gieo hạt\"), weed (\"nhổ cỏ\"), repot (\"thay chậu cây\")]"
+  },
+  {
+    "id": "part1-row-11",
+    "type": "word",
+    "key": "Lắp đặt thiết bị, sửa chữa, sơn vẽ",
+    "words": [
+      "paint",
+      "fix",
+      "install",
+      "repair",
+      "hammer",
+      "mend",
+      "service",
+      "renovate"
+    ],
+    "originalValue": "paint (sơn vẽ), fix (sửa chữa, cố định), install (lắp đặt), repair (sửa chữa), hammer (đóng búa)\r\n[Đồng nghĩa TOEIC hay gặp: mend (\"sửa chữa, vá\"), service (\"bảo trì\"), renovate (\"tân trang\")]"
+  },
+  {
+    "id": "part1-row-12",
+    "type": "word",
+    "key": "Đứng, ngồi, nằm, chờ đợi, nghỉ ngơi (Tư thế)",
+    "words": [
+      "stand",
+      "wait",
+      "rest",
+      "turn",
+      "lie",
+      "sit",
+      "occupy",
+      "stretch",
+      "be seated",
+      "remain standing",
+      "lounge",
+      "relax"
+    ],
+    "originalValue": "stand (đứng), wait (chờ đợi), rest (nghỉ ngơi), turn (xoay, quay), lie (nằm), sit (ngồi), occupy (chiếm chỗ, có người ngồi), stretch (vươn vai, kéo giãn)\r\n[Đồng nghĩa TOEIC hay gặp: be seated (\"đang ngồi\"), remain standing (\"vẫn đang đứng\"), lounge (\"thư giãn, ngồi nghỉ\"), relax (\"thư giãn\")]"
+  },
+  {
+    "id": "part1-row-13",
+    "type": "word",
+    "key": "Tủ đựng đồ, giá kệ sách, ngăn kéo",
+    "words": [
+      "shelf",
+      "cabinet",
+      "drawer",
+      "rack",
+      "cupboard",
+      "bookshelf",
+      "bookcase",
+      "wardrobe",
+      "file cabinet"
+    ],
+    "originalValue": "shelf (giá, kệ), cabinet (tủ), drawer (ngăn kéo), rack (giá đỡ, kệ treo), cupboard (tủ chén), bookshelf (giá sách)\r\n[Đồng nghĩa TOEIC hay gặp: bookcase (\"tủ sách\"), wardrobe (\"tủ quần áo\"), file cabinet (\"tủ hồ sơ\")]"
+  },
+  {
+    "id": "part1-row-14",
+    "type": "word",
+    "key": "Đi bộ, chạy bộ, di chuyển (Không phương tiện)",
+    "words": [
+      "walk",
+      "climb",
+      "cross",
+      "run",
+      "stroll",
+      "march",
+      "ascend",
+      "walk across"
+    ],
+    "originalValue": "walk (đi bộ), climb (leo, trèo), cross (băng qua), run (chạy)\r\n[Đồng nghĩa TOEIC hay gặp: stroll (\"đi dạo\"), march (\"đi đều bước\"), ascend (\"leo lên\"), walk across (\"đi bộ băng qua\")]"
+  },
+  {
+    "id": "part1-row-15",
+    "type": "word",
+    "key": "Phương tiện giao thông đường bộ có động cơ",
+    "words": [
+      "car",
+      "vehicle",
+      "truck",
+      "van",
+      "automobile",
+      "motorcycle",
+      "bus",
+      "cab",
+      "taxi",
+      "coach",
+      "pickup truck"
+    ],
+    "originalValue": "car (xe ô tô), vehicle (phương tiện giao thông), truck (xe tải), van (xe giao hàng, xe van), automobile (xe ô tô), motorcycle (xe máy), bus (xe buýt)\r\n[Đồng nghĩa TOEIC hay gặp: cab / taxi (\"xe taxi\"), coach (\"xe khách\"), pickup truck (\"xe bán tải\")]"
+  },
+  {
+    "id": "part1-row-16",
+    "type": "word",
+    "key": "Giỏ, khay đựng đồ, chậu, tô, cốc",
+    "words": [
+      "cup",
+      "basket",
+      "bottle",
+      "tray",
+      "pot",
+      "bowl",
+      "mug",
+      "jar",
+      "bucket",
+      "pail",
+      "crockery",
+      "tableware",
+      "glass"
+    ],
+    "originalValue": "cup (tách, ly), basket (giỏ, rổ), bottle (chai, lọ), tray (khay, mâm), pot (chậu cây, nồi), bowl (tô, bát), mug (cốc có quai), jar (hũ, lọ thủy tinh)\r\n[Đồng nghĩa TOEIC hay gặp: bucket / pail (\"xô đựng nước\"), crockery / tableware (\"bát đĩa sứ\"), glass (\"ly thủy tinh\")]"
+  },
+  {
+    "id": "part1-row-17",
+    "type": "word",
+    "key": "Xếp chồng, chất đống, rải rác",
+    "words": [
+      "stack",
+      "pile",
+      "scatter",
+      "stack up",
+      "pile up",
+      "heap up",
+      "accumulate"
+    ],
+    "originalValue": "stack (xếp chồng), pile (chất đống), scatter (rải rác, gieo rắc)\r\n[Đồng nghĩa TOEIC hay gặp: stack up (\"xếp chồng lên\"), pile up (\"chất đống lên\"), heap up (\"chất đống cao\"), accumulate (\"tích tụ, chất chồng\")]"
+  },
+  {
+    "id": "part1-row-18",
+    "type": "word",
+    "key": "Túi xách, vali, hành lý cá nhân",
+    "words": [
+      "bag",
+      "suitcase",
+      "luggage",
+      "backpack",
+      "baggage",
+      "briefcase",
+      "purse",
+      "handbag"
+    ],
+    "originalValue": "bag (túi, cặp), suitcase (vali), luggage (hành lý), backpack (ba lô)\r\n[Đồng nghĩa TOEIC hay gặp: baggage (\"hành lý\"), briefcase (\"cặp tài liệu da\"), purse / handbag (\"ví cầm tay, túi xách nữ\")]"
+  },
+  {
+    "id": "part1-row-19",
+    "type": "word",
+    "key": "Làm việc, sử dụng công cụ thiết bị",
+    "words": [
+      "work",
+      "use",
+      "labor",
+      "perform tasks",
+      "utilize"
+    ],
+    "originalValue": "work (làm việc), use (sử dụng)\r\n[Đồng nghĩa TOEIC hay gặp: labor (\"lao động\"), perform tasks (\"thực hiện công việc\"), utilize (\"tận dụng\")]"
+  },
+  {
+    "id": "part1-row-20",
+    "type": "word",
+    "key": "Phương tiện thô sơ, xe đẩy tay",
+    "words": [
+      "cart",
+      "bicycle",
+      "bike",
+      "wheelbarrow",
+      "trolley",
+      "stroller",
+      "wagon"
+    ],
+    "originalValue": "cart (xe đẩy hàng), bicycle (xe đạp), bike (xe đạp/máy), wheelbarrow (xe cút kít)\r\n[Đồng nghĩa TOEIC hay gặp: trolley (\"xe đẩy siêu thị\"), stroller (\"xe đẩy em bé\"), wagon (\"xe kéo tay gỗ\")]"
+  },
+  {
+    "id": "part1-row-21",
+    "type": "word",
+    "key": "Trang phục mặc trên người (Áo khoác, tạp dề...)",
+    "words": [
+      "jacket",
+      "clothing",
+      "coat",
+      "apron",
+      "uniform",
+      "attire",
+      "garment",
+      "apparel",
+      "outfit",
+      "gear",
+      "safety vest"
+    ],
+    "originalValue": "jacket (áo khoác), clothing (quần áo), coat (áo khoác dài), apron (tạp dề), uniform (đồng phục), attire (trang phục), garment (quần áo, hàng may mặc)\r\n[Đồng nghĩa TOEIC hay gặp: apparel / outfit (\"trang phục, bộ đồ\"), gear (\"đồ bảo hộ, trang bị\"), safety vest (\"áo bảo hộ phản quang\")]"
+  },
+  {
+    "id": "part1-row-22",
+    "type": "word",
+    "key": "Cúi, nghiêng, khom người (Tư thế thân thể)",
+    "words": [
+      "lean",
+      "lean over",
+      "bend",
+      "bend over",
+      "stoop",
+      "lean forward",
+      "bow down",
+      "stoop over"
+    ],
+    "originalValue": "lean (tựa, nghiêng người), lean over (cúi/nghiêng người qua), bend (cúi người, uốn cong), bend over (cúi người xuống)\r\n[Đồng nghĩa TOEIC hay gặp: stoop (\"khom lưng, cúi người\"), lean forward (\"cúi người về trước\"), bow down (\"cúi rạp người\"), stoop over (\"cúi khom người\")]"
+  },
+  {
+    "id": "part1-row-23",
+    "type": "word",
+    "key": "Với tay, chạm tới (Động tác tay)",
+    "words": [
+      "reach",
+      "reach for",
+      "reach into",
+      "extend one's arm",
+      "stretch out one's hand",
+      "reach out for"
+    ],
+    "originalValue": "reach (với tay, chạm tới), reach for (với tay lấy cái gì), reach into (với tay vào trong)\r\n[Đồng nghĩa TOEIC hay gặp: extend one's arm (\"vươn tay ra\"), stretch out one's hand (\"với tay ra\"), reach out for (\"với tay lấy\")]"
+  },
+  {
+    "id": "part1-row-24",
+    "type": "word",
+    "key": "Treo móc, gắn cố định vào tường",
+    "words": [
+      "hang",
+      "suspend",
+      "attach",
+      "mount on",
+      "fasten to",
+      "pin up"
+    ],
+    "originalValue": "hang (treo), suspend (treo lơ lửng), attach (gắn vào, đính kèm)\r\n[Đồng nghĩa TOEIC hay gặp: mount on (\"gắn cố định lên tường\"), fasten to (\"buộc chặt vào\"), pin up (\"ghim lên\")]"
+  },
+  {
+    "id": "part1-row-25",
+    "type": "word",
+    "key": "Nhìn, xem, quan sát chung",
+    "words": [
+      "look",
+      "watch",
+      "observe",
+      "admire",
+      "gawk"
+    ],
+    "originalValue": "look (nhìn), watch (theo dõi, xem)\r\n[Đồng nghĩa TOEIC hay gặp: observe (\"quan sát\"), admire (\"ngắm nhìn, chiêm ngưỡng\"), gawk (\"nhìn ngơ ngác\")]"
+  },
+  {
+    "id": "part1-row-26",
+    "type": "word",
+    "key": "Đường giao thông chính, cầu cống, giao lộ",
+    "words": [
+      "road",
+      "street",
+      "bridge",
+      "intersection",
+      "lane",
+      "avenue",
+      "crosswalk"
+    ],
+    "originalValue": "road (đường lộ), street (đường phố), bridge (cây cầu), intersection (giao lộ, ngã tư)\r\n[Đồng nghĩa TOEIC hay gặp: lane (\"làn đường\"), avenue (\"đại lộ\"), crosswalk (\"vạch kẻ đường\")]"
+  },
+  {
+    "id": "part1-row-27",
+    "type": "word",
+    "key": "Vỉa hè, lối đi bộ ngoài trời",
+    "words": [
+      "walkway",
+      "path",
+      "pavement",
+      "driveway",
+      "sidewalk",
+      "pedestrian path",
+      "boardwalk",
+      "track"
+    ],
+    "originalValue": "walkway (lối đi bộ), path (đường mòn, lối đi), pavement (vỉa hè, mặt đường nhựa), driveway (đường xe chạy vào nhà), sidewalk (vỉa hè)\r\n[Đồng nghĩa TOEIC hay gặp: pedestrian path (\"đường đi bộ\"), boardwalk (\"đường lát ván gỗ\"), track (\"đường chạy\")]"
+  },
+  {
+    "id": "part1-row-28",
+    "type": "word",
+    "key": "Lắp ráp, xây dựng kết cấu",
+    "words": [
+      "build",
+      "construct",
+      "assemble",
+      "erect",
+      "put together",
+      "frame"
+    ],
+    "originalValue": "build (xây dựng), construct (xây dựng, thi công), assemble (lắp ráp)\r\n[Đồng nghĩa TOEIC hay gặp: erect (\"dựng lên (hàng rào, cột)\"), put together (\"lắp ráp lại với nhau\"), frame (\"dựng khung\")]"
+  },
+  {
+    "id": "part1-row-29",
+    "type": "word",
+    "key": "Thùng chứa lớn, hộp gỗ, bao bì",
+    "words": [
+      "box",
+      "container",
+      "carton",
+      "bin",
+      "barrel",
+      "canister",
+      "tub",
+      "crate"
+    ],
+    "originalValue": "box (hộp, thùng), container (thùng chứa, vật chứa), carton (hộp bìa cứng)\r\n[Đồng nghĩa TOEIC hay gặp: bin (\"thùng chứa lớn\"), barrel (\"thùng rượu gỗ\"), canister (\"hộp thiếc nhỏ\"), tub (\"chậu to\"), crate (\"thùng gỗ thưa\")]"
+  },
+  {
+    "id": "part1-row-30",
+    "type": "word",
+    "key": "Giấy tờ, tài liệu văn phòng, hóa đơn",
+    "words": [
+      "paper",
+      "file",
+      "document",
+      "menu",
+      "receipt",
+      "copy",
+      "invoice",
+      "records",
+      "stationery",
+      "bill"
+    ],
+    "originalValue": "paper (giấy tờ, tài liệu), file (hồ sơ, tài liệu), document (tài liệu), menu (thực đơn), receipt (biên lai, hóa đơn), copy (bản sao), invoice (biên lai, hóa đơn)\r\n[Đồng nghĩa TOEIC hay gặp: records (\"hồ sơ ghi chép\"), stationery (\"văn phòng phẩm\"), bill (\"hóa đơn tiền điện/nước/ăn uống\")]"
+  },
+  {
+    "id": "part1-row-31",
+    "type": "word",
+    "key": "Lau chùi, đánh bóng, vệ sinh bề mặt",
+    "words": [
+      "wipe",
+      "wash",
+      "polish",
+      "dust",
+      "rub down",
+      "sanitize",
+      "buff"
+    ],
+    "originalValue": "wipe (lau chùi), wash (rửa, giặt), polish (đánh bóng), dust (phủi bụi)\r\n[Đồng nghĩa TOEIC hay gặp: rub down (\"lau chùi kỹ\"), sanitize (\"khử trùng, làm sạch\"), buff (\"đánh bóng bằng khăn\")]"
+  },
+  {
+    "id": "part1-row-32",
+    "type": "word",
+    "key": "Cầm, nắm, giữ trong tay (Trạng thái tĩnh)",
+    "words": [
+      "hold",
+      "grab",
+      "grasp",
+      "grip",
+      "clasp",
+      "seize"
+    ],
+    "originalValue": "hold (cầm, nắm, giữ), grab (giật lấy, bắt lấy), grasp (nắm chặt)\r\n[Đồng nghĩa TOEIC hay gặp: grip (\"nắm chặt\"), clasp (\"ôm, nắm chặt tay\"), seize (\"chộp lấy, bắt lấy\")]"
+  },
+  {
+    "id": "part1-row-33",
+    "type": "word",
+    "key": "Tựa vào, dựa vào, chống đỡ (Tư thế thân thể)",
+    "words": [
+      "lean against",
+      "prop",
+      "prop against",
+      "be propped against",
+      "rest against",
+      "support against"
+    ],
+    "originalValue": "lean against (tựa vào, dựa vào), prop (chống, tựa), prop against (tựa vào, chống đỡ bằng)\r\n[Đồng nghĩa TOEIC hay gặp: be propped against (\"được tựa vào\"), rest against (\"tựa nhẹ vào\"), support against (\"chống đỡ vào\")]"
+  },
+  {
+    "id": "part1-row-34",
+    "type": "word",
+    "key": "Nhặt lên, nhấc lên khỏi mặt đất",
+    "words": [
+      "lift",
+      "pick",
+      "raise",
+      "gather",
+      "elevate",
+      "hoist"
+    ],
+    "originalValue": "lift (nâng lên, nhấc lên), pick (nhặt, hái), raise (nâng lên, giơ lên)\r\n[Đồng nghĩa TOEIC hay gặp: gather (\"thu lượm\"), elevate (\"nâng cao lên\"), hoist (\"kéo lên, trục lên\")]"
+  },
+  {
+    "id": "part1-row-35",
+    "type": "word",
+    "key": "Đưa đồ, trao tay, phân phát",
+    "words": [
+      "hand",
+      "pass",
+      "provide",
+      "distribute",
+      "give",
+      "deliver",
+      "present to",
+      "hand out"
+    ],
+    "originalValue": "hand (trao tay, đưa cho), pass (chuyền, đưa), provide (cung cấp), distribute (phân phát)\r\n[Đồng nghĩa TOEIC hay gặp: give (\"cho, tặng\"), deliver (\"giao tận nơi\"), present to (\"trao cho\"), hand out (\"phân phát bằng tay\")]"
+  },
+  {
+    "id": "part1-row-36",
+    "type": "word",
+    "key": "Máy móc, thiết bị kỹ thuật chung",
+    "words": [
+      "machine",
+      "equipment",
+      "device",
+      "machinery",
+      "instrument",
+      "mechanism",
+      "power tool"
+    ],
+    "originalValue": "machine (máy móc), equipment (thiết bị), device (thiết bị), machinery (máy móc (nói chung))\r\n[Đồng nghĩa TOEIC hay gặp: instrument (\"nhạc cụ, dụng cụ đo đạc\"), mechanism (\"cơ chế, máy móc\"), power tool (\"dụng cụ chạy bằng điện\")]"
+  },
+  {
+    "id": "part1-row-37",
+    "type": "word",
+    "key": "Khuôn viên ngoài trời, sân vườn, bãi cỏ",
+    "words": [
+      "garden",
+      "park",
+      "patio",
+      "lawn",
+      "yard",
+      "courtyard",
+      "terrace",
+      "seating area"
+    ],
+    "originalValue": "garden (sân vườn), park (công viên), patio (khoảng sân sau nhà), lawn (bãi cỏ), yard (sân)\r\n[Đồng nghĩa TOEIC hay gặp: courtyard / terrace (\"sân trong, sân thượng / sân hiên lát đá\"), seating area (\"khu vực ngồi ngoài trời\")]"
+  },
+  {
+    "id": "part1-row-38",
+    "type": "word",
+    "key": "Bao quanh, chạy dọc theo (Cảnh quan / Hàng rào)",
+    "words": [
+      "line",
+      "surround",
+      "encircle",
+      "border",
+      "edge"
+    ],
+    "originalValue": "line (xếp thành hàng chạy dọc theo)\r\n[Đồng nghĩa TOEIC hay gặp: surround (\"bao quanh\"), encircle (\"vây quanh\"), border (\"chạy dọc bờ/mép\"), edge (\"nằm ở rìa của cái gì\")]"
+  },
+  {
+    "id": "part1-row-39",
+    "type": "word",
+    "key": "Xếp thành hàng thẳng, thẳng hàng",
+    "words": [
+      "line",
+      "be aligned",
+      "form a line",
+      "be arranged in a row"
+    ],
+    "originalValue": "line (xếp thành hàng)\r\n[Đồng nghĩa TOEIC hay gặp: be aligned (\"được làm cho thẳng hàng\"), form a line (\"xếp hàng\"), be arranged in a row (\"được xếp thành một dãy\")]"
+  },
+  {
+    "id": "part1-row-40",
+    "type": "word",
+    "key": "Đẩy cộ, kéo vật, cẩu phương tiện",
+    "words": [
+      "push",
+      "tow",
+      "pull",
+      "wheel",
+      "drag",
+      "shove",
+      "propel",
+      "haul"
+    ],
+    "originalValue": "push (đẩy), tow (kéo, cẩu (phương tiện)), pull (kéo), wheel (đẩy xe bánh), drag (kéo lê)\r\n[Đồng nghĩa TOEIC hay gặp: shove (\"đẩy mạnh\"), propel (\"đẩy đi\"), haul (\"kéo mạnh\")]"
+  },
+  {
+    "id": "part1-row-41",
+    "type": "word",
+    "key": "Thiết bị văn phòng, máy tính, điện tử",
+    "words": [
+      "computer",
+      "laptop",
+      "register",
+      "keyboard",
+      "microphone",
+      "telephone",
+      "printer",
+      "calculator",
+      "monitor",
+      "screen",
+      "photocopier",
+      "device"
+    ],
+    "originalValue": "computer (máy tính), laptop (máy tính xách tay), register (máy tính tiền), keyboard (bàn phím), microphone (micrô), telephone (điện thoại), printer (máy in), calculator (máy tính bỏ túi)\r\n[Đồng nghĩa TOEIC hay gặp: monitor / screen (\"màn hình\"), photocopier (\"máy photocopy\"), device (\"thiết bị\")]"
+  },
+  {
+    "id": "part1-row-42",
+    "type": "word",
+    "key": "Hàng hóa bày bán thương mại",
+    "words": [
+      "item",
+      "merchandise",
+      "product",
+      "goods",
+      "cargo",
+      "freight",
+      "commodity",
+      "stock"
+    ],
+    "originalValue": "item (mặt hàng, sản phẩm), merchandise (hàng hóa), product (sản phẩm), goods (hàng hóa)\r\n[Đồng nghĩa TOEIC hay gặp: cargo / freight (\"hàng hóa vận chuyển\"), commodity (\"hàng hóa thương mại\"), stock (\"hàng trong kho/bày bán\")]"
+  },
+  {
+    "id": "part1-row-43",
+    "type": "word",
+    "key": "Quầy thanh toán, mặt quầy",
+    "words": [
+      "counter",
+      "countertop",
+      "bar",
+      "service desk",
+      "reception desk"
+    ],
+    "originalValue": "counter (quầy thanh toán), countertop (mặt quầy)\r\n[Đồng nghĩa TOEIC hay gặp: bar (\"quầy bar\"), service desk (\"quầy dịch vụ\"), reception desk (\"quầy lễ tân\")]"
+  },
+  {
+    "id": "part1-row-44",
+    "type": "word",
+    "key": "Dọn dẹp sạch sẽ, thu dọn, vứt bỏ",
+    "words": [
+      "clean",
+      "empty",
+      "clear",
+      "discard",
+      "tidy up",
+      "neatening",
+      "dispose of",
+      "throw away"
+    ],
+    "originalValue": "clean (dọn dẹp, lau chùi), empty (đổ rác, làm trống rỗng), clear (dọn sạch, làm thông thoáng), discard (vứt bỏ, bỏ đi)\r\n[Đồng nghĩa TOEIC hay gặp: tidy up (\"dọn dẹp ngăn nắp\"), neatening (\"làm cho gọn gàng\"), dispose of (\"vứt bỏ, thanh lý\"), throw away (\"vứt đi\")]"
+  },
+  {
+    "id": "part1-row-45",
+    "type": "word",
+    "key": "Mũ nón, găng tay, giày ủng bảo hộ",
+    "words": [
+      "hat",
+      "shoe",
+      "helmet",
+      "glove",
+      "cap",
+      "boots",
+      "footwear",
+      "eyewear",
+      "safety glasses",
+      "headgear",
+      "headwear"
+    ],
+    "originalValue": "hat (mũ, nón), shoe (giày), helmet (mũ bảo hiểm), glove (găng tay), cap (mũ lưỡi trai), boots (giày ủng)\r\n[Đồng nghĩa TOEIC hay gặp: footwear (\"giày dép\"), eyewear / safety glasses (\"kính bảo hộ\"), headgear / headwear (\"đồ đội đầu\")]"
+  },
+  {
+    "id": "part1-row-46",
+    "type": "word",
+    "key": "Đồ ăn, thức uống, nông sản",
+    "words": [
+      "food",
+      "beverage",
+      "produce",
+      "refreshment",
+      "meal",
+      "provision"
+    ],
+    "originalValue": "food (thức ăn, thực phẩm), beverage (đồ uống), produce (nông sản)\r\n[Đồng nghĩa TOEIC hay gặp: refreshment (\"nước giải khát, thức ăn nhẹ\"), meal (\"bữa ăn\"), provision (\"thực phẩm tiếp tế\")]"
+  },
+  {
+    "id": "part1-row-47",
+    "type": "word",
+    "key": "Trưng bày, triển lãm, trải ra",
+    "words": [
+      "display",
+      "spread",
+      "lay out",
+      "exhibit",
+      "showcase",
+      "present"
+    ],
+    "originalValue": "display (trưng bày), spread (trải ra, phết đều), lay out (trải ra, bày ra)\r\n[Đồng nghĩa TOEIC hay gặp: exhibit (\"triển lãm, trưng bày\"), showcase (\"trưng bày tủ kính\"), present (\"trình bày, bày ra\")]"
+  },
+  {
+    "id": "part1-row-48",
+    "type": "word",
+    "key": "Sách, vở, bìa kẹp tài liệu",
+    "words": [
+      "book",
+      "binder",
+      "notebook",
+      "manual",
+      "volume",
+      "directory"
+    ],
+    "originalValue": "book (sách), binder (bìa kẹp tài liệu), notebook (vở ghi chép)\r\n[Đồng nghĩa TOEIC hay gặp: manual (\"sách hướng dẫn\"), volume (\"tập sách\"), directory (\"danh bạ, niên giám\")]"
+  },
+  {
+    "id": "part1-row-49",
+    "type": "word",
+    "key": "Dụng cụ làm việc thủ công (Thang, vòi nước)",
+    "words": [
+      "ladder",
+      "tool",
+      "hose",
+      "implement",
+      "utensil",
+      "device",
+      "gadget"
+    ],
+    "originalValue": "ladder (thang leo), tool (dụng cụ), hose (vòi nước)\r\n[Đồng nghĩa TOEIC hay gặp: implement (\"công cụ dụng cụ\"), utensil (\"dụng cụ nhà bếp\"), device / gadget (\"thiết bị, dụng cụ nhỏ tiện ích\")]"
+  },
+  {
+    "id": "part1-row-50",
+    "type": "word",
+    "key": "Sắp xếp, bày biện ngăn nắp, trang trí",
+    "words": [
+      "arrange",
+      "decorate",
+      "organize",
+      "tidy",
+      "set in order",
+      "sort",
+      "beautify"
+    ],
+    "originalValue": "arrange (sắp xếp, thu xếp), decorate (trang trí), organize (tổ chức, sắp xếp)\r\n[Đồng nghĩa TOEIC hay gặp: tidy (\"dọn dẹp, sắp xếp\"), set in order (\"sắp đặt theo thứ tự\"), sort (\"phân loại, sắp xếp\"), beautify (\"làm đẹp, trang hoàng\")]"
+  },
+  {
+    "id": "part1-row-51",
+    "type": "word",
+    "key": "Mang, vác, xách (Vận chuyển tay)",
+    "words": [
+      "carry",
+      "transport",
+      "lug",
+      "haul",
+      "convey"
+    ],
+    "originalValue": "carry (mang, vác, xách)\r\n[Đồng nghĩa TOEIC hay gặp: transport (\"vận chuyển\"), lug (\"lôi kéo, mang nặng\"), haul (\"kéo đi, vận chuyển\"), convey (\"vận chuyển\")]"
+  },
+  {
+    "id": "part1-row-52",
+    "type": "word",
+    "key": "Cấu trúc, tiểu cảnh ngoài sân vườn",
+    "words": [
+      "fence",
+      "gate",
+      "fountain",
+      "barrier",
+      "railing",
+      "pond"
+    ],
+    "originalValue": "fence (hàng rào), gate (cổng), fountain (vòi phun nước)\r\n[Đồng nghĩa TOEIC hay gặp: barrier (\"rào chắn\"), railing (\"lan can, tay vịn\"), pond (\"ao hồ nhỏ\")]"
+  },
+  {
+    "id": "part1-row-53",
+    "type": "word",
+    "key": "Hành lang, lối đi trong nhà, cầu thang",
+    "words": [
+      "stair",
+      "stairway",
+      "hallway",
+      "aisle",
+      "passage",
+      "passageway",
+      "lobby",
+      "corridor"
+    ],
+    "originalValue": "stair (bậc thang), stairway (lối cầu thang), hallway (hành lang), aisle (lối đi giữa các hàng kệ/ghế)\r\n[Đồng nghĩa TOEIC hay gặp: passage / passageway (\"lối đi, đường thông\"), lobby (\"sảnh chờ\"), corridor (\"hành lang\")]"
+  },
+  {
+    "id": "part1-row-54",
+    "type": "word",
+    "key": "Lối vào, cửa ngõ",
+    "words": [
+      "entrance",
+      "doorway",
+      "entryway",
+      "lobby",
+      "gateway",
+      "portal"
+    ],
+    "originalValue": "entrance (lối vào, cổng vào), doorway (khung cửa), entryway (lối vào)\r\n[Đồng nghĩa TOEIC hay gặp: lobby (\"sảnh lớn\"), gateway (\"cổng ngõ\"), portal (\"cửa chính\")]"
+  },
+  {
+    "id": "part1-row-55",
+    "type": "word",
+    "key": "Lái xe, vận hành phương tiện",
+    "words": [
+      "drive",
+      "ride",
+      "operate",
+      "steer",
+      "pilot"
+    ],
+    "originalValue": "drive (lái xe), ride (lái xe đạp/máy, cưỡi)\r\n[Đồng nghĩa TOEIC hay gặp: operate (\"vận hành\"), steer (\"bẻ lái\"), pilot (\"lái (máy bay, tàu)\")]"
+  },
+  {
+    "id": "part1-row-56",
+    "type": "word",
+    "key": "Phục vụ thức ăn, đồ uống, ăn uống",
+    "words": [
+      "pour",
+      "drink",
+      "cook",
+      "eat",
+      "serve",
+      "cater",
+      "provide meals",
+      "prepare dishes",
+      "consume"
+    ],
+    "originalValue": "pour (rót, đổ vào), drink (uống), cook (nấu ăn), eat (ăn), serve (phục vụ)\r\n[Đồng nghĩa TOEIC hay gặp: cater (\"phục vụ tiệc\"), provide meals (\"cung cấp bữa ăn\"), prepare dishes (\"chuẩn bị món ăn\"), consume (\"ăn uống\")]"
+  },
+  {
+    "id": "part1-row-57",
+    "type": "word",
+    "key": "Tờ rơi quảng cáo, áp phích, bảng tin",
+    "words": [
+      "poster",
+      "bulletin",
+      "flyer",
+      "leaflet",
+      "pamphlet",
+      "sign",
+      "notice",
+      "banner",
+      "post"
+    ],
+    "originalValue": "poster (áp phích, tờ quảng cáo), bulletin (bảng tin), flyer (tờ rơi)\r\n[Đồng nghĩa TOEIC hay gặp: leaflet / pamphlet (\"tờ rơi quảng cáo nhỏ\"), sign / notice (\"biển hiệu, thông báo\"), banner (\"băng rôn\"), post (\"dán thông báo, đăng\")]"
+  },
+  {
+    "id": "part1-row-58",
+    "type": "word",
+    "key": "Phương tiện đường thủy & đường không",
+    "words": [
+      "boat",
+      "train",
+      "vessel",
+      "craft",
+      "ferry",
+      "ship"
+    ],
+    "originalValue": "boat (thuyền), train (tàu hỏa), vessel (tàu lớn, thuyền lớn)\r\n[Đồng nghĩa TOEIC hay gặp: craft (\"tàu/thuyền nhỏ\"), ferry (\"phà\"), ship (\"đàu thủy lớn\")]"
+  },
+  {
+    "id": "part1-row-59",
+    "type": "word",
+    "key": "Quét dọn, lau nhà, cọ rửa sàn nhà",
+    "words": [
+      "sweep",
+      "mop",
+      "scrub",
+      "broom",
+      "scrub the floor",
+      "mop down"
+    ],
+    "originalValue": "sweep (quét, quét dọn), mop (lau sàn), scrub (cọ rửa)\r\n[Đồng nghĩa TOEIC hay gặp: broom (\"quét bằng chổi\"), scrub the floor (\"cọ rửa sàn nhà\"), mop down (\"lau chùi sàn\")]"
+  },
+  {
+    "id": "part1-row-60",
+    "type": "word",
+    "key": "Đọc tài liệu, đọc lướt qua",
+    "words": [
+      "read",
+      "look through",
+      "browse",
+      "scan",
+      "study",
+      "peruse"
+    ],
+    "originalValue": "read (đọc), look through (nhìn qua, xem qua, đọc lướt), browse (đọc lướt, xem qua)\r\n[Đồng nghĩa TOEIC hay gặp: scan (\"quét nhanh, đọc lướt\"), study (\"nghiên cứu, xem kỹ\"), peruse (\"đọc kỹ\")]"
+  },
+  {
+    "id": "part1-row-61",
+    "type": "word",
+    "key": "Di chuyển dưới nước (Chèo thuyền, bơi)",
+    "words": [
+      "row",
+      "swim",
+      "paddle",
+      "steer a boat",
+      "bathe"
+    ],
+    "originalValue": "row (chèo thuyền), swim (bơi)\r\n[Đồng nghĩa TOEIC hay gặp: paddle (\"chèo xuồng\"), steer a boat (\"lái thuyền\"), bathe (\"tắm mát, tắm biển\")]"
+  },
+  {
+    "id": "part1-row-62",
+    "type": "word",
+    "key": "Thanh toán, mua bán",
+    "words": [
+      "pay",
+      "buy",
+      "make a purchase",
+      "conduct a transaction",
+      "check out"
+    ],
+    "originalValue": "pay (thanh toán), buy (mua)\r\n[Đồng nghĩa TOEIC hay gặp: make a purchase (\"mua hàng\"), conduct a transaction (\"giao dịch\"), check out (\"thanh toán hóa đơn\")]"
+  },
+  {
+    "id": "part1-row-63",
+    "type": "word",
+    "key": "Cắt tỉa cành cây, xén cỏ (Làm vườn/Cảnh quan)",
+    "words": [
+      "cut",
+      "trim",
+      "prune",
+      "mow",
+      "clip",
+      "shear"
+    ],
+    "originalValue": "cut (cắt, tỉa, xén bớt), trim (cắt tỉa, xén)\r\n[Đồng nghĩa TOEIC hay gặp: prune (\"tỉa cành, tỉa bớt nhánh cây\"), mow (\"cắt cỏ bằng máy\"), clip (\"xén, cắt tỉa cành nhỏ\"), shear (\"xén lông, xén lá\")]"
+  },
+  {
+    "id": "part1-row-64",
+    "type": "word",
+    "key": "Cởi ra, tháo ra (Động tác cởi/tháo)",
+    "words": [
+      "remove",
+      "unzip",
+      "take off",
+      "strip off",
+      "undress",
+      "detach"
+    ],
+    "originalValue": "remove (tháo ra, gỡ ra, dọn đi), unzip (kéo khóa mở ra), take off (cởi ra, tháo ra)\r\n[Đồng nghĩa TOEIC hay gặp: strip off (\"cởi bỏ nhanh\"), undress (\"cởi quần áo\"), detach (\"tháo rời\")]"
+  },
+  {
+    "id": "part1-row-65",
+    "type": "word",
+    "key": "Trạng thái không có người (Unoccupied / Vacant)",
+    "words": [
+      "empty",
+      "unoccupied",
+      "vacant",
+      "unattended",
+      "cleared of people"
+    ],
+    "originalValue": "empty (trống rỗng, bỏ không)\r\n[Đồng nghĩa TOEIC hay gặp: unoccupied (\"không bị chiếm chỗ, ghế trống\"), vacant (\"trống, bỏ không\"), unattended (\"không có người trông coi/quản lý\"), cleared of people (\"vắng bóng người\")]"
+  },
+  {
+    "id": "part1-row-66",
+    "type": "word",
+    "key": "Che bóng mát, râm mát (Cây cối / Mái hiên)",
+    "words": [
+      "shade",
+      "cast a shadow",
+      "provide shade for",
+      "shield from the sun"
+    ],
+    "originalValue": "shade (che bóng mát, che râm)\r\n[Đồng nghĩa TOEIC hay gặp: cast a shadow (\"đổ bóng xuống\"), provide shade for (\"cung cấp bóng mát cho\"), shield from the sun (\"che chắn khỏi ánh nắng\")]"
+  },
+  {
+    "id": "part1-row-67",
+    "type": "word",
+    "key": "Xem xét kỹ lưỡng, thanh tra, kiểm tra",
+    "words": [
+      "look into",
+      "inspect",
+      "examine",
+      "scrutinize",
+      "check over",
+      "audit"
+    ],
+    "originalValue": "look into (nhìn vào trong, xem xét), inspect (thanh tra, kiểm tra), examine (xem xét, kiểm tra kỹ)\r\n[Đồng nghĩa TOEIC hay gặp: scrutinize (\"xem xét kỹ lưỡng\"), check over (\"kiểm tra lại toàn bộ\"), audit (\"kiểm toán, kiểm tra\")]"
+  },
+  {
+    "id": "part1-row-68",
+    "type": "word",
+    "key": "Quỳ gối, ngồi xổm (Tư thế thân thể)",
+    "words": [
+      "kneel",
+      "crouch",
+      "squat",
+      "kneel on one knee",
+      "bend one's knees",
+      "hunker down"
+    ],
+    "originalValue": "kneel (quỳ gối), crouch (ngồi xổm, cúi khom), squat (ngồi xổm)\r\n[Đồng nghĩa TOEIC hay gặp: kneel on one knee (\"quỳ một gối\"), bend one's knees (\"khuỵu gối\"), hunker down (\"ngồi thụp xuống\")]"
+  },
+  {
+    "id": "part1-row-69",
+    "type": "word",
+    "key": "Nhìn ra, hướng ra (Cảnh quan / Tòa nhà)",
+    "words": [
+      "overlook",
+      "face",
+      "command a view of",
+      "look out on",
+      "look out onto",
+      "face toward"
+    ],
+    "originalValue": "overlook (nhìn ra, hướng ra), face (quay mặt về, hướng về)\r\n[Đồng nghĩa TOEIC hay gặp: command a view of (\"có tầm nhìn hướng ra\"), look out on / look out onto (\"nhìn ra ngoài phía\"), face toward (\"hướng về phía\")]"
+  },
+  {
+    "id": "part1-row-70",
+    "type": "word",
+    "key": "Chỉ tay, ra cử chỉ (Động tác tay)",
+    "words": [
+      "point",
+      "point at",
+      "point to",
+      "gesture toward"
+    ],
+    "originalValue": "point (chỉ tay vào)\r\n[Đồng nghĩa TOEIC hay gặp: point at (\"chỉ vào\"), point to (\"chỉ hướng tới\"), gesture toward (\"ra hiệu về phía\")]"
+  },
+  {
+    "id": "part1-row-71",
+    "type": "word",
+    "key": "Gõ phím, viết ghi chép, nhập liệu, nhấn nút",
+    "words": [
+      "press",
+      "type",
+      "write",
+      "input",
+      "key in",
+      "record",
+      "push a button"
+    ],
+    "originalValue": "press (nhấn, ấn), type (gõ phím, đánh máy), write (viết)\r\n[Đồng nghĩa TOEIC hay gặp: input (\"nhập dữ liệu\"), key in (\"gõ phím\"), record (\"ghi chép\"), push a button (\"nhấn nút\")]"
+  }
+]
