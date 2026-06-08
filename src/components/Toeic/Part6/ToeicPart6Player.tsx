@@ -902,7 +902,7 @@ export default function ToeicPart6Player({
               </div>
               <div
                 ref={passageScrollRef}
-                className="flex-1 overflow-y-auto p-8 lg:p-12 scrollbar-thin"
+                className="flex-1 overflow-y-auto p-8 lg:p-12 pb-[35vh] lg:pb-[35vh] scrollbar-thin"
                 onMouseMove={(e) => {
                   const x = e.clientX;
                   const y = e.clientY;
@@ -1007,7 +1007,7 @@ export default function ToeicPart6Player({
 
           {/* RIGHT: QUESTIONS COLUMN */}
           <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative pl-4">
-            <div ref={questionsScrollRef} className="flex-1 overflow-y-auto pr-3 scrollbar-thin space-y-4 pb-24">
+            <div ref={questionsScrollRef} className="flex-1 overflow-y-auto pr-3 scrollbar-thin space-y-4 pb-[35vh]">
               {questions.map((q: any) => {
                 const qKey = q.id || `${currentGroup.id}_${q.questionNo}`;
                 const isSelectedAny = !!answers[qKey];

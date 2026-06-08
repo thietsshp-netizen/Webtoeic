@@ -1417,7 +1417,7 @@ export default function ToeicPart34Player({
 
               {parsedTranscript ? (
                 (revealMode || revealPartialMode) ? (
-                  <div className="space-y-2 px-2 pb-20">
+                  <div className="space-y-2 px-2 pb-[35vh]">
                     {(() => {
                       // Group sentences by turn (consecutive sentences with same speaker or continuation)
                       const turns: any[] = [];
@@ -1601,7 +1601,7 @@ export default function ToeicPart34Player({
               ref={questionsScrollRef}
               className="flex-1 overflow-y-auto pr-3 pl-4 scrollbar-thin scrollbar-thumb-slate-300"
             >
-              <div className="space-y-4 pt-2 pb-24 w-full">
+              <div className="space-y-4 pt-2 pb-[35vh] w-full">
                 {questions.map((q: any) => {
                   const qKey = q.id || `${currentGroup.id}_${q.questionNo}`;
                   const isSelectedAny = !!answers[qKey];

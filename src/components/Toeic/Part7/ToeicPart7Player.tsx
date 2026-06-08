@@ -1190,7 +1190,7 @@ export default function ToeicPart7Player({
             className="overflow-y-auto scrollbar-thin select-text"
             style={{ height: isSplitView ? `${splitHeight}%` : '100%', flex: isSplitView ? 'none' : '1' }}
           >
-            <div className="p-10 space-y-16 pb-60">
+            <div className="p-10 space-y-16 pb-[35vh]">
               {passages.map((p: any, idx: number) => (
                 <div key={idx} className="relative animate-in fade-in duration-700">
                   <div className="flex items-center justify-between mb-4">
@@ -1256,7 +1256,7 @@ export default function ToeicPart7Player({
               ref={passageScrollRefBottom}
               className="overflow-y-auto scrollbar-thin select-text flex-1"
             >
-              <div className="p-10 space-y-16 pb-60">
+              <div className="p-10 space-y-16 pb-[35vh]">
                 {passages.map((p: any, idx: number) => (
                   <div key={`bottom-${idx}`} className="relative animate-in fade-in duration-700">
                     <div className="flex items-center justify-between mb-4">
@@ -1296,7 +1296,7 @@ export default function ToeicPart7Player({
         {/* COLUMN 2: QUESTIONS (Full width expansion) */}
         <div className="flex-1 min-h-0 relative flex flex-col min-w-[400px]">
           <div ref={questionsScrollRef} className="flex-1 overflow-y-auto bg-white scrollbar-thin scroll-smooth select-text">
-            <div className="p-10 space-y-6 pb-60 w-full">
+            <div className="p-10 space-y-6 pb-[35vh] w-full">
               {questions.map((q: any, qIdx: number) => {
                 const colors = ['yellow', 'cyan', 'emerald', 'magenta', 'orange'];
                 const cColors = getEvidenceColor(colors[qIdx % colors.length]);
