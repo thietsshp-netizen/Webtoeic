@@ -964,11 +964,31 @@ export default function ToeicPart1Player({
   const [saveLoading, setSaveLoading] = useState(false);
   const hotspotsContainerRef = useRef<HTMLDivElement>(null);
   const localHotspotsRef = useRef<any[]>([]);
+  
+  const [saveStatus, setSaveStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const saveTimeoutRef = useRef<any>(null);
+
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    };
+  }, []);
 
   // Đồng bộ localHotspots khi đổi question group
   useEffect(() => {
-    if (currentGroup?.metadata && typeof currentGroup.metadata === 'object' && Array.isArray((currentGroup.metadata as any).hotspots)) {
-      const hots = JSON.parse(JSON.stringify((currentGroup.metadata as any).hotspots));
+    let meta: any = null;
+    if (currentGroup?.metadata) {
+      if (typeof currentGroup.metadata === 'string') {
+        try {
+          meta = JSON.parse(currentGroup.metadata);
+        } catch (e) {}
+      } else if (typeof currentGroup.metadata === 'object') {
+        meta = currentGroup.metadata;
+      }
+    }
+
+    if (meta && Array.isArray(meta.hotspots)) {
+      const hots = JSON.parse(JSON.stringify(meta.hotspots));
       setLocalHotspots(hots);
       localHotspotsRef.current = hots;
     } else {
@@ -996,17 +1016,16 @@ export default function ToeicPart1Player({
       x = Math.max(0, Math.min(100, x));
       y = Math.max(0, Math.min(100, y));
 
-      setLocalHotspots(prev => {
-        const next = [...prev];
-        if (next[draggingIndex]) {
-          next[draggingIndex] = {
-            ...next[draggingIndex],
-            x: Math.round(x * 100) / 100,
-            y: Math.round(y * 100) / 100
-          };
-        }
-        return next;
-      });
+      const updated = [...localHotspotsRef.current];
+      if (updated[draggingIndex]) {
+        updated[draggingIndex] = {
+          ...updated[draggingIndex],
+          x: Math.round(x * 100) / 100,
+          y: Math.round(y * 100) / 100
+        };
+        localHotspotsRef.current = updated;
+        setLocalHotspots(updated);
+      }
     };
 
     const handleMouseUp = async () => {
@@ -1014,7 +1033,7 @@ export default function ToeicPart1Player({
       
       // Tự động lưu tọa độ mới nhất của các hotspot từ ref vào database khi thả chuột
       try {
-        await fetch("/api/admin/update-content", {
+        const res = await fetch("/api/admin/update-content", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -1024,8 +1043,41 @@ export default function ToeicPart1Player({
             value: localHotspotsRef.current
           })
         });
-      } catch (err) {
+        const data = await res.json();
+        if (data.success) {
+          // Cập nhật trực tiếp vào currentGroup.metadata để tránh bị đè dữ liệu cũ khi đổi câu hỏi
+          if (currentGroup) {
+            let meta: any = currentGroup.metadata;
+            if (!meta) {
+              currentGroup.metadata = {};
+              meta = currentGroup.metadata;
+            } else if (typeof meta === 'string') {
+              try {
+                currentGroup.metadata = JSON.parse(meta);
+                meta = currentGroup.metadata;
+              } catch (e) {
+                currentGroup.metadata = {};
+                meta = currentGroup.metadata;
+              }
+            }
+            meta.hotspots = JSON.parse(JSON.stringify(localHotspotsRef.current));
+          }
+
+          if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+          setSaveStatus({ type: 'success', message: 'Đã lưu vị trí hotspot thành công!' });
+          saveTimeoutRef.current = setTimeout(() => setSaveStatus(null), 2500);
+
+          router.refresh();
+        } else {
+          if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+          setSaveStatus({ type: 'error', message: `Lỗi: ${data.error || 'Vui lòng kéo lại để lưu.'}` });
+          saveTimeoutRef.current = setTimeout(() => setSaveStatus(null), 5000);
+        }
+      } catch (err: any) {
         console.error("Lỗi tự động lưu vị trí hotspot:", err);
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+        setSaveStatus({ type: 'error', message: 'Lỗi kết nối. Vui lòng kéo lại để lưu.' });
+        saveTimeoutRef.current = setTimeout(() => setSaveStatus(null), 5000);
       }
     };
 
@@ -1035,7 +1087,7 @@ export default function ToeicPart1Player({
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [draggingIndex, isAdminMode, currentGroup?.id]);
+  }, [draggingIndex, isAdminMode, currentGroup]);
 
   const handleUpdateActiveHsField = (fieldKey: string, val: any) => {
     const activeIdx = hoveredHotspotIndex !== null ? hoveredHotspotIndex : selectedHotspotIndex;
@@ -1068,6 +1120,22 @@ export default function ToeicPart1Player({
       });
       const data = await res.json();
       if (data.success) {
+        if (currentGroup) {
+          let meta: any = currentGroup.metadata;
+          if (!meta) {
+            currentGroup.metadata = {};
+            meta = currentGroup.metadata;
+          } else if (typeof meta === 'string') {
+            try {
+              currentGroup.metadata = JSON.parse(meta);
+              meta = currentGroup.metadata;
+            } catch (e) {
+              currentGroup.metadata = {};
+              meta = currentGroup.metadata;
+            }
+          }
+          meta.hotspots = JSON.parse(JSON.stringify(localHotspots));
+        }
         router.refresh();
       } else {
         alert("Lỗi khi lưu: " + data.error);
@@ -1104,6 +1172,22 @@ export default function ToeicPart1Player({
       });
       const data = await res.json();
       if (data.success) {
+        if (currentGroup) {
+          let meta: any = currentGroup.metadata;
+          if (!meta) {
+            currentGroup.metadata = {};
+            meta = currentGroup.metadata;
+          } else if (typeof meta === 'string') {
+            try {
+              currentGroup.metadata = JSON.parse(meta);
+              meta = currentGroup.metadata;
+            } catch (e) {
+              currentGroup.metadata = {};
+              meta = currentGroup.metadata;
+            }
+          }
+          meta.hotspots = JSON.parse(JSON.stringify(updated));
+        }
         setSelectedHotspotIndex(null);
         setHoveredHotspotIndex(null);
         setLocalHotspots(updated);
@@ -1764,6 +1848,18 @@ export default function ToeicPart1Player({
                   {currentGroup.imageUrl ? (
                     <div className="relative w-full max-h-[600px] flex justify-center items-center">
                       <img src={currentGroup.imageUrl} alt={`Câu ${currentIndex + 1}`} className="w-full max-h-[600px] object-contain select-none" draggable="false" />
+                      
+                      {/* Floating Save Status Toast */}
+                      {saveStatus && (
+                        <div className={`absolute top-4 left-1/2 -translate-x-1/2 z-[9999] px-4 py-2 rounded-xl shadow-xl backdrop-blur-md border flex items-center gap-2 text-xs font-bold transition-all duration-300 animate-in fade-in slide-in-from-top-4 ${
+                          saveStatus.type === 'success' 
+                            ? 'bg-emerald-950/90 border-emerald-500/30 text-emerald-300 shadow-emerald-950/20' 
+                            : 'bg-red-950/90 border-red-500/30 text-red-300 shadow-red-950/20'
+                        }`}>
+                          <span className="text-sm">{saveStatus.type === 'success' ? '✅' : '⚠️'}</span>
+                          <span>{saveStatus.message}</span>
+                        </div>
+                      )}
                       
                       {/* Hotspots Layer */}
                       {localHotspots.length > 0 && (

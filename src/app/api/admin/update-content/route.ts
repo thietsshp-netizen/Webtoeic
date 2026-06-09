@@ -92,9 +92,18 @@ export async function PUT(req: Request) {
            syncLogs.push(`🚀 [Bảng: ToeicQuestion] [Cột: questionText] Đã đồng bộ.`);
         }
       } else if (field === "metadata" || field === "metadata.hotspots") {
-        const currentMetadata = (group.metadata && typeof group.metadata === 'object') 
-          ? JSON.parse(JSON.stringify(group.metadata)) 
-          : {};
+        let currentMetadata: any = {};
+        if (group.metadata) {
+          if (typeof group.metadata === 'string') {
+            try {
+              currentMetadata = JSON.parse(group.metadata);
+            } catch (e) {
+              console.error("Lỗi parse metadata string:", e);
+            }
+          } else if (typeof group.metadata === 'object') {
+            currentMetadata = JSON.parse(JSON.stringify(group.metadata));
+          }
+        }
         
         const newHotspots = typeof value === 'string' ? JSON.parse(value) : value;
         if (!Array.isArray(newHotspots)) {
