@@ -601,13 +601,32 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   // 2. Trì hoãn lưu xuống localStorage (Debounce 800ms) để tránh nghẽn CPU
   useEffect(() => {
     const timer = setTimeout(() => {
-      localStorage.setItem('webtoeic_canvas_elements', JSON.stringify(elements));
+      let success = false;
+      let tempElements = [...elements];
+      
+      // Vòng lặp tự động cắt bớt nét vẽ cũ nhất nếu localStorage bị tràn (QuotaExceededError)
+      while (!success && tempElements.length > 0) {
+        try {
+          localStorage.setItem('webtoeic_canvas_elements', JSON.stringify(tempElements));
+          success = true;
+        } catch (err) {
+          console.warn(`LocalStorage đầy, tự động loại bỏ nét vẽ cũ nhất (còn lại ${tempElements.length - 1} nét)`);
+          tempElements.shift(); // Loại bỏ phần tử đầu tiên (nét vẽ cũ nhất)
+        }
+      }
+
+      // Nếu đã phải cắt bớt nét vẽ thì đồng bộ lại React State
+      if (tempElements.length !== elements.length) {
+        setElements(tempElements);
+      }
     }, 800);
     return () => clearTimeout(timer);
   }, [elements]);
 
   useEffect(() => {
-    localStorage.setItem('webtoeic_draw_color', color);
+    try {
+      localStorage.setItem('webtoeic_draw_color', color);
+    } catch (err) {}
   }, [color]);
   // Tải cấu hình phím tắt và bút clone từ Database (hoặc LocalStorage dự phòng) khi công cụ vẽ kích hoạt
   useEffect(() => {
