@@ -91,6 +91,23 @@ export async function PUT(req: Request) {
            await prisma.toeicQuestion.updateMany({ where: { groupId: id }, data: { questionText: value } });
            syncLogs.push(`🚀 [Bảng: ToeicQuestion] [Cột: questionText] Đã đồng bộ.`);
         }
+      } else if (field === "metadata" || field === "metadata.hotspots") {
+        const currentMetadata = (group.metadata && typeof group.metadata === 'object') 
+          ? JSON.parse(JSON.stringify(group.metadata)) 
+          : {};
+        
+        const newHotspots = typeof value === 'string' ? JSON.parse(value) : value;
+        if (!Array.isArray(newHotspots)) {
+          return NextResponse.json({ success: false, error: "Hotspots must be an array" }, { status: 400 });
+        }
+        
+        currentMetadata.hotspots = newHotspots;
+        await prisma.toeicQuestionGroup.update({ 
+          where: { id }, 
+          data: { metadata: currentMetadata } 
+        });
+        syncLogs.push(`✅ [Bảng: ToeicQuestionGroup] [Cột: metadata.hotspots] Đã cập nhật ${newHotspots.length} hotspots.`);
+        totalUpdates++;
       }
     } 
     // 2. TARGET QUESTION

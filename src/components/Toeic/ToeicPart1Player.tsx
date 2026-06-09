@@ -17,6 +17,7 @@ import Link from 'next/link';
 import FlagSelector, { FlagColor } from '../Player/FlagSelector';
 import { startToeicPartTour } from './toeicTour';
 import FloatingVideoExplanationPlayer from '../Player/FloatingVideoExplanationPlayer';
+import { useRouter } from 'next/navigation';
 import part1WordFamiliesData from "@/data/part1_word_families.json";
 
 function parseOptionsFromText(text: string) {
@@ -511,6 +512,8 @@ export default function ToeicPart1Player({
 
   useEffect(() => {
     setActiveWordFamily([]);
+    setHoveredHotspotIndex(null);
+    setSelectedHotspotIndex(null);
   }, [currentIndex]);
 
   const { isAdminMode } = useAdminEdit();
@@ -947,6 +950,165 @@ export default function ToeicPart1Player({
   const [time, setTime] = useState(0);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [playingSegmentLabel, setPlayingSegmentLabel] = useState<string | null>(null);
+  const [hoveredHotspotIndex, setHoveredHotspotIndex] = useState<number | null>(null);
+  const [selectedHotspotIndex, setSelectedHotspotIndex] = useState<number | null>(null);
+
+  const currentGroup = data[currentIndex] || {};
+  const questionData = currentGroup?.questions?.[0] || {};
+  const currentQuestionId = questionData.id;
+  const currentQKey = questionData.id || `${currentGroup.id}_${questionData.questionNo}`;
+
+  const router = useRouter();
+  const [localHotspots, setLocalHotspots] = useState<any[]>([]);
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const hotspotsContainerRef = useRef<HTMLDivElement>(null);
+
+  // Đồng bộ localHotspots khi đổi question group
+  useEffect(() => {
+    if (currentGroup?.metadata && typeof currentGroup.metadata === 'object' && Array.isArray((currentGroup.metadata as any).hotspots)) {
+      setLocalHotspots(JSON.parse(JSON.stringify((currentGroup.metadata as any).hotspots)));
+    } else {
+      setLocalHotspots([]);
+    }
+  }, [currentGroup]);
+
+  // Xử lý kéo thả chấm tròn hotspot
+  useEffect(() => {
+    if (draggingIndex === null || !isAdminMode) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!hotspotsContainerRef.current) return;
+      const rect = hotspotsContainerRef.current.getBoundingClientRect();
+      
+      let x = ((e.clientX - rect.left) / rect.width) * 100;
+      let y = ((e.clientY - rect.top) / rect.height) * 100;
+      
+      x = Math.max(0, Math.min(100, x));
+      y = Math.max(0, Math.min(100, y));
+
+      setLocalHotspots(prev => {
+        const next = [...prev];
+        if (next[draggingIndex]) {
+          next[draggingIndex] = {
+            ...next[draggingIndex],
+            x: Math.round(x * 100) / 100,
+            y: Math.round(y * 100) / 100
+          };
+        }
+        return next;
+      });
+    };
+
+    const handleMouseUp = async () => {
+      setDraggingIndex(null);
+      
+      // Tự động lưu tọa độ mới của các hotspot vào database khi thả chuột
+      try {
+        await fetch("/api/admin/update-content", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            target: "group",
+            id: currentGroup.id,
+            field: "metadata.hotspots",
+            value: localHotspots
+          })
+        });
+      } catch (err) {
+        console.error("Lỗi tự động lưu vị trí hotspot:", err);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [draggingIndex, localHotspots, isAdminMode, currentGroup?.id]);
+
+  const handleUpdateActiveHsField = (fieldKey: string, val: any) => {
+    const activeIdx = hoveredHotspotIndex !== null ? hoveredHotspotIndex : selectedHotspotIndex;
+    if (activeIdx === null) return;
+    
+    setLocalHotspots(prev => {
+      const next = [...prev];
+      if (next[activeIdx]) {
+        next[activeIdx] = {
+          ...next[activeIdx],
+          [fieldKey]: val
+        };
+      }
+      return next;
+    });
+  };
+
+  const handleSaveHotspotsData = async () => {
+    setSaveLoading(true);
+    try {
+      const res = await fetch("/api/admin/update-content", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          target: "group",
+          id: currentGroup.id,
+          field: "metadata.hotspots",
+          value: localHotspots
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        router.refresh();
+      } else {
+        alert("Lỗi khi lưu: " + data.error);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Lỗi kết nối.");
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
+  const handleDeleteHotspot = async () => {
+    const activeIdx = hoveredHotspotIndex !== null ? hoveredHotspotIndex : selectedHotspotIndex;
+    if (activeIdx === null) return;
+
+    if (!confirm(`Bạn có chắc chắn muốn xóa Hotspot #${activeIdx + 1} (${localHotspots[activeIdx]?.en || ''})?`)) {
+      return;
+    }
+
+    setSaveLoading(true);
+    const updated = localHotspots.filter((_, idx) => idx !== activeIdx);
+    
+    try {
+      const res = await fetch("/api/admin/update-content", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          target: "group",
+          id: currentGroup.id,
+          field: "metadata.hotspots",
+          value: updated
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSelectedHotspotIndex(null);
+        setHoveredHotspotIndex(null);
+        setLocalHotspots(updated);
+        router.refresh();
+      } else {
+        alert("Lỗi khi xóa: " + data.error);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Lỗi kết nối.");
+    } finally {
+      setSaveLoading(false);
+    }
+  };
 
   // Lắng nghe sự kiện từ Tour để tự động mở bung Sidebar làm ví dụ
   useEffect(() => {
@@ -966,10 +1128,6 @@ export default function ToeicPart1Player({
   const wavesurfer = useRef<WaveSurfer | null>(null);
   const regionsPlugin = useRef<any>(null);
 
-  const currentGroup = data[currentIndex] || {};
-  const questionData = currentGroup?.questions?.[0] || {};
-  const currentQuestionId = questionData.id;
-  const currentQKey = questionData.id || `${currentGroup.id}_${questionData.questionNo}`;
   const correctAnswer = questionData.correctAnswer?.toUpperCase();
   const selectedAnswer = answers[currentQKey] || null;
   const isFlagged = flags[currentQKey] || false;
@@ -1592,9 +1750,328 @@ export default function ToeicPart1Player({
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-4 items-center max-w-full">
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-2 relative h-fit flex-shrink-0">
-                <div className="rounded-xl overflow-hidden bg-slate-50 flex justify-center items-center">
-                  {currentGroup.imageUrl ? (<img src={currentGroup.imageUrl} alt={`Câu ${currentIndex + 1}`} className="w-full max-h-[600px] object-contain" />) : (<div className="text-slate-400 font-bold">Image Missing</div>)}
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-2 relative h-fit flex-shrink-0 z-[300]">
+                <div className="rounded-xl overflow-visible bg-slate-50 flex justify-center items-center relative">
+                  {currentGroup.imageUrl ? (
+                    <div className="relative w-full max-h-[600px] flex justify-center items-center">
+                      <img src={currentGroup.imageUrl} alt={`Câu ${currentIndex + 1}`} className="w-full max-h-[600px] object-contain select-none" draggable="false" />
+                      
+                      {/* Hotspots Layer */}
+                      {localHotspots.length > 0 && (
+                        <div ref={hotspotsContainerRef} className="absolute inset-0 pointer-events-none select-none z-20">
+                          {/* Lớp phủ click trong suốt để khi click ra ngoài các chấm số sẽ tắt bubble */}
+                          {selectedHotspotIndex !== null && (
+                            <div 
+                              className="absolute inset-0 pointer-events-auto z-10 cursor-default"
+                              onClick={() => setSelectedHotspotIndex(null)}
+                            />
+                          )}
+
+                          {/* SVG vẽ đường chỉ nối động từ số ra bubble bên ngoài ảnh ở lề bên phải */}
+                          {(() => {
+                            const activeIdx = hoveredHotspotIndex !== null ? hoveredHotspotIndex : selectedHotspotIndex;
+                            if (activeIdx === null || !localHotspots[activeIdx]) return null;
+                            
+                            const activeHs = localHotspots[activeIdx];
+                            const startX = `${activeHs.x}%`;
+                            const startY = `${activeHs.y}%`;
+                            const endX = "103%";
+                            const endY = `${activeHs.y}%`;
+
+                            return (
+                              <>
+                                <svg className="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible">
+                                  <g className="animate-in fade-in duration-300">
+                                    <line 
+                                      x1={startX} 
+                                      y1={startY} 
+                                      x2={endX} 
+                                      y2={endY} 
+                                      stroke={hoveredHotspotIndex !== null ? "#f59e0b" : "#10b981"} 
+                                      strokeWidth="1.5" 
+                                      strokeDasharray="4 3"
+                                      className="animate-[dash_10s_linear_infinite]"
+                                    />
+                                    <circle 
+                                      cx={endX} 
+                                      cy={endY} 
+                                      r="3" 
+                                      fill={hoveredHotspotIndex !== null ? "#f59e0b" : "#10b981"}
+                                    />
+                                  </g>
+                                </svg>
+
+                                <div 
+                                  className={`absolute left-[105%] w-max max-w-[460px] z-[99999] transition-all duration-200 ease-out animate-in fade-in zoom-in-95 pointer-events-auto ${
+                                    activeHs.y < 20 ? "translate-y-0" : activeHs.y > 80 ? "translate-y-0" : "-translate-y-1/2"
+                                  }`}
+                                  style={activeHs.y < 20 ? { top: "5px" } : activeHs.y > 80 ? { bottom: "5px" } : { top: `${activeHs.y}%` }}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <div className={`bg-slate-950/95 border p-4 rounded-2xl shadow-2xl backdrop-blur-md text-left relative ring-1 ${
+                                    hoveredHotspotIndex !== null 
+                                      ? 'border-amber-500/50 ring-amber-500/20' 
+                                      : 'border-emerald-500/50 ring-emerald-500/20'
+                                  }`}>
+                                    {isAdminMode ? (
+                                      <div className="space-y-2.5 text-slate-200 min-w-[280px]">
+                                        <div className="flex items-center justify-between border-b border-slate-800 pb-1.5">
+                                          <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest">
+                                            ✏️ SỬA HOTSPOT #{activeIdx + 1}
+                                          </span>
+                                          <button 
+                                            onClick={() => setSelectedHotspotIndex(null)}
+                                            className="text-slate-400 hover:text-white"
+                                          >
+                                            <XMarkIcon className="w-3.5 h-3.5" />
+                                          </button>
+                                        </div>
+
+                                        <div className="bg-slate-900 border border-slate-800/80 rounded-xl p-2.5 flex justify-between items-center text-[10px]">
+                                          <div>
+                                            <span className="text-slate-450 block text-[8px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">Tọa độ gốc</span>
+                                            <code className="text-indigo-300 font-black bg-indigo-950/60 border border-indigo-900/30 px-1.5 py-0.5 rounded">
+                                              X: {((currentGroup.metadata as any)?.hotspots?.[activeIdx]?.x ?? 0).toFixed(1)}%, Y: {((currentGroup.metadata as any)?.hotspots?.[activeIdx]?.y ?? 0).toFixed(1)}%
+                                            </code>
+                                          </div>
+                                          <div className="text-right">
+                                            <span className="text-slate-450 block text-[8px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">Tọa độ mới</span>
+                                            <code className="text-amber-300 font-black bg-amber-950/60 border border-amber-900/30 px-1.5 py-0.5 rounded animate-pulse">
+                                              X: {activeHs.x?.toFixed(1)}%, Y: {activeHs.y?.toFixed(1)}%
+                                            </code>
+                                          </div>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-2 gap-2">
+                                          <div>
+                                            <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Từ vựng (EN)</label>
+                                            <input 
+                                              type="text"
+                                              className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500"
+                                              value={activeHs.en || ""}
+                                              onChange={(e) => handleUpdateActiveHsField("en", e.target.value)}
+                                            />
+                                          </div>
+                                          <div>
+                                            <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Phiên âm (IPA)</label>
+                                            <input 
+                                              type="text"
+                                              className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500"
+                                              value={activeHs.ipa || ""}
+                                              onChange={(e) => handleUpdateActiveHsField("ipa", e.target.value)}
+                                            />
+                                          </div>
+                                        </div>
+
+                                        <div>
+                                          <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Nghĩa tiếng Việt</label>
+                                          <input 
+                                            type="text"
+                                            className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500"
+                                            value={activeHs.vi || ""}
+                                            onChange={(e) => handleUpdateActiveHsField("vi", e.target.value)}
+                                          />
+                                        </div>
+
+                                        <div>
+                                          <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Ví dụ (Example)</label>
+                                          <textarea 
+                                            className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500 min-h-[45px] resize-y"
+                                            value={activeHs.example || ""}
+                                            onChange={(e) => handleUpdateActiveHsField("example", e.target.value)}
+                                          />
+                                        </div>
+
+                                        <div>
+                                          <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Dịch câu ví dụ</label>
+                                          <textarea 
+                                            className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500 min-h-[35px] resize-y"
+                                            value={activeHs.example_vi || ""}
+                                            onChange={(e) => handleUpdateActiveHsField("example_vi", e.target.value)}
+                                          />
+                                        </div>
+
+                                        <div>
+                                          <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Từ đồng nghĩa (Synonyms)</label>
+                                          <input 
+                                            type="text"
+                                            placeholder="word (ipa), word2 (ipa2)"
+                                            className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500"
+                                            value={
+                                              Array.isArray(activeHs.synonyms)
+                                                ? activeHs.synonyms.map((s: any) => `${s.word}${s.ipa ? ` (${s.ipa})` : ''}`).join(', ')
+                                                : typeof activeHs.synonyms === 'string'
+                                                  ? activeHs.synonyms
+                                                  : ""
+                                            }
+                                            onChange={(e) => {
+                                              const raw = e.target.value;
+                                              const parsed = raw.split(',').map(item => {
+                                                const clean = item.trim();
+                                                if (!clean) return null;
+                                                const match = clean.match(/^(.*?)\s*\((.*?)\)$/);
+                                                if (match) {
+                                                  return { word: match[1].trim(), ipa: match[2].trim() };
+                                                }
+                                                return { word: clean, ipa: "" };
+                                              }).filter(Boolean);
+                                              handleUpdateActiveHsField("synonyms", parsed);
+                                            }}
+                                          />
+                                        </div>
+
+                                        <div className="flex justify-between items-center pt-2 border-t border-slate-900 gap-2">
+                                          <button
+                                            type="button"
+                                            onClick={handleDeleteHotspot}
+                                            disabled={saveLoading}
+                                            className="bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-black text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-xl shadow-lg shadow-red-500/15 active:scale-95 transition-all cursor-pointer"
+                                          >
+                                            Xóa Hotspot
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={handleSaveHotspotsData}
+                                            disabled={saveLoading}
+                                            className="bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-xl shadow-lg shadow-amber-500/25 active:scale-95 transition-all cursor-pointer"
+                                          >
+                                            {saveLoading ? 'Đang lưu...' : 'Lưu thông tin'}
+                                          </button>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <>
+                                        {hoveredHotspotIndex === null && selectedHotspotIndex !== null && (
+                                          <button 
+                                            onClick={() => setSelectedHotspotIndex(null)}
+                                            className="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors p-1 hover:bg-slate-800 rounded-lg cursor-pointer animate-in fade-in"
+                                            title="Tắt bubble giải thích"
+                                          >
+                                            <XMarkIcon className="w-3.5 h-3.5" />
+                                          </button>
+                                        )}
+
+                                        <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-800 pb-2 mb-2 pr-6 text-sm">
+                                          <span className={`text-slate-950 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${
+                                            hoveredHotspotIndex !== null ? 'bg-amber-500' : 'bg-emerald-500'
+                                          }`}>{activeIdx + 1}</span>
+                                          <span className="font-black text-white">{activeHs.en}</span>
+                                          {activeHs.ipa && <span className="text-[10px] text-slate-400 font-mono">{activeHs.ipa}</span>}
+                                          <span className="text-indigo-400 font-bold ml-1">— {activeHs.vi}</span>
+                                        </div>
+                                        
+                                        {activeHs.example && (
+                                          <div className="mt-2 text-[11px] text-slate-300 space-y-1">
+                                            <p className="italic leading-relaxed">
+                                              "{(() => {
+                                                const phrase = activeHs.en.toLowerCase();
+                                                const sentence = activeHs.example;
+                                                const matchIdx = sentence.toLowerCase().indexOf(phrase);
+                                                if (matchIdx !== -1) {
+                                                  const start = sentence.substring(0, matchIdx);
+                                                  const matchedWord = sentence.substring(matchIdx, matchIdx + phrase.length);
+                                                  const end = sentence.substring(matchIdx + phrase.length);
+                                                  return (
+                                                    <>
+                                                      {start}
+                                                      <strong className="font-bold text-amber-400 not-italic">{matchedWord}</strong>
+                                                      {end}
+                                                    </>
+                                                  );
+                                                }
+                                                // Fallback nếu so khớp không chính xác 100% thì in đậm các từ đơn lẻ
+                                                return sentence;
+                                              })()}"
+                                            </p>
+                                            {activeHs.example_vi && <p className="text-slate-400 mt-0.5 leading-snug">{activeHs.example_vi}</p>}
+                                          </div>
+                                        )}
+
+                                        {activeHs.synonyms && activeHs.synonyms.length > 0 && (
+                                          <p className="text-[10px] text-slate-300 mt-2.5 pt-2 border-t border-slate-800/60 italic">
+                                            <span className="text-indigo-400/80 font-bold not-italic">Synonyms:</span> {activeHs.synonyms.map((s: any) => `${s.word} (${s.ipa})`).join(', ')}
+                                          </p>
+                                        )}
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                              </>
+                            );
+                          })()}
+
+                          {localHotspots.map((hs, hidx) => {
+                            const isHovered = hoveredHotspotIndex === hidx;
+                            const isSelected = selectedHotspotIndex === hidx;
+
+                            // Tự động chuyển nhãn xuống dưới nếu nằm sát mép trên hoặc có hotspot khác ngay phía trên
+                            const isNearTop = hs.y < 15;
+                            const hasHotspotAbove = localHotspots.some((otherHs, oidx) => {
+                              if (oidx === hidx) return false;
+                              const xDiff = Math.abs(hs.x - otherHs.x);
+                              const yDiff = hs.y - otherHs.y; // > 0 nghĩa là otherHs nằm trên hs
+                              return xDiff < 8 && yDiff > 0 && yDiff < 20;
+                            });
+                            const showBelow = isNearTop || hasHotspotAbove;
+
+                            return (
+                              <div
+                                key={hidx}
+                                className="absolute pointer-events-none z-30 select-none"
+                                style={{
+                                  left: `${hs.x}%`,
+                                  top: `${hs.y}%`,
+                                }}
+                              >
+                                {/* Tag từ vựng + phiên âm IPA nhỏ gọn, tự động hiển thị phía trên hoặc phía dưới chấm số */}
+                                <div 
+                                  className={`absolute -translate-x-1/2 whitespace-nowrap px-1.5 py-0.5 rounded-md border text-[9px] font-bold shadow-sm pointer-events-none transition-all duration-200 backdrop-blur-sm ${
+                                    showBelow ? 'top-[10px]' : 'bottom-[10px]'
+                                  } ${
+                                    isHovered || isSelected
+                                      ? 'bg-emerald-500/50 text-slate-950 border-emerald-600/50 scale-105 opacity-100 z-50 visible'
+                                      : 'opacity-0 invisible h-0 py-0 overflow-hidden'
+                                  }`}
+                                >
+                                  {hs.en} {hs.ipa ? `[${hs.ipa}]` : ''}
+                                </div>
+
+                                <div 
+                                  onMouseEnter={() => setHoveredHotspotIndex(hidx)}
+                                  onMouseLeave={() => setHoveredHotspotIndex(null)}
+                                  onMouseDown={(e) => {
+                                    if (isAdminMode) {
+                                      e.stopPropagation();
+                                      e.preventDefault();
+                                      setDraggingIndex(hidx);
+                                    }
+                                  }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    // Click lại chấm số đang chọn để tắt bubble, hoặc chọn số mới
+                                    setSelectedHotspotIndex(isSelected ? null : hidx);
+                                  }}
+                                  className={`absolute -translate-x-1/2 -translate-y-1/2 w-[16px] h-[16px] flex items-center justify-center rounded-full border border-white shadow-md shrink-0 pointer-events-auto cursor-pointer ${
+                                    draggingIndex === hidx ? '' : 'transition-all duration-200'
+                                  } ${
+                                    isHovered 
+                                      ? 'bg-amber-400 text-slate-950 border-slate-950 scale-125 shadow-lg shadow-amber-500/30' 
+                                      : isSelected
+                                        ? 'bg-amber-500 text-slate-950 scale-110 shadow-md ring-2 ring-emerald-400'
+                                        : 'bg-emerald-500 text-white'
+                                  }`}
+                                >
+                                  <span className="text-[8px] font-black select-none leading-none">{hidx + 1}</span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-slate-400 font-bold py-20">Image Missing</div>
+                  )}
                 </div>
               </div>
               <div className="flex flex-col gap-1.5 py-1 justify-center w-full max-w-full overflow-visible tour-question-options-target">
@@ -1761,6 +2238,7 @@ export default function ToeicPart1Player({
                 })}
               </div>
             </div>
+
 
 
             {isReviewMode && selectedAnswer && !revealMode && (
