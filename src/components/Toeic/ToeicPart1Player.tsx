@@ -2003,6 +2003,8 @@ export default function ToeicPart1Player({
                           {localHotspots.map((hs, hidx) => {
                             const isHovered = hoveredHotspotIndex === hidx;
                             const isSelected = selectedHotspotIndex === hidx;
+                            const isNextHotspot = (hoveredHotspotIndex !== null && hoveredHotspotIndex + 1 === hidx) || 
+                                                  (hoveredHotspotIndex === null && selectedHotspotIndex !== null && selectedHotspotIndex + 1 === hidx);
 
                             // Tự động chuyển nhãn xuống dưới nếu nằm sát mép trên hoặc có hotspot khác ngay phía trên
                             const isNearTop = hs.y < 15;
@@ -2058,7 +2060,9 @@ export default function ToeicPart1Player({
                                       ? 'bg-amber-400 text-slate-950 border-slate-950 scale-125 shadow-lg shadow-amber-500/30' 
                                       : isSelected
                                         ? 'bg-amber-500 text-slate-950 scale-110 shadow-md ring-2 ring-emerald-400'
-                                        : 'bg-emerald-500 text-white'
+                                        : isNextHotspot
+                                          ? 'bg-emerald-500 text-white ring-4 ring-amber-400/80 animate-pulse scale-110 shadow-lg shadow-amber-400/20'
+                                          : 'bg-emerald-500 text-white'
                                   }`}
                                 >
                                   <span className="text-[8px] font-black select-none leading-none">{hidx + 1}</span>
