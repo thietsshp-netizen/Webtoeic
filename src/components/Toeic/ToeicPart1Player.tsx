@@ -2024,11 +2024,14 @@ export default function ToeicPart1Player({
                               return xDiff < 8 && yDiff > 0 && yDiff < 20;
                             });
                             const showBelow = isNearTop || hasHotspotAbove;
+                            const labelTranslateX = hs.x < 20 ? '0%' : hs.x > 80 ? '-100%' : '-50%';
 
                             return (
                               <div
                                 key={hidx}
-                                className="absolute pointer-events-none z-30 select-none"
+                                className={`absolute pointer-events-none select-none ${
+                                  isHovered || isSelected ? 'z-50' : 'z-30'
+                                }`}
                                 style={{
                                   left: `${hs.x}%`,
                                   top: `${hs.y}%`,
@@ -2036,15 +2039,18 @@ export default function ToeicPart1Player({
                               >
                                 {/* Tag từ vựng + phiên âm IPA nhỏ gọn, tự động hiển thị phía trên hoặc phía dưới chấm số */}
                                 <div 
-                                  className={`absolute -translate-x-1/2 whitespace-nowrap px-1.5 py-0.5 rounded-md border text-[9px] font-bold shadow-sm pointer-events-none transition-all duration-200 backdrop-blur-sm ${
-                                    showBelow ? 'top-[10px]' : 'bottom-[10px]'
+                                  className={`absolute px-2 py-1.5 rounded-lg border text-[9px] font-bold shadow-lg pointer-events-none transition-all duration-200 backdrop-blur-md flex flex-col items-center text-center min-w-[125px] max-w-[200px] gap-0.5 ${
+                                    showBelow ? 'top-[16px]' : 'bottom-[16px]'
                                   } ${
                                     isHovered || isSelected
-                                      ? 'bg-emerald-500/50 text-slate-950 border-emerald-600/50 scale-105 opacity-100 z-50 visible'
+                                      ? 'bg-slate-900/95 text-slate-100 border-slate-700/80 scale-105 opacity-100 visible'
                                       : 'opacity-0 invisible h-0 py-0 overflow-hidden'
                                   }`}
+                                  style={{ transform: `translateX(${labelTranslateX})` }}
                                 >
-                                  {hs.en} {hs.ipa ? `[${hs.ipa}]` : ''} {hs.vi ? `— ${hs.vi}` : ''}
+                                  <div className="font-extrabold text-[10.5px] text-amber-400 leading-tight">{hs.en}</div>
+                                  {hs.ipa && <div className="text-slate-400 font-medium text-[8px] font-mono leading-none">[{hs.ipa}]</div>}
+                                  {hs.vi && <div className="text-slate-300 font-normal border-t border-slate-800 pt-0.5 w-full text-[8.5px] leading-snug">{hs.vi}</div>}
                                 </div>
 
                                 <div 
