@@ -1656,16 +1656,20 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   // Phím tắt bàn phím thông minh (IME-proof) - BIND DUY NHẤT 1 LẦN để đạt độ nhạy phản hồi 100%
   useEffect(() => {
     const getEventHotkeyString = (ev: KeyboardEvent): string => {
+      const k = ev.key.toLowerCase();
+      // Nếu chỉ nhấn phím bổ trợ đơn độc, không được xem là tổ hợp phím tắt
+      if (k === 'control' || k === 'meta' || k === 'shift' || k === 'alt') {
+        return '';
+      }
+
       const parts: string[] = [];
       if (ev.ctrlKey || ev.metaKey) parts.push('ctrl');
-      if (ev.shiftKey && ev.key !== 'Shift') parts.push('shift');
+      if (ev.shiftKey) parts.push('shift');
       if (ev.altKey) parts.push('alt');
       
-      const k = ev.key.toLowerCase();
-      if (k !== 'control' && k !== 'meta' && k !== 'shift' && k !== 'alt') {
-        if (ev.code === 'Space') parts.push('space');
-        else parts.push(k);
-      }
+      if (ev.code === 'Space') parts.push('space');
+      else parts.push(k);
+      
       return parts.join('+');
     };
 
@@ -1719,9 +1723,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const pressedHotkey = getEventHotkeyString(e);
 
       // A. KIỂM TRA PHÍM TẮT BÚT CLONE TRƯỚC (Để ghi đè lên các bút gốc nếu trùng phím)
-      const matchedClone = stateRef.current.clonedTools.find(
-        clone => pressedHotkey === clone.hotkey.toLowerCase()
-      );
+      const matchedClone = pressedHotkey ? stateRef.current.clonedTools.find(
+        clone => clone.hotkey && pressedHotkey === clone.hotkey.toLowerCase()
+      ) : null;
       if (matchedClone) {
         e.preventDefault();
         setTool(matchedClone.baseType);
@@ -1737,12 +1741,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       // B. DÒ TÌM PHÍM TẮT TÙY CHỈNH (Custom Hotkeys)
       const hotkeys = stateRef.current.customHotkeys;
 
-      if (pressedHotkey === hotkeys.cursor) {
+      if (pressedHotkey && hotkeys.cursor && pressedHotkey === hotkeys.cursor) {
         e.preventDefault();
         setTool('cursor');
         setSelectedId(null);
         setActiveCloneId(null);
-      } else if (pressedHotkey === hotkeys.hand) {
+      } else if (pressedHotkey && hotkeys.hand && pressedHotkey === hotkeys.hand) {
         e.preventDefault();
         if (stateRef.current.tool === 'hand') {
           // Nếu đang ở hình bàn tay mà bấm ESC (hoặc phím hotkey của hand) lần nữa,
@@ -1752,58 +1756,58 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           setTool('hand');
         }
         setActiveCloneId(null);
-      } else if (pressedHotkey === hotkeys.pencil) {
+      } else if (pressedHotkey && hotkeys.pencil && pressedHotkey === hotkeys.pencil) {
         e.preventDefault();
         setTool('pencil');
         setSelectedId(null);
         setActiveCloneId(null);
-      } else if (pressedHotkey === hotkeys.highlight) {
+      } else if (pressedHotkey && hotkeys.highlight && pressedHotkey === hotkeys.highlight) {
         e.preventDefault();
         setTool('highlight');
         setSelectedId(null);
         setActiveCloneId(null);
-      } else if (pressedHotkey === hotkeys.flashlight) {
+      } else if (pressedHotkey && hotkeys.flashlight && pressedHotkey === hotkeys.flashlight) {
         e.preventDefault();
         setIsFlashlightActive(prev => !prev);
-      } else if (pressedHotkey === hotkeys.eraser) {
+      } else if (pressedHotkey && hotkeys.eraser && pressedHotkey === hotkeys.eraser) {
         e.preventDefault();
         setTool('eraser');
         setSelectedId(null);
         setActiveCloneId(null);
-      } else if (pressedHotkey === hotkeys.rectangle) {
+      } else if (pressedHotkey && hotkeys.rectangle && pressedHotkey === hotkeys.rectangle) {
         e.preventDefault();
         setTool('rectangle');
         setSelectedId(null);
         setActiveCloneId(null);
-      } else if (pressedHotkey === hotkeys.circle) {
+      } else if (pressedHotkey && hotkeys.circle && pressedHotkey === hotkeys.circle) {
         e.preventDefault();
         setTool('circle');
         setSelectedId(null);
         setActiveCloneId(null);
-      } else if (pressedHotkey === hotkeys.text) {
+      } else if (pressedHotkey && hotkeys.text && pressedHotkey === hotkeys.text) {
         e.preventDefault();
         setTool('text');
         setSelectedId(null);
         setActiveCloneId(null);
-      } else if (pressedHotkey === hotkeys.color1) {
+      } else if (pressedHotkey && hotkeys.color1 && pressedHotkey === hotkeys.color1) {
         e.preventDefault();
         updateColor(stateRef.current.colorSlots[0]);
-      } else if (pressedHotkey === hotkeys.color2) {
+      } else if (pressedHotkey && hotkeys.color2 && pressedHotkey === hotkeys.color2) {
         e.preventDefault();
         updateColor(stateRef.current.colorSlots[1]);
-      } else if (pressedHotkey === hotkeys.color3) {
+      } else if (pressedHotkey && hotkeys.color3 && pressedHotkey === hotkeys.color3) {
         e.preventDefault();
         updateColor(stateRef.current.colorSlots[2]);
-      } else if (pressedHotkey === hotkeys.color4) {
+      } else if (pressedHotkey && hotkeys.color4 && pressedHotkey === hotkeys.color4) {
         e.preventDefault();
         updateColor(stateRef.current.colorSlots[3]);
-      } else if (pressedHotkey === hotkeys.color5) {
+      } else if (pressedHotkey && hotkeys.color5 && pressedHotkey === hotkeys.color5) {
         e.preventDefault();
         updateColor(stateRef.current.colorSlots[4]);
-      } else if (pressedHotkey === hotkeys.color6) {
+      } else if (pressedHotkey && hotkeys.color6 && pressedHotkey === hotkeys.color6) {
         e.preventDefault();
         updateColor(stateRef.current.colorSlots[5]);
-      } else if (pressedHotkey === hotkeys.clear) {
+      } else if (pressedHotkey && hotkeys.clear && pressedHotkey === hotkeys.clear) {
         e.preventDefault();
         clearCanvas();
       }
