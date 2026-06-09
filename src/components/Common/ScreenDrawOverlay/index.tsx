@@ -601,17 +601,46 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   // 2. Trì hoãn lưu xuống localStorage (Debounce 800ms) để tránh nghẽn CPU
   useEffect(() => {
     const timer = setTimeout(() => {
-      let success = false;
       let tempElements = [...elements];
+      let jsonStr = JSON.stringify(tempElements);
       
-      // Vòng lặp tự động cắt bớt nét vẽ cũ nhất nếu localStorage bị tràn (QuotaExceededError)
+      // 1. TỐI ƯU CHỦ ĐỘNG: Nếu chuỗi JSON lớn hơn 3MB, dọn dẹp các nét vẽ Pencil/Highlight tự do cũ nhất
+      const LIMIT_WARN = 3 * 1024 * 1024; // 3MB
+      const LIMIT_SAFE = 2 * 1024 * 1024; // 2MB
+      
+      if (jsonStr.length > LIMIT_WARN) {
+        console.warn(`[DrawOverlay] Dung lượng nét vẽ lớn (${(jsonStr.length / 1024 / 1024).toFixed(2)}MB), bắt đầu chủ động dọn dẹp...`);
+        
+        // Tìm và lọc loại bỏ dần các nét vẽ tự do (Pencil/Highlight) từ cũ nhất (đầu mảng)
+        // Giữ lại các nét vẽ quan trọng như hình dạng (shapes) và chữ nháp (text)
+        let pruned = false;
+        while (jsonStr.length > LIMIT_SAFE && tempElements.length > 0) {
+          const firstFreeHandIdx = tempElements.findIndex(el => el.type === 'pencil' || el.type === 'highlight');
+          
+          if (firstFreeHandIdx !== -1) {
+            tempElements.splice(firstFreeHandIdx, 1);
+            jsonStr = JSON.stringify(tempElements);
+            pruned = true;
+          } else {
+            // Nếu không còn nét vẽ tự do nào để xóa (chỉ còn toàn chữ nháp/hình dạng cực nhẹ), dừng xóa
+            break;
+          }
+        }
+        
+        if (pruned) {
+          console.log(`[DrawOverlay] Đã chủ động dọn dẹp đưa dung lượng về ${(jsonStr.length / 1024 / 1024).toFixed(2)}MB`);
+        }
+      }
+
+      // 2. LƯU VÀ FALLBACK: Thử lưu, nếu vẫn báo lỗi đầy thì loại bỏ tiếp nét vẽ cũ nhất bất kỳ
+      let success = false;
       while (!success && tempElements.length > 0) {
         try {
           localStorage.setItem('webtoeic_canvas_elements', JSON.stringify(tempElements));
           success = true;
         } catch (err) {
-          console.warn(`LocalStorage đầy, tự động loại bỏ nét vẽ cũ nhất (còn lại ${tempElements.length - 1} nét)`);
-          tempElements.shift(); // Loại bỏ phần tử đầu tiên (nét vẽ cũ nhất)
+          console.warn("[DrawOverlay] LocalStorage đầy, tiến hành loại bỏ nét vẽ cũ nhất làm fallback...");
+          tempElements.shift(); // Fallback xóa phần tử đầu tiên
         }
       }
 
