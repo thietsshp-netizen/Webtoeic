@@ -963,15 +963,24 @@ export default function ToeicPart1Player({
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const [saveLoading, setSaveLoading] = useState(false);
   const hotspotsContainerRef = useRef<HTMLDivElement>(null);
+  const localHotspotsRef = useRef<any[]>([]);
 
   // Đồng bộ localHotspots khi đổi question group
   useEffect(() => {
     if (currentGroup?.metadata && typeof currentGroup.metadata === 'object' && Array.isArray((currentGroup.metadata as any).hotspots)) {
-      setLocalHotspots(JSON.parse(JSON.stringify((currentGroup.metadata as any).hotspots)));
+      const hots = JSON.parse(JSON.stringify((currentGroup.metadata as any).hotspots));
+      setLocalHotspots(hots);
+      localHotspotsRef.current = hots;
     } else {
       setLocalHotspots([]);
+      localHotspotsRef.current = [];
     }
   }, [currentGroup]);
+
+  // Luôn cập nhật ref bằng giá trị state mới nhất
+  useEffect(() => {
+    localHotspotsRef.current = localHotspots;
+  }, [localHotspots]);
 
   // Xử lý kéo thả chấm tròn hotspot
   useEffect(() => {
@@ -1003,7 +1012,7 @@ export default function ToeicPart1Player({
     const handleMouseUp = async () => {
       setDraggingIndex(null);
       
-      // Tự động lưu tọa độ mới của các hotspot vào database khi thả chuột
+      // Tự động lưu tọa độ mới nhất của các hotspot từ ref vào database khi thả chuột
       try {
         await fetch("/api/admin/update-content", {
           method: "PUT",
@@ -1012,7 +1021,7 @@ export default function ToeicPart1Player({
             target: "group",
             id: currentGroup.id,
             field: "metadata.hotspots",
-            value: localHotspots
+            value: localHotspotsRef.current
           })
         });
       } catch (err) {
@@ -1026,7 +1035,7 @@ export default function ToeicPart1Player({
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [draggingIndex, localHotspots, isAdminMode, currentGroup?.id]);
+  }, [draggingIndex, isAdminMode, currentGroup?.id]);
 
   const handleUpdateActiveHsField = (fieldKey: string, val: any) => {
     const activeIdx = hoveredHotspotIndex !== null ? hoveredHotspotIndex : selectedHotspotIndex;
