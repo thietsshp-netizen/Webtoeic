@@ -2035,7 +2035,7 @@ export default function ToeicPart1Player({
                                       : 'opacity-0 invisible h-0 py-0 overflow-hidden'
                                   }`}
                                 >
-                                  {hs.en} {hs.ipa ? `[${hs.ipa}]` : ''}
+                                  {hs.en} {hs.ipa ? `[${hs.ipa}]` : ''} {hs.vi ? `— ${hs.vi}` : ''}
                                 </div>
 
                                 <div 
