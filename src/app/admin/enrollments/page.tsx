@@ -16,12 +16,13 @@ type Student = {
   name: string;
   email: string | null;
   role: string;
+  classCode: string | null;
   lastIp: string;
   enrollments: string[];
   createdAt: string; 
   accountExpiresAt: string | null;
 };
-type MatrixData = { users: Student[]; courses: Course[] };
+type MatrixData = { users: Student[]; courses: Course[]; classes: string[] };
 
 export default function EnrollmentMatrix() {
   const { data: session, status } = useSession();
@@ -49,6 +50,13 @@ export default function EnrollmentMatrix() {
   const [showDeviceModal, setShowDeviceModal] = useState<{ userId: string; name: string } | null>(null);
   const [userDevices, setUserDevices] = useState<any[]>([]);
   const [loadingDevices, setLoadingDevices] = useState(false);
+
+  // Class Management States
+  const [filterClass, setFilterClass] = useState("ALL");
+  const [showClassModal, setShowClassModal] = useState(false);
+  const [newClassName, setNewClassName] = useState("");
+  const [isCreatingClass, setIsCreatingClass] = useState(false);
+  const [classError, setClassError] = useState("");
 
   const isAdmin = (session?.user as any)?.role === "ADMIN";
 
@@ -143,6 +151,85 @@ export default function EnrollmentMatrix() {
     } catch (e: any) {
       alert(`⚠️ Lỗi: ${e.message}`);
       fetchData(); // Tải lại dữ liệu để đảm bảo UI khớp với DB
+    }
+  };
+
+  const updateClassCode = async (userId: string, newClassCode: string) => {
+    try {
+      const res = await fetch("/api/admin/users/update-class", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, classCode: newClassCode }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Lỗi cập nhật lớp");
+      
+      if (result.user) {
+        setData(prev => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            users: prev.users.map(u => u.id === userId ? { ...u, classCode: result.user.classCode } : u)
+          };
+        });
+      }
+    } catch (e: any) {
+      alert(`⚠️ Lỗi: ${e.message}`);
+      fetchData();
+    }
+  };
+
+  const handleAddClass = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newClassName.trim()) return;
+    setIsCreatingClass(true);
+    setClassError("");
+    try {
+      const res = await fetch("/api/admin/classes/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: newClassName.trim() })
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Lỗi tạo mã lớp");
+      
+      setNewClassName("");
+      setData(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          classes: [...prev.classes, result.class.code].sort()
+        };
+      });
+    } catch (e: any) {
+      setClassError(e.message);
+    } finally {
+      setIsCreatingClass(false);
+    }
+  };
+
+  const handleDeleteClass = async (code: string) => {
+    if (!confirm(`Bạn có chắc chắn muốn xóa mã lớp "${code}"? Tất cả học viên thuộc lớp này sẽ tự động chuyển về trạng thái "Chưa xếp lớp".`)) return;
+    
+    try {
+      const res = await fetch("/api/admin/classes/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code })
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Lỗi xóa mã lớp");
+      
+      setData(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          classes: prev.classes.filter(c => c !== code),
+          users: prev.users.map(u => u.classCode === code ? { ...u, classCode: null } : u)
+        };
+      });
+    } catch (e: any) {
+      alert(`Lỗi: ${e.message}`);
     }
   };
 
@@ -270,11 +357,16 @@ export default function EnrollmentMatrix() {
     filteredStudents = filteredStudents.filter(u => u.enrollments.length === 0);
   }
 
+  if (filterClass !== "ALL") {
+    filteredStudents = filteredStudents.filter(u => u.classCode === filterClass);
+  }
+
   if (search) {
     filteredStudents = filteredStudents.filter(
       s =>
         (s.email ?? "").toLowerCase().includes(search.toLowerCase()) ||
-        (s.name ?? "").toLowerCase().includes(search.toLowerCase())
+        (s.name ?? "").toLowerCase().includes(search.toLowerCase()) ||
+        (s.classCode ?? "").toLowerCase().includes(search.toLowerCase())
     );
   }
 
@@ -339,6 +431,15 @@ export default function EnrollmentMatrix() {
             Thêm học viên mới
           </button>
 
+          {/* Action Manage Classes */}
+          <button
+            onClick={() => setShowClassModal(true)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-indigo-700 transition shadow-lg shadow-indigo-200"
+          >
+            <Settings size={18} />
+            Quản lý Lớp học
+          </button>
+
           <div className="w-px h-6 bg-slate-200 mx-1 hidden md:block"></div>
 
           {/* Action Delete */}
@@ -352,6 +453,22 @@ export default function EnrollmentMatrix() {
               Xóa {selectedUsers.size} Học viên
             </button>
           )}
+
+          {/* Lọc theo Lớp */}
+          <div className="relative group">
+            <Filter size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400 pointer-events-none" />
+            <select
+              title="Lọc theo Lớp"
+              value={filterClass}
+              onChange={e => setFilterClass(e.target.value)}
+              className="pl-9 pr-8 py-2.5 border border-indigo-200 rounded-xl text-sm font-semibold text-indigo-700 outline-none focus:ring-2 focus:ring-indigo-500 transition appearance-none bg-indigo-50 hover:bg-indigo-100 cursor-pointer"
+            >
+              <option value="ALL">Tất cả các Lớp</option>
+              {(data?.classes || []).map(cls => (
+                <option key={cls} value={cls}>{cls}</option>
+              ))}
+            </select>
+          </div>
 
           {/* Filters */}
           <div className="relative group">
@@ -547,6 +664,26 @@ export default function EnrollmentMatrix() {
                                 {new Date(student.accountExpiresAt) > new Date() ? "đang hoạt động" : "đã hết hạn"}
                               </span>
                             )}
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">LỚP:</span>
+                            <div className="relative inline-block">
+                              <select 
+                                value={student.classCode || ""}
+                                onChange={(e) => updateClassCode(student.id, e.target.value)}
+                                className="text-[10px] border border-slate-200 px-2 py-0.5 rounded font-bold text-indigo-600 bg-white outline-none cursor-pointer appearance-none pr-5 min-w-[100px]"
+                                title="Chọn mã lớp cho học viên"
+                              >
+                                <option value="">Chưa chọn lớp</option>
+                                {(data?.classes || []).map(code => (
+                                  <option key={code} value={code}>{code}</option>
+                                ))}
+                              </select>
+                              <div className="absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none opacity-50 text-indigo-600">
+                                <ArrowUpDown size={8} />
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -769,6 +906,80 @@ export default function EnrollmentMatrix() {
               <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100">
                 <p className="text-[10px] text-blue-700 font-bold italic leading-relaxed">
                   * Hệ thống giới hạn 1 PC và 1 Mobile. Reset slot giúp học viên có thể đăng nhập trên thiết bị mới nếu họ đã hết lượt đổi máy (quá 30 ngày).
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* --- CLASS MODAL --- */}
+      {showClassModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-[2.5rem] w-full max-w-md shadow-2xl border border-white overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-8 pb-4 flex justify-between items-center">
+              <h2 className="text-xl font-black text-slate-800 tracking-tight uppercase">Quản lý Lớp học</h2>
+              <button onClick={() => { setShowClassModal(false); setClassError(""); }} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                <X size={20} className="text-slate-400" />
+              </button>
+            </div>
+            
+            <div className="p-8 pt-4 space-y-6">
+              {/* Form tạo lớp mới */}
+              <form onSubmit={handleAddClass} className="space-y-3">
+                {classError && (
+                  <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-xs font-bold border border-red-100 italic">
+                    ⚠️ {classError}
+                  </div>
+                )}
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1">Tạo mã lớp mới</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      required
+                      placeholder="Ví dụ: T67_246_21h"
+                      className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold text-slate-700"
+                      value={newClassName}
+                      onChange={e => setNewClassName(e.target.value)}
+                    />
+                    <button
+                      type="submit"
+                      disabled={isCreatingClass}
+                      className="px-6 bg-indigo-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-indigo-700 active:scale-95 transition-all disabled:opacity-50"
+                    >
+                      {isCreatingClass ? "ĐANG TẠO..." : "TẠO"}
+                    </button>
+                  </div>
+                </div>
+              </form>
+
+              {/* Danh sách lớp hiện có */}
+              <div className="border-t border-slate-100 pt-4">
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">Danh sách lớp hiện có</label>
+                <div className="max-h-60 overflow-y-auto space-y-2 pr-1 scrollbar-thin">
+                  {(data?.classes || []).length === 0 ? (
+                    <div className="text-center py-6 text-slate-400 font-bold text-xs italic">Chưa có lớp nào được tạo.</div>
+                  ) : (
+                    (data?.classes || []).map(code => (
+                      <div key={code} className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                        <span className="text-sm font-bold text-indigo-700">{code}</span>
+                        <button
+                          onClick={() => handleDeleteClass(code)}
+                          className="p-1.5 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors"
+                          title="Xóa mã lớp"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <div className="p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
+                <p className="text-[10px] text-indigo-700 font-bold italic leading-relaxed">
+                  * Khi xóa một mã lớp, tất cả học viên thuộc lớp đó sẽ tự động chuyển về trạng thái "Chưa xếp lớp" để đảm bảo tính an toàn dữ liệu.
                 </p>
               </div>
             </div>

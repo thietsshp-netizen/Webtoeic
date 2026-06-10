@@ -31,6 +31,7 @@ model User {
   userVocabs       UserVocabulary[]
   vocabBookmarks   VocabBookmark[]
   drawSettings     Json?             // Cấu hình phím tắt và bút clone của admin (cho phép null)
+  classCode        String?
 }
 
 model Account {
@@ -374,3 +375,10 @@ enum Role {
   USER
   ADMIN
 }
+
+model Class {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  createdAt DateTime @default(now())
+}
+

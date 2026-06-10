@@ -27,18 +27,24 @@ export async function GET() {
       orderBy: { createdAt: 'asc' }
     });
 
+    const classes = await prisma.class.findMany({
+      orderBy: { code: 'asc' }
+    });
+
     const data = {
       users: users.map(user => ({
         id: user.id,
         name: user.name || 'Chưa đặt tên',
         email: user.email,
         role: user.role,
+        classCode: user.classCode || null,
         lastIp: user.ipHistories[0]?.ipAddress || 'N/A',
         enrollments: user.enrollments.map(e => e.courseId),
         createdAt: user.createdAt.toISOString(),
         accountExpiresAt: user.accountExpiresAt ? user.accountExpiresAt.toISOString() : null,
       })),
-      courses
+      courses,
+      classes: classes.map(c => c.code)
     };
 
     return NextResponse.json(data);
