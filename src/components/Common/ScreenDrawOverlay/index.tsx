@@ -144,6 +144,7 @@ export interface DrawElement {
   textBorderWidth?: number;
   textBgColor?: string;
   textBgOpacity?: number;
+  anchorSelector?: string;
 }
 
 interface ScreenDrawOverlayProps {
@@ -296,6 +297,104 @@ export const erasePixelFromElements = (
   return nextElements;
 };
 
+// Tạo CSS selector duy nhất cho phần tử HTML
+export const generateUniqueSelector = (el: HTMLElement): string => {
+  if (el.id) return `#${CSS.escape(el.id)}`;
+  
+  // Check if it already has a data-draw-id
+  let drawId = el.getAttribute('data-draw-id');
+  if (drawId) return `[data-draw-id="${drawId}"]`;
+
+  // Check if it has a globally unique class name
+  const classes = Array.from(el.classList)
+    .filter(c => c && typeof c === 'string' && !c.includes('active') && !c.includes('hover') && !c.includes('selected') && !c.includes('drawing'))
+    .map(c => CSS.escape(c));
+
+  if (classes.length > 0) {
+    const classSelector = `.${classes.join('.')}`;
+    try {
+      const helpers = Array.from(document.querySelectorAll(classSelector));
+      if (helpers.length === 1) return classSelector;
+    } catch (e) {}
+  }
+
+  // Fallback: Generate and assign a new data-draw-id to ensure 100% unique selector stability
+  drawId = `draw-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+  el.setAttribute('data-draw-id', drawId);
+  return `[data-draw-id="${drawId}"]`;
+};
+
+// Helper tìm phần tử neo phù hợp nhất (Bubble up) và tạo Selector
+export const findBestAnchor = (
+  clientX: number,
+  clientY: number,
+  canvas: HTMLCanvasElement | null
+): { selector: string; rect: DOMRect; priority: number } | null => {
+  if (!canvas) return null;
+  
+  const originalPointerEvents = canvas.style.pointerEvents;
+  canvas.style.pointerEvents = 'none';
+
+  // Quét các điểm xung quanh để tìm phần tử chữ cụ thể (như span) thay vì thẻ div bao ngoài khi người dùng vẽ lệch/vẽ gạch chân dưới chữ
+  const offsets = [
+    { x: 0, y: 0 },
+    { x: 0, y: -6 },   // 6px lên trên (rất hiệu quả cho nét gạch chân)
+    { x: 0, y: -12 },  // 12px lên trên
+    { x: 0, y: -18 },  // 18px lên trên
+    { x: 0, y: 6 },    // 6px xuống dưới
+    { x: -10, y: 0 },  // 10px sang trái
+    { x: 10, y: 0 }    // 10px sang phải
+  ];
+
+  let bestAnchorInfo: { selector: string; rect: DOMRect; priority: number } | null = null;
+
+  for (const offset of offsets) {
+    const testX = clientX + offset.x;
+    const testY = clientY + offset.y;
+    const el = document.elementFromPoint(testX, testY) as HTMLElement | null;
+    if (!el) continue;
+
+    const targetSelectors = [
+      'span',
+      'p',
+      'li',
+      'tr',
+      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+      '[class*="option"]',
+      'div',
+      '[class*="question-item"]',
+      '[class*="paragraph-item"]',
+      '[class*="passage-box"]'
+    ];
+
+    for (let i = 0; i < targetSelectors.length; i++) {
+      const selector = targetSelectors[i];
+      const anchor = el.closest(selector) as HTMLElement | null;
+      if (anchor) {
+        let uniqueSelector = generateUniqueSelector(anchor);
+        try {
+          let found = document.querySelector(uniqueSelector);
+          if (found === anchor) {
+            const info = { selector: uniqueSelector, rect: anchor.getBoundingClientRect(), priority: i };
+            if (!bestAnchorInfo || info.priority < bestAnchorInfo.priority) {
+              bestAnchorInfo = info;
+            }
+            break;
+          }
+        } catch (e) {}
+      }
+    }
+    
+    // Nếu tìm thấy span (ưu tiên cao nhất), dừng tìm kiếm sớm
+    if (bestAnchorInfo && bestAnchorInfo.priority === 0) {
+      break;
+    }
+  }
+
+  canvas.style.pointerEvents = originalPointerEvents;
+  return bestAnchorInfo;
+};
+
 export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({ 
   isActive, 
   setIsActive 
@@ -375,6 +474,94 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   
+  // Ref lưu phần tử neo đang vẽ active
+  const activeAnchorRef = useRef<{ selector: string; rect: DOMRect; priority: number } | null>(null);
+
+  // Helper dịch chuyển toạ độ tương đối của DrawElement thành toạ độ tuyệt đối trên Canvas
+  const getTranslatedElement = (el: DrawElement, canvasRect: DOMRect | null | undefined): DrawElement | null => {
+    if (!el.anchorSelector) return el;
+    let domEl: Element | null = null;
+    try {
+      domEl = document.querySelector(el.anchorSelector);
+    } catch (e) {
+      console.warn("Invalid selector lookup:", el.anchorSelector);
+    }
+    if (!domEl) return null; // Anchor đã biến mất khỏi DOM hoặc selector sai
+    
+    if (!canvasRect) return el;
+    const rect = domEl.getBoundingClientRect();
+    const dx = rect.left - canvasRect.left;
+    const dy = rect.top - canvasRect.top;
+    
+    return {
+      ...el,
+      x: el.x !== undefined ? el.x + dx : undefined,
+      y: el.y !== undefined ? el.y + dy : undefined,
+      points: el.points.map(pt => ({
+        ...pt,
+        x: pt.x + dx,
+        y: pt.y + dy
+      }))
+    };
+  };
+
+  // Helper thực hiện tẩy Pixel có tính toán neo toạ độ (DOM Anchoring Aware)
+  const performPixelErasing = (ex: number, ey: number, eraserRadius: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const canvasRect = canvas.getBoundingClientRect();
+    
+    // Thu thập các phần tử đã được chuyển đổi sang hệ toạ độ tuyệt đối
+    const absoluteElements: DrawElement[] = [];
+    const elementTranslationOffsets = new Map<string, { dx: number; dy: number }>();
+    
+    elements.forEach(el => {
+      const translated = getTranslatedElement(el, canvasRect);
+      if (translated) {
+        absoluteElements.push(translated);
+        if (el.anchorSelector) {
+          const domEl = document.querySelector(el.anchorSelector);
+          if (domEl) {
+            const domRect = domEl.getBoundingClientRect();
+            elementTranslationOffsets.set(el.id, {
+              dx: domRect.left - canvasRect.left,
+              dy: domRect.top - canvasRect.top
+            });
+          }
+        }
+      }
+    });
+
+    const erasedAbsoluteElements = erasePixelFromElements(ex, ey, eraserRadius, absoluteElements, eraserTargets);
+    
+    const nextElements = erasedAbsoluteElements.map(el => {
+      let baseId = el.id;
+      if (el.id.includes('_split_')) {
+        baseId = el.id.split('_split_')[0];
+      }
+      const originalEl = elements.find(o => o.id === baseId);
+      if (originalEl && originalEl.anchorSelector) {
+        const offset = elementTranslationOffsets.get(baseId);
+        if (offset) {
+          return {
+            ...el,
+            anchorSelector: originalEl.anchorSelector,
+            x: el.x !== undefined ? el.x - offset.dx : undefined,
+            y: el.y !== undefined ? el.y - offset.dy : undefined,
+            points: el.points.map(pt => ({
+              ...pt,
+              x: pt.x - offset.dx,
+              y: pt.y - offset.dy
+            }))
+          };
+        }
+      }
+      return el;
+    });
+
+    setElements(nextElements);
+  };
+
   // Trạng thái vẽ nháp
   const isDrawingRef = useRef(false);
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
@@ -831,15 +1018,64 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   useEffect(() => {
     if (!isActive) return;
 
+    let ticking = false;
+    const requestRedraw = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          drawAllElements();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    const handleScrollCapture = () => {
+      requestRedraw();
+    };
+
     // Delay nhỏ để DOM render xong canvas
     const timer = setTimeout(() => {
       initCanvas();
       window.addEventListener("resize", initCanvas);
+      window.addEventListener('scroll', handleScrollCapture, { capture: true, passive: true });
+      window.addEventListener('webtoeic-toggle-global-draw-state', requestRedraw);
+      window.addEventListener('webtoeic-toggle-global-draw', requestRedraw);
+      window.addEventListener('transitionend', requestRedraw, { capture: true, passive: true });
+      window.addEventListener('animationend', requestRedraw, { capture: true, passive: true });
     }, 50);
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof window !== 'undefined' && 'ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(() => {
+        requestRedraw();
+      });
+      resizeObserver.observe(document.body);
+
+      // Quan sát thêm các vùng chứa chính của giao diện có thể co giãn khi đóng/mở sidebar
+      const mainEl = document.querySelector('main');
+      if (mainEl) resizeObserver.observe(mainEl);
+      
+      const flexEl = document.querySelector('.flex-1');
+      if (flexEl) resizeObserver.observe(flexEl);
+      
+      const sidebarEl = document.querySelector('[class*="sidebar"]');
+      if (sidebarEl) resizeObserver.observe(sidebarEl);
+      
+      const playerEl = document.querySelector('[class*="Player"]');
+      if (playerEl) resizeObserver.observe(playerEl);
+    }
 
     return () => {
       window.removeEventListener("resize", initCanvas);
+      window.removeEventListener('scroll', handleScrollCapture, { capture: true });
+      window.removeEventListener('webtoeic-toggle-global-draw-state', requestRedraw);
+      window.removeEventListener('webtoeic-toggle-global-draw', requestRedraw);
+      window.removeEventListener('transitionend', requestRedraw, { capture: true });
+      window.removeEventListener('animationend', requestRedraw, { capture: true });
       clearTimeout(timer);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
     };
   }, [isActive]);
 
@@ -1287,14 +1523,58 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       }
     });
 
+    const canvasRect = canvas.getBoundingClientRect();
+    
+    // Gom nhóm toạ độ neo duy nhất để lưu vào cache
+    const rectCache = new Map<string, DOMRect>();
+    elements.forEach(el => {
+      if (el.anchorSelector && !rectCache.has(el.anchorSelector)) {
+        let domEl: Element | null = null;
+        try {
+          domEl = document.querySelector(el.anchorSelector);
+        } catch (e) {
+          console.warn("Invalid selector lookup:", el.anchorSelector);
+        }
+        if (domEl) {
+          rectCache.set(el.anchorSelector, domEl.getBoundingClientRect());
+        }
+      }
+    });
+
+    const getTranslatedElementLocal = (el: DrawElement): DrawElement | null => {
+      if (!el.anchorSelector) return el;
+      const rect = rectCache.get(el.anchorSelector);
+      if (!rect) return null; // anchor không còn hiển thị hoặc không tồn tại
+      
+      const dx = rect.left - canvasRect.left;
+      const dy = rect.top - canvasRect.top;
+      
+      return {
+        ...el,
+        x: el.x !== undefined ? el.x + dx : undefined,
+        y: el.y !== undefined ? el.y + dy : undefined,
+        points: el.points.map(pt => ({
+          ...pt,
+          x: pt.x + dx,
+          y: pt.y + dy
+        }))
+      };
+    };
+
+    const drawTranslatedElement = (el: DrawElement) => {
+      const translated = getTranslatedElementLocal(el);
+      if (!translated) return; // skip if anchor is missing/hidden
+      drawElement(translated);
+    };
+
     // 1. Vẽ toàn bộ đối tượng được phép tẩy trước
-    erasableElements.forEach(drawElement);
+    erasableElements.forEach(drawTranslatedElement);
 
     // 2. Vẽ đè các nét tẩy lên (sẽ tẩy sạch các phần tử ở bước 1)
-    eraserElements.forEach(drawElement);
+    eraserElements.forEach(drawTranslatedElement);
 
     // 3. Vẽ đè toàn bộ đối tượng KHÔNG được phép tẩy lên trên cùng (hoàn toàn nguyên vẹn)
-    nonErasableElements.forEach(drawElement);
+    nonErasableElements.forEach(drawTranslatedElement);
 
     // 4. Vẽ nét vẽ nháp đang di chuột (Active Stroke) nếu đang vẽ trong chế độ Đèn chiếu
     if (isFlashlightActive && isDrawingRef.current && activePointsRef.current.length > 0) {
@@ -1411,16 +1691,21 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   // Thuật toán Hit Testing tìm đối tượng gần click chuột nhất
   const findElementAtPosition = (x: number, y: number): DrawElement | null => {
+    const canvas = canvasRef.current;
+    const canvasRect = canvas?.getBoundingClientRect();
+
     // Duyệt ngược từ phần tử vẽ sau cùng lên đầu để ưu tiên chọn phần tử trên cùng
     for (let i = elements.length - 1; i >= 0; i--) {
-      const el = elements[i];
+      const originalEl = elements[i];
+      const el = getTranslatedElement(originalEl, canvasRect);
+      if (!el) continue;
 
       if (el.type === 'pencil' || el.type === 'highlight' || el.type === 'eraser') {
         for (let j = 0; j < el.points.length; j++) {
           const pt = el.points[j];
           const distance = Math.sqrt((pt.x - x) ** 2 + (pt.y - y) ** 2);
           if (distance < el.size + 8) {
-            return el;
+            return originalEl;
           }
         }
       }
@@ -1431,7 +1716,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           const minY = Math.min(el.y, el.y + el.height);
           const maxY = Math.max(el.y, el.y + el.height);
           if (x >= minX - 8 && x <= maxX + 8 && y >= minY - 8 && y <= maxY + 8) {
-            return el;
+            return originalEl;
           }
         }
       }
@@ -1439,7 +1724,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         if (el.x !== undefined && el.y !== undefined && el.radius !== undefined) {
           const distance = Math.sqrt((el.x - x) ** 2 + (el.y - y) ** 2);
           if (distance <= el.radius + 8) {
-            return el;
+            return originalEl;
           }
         }
       }
@@ -1448,7 +1733,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           const normX = (x - el.x) / (el.rx + 8);
           const normY = (y - el.y) / (el.ry + 8);
           if (normX * normX + normY * normY <= 1) {
-            return el;
+            return originalEl;
           }
         }
       }
@@ -1456,12 +1741,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         if (el.x !== undefined && el.y !== undefined && el.text) {
           const lines = el.text.split('\n');
           let maxLineWidth = 0;
-          const canvas = canvasRef.current;
           const tempCtx = canvas?.getContext('2d');
           if (tempCtx) {
             tempCtx.save();
             lines.forEach(line => {
-              const cleanLine = line.replace(/\*\//g, "");
+              const cleanLine = line.replace(/\*\*/g, "");
               tempCtx.font = getElementFont(el.size, el.textStyle);
               const w = tempCtx.measureText(cleanLine).width;
               if (w > maxLineWidth) maxLineWidth = w;
@@ -1474,7 +1758,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           const width = maxLineWidth + 12;
           const height = el.size * lines.length * 1.3 + 8;
           if (x >= el.x && x <= el.x + width && y >= el.y && y <= el.y + height) {
-            return el;
+            return originalEl;
           }
         }
       }
@@ -1483,7 +1767,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   };
 
   // Thuật toán kiểm tra chuột có nằm trên 4 góc kéo dãn (Resize Handle) của phần tử đang chọn hay không
-  const getResizeHandleAtPosition = (x: number, y: number, el: DrawElement): 'nw' | 'ne' | 'se' | 'sw' | null => {
+  const getResizeHandleAtPosition = (x: number, y: number, originalEl: DrawElement): 'nw' | 'ne' | 'se' | 'sw' | null => {
+    if (!originalEl) return null;
+    const canvas = canvasRef.current;
+    const canvasRect = canvas?.getBoundingClientRect();
+    const el = getTranslatedElement(originalEl, canvasRect);
     if (!el) return null;
     
     let x1 = 0, y1 = 0, x2 = 0, y2 = 0;
@@ -1722,6 +2010,19 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Tự động vẽ lại nhiều lần khi học viên bấm Ctrl+S / Ctrl+Shift+S để khớp toạ độ trong suốt 500ms hoạt họa co giãn giải thích
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        const redraw = () => {
+          window.requestAnimationFrame(() => {
+            drawAllElements();
+          });
+        };
+        const intervals = [30, 80, 150, 220, 300, 380, 450, 520, 600, 750, 900, 1100];
+        intervals.forEach(delay => {
+          setTimeout(redraw, delay);
+        });
+      }
+
       // Nếu đang mở Modal cài đặt phím tắt, chặn hoàn toàn phím tắt toàn cục để tránh ghi đè/gõ chữ
       if (stateRef.current.showSettings) {
         return;
@@ -2126,11 +2427,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         const targetScroll = findScrollable(elementUnder);
         scrollTargetRef.current = targetScroll;
       }
-    } 
-    else {
+    } else {
       saveToUndoStack(elements);
       // 2. Chế độ vẽ vẽ: Chụp snapshot canvas và khởi tạo toạ độ kèm lực nhấn ban đầu
       setSelectedId(null);
+      activeAnchorRef.current = findBestAnchor(e.clientX, e.clientY, canvas);
 
       // Nếu là Eraser, lập tức kiểm tra va chạm để xóa nét luôn khi click xuống
       const { eraserMode, eraserTargets } = stateRef.current;
@@ -2153,7 +2454,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             else if (el.type === 'rectangle' || el.type === 'circle' || el.type === 'ellipse') isTarget = shapesErasable;
             else if (el.type === 'text') isTarget = textErasable;
 
-            if (isTarget && checkIntersection(x, y, el, eraserRadius)) {
+            const translatedEl = getTranslatedElement(el, rect);
+            if (translatedEl && isTarget && checkIntersection(x, y, translatedEl, eraserRadius)) {
               toDeleteIds.add(el.id);
             }
           });
@@ -2162,8 +2464,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             setElements(prev => prev.filter(el => !toDeleteIds.has(el.id)));
           }
         } else {
-          // Pixel Eraser - thực hiện chia nét / xóa vật thể thật luôn
-          setElements(prev => erasePixelFromElements(x, y, eraserRadius, prev, eraserTargets));
+          // Pixel Eraser - thực hiện chia nét / xóa vật thể thật luôn với neo toạ độ
+          performPixelErasing(x, y, eraserRadius);
         }
       }
 
@@ -2544,7 +2846,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               else if (el.type === 'rectangle' || el.type === 'circle' || el.type === 'ellipse') isTarget = shapesErasable;
               else if (el.type === 'text') isTarget = textErasable;
 
-              if (isTarget && checkIntersection(ex, ey, el, eraserRadius)) {
+              const translatedEl = getTranslatedElement(el, rect);
+              if (translatedEl && isTarget && checkIntersection(ex, ey, translatedEl, eraserRadius)) {
                 toDeleteIds.add(el.id);
               }
             });
@@ -2554,7 +2857,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             }
           } else {
             const eraserRadius = eraserSize / 2;
-            setElements(prev => erasePixelFromElements(ex, ey, eraserRadius, prev, eraserTargets));
+            performPixelErasing(ex, ey, eraserRadius);
           }
 
           lastPointRef.current = { x: ex, y: ey };
@@ -2663,6 +2966,38 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const ex = e.clientX - (rect?.left || 0);
       const ey = e.clientY - (rect?.top || 0);
 
+      let activeAnchor = activeAnchorRef.current;
+      if (rect && points.length > 0) {
+        const sampleIndices = [
+          0,
+          Math.floor(points.length / 2),
+          points.length - 1
+        ];
+        sampleIndices.forEach(idx => {
+          if (idx >= 0 && idx < points.length) {
+            const pt = points[idx];
+            const testX = pt.x + rect.left;
+            const testY = pt.y + rect.top;
+            const anchor = findBestAnchor(testX, testY, canvas);
+            if (anchor) {
+              if (!activeAnchor || anchor.priority < activeAnchor.priority) {
+                activeAnchor = anchor;
+              }
+            }
+          }
+        });
+      }
+
+      let dx = 0;
+      let dy = 0;
+      let anchorSelector: string | undefined = undefined;
+
+      if (activeAnchor && rect) {
+        anchorSelector = activeAnchor.selector;
+        dx = activeAnchor.rect.left - rect.left;
+        dy = activeAnchor.rect.top - rect.top;
+      }
+
       // ── DOT EVENT HANDLER ──────────────────────────────────────────────────
       // Khi người dùng chỉ tap (không di chuyển) -> points <= 2, không có điểm
       // đủ để vẽ Bezier. Vẽ hình tròn nhỏ ngay tại điểm đó.
@@ -2689,7 +3024,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         const dotElement: DrawElement = {
           id: Date.now().toString(),
           type: tool,
-          points: [{ x: dotX, y: dotY, pressure }],
+          anchorSelector: anchorSelector,
+          points: [{ x: dotX - dx, y: dotY - dy, pressure }],
           color: color,
           size: tool === 'highlight' ? highlightSize : pencilSize,
           penStyle: tool === 'pencil' ? penStyle : undefined,
@@ -2719,11 +3055,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           newElement = {
             id: elementId,
             type: 'rectangle',
+            anchorSelector: anchorSelector,
             points: [],
             color: color,
             size: tool === 'highlight' ? highlightSize : pencilSize,
-            x: shape.rect.x,
-            y: shape.rect.y,
+            x: shape.rect.x - dx,
+            y: shape.rect.y - dy,
             width: shape.rect.w,
             height: shape.rect.h,
           };
@@ -2731,22 +3068,24 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           newElement = {
             id: elementId,
             type: 'circle',
+            anchorSelector: anchorSelector,
             points: [],
             color: color,
             size: tool === 'highlight' ? highlightSize : pencilSize,
-            x: shape.circle.cx,
-            y: shape.circle.cy,
+            x: shape.circle.cx - dx,
+            y: shape.circle.cy - dy,
             radius: shape.circle.radius,
           };
         } else if (shape.type === 'ellipse' && shape.ellipse) {
           newElement = {
             id: elementId,
             type: 'ellipse',
+            anchorSelector: anchorSelector,
             points: [],
             color: color,
             size: tool === 'highlight' ? highlightSize : pencilSize,
-            x: shape.ellipse.cx,
-            y: shape.ellipse.cy,
+            x: shape.ellipse.cx - dx,
+            y: shape.ellipse.cy - dy,
             rx: shape.ellipse.rx,
             ry: shape.ellipse.ry,
           };
@@ -2754,7 +3093,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           newElement = {
             id: elementId,
             type: 'pencil',
-            points: [shape.line.start, shape.line.end],
+            anchorSelector: anchorSelector,
+            points: [
+              { x: shape.line.start.x - dx, y: shape.line.start.y - dy },
+              { x: shape.line.end.x - dx, y: shape.line.end.y - dy }
+            ],
             color: color,
             size: tool === 'highlight' ? highlightSize : pencilSize,
           };
@@ -2768,7 +3111,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             newElement = {
               id: elementId,
               type: tool,
-              points: [...points],
+              anchorSelector: anchorSelector,
+              points: points.map(pt => ({
+                ...pt,
+                x: pt.x - dx,
+                y: pt.y - dy
+              })),
               color: color,
               size: tool === 'eraser' ? eraserSize : tool === 'highlight' ? highlightSize : pencilSize,
               penStyle: tool === 'pencil' ? penStyle : undefined
@@ -2784,11 +3132,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             newElement = {
               id: elementId,
               type: 'rectangle',
+              anchorSelector: anchorSelector,
               points: [],
               color: color,
               size: pencilSize,
-              x: startPoint.x,
-              y: startPoint.y,
+              x: startPoint.x - dx,
+              y: startPoint.y - dy,
               width: w,
               height: h
             };
@@ -2799,11 +3148,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             newElement = {
               id: elementId,
               type: 'circle',
+              anchorSelector: anchorSelector,
               points: [],
               color: color,
               size: pencilSize,
-              x: cx,
-              y: cy,
+              x: cx - dx,
+              y: cy - dy,
               radius: radius
             };
           }
@@ -2867,6 +3217,16 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const x = textInput.x - rect.left;
       const y = textInput.y - rect.top;
 
+      const bestAnchor = findBestAnchor(textInput.x, textInput.y, canvas);
+      let dx = 0;
+      let dy = 0;
+      let anchorSelector: string | undefined = undefined;
+      if (bestAnchor) {
+        anchorSelector = bestAnchor.selector;
+        dx = bestAnchor.rect.left - rect.left;
+        dy = bestAnchor.rect.top - rect.top;
+      }
+
       const newId = Date.now().toString();
       targetId = newId;
 
@@ -2876,6 +3236,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const newElement: DrawElement = {
         id: newId,
         type: 'text',
+        anchorSelector: anchorSelector,
         points: [],
         color: isTextClone ? activeClone.color : color,
         size: (isTextClone && activeClone.textSize) ? activeClone.textSize : fontSize,
@@ -2884,8 +3245,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         textBorderWidth: isTextClone ? activeClone.textBorderWidth : undefined,
         textBgColor: isTextClone ? activeClone.textBgColor : undefined,
         textBgOpacity: isTextClone ? activeClone.textBgOpacity : undefined,
-        x: x,
-        y: y,
+        x: x - dx,
+        y: y - dy,
         text: textInputValRef.current
       };
       setElements(prev => [...prev, newElement]);

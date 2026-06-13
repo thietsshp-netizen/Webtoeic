@@ -684,7 +684,6 @@ export default function ToeicPart5Player({
 
   const renderWordFamilyCloud = (text: string, children?: React.ReactNode, sentenceText?: string) => {
     const isRevealed = revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id];
-    if (!isRevealed) return children || text;
 
     const getMainKeys = (keyStr: string): string[] => {
       const clean = keyStr.replace(/\s*\([^)]*\)/g, '');
@@ -825,40 +824,42 @@ export default function ToeicPart5Player({
         return (
           <span className="relative inline-block group/cloud mx-0.5 select-text">
             {children}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (activeWordFamily.length > 0 && activeWordFamily[0].id === primaryFam.id) {
-                  setActiveWordFamily([]);
-                  return;
-                }
-                const rect = e.currentTarget.getBoundingClientRect();
-                const parentRect = e.currentTarget.parentElement?.getBoundingClientRect() || rect;
-                const popoverHeight = 360;
-                const popoverWidth = 380;
-                let x = parentRect.left;
-                if (x + popoverWidth > window.innerWidth) {
-                  x = Math.max(10, window.innerWidth - popoverWidth - 20);
-                } else {
-                  x = Math.max(10, x);
-                }
-                let y = parentRect.bottom + 8;
-                if (y + popoverHeight > window.innerHeight && parentRect.top > popoverHeight + 20) {
-                  y = parentRect.top - popoverHeight - 8;
-                } else if (y + popoverHeight > window.innerHeight) {
-                  y = Math.max(10, window.innerHeight - popoverHeight - 20);
-                }
-                setPopoverPos({ x, y });
-                setActiveWordFamily(matchedFamilies);
-              }}
-              className="absolute -top-[5px] -right-[6px] text-blue-400 hover:text-blue-600 transition-colors z-10 p-0 m-0 cursor-pointer"
-              title={`Xem họ từ/gốc từ: ${primaryFam.key}`}
-            >
-              <svg className="w-2.5 h-2.5 fill-blue-100 stroke-blue-500 stroke-[1.5]" viewBox="0 0 24 24">
-                <path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z" />
-              </svg>
-            </button>
+            {isRevealed && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (activeWordFamily.length > 0 && activeWordFamily[0].id === primaryFam.id) {
+                    setActiveWordFamily([]);
+                    return;
+                  }
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const parentRect = e.currentTarget.parentElement?.getBoundingClientRect() || rect;
+                  const popoverHeight = 360;
+                  const popoverWidth = 380;
+                  let x = parentRect.left;
+                  if (x + popoverWidth > window.innerWidth) {
+                    x = Math.max(10, window.innerWidth - popoverWidth - 20);
+                  } else {
+                    x = Math.max(10, x);
+                  }
+                  let y = parentRect.bottom + 8;
+                  if (y + popoverHeight > window.innerHeight && parentRect.top > popoverHeight + 20) {
+                    y = parentRect.top - popoverHeight - 8;
+                  } else if (y + popoverHeight > window.innerHeight) {
+                    y = Math.max(10, window.innerHeight - popoverHeight - 20);
+                  }
+                  setPopoverPos({ x, y });
+                  setActiveWordFamily(matchedFamilies);
+                }}
+                className="absolute -top-[5px] -right-[6px] text-blue-400 hover:text-blue-600 transition-colors z-10 p-0 m-0 cursor-pointer"
+                title={`Xem họ từ/gốc từ: ${primaryFam.key}`}
+              >
+                <svg className="w-2.5 h-2.5 fill-blue-100 stroke-blue-500 stroke-[1.5]" viewBox="0 0 24 24">
+                  <path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z" />
+                </svg>
+              </button>
+            )}
           </span>
         );
       }
@@ -1045,22 +1046,6 @@ export default function ToeicPart5Player({
     // Loại bỏ số thứ tự ở đầu nếu có
     const raw = text.replace(/^\d+[\.\s]*/, '');
 
-    // Chỉ hiển thị Ruby/Glossing khi đã kích hoạt xem giải thích
-    const isRevealed = revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id];
-    if (!isRevealed) {
-      const parts = raw.split(/(_{3,})/);
-      return parts.map((part, i) => {
-        if (part.startsWith('_')) {
-          return (
-            <span key={i} className="inline mx-3 text-slate-900 font-bold tracking-tight">
-              {part}
-            </span>
-          );
-        }
-        return <span key={i}>{part}</span>;
-      });
-    }
-
     // LẤY DỮ LIỆU TỪ METADATA (CỰC KỲ AN TOÀN & RỘNG RÃI)
     const meta = currentQ.metadata as any;
     const vocabs = meta?.vocabulary || explainData?.vocabulary || [];
@@ -1125,7 +1110,8 @@ export default function ToeicPart5Player({
       segments = newSegments;
     });
 
-    // Render mảng segments ra các thẻ React cao cấp
+    const isRevealed = revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id];
+
     return segments.map((seg, i) => {
       if (seg.type === 'vocab') {
         const meaningRaw = String(seg.data.meaning || '');
@@ -1139,7 +1125,7 @@ export default function ToeicPart5Player({
           ? `${String(seg.data.word || '').toLowerCase()} = ${shortMeaning}`
           : shortMeaning;
 
-        const rubyNode = (
+        const rubyNode = isRevealed ? (
           <ruby
             className="text-emerald-755 font-bold cursor-help transition-all align-baseline mx-0.5 whitespace-nowrap"
             title={`${seg.content} (${seg.data.ipa_uk || seg.data.ipa || ''}): ${seg.data.meaning}`}
@@ -1159,6 +1145,8 @@ export default function ToeicPart5Player({
               </span>
             </rt>
           </ruby>
+        ) : (
+          <span className="font-bold border-b border-transparent pb-0.5">{seg.content}</span>
         );
 
         return <Fragment key={i}>{renderWordFamilyCloud(seg.content, rubyNode, raw)}</Fragment>;
@@ -1175,7 +1163,7 @@ export default function ToeicPart5Player({
           ? `${String(seg.data.phrase || '').toLowerCase()} = ${shortMeaning}`
           : shortMeaning;
 
-        const rubyNode = (
+        const rubyNode = isRevealed ? (
           <ruby
             className="text-purple-755 font-bold cursor-help transition-all align-baseline mx-0.5 whitespace-nowrap"
             title={`Cấu trúc: ${seg.data.phrase} - Nghĩa đầy đủ: ${seg.data.meaning}`}
@@ -1195,6 +1183,8 @@ export default function ToeicPart5Player({
               </span>
             </rt>
           </ruby>
+        ) : (
+          <span className="font-bold border-b border-transparent pb-0.5">{seg.content}</span>
         );
 
         return <Fragment key={i}>{renderWordFamilyCloud(seg.content, rubyNode, raw)}</Fragment>;
