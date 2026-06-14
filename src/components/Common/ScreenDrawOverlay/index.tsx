@@ -729,7 +729,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     const storedElements = localStorage.getItem('webtoeic_canvas_elements');
     if (storedElements) {
       try {
-        setElements(JSON.parse(storedElements));
+        const parsed = JSON.parse(storedElements);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setUndoStack([parsed]);
+        }
       } catch (e) {
         // bỏ qua
       }
