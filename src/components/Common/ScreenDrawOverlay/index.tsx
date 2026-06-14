@@ -3564,11 +3564,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               const clickedElement = findElementAtPosition(clickX, clickY);
               
               if (clickedElement && clickedElement.type === 'text') {
-                // Nhấp vào chữ ở chế độ Bàn tay: chỉ cho phép sửa nếu không kéo thả di chuyển vị trí.
-                // Chúng ta so khớp toạ độ click hiện tại với toạ độ ban đầu của phần tử. 
-                // Nếu khoảng cách lệch rất nhỏ (người dùng chỉ nhấp chuột tĩnh để sửa chứ không rê kéo đi chỗ khác) thì mới kích hoạt.
-                const startX = clickedElement.x ?? 0;
-                const startY = clickedElement.y ?? 0;
+                const translatedEl = getTranslatedElement(clickedElement, rect);
+                const startX = translatedEl ? (translatedEl.x ?? clickedElement.x ?? 0) : (clickedElement.x ?? 0);
+                const startY = translatedEl ? (translatedEl.y ?? clickedElement.y ?? 0) : (clickedElement.y ?? 0);
                 const dist = Math.sqrt((clickX - startX) ** 2 + (clickY - startY) ** 2);
                 
                 // Cho phép sai số nhỏ (dưới 8px) đề phòng rung tay khi click/tap
@@ -3579,8 +3577,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                   // Trừ đi 4px cho cả x và y để bù trừ (offset) phần padding: 4px của textarea, 
                   // giúp chữ trong ô gõ đè khít 100% lên chữ vẽ cũ trên canvas mà không bị lệch hay rung giật.
                   setTextInput({ 
-                    x: clickedElement.x! + rect.left - 4, 
-                    y: clickedElement.y! + rect.top - 4 
+                    x: startX + rect.left - 4, 
+                    y: startY + rect.top - 4 
                   });
                   const loadedVal = clickedElement.text || "";
                   textInputValRef.current = loadedVal;
