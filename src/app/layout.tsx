@@ -7,6 +7,7 @@ import FingerprintInitializer from "@/components/Auth/FingerprintInitializer";
 import SessionGuard from "@/components/Auth/SessionGuard";
 
 import { GlobalScreenDraw } from "@/components/Common/GlobalScreenDraw";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
@@ -28,6 +29,12 @@ export default function RootLayout({
   return (
     <html lang="vi" className={`${inter.variable} antialiased`}>
       <body className="min-h-screen bg-white font-sans">
+        <NextTopLoader 
+          color="#3b82f6" 
+          height={3} 
+          showSpinner={false}
+          shadow="0 0 10px #3b82f6,0 0 5px #3b82f6"
+        />
         <FingerprintInitializer />
         <AuthProvider>
           <SessionGuard />
