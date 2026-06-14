@@ -3555,7 +3555,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onClick={(e) => {
-          if (tool === 'text' || tool === 'hand') {
+          if (tool === 'text') {
             const canvas = canvasRef.current;
             if (canvas) {
               const rect = canvas.getBoundingClientRect();
@@ -3567,36 +3567,57 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 const translatedEl = getTranslatedElement(clickedElement, rect);
                 const startX = translatedEl ? (translatedEl.x ?? clickedElement.x ?? 0) : (clickedElement.x ?? 0);
                 const startY = translatedEl ? (translatedEl.y ?? clickedElement.y ?? 0) : (clickedElement.y ?? 0);
-                const dist = Math.sqrt((clickX - startX) ** 2 + (clickY - startY) ** 2);
                 
-                // Cho phép sai số nhỏ (dưới 8px) đề phòng rung tay khi click/tap
-                if (tool === 'text' || dist < 8) {
-                  setSelectedId(null);
-                  setEditingTextId(clickedElement.id);
-                  // Đổi toạ độ từ canvas sang client coordinate để hiển thị textarea đúng vị trí
-                  // Trừ đi 4px cho cả x và y để bù trừ (offset) phần padding: 4px của textarea, 
-                  // giúp chữ trong ô gõ đè khít 100% lên chữ vẽ cũ trên canvas mà không bị lệch hay rung giật.
-                  setTextInput({ 
-                    x: startX + rect.left - 4, 
-                    y: startY + rect.top - 4 
-                  });
-                  const loadedVal = clickedElement.text || "";
-                  textInputValRef.current = loadedVal;
-                  setActiveTextVal(loadedVal);
-                  return;
-                }
+                setSelectedId(null);
+                setEditingTextId(clickedElement.id);
+                // Đổi toạ độ từ canvas sang client coordinate để hiển thị textarea đúng vị trí
+                // Trừ đi 4px cho cả x và y để bù trừ (offset) phần padding: 4px của textarea, 
+                // giúp chữ trong ô gõ đè khít 100% lên chữ vẽ cũ trên canvas mà không bị lệch hay rung giật.
+                setTextInput({ 
+                  x: startX + rect.left - 4, 
+                  y: startY + rect.top - 4 
+                });
+                const loadedVal = clickedElement.text || "";
+                textInputValRef.current = loadedVal;
+                setActiveTextVal(loadedVal);
+                return;
               }
             }
 
-            if (tool === 'text') {
-              setSelectedId(null);
-              setEditingTextId(null);
-              // Căn chỉnh chính xác vị trí gõ chữ vào đúng điểm click chuột
-              const offsetX = 7; // padding-left + border-left
-              const offsetY = 5 + (fontSize / 2); // padding-top + border-top + 1/2 cỡ chữ
-              setTextInput({ x: e.clientX - offsetX, y: e.clientY - offsetY });
-              textInputValRef.current = "";
-              setActiveTextVal("");
+            setSelectedId(null);
+            setEditingTextId(null);
+            // Căn chỉnh chính xác vị trí gõ chữ vào đúng điểm click chuột
+            const offsetX = 7; // padding-left + border-left
+            const offsetY = 5 + (fontSize / 2); // padding-top + border-top + 1/2 cỡ chữ
+            setTextInput({ x: e.clientX - offsetX, y: e.clientY - offsetY });
+            textInputValRef.current = "";
+            setActiveTextVal("");
+          }
+        }}
+        onDoubleClick={(e) => {
+          if (tool === 'hand') {
+            const canvas = canvasRef.current;
+            if (canvas) {
+              const rect = canvas.getBoundingClientRect();
+              const clickX = e.clientX - rect.left;
+              const clickY = e.clientY - rect.top;
+              const clickedElement = findElementAtPosition(clickX, clickY);
+              
+              if (clickedElement && clickedElement.type === 'text') {
+                const translatedEl = getTranslatedElement(clickedElement, rect);
+                const startX = translatedEl ? (translatedEl.x ?? clickedElement.x ?? 0) : (clickedElement.x ?? 0);
+                const startY = translatedEl ? (translatedEl.y ?? clickedElement.y ?? 0) : (clickedElement.y ?? 0);
+                
+                setSelectedId(null);
+                setEditingTextId(clickedElement.id);
+                setTextInput({ 
+                  x: startX + rect.left - 4, 
+                  y: startY + rect.top - 4 
+                });
+                const loadedVal = clickedElement.text || "";
+                textInputValRef.current = loadedVal;
+                setActiveTextVal(loadedVal);
+              }
             }
           }
         }}
