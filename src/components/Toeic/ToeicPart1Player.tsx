@@ -962,6 +962,47 @@ export default function ToeicPart1Player({
   const [localHotspots, setLocalHotspots] = useState<any[]>([]);
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const [saveLoading, setSaveLoading] = useState(false);
+  const [synonymsInputVal, setSynonymsInputVal] = useState("");
+
+  useEffect(() => {
+    if (selectedHotspotIndex !== null && localHotspots[selectedHotspotIndex]) {
+      const activeHs = localHotspots[selectedHotspotIndex];
+      
+      // Parse the current local state string to structural objects to compare
+      const currentParsed = synonymsInputVal.split(',').map(item => {
+        const clean = item.trim();
+        if (!clean) return null;
+        const match = clean.match(/^(.*?)\s*[\(\[](.*?)[\)\]]$/);
+        if (match) {
+          return { word: match[1].trim(), ipa: match[2].trim() };
+        }
+        return { word: clean, ipa: "" };
+      }).filter((item): item is { word: string; ipa: string } => item !== null);
+
+      const activeSyns = Array.isArray(activeHs.synonyms)
+        ? activeHs.synonyms
+        : typeof activeHs.synonyms === 'string'
+          ? [{ word: activeHs.synonyms, ipa: "" }]
+          : [];
+
+      // Check structural equivalence to avoid overwriting synonymsInputVal while the user is typing
+      const isEquivalent = currentParsed.length === activeSyns.length && currentParsed.every((val, i) => {
+        const other = activeSyns[i];
+        return other && val.word === other.word && val.ipa === other.ipa;
+      });
+
+      if (!isEquivalent) {
+        const valText = Array.isArray(activeHs.synonyms)
+          ? activeHs.synonyms.map((s: any) => `${s.word}${s.ipa ? ` (${s.ipa})` : ''}`).join(', ')
+          : typeof activeHs.synonyms === 'string'
+            ? activeHs.synonyms
+            : "";
+        setSynonymsInputVal(valText);
+      }
+    } else {
+      setSynonymsInputVal("");
+    }
+  }, [selectedHotspotIndex, localHotspots]);
   const hotspotsContainerRef = useRef<HTMLDivElement>(null);
   const localHotspotsRef = useRef<any[]>([]);
   
@@ -2002,19 +2043,14 @@ export default function ToeicPart1Player({
                                             type="text"
                                             placeholder="word (ipa), word2 (ipa2)"
                                             className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500"
-                                            value={
-                                              Array.isArray(activeHs.synonyms)
-                                                ? activeHs.synonyms.map((s: any) => `${s.word}${s.ipa ? ` (${s.ipa})` : ''}`).join(', ')
-                                                : typeof activeHs.synonyms === 'string'
-                                                  ? activeHs.synonyms
-                                                  : ""
-                                            }
+                                            value={synonymsInputVal}
                                             onChange={(e) => {
                                               const raw = e.target.value;
+                                              setSynonymsInputVal(raw);
                                               const parsed = raw.split(',').map(item => {
                                                 const clean = item.trim();
                                                 if (!clean) return null;
-                                                const match = clean.match(/^(.*?)\s*\((.*?)\)$/);
+                                                const match = clean.match(/^(.*?)\s*[\(\[](.*?)[\)\]]$/);
                                                 if (match) {
                                                   return { word: match[1].trim(), ipa: match[2].trim() };
                                                 }
