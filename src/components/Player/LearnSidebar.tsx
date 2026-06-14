@@ -498,12 +498,10 @@ export default function LearnSidebar() {
                                   {isSectionExpanded && (
                                     <div className="space-y-2 pl-2 border-l border-slate-100 animate-in fade-in duration-200">
                                       {sectionNotes.map((note: any) => (
-                                        <div 
+                                        <Link 
                                           key={note.id}
-                                          onClick={() => {
-                                            router.push(`/learn/${courseId}/lesson/${note.lesson?.id}?q=${note.question?.id}`);
-                                          }}
-                                          className="bg-slate-50/30 border border-slate-100/60 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-indigo-100/40 hover:bg-white transition-all group cursor-pointer active:scale-[0.98]"
+                                          href={`/learn/${courseId}/lesson/${note.lesson?.id}?q=${note.question?.id}`}
+                                          className="bg-slate-50/30 border border-slate-100/60 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-indigo-100/40 hover:bg-white transition-all group cursor-pointer active:scale-[0.98] block"
                                         >
                                           <div className="flex items-start justify-between mb-1.5">
                                             <div className="flex items-center gap-2 min-w-0 pr-2">
@@ -534,7 +532,7 @@ export default function LearnSidebar() {
                                               </p>
                                             </div>
                                           ) : null}
-                                        </div>
+                                        </Link>
                                       ))}
                                     </div>
                                   )}
@@ -702,13 +700,13 @@ export default function LearnSidebar() {
                                 const isLocked = !isEnrolled && !lesson.isPreview;
 
                                 return (
-                                  <div 
+                                  <Link 
                                     key={lesson.id}
-                                    onClick={() => {
+                                    href={isLocked ? "" : `/learn/${courseId}/lesson/${lesson.id}`}
+                                    onClick={(e) => {
                                       if (isLocked) {
+                                        e.preventDefault();
                                         setIsAuthModalOpen(true);
-                                      } else {
-                                        router.push(`/learn/${courseId}/lesson/${lesson.id}`);
                                       }
                                     }}
                                     className={`group/item relative flex items-center gap-4 py-3 px-4 ml-2 rounded-xl transition-all duration-200 cursor-pointer ${
@@ -768,7 +766,7 @@ export default function LearnSidebar() {
                                          </div>
                                       )}
                                     </div>
-                                  </div>
+                                  </Link>
                                 );
                               })}
                             </div>

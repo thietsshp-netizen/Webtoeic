@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import LearnSidebar from "@/components/Player/LearnSidebar";
 import GrammarHandbook from "@/components/Player/GrammarHandbook";
 import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { ChevronLeft, Share2, HelpCircle, ChevronRight, Menu, Pencil } from "lucide-react";
 import { AdminEditProvider } from "@/components/Admin/AdminEditProvider";
@@ -105,14 +106,14 @@ export default function LearnLayout({
         <header className="h-14 border-b flex items-center justify-between px-6 bg-slate-900 text-white flex-shrink-0 z-50">
           <div className="flex items-center gap-4">
             {/* Nút Quay lại Dashboard */}
-            <button
-              onClick={() => router.push("/?tab=dashboard")}
+            <Link
+              href="/?tab=dashboard"
               className="p-2 hover:bg-white/10 rounded-full transition-colors text-slate-400 hover:text-white flex items-center gap-1 group"
               title="Quay lại Dashboard"
             >
               <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
               <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">Dashboard</span>
-            </button>
+            </Link>
             <div className="h-4 w-px bg-white/20 mx-1"></div>
             <h1 className="text-sm font-black tracking-tight flex items-center gap-3">
               <span className="max-w-[150px] sm:max-w-sm truncate uppercase italic text-blue-400">{courseTitle}</span>
