@@ -567,7 +567,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
   const startPointRef = useRef<{ x: number; y: number } | null>(null);
   const canvasSnapshotRef = useRef<ImageData | null>(null);
-  const activePointsRef = useRef<{ x: number; y: number; pressure?: number }[]>([]);
+  const activePointsRef = useRef<{ x: number; y: number; pressure?: number; time?: number }[]>([]);
 
   // Shape Recognition: các timer và trạng thái nhận dạng
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -1020,6 +1020,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     let ticking = false;
     const requestRedraw = () => {
+      if (isDrawingRef.current) return; // Bỏ qua yêu cầu vẽ lại từ hệ thống khi người dùng đang vẽ
       if (!ticking) {
         window.requestAnimationFrame(() => {
           drawAllElements();
@@ -1577,15 +1578,14 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     nonErasableElements.forEach(drawTranslatedElement);
 
     // 4. Vẽ nét vẽ nháp đang di chuột (Active Stroke) nếu đang vẽ trong chế độ Đèn chiếu
-    if (isFlashlightActive && isDrawingRef.current && activePointsRef.current.length > 0) {
+    if (isDrawingRef.current && activePointsRef.current.length > 0) {
       ctx.save();
-      ctx.strokeStyle = color;
-      ctx.fillStyle = color;
-      ctx.globalCompositeOperation = 'source-over';
-
+      
       if (hasSnappedRef.current && recognizedShapeRef.current) {
         // Nếu đã nhận dạng và snap hình học chuẩn đẹp thành công dưới đèn chiếu
         const shape = recognizedShapeRef.current;
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
         ctx.lineWidth = tool === 'highlight' ? highlightSize : pencilSize;
         ctx.globalAlpha = tool === 'highlight' ? 0.35 : 1.0;
         ctx.lineCap = tool === 'highlight' ? 'square' : 'round';
@@ -1618,10 +1618,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           ctx.stroke();
         }
       } else if (tool === 'pencil') {
+        // Khôi phục vẽ nhanh lineTo để tối ưu hiệu năng cọ vẽ
         ctx.globalAlpha = 1.0;
         ctx.lineWidth = pencilSize;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
+        ctx.strokeStyle = color;
         ctx.beginPath();
         ctx.moveTo(activePointsRef.current[0].x, activePointsRef.current[0].y);
         for (let i = 1; i < activePointsRef.current.length; i++) {
@@ -1633,6 +1635,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         ctx.lineWidth = highlightSize;
         ctx.lineCap = 'square';
         ctx.lineJoin = 'miter';
+        ctx.strokeStyle = color;
         ctx.beginPath();
         ctx.moveTo(activePointsRef.current[0].x, activePointsRef.current[0].y);
         for (let i = 1; i < activePointsRef.current.length; i++) {
@@ -1652,37 +1655,27 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         }
         ctx.stroke();
       } else if (tool === 'rectangle' || tool === 'circle') {
-        ctx.lineWidth = pencilSize;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
         const startPoint = activePointsRef.current[0];
         const lastPoint = activePointsRef.current[activePointsRef.current.length - 1];
-        const w = lastPoint.x - startPoint.x;
-        const h = lastPoint.y - startPoint.y;
-
-        ctx.beginPath();
-        if (tool === 'rectangle') {
-          ctx.rect(startPoint.x, startPoint.y, w, h);
-          ctx.save();
-          ctx.globalAlpha = 0.3;
-          ctx.fillStyle = color;
-          ctx.fill();
-          ctx.restore();
-
-          ctx.save();
-          ctx.globalAlpha = 0.6;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
-          ctx.restore();
-        } else {
-          ctx.globalAlpha = 1.0;
-          const cx = startPoint.x + w / 2;
-          const cy = startPoint.y + h / 2;
-          const radius = Math.min(Math.abs(w), Math.abs(h)) / 2;
-          ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
-          ctx.stroke();
+        if (startPoint && lastPoint) {
+          const w = lastPoint.x - startPoint.x;
+          const h = lastPoint.y - startPoint.y;
+          const tempEl: DrawElement = {
+            id: 'temp-active-draw',
+            type: tool,
+            points: [],
+            color: color,
+            size: pencilSize,
+            x: tool === 'circle' ? startPoint.x + w / 2 : startPoint.x,
+            y: tool === 'circle' ? startPoint.y + h / 2 : startPoint.y,
+            width: w,
+            height: h,
+            radius: tool === 'circle' ? Math.min(Math.abs(w), Math.abs(h)) / 2 : undefined
+          };
+          drawElement(tempEl);
         }
       }
+      
       ctx.restore();
     }
   };
@@ -2333,13 +2326,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     lastPointRef.current = { x, y };
     startPointRef.current = { x, y };
 
-    // Bắt đầu đếm ngược nhận diện ngay từ khi nhấn bút
-    if (tool === 'pencil' || tool === 'highlight') {
-      holdTimerRef.current = setTimeout(triggerHoldRecognition, 1000);
-      pendingTimerRef.current = setTimeout(() => {
-        setShapePending(true);
-      }, 200);
-    }
+
 
     if (tool === 'hand') {
       if (selectedId) {
@@ -2472,7 +2459,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       canvasSnapshotRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const startPressure = e.pressure !== undefined && e.pressure > 0 ? e.pressure : 0.5;
       lastWidthFactorRef.current = startPressure;
-      activePointsRef.current = [{ x, y, pressure: startPressure }];
+      activePointsRef.current = [{ x, y, pressure: startPressure, time: Date.now() }];
 
       if (tool === 'pencil' || tool === 'highlight') {
         ctx.beginPath();
@@ -2487,11 +2474,21 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     if (!canvas || !ctx) return;
     const rect = canvas.getBoundingClientRect();
 
-    const nativeEvent = e.nativeEvent as unknown as any;
-    const events = nativeEvent.getCoalescedEvents ? nativeEvent.getCoalescedEvents() : [e];
+    const nativeEvent = e.nativeEvent as any;
+    let events: any[] = [nativeEvent];
+    if (nativeEvent && typeof nativeEvent.getCoalescedEvents === 'function') {
+      try {
+        const coalesced = nativeEvent.getCoalescedEvents();
+        if (coalesced && coalesced.length > 0) {
+          events = Array.from(coalesced);
+        }
+      } catch (err) {
+        console.warn("Failed to get coalesced events:", err);
+      }
+    }
 
     // Lấy toạ độ chuột hiện tại
-    const lastEvent = events[events.length - 1];
+    const lastEvent = events[events.length - 1] || nativeEvent;
     const x = lastEvent.clientX - rect.left;
     const y = lastEvent.clientY - rect.top;
 
@@ -2662,7 +2659,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           }
 
           const startPressure = evt.pressure !== undefined && evt.pressure > 0 ? evt.pressure : 0.5;
-          activePointsRef.current.push({ x: ex, y: ey, pressure: startPressure });
+          activePointsRef.current.push({ x: ex, y: ey, pressure: startPressure, time: Date.now() });
           lastPointRef.current = { x: ex, y: ey };
         });
       }
@@ -2676,31 +2673,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     const lastPoint = lastPointRef.current;
     if (!lastPoint || !startPointRef.current) return;
 
-    const dist = ptDist({ x, y }, lastMovePosRef.current);
 
-    if (dist > 2) {
-      lastMovePosRef.current = { x, y };
-      lastMoveTimeRef.current = Date.now();
-
-      // Reset các timer đếm ngược nhận diện hình
-      if (holdTimerRef.current) {
-        clearTimeout(holdTimerRef.current);
-        holdTimerRef.current = null;
-      }
-      if (pendingTimerRef.current) {
-        clearTimeout(pendingTimerRef.current);
-        pendingTimerRef.current = null;
-      }
-      // Chỉ set React state khi thực sự thay đổi để tránh kích hoạt re-render vô ích gây lag nét vẽ tự do
-      setShapePending(prev => prev ? false : prev);
-
-      if (tool === 'pencil' || tool === 'highlight') {
-        holdTimerRef.current = setTimeout(triggerHoldRecognition, 1000);
-        pendingTimerRef.current = setTimeout(() => {
-          setShapePending(true);
-        }, 200);
-      }
-    }
 
     if (tool === 'hand') {
       const dx = x - lastPoint.x;
@@ -3407,13 +3380,46 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     return null;
   };
 
-  /** Trigger nhận dạng khi giữ nguyên bút 1s */
   const triggerHoldRecognition = () => {
     if (!isDrawingRef.current) return;
+
+    // Kiểm tra thời gian di chuyển cuối cùng để tránh trigger sai khi CPU/trình duyệt bị lag
+    const timeSinceLastMove = Date.now() - lastMoveTimeRef.current;
+    if (timeSinceLastMove < 800) {
+      if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = setTimeout(triggerHoldRecognition, 800);
+      return;
+    }
+
     const points = activePointsRef.current;
     if (points.length < 5) return;
 
-    const shape = detectShape(points);
+    // Check if the user is actually holding the pen still.
+    // If the last 10 points are not clustered within 4px of the latest point,
+    // they are still actively drawing, so we postpone shape recognition.
+    const lastPt = points[points.length - 1];
+    const sampleCount = Math.min(10, points.length);
+    const isHoldingStill = points.slice(-sampleCount).every(pt => ptDist(pt, lastPt) < 4);
+    if (!isHoldingStill) {
+      if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = setTimeout(triggerHoldRecognition, 300);
+      return;
+    }
+
+    // Clean up duplicate/near-duplicate consecutive points to ensure robust shape detection
+    const cleanedPoints: { x: number; y: number }[] = [];
+    for (const pt of points) {
+      if (cleanedPoints.length === 0) {
+        cleanedPoints.push(pt);
+      } else {
+        const lastClean = cleanedPoints[cleanedPoints.length - 1];
+        if (ptDist(pt, lastClean) >= 0.5) {
+          cleanedPoints.push(pt);
+        }
+      }
+    }
+
+    const shape = detectShape(cleanedPoints);
     if (shape) {
       recognizedShapeRef.current = shape;
       hasSnappedRef.current = true;
@@ -3465,6 +3471,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           ctx.stroke();
         }
       }
+    } else {
+      // Nếu chưa nhận diện được hình, tiếp tục hẹn giờ kiểm tra lại để không bị ngắt quãng giữa chừng
+      if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = setTimeout(triggerHoldRecognition, 300);
     }
   };
 
