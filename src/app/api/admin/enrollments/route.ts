@@ -31,20 +31,55 @@ export async function GET() {
       orderBy: { code: 'asc' }
     });
 
+    // Thống kê số buổi học đã tạo theo từng lớp
+    const sessionCounts = await (prisma as any).classSession.groupBy({
+      by: ['classCode'],
+      _count: { id: true }
+    });
+
+    // Thống kê số buổi đã điểm danh của từng học viên
+    const attendanceCounts = await (prisma as any).attendance.groupBy({
+      by: ['userId'],
+      _count: { id: true }
+    });
+
+    const sessionCountMap = new Map<string, number>(sessionCounts.map((item: any) => [item.classCode, item._count.id]));
+    const attendanceCountMap = new Map<string, number>(attendanceCounts.map((item: any) => [item.userId, item._count.id]));
+
+    // Tìm mã lớp có buổi học đang hoạt động (isActive = true) gần nhất
+    const activeSession = await (prisma as any).classSession.findFirst({
+      where: { isActive: true },
+      select: { classCode: true },
+      orderBy: { createdAt: 'desc' }
+    });
+    const activeClassCode = activeSession?.classCode || null;
+
     const data = {
-      users: users.map(user => ({
-        id: user.id,
-        name: user.name || 'Chưa đặt tên',
-        email: user.email,
-        role: user.role,
-        classCode: user.classCode || null,
-        lastIp: user.ipHistories[0]?.ipAddress || 'N/A',
-        enrollments: user.enrollments.map(e => e.courseId),
-        createdAt: user.createdAt.toISOString(),
-        accountExpiresAt: user.accountExpiresAt ? user.accountExpiresAt.toISOString() : null,
-      })),
+      users: users.map(user => {
+        const totalSessions = user.classCode ? (sessionCountMap.get(user.classCode) || 0) : 0;
+        const presentSessions = attendanceCountMap.get(user.id) || 0;
+        const absentSessions = Math.max(0, totalSessions - presentSessions);
+
+        return {
+          id: user.id,
+          name: user.name || 'Chưa đặt tên',
+          email: user.email,
+          role: user.role,
+          classCode: user.classCode || null,
+          lastIp: user.ipHistories[0]?.ipAddress || 'N/A',
+          enrollments: user.enrollments.map(e => e.courseId),
+          createdAt: user.createdAt.toISOString(),
+          accountExpiresAt: user.accountExpiresAt ? user.accountExpiresAt.toISOString() : null,
+          attendanceStats: {
+            total: totalSessions,
+            present: presentSessions,
+            absent: absentSessions
+          }
+        };
+      }),
       courses,
-      classes: classes.map(c => c.code)
+      classes: classes.map(c => c.code),
+      activeClassCode
     };
 
     return NextResponse.json(data);

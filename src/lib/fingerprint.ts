@@ -7,8 +7,16 @@
 export async function getBrowserFingerprint(): Promise<string> {
   if (typeof window === "undefined") return "";
 
+  const ua = navigator.userAgent;
+  let os = "unknown";
+  if (ua.includes("Windows")) os = "Windows";
+  else if (ua.includes("Macintosh")) os = "Mac";
+  else if (ua.includes("iPhone") || ua.includes("iPad")) os = "iOS";
+  else if (ua.includes("Android")) os = "Android";
+  else if (ua.includes("Linux")) os = "Linux";
+
   const hardwareInfo = {
-    ua: navigator.userAgent,
+    os,
     screen: `${window.screen.width}x${window.screen.height}x${window.screen.colorDepth}`,
     cpu: navigator.hardwareConcurrency || "unknown",
     memory: (navigator as any).deviceMemory || "unknown",

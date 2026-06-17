@@ -7,6 +7,7 @@ import FingerprintInitializer from "@/components/Auth/FingerprintInitializer";
 import SessionGuard from "@/components/Auth/SessionGuard";
 
 import { GlobalScreenDraw } from "@/components/Common/GlobalScreenDraw";
+import { GlobalClassCalling } from "@/components/Common/GlobalClassCalling";
 import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({
@@ -41,6 +42,7 @@ export default function RootLayout({
           <DictionaryProvider>
             {children}
             <GlobalScreenDraw />
+            <GlobalClassCalling />
           </DictionaryProvider>
         </AuthProvider>
       </body>

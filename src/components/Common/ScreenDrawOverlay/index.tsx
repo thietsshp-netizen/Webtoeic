@@ -2396,11 +2396,16 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           const hasScrollableOverflow = (element: HTMLElement) => {
             const style = window.getComputedStyle(element);
             const overflowY = style.overflowY || style.overflow || '';
+            const classNameStr = typeof element.className === 'string'
+              ? element.className
+              : (typeof element.className === 'object' && element.className !== null
+                 ? (element.className as any).baseVal || ''
+                 : '');
             const isScrollable = overflowY.includes('auto') || 
                                  overflowY.includes('scroll') || 
                                  overflowY.includes('overlay') || 
-                                 element.className.includes('overflow-y-') ||
-                                 element.className.includes('overflow-auto');
+                                 classNameStr.includes('overflow-y-') ||
+                                 classNameStr.includes('overflow-auto');
             return isScrollable && (element.scrollHeight - element.clientHeight > 1);
           };
 
@@ -3678,14 +3683,17 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             // Nhấn phím Enter (không kèm Shift): Lưu và kết thúc nhập
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
+              e.stopPropagation();
               handleTextSubmit(false);
             }
             // Nhấn Shift+Enter: Cho phép xuống dòng bên trong textarea
             else if (e.key === 'Enter' && e.shiftKey) {
+              e.stopPropagation();
               // Cho phép chèn ký tự \n bình thường
             }
             else if (e.key === 'Escape') {
               e.preventDefault();
+              e.stopPropagation();
               handleTextSubmit(true); // Lưu chữ đã gõ và tự động chuyển sang Bàn tay để di chuyển ngay!
             }
           }}

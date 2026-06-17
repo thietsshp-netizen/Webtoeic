@@ -25,6 +25,7 @@ import 'swiper/css/pagination';
 import {
   BarChart3,
   BookOpen,
+  CalendarCheck,
   Clock,
   Search,
   ArrowRight,
@@ -127,6 +128,11 @@ function HomeContent() {
     }
   };
   const [dashTab, setDashTab] = useState<string>("courses");
+  // Attendance States
+  const [attendanceData, setAttendanceData] = useState<any>(null);
+  const [loadingAttendance, setLoadingAttendance] = useState(false);
+  const [checkingIn, setCheckingIn] = useState(false);
+  const [attendanceError, setAttendanceError] = useState("");
   const [vocabMode, setVocabMode] = useState<string>("library");
   const [vocabFilter, setVocabFilter] = useState<"all" | "unlearned" | "review">("all");
   const [courses, setCourses] = useState<any[]>([]);
@@ -229,6 +235,37 @@ function HomeContent() {
     }
   }, [activeTab]);
 
+  const fetchAttendanceStats = useCallback(async (isInitial = false) => {
+    setAttendanceError("");
+    if (isInitial) {
+      setLoadingAttendance(true);
+    }
+    try {
+      const res = await fetch(`/api/classes/attendance/stats?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0"
+        }
+      });
+      if (res.status === 401) {
+        setAttendanceData(null);
+        return;
+      }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Không thể tải dữ liệu điểm danh");
+      setAttendanceData(data);
+    } catch (err: any) {
+      console.error(err);
+      setAttendanceError(err.message);
+    } finally {
+      if (isInitial) {
+        setLoadingAttendance(false);
+      }
+    }
+  }, []);
+
   // 4. useEffect FETCH DỮ LIỆU DASHBOARD (PRIVATE)
   useEffect(() => {
     if (activeTab === "dashboard" && status === "authenticated") {
@@ -266,8 +303,21 @@ function HomeContent() {
         })
         .catch(err => console.error(err))
         .finally(() => setLoadingVocab(false));
+
+      fetchAttendanceStats(true);
     }
-  }, [activeTab, status]);
+  }, [activeTab, status, fetchAttendanceStats]);
+
+  // Polling cho trạng thái điểm danh học viên
+  useEffect(() => {
+    if (activeTab === "dashboard" && status === "authenticated" && dashTab === "attendance") {
+      fetchAttendanceStats();
+      const interval = setInterval(() => {
+        fetchAttendanceStats();
+      }, 4000);
+      return () => clearInterval(interval);
+    }
+  }, [activeTab, status, dashTab, fetchAttendanceStats]);
 
 
 
@@ -852,6 +902,7 @@ function HomeContent() {
                   <SideTabBtn id="history" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Clock size={20} />} label="Lịch sử giải đề" />
                   <SideTabBtn id="review" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Star size={20} />} label="Ôn tập" />
                   <SideTabBtn id="vocab" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Languages size={20} />} label="Từ vựng" />
+                  <SideTabBtn id="attendance" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<CalendarCheck size={20} />} label="Điểm danh & Chuyên cần" />
                   <SideTabBtn id="account" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Settings size={20} />} label="Cài đặt tài khoản" />
                 </div>
 
@@ -1287,6 +1338,7 @@ function HomeContent() {
                                       type={showSettingsPassword ? "text" : "password"}
                                       value={settingsPassword}
                                       onChange={(e) => setSettingsPassword(e.target.value)}
+                                      autoComplete="new-password"
                                       className="w-full px-6 py-4 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-blue-50 focus:border-blue-500 outline-none transition-all font-bold text-sm bg-slate-50 pr-14"
                                       placeholder="Để trống nếu không đổi..."
                                     />
@@ -1306,6 +1358,7 @@ function HomeContent() {
                                       type={showSettingsConfirmPassword ? "text" : "password"}
                                       value={settingsConfirmPassword}
                                       onChange={(e) => setSettingsConfirmPassword(e.target.value)}
+                                      autoComplete="new-password"
                                       className="w-full px-6 py-4 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-blue-50 focus:border-blue-500 outline-none transition-all font-bold text-sm bg-slate-50 pr-14"
                                       placeholder="Nhập lại mật khẩu mới..."
                                     />
@@ -1365,6 +1418,171 @@ function HomeContent() {
                           <DeviceManagement />
                         </div>
                       </div>
+                    </div>
+                  )}
+
+                  {/* --- TAB: ĐIỂM DANH & CHUYÊN CẦN --- */}
+                  {dashTab === "attendance" && (
+                    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div>
+                          <h2 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Điểm danh & Chuyên cần</h2>
+                          <p className="text-slate-500 font-medium">Theo dõi lịch sử tham gia lớp học của bạn.</p>
+                        </div>
+                      </div>
+
+                      {/* Khung Điểm danh */}
+                      <div className="bg-white border border-slate-100 rounded-[3rem] p-10 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500" />
+                        
+                        {loadingAttendance ? (
+                          <div className="py-10 text-center text-slate-400 font-bold flex items-center justify-center gap-3">
+                            <span className="animate-spin text-blue-500">⏳</span>
+                            <span>Đang kiểm tra trạng thái lớp học...</span>
+                          </div>
+                        ) : attendanceData?.noClass ? (
+                          <div className="flex flex-col items-center py-10 text-center text-slate-400">
+                            <CalendarCheck size={48} className="opacity-20 mb-4 text-indigo-500" />
+                            <h4 className="text-lg font-bold text-slate-700 uppercase italic">Tài khoản chưa được xếp lớp</h4>
+                            <p className="text-sm font-medium text-slate-400 mt-2 max-w-md">
+                              Tài khoản của bạn hiện chưa liên kết với lớp học nào. Vui lòng liên hệ Giáo viên/Admin để được xếp lớp và cấp quyền điểm danh nhé.
+                            </p>
+                          </div>
+                        ) : attendanceData?.activeSession ? (
+                          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="space-y-3">
+                              <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold uppercase tracking-wider border border-emerald-100">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Đang mở điểm danh
+                              </div>
+                              <h3 className="text-2xl font-black text-slate-800">
+                                {attendanceData.activeSession.title}
+                              </h3>
+                              <p className="text-slate-500 text-sm font-medium">
+                                {attendanceData.activeSession.checkedIn 
+                                  ? "Bạn đã điểm danh thành công cho buổi học này! Vui lòng chú ý lắng nghe bài giảng."
+                                  : "Buổi học đang bắt đầu, vui lòng bấm nút bên cạnh để điểm danh vào lớp ngay."}
+                              </p>
+                            </div>
+                            
+                            {attendanceData.activeSession.checkedIn ? (
+                              <div className="bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-2xl px-6 py-4 flex items-center gap-3 font-bold text-sm">
+                                <CheckCircle2 size={22} className="text-emerald-500" /> Đã điểm danh thành công
+                              </div>
+                            ) : (
+                              <button
+                                onClick={async () => {
+                                  if (checkingIn) return;
+                                  setCheckingIn(true);
+                                  try {
+                                    const res = await fetch("/api/classes/attendance/checkin", {
+                                      method: "POST"
+                                    });
+                                    const resData = await res.json();
+                                    if (!res.ok) throw new Error(resData.error || "Điểm danh thất bại");
+                                    alert("🎉 Điểm danh thành công!");
+                                    fetchAttendanceStats();
+                                  } catch (err: any) {
+                                    alert("⚠️ Lỗi: " + err.message);
+                                  } finally {
+                                    setCheckingIn(false);
+                                  }
+                                }}
+                                disabled={checkingIn}
+                                className="px-10 py-5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-emerald-200 disabled:opacity-50"
+                              >
+                                {checkingIn ? "Đang xử lý..." : "👉 Điểm danh vào lớp"}
+                              </button>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center py-10 text-center text-slate-400">
+                            <CalendarCheck size={48} className="opacity-20 mb-4 text-slate-600" />
+                            <h4 className="text-lg font-bold text-slate-700 uppercase italic">Lớp học hiện tại chưa mở điểm danh</h4>
+                            <p className="text-sm font-medium text-slate-400 mt-2 max-w-md">
+                              Khi giáo viên bắt đầu buổi học mới và mở điểm danh, nút điểm danh sẽ tự động xuất hiện tại đây.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Thống kê chuyên cần và lịch sử (Chỉ hiển thị khi đã được xếp lớp) */}
+                      {!attendanceData?.noClass && (
+                        <>
+                          {/* Thống kê chuyên cần */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="bg-blue-50/50 border border-blue-100 rounded-3xl p-6 shadow-sm">
+                              <p className="text-[10px] font-black text-blue-400 uppercase tracking-wider mb-2">Tổng số buổi đã học</p>
+                              <p className="text-4xl font-black text-blue-600 italic">{attendanceData?.total || 0} <span className="text-xs font-bold text-slate-400 uppercase not-italic">buổi</span></p>
+                            </div>
+                            <div className="bg-emerald-50/50 border border-emerald-100 rounded-3xl p-6 shadow-sm">
+                              <p className="text-[10px] font-black text-emerald-400 uppercase tracking-wider mb-2">Số buổi có mặt</p>
+                              <p className="text-4xl font-black text-emerald-600 italic">{attendanceData?.present || 0} <span className="text-xs font-bold text-slate-400 uppercase not-italic">buổi</span></p>
+                            </div>
+                            <div className="bg-rose-50/50 border border-rose-100 rounded-3xl p-6 shadow-sm">
+                              <p className="text-[10px] font-black text-rose-400 uppercase tracking-wider mb-2">Số buổi vắng</p>
+                              <p className="text-4xl font-black text-rose-600 italic">{attendanceData?.absent || 0} <span className="text-xs font-bold text-slate-400 uppercase not-italic">buổi</span></p>
+                            </div>
+                          </div>
+
+                          {/* Danh sách lịch sử điểm danh */}
+                          <div className="space-y-6">
+                            <h3 className="text-xl font-bold text-slate-900 uppercase italic tracking-tight flex items-center gap-3">
+                              <div className="w-2 h-8 bg-blue-600 rounded-full" />
+                              Chi tiết lịch sử chuyên cần
+                            </h3>
+                            <div className="bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden shadow-sm">
+                              <table className="w-full text-left">
+                                <thead>
+                                  <tr className="bg-slate-50/50 border-b border-slate-100">
+                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Buổi học</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Thời gian</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Trạng thái</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-50">
+                                  {attendanceData?.history && attendanceData.history.length > 0 ? (
+                                    attendanceData.history.map((h: any) => (
+                                      <tr key={h.id} className="hover:bg-slate-50/50 transition-colors">
+                                        <td className="px-8 py-5">
+                                          <span className="text-sm font-bold text-slate-700 uppercase italic">{h.title}</span>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                          <span className="text-xs text-slate-500 font-medium">
+                                            {new Date(h.createdAt).toLocaleDateString("vi-VN", {
+                                              day: "2-digit",
+                                              month: "2-digit",
+                                              year: "numeric",
+                                              hour: "2-digit",
+                                              minute: "2-digit"
+                                            })}
+                                          </span>
+                                        </td>
+                                        <td className="px-8 py-5 text-center">
+                                          {h.checkedIn ? (
+                                            <span className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[10px] font-bold uppercase tracking-wider">
+                                              Có mặt ({new Date(h.checkedInAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })})
+                                            </span>
+                                          ) : (
+                                            <span className="inline-flex items-center gap-1 px-3 py-1 bg-rose-50 text-rose-600 border border-rose-100 rounded-xl text-[10px] font-bold uppercase tracking-wider">
+                                              Vắng mặt
+                                            </span>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    ))
+                                  ) : (
+                                    <tr>
+                                      <td colSpan={3} className="px-8 py-16 text-center text-slate-400 font-bold italic">
+                                        Chưa có lịch sử buổi học nào.
+                                      </td>
+                                    </tr>
+                                  )}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   )}
 

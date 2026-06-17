@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
   CheckCircle2, Circle, Search, RefreshCw, Users,
-  BookOpen, ShieldAlert, Loader2, Trash2, Filter, ArrowUpDown, UserPlus, X, Mail, Key, Settings, Laptop, Smartphone
+  BookOpen, ShieldAlert, Loader2, Trash2, Filter, ArrowUpDown, UserPlus, X, Mail, Key, Settings, Laptop, Smartphone, CalendarCheck, ArrowLeft
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -21,6 +21,11 @@ type Student = {
   enrollments: string[];
   createdAt: string; 
   accountExpiresAt: string | null;
+  attendanceStats?: {
+    total: number;
+    present: number;
+    absent: number;
+  };
 };
 type MatrixData = { users: Student[]; courses: Course[]; classes: string[] };
 
@@ -57,6 +62,18 @@ export default function EnrollmentMatrix() {
   const [newClassName, setNewClassName] = useState("");
   const [isCreatingClass, setIsCreatingClass] = useState(false);
   const [classError, setClassError] = useState("");
+  
+  // Session Management States
+  const [selectedClassForSessions, setSelectedClassForSessions] = useState<string | null>(null);
+  const [sessionsList, setSessionsList] = useState<any[]>([]);
+  const [newSessionTitle, setNewSessionTitle] = useState("");
+  const [loadingSessions, setLoadingSessions] = useState(false);
+  const [isCreatingSession, setIsCreatingSession] = useState(false);
+
+  // Student Absence Details Modal State
+  const [showAbsenceDetailModal, setShowAbsenceDetailModal] = useState<Student | null>(null);
+  const [absenceSessionsList, setAbsenceSessionsList] = useState<any[]>([]);
+  const [loadingAbsenceDetail, setLoadingAbsenceDetail] = useState(false);
 
   const isAdmin = (session?.user as any)?.role === "ADMIN";
 
@@ -208,8 +225,98 @@ export default function EnrollmentMatrix() {
     }
   };
 
+  const fetchSessions = async (classCode: string) => {
+    setLoadingSessions(true);
+    try {
+      const res = await fetch(`/api/admin/classes/sessions?classCode=${classCode}`);
+      const json = await res.json();
+      if (json.sessions) setSessionsList(json.sessions);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingSessions(false);
+    }
+  };
+
+  const handleCreateSession = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedClassForSessions || !newSessionTitle.trim()) return;
+    setIsCreatingSession(true);
+    try {
+      const res = await fetch("/api/admin/classes/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          classCode: selectedClassForSessions,
+          title: newSessionTitle.trim()
+        })
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Lỗi tạo buổi học");
+      setNewSessionTitle("");
+      fetchSessions(selectedClassForSessions);
+      fetchData(); // Tải lại số liệu đếm vắng học toàn bộ trang
+    } catch (e: any) {
+      alert(e.message);
+    } finally {
+      setIsCreatingSession(false);
+    }
+  };
+
+  const handleToggleSessionActive = async (sessionId: string, currentActive: boolean) => {
+    try {
+      const res = await fetch("/api/admin/classes/sessions", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId,
+          isActive: !currentActive
+        })
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Lỗi cập nhật trạng thái");
+      if (selectedClassForSessions) {
+        fetchSessions(selectedClassForSessions);
+      }
+    } catch (e: any) {
+      alert(e.message);
+    }
+  };
+
+  const handleOpenAbsenceDetail = async (student: Student) => {
+    setShowAbsenceDetailModal(student);
+    if (!student.classCode) return;
+    setLoadingAbsenceDetail(true);
+    try {
+      const res = await fetch(`/api/admin/classes/sessions?classCode=${student.classCode}`);
+      const json = await res.json();
+      if (json.sessions) {
+        const sessionsWithPresence = json.sessions.map((s: any) => {
+          const present = s.attendances.some((a: any) => a.userId === student.id);
+          return {
+            id: s.id,
+            title: s.title,
+            createdAt: s.createdAt,
+            present
+          };
+        });
+        setAbsenceSessionsList(sessionsWithPresence);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingAbsenceDetail(false);
+    }
+  };
+
   const handleDeleteClass = async (code: string) => {
-    if (!confirm(`Bạn có chắc chắn muốn xóa mã lớp "${code}"? Tất cả học viên thuộc lớp này sẽ tự động chuyển về trạng thái "Chưa xếp lớp".`)) return;
+    const confirmCode = prompt(`CẢNH BÁO: Hành động này sẽ xóa lớp "${code}".\nTất cả học viên thuộc lớp này sẽ tự động chuyển về trạng thái "Chưa xếp lớp".\nHãy nhập chính xác mã lớp "${code}" để xác nhận xóa:`);
+    if (confirmCode !== code) {
+      if (confirmCode !== null) {
+        alert("Xác nhận không khớp. Hủy thao tác xóa.");
+      }
+      return;
+    }
     
     try {
       const res = await fetch("/api/admin/classes/delete", {
@@ -684,6 +791,20 @@ export default function EnrollmentMatrix() {
                                 <ArrowUpDown size={8} />
                               </div>
                             </div>
+                            {student.classCode && student.attendanceStats && (
+                              <button
+                                onClick={() => handleOpenAbsenceDetail(student)}
+                                className={clsx(
+                                  "text-[10px] px-2 py-0.5 rounded font-bold transition-all hover:scale-105 active:scale-95 flex items-center gap-1 border",
+                                  student.attendanceStats.absent > 2
+                                    ? "bg-rose-50 border-rose-200 text-rose-600 font-extrabold"
+                                    : "bg-indigo-50 border-indigo-200 text-indigo-600"
+                                )}
+                                title="Bấm để xem chi tiết lịch sử chuyên cần"
+                              >
+                                Vắng: {student.attendanceStats.absent} buổi
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -918,69 +1039,233 @@ export default function EnrollmentMatrix() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-[2.5rem] w-full max-w-md shadow-2xl border border-white overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-8 pb-4 flex justify-between items-center">
-              <h2 className="text-xl font-black text-slate-800 tracking-tight uppercase">Quản lý Lớp học</h2>
-              <button onClick={() => { setShowClassModal(false); setClassError(""); }} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                <X size={20} className="text-slate-400" />
+              <h2 className="text-xl font-black text-slate-800 tracking-tight uppercase">
+                {selectedClassForSessions ? `Buổi học: ${selectedClassForSessions}` : "Quản lý Lớp học"}
+              </h2>
+              <button 
+                onClick={() => { 
+                  if (selectedClassForSessions) {
+                    setSelectedClassForSessions(null);
+                  } else {
+                    setShowClassModal(false); 
+                    setClassError(""); 
+                  }
+                }} 
+                className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+              >
+                {selectedClassForSessions ? <ArrowLeft size={20} className="text-slate-400" /> : <X size={20} className="text-slate-400" />}
               </button>
             </div>
             
             <div className="p-8 pt-4 space-y-6">
-              {/* Form tạo lớp mới */}
-              <form onSubmit={handleAddClass} className="space-y-3">
-                {classError && (
-                  <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-xs font-bold border border-red-100 italic">
-                    ⚠️ {classError}
-                  </div>
-                )}
-                <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1">Tạo mã lớp mới</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      required
-                      placeholder="Ví dụ: T67_246_21h"
-                      className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold text-slate-700"
-                      value={newClassName}
-                      onChange={e => setNewClassName(e.target.value)}
-                    />
-                    <button
-                      type="submit"
-                      disabled={isCreatingClass}
-                      className="px-6 bg-indigo-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-indigo-700 active:scale-95 transition-all disabled:opacity-50"
-                    >
-                      {isCreatingClass ? "ĐANG TẠO..." : "TẠO"}
-                    </button>
+              {selectedClassForSessions ? (
+                // --- VIEW QUẢN LÝ BUỔI HỌC CỦA LỚP ---
+                <div className="space-y-6">
+                  <form onSubmit={handleCreateSession} className="space-y-3">
+                    <div>
+                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1">Tạo buổi học mới & Mở điểm danh</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          required
+                          placeholder="Ví dụ: Buổi 1 - ETS 2024 Test 1"
+                          className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold text-slate-700 text-sm"
+                          value={newSessionTitle}
+                          onChange={e => setNewSessionTitle(e.target.value)}
+                        />
+                        <button
+                          type="submit"
+                          disabled={isCreatingSession}
+                          className="px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-[10px] uppercase tracking-wider transition-all disabled:opacity-50"
+                        >
+                          {isCreatingSession ? "ĐANG MỞ..." : "MỞ"}
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+
+                  <div className="border-t border-slate-100 pt-4">
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">Danh sách buổi học</label>
+                    <div className="max-h-60 overflow-y-auto space-y-2 pr-1 scrollbar-thin">
+                      {loadingSessions ? (
+                        <div className="text-center py-6 text-slate-400 font-bold text-xs italic">Đang tải danh sách buổi học...</div>
+                      ) : sessionsList.length === 0 ? (
+                        <div className="text-center py-6 text-slate-400 font-bold text-xs italic">Chưa có buổi học nào được tạo.</div>
+                      ) : (
+                        sessionsList.map(s => (
+                          <div key={s.id} className="flex flex-col gap-2 p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-sm font-bold text-slate-800 uppercase italic truncate">{s.title}</span>
+                              <button
+                                onClick={() => handleToggleSessionActive(s.id, s.isActive)}
+                                className={clsx(
+                                  "shrink-0 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all border",
+                                  s.isActive
+                                    ? "bg-emerald-50 border-emerald-200 text-emerald-600 hover:bg-emerald-100"
+                                    : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-slate-200"
+                                )}
+                              >
+                                {s.isActive ? "Đang mở" : "Khóa"}
+                              </button>
+                            </div>
+                            <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold">
+                              <span>Có mặt: {s.attendances.length} học viên</span>
+                              <span>{new Date(s.createdAt).toLocaleDateString("vi-VN")}</span>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
                   </div>
                 </div>
-              </form>
-
-              {/* Danh sách lớp hiện có */}
-              <div className="border-t border-slate-100 pt-4">
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">Danh sách lớp hiện có</label>
-                <div className="max-h-60 overflow-y-auto space-y-2 pr-1 scrollbar-thin">
-                  {(data?.classes || []).length === 0 ? (
-                    <div className="text-center py-6 text-slate-400 font-bold text-xs italic">Chưa có lớp nào được tạo.</div>
-                  ) : (
-                    (data?.classes || []).map(code => (
-                      <div key={code} className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                        <span className="text-sm font-bold text-indigo-700">{code}</span>
+              ) : (
+                // --- VIEW QUẢN LÝ LỚP HỌC (DANH SÁCH LỚP) ---
+                <>
+                  {/* Form tạo lớp mới */}
+                  <form onSubmit={handleAddClass} className="space-y-3">
+                    {classError && (
+                      <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-xs font-bold border border-red-100 italic">
+                        ⚠️ {classError}
+                      </div>
+                    )}
+                    <div>
+                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1">Tạo mã lớp mới</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          required
+                          placeholder="Ví dụ: T67_246_21h"
+                          className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold text-slate-700"
+                          value={newClassName}
+                          onChange={e => setNewClassName(e.target.value)}
+                        />
                         <button
-                          onClick={() => handleDeleteClass(code)}
-                          className="p-1.5 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors"
-                          title="Xóa mã lớp"
+                          type="submit"
+                          disabled={isCreatingClass}
+                          className="px-6 bg-indigo-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-indigo-700 active:scale-95 transition-all disabled:opacity-50"
                         >
-                          <Trash2 size={14} />
+                          {isCreatingClass ? "TẠO..." : "TẠO"}
                         </button>
+                      </div>
+                    </div>
+                  </form>
+
+                  {/* Danh sách lớp hiện có */}
+                  <div className="border-t border-slate-100 pt-4">
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">Danh sách lớp hiện có</label>
+                    <div className="max-h-60 overflow-y-auto space-y-2 pr-1 scrollbar-thin">
+                      {(data?.classes || []).length === 0 ? (
+                        <div className="text-center py-6 text-slate-400 font-bold text-xs italic">Chưa có lớp nào được tạo.</div>
+                      ) : (
+                        (data?.classes || []).map(code => (
+                          <div key={code} className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span className="text-sm font-bold text-indigo-700">{code}</span>
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                onClick={() => {
+                                  setSelectedClassForSessions(code);
+                                  fetchSessions(code);
+                                }}
+                                className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors"
+                                title="Quản lý Buổi học & Điểm danh"
+                              >
+                                <CalendarCheck size={14} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteClass(code)}
+                                className="p-1.5 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors"
+                                title="Xóa mã lớp"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
+                    <p className="text-[10px] text-indigo-700 font-bold italic leading-relaxed">
+                      * Bấm biểu tượng Lịch để quản lý buổi học, mở hoặc đóng cổng tự điểm danh cho học viên của lớp đó.
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- STUDENT ABSENCE DETAIL MODAL --- */}
+      {showAbsenceDetailModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-[2.5rem] w-full max-w-md shadow-2xl border border-white overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-8 pb-4 flex justify-between items-center">
+              <div>
+                <h2 className="text-lg font-black text-slate-800 tracking-tight uppercase leading-none">Chi tiết Chuyên cần</h2>
+                <p className="text-[10px] text-slate-400 font-bold mt-1.5">{showAbsenceDetailModal.name || showAbsenceDetailModal.email} · Lớp {showAbsenceDetailModal.classCode}</p>
+              </div>
+              <button onClick={() => setShowAbsenceDetailModal(null)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                <X size={20} className="text-slate-400" />
+              </button>
+            </div>
+
+            <div className="p-8 pt-4 space-y-6">
+              {/* Thống kê nhanh */}
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                  <div className="text-[8px] font-black text-slate-400 uppercase tracking-wider">Tổng buổi</div>
+                  <div className="text-lg font-black text-slate-700">{showAbsenceDetailModal.attendanceStats?.total || 0}</div>
+                </div>
+                <div className="bg-emerald-50 p-3 rounded-2xl border border-emerald-100">
+                  <div className="text-[8px] font-black text-emerald-500 uppercase tracking-wider">Có mặt</div>
+                  <div className="text-lg font-black text-emerald-600">{showAbsenceDetailModal.attendanceStats?.present || 0}</div>
+                </div>
+                <div className="bg-rose-50 p-3 rounded-2xl border border-rose-100">
+                  <div className="text-[8px] font-black text-rose-500 uppercase tracking-wider">Vắng</div>
+                  <div className="text-lg font-black text-rose-600">{showAbsenceDetailModal.attendanceStats?.absent || 0}</div>
+                </div>
+              </div>
+
+              {/* Danh sách các buổi */}
+              <div className="space-y-3">
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Lịch sử chi tiết</label>
+                <div className="max-h-64 overflow-y-auto space-y-2 pr-1 scrollbar-thin">
+                  {loadingAbsenceDetail ? (
+                    <div className="text-center py-10 text-slate-400 font-bold text-xs italic flex items-center justify-center gap-2">
+                      <span className="animate-spin">⏳</span> Đang tải...
+                    </div>
+                  ) : absenceSessionsList.length === 0 ? (
+                    <div className="text-center py-10 text-slate-400 font-bold text-xs italic">Không tìm thấy lịch sử buổi học.</div>
+                  ) : (
+                    absenceSessionsList.map(s => (
+                      <div key={s.id} className="flex items-center justify-between p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div>
+                          <div className="text-xs font-bold text-slate-700 uppercase italic">{s.title}</div>
+                          <div className="text-[9px] text-slate-400 font-bold mt-0.5">
+                            {new Date(s.createdAt).toLocaleDateString("vi-VN", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric"
+                            })}
+                          </div>
+                        </div>
+                        <div>
+                          {s.present ? (
+                            <span className="px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[9px] font-black uppercase tracking-wider">
+                              Có mặt
+                            </span>
+                          ) : (
+                            <span className="px-2.5 py-1 bg-rose-50 text-rose-600 border border-rose-100 rounded-xl text-[9px] font-black uppercase tracking-wider">
+                              Vắng mặt
+                            </span>
+                          )}
+                        </div>
                       </div>
                     ))
                   )}
                 </div>
-              </div>
-
-              <div className="p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
-                <p className="text-[10px] text-indigo-700 font-bold italic leading-relaxed">
-                  * Khi xóa một mã lớp, tất cả học viên thuộc lớp đó sẽ tự động chuyển về trạng thái "Chưa xếp lớp" để đảm bảo tính an toàn dữ liệu.
-                </p>
               </div>
             </div>
           </div>

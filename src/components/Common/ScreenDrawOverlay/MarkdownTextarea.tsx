@@ -111,6 +111,7 @@ export const MarkdownTextarea: React.FC<RichTextInputProps> = ({
     // 2. Nhấn Enter để kết thúc soạn thảo nháp (không kèm Shift)
     else if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      e.stopPropagation();
       onBlur();
     }
     // 3. Trả sự kiện khác ra ngoài index.tsx
