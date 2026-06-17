@@ -452,7 +452,7 @@ export const GlobalClassCalling: React.FC = () => {
                   <Mic size={13} className="text-indigo-400 shrink-0 animate-pulse" />
                   {(() => {
                     const currentStudent = presentStudents.find(s => s.id === callingStudentId);
-                    const nameText = currentStudent ? currentStudent.name || "Chưa đặt tên" : "CHƯA GỌI";
+                    const nameText = currentStudent ? currentStudent.displayName || currentStudent.name || "Chưa đặt tên" : "CHƯA GỌI";
                     return (
                       <span 
                         title={nameText}
@@ -468,7 +468,7 @@ export const GlobalClassCalling: React.FC = () => {
                   <span className="shrink-0">TIẾP THEO:</span>
                   <span className="truncate flex-1 italic text-white/60 uppercase">
                     {nextStudentPreview 
-                      ? nextStudentPreview.name || "Chưa đặt tên" 
+                      ? nextStudentPreview.displayName || nextStudentPreview.name || "Chưa đặt tên" 
                       : "Hết lượt (Quay lại đầu)"}
                   </span>
                 </div>
@@ -636,10 +636,10 @@ export const GlobalClassCalling: React.FC = () => {
                                 )}
                               </div>
                               <div 
-                                title={currentStudent ? currentStudent.name || "Chưa đặt tên" : "CHƯA GỌI"}
+                                title={currentStudent ? currentStudent.displayName || currentStudent.name || "Chưa đặt tên" : "CHƯA GỌI"}
                                 className="text-2xl font-black text-indigo-300 uppercase italic tracking-tight px-2 break-words leading-tight"
                               >
-                                {currentStudent ? currentStudent.name || "Chưa đặt tên" : "CHƯA GỌI"}
+                                {currentStudent ? currentStudent.displayName || currentStudent.name || "Chưa đặt tên" : "CHƯA GỌI"}
                               </div>
                             </>
                           );
@@ -651,7 +651,7 @@ export const GlobalClassCalling: React.FC = () => {
                         <span className="text-white/40 font-bold uppercase tracking-wider text-[10px]">TIẾP THEO GỢI Ý:</span>
                         <span className="text-white font-black italic truncate max-w-[200px] text-right">
                           {nextStudentPreview 
-                            ? `${nextStudentPreview.name || "Chưa đặt tên"} (${nextStudentPreview.speakCount || 0} lần)` 
+                            ? `${nextStudentPreview.displayName || nextStudentPreview.name || "Chưa đặt tên"} (${nextStudentPreview.speakCount || 0} lần)` 
                             : "Hết lượt (Quay lại từ đầu)"}
                         </span>
                       </div>
