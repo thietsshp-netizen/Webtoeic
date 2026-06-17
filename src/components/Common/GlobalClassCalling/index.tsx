@@ -33,6 +33,23 @@ export const GlobalClassCalling: React.FC = () => {
   const dragStart = useRef({ x: 0, y: 0 });
   const widgetRef = useRef<HTMLDivElement>(null);
 
+  // States for searchable class dropdown
+  const [showClassList, setShowClassList] = useState(false);
+  const [classSearch, setClassSearch] = useState("");
+  const classSelectRef = useRef<HTMLDivElement>(null);
+
+  // Click outside to close searchable class dropdown
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (classSelectRef.current && !classSelectRef.current.contains(e.target as Node)) {
+        setShowClassList(false);
+        setClassSearch("");
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   // 1. Fetch trạng thái buổi học đang hoạt động của lớp được chọn (Khai báo trước để dùng trong useEffect)
   const fetchActiveSession = useCallback(async (classCode: string) => {
     if (!classCode) return;
@@ -504,22 +521,49 @@ export const GlobalClassCalling: React.FC = () => {
                   <Minimize2 size={14} />
                 </button>
 
-                {/* Dropdown Chọn Lớp */}
-                <select
-                  value={selectedClass}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setSelectedClass(val);
-                    localStorage.setItem("webtoeic_selected_class", val);
-                    fetchActiveSession(val);
-                  }}
-                  className="text-[10px] font-bold text-indigo-300 bg-white/5 border border-white/10 rounded-xl px-2.5 py-1.5 outline-none cursor-pointer max-w-[120px]"
-                  title="Chọn lớp học"
-                >
-                  {classes.map(c => (
-                    <option key={c} value={c} className="bg-slate-800 text-white font-bold">{c}</option>
-                  ))}
-                </select>
+                {/* Searchable Select Chọn Lớp */}
+                <div ref={classSelectRef} className="relative z-[10000]">
+                  <input
+                    type="text"
+                    value={showClassList ? classSearch : selectedClass}
+                    placeholder="Tìm lớp..."
+                    onFocus={() => {
+                      setShowClassList(true);
+                      setClassSearch("");
+                    }}
+                    onChange={(e) => setClassSearch(e.target.value)}
+                    className="text-[10px] font-bold text-indigo-300 bg-white/5 border border-white/10 rounded-xl px-2.5 py-1.5 outline-none cursor-pointer w-[120px] placeholder-indigo-300/40 text-left truncate"
+                    title="Tìm và chọn lớp học"
+                  />
+                  {showClassList && (
+                    <div className="absolute right-0 mt-1 w-[160px] max-h-[180px] overflow-y-auto bg-slate-800/95 border border-white/10 rounded-xl shadow-xl z-[10001] no-scrollbar py-1">
+                      {classes.filter(c => c.toLowerCase().includes(classSearch.toLowerCase())).length > 0 ? (
+                        classes
+                          .filter(c => c.toLowerCase().includes(classSearch.toLowerCase()))
+                          .map(c => (
+                            <button
+                              key={c}
+                              onClick={() => {
+                                setSelectedClass(c);
+                                localStorage.setItem("webtoeic_selected_class", c);
+                                fetchActiveSession(c);
+                                setShowClassList(false);
+                                setClassSearch("");
+                              }}
+                              className={clsx(
+                                "w-full text-left px-3 py-2 text-[10px] font-bold hover:bg-indigo-600 hover:text-white transition-colors truncate block",
+                                c === selectedClass ? "text-indigo-400 bg-white/5" : "text-white"
+                              )}
+                            >
+                              {c}
+                            </button>
+                          ))
+                      ) : (
+                        <div className="px-3 py-2 text-[10px] text-white/40 italic">Không tìm thấy lớp</div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Quản lý Buổi học & Điểm danh trực tiếp */}
