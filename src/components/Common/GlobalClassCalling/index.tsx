@@ -378,8 +378,9 @@ export const GlobalClassCalling: React.FC = () => {
   // 5. Logic Kéo Thả (Draggable) của Widget
   const handleMouseDown = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
-    // Bỏ qua kéo thả nếu bấm nhầm vào select dropdown hoặc các nút button
-    if (target.tagName.toLowerCase() === "select" || target.closest("button")) {
+    const tagName = target.tagName.toLowerCase();
+    // Bỏ qua kéo thả nếu bấm nhầm vào input, select dropdown hoặc các nút button
+    if (tagName === "input" || tagName === "select" || target.closest("button")) {
       return;
     }
 
