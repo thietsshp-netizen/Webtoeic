@@ -81,7 +81,7 @@ import DeviceManagement from "@/components/Account/DeviceManagement";
 import { startVocabTour } from "@/components/Toeic/toeicTour";
 
 function HomeContent() {
-  const { data: session, status } = useSession() as any;
+  const { data: session, status, update } = useSession() as any;
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
@@ -166,6 +166,14 @@ function HomeContent() {
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [settingsDone, setSettingsDone] = useState(false);
   const [detailPart, setDetailPart] = useState<any>(null);
+
+  const isSettingsInitialized = useRef(false);
+  useEffect(() => {
+    if (session?.user && !isSettingsInitialized.current) {
+      setSettingsDisplayName(session.user.name || "");
+      isSettingsInitialized.current = true;
+    }
+  }, [session]);
 
   // --- QUẢN LÝ ẢNH & MOUNTED ---
   const [scoreImages, setScoreImages] = useState<any[]>([]);
@@ -1305,6 +1313,9 @@ function HomeContent() {
                                 })
                               });
                               if (res.ok) {
+                                if (update) {
+                                  await update({ name: settingsDisplayName });
+                                }
                                 setSettingsDone(true);
                                 setTimeout(() => setSettingsDone(false), 5000);
                               } else {

@@ -226,9 +226,12 @@ export const authOptions: NextAuthOptions = {
               return { ...token, error: "SessionConflict" } as any;
             }
 
-            token.role = dbUser.role;
-            token.expiresAt = dbUser.accountExpiresAt;
-            token.createdAt = dbUser.createdAt;
+            const userObj = dbUser as any;
+            token.role = userObj.role;
+            token.expiresAt = userObj.accountExpiresAt;
+            token.createdAt = userObj.createdAt;
+            token.displayName = userObj.displayName;
+            token.name = userObj.name;
 
             // Tính toán số ngày còn lại
             if (dbUser.accountExpiresAt) {
