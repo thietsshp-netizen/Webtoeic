@@ -401,6 +401,7 @@ model Attendance {
   userId      String
   checkedInAt DateTime     @default(now())
   speakCount  Int          @default(0)
+  isMuted     Boolean      @default(false)
   session     ClassSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 

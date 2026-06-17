@@ -47,6 +47,8 @@ import {
   Award,
   Users,
   Zap,
+  Mic,
+  MicOff,
   Target,
   Check,
   X,
@@ -132,6 +134,7 @@ function HomeContent() {
   const [attendanceData, setAttendanceData] = useState<any>(null);
   const [loadingAttendance, setLoadingAttendance] = useState(false);
   const [checkingIn, setCheckingIn] = useState(false);
+  const [isMutedCheck, setIsMutedCheck] = useState(false);
   const [attendanceError, setAttendanceError] = useState("");
   const [vocabMode, setVocabMode] = useState<string>("library");
   const [vocabFilter, setVocabFilter] = useState<"all" | "unlearned" | "review">("all");
@@ -1475,34 +1478,87 @@ function HomeContent() {
                               </p>
                             </div>
                             
-                            {attendanceData.activeSession.checkedIn ? (
-                              <div className="bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-2xl px-6 py-4 flex items-center gap-3 font-bold text-sm">
-                                <CheckCircle2 size={22} className="text-emerald-500" /> Đã điểm danh thành công
+                             {attendanceData.activeSession.checkedIn ? (
+                              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                                <div className="bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-2xl px-6 py-4 flex items-center gap-3 font-bold text-sm">
+                                  <CheckCircle2 size={22} className="text-emerald-500" /> Đã điểm danh thành công
+                                </div>
+                                <button
+                                  onClick={async () => {
+                                    if (checkingIn) return;
+                                    setCheckingIn(true);
+                                    try {
+                                      const nextMuteState = !attendanceData.activeSession.isMuted;
+                                      const res = await fetch("/api/classes/attendance/checkin", {
+                                        method: "PATCH",
+                                        headers: { "Content-Type": "application/json" },
+                                        body: JSON.stringify({ isMuted: nextMuteState })
+                                      });
+                                      const resData = await res.json();
+                                      if (!res.ok) throw new Error(resData.error || "Không thể thay đổi trạng thái mic");
+                                      fetchAttendanceStats();
+                                    } catch (err: any) {
+                                      alert("⚠️ Lỗi: " + err.message);
+                                    } finally {
+                                      setCheckingIn(false);
+                                    }
+                                  }}
+                                  disabled={checkingIn}
+                                  className={clsx(
+                                    "px-5 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 border",
+                                    attendanceData.activeSession.isMuted
+                                      ? "bg-rose-500/10 border-rose-500/20 text-rose-600 hover:bg-rose-500/20"
+                                      : "bg-indigo-500/10 border-indigo-500/20 text-indigo-600 hover:bg-indigo-500/20"
+                                  )}
+                                >
+                                  {attendanceData.activeSession.isMuted ? (
+                                    <>
+                                      <MicOff size={16} /> Xin bật lại mic
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Mic size={16} /> Xin phép tắt mic
+                                    </>
+                                  )}
+                                </button>
                               </div>
                             ) : (
-                              <button
-                                onClick={async () => {
-                                  if (checkingIn) return;
-                                  setCheckingIn(true);
-                                  try {
-                                    const res = await fetch("/api/classes/attendance/checkin", {
-                                      method: "POST"
-                                    });
-                                    const resData = await res.json();
-                                    if (!res.ok) throw new Error(resData.error || "Điểm danh thất bại");
-                                    alert("🎉 Điểm danh thành công!");
-                                    fetchAttendanceStats();
-                                  } catch (err: any) {
-                                    alert("⚠️ Lỗi: " + err.message);
-                                  } finally {
-                                    setCheckingIn(false);
-                                  }
-                                }}
-                                disabled={checkingIn}
-                                className="px-10 py-5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-emerald-200 disabled:opacity-50"
-                              >
-                                {checkingIn ? "Đang xử lý..." : "👉 Điểm danh vào lớp"}
-                              </button>
+                              <div className="flex flex-col items-center sm:items-end gap-3">
+                                <label className="flex items-center gap-2 text-slate-600 font-bold text-xs cursor-pointer select-none">
+                                  <input
+                                    type="checkbox"
+                                    checked={isMutedCheck}
+                                    onChange={(e) => setIsMutedCheck(e.target.checked)}
+                                    className="w-4 h-4 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500 cursor-pointer"
+                                  />
+                                  <span>Xin tắt mic (không gọi tên phát biểu)</span>
+                                </label>
+                                <button
+                                  onClick={async () => {
+                                    if (checkingIn) return;
+                                    setCheckingIn(true);
+                                    try {
+                                      const res = await fetch("/api/classes/attendance/checkin", {
+                                        method: "POST",
+                                        headers: { "Content-Type": "application/json" },
+                                        body: JSON.stringify({ isMuted: isMutedCheck })
+                                      });
+                                      const resData = await res.json();
+                                      if (!res.ok) throw new Error(resData.error || "Điểm danh thất bại");
+                                      alert("🎉 Điểm danh thành công!");
+                                      fetchAttendanceStats();
+                                    } catch (err: any) {
+                                      alert("⚠️ Lỗi: " + err.message);
+                                    } finally {
+                                      setCheckingIn(false);
+                                    }
+                                  }}
+                                  disabled={checkingIn}
+                                  className="px-10 py-5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-emerald-200 disabled:opacity-50"
+                                >
+                                  {checkingIn ? "Đang xử lý..." : "👉 Điểm danh vào lớp"}
+                                </button>
+                              </div>
                             )}
                           </div>
                         ) : (

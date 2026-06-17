@@ -76,7 +76,8 @@ export async function GET() {
         id: activeSession.id,
         title: activeSession.title,
         isActive: activeSession.isActive,
-        checkedIn: !!activeSession.attendances.find((a: any) => a.userId === user.id)
+        checkedIn: !!activeSession.attendances.find((a: any) => a.userId === user.id),
+        isMuted: !!activeSession.attendances.find((a: any) => a.userId === user.id)?.isMuted
       } : null,
       history
     });

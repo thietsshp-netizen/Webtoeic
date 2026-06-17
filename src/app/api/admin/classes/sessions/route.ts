@@ -35,6 +35,7 @@ export async function GET(req: Request) {
             userId: true,
             checkedInAt: true,
             speakCount: true,
+            isMuted: true,
             user: {
               select: {
                 id: true,
@@ -94,7 +95,7 @@ export async function PATCH(req: Request) {
   try {
     await verifyAdmin();
 
-    const { sessionId, isActive, callingStudentId, clearCalling } = await req.json();
+    const { sessionId, isActive, callingStudentId, clearCalling, targetUserId, isMuted } = await req.json();
 
     if (!sessionId) {
       return NextResponse.json({ error: "Thiếu ID buổi học (sessionId)" }, { status: 400 });
@@ -111,9 +112,23 @@ export async function PATCH(req: Request) {
       updateData.callingStudentId = null;
     }
 
-    console.log("[PATCH SESSIONS] Request payload:", { sessionId, isActive, callingStudentId, clearCalling });
+    console.log("[PATCH SESSIONS] Request payload:", { sessionId, isActive, callingStudentId, clearCalling, targetUserId, isMuted });
 
     const updatedSession = await prisma.$transaction(async (tx: any) => {
+      if (targetUserId !== undefined && isMuted !== undefined) {
+        await (tx as any).attendance.update({
+          where: {
+            sessionId_userId: {
+              sessionId,
+              userId: targetUserId
+            }
+          },
+          data: {
+            isMuted
+          }
+        });
+      }
+
       if (callingStudentId) {
         const updateResult = await (tx as any).attendance.updateMany({
           where: { sessionId, userId: callingStudentId },

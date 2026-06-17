@@ -7,19 +7,29 @@
 - [/] Spawn 8 subagents concurrently to translate and convert episodes:
   - [/] Subagent 1: E01, E02, E03 (ID: `57078f52-e5f6-472d-8064-d14d24db94a5`)
   - [/] Subagent 2: E04, E05, E06 (ID: `1d6060ed-2893-4d80-9885-e854d62c3844`)
-  - [/] Subagent 3: E07, E08, E09 (ID: `0bb097e9-1fc3-4575-ac6e-152ca2d8f275`)
-  - [/] Subagent 4: E10, E11, E12 (ID: `dc5b5ee1-e2a8-4412-b534-2fafb02d1f2c`)
-  - [/] Subagent 5: E13, E14, E15 (ID: `5d22f543-b5eb-480b-81d9-dcc737f4626a`)
-  - [/] Subagent 6: E16-17, E18, E19 (ID: `25f8de2b-b623-4e9a-bc67-70175dc313d1`)
-  - [/] Subagent 7: E20, E21, E22 (ID: `eb73c8a9-3dd4-495c-9615-1725bb40b694`)
-  - [/] Subagent 8: E23, E24 (ID: `27d262d9-d8fe-4679-9baf-a877d953a6f0`)
-- [ ] Monitor progress of subagents.
-- [ ] **Giai đoạn 3: Cập nhật Giao diện Dashboard**
-    - [ ] Thêm Tab "CẦN ÔN TẬP" vào Header của Sổ tay.
-    - [ ] Cập nhật logic lọc từ vựng theo ngày đến hạn.
-    - [ ] Thiết kế thanh tiến trình 5 vạch trên thẻ từ `DashVocabCard`.
-- [ ] **Giai đoạn 4: Tích hợp vào Game**
-    - [ ] Tích hợp lệnh gọi API ngầm vào kết quả Đúng/Sai của các trò chơi.
-    - [ ] Kiểm tra tính đồng bộ giữa Dashboard và Khóa học.
-- [ ] **Giai đoạn 5: Kiểm tra & Nghiệm thu**
-    - [ ] Chạy thử nghiệm thực tế toàn bộ chu trình SRS.
+- [x] Spawn 8 subagents concurrently to translate and convert episodes:
+  - [x] Subagent 1: E01, E02, E03 (ID: `57078f52-e5f6-472d-8064-d14d24db94a5`)
+  - [x] Subagent 2: E04, E05, E06 (ID: `1d6060ed-2893-4d80-9885-e854d62c3844`)
+  - [x] Subagent 3: E07, E08, E09 (ID: `0bb097e9-1fc3-4575-ac6e-152ca2d8f275`)
+  - [x] Subagent 4: E10, E11, E12 (ID: `dc5b5ee1-e2a8-4412-b534-2fafb02d1f2c`)
+  - [x] Subagent 5: E13, E14, E15 (ID: `5d22f543-b5eb-480b-81d9-dcc737f4626a`)
+  - [x] Subagent 6: E16-17, E18, E19 (ID: `25f8de2b-b623-4e9a-bc67-70175dc313d1`)
+  - [x] Subagent 7: E20, E21, E22 (ID: `eb73c8a9-3dd4-495c-9615-1725bb40b694`)
+  - [x] Subagent 8: E23, E24 (ID: `27d262d9-d8fe-4679-9baf-a877d953a6f0`)
+- [x] Monitor progress of subagents.
+- [x] **Giai đoạn 3: Cập nhật Giao diện Dashboard**
+    - [x] Thêm Tab "CẦN ÔN TẬP" vào Header của Sổ tay.
+    - [x] Cập nhật logic lọc từ vựng theo ngày đến hạn.
+    - [x] Thiết kế thanh tiến trình 5 vạch trên thẻ từ `DashVocabCard`.
+- [x] **Giai đoạn 4: Tích hợp vào Game**
+    - [x] Tích hợp lệnh gọi API ngầm vào kết quả Đúng/Sai của các trò chơi.
+    - [x] Kiểm tra tính đồng bộ giữa Dashboard và Khóa học.
+- [x] **Giai đoạn 5: Kiểm tra & Nghiệm thu**
+    - [x] Chạy thử nghiệm thực tế toàn bộ chu trình SRS.
+- [x] Thêm trường `isMuted` vào model `Attendance` trong `prisma/schema.prisma` và push database.
+- [x] Cập nhật API checkin: `src/app/api/classes/attendance/checkin/route.ts` để lưu `isMuted` (POST) và cập nhật `isMuted` (PATCH).
+- [x] Cập nhật API stats: `src/app/api/classes/attendance/stats/route.ts` để trả về `isMuted`.
+- [x] Cập nhật API sessions của admin: `src/app/api/admin/classes/sessions/route.ts` để lấy và cập nhật `isMuted`.
+- [x] Cập nhật giao diện học viên: `src/app/page.tsx` để hiển thị checkbox xin tắt mic và nút bật/tắt mic sau khi điểm danh.
+- [x] Cập nhật Widget gọi tên của giáo viên: `src/components/Common/GlobalClassCalling/index.tsx` để đồng bộ `isMuted` từ API, loại trừ học viên tắt mic khỏi thuật toán gọi tên, và hiển thị danh sách học viên kèm nút tắt/bật mic.
+- [x] Chạy `npx tsc --noEmit` để xác minh dự án build thành công không lỗi type.

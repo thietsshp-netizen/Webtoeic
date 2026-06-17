@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { CalendarCheck, X, Play, Users, Shuffle, RotateCcw, GripVertical, Calendar, Loader2, Minimize2, Maximize2, Mic } from "lucide-react";
+import { CalendarCheck, X, Play, Users, Shuffle, RotateCcw, GripVertical, Calendar, Loader2, Minimize2, Maximize2, Mic, MicOff } from "lucide-react";
 import { clsx } from "clsx";
 
 export const GlobalClassCalling: React.FC = () => {
@@ -18,6 +18,34 @@ export const GlobalClassCalling: React.FC = () => {
   const [presentStudents, setPresentStudents] = useState<any[]>([]);
   const [callingStudentId, setCallingStudentId] = useState<string | null>(null);
   const lastLocalUpdate = useRef<number>(0);
+  
+  const toggleMuteStudent = async (studentId: string) => {
+    if (!activeSession) return;
+    const targetStudent = presentStudents.find(s => s.id === studentId);
+    if (!targetStudent) return;
+    const nextMuteState = !targetStudent.isMuted;
+
+    setPresentStudents(prev => prev.map(s => {
+      if (s.id === studentId) {
+        return { ...s, isMuted: nextMuteState };
+      }
+      return s;
+    }));
+
+    try {
+      await fetch("/api/admin/classes/sessions", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId: activeSession.id,
+          targetUserId: studentId,
+          isMuted: nextMuteState
+        })
+      });
+    } catch (e) {
+      console.error("Lỗi cập nhật mic học viên:", e);
+    }
+  };
   
   // States for attendance controls
   const [sessionTitleInput, setSessionTitleInput] = useState("");
@@ -68,7 +96,8 @@ export const GlobalClassCalling: React.FC = () => {
           // Lấy danh sách học viên đã điểm danh
           const students = active.attendances.map((a: any) => ({
             ...a.user,
-            speakCount: a.speakCount || 0
+            speakCount: a.speakCount || 0,
+            isMuted: !!a.isMuted
           }));
           setPresentStudents(students);
 
@@ -276,18 +305,27 @@ export const GlobalClassCalling: React.FC = () => {
   // Helper tính toán và lấy index học viên tiếp theo theo thuật toán thông minh
   const getSmartNextStudentIndex = useCallback(() => {
     if (presentStudents.length === 0) return -1;
-    if (presentStudents.length === 1) return 0;
-
-    const candidates = presentStudents.map((s, idx) => ({ ...s, originalIndex: idx }));
     
-    // Loại trừ người đang phát biểu hiện tại nếu lớp học có nhiều hơn 1 học viên
+    const activeStudents = presentStudents.filter(s => !s.isMuted);
+    if (activeStudents.length === 0) return -1;
+    if (activeStudents.length === 1) {
+      return presentStudents.findIndex(p => p.id === activeStudents[0].id);
+    }
+
+    const candidates = activeStudents.map((s) => ({
+      ...s,
+      originalIndex: presentStudents.findIndex(p => p.id === s.id)
+    }));
+    
+    // Loại trừ người đang phát biểu hiện tại nếu lớp học có nhiều hơn 1 học viên không bị tắt mic
     const eligibleCandidates = candidates.filter(c => c.id !== callingStudentId);
+    const finalCandidates = eligibleCandidates.length > 0 ? eligibleCandidates : candidates;
     
     // Tìm speakCount nhỏ nhất trong số các ứng viên
-    const minSpeakCount = Math.min(...eligibleCandidates.map(c => c.speakCount));
+    const minSpeakCount = Math.min(...finalCandidates.map(c => c.speakCount));
     
     // Lọc các ứng viên có số lần phát biểu ít nhất
-    const bestCandidates = eligibleCandidates.filter(c => c.speakCount === minSpeakCount);
+    const bestCandidates = finalCandidates.filter(c => c.speakCount === minSpeakCount);
     
     // Chọn ngẫu nhiên một người trong số các ứng viên tốt nhất để tạo sự công bằng và bất ngờ
     const randIdx = Math.floor(Math.random() * bestCandidates.length);
@@ -309,12 +347,14 @@ export const GlobalClassCalling: React.FC = () => {
 
   // Lấy thông tin học viên tiếp theo dự kiến hiển thị lên UI preview
   const getNextStudentPreview = () => {
-    if (presentStudents.length === 0) return null;
-    if (presentStudents.length === 1) return presentStudents[0];
+    const activeStudents = presentStudents.filter(s => !s.isMuted);
+    if (activeStudents.length === 0) return null;
+    if (activeStudents.length === 1) return activeStudents[0];
 
-    const eligibleCandidates = presentStudents.filter(s => s.id !== callingStudentId);
-    const minSpeakCount = Math.min(...eligibleCandidates.map(s => s.speakCount));
-    const bestCandidates = eligibleCandidates.filter(s => s.speakCount === minSpeakCount);
+    const eligibleCandidates = activeStudents.filter(s => s.id !== callingStudentId);
+    const finalCandidates = eligibleCandidates.length > 0 ? eligibleCandidates : activeStudents;
+    const minSpeakCount = Math.min(...finalCandidates.map(s => s.speakCount));
+    const bestCandidates = finalCandidates.filter(s => s.speakCount === minSpeakCount);
     
     return bestCandidates[0];
   };
@@ -707,6 +747,48 @@ export const GlobalClassCalling: React.FC = () => {
                           <Users size={12} />
                           <span>ĐÃ CÓ MẶT: {presentStudents.length} học viên</span>
                         </div>
+                      </div>
+
+                      {/* Danh sách học viên có thể cuộn */}
+                      <div className="max-h-[140px] overflow-y-auto pr-1 space-y-1.5 border border-white/5 bg-white/5 rounded-2xl p-2.5 no-scrollbar">
+                        {presentStudents.map((s) => {
+                          const isMuted = !!s.isMuted;
+                          const displayName = s.displayName || s.name || "Chưa đặt tên";
+                          const isCurrent = s.id === callingStudentId;
+                          return (
+                            <div 
+                              key={s.id} 
+                              className={clsx(
+                                "flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl transition-all",
+                                isCurrent 
+                                  ? "bg-indigo-600/20 border border-indigo-500/30 text-indigo-200" 
+                                  : "hover:bg-white/5 text-white/70"
+                              )}
+                            >
+                              <span 
+                                title={displayName}
+                                className={clsx(
+                                  "text-[11px] font-bold truncate flex-1",
+                                  isMuted ? "text-white/20 line-through italic" : "text-white/80"
+                                )}
+                              >
+                                {displayName} <span className="text-[9px] opacity-40 font-normal">({s.speakCount || 0} lần)</span>
+                              </span>
+                              <button
+                                onClick={() => toggleMuteStudent(s.id)}
+                                className={clsx(
+                                  "p-1 rounded-lg transition-all",
+                                  isMuted 
+                                    ? "bg-rose-500/10 text-rose-400 hover:bg-rose-500/20" 
+                                    : "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
+                                )}
+                                title={isMuted ? "Bật lại mic cho học viên này" : "Tắt mic học viên này"}
+                              >
+                                {isMuted ? <MicOff size={11} /> : <Mic size={11} />}
+                              </button>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   ) : (

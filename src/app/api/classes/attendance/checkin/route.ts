@@ -43,6 +43,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Hiện tại lớp học này chưa mở điểm danh hoặc đã bị khóa" }, { status: 400 });
     }
 
+    let isMuted = false;
+    try {
+      const clonedReq = req.clone();
+      const body = await clonedReq.json();
+      if (body && typeof body.isMuted === "boolean") {
+        isMuted = body.isMuted;
+      }
+    } catch (e) {
+      // Bỏ qua nếu không có body JSON
+    }
+
     // Kiểm tra xem đã điểm danh trước đó chưa
     const existingAttendance = await (prisma as any).attendance.findUnique({
       where: {
@@ -61,13 +72,74 @@ export async function POST(req: Request) {
     await (prisma as any).attendance.create({
       data: {
         sessionId: activeSession.id,
-        userId: user.id
+        userId: user.id,
+        isMuted
       }
     });
 
     return NextResponse.json({ success: true, message: "Điểm danh thành công!" });
   } catch (error: any) {
     console.error("[ATTENDANCE_CHECKIN_POST]", error);
+    return NextResponse.json({ error: error.message || "Lỗi Server" }, { status: 500 });
+  }
+}
+
+export async function PATCH(req: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) {
+    return NextResponse.json({ error: "Chưa đăng nhập" }, { status: 401 });
+  }
+
+  try {
+    const userEmail = session.user.email;
+    if (!userEmail) {
+      return NextResponse.json({ error: "Email không xác định" }, { status: 400 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: userEmail },
+      select: { id: true, classCode: true }
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "Không tìm thấy thông tin tài khoản" }, { status: 404 });
+    }
+
+    if (!user.classCode) {
+      return NextResponse.json({ error: "Tài khoản của bạn chưa được xếp vào lớp nào" }, { status: 400 });
+    }
+
+    const activeSession = await (prisma as any).classSession.findFirst({
+      where: {
+        classCode: user.classCode,
+        isActive: true
+      }
+    });
+
+    if (!activeSession) {
+      return NextResponse.json({ error: "Hiện tại lớp học này chưa mở điểm danh hoặc đã bị khóa" }, { status: 400 });
+    }
+
+    const { isMuted } = await req.json();
+    if (typeof isMuted !== "boolean") {
+      return NextResponse.json({ error: "Tham số isMuted không hợp lệ" }, { status: 400 });
+    }
+
+    const attendance = await (prisma as any).attendance.update({
+      where: {
+        sessionId_userId: {
+          sessionId: activeSession.id,
+          userId: user.id
+        }
+      },
+      data: {
+        isMuted
+      }
+    });
+
+    return NextResponse.json({ success: true, isMuted: attendance.isMuted });
+  } catch (error: any) {
+    console.error("[ATTENDANCE_CHECKIN_PATCH]", error);
     return NextResponse.json({ error: error.message || "Lỗi Server" }, { status: 500 });
   }
 }
