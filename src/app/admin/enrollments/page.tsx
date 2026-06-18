@@ -171,6 +171,32 @@ export default function EnrollmentMatrix() {
     }
   };
 
+  const updateName = async (userId: string, newName: string) => {
+    if (!newName.trim()) return;
+    try {
+      const res = await fetch("/api/admin/users/update-name", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, name: newName }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Lỗi cập nhật tên");
+      
+      if (result.user) {
+        setData(prev => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            users: prev.users.map(u => u.id === userId ? { ...u, name: result.user.name } : u)
+          };
+        });
+      }
+    } catch (e: any) {
+      alert(`⚠️ Lỗi: ${e.message}`);
+      fetchData();
+    }
+  };
+
   const updateClassCode = async (userId: string, newClassCode: string) => {
     try {
       const res = await fetch("/api/admin/users/update-class", {
@@ -702,10 +728,19 @@ export default function EnrollmentMatrix() {
                         {(student.name || student.email || "?")[0].toUpperCase()}
                       </div>
                       <div className="overflow-hidden">
-                        <div className="font-black text-slate-800 text-sm leading-tight truncate">
-                          {student.name || "Chưa đặt tên"}
-                        </div>
-                        <div className="text-xs text-slate-400 mt-0.5 truncate">{student.email}</div>
+                        <input
+                          type="text"
+                          defaultValue={student.name || "Chưa đặt tên"}
+                          onBlur={(e) => updateName(student.id, e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              (e.target as HTMLInputElement).blur();
+                            }
+                          }}
+                          className="font-black text-slate-800 text-sm leading-tight bg-transparent hover:bg-slate-100 focus:bg-white focus:ring-2 focus:ring-blue-500 rounded px-1 py-0.5 outline-none transition-all w-full border-none"
+                          title="Nhập để đổi tên học viên. Bấm Enter hoặc click ra ngoài để lưu."
+                        />
+                        <div className="text-xs text-slate-400 mt-0.5 truncate px-1">{student.email}</div>
                         <div className="flex flex-col gap-2 mt-2">
                           <div className="flex items-center gap-2">
                             <div className="text-[10px] text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded font-bold whitespace-nowrap">

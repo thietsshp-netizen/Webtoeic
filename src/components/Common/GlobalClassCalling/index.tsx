@@ -511,7 +511,7 @@ export const GlobalClassCalling: React.FC = () => {
                   <Mic size={13} className="text-indigo-400 shrink-0 animate-pulse" />
                   {(() => {
                     const currentStudent = presentStudents.find(s => s.id === callingStudentId);
-                    const nameText = currentStudent ? currentStudent.displayName || currentStudent.name || "Chưa đặt tên" : "CHƯA GỌI";
+                    const nameText = currentStudent ? currentStudent.name || currentStudent.displayName || "Chưa đặt tên" : "CHƯA GỌI";
                     return (
                       <span 
                         title={nameText}
@@ -527,7 +527,7 @@ export const GlobalClassCalling: React.FC = () => {
                   <span className="shrink-0">TIẾP THEO:</span>
                   <span className="truncate flex-1 italic text-white/60 uppercase">
                     {nextStudentPreview 
-                      ? nextStudentPreview.displayName || nextStudentPreview.name || "Chưa đặt tên" 
+                      ? nextStudentPreview.name || nextStudentPreview.displayName || "Chưa đặt tên" 
                       : "Hết lượt (Quay lại đầu)"}
                   </span>
                 </div>
@@ -722,10 +722,10 @@ export const GlobalClassCalling: React.FC = () => {
                                 )}
                               </div>
                               <div 
-                                title={currentStudent ? currentStudent.displayName || currentStudent.name || "Chưa đặt tên" : "CHƯA GỌI"}
+                                title={currentStudent ? currentStudent.name || currentStudent.displayName || "Chưa đặt tên" : "CHƯA GỌI"}
                                 className="text-2xl font-black text-indigo-300 uppercase italic tracking-tight px-2 break-words leading-tight"
                               >
-                                {currentStudent ? currentStudent.displayName || currentStudent.name || "Chưa đặt tên" : "CHƯA GỌI"}
+                                {currentStudent ? currentStudent.name || currentStudent.displayName || "Chưa đặt tên" : "CHƯA GỌI"}
                               </div>
                             </>
                           );
@@ -737,7 +737,7 @@ export const GlobalClassCalling: React.FC = () => {
                         <span className="text-white/40 font-bold uppercase tracking-wider text-[10px]">TIẾP THEO GỢI Ý:</span>
                         <span className="text-white font-black italic truncate max-w-[200px] text-right">
                           {nextStudentPreview 
-                            ? `${nextStudentPreview.displayName || nextStudentPreview.name || "Chưa đặt tên"} (${nextStudentPreview.speakCount || 0} lần)` 
+                            ? `${nextStudentPreview.name || nextStudentPreview.displayName || "Chưa đặt tên"} (${nextStudentPreview.speakCount || 0} lần)` 
                             : "Hết lượt (Quay lại từ đầu)"}
                         </span>
                       </div>
@@ -754,7 +754,7 @@ export const GlobalClassCalling: React.FC = () => {
                       <div className="max-h-[140px] overflow-y-auto pr-1 space-y-1.5 border border-white/5 bg-white/5 rounded-2xl p-2.5 no-scrollbar">
                         {presentStudents.map((s) => {
                           const isMuted = !!s.isMuted;
-                          const displayName = s.displayName || s.name || "Chưa đặt tên";
+                          const displayName = s.name || s.displayName || "Chưa đặt tên";
                           const isCurrent = s.id === callingStudentId;
                           return (
                             <div 
