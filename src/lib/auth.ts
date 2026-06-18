@@ -185,6 +185,7 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).expiresAt = token.expiresAt;
         (session.user as any).createdAt = token.createdAt;
 
+        session.user.email = (token.email as string) || session.user.email;
         session.user.name = (token.displayName as string) || (token.name as string) || (session.user.email?.split('@')[0]);
 
         if (token.picture) {
@@ -208,7 +209,7 @@ export const authOptions: NextAuthOptions = {
           console.log("JWT Callback - Finding dbUser for sub:", token.sub);
           const dbUser = await prisma.user.findUnique({
             where: { id: token.sub as string },
-            select: { id: true, role: true, accountExpiresAt: true, displayName: true, name: true, createdAt: true, activeSessionId: true } as any
+            select: { id: true, email: true, role: true, accountExpiresAt: true, displayName: true, name: true, createdAt: true, activeSessionId: true } as any
           });
 
           if (!dbUser) {
@@ -227,6 +228,7 @@ export const authOptions: NextAuthOptions = {
             }
 
             const userObj = dbUser as any;
+            token.email = userObj.email;
             token.role = userObj.role;
             token.expiresAt = userObj.accountExpiresAt;
             token.createdAt = userObj.createdAt;
