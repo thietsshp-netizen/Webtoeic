@@ -9,7 +9,7 @@ import {
   CheckCircleIcon, EyeIcon, ClockIcon, FlagIcon, TrophyIcon, ArrowRightOnRectangleIcon,
   XMarkIcon
 } from '@heroicons/react/24/solid';
-import { Send, LayoutDashboard, ChevronRight, Play, Pause, Volume2, HelpCircle, CheckCircle2, XCircle, Info, Lightbulb, Flag, ChevronsLeftRight } from "lucide-react";
+import { Send, LayoutDashboard, ChevronRight, Play, Pause, Volume2, HelpCircle, CheckCircle2, XCircle, Info, Lightbulb, Flag, ChevronsLeftRight, Star } from "lucide-react";
 import { AdminInlineEditor } from "@/components/Admin/AdminInlineEditor";
 import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
 import confetti from 'canvas-confetti';
@@ -458,7 +458,8 @@ export default function ToeicPart1Player({
   videoExplanation: videoExplanationRaw,
   onVideoQuestionSync,
   onToggleVideo,
-  videoOpen
+  videoOpen,
+  userId
 }: {
   data: any[];
   lessonId?: string;
@@ -480,6 +481,7 @@ export default function ToeicPart1Player({
   onVideoQuestionSync?: (questionNo: number) => void;
   onToggleVideo?: () => void;
   videoOpen?: boolean;
+  userId?: string | null;
 }) {
   // Chuẩn hóa videoExplanation thành dạng vừa là Mảng vừa là Đối tượng đơn để tương thích ngược 100%
   const videoExplanation = (() => {
@@ -952,6 +954,103 @@ export default function ToeicPart1Player({
   const [playingSegmentLabel, setPlayingSegmentLabel] = useState<string | null>(null);
   const [hoveredHotspotIndex, setHoveredHotspotIndex] = useState<number | null>(null);
   const [selectedHotspotIndex, setSelectedHotspotIndex] = useState<number | null>(null);
+
+  // User Vocabulary sync state
+  const [savedVocabs, setSavedVocabs] = useState<Set<string>>(new Set());
+  const [starLoadingWord, setStarLoadingWord] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    const loadSavedVocabs = async () => {
+      try {
+        const res = await fetch("/api/user-vocabulary?all=true");
+        if (res.ok) {
+          const vocabList = await res.json();
+          if (Array.isArray(vocabList)) {
+            const starredWords = new Set(
+              vocabList.filter(v => v.isStarred).map(v => v.word.trim().toLowerCase())
+            );
+            setSavedVocabs(starredWords);
+          }
+        }
+      } catch (e) {
+        console.error("Lỗi tải từ vựng cá nhân:", e);
+      }
+    };
+    loadSavedVocabs();
+
+    // Lắng nghe sự kiện vocab-updated từ các component khác để đồng bộ
+    const handleVocabUpdated = () => {
+      loadSavedVocabs();
+    };
+    window.addEventListener('vocab-updated', handleVocabUpdated);
+    return () => {
+      window.removeEventListener('vocab-updated', handleVocabUpdated);
+    };
+  }, [userId]);
+
+  const toggleStarHotspotWord = async (activeHs: any) => {
+    if (!userId) {
+      alert("Vui lòng đăng nhập để lưu từ vựng!");
+      return;
+    }
+    const cleanWord = activeHs.en.trim();
+    const cleanWordLower = cleanWord.toLowerCase();
+    const isAlreadyStarred = savedVocabs.has(cleanWordLower);
+
+    setStarLoadingWord(cleanWordLower);
+
+    // Optimistic UI Update
+    setSavedVocabs(prev => {
+      const next = new Set(prev);
+      if (isAlreadyStarred) next.delete(cleanWordLower);
+      else next.add(cleanWordLower);
+      return next;
+    });
+
+    try {
+      // Chuẩn hóa collocations và word family thành chuỗi rỗng
+      const payload = {
+        word: cleanWord,
+        definition: activeHs.vi || "",
+        translation: activeHs.vi || "",
+        ipa: activeHs.ipa || "",
+        example: activeHs.example || "",
+        exampleTranslation: activeHs.example_vi || "",
+        synonyms: Array.isArray(activeHs.synonyms)
+          ? activeHs.synonyms.map((s: any) => `${s.word}${s.ipa ? ` (${s.ipa})` : ''}`).join(', ')
+          : activeHs.synonyms || "",
+        antonyms: "",
+        collocations: "",
+        wordFamily: "",
+        action: isAlreadyStarred ? 'delete' : 'save'
+      };
+
+      const res = await fetch("/api/user-vocabulary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        throw new Error("Lỗi lưu từ");
+      }
+      // Phát sự kiện đồng bộ
+      window.dispatchEvent(new CustomEvent('vocab-updated'));
+    } catch (e) {
+      console.error("Lỗi toggle star hotspot:", e);
+      // Rollback
+      setSavedVocabs(prev => {
+        const next = new Set(prev);
+        if (isAlreadyStarred) next.add(cleanWordLower);
+        else next.delete(cleanWordLower);
+        return next;
+      });
+      alert("Không thể lưu từ. Vui lòng thử lại!");
+    } finally {
+      setStarLoadingWord(null);
+    }
+  };
 
   const currentGroup = data[currentIndex] || {};
   const questionData = currentGroup?.questions?.[0] || {};
@@ -2097,6 +2196,23 @@ export default function ToeicPart1Player({
                                             hoveredHotspotIndex !== null ? 'bg-amber-500' : 'bg-emerald-500'
                                           }`}>{activeIdx + 1}</span>
                                           <span className="font-black text-white">{activeHs.en}</span>
+                                          
+                                          {/* Star button to save word */}
+                                          {userId && hoveredHotspotIndex === null && (
+                                            <button
+                                              onClick={() => toggleStarHotspotWord(activeHs)}
+                                              disabled={starLoadingWord === activeHs.en.trim().toLowerCase()}
+                                              className={`p-1 rounded-lg transition-all cursor-pointer ${
+                                                savedVocabs.has(activeHs.en.trim().toLowerCase())
+                                                  ? "text-yellow-500 bg-yellow-500/10"
+                                                  : "text-slate-500 hover:bg-slate-800 hover:text-yellow-500"
+                                              }`}
+                                              title={savedVocabs.has(activeHs.en.trim().toLowerCase()) ? "Bỏ lưu từ" : "Lưu từ vào sổ tay"}
+                                            >
+                                              <Star size={12} fill={savedVocabs.has(activeHs.en.trim().toLowerCase()) ? "currentColor" : "none"} className={starLoadingWord === activeHs.en.trim().toLowerCase() ? "animate-pulse" : ""} />
+                                            </button>
+                                          )}
+
                                           {activeHs.ipa && <span className="text-[10px] text-slate-400 font-mono">{activeHs.ipa}</span>}
                                           <span className="text-indigo-400 font-bold ml-1">— {activeHs.vi}</span>
                                         </div>

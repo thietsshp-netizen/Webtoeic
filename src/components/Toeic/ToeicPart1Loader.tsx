@@ -73,12 +73,13 @@ export default async function ToeicPart1Loader({
   }
 
   const session = await getServerSession(authOptions) as any;
+  const userId = session?.user?.id || null;
   let initialProgress = {};
-  if (session?.user?.id && filterGroups.length > 0) {
+  if (userId && filterGroups.length > 0) {
     const questionIds = filterGroups.flatMap(g => g.questions.map((q: any) => q.id));
     const attempts = await prisma.questionAttempt.findMany({
       where: {
-        userId: session.user.id,
+        userId: userId,
         questionId: { in: questionIds }
       }
     });
@@ -113,6 +114,7 @@ export default async function ToeicPart1Loader({
       initialProgress={initialProgress}
       jumpTo={jumpToQ ? { id: jumpToQ, ts: Date.now() } : undefined}
       videoExplanation={videoExplanation}
+      userId={userId}
     />
   );
 }

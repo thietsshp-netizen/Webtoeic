@@ -808,6 +808,7 @@ export default function ToeicFullTestPlayer({
                   onVideoQuestionSync={handleVideoQuestionSync}
                   onToggleVideo={() => setShowVideo(p => !p)}
                   videoOpen={showVideo}
+                  userId={(session?.user as any)?.id}
                 />
               )}
               {activePart === 2 && (

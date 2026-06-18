@@ -107,21 +107,11 @@ export async function POST(request: Request) {
     }
 
     if (existing) {
-      // If saving and already exists, update with latest data from dictionary
+      // If saving and already exists, only update isStarred and isUnlearned flags to preserve old definition/examples
       const updated = await (prisma as any).userVocabulary.update({
         where: { id: existing.id },
         data: { 
           isStarred: true,
-          partOfSpeech,
-          definition: definition.trim(),
-          translation: translation?.trim() || definition.trim(),
-          ipa,
-          example,
-          exampleTranslation,
-          synonyms,
-          antonyms,
-          collocations,
-          wordFamily,
           isUnlearned: true // Reset to unlearned when re-starred
         }
       });
