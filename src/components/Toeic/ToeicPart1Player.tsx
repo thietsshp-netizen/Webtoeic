@@ -19,6 +19,7 @@ import { startToeicPartTour } from './toeicTour';
 import FloatingVideoExplanationPlayer from '../Player/FloatingVideoExplanationPlayer';
 import { useRouter } from 'next/navigation';
 import part1WordFamiliesData from "@/data/part1_word_families.json";
+import { useDictionary } from "@/components/Dictionary/DictionaryProvider";
 
 function parseOptionsFromText(text: string) {
   if (!text) return [];
@@ -511,6 +512,36 @@ export default function ToeicPart1Player({
   const [showVideo, setShowVideo] = useState(false);
   const [activeWordFamily, setActiveWordFamily] = useState<any[]>([]);
   const [popoverPos, setPopoverPos] = useState({ x: 100, y: 100 });
+  const { openDictionary } = useDictionary();
+
+  const renderInteractiveText = (text: string, highlightPhrase?: string) => {
+    if (!text) return null;
+    const cleanHighlight = (highlightPhrase || "").trim().toLowerCase();
+    const parts = text.split(/(\b[a-zA-Z0-9'-]+\b)/g);
+    
+    return parts.map((part, idx) => {
+      const isWord = /^[a-zA-Z0-9'-]+$/.test(part);
+      if (isWord) {
+        const cleanWord = part.toLowerCase();
+        const isHighlighted = cleanHighlight && (cleanHighlight.includes(cleanWord) || cleanWord.includes(cleanHighlight));
+        
+        return (
+          <span
+            key={idx}
+            onClick={() => {
+              speak(part, 'us');
+            }}
+            className={`hover:text-yellow-400 hover:underline cursor-pointer transition-colors duration-150 inline-block ${
+              isHighlighted ? 'text-amber-400 font-bold not-italic' : 'text-slate-200'
+            }`}
+          >
+            {part}
+          </span>
+        );
+      }
+      return <span key={idx}>{part}</span>;
+    });
+  };
 
   useEffect(() => {
     setActiveWordFamily([]);
@@ -1818,6 +1849,17 @@ export default function ToeicPart1Player({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Bỏ qua phím tắt nếu người dùng đang nhập liệu trong input, textarea hoặc contenteditable
+      const activeEl = document.activeElement;
+      if (
+        activeEl &&
+        (activeEl.tagName === 'INPUT' ||
+          activeEl.tagName === 'TEXTAREA' ||
+          activeEl.getAttribute('contenteditable') === 'true')
+      ) {
+        return;
+      }
+
       if (e.key === '`') {
         e.preventDefault();
         if (!wavesurfer.current) return;
@@ -1838,19 +1880,21 @@ export default function ToeicPart1Player({
           setCurrentIndex(prev => prev + 1);
         }
       } else if (e.key === 'ArrowUp') {
-        if (localHotspots.length > 0) {
-          e.preventDefault();
-          setSelectedHotspotIndex(prev => {
-            if (prev === null) return localHotspots.length - 1;
-            return (prev - 1 + localHotspots.length) % localHotspots.length;
-          });
-        }
-      } else if (e.key === 'ArrowDown') {
-        if (localHotspots.length > 0) {
+        const hotspots = localHotspotsRef.current;
+        if (hotspots && hotspots.length > 0) {
           e.preventDefault();
           setSelectedHotspotIndex(prev => {
             if (prev === null) return 0;
-            return (prev + 1) % localHotspots.length;
+            return (prev + 1) % hotspots.length;
+          });
+        }
+      } else if (e.key === 'ArrowDown') {
+        const hotspots = localHotspotsRef.current;
+        if (hotspots && hotspots.length > 0) {
+          e.preventDefault();
+          setSelectedHotspotIndex(prev => {
+            if (prev === null) return hotspots.length - 1;
+            return (prev - 1 + hotspots.length) % hotspots.length;
           });
         }
       } else if (['1', '2', '3', '4'].includes(e.key)) {
@@ -2069,7 +2113,7 @@ export default function ToeicPart1Player({
                                   style={activeHs.y < 20 ? { top: "5px" } : activeHs.y > 80 ? { bottom: "5px" } : { top: `${activeHs.y}%` }}
                                   onClick={(e) => e.stopPropagation()}
                                 >
-                                  <div className={`bg-slate-950/95 border p-4 rounded-2xl shadow-2xl backdrop-blur-md text-left relative ring-1 ${
+                                  <div className={`bg-slate-950/95 border p-4 rounded-2xl shadow-2xl backdrop-blur-md text-left relative ring-1 select-text ${
                                     hoveredHotspotIndex !== null 
                                       ? 'border-amber-500/50 ring-amber-500/20' 
                                       : 'border-emerald-500/50 ring-emerald-500/20'
@@ -2211,7 +2255,26 @@ export default function ToeicPart1Player({
                                           <span className={`text-slate-950 text-[11px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 ${
                                             hoveredHotspotIndex !== null ? 'bg-amber-500' : 'bg-emerald-500'
                                           }`}>{activeIdx + 1}</span>
-                                          <span className="font-black text-white text-[15px]">{activeHs.en}</span>
+                                          
+                                          <span 
+                                            onClick={() => {
+                                              speak(activeHs.en, 'us');
+                                            }}
+                                            className="font-black text-white text-[15px] hover:text-yellow-400 hover:underline cursor-pointer transition-colors"
+                                          >
+                                            {activeHs.en}
+                                          </span>
+
+                                          <button
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              speak(activeHs.en, 'us');
+                                            }}
+                                            className="p-1 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-indigo-400 transition-all cursor-pointer flex items-center justify-center shrink-0"
+                                            title="Phát âm từ này"
+                                          >
+                                            <Volume2 size={15} />
+                                          </button>
                                           
                                           {/* Star button to save word */}
                                           {userId && hoveredHotspotIndex === null && (
@@ -2235,35 +2298,28 @@ export default function ToeicPart1Player({
                                         
                                         {activeHs.example && (
                                           <div className="mt-2 text-[12.5px] text-slate-200 space-y-1.5">
-                                            <p className="italic leading-relaxed">
-                                              "{(() => {
-                                                const phrase = activeHs.en.toLowerCase();
-                                                const sentence = activeHs.example;
-                                                const matchIdx = sentence.toLowerCase().indexOf(phrase);
-                                                if (matchIdx !== -1) {
-                                                  const start = sentence.substring(0, matchIdx);
-                                                  const matchedWord = sentence.substring(matchIdx, matchIdx + phrase.length);
-                                                  const end = sentence.substring(matchIdx + phrase.length);
-                                                  return (
-                                                    <>
-                                                      {start}
-                                                      <strong className="font-bold text-amber-400 not-italic">{matchedWord}</strong>
-                                                      {end}
-                                                    </>
-                                                  );
-                                                }
-                                                // Fallback nếu so khớp không chính xác 100% thì in đậm các từ đơn lẻ
-                                                return sentence;
-                                              })()}"
+                                            <p className="italic leading-relaxed text-slate-200">
+                                              "{renderInteractiveText(activeHs.example, activeHs.en)}"
                                             </p>
                                             {activeHs.example_vi && <p className="text-slate-350 mt-1 leading-snug text-[12px]">{activeHs.example_vi}</p>}
                                           </div>
                                         )}
 
                                         {activeHs.synonyms && activeHs.synonyms.length > 0 && (
-                                          <p className="text-[10px] text-slate-300 mt-2.5 pt-2 border-t border-slate-800/60 italic">
-                                            <span className="text-indigo-400/80 font-bold not-italic">Synonyms:</span> {activeHs.synonyms.map((s: any) => `${s.word} (${s.ipa})`).join(', ')}
-                                          </p>
+                                          <div className="mt-3 pt-2.5 border-t border-slate-800/60 text-[12px] select-text flex flex-wrap items-center gap-2">
+                                            <span className="text-slate-400 font-bold">Synonyms:</span>
+                                            {activeHs.synonyms.map((s: any, sIdx: number) => (
+                                              <div 
+                                                key={sIdx}
+                                                className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-lg text-emerald-400 font-bold cursor-pointer hover:bg-emerald-500/20 transition-all select-text"
+                                                onClick={() => speak(s.word, 'us')}
+                                              >
+                                                <Volume2 size={12} className="text-emerald-400 shrink-0" />
+                                                <span>{s.word}</span>
+                                                {s.ipa && <span className="text-emerald-500/60 font-mono text-[9.5px] font-normal ml-0.5">[{s.ipa}]</span>}
+                                              </div>
+                                            ))}
+                                          </div>
                                         )}
                                       </>
                                     )}
@@ -2278,6 +2334,7 @@ export default function ToeicPart1Player({
                             const isSelected = selectedHotspotIndex === hidx;
                             const isNextHotspot = (hoveredHotspotIndex !== null && hoveredHotspotIndex + 1 === hidx) || 
                                                   (hoveredHotspotIndex === null && selectedHotspotIndex !== null && selectedHotspotIndex + 1 === hidx);
+                            const isFirstSuggested = selectedHotspotIndex === null && hoveredHotspotIndex === null && hidx === 0;
 
                             // Tự động chuyển nhãn xuống dưới nếu nằm sát mép trên hoặc có hotspot khác ngay phía trên
                             const isNearTop = hs.y < 15;
@@ -2306,7 +2363,7 @@ export default function ToeicPart1Player({
                                   className={`absolute px-2 py-1.5 rounded-lg border text-[9px] font-bold shadow-lg pointer-events-none transition-all duration-200 backdrop-blur-md flex flex-col items-center text-center min-w-[125px] max-w-[200px] gap-0.5 ${
                                     showBelow ? 'top-[16px]' : 'bottom-[16px]'
                                   } ${
-                                    isHovered || isSelected
+                                    isHovered
                                       ? 'bg-slate-900/95 text-slate-100 border-slate-700/80 scale-105 opacity-100 visible'
                                       : 'opacity-0 invisible h-0 py-0 overflow-hidden'
                                   }`}
@@ -2339,7 +2396,7 @@ export default function ToeicPart1Player({
                                       ? 'bg-amber-400 text-slate-950 border-slate-950 scale-125 shadow-lg shadow-amber-500/30' 
                                       : isSelected
                                         ? 'bg-amber-500 text-slate-950 scale-110 shadow-md ring-2 ring-emerald-400'
-                                        : isNextHotspot
+                                        : (isNextHotspot || isFirstSuggested)
                                           ? 'bg-emerald-500 text-white ring-4 ring-amber-400/80 animate-pulse scale-110 shadow-lg shadow-amber-400/20'
                                           : 'bg-emerald-500 text-white'
                                   }`}
