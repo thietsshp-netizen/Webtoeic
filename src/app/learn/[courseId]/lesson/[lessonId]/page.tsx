@@ -290,13 +290,15 @@ export default async function LessonDetailPage({
                         ĐĂNG NHẬP NGAY
                       </Link>
                     ) : (
-                      <button className="px-8 py-4 bg-green-600 text-white font-bold rounded-2xl hover:bg-green-700 transition-all shadow-lg shadow-green-600/30">
+                      <a
+                        href="https://m.me/101690955494114"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-8 py-4 bg-green-600 text-white font-bold rounded-2xl hover:bg-green-700 transition-all shadow-lg shadow-green-600/30 block text-center"
+                      >
                         LIÊN HỆ MỞ KHÓA
-                      </button>
+                      </a>
                     )}
-                    <Link href={`/courses/${courseId}`} className="px-8 py-4 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition-all">
-                      XEM LỘ TRÌNH KHÓA HỌC
-                    </Link>
                   </div>
                 </div>
               </div>
