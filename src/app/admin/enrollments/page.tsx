@@ -27,7 +27,7 @@ type Student = {
     absent: number;
   };
 };
-type MatrixData = { users: Student[]; courses: Course[]; classes: string[] };
+type MatrixData = { users: Student[]; courses: Course[]; classes: { code: string; sessionCount: number }[] };
 
 export default function EnrollmentMatrix() {
   const { data: session, status } = useSession();
@@ -213,9 +213,10 @@ export default function EnrollmentMatrix() {
       setNewClassName("");
       setData(prev => {
         if (!prev) return prev;
+        const newClass = { code: result.class.code, sessionCount: 0 };
         return {
           ...prev,
-          classes: [...prev.classes, result.class.code].sort()
+          classes: [...prev.classes, newClass].sort((a, b) => a.code.localeCompare(b.code))
         };
       });
     } catch (e: any) {
@@ -331,7 +332,7 @@ export default function EnrollmentMatrix() {
         if (!prev) return prev;
         return {
           ...prev,
-          classes: prev.classes.filter(c => c !== code),
+          classes: prev.classes.filter(c => c.code !== code),
           users: prev.users.map(u => u.classCode === code ? { ...u, classCode: null } : u)
         };
       });
@@ -572,7 +573,7 @@ export default function EnrollmentMatrix() {
             >
               <option value="ALL">Tất cả các Lớp</option>
               {(data?.classes || []).map(cls => (
-                <option key={cls} value={cls}>{cls}</option>
+                <option key={cls.code} value={cls.code}>{cls.code} ({cls.sessionCount} buổi)</option>
               ))}
             </select>
           </div>
@@ -783,8 +784,8 @@ export default function EnrollmentMatrix() {
                                 title="Chọn mã lớp cho học viên"
                               >
                                 <option value="">Chưa chọn lớp</option>
-                                {(data?.classes || []).map(code => (
-                                  <option key={code} value={code}>{code}</option>
+                                {(data?.classes || []).map(cls => (
+                                  <option key={cls.code} value={cls.code}>{cls.code} ({cls.sessionCount} buổi)</option>
                                 ))}
                               </select>
                               <div className="absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none opacity-50 text-indigo-600">
@@ -1157,14 +1158,14 @@ export default function EnrollmentMatrix() {
                       {(data?.classes || []).length === 0 ? (
                         <div className="text-center py-6 text-slate-400 font-bold text-xs italic">Chưa có lớp nào được tạo.</div>
                       ) : (
-                        (data?.classes || []).map(code => (
-                          <div key={code} className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                            <span className="text-sm font-bold text-indigo-700">{code}</span>
+                        (data?.classes || []).map(cls => (
+                          <div key={cls.code} className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span className="text-sm font-bold text-indigo-700">{cls.code} ({cls.sessionCount} buổi)</span>
                             <div className="flex items-center gap-1.5">
                               <button
                                 onClick={() => {
-                                  setSelectedClassForSessions(code);
-                                  fetchSessions(code);
+                                  setSelectedClassForSessions(cls.code);
+                                  fetchSessions(cls.code);
                                 }}
                                 className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors"
                                 title="Quản lý Buổi học & Điểm danh"
@@ -1172,7 +1173,7 @@ export default function EnrollmentMatrix() {
                                 <CalendarCheck size={14} />
                               </button>
                               <button
-                                onClick={() => handleDeleteClass(code)}
+                                onClick={() => handleDeleteClass(cls.code)}
                                 className="p-1.5 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors"
                                 title="Xóa mã lớp"
                               >

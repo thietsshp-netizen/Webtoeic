@@ -12,7 +12,7 @@ export const GlobalClassCalling: React.FC = () => {
   // States
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [classes, setClasses] = useState<string[]>([]);
+  const [classes, setClasses] = useState<{ code: string; sessionCount: number }[]>([]);
   const [selectedClass, setSelectedClass] = useState("");
   const [activeSession, setActiveSession] = useState<any>(null);
   const [presentStudents, setPresentStudents] = useState<any[]>([]);
@@ -128,17 +128,18 @@ export const GlobalClassCalling: React.FC = () => {
         if (data.classes) {
           setClasses(data.classes);
           
-          if (data.activeClassCode && data.classes.includes(data.activeClassCode)) {
+          const classCodes = data.classes.map((c: any) => c.code);
+          if (data.activeClassCode && classCodes.includes(data.activeClassCode)) {
             setSelectedClass(data.activeClassCode);
             fetchActiveSession(data.activeClassCode);
           } else {
             const savedClass = localStorage.getItem("webtoeic_selected_class");
-            if (savedClass && data.classes.includes(savedClass)) {
+            if (savedClass && classCodes.includes(savedClass)) {
               setSelectedClass(savedClass);
               fetchActiveSession(savedClass);
-            } else if (data.classes.length > 0) {
-              setSelectedClass(data.classes[0]);
-              fetchActiveSession(data.classes[0]);
+            } else if (classCodes.length > 0) {
+              setSelectedClass(classCodes[0]);
+              fetchActiveSession(classCodes[0]);
             }
           }
         }
@@ -573,30 +574,30 @@ export const GlobalClassCalling: React.FC = () => {
                       setClassSearch("");
                     }}
                     onChange={(e) => setClassSearch(e.target.value)}
-                    className="text-[10px] font-bold text-indigo-300 bg-white/5 border border-white/10 rounded-xl px-2.5 py-1.5 outline-none cursor-pointer w-[120px] placeholder-indigo-300/40 text-left truncate"
+                    className="text-[10px] font-bold text-indigo-300 bg-white/5 border border-white/10 rounded-xl px-2.5 py-1.5 outline-none cursor-pointer w-[145px] placeholder-indigo-300/40 text-left truncate"
                     title="Tìm và chọn lớp học"
                   />
                   {showClassList && (
-                    <div className="absolute right-0 mt-1 w-[160px] max-h-[180px] overflow-y-auto bg-slate-800/95 border border-white/10 rounded-xl shadow-xl z-[10001] no-scrollbar py-1">
-                      {classes.filter(c => c.toLowerCase().includes(classSearch.toLowerCase())).length > 0 ? (
+                    <div className="absolute right-0 mt-1 w-[220px] max-h-[180px] overflow-y-auto bg-slate-800/95 border border-white/10 rounded-xl shadow-xl z-[10001] no-scrollbar py-1">
+                      {classes.filter(c => c.code.toLowerCase().includes(classSearch.toLowerCase())).length > 0 ? (
                         classes
-                          .filter(c => c.toLowerCase().includes(classSearch.toLowerCase()))
+                          .filter(c => c.code.toLowerCase().includes(classSearch.toLowerCase()))
                           .map(c => (
                             <button
-                              key={c}
+                              key={c.code}
                               onClick={() => {
-                                setSelectedClass(c);
-                                localStorage.setItem("webtoeic_selected_class", c);
-                                fetchActiveSession(c);
+                                setSelectedClass(c.code);
+                                localStorage.setItem("webtoeic_selected_class", c.code);
+                                fetchActiveSession(c.code);
                                 setShowClassList(false);
                                 setClassSearch("");
                               }}
                               className={clsx(
                                 "w-full text-left px-3 py-2 text-[10px] font-bold hover:bg-indigo-600 hover:text-white transition-colors truncate block",
-                                c === selectedClass ? "text-indigo-400 bg-white/5" : "text-white"
+                                c.code === selectedClass ? "text-indigo-400 bg-white/5" : "text-white"
                               )}
                             >
-                              {c}
+                              {c.code} ({c.sessionCount} buổi)
                             </button>
                           ))
                       ) : (

@@ -78,7 +78,10 @@ export async function GET() {
         };
       }),
       courses,
-      classes: classes.map(c => c.code),
+      classes: classes.map(c => ({
+        code: c.code,
+        sessionCount: sessionCountMap.get(c.code) || 0
+      })),
       activeClassCode
     };
 
