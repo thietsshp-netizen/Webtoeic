@@ -551,7 +551,14 @@ export default function EnrollmentMatrix() {
             </h1>
           </div>
           <p className="text-slate-400 font-medium text-sm ml-13">
-            {data?.users.length ?? 0} học viên · {data?.courses.length ?? 0} khóa học · Bấm ô để cấp/thu hồi quyền tức thì
+            {search || filterClass !== "ALL" || filterType !== "ALL" ? (
+              <span className="text-blue-600 font-bold">
+                Tìm thấy {filteredStudents.length} / {data?.users.length ?? 0} học viên
+              </span>
+            ) : (
+              <span>{data?.users.length ?? 0} học viên</span>
+            )}
+            {" "}· {data?.courses.length ?? 0} khóa học · Bấm ô để cấp/thu hồi quyền tức thì
           </p>
         </div>
 
