@@ -14,10 +14,6 @@ export default async function CourseLearnPage({
   const session = await getServerSession(authOptions) as any;
   const userId = session?.user?.id;
 
-  const isExpired = session?.user?.role !== "ADMIN" && session?.user?.expiresAt && new Date(session.user.expiresAt) < new Date();
-  if (isExpired) {
-    redirect("/?tab=dashboard");
-  }
 
   // Lấy chi tiết khóa học và cấu trúc bài học
   const course = await prisma.course.findUnique({
