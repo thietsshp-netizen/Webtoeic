@@ -56,19 +56,26 @@ export default async function LessonDetailPage({
   }
 
   // 1. KIỂM TRA QUYỀN TRUY CẬP
+  const isExpired = session?.user?.role !== "ADMIN" && session?.user?.expiresAt && new Date(session.user.expiresAt) < new Date();
+
   let hasAccess = false;
-  if (session?.user?.role === "ADMIN" || lesson.isPreview) {
+  if (lesson.isPreview) {
+    // Luôn cho phép xem các bài học thử/miễn phí, kể cả tài khoản hết hạn
     hasAccess = true;
-  } else if (session) {
-    const enrollment = await prisma.enrollment.findUnique({
-      where: {
-        userId_courseId: {
-          userId: session.user.id,
-          courseId: courseId,
+  } else if (!isExpired) {
+    if (session?.user?.role === "ADMIN") {
+      hasAccess = true;
+    } else if (session) {
+      const enrollment = await prisma.enrollment.findUnique({
+        where: {
+          userId_courseId: {
+            userId: session.user.id,
+            courseId: courseId,
+          },
         },
-      },
-    });
-    if (enrollment) hasAccess = true;
+      });
+      if (enrollment) hasAccess = true;
+    }
   }
 
   // 1.1 GHI NHẬN TIẾN ĐỘ BÀI HỌC (START/VIEW)
@@ -271,7 +278,9 @@ export default async function LessonDetailPage({
                   </div>
                   <h3 className="text-2xl font-bold text-slate-800 mb-3 tracking-normal">NỘI DUNG ĐANG KHÓA</h3>
                   <p className="text-slate-500 text-sm font-medium mb-8 leading-relaxed">
-                    {session
+                    {isExpired
+                      ? "Tài khoản của bạn đã hết hạn sử dụng. Vui lòng liên hệ Admin để đăng ký khóa học chính thức và tiếp tục học tập!"
+                      : session
                       ? "Tài khoản của bạn chưa được cấp quyền truy cập. Vui lòng liên hệ Admin để được hỗ trợ mở khóa!"
                       : "Bạn cần đăng nhập và tham gia khóa học này để xem các nội dung chi tiết."}
                   </p>

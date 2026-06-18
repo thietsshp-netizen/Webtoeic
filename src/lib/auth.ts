@@ -85,22 +85,7 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
-      // 1. CHẶN ĐĂNG NHẬP NẾU TÀI KHOẢN ĐÃ HẾT HẠN (Chỉ áp dụng cho USER)
-      if (dbUser && dbUser.accountExpiresAt) {
-        const now = new Date();
-        const expiresAt = new Date(dbUser.accountExpiresAt);
-
-        // Nếu đã quá ngày hết hạn
-        if (expiresAt < now) {
-          // Tính toán số ngày
-          const diffTime = expiresAt.getTime() - now.getTime();
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-          if (diffDays <= -1) {
-            return `/auth/signin?error=ExpiredAccount&email=${encodeURIComponent(user.email as string)}`;
-          }
-        }
-      }
+      // 1. CHẶN ĐĂNG NHẬP NẾU TÀI KHOẢN ĐÃ HẾT HẠN (Chỉ áp dụng cho USER) - Đã bỏ chặn để học viên xem được thông tin cá nhân
 
       // 3. KIỂM TRA GIỚI HẠN THIẾT BỊ
       try {
@@ -242,11 +227,7 @@ export const authOptions: NextAuthOptions = {
               const diffTime = expiresAt.getTime() - now.getTime();
               const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-              // Nếu đã hết hạn (-1) thì hủy session luôn (Trừ ADMIN)
-              if (diffDays <= -1 && (dbUser as any).role !== "ADMIN") {
-                console.log("JWT Callback - Account expired for User:", token.sub);
-                return { ...token, error: "ExpiredAccount" } as any;
-              }
+              // Nếu đã hết hạn (-1) thì vẫn cho phép session hoạt động bình thường, sẽ chặn ở trang học tập
 
               token.daysLeft = diffDays;
             } else {
