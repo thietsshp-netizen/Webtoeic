@@ -2191,11 +2191,11 @@ export default function ToeicPart1Player({
                                           </button>
                                         )}
 
-                                        <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-800 pb-2 mb-2 pr-6 text-sm">
-                                          <span className={`text-slate-950 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${
+                                        <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-800 pb-2 mb-2 pr-6 text-base">
+                                          <span className={`text-slate-950 text-[11px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 ${
                                             hoveredHotspotIndex !== null ? 'bg-amber-500' : 'bg-emerald-500'
                                           }`}>{activeIdx + 1}</span>
-                                          <span className="font-black text-white">{activeHs.en}</span>
+                                          <span className="font-black text-white text-[15px]">{activeHs.en}</span>
                                           
                                           {/* Star button to save word */}
                                           {userId && hoveredHotspotIndex === null && (
@@ -2209,16 +2209,16 @@ export default function ToeicPart1Player({
                                               }`}
                                               title={savedVocabs.has(activeHs.en.trim().toLowerCase()) ? "Bỏ lưu từ" : "Lưu từ vào sổ tay"}
                                             >
-                                              <Star size={12} fill={savedVocabs.has(activeHs.en.trim().toLowerCase()) ? "currentColor" : "none"} className={starLoadingWord === activeHs.en.trim().toLowerCase() ? "animate-pulse" : ""} />
+                                              <Star size={14} fill={savedVocabs.has(activeHs.en.trim().toLowerCase()) ? "currentColor" : "none"} className={starLoadingWord === activeHs.en.trim().toLowerCase() ? "animate-pulse" : ""} />
                                             </button>
                                           )}
 
-                                          {activeHs.ipa && <span className="text-[10px] text-slate-400 font-mono">{activeHs.ipa}</span>}
-                                          <span className="text-indigo-400 font-bold ml-1">— {activeHs.vi}</span>
+                                          {activeHs.ipa && <span className="text-[11px] text-slate-400 font-mono">[{activeHs.ipa}]</span>}
+                                          <span className="text-indigo-400 font-bold ml-1 text-[15px]">— {activeHs.vi}</span>
                                         </div>
                                         
                                         {activeHs.example && (
-                                          <div className="mt-2 text-[11px] text-slate-300 space-y-1">
+                                          <div className="mt-2 text-[12.5px] text-slate-200 space-y-1.5">
                                             <p className="italic leading-relaxed">
                                               "{(() => {
                                                 const phrase = activeHs.en.toLowerCase();
@@ -2240,7 +2240,7 @@ export default function ToeicPart1Player({
                                                 return sentence;
                                               })()}"
                                             </p>
-                                            {activeHs.example_vi && <p className="text-slate-400 mt-0.5 leading-snug">{activeHs.example_vi}</p>}
+                                            {activeHs.example_vi && <p className="text-slate-350 mt-1 leading-snug text-[12px]">{activeHs.example_vi}</p>}
                                           </div>
                                         )}
 
