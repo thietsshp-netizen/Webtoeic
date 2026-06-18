@@ -1837,6 +1837,22 @@ export default function ToeicPart1Player({
         } else {
           setCurrentIndex(prev => prev + 1);
         }
+      } else if (e.key === 'ArrowUp') {
+        if (localHotspots.length > 0) {
+          e.preventDefault();
+          setSelectedHotspotIndex(prev => {
+            if (prev === null) return localHotspots.length - 1;
+            return (prev - 1 + localHotspots.length) % localHotspots.length;
+          });
+        }
+      } else if (e.key === 'ArrowDown') {
+        if (localHotspots.length > 0) {
+          e.preventDefault();
+          setSelectedHotspotIndex(prev => {
+            if (prev === null) return 0;
+            return (prev + 1) % localHotspots.length;
+          });
+        }
       } else if (['1', '2', '3', '4'].includes(e.key)) {
         e.preventDefault();
         const labels = ['A', 'B', 'C', 'D'];
