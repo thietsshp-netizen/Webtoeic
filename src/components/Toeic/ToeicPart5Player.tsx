@@ -963,12 +963,26 @@ export default function ToeicPart5Player({
 
     selectedMatches.sort((a, b) => a.start - b.start);
 
+    const wrapTextInSpans = (str: string, prefixKey: string) => {
+      const tokens = str.split(/(\s+)/);
+      return tokens.map((token, tIdx) => {
+        if (token.trim() === "") {
+          return token;
+        }
+        return (
+          <span key={`${prefixKey}-${tIdx}`} className="inline-block">
+            {token}
+          </span>
+        );
+      });
+    };
+
     const resultElements: React.ReactNode[] = [];
     let lastIdx = 0;
 
     selectedMatches.forEach((match, idx) => {
       if (match.start > lastIdx) {
-        resultElements.push(<Fragment key={`t-${idx}`}>{text.substring(lastIdx, match.start)}</Fragment>);
+        resultElements.push(<Fragment key={`t-${idx}`}>{wrapTextInSpans(text.substring(lastIdx, match.start), `t-${idx}`)}</Fragment>);
       }
       // Với mỗi match, tìm thêm root match (nếu có) cho cùng từ đó
       const extraRootForMatch = (() => {
@@ -1034,7 +1048,7 @@ export default function ToeicPart5Player({
     });
 
     if (lastIdx < text.length) {
-      resultElements.push(<Fragment key="t-end">{text.substring(lastIdx)}</Fragment>);
+      resultElements.push(<Fragment key="t-end">{wrapTextInSpans(text.substring(lastIdx), 't-end')}</Fragment>);
     }
 
     return resultElements;
@@ -1335,7 +1349,7 @@ export default function ToeicPart5Player({
   return (
     <div className="flex-1 flex flex-col font-sans bg-[#f8fafc] text-slate-900 overflow-hidden select-text relative">
       <div className="flex-1 flex overflow-hidden relative">
-        <div className="flex-1 flex flex-col min-h-0 overflow-y-auto px-4 md:pl-8 md:pr-16 scroll-smooth">
+        <div id="part5-scroll-container" className="flex-1 flex flex-col min-h-0 overflow-y-auto px-4 md:pl-8 md:pr-16 scroll-smooth webtoeic-scroll-container">
           <div className="flex-1 flex flex-col w-full min-h-0 pb-10">
             <div className="bg-white rounded-3xl shadow-md border border-blue-100 mt-4 shrink-0 flex flex-col relative z-20">
               <div className="bg-slate-50/50 border-b border-slate-100 px-6 h-14 flex items-center justify-between shrink-0 rounded-t-3xl">

@@ -1226,8 +1226,9 @@ export default function ToeicPart7Player({
         >
           {/* TOP OR SINGLE PASSAGE PANE */}
           <div
+            id="part7-passage-container-top"
             ref={passageScrollRef}
-            className="overflow-y-auto scrollbar-thin select-text"
+            className="overflow-y-auto scrollbar-thin select-text webtoeic-scroll-container"
             style={{ height: isSplitView ? `${splitHeight}%` : '100%', flex: isSplitView ? 'none' : '1' }}
           >
             <div className="p-10 space-y-16 pb-[35vh]">
@@ -1297,8 +1298,9 @@ export default function ToeicPart7Player({
           {/* BOTTOM PASSAGE PANE */}
           {isSplitView && (
             <div
+              id="part7-passage-container-bottom"
               ref={passageScrollRefBottom}
-              className="overflow-y-auto scrollbar-thin select-text flex-1"
+              className="overflow-y-auto scrollbar-thin select-text flex-1 webtoeic-scroll-container"
             >
               <div className="p-10 space-y-16 pb-[35vh]">
                 {passages.map((p: any, idx: number) => (
@@ -1340,7 +1342,7 @@ export default function ToeicPart7Player({
         </div>
         {/* COLUMN 2: QUESTIONS (Full width expansion) */}
         <div className="flex-1 min-h-0 relative flex flex-col min-w-[400px]">
-          <div ref={questionsScrollRef} className="flex-1 overflow-y-auto bg-white scrollbar-thin scroll-smooth select-text">
+          <div id="part7-questions-container" ref={questionsScrollRef} className="flex-1 overflow-y-auto bg-white scrollbar-thin scroll-smooth select-text webtoeic-scroll-container">
             <div className="p-10 space-y-6 pb-[35vh] w-full">
               {questions.map((q: any, qIdx: number) => {
                 const colors = ['yellow', 'cyan', 'emerald', 'magenta', 'orange'];

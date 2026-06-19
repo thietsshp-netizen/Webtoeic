@@ -930,8 +930,9 @@ export default function ToeicPart6Player({
                 <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded italic">Bật Hiện đáp án và rê chuột vào câu để xem bản dịch</span>
               </div>
               <div
+                id="part6-passage-container"
                 ref={passageScrollRef}
-                className="flex-1 overflow-y-auto p-8 lg:p-12 pb-[35vh] lg:pb-[35vh] scrollbar-thin"
+                className="flex-1 overflow-y-auto p-8 lg:p-12 pb-[35vh] lg:pb-[35vh] scrollbar-thin webtoeic-scroll-container"
                 onMouseMove={(e) => {
                   const x = e.clientX;
                   const y = e.clientY;
@@ -1037,7 +1038,7 @@ export default function ToeicPart6Player({
 
           {/* RIGHT: QUESTIONS COLUMN */}
           <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative pl-4">
-            <div ref={questionsScrollRef} className="flex-1 overflow-y-auto pr-3 scrollbar-thin space-y-4 pb-[35vh]">
+            <div id="part6-questions-container" ref={questionsScrollRef} className="flex-1 overflow-y-auto pr-3 scrollbar-thin space-y-4 pb-[35vh] webtoeic-scroll-container">
               {questions.map((q: any) => {
                 const qKey = q.id || `${currentGroup.id}_${q.questionNo}`;
                 const isSelectedAny = !!answers[qKey];
