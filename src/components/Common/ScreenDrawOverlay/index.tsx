@@ -2946,7 +2946,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (e.pointerType === 'touch') return;
+    // Chỉ bỏ qua touch nếu không ở trạng thái đang vẽ/kéo thả, tránh nuốt sự kiện pointerup gây kẹt trạng thái vẽ
+    if (e.pointerType === 'touch' && !isDrawingRef.current && !resizingInfo) return;
 
     if (tool !== 'cursor') {
       e.preventDefault();
@@ -3597,6 +3598,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
         onClick={(e) => {
           if (tool === 'text') {
             const canvas = canvasRef.current;
