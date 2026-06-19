@@ -1001,20 +1001,41 @@ export default function ToeicPart34Player({
       if (percentage > 80) percentage = 80;
       setVSplitWidth(percentage);
     };
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isDragging.current || !mainContainerRef.current || e.touches.length === 0) return;
+      const rect = mainContainerRef.current.getBoundingClientRect();
+      let percentage = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
+      if (percentage < 20) percentage = 20;
+      if (percentage > 80) percentage = 80;
+      setVSplitWidth(percentage);
+    };
     const handleMouseUp = () => {
+      isDragging.current = false;
+      setIsResizingV(false);
+    };
+    const handleTouchEnd = () => {
       isDragging.current = false;
       setIsResizingV(false);
     };
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
     };
   }, []);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
+    isDragging.current = true;
+    setIsResizingV(true);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
     isDragging.current = true;
     setIsResizingV(true);
   };
@@ -1590,6 +1611,7 @@ export default function ToeicPart34Player({
             {/* The Handle - Circular */}
             <div
               onMouseDown={handleMouseDown}
+              onTouchStart={handleTouchStart}
               className={`absolute top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white border-2 shadow-xl flex items-center justify-center transition-all cursor-col-resize ${isResizingV ? 'border-indigo-500 scale-110 shadow-indigo-200' : 'border-slate-200 group-hover:border-indigo-400 group-hover:scale-105'}`}
             >
               <ChevronsLeftRight className={`w-5 h-5 ${isResizingV ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-600'}`} />

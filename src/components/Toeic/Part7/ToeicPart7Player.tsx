@@ -986,6 +986,7 @@ export default function ToeicPart7Player({
 
   // DRAG HANDLERS
   const handleMouseDown = () => { isDragging.current = true; setIsResizing(true); document.body.style.cursor = 'col-resize'; };
+  const handleTouchStart = () => { isDragging.current = true; setIsResizing(true); };
   const handleToggleFlag = async (questionId: string, color: FlagColor | null, note?: string) => {
     // Tìm câu hỏi thực tế để lấy dbId
     let targetDbId = questionId;
@@ -1024,13 +1025,27 @@ export default function ToeicPart7Player({
         if (percentage > 20 && percentage < 80) setLeftWidth(percentage);
       }
       if (isResizingSplitRef.current) {
-        // Calculate the percentage height relative to the window height, or ideally the container height.
-        // For simplicity, we can use window height as an approximation if the container fills most of the screen.
-        // Actually, we should calculate based on the bounding rect of the passage container.
         const container = passageScrollRef.current?.parentElement;
         if (container) {
           const rect = container.getBoundingClientRect();
           const yOffset = e.clientY - rect.top;
+          const percentage = (yOffset / rect.height) * 100;
+          if (percentage > 20 && percentage < 80) setSplitHeight(percentage);
+        }
+      }
+    };
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 0) return;
+      const touch = e.touches[0];
+      if (isDragging.current) {
+        const percentage = (touch.clientX / window.innerWidth) * 100;
+        if (percentage > 20 && percentage < 80) setLeftWidth(percentage);
+      }
+      if (isResizingSplitRef.current) {
+        const container = passageScrollRef.current?.parentElement;
+        if (container) {
+          const rect = container.getBoundingClientRect();
+          const yOffset = touch.clientY - rect.top;
           const percentage = (yOffset / rect.height) * 100;
           if (percentage > 20 && percentage < 80) setSplitHeight(percentage);
         }
@@ -1043,9 +1058,22 @@ export default function ToeicPart7Player({
       setIsResizingSplit(false);
       document.body.style.cursor = 'default';
     };
+    const handleTouchEnd = () => {
+      isDragging.current = false;
+      setIsResizing(false);
+      isResizingSplitRef.current = false;
+      setIsResizingSplit(false);
+    };
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
-    return () => { window.removeEventListener('mousemove', handleMouseMove); window.removeEventListener('mouseup', handleMouseUp); };
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
   }, []);
 
   const handleFinishTest = async () => {
@@ -1257,6 +1285,10 @@ export default function ToeicPart7Player({
                 isResizingSplitRef.current = true;
                 document.body.style.cursor = 'row-resize';
               }}
+              onTouchStart={() => {
+                setIsResizingSplit(true);
+                isResizingSplitRef.current = true;
+              }}
             >
               <ChevronsUpDown size={14} className="text-slate-400" />
             </div>
@@ -1300,6 +1332,7 @@ export default function ToeicPart7Player({
           <div className={`w-[2px] h-full transition-colors ${isResizing ? 'bg-indigo-500' : 'bg-slate-200 group-hover:bg-indigo-400'}`}></div>
           <div
             onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
             className={`absolute top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white border-2 shadow-xl flex items-center justify-center transition-all cursor-col-resize ${isResizing ? 'border-indigo-500 scale-110 shadow-indigo-200' : 'border-slate-200 group-hover:border-indigo-400 group-hover:scale-105'}`}
           >
             <ChevronsLeftRight className={`w-5 h-5 ${isResizing ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-600'}`} />

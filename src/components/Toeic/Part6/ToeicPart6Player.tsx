@@ -592,16 +592,30 @@ export default function ToeicPart6Player({
       const percentage = (e.clientX / window.innerWidth) * 100;
       if (percentage > 20 && percentage < 80) setVSplitWidth(percentage);
     };
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isDragging.current || e.touches.length === 0) return;
+      const clientX = e.touches[0].clientX;
+      const percentage = (clientX / window.innerWidth) * 100;
+      if (percentage > 20 && percentage < 80) setVSplitWidth(percentage);
+    };
     const handleMouseUp = () => {
       isDragging.current = false;
       setIsResizingV(false);
       document.body.style.cursor = 'default';
     };
+    const handleTouchEnd = () => {
+      isDragging.current = false;
+      setIsResizingV(false);
+    };
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
     };
   }, []);
 
@@ -609,6 +623,11 @@ export default function ToeicPart6Player({
     isDragging.current = true;
     setIsResizingV(true);
     document.body.style.cursor = 'col-resize';
+  };
+
+  const handleTouchStart = () => {
+    isDragging.current = true;
+    setIsResizingV(true);
   };
 
   const handleSelect = (questionId: string, option: string) => {
@@ -1009,6 +1028,7 @@ export default function ToeicPart6Player({
             {/* The Handle */}
             <div
               onMouseDown={handleMouseDown}
+              onTouchStart={handleTouchStart}
               className={`absolute top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white border-2 shadow-xl flex items-center justify-center transition-all cursor-col-resize ${isResizingV ? 'border-indigo-500 scale-110 shadow-indigo-200' : 'border-slate-200 group-hover:border-indigo-400 group-hover:scale-105'}`}
             >
               <ChevronsLeftRight className={`w-5 h-5 ${isResizingV ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-600'}`} />
