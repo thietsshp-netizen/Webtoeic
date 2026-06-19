@@ -2090,7 +2090,7 @@ export default function ToeicPart1Player({
                                       y1={startY}
                                       x2={endX}
                                       y2={endY}
-                                      stroke={hoveredHotspotIndex !== null ? "#f59e0b" : "#10b981"}
+                                      stroke={hoveredHotspotIndex !== null ? "#f59e0b" : "#ef4444"}
                                       strokeWidth="1.5"
                                       strokeDasharray="4 3"
                                       className="animate-[dash_10s_linear_infinite]"
@@ -2099,7 +2099,7 @@ export default function ToeicPart1Player({
                                       cx={endX}
                                       cy={endY}
                                       r="3"
-                                      fill={hoveredHotspotIndex !== null ? "#f59e0b" : "#10b981"}
+                                      fill={hoveredHotspotIndex !== null ? "#f59e0b" : "#ef4444"}
                                     />
                                   </g>
                                 </svg>
@@ -2248,7 +2248,7 @@ export default function ToeicPart1Player({
                                         )}
 
                                         <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-800 pb-2 mb-2 pr-6 text-base">
-                                          <span className={`text-slate-950 text-[11px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 ${hoveredHotspotIndex !== null ? 'bg-amber-500' : 'bg-emerald-500'
+                                          <span className={`text-slate-950 text-[11px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 ${hoveredHotspotIndex !== null ? 'bg-amber-500' : 'bg-red-500'
                                             }`}>{activeIdx + 1}</span>
 
                                           <span
@@ -2384,10 +2384,10 @@ export default function ToeicPart1Player({
                                     } ${isHovered
                                       ? 'w-4 h-4 bg-amber-400/20 text-amber-400 border-amber-400/40 scale-110 shadow-lg font-black'
                                       : isSelected
-                                        ? 'w-4 h-4 bg-amber-500/20 text-amber-400 border-amber-500/40 scale-110 shadow-md ring-1 ring-emerald-400/50 font-black'
+                                        ? 'w-4 h-4 bg-amber-500/20 text-amber-400 border-amber-500/40 scale-110 shadow-md ring-1 ring-red-400/50 font-black'
                                         : (isNextHotspot || isFirstSuggested)
-                                          ? 'w-2 h-2 bg-emerald-500 ring-2 ring-amber-400/80 animate-pulse'
-                                          : 'w-2 h-2 bg-emerald-500/90 animate-[pulse_2s_infinite]'
+                                          ? 'w-2 h-2 bg-red-500 ring-2 ring-amber-400/80 animate-pulse'
+                                          : 'w-2 h-2 bg-red-500/90 animate-[pulse_2s_infinite]'
                                     }`}
                                 >
                                   <span className={`text-[8px] font-black select-none leading-none transition-all duration-300 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] ${isHovered || isSelected ? 'scale-100 opacity-100' : 'scale-0 opacity-0 w-0 h-0 overflow-hidden'
