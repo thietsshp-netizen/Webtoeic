@@ -408,17 +408,17 @@ function HomeContent() {
       {/* --- TOP NAVBAR --- */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
             <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200 group-hover:rotate-6 transition-transform">
               <GraduationCap className="text-white" size={24} />
             </div>
-            <span className="text-xl font-bold text-slate-900 tracking-tight">
+            <span className="text-xl font-bold text-slate-900 tracking-tight hidden sm:block">
               hoctoeic
               <span className="text-blue-600 block text-[10px] uppercase tracking-[0.3em] font-bold -mt-1">E-LEARNING SYSTEM</span>
             </span>
           </Link>
 
-          <div className="flex items-center bg-slate-100/50 p-1.5 rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-[240px] md:max-w-none">
+          <div className="flex items-center bg-slate-100/50 p-1.5 rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-[290px] sm:max-w-none">
             <TabBtn href="/?tab=intro" id="intro" active={activeTab} label="GIỚI THIỆU" icon={<Star size={16} />} />
             <TabBtn href="/courses" id="courses" active={activeTab} label="KHÓA HỌC" icon={<BookOpen size={16} />} />
             <TabBtn href="/?tab=dashboard" id="dashboard" active={activeTab} label="DASHBOARD" icon={<Layout size={16} />} color="blue" />
@@ -2003,7 +2003,7 @@ function TabBtn({ href, id, active, label, icon, color = "slate" }: { href: stri
     <Link
       href={href}
       className={clsx(
-        "flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all whitespace-nowrap",
+        "flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3.5 rounded-xl font-bold text-[9px] sm:text-[10px] uppercase tracking-widest transition-all whitespace-nowrap",
         isActive
           ? (color === "blue" ? "bg-blue-600 text-white shadow-xl shadow-blue-200" : "bg-white text-slate-900 shadow-md ring-1 ring-slate-100")
           : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
