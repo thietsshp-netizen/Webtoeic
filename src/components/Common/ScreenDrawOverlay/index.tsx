@@ -2294,7 +2294,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (tool === 'cursor') return;
 
-    if (e.pointerType === 'touch' && e.pressure === 0) return;
+    if (e.pointerType === 'touch') return;
 
     const canvas = canvasRef.current;
     const ctx = ctxRef.current;
@@ -3628,7 +3628,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         }}
         style={{ 
           cursor: cursorStyle,
-          pointerEvents: (tool === 'cursor' || textInput || isShiftPressed) ? 'none' : 'auto'
+          pointerEvents: (tool === 'cursor' || textInput || isShiftPressed) ? 'none' : 'auto',
+          touchAction: 'none'
         }}
       />
 
