@@ -1033,6 +1033,30 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   };
 
   useEffect(() => {
+    if (isActive) {
+      document.body.classList.add('drawing-mode-active');
+      const styleEl = document.createElement('style');
+      styleEl.id = 'drawing-mode-selection-blocker';
+      styleEl.innerHTML = `
+        body.drawing-mode-active,
+        body.drawing-mode-active *,
+        body.drawing-mode-active .select-text {
+          user-select: none !important;
+          -webkit-user-select: none !important;
+          -webkit-touch-callout: none !important;
+        }
+      `;
+      document.head.appendChild(styleEl);
+
+      return () => {
+        document.body.classList.remove('drawing-mode-active');
+        const el = document.getElementById('drawing-mode-selection-blocker');
+        if (el) el.remove();
+      };
+    }
+  }, [isActive]);
+
+  useEffect(() => {
     if (!isActive) return;
 
     let ticking = false;
