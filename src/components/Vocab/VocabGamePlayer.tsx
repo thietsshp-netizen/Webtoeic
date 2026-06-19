@@ -306,12 +306,21 @@ function FlashCard({
 export function ScrambleGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSUpdate?: (word: string, definition: string, isCorrect: boolean) => void }) {
   const [list] = useState(() => [...words].sort(() => Math.random() - 0.5));
   const [idx, setIdx] = useState(0);
+  const [direction, setDirection] = useState<'next' | 'prev'>('next');
   const [input, setInput] = useState("");
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const [canNext, setCanNext] = useState(false);
   const [showAns, setShowAns] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const touchStartRef = useRef<number | null>(null);
+
+  const changeIdx = (newVal: number | ((prev: number) => number)) => {
+    setIdx(prev => {
+      const nextVal = typeof newVal === 'function' ? newVal(prev) : newVal;
+      setDirection(nextVal > prev ? 'next' : 'prev');
+      return nextVal;
+    });
+  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartRef.current = e.targetTouches[0].clientX;
@@ -325,9 +334,9 @@ export function ScrambleGame({ words, onSRSUpdate }: { words: VocabWord[], onSRS
 
     const minSwipeDistance = 50;
     if (distance > minSwipeDistance && idx < list.length - 1) {
-      setIdx(i => i + 1);
+      changeIdx(i => i + 1);
     } else if (distance < -minSwipeDistance && idx > 0) {
-      setIdx(i => i - 1);
+      changeIdx(i => i - 1);
     }
   };
 
@@ -384,12 +393,12 @@ export function ScrambleGame({ words, onSRSUpdate }: { words: VocabWord[], onSRS
 
   const handleCheck = () => {
     if (canNext) {
-      setIdx(i => i + 1);
+      changeIdx(i => i + 1);
       return;
     }
     if (input.trim().toLowerCase() === item.word.toLowerCase()) {
       // Logic handled by useEffect now, but kept for button fallback
-      setIdx(i => i + 1);
+      changeIdx(i => i + 1);
     } else {
       setMsg({ text: "❌ Chưa đúng, hãy kiểm tra lại!", ok: false });
       // Shake animation is already handled visually by each character slot
@@ -398,9 +407,12 @@ export function ScrambleGame({ words, onSRSUpdate }: { words: VocabWord[], onSRS
 
   return (
     <div 
+      key={idx}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      className="max-w-lg mx-auto text-center space-y-6"
+      className={`max-w-lg mx-auto text-center space-y-6 animate-in fade-in duration-300 ${
+        direction === 'next' ? 'slide-in-from-right-8' : 'slide-in-from-left-8'
+      }`}
     >
       <div
         className="bg-white rounded-3xl shadow-lg border border-slate-100 p-5 sm:p-8 cursor-text"
@@ -502,7 +514,7 @@ export function ScrambleGame({ words, onSRSUpdate }: { words: VocabWord[], onSRS
         >
           Xem đáp án
         </button>
-        <button onClick={() => setIdx(i => i + 1)} className="px-6 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-colors flex items-center gap-2">Tiếp theo <ChevronRight size={16} /></button>
+        <button onClick={() => changeIdx(i => i + 1)} className="px-6 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-colors flex items-center gap-2">Tiếp theo <ChevronRight size={16} /></button>
       </div>
       <div className="text-sm text-slate-400">{idx + 1} / {list.length}</div>
     </div>
@@ -513,9 +525,18 @@ export function ScrambleGame({ words, onSRSUpdate }: { words: VocabWord[], onSRS
 export function FillGame({ words, allWords, onSRSUpdate }: { words: VocabWord[]; allWords: VocabWord[]; onSRSUpdate?: (word: string, definition: string, isCorrect: boolean) => void }) {
   const [list] = useState(() => [...words].sort(() => Math.random() - 0.5));
   const [idx, setIdx] = useState(0);
+  const [direction, setDirection] = useState<'next' | 'prev'>('next');
   const [revealed, setRevealed] = useState<string[]>([]);
   const [isCorrect, setIsCorrect] = useState(false);
   const touchStartRef = useRef<number | null>(null);
+
+  const changeIdx = (newVal: number | ((prev: number) => number)) => {
+    setIdx(prev => {
+      const nextVal = typeof newVal === 'function' ? newVal(prev) : newVal;
+      setDirection(nextVal > prev ? 'next' : 'prev');
+      return nextVal;
+    });
+  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartRef.current = e.targetTouches[0].clientX;
@@ -529,9 +550,9 @@ export function FillGame({ words, allWords, onSRSUpdate }: { words: VocabWord[];
 
     const minSwipeDistance = 50;
     if (distance > minSwipeDistance && isCorrect && idx < list.length - 1) {
-      setIdx(i => i + 1);
+      changeIdx(i => i + 1);
     } else if (distance < -minSwipeDistance && idx > 0) {
-      setIdx(i => i - 1);
+      changeIdx(i => i - 1);
     }
   };
 
@@ -600,9 +621,12 @@ export function FillGame({ words, allWords, onSRSUpdate }: { words: VocabWord[];
 
   return (
     <div 
+      key={idx}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      className="max-w-2xl mx-auto space-y-6"
+      className={`max-w-2xl mx-auto space-y-6 animate-in fade-in duration-300 ${
+        direction === 'next' ? 'slide-in-from-right-8' : 'slide-in-from-left-8'
+      }`}
     >
       <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-5 sm:p-8 text-center">
         <div className="text-xl sm:text-2xl font-black text-red-500 mb-4 sm:mb-6">{limitMeanings(item.mean)}</div>
@@ -648,7 +672,7 @@ export function FillGame({ words, allWords, onSRSUpdate }: { words: VocabWord[];
         </div>
       </div>
       <div className="flex gap-3 justify-center">
-        <button onClick={() => setIdx(i => i + 1)} disabled={!isCorrect} className={`px-10 py-4 font-black rounded-2xl transition-all flex items-center gap-2 ${isCorrect ? "bg-blue-600 text-white shadow-xl shadow-blue-200" : "bg-slate-100 text-slate-400 opacity-50"}`}>
+        <button onClick={() => changeIdx(i => i + 1)} disabled={!isCorrect} className={`px-10 py-4 font-black rounded-2xl transition-all flex items-center gap-2 ${isCorrect ? "bg-blue-600 text-white shadow-xl shadow-blue-200" : "bg-slate-100 text-slate-400 opacity-50"}`}>
           Tiếp theo <ChevronRight size={18} />
         </button>
       </div>
@@ -691,7 +715,7 @@ export function MatchGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSUpd
         <div className="space-y-3 mb-6">
           {set.map(w => (
             <div key={w.id} className="flex items-center gap-2 sm:gap-4">
-              <button onClick={() => speak(w.word)} className="w-24 sm:w-40 flex items-center gap-1.5 sm:gap-3 bg-blue-50 hover:bg-blue-100 rounded-xl sm:rounded-2xl p-2 sm:p-3 transition-colors font-black text-blue-700 text-xs sm:text-base flex-shrink-0">
+              <button onClick={() => speak(w.word)} className="w-[115px] sm:w-40 flex items-center gap-1 sm:gap-3 bg-blue-50 hover:bg-blue-100 rounded-xl sm:rounded-2xl p-1.5 sm:p-3 transition-colors font-black text-blue-700 text-xs sm:text-base flex-shrink-0">
                 <span className="truncate">{w.word}</span> <Volume2 size={12} className="text-blue-400 flex-shrink-0" />
               </button>
               <div
@@ -745,10 +769,19 @@ export function SynonymGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSU
   const withSyns = words.filter(w => w.syns.length > 0);
   const [list] = useState(() => [...withSyns].sort(() => Math.random() - 0.5));
   const [idx, setIdx] = useState(0);
+  const [direction, setDirection] = useState<'next' | 'prev'>('next');
   const [dropped, setDropped] = useState<string[]>([]);
   const [revealed, setRevealed] = useState<string[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
   const touchStartRef = useRef<number | null>(null);
+
+  const changeIdx = (newVal: number | ((prev: number) => number)) => {
+    setIdx(prev => {
+      const nextVal = typeof newVal === 'function' ? newVal(prev) : newVal;
+      setDirection(nextVal > prev ? 'next' : 'prev');
+      return nextVal;
+    });
+  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartRef.current = e.targetTouches[0].clientX;
@@ -762,9 +795,9 @@ export function SynonymGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSU
 
     const minSwipeDistance = 50;
     if (distance > minSwipeDistance && isCompleted && idx < list.length - 1) {
-      setIdx(i => i + 1);
+      changeIdx(i => i + 1);
     } else if (distance < -minSwipeDistance && idx > 0) {
-      setIdx(i => i - 1);
+      changeIdx(i => i - 1);
     }
   };
 
@@ -851,9 +884,12 @@ export function SynonymGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSU
 
   return (
     <div 
+      key={idx}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      className="max-w-lg mx-auto space-y-6"
+      className={`max-w-lg mx-auto space-y-6 animate-in fade-in duration-300 ${
+        direction === 'next' ? 'slide-in-from-right-8' : 'slide-in-from-left-8'
+      }`}
     >
       <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-5 sm:p-8 text-center">
         <div className="space-y-2 mb-4 sm:mb-8">
@@ -923,7 +959,7 @@ export function SynonymGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSU
         >
           Xem đáp án
         </button>
-        <button onClick={() => setIdx(i => i + 1)} className={`px-10 py-3 font-bold rounded-2xl transition-all flex items-center gap-2 ${isCompleted ? "bg-blue-600 text-white shadow-xl shadow-blue-200" : "bg-slate-100 text-slate-400 pointer-events-none"}`}>
+        <button onClick={() => changeIdx(i => i + 1)} className={`px-10 py-3 font-bold rounded-2xl transition-all flex items-center gap-2 ${isCompleted ? "bg-blue-600 text-white shadow-xl shadow-blue-200" : "bg-slate-100 text-slate-400 pointer-events-none"}`}>
           Tiếp theo <ChevronRight size={16} />
         </button>
       </div>

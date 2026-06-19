@@ -901,16 +901,16 @@ function HomeContent() {
             <div className="flex -mb-20 h-[calc(100vh-80px)] overflow-hidden">
                <aside className={clsx(
                 "bg-white border-r border-slate-100 flex flex-col transition-all duration-500 shadow-xl shadow-slate-200/50 z-20 shrink-0",
-                collapsed ? "w-14 md:w-24" : "w-64 md:w-72"
+                collapsed ? "w-12 md:w-24" : "w-64 md:w-72"
               )}>
-                <div className={clsx("border-b border-slate-50 flex items-center justify-between", collapsed ? "p-3 md:p-6 justify-center" : "p-6")}>
+                <div className={clsx("border-b border-slate-50 flex items-center justify-between", collapsed ? "p-2 md:p-6 justify-center" : "p-6")}>
                   {!collapsed && <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Học viên Pro</span>}
                   <button onClick={() => setCollapsed(!collapsed)} className="p-2.5 hover:bg-slate-50 rounded-xl transition-colors">
                     {collapsed ? <ChevronRight size={18} /> : <ArrowLeft size={18} />}
                   </button>
                 </div>
 
-                <div className={clsx("flex-1 space-y-2 overflow-y-auto no-scrollbar", collapsed ? "p-2 md:p-4" : "p-4")}>
+                <div className={clsx("flex-1 space-y-2 overflow-y-auto no-scrollbar", collapsed ? "p-1 md:p-4" : "p-4")}>
                   <SideTabBtn id="courses" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<BookOpen size={20} />} label="Khóa học" />
                   <SideTabBtn id="stats" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<BarChart3 size={20} />} label="Thống kê" />
                   <SideTabBtn id="history" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Clock size={20} />} label="Lịch sử giải đề" />
@@ -920,7 +920,7 @@ function HomeContent() {
                   <SideTabBtn id="account" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Settings size={20} />} label="Cài đặt tài khoản" />
                 </div>
 
-                <div className={clsx("border-t border-slate-50 space-y-2", collapsed ? "p-2 md:p-4 text-center" : "p-4")}>
+                <div className={clsx("border-t border-slate-50 space-y-2", collapsed ? "p-1 md:p-4 text-center" : "p-4")}>
                   {!collapsed ? (
                     <div className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.2em] px-4 py-2">Hỗ trợ 24/7</div>
                   ) : (

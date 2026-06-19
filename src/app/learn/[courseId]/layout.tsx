@@ -163,8 +163,8 @@ export default function LearnLayout({
         <div className="flex flex-1 overflow-hidden relative">
           {/* Sidebar Bên Trái (Collapsible) */}
           <div 
-            className={`h-full transition-all duration-300 ease-in-out border-r bg-[#fbfcfd] flex-shrink-0 relative overflow-hidden flex flex-col ${
-              sidebarOpen ? "w-[340px]" : "w-14"
+            className={`h-full transition-all duration-300 ease-in-out bg-[#fbfcfd] flex-shrink-0 relative overflow-hidden flex flex-col ${
+              sidebarOpen ? "w-[280px] sm:w-[340px] border-r border-slate-100" : "w-0 sm:w-14 sm:border-r border-slate-100"
             }`}
           >
             {/* Collapsed State Indicator */}
@@ -189,7 +189,7 @@ export default function LearnLayout({
             )}
 
             {/* Actual Sidebar Content */}
-            <div className={`w-[340px] h-full transition-opacity duration-300 ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}> 
+            <div className={`w-[280px] sm:w-[340px] h-full transition-opacity duration-300 ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}> 
               <LearnSidebar />
             </div>
           </div>
@@ -198,7 +198,7 @@ export default function LearnLayout({
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className={`absolute top-1/2 -translate-y-1/2 z-[60] w-6 h-14 bg-white border border-slate-200 shadow-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-slate-50 transition-all duration-500 rounded-r-xl ${
-              sidebarOpen ? "left-[340px] -ml-px" : "left-14"
+              sidebarOpen ? "left-[280px] sm:left-[340px] -ml-px" : "left-0 sm:left-14"
             }`}
             title={sidebarOpen ? "Thu gọn menu" : "Mở rộng menu"}
           >
