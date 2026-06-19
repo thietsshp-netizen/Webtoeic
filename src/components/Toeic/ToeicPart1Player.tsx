@@ -523,7 +523,30 @@ export default function ToeicPart1Player({
       const isWord = /^[a-zA-Z0-9'-]+$/.test(part);
       if (isWord) {
         const cleanWord = part.toLowerCase();
-        const isHighlighted = cleanHighlight && (cleanHighlight.includes(cleanWord) || cleanWord.includes(cleanHighlight));
+        const highlightWords = cleanHighlight.split(/[^a-zA-Z0-9'-]+/).filter(Boolean);
+        const isHighlighted = cleanHighlight && highlightWords.some(hw => {
+          if (hw === cleanWord) return true;
+          
+          const minLen = Math.min(hw.length, cleanWord.length);
+          
+          // Trường hợp 1: Từ này chứa từ kia (ví dụ: book -> books, plan -> planning) và độ dài từ ngắn >= 3
+          if ((cleanWord.includes(hw) || hw.includes(cleanWord)) && minLen >= 3) {
+            return true;
+          }
+          
+          // Trường hợp 2: Biến thể đổi đuôi (ví dụ: canopy -> canopies, shelf -> shelves)
+          let lcpLength = 0;
+          for (let i = 0; i < minLen; i++) {
+            if (hw[i] === cleanWord[i]) {
+              lcpLength++;
+            } else {
+              break;
+            }
+          }
+          
+          const maxLen = Math.max(hw.length, cleanWord.length);
+          return lcpLength >= 3 && lcpLength >= maxLen - 3;
+        });
 
         return (
           <span
