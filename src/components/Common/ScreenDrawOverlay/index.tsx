@@ -2889,9 +2889,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (points.length < 2) return;
 
       if (tool === 'highlight') {
-        if (canvasSnapshotRef.current) {
-          ctx.putImageData(canvasSnapshotRef.current, 0, 0);
-        }
+        drawAllElements();
         ctx.strokeStyle = color;
         ctx.globalCompositeOperation = 'source-over';
         ctx.globalAlpha = 0.35;
@@ -2907,9 +2905,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         ctx.stroke();
       }
       else if (tool === 'rectangle' || tool === 'circle') {
-        if (canvasSnapshotRef.current) {
-          ctx.putImageData(canvasSnapshotRef.current, 0, 0);
-        }
+        drawAllElements();
         ctx.strokeStyle = color;
         ctx.globalCompositeOperation = 'source-over';
         ctx.lineCap = 'round';
@@ -3483,11 +3479,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const canvas = canvasRef.current;
       const ctx = ctxRef.current;
       if (canvas && ctx) {
-        if (stateRef.current.isFlashlightActive) {
-          drawAllElements();
-        } else if (canvasSnapshotRef.current) {
-          ctx.putImageData(canvasSnapshotRef.current, 0, 0);
-        }
+        drawAllElements();
         ctx.strokeStyle = color;
         ctx.fillStyle = color;
         ctx.lineWidth = tool === 'highlight' ? highlightSize : pencilSize;
