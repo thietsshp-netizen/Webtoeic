@@ -518,22 +518,21 @@ export default function ToeicPart1Player({
     if (!text) return null;
     const cleanHighlight = (highlightPhrase || "").trim().toLowerCase();
     const parts = text.split(/(\b[a-zA-Z0-9'-]+\b)/g);
-    
+
     return parts.map((part, idx) => {
       const isWord = /^[a-zA-Z0-9'-]+$/.test(part);
       if (isWord) {
         const cleanWord = part.toLowerCase();
         const isHighlighted = cleanHighlight && (cleanHighlight.includes(cleanWord) || cleanWord.includes(cleanHighlight));
-        
+
         return (
           <span
             key={idx}
             onClick={() => {
               speak(part, 'us');
             }}
-            className={`hover:text-yellow-400 hover:underline cursor-pointer transition-colors duration-150 inline-block ${
-              isHighlighted ? 'text-amber-400 font-bold not-italic' : 'text-slate-200'
-            }`}
+            className={`hover:text-yellow-400 hover:underline cursor-pointer transition-colors duration-150 inline-block ${isHighlighted ? 'text-amber-400 font-bold not-italic' : 'text-slate-200'
+              }`}
           >
             {part}
           </span>
@@ -588,7 +587,7 @@ export default function ToeicPart1Player({
 
       const lastChar = memberLower.slice(-1);
       const isConsonant = /^[bcdfghjklmnpqrstvwxyz]$/i.test(lastChar);
-      
+
       if (wordLower.startsWith(stem)) {
         const suffix = wordLower.substring(stem.length);
         if (endsWithE) {
@@ -613,12 +612,12 @@ export default function ToeicPart1Player({
       if (memberLower === wordLower) return true;
       const endsWithE = memberLower.length > 2 && memberLower.endsWith('e');
       const stem = endsWithE ? memberLower.slice(0, -1) : memberLower;
-      
+
       if (wordLower.startsWith(stem)) {
         const suffix = wordLower.substring(stem.length);
         return suffix.length <= 3 && /^(s|es|ed|ing|er|est|ly|y)?$/.test(suffix);
       }
-      
+
       const lastChar = memberLower.slice(-1);
       const isConsonant = /^[bcdfghjklmnpqrstvwxyz]$/i.test(lastChar);
       if (isConsonant && !endsWithE) {
@@ -727,7 +726,7 @@ export default function ToeicPart1Player({
           const rest = parts.slice(1).join('\\s+');
           const lastChar = member.split(' ')[0].slice(-1);
           const isConsonant = /^[bcdfghjklmnpqrstvwxyz]$/i.test(lastChar);
-          
+
           if (isConsonant && parts.length > 0) {
             regex = new RegExp(`\\b${firstWord}(?:${lastChar})?(?:ing|ed|s)?\\s+${rest}\\b`, 'gi');
           } else {
@@ -811,7 +810,7 @@ export default function ToeicPart1Player({
 
       const wordLower = match.matchedWord.toLowerCase();
       const matchedFamsForWord: any[] = [];
-      
+
       part1WordFamiliesData.forEach((fam: any) => {
         if (!fam.words) return;
         const hasWord = fam.words.some((m: string) => {
@@ -1097,7 +1096,7 @@ export default function ToeicPart1Player({
   useEffect(() => {
     if (selectedHotspotIndex !== null && localHotspots[selectedHotspotIndex]) {
       const activeHs = localHotspots[selectedHotspotIndex];
-      
+
       // Parse the current local state string to structural objects to compare
       const currentParsed = synonymsInputVal.split(',').map(item => {
         const clean = item.trim();
@@ -1135,7 +1134,7 @@ export default function ToeicPart1Player({
   }, [selectedHotspotIndex, localHotspots]);
   const hotspotsContainerRef = useRef<HTMLDivElement>(null);
   const localHotspotsRef = useRef<any[]>([]);
-  
+
   const [saveStatus, setSaveStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const saveTimeoutRef = useRef<any>(null);
 
@@ -1152,7 +1151,7 @@ export default function ToeicPart1Player({
       if (typeof currentGroup.metadata === 'string') {
         try {
           meta = JSON.parse(currentGroup.metadata);
-        } catch (e) {}
+        } catch (e) { }
       } else if (typeof currentGroup.metadata === 'object') {
         meta = currentGroup.metadata;
       }
@@ -1180,10 +1179,10 @@ export default function ToeicPart1Player({
     const handleMouseMove = (e: MouseEvent) => {
       if (!hotspotsContainerRef.current) return;
       const rect = hotspotsContainerRef.current.getBoundingClientRect();
-      
+
       let x = ((e.clientX - rect.left) / rect.width) * 100;
       let y = ((e.clientY - rect.top) / rect.height) * 100;
-      
+
       x = Math.max(0, Math.min(100, x));
       y = Math.max(0, Math.min(100, y));
 
@@ -1201,7 +1200,7 @@ export default function ToeicPart1Player({
 
     const handleMouseUp = async () => {
       setDraggingIndex(null);
-      
+
       // Tự động lưu tọa độ mới nhất của các hotspot từ ref vào database khi thả chuột
       try {
         const res = await fetch("/api/admin/update-content", {
@@ -1263,7 +1262,7 @@ export default function ToeicPart1Player({
   const handleUpdateActiveHsField = (fieldKey: string, val: any) => {
     const activeIdx = hoveredHotspotIndex !== null ? hoveredHotspotIndex : selectedHotspotIndex;
     if (activeIdx === null) return;
-    
+
     setLocalHotspots(prev => {
       const next = [...prev];
       if (next[activeIdx]) {
@@ -1329,7 +1328,7 @@ export default function ToeicPart1Player({
 
     setSaveLoading(true);
     const updated = localHotspots.filter((_, idx) => idx !== activeIdx);
-    
+
     try {
       const res = await fetch("/api/admin/update-content", {
         method: "PUT",
@@ -2048,25 +2047,24 @@ export default function ToeicPart1Player({
                   {currentGroup.imageUrl ? (
                     <div className="relative w-full max-h-[600px] flex justify-center items-center">
                       <img src={currentGroup.imageUrl} alt={`Câu ${currentIndex + 1}`} className="w-full max-h-[600px] object-contain select-none" draggable="false" />
-                      
+
                       {/* Floating Save Status Toast */}
                       {saveStatus && (
-                        <div className={`absolute top-4 left-1/2 -translate-x-1/2 z-[9999] px-4 py-2 rounded-xl shadow-xl backdrop-blur-md border flex items-center gap-2 text-xs font-bold transition-all duration-300 animate-in fade-in slide-in-from-top-4 ${
-                          saveStatus.type === 'success' 
-                            ? 'bg-emerald-950/90 border-emerald-500/30 text-emerald-300 shadow-emerald-950/20' 
+                        <div className={`absolute top-4 left-1/2 -translate-x-1/2 z-[9999] px-4 py-2 rounded-xl shadow-xl backdrop-blur-md border flex items-center gap-2 text-xs font-bold transition-all duration-300 animate-in fade-in slide-in-from-top-4 ${saveStatus.type === 'success'
+                            ? 'bg-emerald-950/90 border-emerald-500/30 text-emerald-300 shadow-emerald-950/20'
                             : 'bg-red-950/90 border-red-500/30 text-red-300 shadow-red-950/20'
-                        }`}>
+                          }`}>
                           <span className="text-sm">{saveStatus.type === 'success' ? '✅' : '⚠️'}</span>
                           <span>{saveStatus.message}</span>
                         </div>
                       )}
-                      
+
                       {/* Hotspots Layer */}
                       {localHotspots.length > 0 && (
                         <div ref={hotspotsContainerRef} className="absolute inset-0 pointer-events-none select-none z-20">
                           {/* Lớp phủ click trong suốt để khi click ra ngoài các chấm số sẽ tắt bubble */}
                           {selectedHotspotIndex !== null && (
-                            <div 
+                            <div
                               className="absolute inset-0 pointer-events-auto z-10 cursor-default"
                               onClick={() => setSelectedHotspotIndex(null)}
                             />
@@ -2076,7 +2074,7 @@ export default function ToeicPart1Player({
                           {(() => {
                             const activeIdx = hoveredHotspotIndex !== null ? hoveredHotspotIndex : selectedHotspotIndex;
                             if (activeIdx === null || !localHotspots[activeIdx]) return null;
-                            
+
                             const activeHs = localHotspots[activeIdx];
                             const startX = `${activeHs.x}%`;
                             const startY = `${activeHs.y}%`;
@@ -2087,44 +2085,42 @@ export default function ToeicPart1Player({
                               <>
                                 <svg className="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible">
                                   <g className="animate-in fade-in duration-300">
-                                    <line 
-                                      x1={startX} 
-                                      y1={startY} 
-                                      x2={endX} 
-                                      y2={endY} 
-                                      stroke={hoveredHotspotIndex !== null ? "#f59e0b" : "#10b981"} 
-                                      strokeWidth="1.5" 
+                                    <line
+                                      x1={startX}
+                                      y1={startY}
+                                      x2={endX}
+                                      y2={endY}
+                                      stroke={hoveredHotspotIndex !== null ? "#f59e0b" : "#10b981"}
+                                      strokeWidth="1.5"
                                       strokeDasharray="4 3"
                                       className="animate-[dash_10s_linear_infinite]"
                                     />
-                                    <circle 
-                                      cx={endX} 
-                                      cy={endY} 
-                                      r="3" 
+                                    <circle
+                                      cx={endX}
+                                      cy={endY}
+                                      r="3"
                                       fill={hoveredHotspotIndex !== null ? "#f59e0b" : "#10b981"}
                                     />
                                   </g>
                                 </svg>
 
-                                <div 
-                                  className={`absolute left-[105%] w-max max-w-[460px] z-[99999] transition-all duration-200 ease-out animate-in fade-in zoom-in-95 pointer-events-auto ${
-                                    activeHs.y < 20 ? "translate-y-0" : activeHs.y > 80 ? "translate-y-0" : "-translate-y-1/2"
-                                  }`}
+                                <div
+                                  className={`absolute left-[105%] w-max max-w-[460px] z-[99999] transition-all duration-200 ease-out animate-in fade-in zoom-in-95 pointer-events-auto ${activeHs.y < 20 ? "translate-y-0" : activeHs.y > 80 ? "translate-y-0" : "-translate-y-1/2"
+                                    }`}
                                   style={activeHs.y < 20 ? { top: "5px" } : activeHs.y > 80 ? { bottom: "5px" } : { top: `${activeHs.y}%` }}
                                   onClick={(e) => e.stopPropagation()}
                                 >
-                                  <div className={`bg-slate-950/95 border p-4 rounded-2xl shadow-2xl backdrop-blur-md text-left relative ring-1 select-text ${
-                                    hoveredHotspotIndex !== null 
-                                      ? 'border-amber-500/50 ring-amber-500/20' 
+                                  <div className={`bg-slate-950/95 border p-4 rounded-2xl shadow-2xl backdrop-blur-md text-left relative ring-1 select-text ${hoveredHotspotIndex !== null
+                                      ? 'border-amber-500/50 ring-amber-500/20'
                                       : 'border-emerald-500/50 ring-emerald-500/20'
-                                  }`}>
+                                    }`}>
                                     {isAdminMode ? (
                                       <div className="space-y-2.5 text-slate-200 min-w-[280px]">
                                         <div className="flex items-center justify-between border-b border-slate-800 pb-1.5">
                                           <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest">
                                             ✏️ SỬA HOTSPOT #{activeIdx + 1}
                                           </span>
-                                          <button 
+                                          <button
                                             onClick={() => setSelectedHotspotIndex(null)}
                                             className="text-slate-400 hover:text-white"
                                           >
@@ -2146,11 +2142,11 @@ export default function ToeicPart1Player({
                                             </code>
                                           </div>
                                         </div>
-                                        
+
                                         <div className="grid grid-cols-2 gap-2">
                                           <div>
                                             <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Từ vựng (EN)</label>
-                                            <input 
+                                            <input
                                               type="text"
                                               className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500"
                                               value={activeHs.en || ""}
@@ -2159,7 +2155,7 @@ export default function ToeicPart1Player({
                                           </div>
                                           <div>
                                             <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Phiên âm (IPA)</label>
-                                            <input 
+                                            <input
                                               type="text"
                                               className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500"
                                               value={activeHs.ipa || ""}
@@ -2170,7 +2166,7 @@ export default function ToeicPart1Player({
 
                                         <div>
                                           <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Nghĩa tiếng Việt</label>
-                                          <input 
+                                          <input
                                             type="text"
                                             className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500"
                                             value={activeHs.vi || ""}
@@ -2180,7 +2176,7 @@ export default function ToeicPart1Player({
 
                                         <div>
                                           <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Ví dụ (Example)</label>
-                                          <textarea 
+                                          <textarea
                                             className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500 min-h-[45px] resize-y"
                                             value={activeHs.example || ""}
                                             onChange={(e) => handleUpdateActiveHsField("example", e.target.value)}
@@ -2189,7 +2185,7 @@ export default function ToeicPart1Player({
 
                                         <div>
                                           <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Dịch câu ví dụ</label>
-                                          <textarea 
+                                          <textarea
                                             className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500 min-h-[35px] resize-y"
                                             value={activeHs.example_vi || ""}
                                             onChange={(e) => handleUpdateActiveHsField("example_vi", e.target.value)}
@@ -2198,7 +2194,7 @@ export default function ToeicPart1Player({
 
                                         <div>
                                           <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Từ đồng nghĩa (Synonyms)</label>
-                                          <input 
+                                          <input
                                             type="text"
                                             placeholder="word (ipa), word2 (ipa2)"
                                             className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500"
@@ -2242,7 +2238,7 @@ export default function ToeicPart1Player({
                                     ) : (
                                       <>
                                         {hoveredHotspotIndex === null && selectedHotspotIndex !== null && (
-                                          <button 
+                                          <button
                                             onClick={() => setSelectedHotspotIndex(null)}
                                             className="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors p-1 hover:bg-slate-800 rounded-lg cursor-pointer animate-in fade-in"
                                             title="Tắt bubble giải thích"
@@ -2252,11 +2248,10 @@ export default function ToeicPart1Player({
                                         )}
 
                                         <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-800 pb-2 mb-2 pr-6 text-base">
-                                          <span className={`text-slate-950 text-[11px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 ${
-                                            hoveredHotspotIndex !== null ? 'bg-amber-500' : 'bg-emerald-500'
-                                          }`}>{activeIdx + 1}</span>
-                                          
-                                          <span 
+                                          <span className={`text-slate-950 text-[11px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 ${hoveredHotspotIndex !== null ? 'bg-amber-500' : 'bg-emerald-500'
+                                            }`}>{activeIdx + 1}</span>
+
+                                          <span
                                             onClick={() => {
                                               speak(activeHs.en, 'us');
                                             }}
@@ -2275,17 +2270,16 @@ export default function ToeicPart1Player({
                                           >
                                             <Volume2 size={15} />
                                           </button>
-                                          
+
                                           {/* Star button to save word */}
                                           {userId && hoveredHotspotIndex === null && (
                                             <button
                                               onClick={() => toggleStarHotspotWord(activeHs)}
                                               disabled={starLoadingWord === activeHs.en.trim().toLowerCase()}
-                                              className={`p-1 rounded-lg transition-all cursor-pointer ${
-                                                savedVocabs.has(activeHs.en.trim().toLowerCase())
+                                              className={`p-1 rounded-lg transition-all cursor-pointer ${savedVocabs.has(activeHs.en.trim().toLowerCase())
                                                   ? "text-yellow-500 bg-yellow-500/10"
                                                   : "text-slate-500 hover:bg-slate-800 hover:text-yellow-500"
-                                              }`}
+                                                }`}
                                               title={savedVocabs.has(activeHs.en.trim().toLowerCase()) ? "Bỏ lưu từ" : "Lưu từ vào sổ tay"}
                                             >
                                               <Star size={14} fill={savedVocabs.has(activeHs.en.trim().toLowerCase()) ? "currentColor" : "none"} className={starLoadingWord === activeHs.en.trim().toLowerCase() ? "animate-pulse" : ""} />
@@ -2295,7 +2289,7 @@ export default function ToeicPart1Player({
                                           {activeHs.ipa && <span className="text-[11px] text-slate-400 font-mono">[{activeHs.ipa}]</span>}
                                           <span className="text-indigo-400 font-bold ml-1 text-[15px]">— {activeHs.vi}</span>
                                         </div>
-                                        
+
                                         {activeHs.example && (
                                           <div className="mt-2 text-[12.5px] text-slate-200 space-y-1.5">
                                             <p className="italic leading-relaxed text-slate-200">
@@ -2309,7 +2303,7 @@ export default function ToeicPart1Player({
                                           <div className="mt-3 pt-2.5 border-t border-slate-800/60 text-[12px] select-text flex flex-wrap items-center gap-2">
                                             <span className="text-slate-400 font-bold">Synonyms:</span>
                                             {activeHs.synonyms.map((s: any, sIdx: number) => (
-                                              <div 
+                                              <div
                                                 key={sIdx}
                                                 className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-lg text-emerald-400 font-bold cursor-pointer hover:bg-emerald-500/20 transition-all select-text"
                                                 onClick={() => speak(s.word, 'us')}
@@ -2332,8 +2326,8 @@ export default function ToeicPart1Player({
                           {localHotspots.map((hs, hidx) => {
                             const isHovered = hoveredHotspotIndex === hidx;
                             const isSelected = selectedHotspotIndex === hidx;
-                            const isNextHotspot = (hoveredHotspotIndex !== null && hoveredHotspotIndex + 1 === hidx) || 
-                                                  (hoveredHotspotIndex === null && selectedHotspotIndex !== null && selectedHotspotIndex + 1 === hidx);
+                            const isNextHotspot = (hoveredHotspotIndex !== null && hoveredHotspotIndex + 1 === hidx) ||
+                              (hoveredHotspotIndex === null && selectedHotspotIndex !== null && selectedHotspotIndex + 1 === hidx);
                             const isFirstSuggested = selectedHotspotIndex === null && hoveredHotspotIndex === null && hidx === 0;
 
                             // Tự động chuyển nhãn xuống dưới nếu nằm sát mép trên hoặc có hotspot khác ngay phía trên
@@ -2350,23 +2344,20 @@ export default function ToeicPart1Player({
                             return (
                               <div
                                 key={hidx}
-                                className={`absolute pointer-events-none select-none ${
-                                  isHovered || isSelected ? 'z-50' : 'z-30'
-                                }`}
+                                className={`absolute pointer-events-none select-none ${isHovered || isSelected ? 'z-50' : 'z-30'
+                                  }`}
                                 style={{
                                   left: `${hs.x}%`,
                                   top: `${hs.y}%`,
                                 }}
                               >
                                 {/* Tag từ vựng + phiên âm IPA nhỏ gọn, tự động hiển thị phía trên hoặc phía dưới chấm số */}
-                                <div 
-                                  className={`absolute px-2 py-1.5 rounded-lg border text-[9px] font-bold shadow-lg pointer-events-none transition-all duration-200 backdrop-blur-md flex flex-col items-center text-center min-w-[125px] max-w-[200px] gap-0.5 ${
-                                    showBelow ? 'top-[16px]' : 'bottom-[16px]'
-                                  } ${
-                                    isHovered
+                                <div
+                                  className={`absolute px-2 py-1.5 rounded-lg border text-[9px] font-bold shadow-lg pointer-events-none transition-all duration-200 backdrop-blur-md flex flex-col items-center text-center min-w-[125px] max-w-[200px] gap-0.5 ${showBelow ? 'top-[16px]' : 'bottom-[16px]'
+                                    } ${isHovered
                                       ? 'bg-slate-900/95 text-slate-100 border-slate-700/80 scale-105 opacity-100 visible'
                                       : 'opacity-0 invisible h-0 py-0 overflow-hidden'
-                                  }`}
+                                    }`}
                                   style={{ transform: `translateX(${labelTranslateX})` }}
                                 >
                                   <div className="font-extrabold text-[10.5px] text-amber-400 leading-tight">{hs.en}</div>
@@ -2374,7 +2365,7 @@ export default function ToeicPart1Player({
                                   {hs.vi && <div className="text-slate-300 font-normal border-t border-slate-800 pt-0.5 w-full text-[8.5px] leading-snug">{hs.vi}</div>}
                                 </div>
 
-                                <div 
+                                <div
                                   onMouseEnter={() => setHoveredHotspotIndex(hidx)}
                                   onMouseLeave={() => setHoveredHotspotIndex(null)}
                                   onMouseDown={(e) => {
@@ -2389,19 +2380,18 @@ export default function ToeicPart1Player({
                                     // Click lại chấm số đang chọn để tắt bubble, hoặc chọn số mới
                                     setSelectedHotspotIndex(isSelected ? null : hidx);
                                   }}
-                                  className={`absolute -translate-x-1/2 -translate-y-1/2 w-[16px] h-[16px] flex items-center justify-center rounded-full border border-white shadow-md shrink-0 pointer-events-auto cursor-pointer ${
-                                    draggingIndex === hidx ? '' : 'transition-all duration-200'
-                                  } ${
-                                    isHovered 
-                                      ? 'bg-amber-400 text-slate-950 border-slate-950 scale-125 shadow-lg shadow-amber-500/30' 
+                                  className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center rounded-full border border-white shadow-md shrink-0 pointer-events-auto cursor-pointer transition-all duration-300 ${draggingIndex === hidx ? '' : 'transition-all duration-300'
+                                    } ${isHovered
+                                      ? 'w-4 h-4 bg-amber-400/20 text-amber-400 border-amber-400/40 scale-110 shadow-lg font-black'
                                       : isSelected
-                                        ? 'bg-amber-500 text-slate-950 scale-110 shadow-md ring-2 ring-emerald-400'
+                                        ? 'w-4 h-4 bg-amber-500/20 text-amber-400 border-amber-500/40 scale-110 shadow-md ring-1 ring-emerald-400/50 font-black'
                                         : (isNextHotspot || isFirstSuggested)
-                                          ? 'bg-emerald-500 text-white ring-4 ring-amber-400/80 animate-pulse scale-110 shadow-lg shadow-amber-400/20'
-                                          : 'bg-emerald-500 text-white'
-                                  }`}
+                                          ? 'w-2 h-2 bg-emerald-500 ring-2 ring-amber-400/80 animate-pulse'
+                                          : 'w-2 h-2 bg-emerald-500/90 animate-[pulse_2s_infinite]'
+                                    }`}
                                 >
-                                  <span className="text-[8px] font-black select-none leading-none">{hidx + 1}</span>
+                                  <span className={`text-[8px] font-black select-none leading-none transition-all duration-300 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] ${isHovered || isSelected ? 'scale-100 opacity-100' : 'scale-0 opacity-0 w-0 h-0 overflow-hidden'
+                                    }`}>{hidx + 1}</span>
                                 </div>
                               </div>
                             );
@@ -3063,11 +3053,11 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
       let lineClass = "text-slate-700 text-sm leading-relaxed my-1.5 font-medium";
       const lowerTrimmed = trimmed.toLowerCase();
       if (
-        lowerTrimmed.startsWith('gốc:') || 
-        lowerTrimmed.startsWith('goc:') || 
-        lowerTrimmed.startsWith('tiền tố:') || 
+        lowerTrimmed.startsWith('gốc:') ||
+        lowerTrimmed.startsWith('goc:') ||
+        lowerTrimmed.startsWith('tiền tố:') ||
         lowerTrimmed.startsWith('tien to:') ||
-        lowerTrimmed.startsWith('hậu tố:') || 
+        lowerTrimmed.startsWith('hậu tố:') ||
         lowerTrimmed.startsWith('hau to:')
       ) {
         lineClass = "text-red-600 text-sm leading-relaxed my-1.5 font-bold";
@@ -3123,7 +3113,7 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
     if (!matchedWord) return key;
     const clean = key.replace(/\s*\([^)]*\)/g, '');
     const items = clean.split(/[,/]/).map(item => item.trim());
-    
+
     if (items.length === 1) {
       return items[0].charAt(0).toUpperCase() + items[0].slice(1);
     }
