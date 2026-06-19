@@ -2123,7 +2123,7 @@ export default function ToeicPart34Player({
           </div>
         );
 
-        if (isFullTest && mounted && document.getElementById("bottom-nav-portal-target")) {
+        if (mounted && document.getElementById("bottom-nav-portal-target")) {
           return createPortal(
             <div className="relative flex-none h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
               <div className="absolute left-4 flex gap-2 pointer-events-auto z-[80]">

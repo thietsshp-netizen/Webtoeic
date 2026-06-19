@@ -789,7 +789,7 @@ export default function ToeicFullTestPlayer({
       )}
 
       <div className="flex flex-1 overflow-hidden relative">
-        <div id="bottom-nav-portal-target" className="absolute bottom-0 left-0 right-0 z-50 pointer-events-none"></div>
+        <div id="bottom-nav-portal-target" className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none xl:absolute xl:bottom-0 xl:left-0 xl:right-0"></div>
 
         <div ref={mainScrollRef} className="flex-1 overflow-y-auto custom-scrollbar p-6">
           <div className="max-w-[1400px] mx-auto pb-20">

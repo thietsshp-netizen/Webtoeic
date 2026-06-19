@@ -120,6 +120,7 @@ export default function ToeicPlayerClient({
       )}
 
       <div className="flex-1 overflow-hidden relative">
+        <div id="bottom-nav-portal-target" className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none xl:absolute xl:bottom-0 xl:left-0 xl:right-0"></div>
         {renderPlayer()}
       </div>
     </div>

@@ -1808,7 +1808,7 @@ export default function ToeicPart7Player({
           </div>
         );
 
-        if (isFullTest && mounted) {
+        if (mounted) {
           const target = document.getElementById("bottom-nav-portal-target");
           if (target) {
             return createPortal(
