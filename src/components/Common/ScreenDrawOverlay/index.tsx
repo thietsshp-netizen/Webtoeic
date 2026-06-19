@@ -990,6 +990,20 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     }
   };
 
+  const getCanvasCoords = (clientX: number, clientY: number, canvas: HTMLCanvasElement) => {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const logicalWidth = canvas.width / dpr;
+    const logicalHeight = canvas.height / dpr;
+    const scaleX = rect.width > 0 ? (logicalWidth / rect.width) : 1;
+    const scaleY = rect.height > 0 ? (logicalHeight / rect.height) : 1;
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY,
+      rect
+    };
+  };
+
   // Khởi tạo Canvas size toàn màn hình sắc nét hỗ trợ Retina
   const initCanvas = () => {
     const canvas = canvasRef.current;
@@ -2290,19 +2304,19 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     };
   }, [isDraggingToolbar]);
 
-  // Vẽ mượt mà & Hit testing kéo thả di chuyển phần tử
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (tool === 'cursor') return;
 
     if (e.pointerType === 'touch') return;
 
+    // Ngăn chặn hành vi mặc định (chọn chữ, cử chỉ zoom/pan của Safari)
+    e.preventDefault();
+
     const canvas = canvasRef.current;
     const ctx = ctxRef.current;
     if (!canvas || !ctx) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y, rect } = getCanvasCoords(e.clientX, e.clientY, canvas);
 
     if (tool === 'text') {
       return; // Nhường hoàn toàn quyền xử lý tạo textInput cho sự kiện onClick
@@ -2477,10 +2491,15 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (e.pointerType === 'touch') return;
+
+    if (tool !== 'cursor') {
+      e.preventDefault();
+    }
+
     const canvas = canvasRef.current;
     const ctx = ctxRef.current;
     if (!canvas || !ctx) return;
-    const rect = canvas.getBoundingClientRect();
 
     const nativeEvent = e.nativeEvent as any;
     let events: any[] = [nativeEvent];
@@ -2497,8 +2516,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     // Lấy toạ độ chuột hiện tại
     const lastEvent = events[events.length - 1] || nativeEvent;
-    const x = lastEvent.clientX - rect.left;
-    const y = lastEvent.clientY - rect.top;
+    const { x, y, rect } = getCanvasCoords(lastEvent.clientX, lastEvent.clientY, canvas);
 
     // --- CHECK FOR RESIZE HANDLE HOVER ---
     if (tool === 'hand' && selectedId && !resizingInfo && !isDrawingRef.current) {
@@ -2656,8 +2674,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       mousePosRef.current = { x, y };
       if (isDrawingRef.current && lastPointRef.current) {
         events.forEach((evt: any) => {
-          const ex = evt.clientX - rect.left;
-          const ey = evt.clientY - rect.top;
+          const { x: ex, y: ey } = getCanvasCoords(evt.clientX, evt.clientY, canvas);
           
           // Lọc khoảng cách tối thiểu giữa các điểm để tránh răng cưa góc cạnh và tích tụ độ mờ (opacity accumulation)
           const lastPt = activePointsRef.current[activePointsRef.current.length - 1];
@@ -2733,8 +2750,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     else {
       // Logic vẽ vẽ trực tiếp mượt mà để đạt hiệu năng tối đa khi đang rê chuột
       events.forEach((evt: any) => {
-        const ex = evt.clientX - rect.left;
-        const ey = evt.clientY - rect.top;
+        const { x: ex, y: ey } = getCanvasCoords(evt.clientX, evt.clientY, canvas);
         const pt = lastPointRef.current;
 
         const currentPressure = evt.pressure !== undefined && evt.pressure > 0 ? evt.pressure : 0.5;
@@ -2910,6 +2926,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (e.pointerType === 'touch') return;
+
+    if (tool !== 'cursor') {
+      e.preventDefault();
+    }
+
     if (resizingInfo) {
       setResizingInfo(null);
       isDrawingRef.current = false; // Sửa lỗi giải phóng: Reset trạng thái kéo vẽ vẽ

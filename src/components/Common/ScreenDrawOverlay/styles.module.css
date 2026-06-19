@@ -8,6 +8,9 @@
   height: 100vh;
   z-index: 99998; /* Đặt canvas vẽ nháp trên cùng tất cả (Video giải thích z-index 9998, Sổ tay ngữ pháp z-index 9999) */
   display: block;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
 }
 
 /* Kính mờ Glassmorphism cho Toolbar */
