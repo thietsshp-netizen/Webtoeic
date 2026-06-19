@@ -186,6 +186,9 @@ function HomeContent() {
   // 1. useEffect KHỞI TẠO & FETCH GALLERY (SUPABASE)
   useEffect(() => {
     setMounted(true);
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setCollapsed(true);
+    }
 
     const fetchGallery = async () => {
       try {
@@ -896,18 +899,18 @@ function HomeContent() {
             </div>
           ) : (
             <div className="flex -mb-20 h-[calc(100vh-80px)] overflow-hidden">
-              <aside className={clsx(
+               <aside className={clsx(
                 "bg-white border-r border-slate-100 flex flex-col transition-all duration-500 shadow-xl shadow-slate-200/50 z-20 shrink-0",
-                collapsed ? "w-24" : "w-72"
+                collapsed ? "w-14 md:w-24" : "w-64 md:w-72"
               )}>
-                <div className="p-6 border-b border-slate-50 flex items-center justify-between">
+                <div className={clsx("border-b border-slate-50 flex items-center justify-between", collapsed ? "p-3 md:p-6 justify-center" : "p-6")}>
                   {!collapsed && <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Học viên Pro</span>}
                   <button onClick={() => setCollapsed(!collapsed)} className="p-2.5 hover:bg-slate-50 rounded-xl transition-colors">
                     {collapsed ? <ChevronRight size={18} /> : <ArrowLeft size={18} />}
                   </button>
                 </div>
 
-                <div className="flex-1 p-4 space-y-2 overflow-y-auto no-scrollbar">
+                <div className={clsx("flex-1 space-y-2 overflow-y-auto no-scrollbar", collapsed ? "p-2 md:p-4" : "p-4")}>
                   <SideTabBtn id="courses" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<BookOpen size={20} />} label="Khóa học" />
                   <SideTabBtn id="stats" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<BarChart3 size={20} />} label="Thống kê" />
                   <SideTabBtn id="history" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Clock size={20} />} label="Lịch sử giải đề" />
@@ -917,8 +920,12 @@ function HomeContent() {
                   <SideTabBtn id="account" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Settings size={20} />} label="Cài đặt tài khoản" />
                 </div>
 
-                <div className="p-4 border-t border-slate-50 space-y-2">
-                  <div className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.2em] px-4 py-2">Hỗ trợ 24/7</div>
+                <div className={clsx("border-t border-slate-50 space-y-2", collapsed ? "p-2 md:p-4 text-center" : "p-4")}>
+                  {!collapsed ? (
+                    <div className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.2em] px-4 py-2">Hỗ trợ 24/7</div>
+                  ) : (
+                    <div className="text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none py-1">24/7</div>
+                  )}
                 </div>
               </aside>
 
@@ -1025,14 +1032,14 @@ function HomeContent() {
                           <div className="w-2 h-8 bg-blue-600 rounded-full"></div>
                           Thống kê kết quả làm bài theo từng Part
                         </h3>
-                        <div className="bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden shadow-sm">
-                          <table className="w-full text-left">
+                        <div className="bg-white border border-slate-100 rounded-3xl sm:rounded-[2.5rem] overflow-x-auto shadow-sm">
+                          <table className="w-full min-w-[500px] sm:min-w-0 text-left">
                             <thead>
                               <tr className="bg-slate-50/50 border-b border-slate-100">
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Phần thi</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Độ chính xác</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Số câu đúng</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Chi tiết theo dạng</th>
+                                <th className="px-3 sm:px-8 py-4 sm:py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Phần thi</th>
+                                <th className="px-3 sm:px-8 py-4 sm:py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Độ chính xác</th>
+                                <th className="px-3 sm:px-8 py-4 sm:py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Số câu đúng</th>
+                                <th className="px-3 sm:px-8 py-4 sm:py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Chi tiết theo dạng</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
@@ -1042,28 +1049,28 @@ function HomeContent() {
                                   const color = pct >= 80 ? "text-emerald-600" : pct >= 60 ? "text-blue-600" : "text-red-500";
                                   return (
                                     <tr key={p.partNumber} className="hover:bg-slate-50/50 transition-colors group">
-                                      <td className="px-8 py-5">
-                                        <div className="flex items-center gap-3">
-                                          <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-black text-slate-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                      <td className="px-3 sm:px-8 py-4 sm:py-5">
+                                        <div className="flex items-center gap-2 sm:gap-3">
+                                          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-black text-slate-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
                                             {p.partNumber}
                                           </div>
-                                          <span className="text-sm font-bold text-slate-700 uppercase italic">Part {p.partNumber}</span>
+                                          <span className="text-xs sm:text-sm font-bold text-slate-700 uppercase italic">Part {p.partNumber}</span>
                                         </div>
                                       </td>
-                                      <td className="px-8 py-5 text-center">
-                                        <span className={clsx("text-lg font-black italic", color)}>
+                                      <td className="px-3 sm:px-8 py-4 sm:py-5 text-center">
+                                        <span className={clsx("text-base sm:text-lg font-black italic", color)}>
                                           {pct}%
                                         </span>
                                       </td>
-                                      <td className="px-8 py-5 text-center">
-                                        <span className="text-sm font-bold text-slate-600">{p.correct} / {p.total}</span>
+                                      <td className="px-3 sm:px-8 py-4 sm:py-5 text-center">
+                                        <span className="text-xs sm:text-sm font-bold text-slate-600">{p.correct} / {p.total}</span>
                                       </td>
-                                      <td className="px-8 py-5 text-center">
+                                      <td className="px-3 sm:px-8 py-4 sm:py-5 text-center">
                                         <button
                                           onClick={() => setDetailPart(p)}
-                                          className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm mx-auto"
+                                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm mx-auto"
                                         >
-                                          <Eye size={20} />
+                                          <Eye size={16} className="sm:w-5 sm:h-5" />
                                         </button>
                                       </td>
                                     </tr>
@@ -1071,7 +1078,7 @@ function HomeContent() {
                                 })
                               ) : (
                                 <tr>
-                                  <td colSpan={4} className="px-8 py-20 text-center text-slate-400 font-bold italic">
+                                  <td colSpan={4} className="px-3 sm:px-8 py-12 sm:py-20 text-center text-slate-400 font-bold italic">
                                     Chưa có dữ liệu thống kê bài tập.
                                   </td>
                                 </tr>
@@ -1654,22 +1661,22 @@ function HomeContent() {
                   )}
 
                   {dashTab === "vocab" && (
-                    <div className="space-y-12">
-                      <div className="bg-white border border-slate-100 rounded-[3rem] shadow-[0_10px_40px_rgba(0,0,0,0.02)] p-10 animate-in fade-in zoom-in duration-500">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                    <div className="space-y-6 sm:space-y-12">
+                      <div className="bg-white border border-slate-100 rounded-2xl sm:rounded-[3rem] shadow-[0_10px_40px_rgba(0,0,0,0.02)] p-4 sm:p-10 animate-in fade-in zoom-in duration-500">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 mb-5 sm:mb-10">
                           <div>
                             <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 opacity-70">NGÀY 0</div>
-                            <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2 sm:gap-3 flex-wrap">
                               <span id="vocab-title-target">Sổ tay từ vựng</span>
                               <button
                                 onClick={() => {
                                   setShowVocabGuide(true);
                                   setHasClosedVocabGuide(false);
                                 }}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm"
+                                className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg sm:rounded-xl font-bold text-[8px] sm:text-[10px] uppercase tracking-wider transition-all shadow-sm"
                                 title="Xem cơ chế 5 rổ từ vựng Leitner"
                               >
-                                <HelpCircle size={12} />
+                                <HelpCircle size={10} />
                                 Cơ chế 5 rổ từ vựng
                               </button>
 
@@ -1678,22 +1685,22 @@ function HomeContent() {
                                   startVocabTour();
                                 }}
                                 id="vocab-guide-btn"
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm"
+                                className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg sm:rounded-xl font-bold text-[8px] sm:text-[10px] uppercase tracking-wider transition-all shadow-sm"
                                 title="Khởi động Tour hướng dẫn"
                               >
-                                <Compass size={12} className="animate-pulse" />
+                                <Compass size={10} className="animate-pulse" />
                                 Hướng dẫn nhanh
                               </button>
                             </h2>
                           </div>
 
                           {/* Filter Tabs (Like Course Player) */}
-                          <div id="vocab-filters-target" className="flex gap-1 bg-slate-50 p-1 rounded-2xl border border-slate-100">
+                          <div id="vocab-filters-target" className="flex gap-0.5 sm:gap-1 bg-slate-50 p-0.5 sm:p-1 rounded-xl sm:rounded-2xl border border-slate-100 overflow-x-auto scrollbar-hide whitespace-nowrap">
                             <button
                               id="vocab-filter-all-btn"
                               onClick={() => setVocabFilter("all")}
                               className={clsx(
-                                "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                "px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all",
                                 vocabFilter === "all" ? "bg-white shadow-sm text-blue-600" : "text-slate-400 hover:text-slate-500"
                               )}
                             >
@@ -1703,7 +1710,7 @@ function HomeContent() {
                               id="vocab-filter-unlearned-btn"
                               onClick={() => setVocabFilter("unlearned")}
                               className={clsx(
-                                "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                "px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all",
                                 vocabFilter === "unlearned" ? "bg-white shadow-sm text-rose-500" : "text-slate-400 hover:text-slate-500"
                               )}
                             >
@@ -1713,7 +1720,7 @@ function HomeContent() {
                               id="vocab-filter-review-btn"
                               onClick={() => setVocabFilter("review")}
                               className={clsx(
-                                "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                "px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all",
                                 vocabFilter === "review" ? "bg-white shadow-sm text-amber-500" : "text-slate-400 hover:text-slate-500"
                               )}
                             >
@@ -1722,8 +1729,9 @@ function HomeContent() {
                           </div>
                         </div>
 
-                        {/* Sub-navigation for Vocab Modes (Gray Style like Course) */}
-                        <div className="flex flex-wrap gap-2 bg-slate-50/80 p-1.5 rounded-2xl border border-slate-100/50 mb-12">
+                        {/* Sub-navigation for Vocab Modes (Horizontal scrollable style) */}
+                        {/* Sub-navigation for Vocab Modes (Horizontal scrollable style) */}
+                        <div className="flex gap-1 overflow-x-auto scrollbar-hide bg-slate-50/80 p-1.5 rounded-2xl border border-slate-100/50 mb-5 sm:mb-12 whitespace-nowrap">
                           {/* Nút Thư viện riêng biệt */}
                           {(() => {
                             const Icon = BookOpen;
@@ -1733,7 +1741,7 @@ function HomeContent() {
                                 id="vocab-mode-library-btn"
                                 onClick={() => setVocabMode("library")}
                                 className={clsx(
-                                  "flex items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300",
+                                  "flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap",
                                   isActive
                                     ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
                                     : "text-slate-400 hover:text-slate-700 hover:bg-white"
@@ -1746,7 +1754,7 @@ function HomeContent() {
                           })()}
 
                           {/* Dải 4 trò chơi còn lại */}
-                          <div id="vocab-games-target" className="flex flex-wrap gap-2">
+                          <div id="vocab-games-target" className="flex gap-1 whitespace-nowrap">
                             {[
                               { id: "scramble", label: "Xếp chữ", icon: Shuffle },
                               { id: "fill", label: "Điền từ", icon: PenLine },
@@ -1760,7 +1768,7 @@ function HomeContent() {
                                   key={mode.id}
                                   onClick={() => setVocabMode(mode.id)}
                                   className={clsx(
-                                    "flex items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300",
+                                    "flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap",
                                     isActive
                                       ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
                                       : "text-slate-400 hover:text-slate-700 hover:bg-white"
@@ -1814,7 +1822,7 @@ function HomeContent() {
                             )}
 
                             {vocabMode !== "library" && (
-                              <div className="bg-white/50 backdrop-blur-sm border border-slate-100 rounded-[3rem] p-8 md:p-16">
+                              <div className="bg-white/50 backdrop-blur-sm border border-slate-100 rounded-3xl sm:rounded-[3rem] p-3 sm:p-8 md:p-16">
                                 {(() => {
                                   const filteredWords = vocabFilter === "review"
                                     ? myVocab.filter(v => !v.nextReviewDate || new Date(v.nextReviewDate) <= new Date())
@@ -2012,7 +2020,8 @@ function SideTabBtn({ id, active, onClick, collapsed, icon, label }: any) {
     <button
       onClick={() => onClick(id)}
       className={clsx(
-        "w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 group",
+        "w-full flex items-center transition-all duration-300 group",
+        collapsed ? "justify-center p-2.5 md:p-4 rounded-xl md:rounded-2xl" : "gap-4 p-4 rounded-2xl",
         isActive
           ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
           : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"

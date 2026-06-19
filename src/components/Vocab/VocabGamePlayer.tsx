@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import "mobile-drag-drop/default.css";
 import { Star, Volume2, RotateCcw, ChevronRight, ChevronLeft, BookOpen, Shuffle, PenLine, Link2, Lightbulb, Replace, Layers, HelpCircle, Compass } from "lucide-react";
 import confetti from "canvas-confetti";
 import VocabGuideModal from "@/components/Vocab/VocabGuideModal";
@@ -79,7 +80,7 @@ function FlashCard({
 
   return (
     <div
-      className="relative h-[480px] cursor-pointer group/card"
+      className="relative h-[420px] sm:h-[480px] cursor-pointer group/card"
       style={{ perspective: "1000px" }}
       onClick={() => { setFlipped(!flipped); speak(word.word); }}
     >
@@ -88,7 +89,7 @@ function FlashCard({
         style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "rotateY(0)" }}
       >
         {/* Front */}
-        <div className="absolute inset-0 bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-200 p-8 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all">
+        <div className="absolute inset-0 bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-200 p-5 sm:p-8 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all">
           {/* Bookmark Button (Unlearned) - Left */}
           <button
             onClick={(e) => { e.stopPropagation(); onToggleUnlearned(); }}
@@ -112,8 +113,8 @@ function FlashCard({
             <Star size={16} fill={isInNotebook ? "currentColor" : "none"} />
           </button>
 
-          <div className="mt-10 mb-2">
-            <div className="text-3xl font-black text-blue-600 mb-2 flex items-center gap-3">
+          <div className="mt-6 sm:mt-10 mb-2">
+            <div className="text-2xl sm:text-3xl font-black text-blue-600 mb-2 flex items-center gap-3">
               {word.word}
               <button onClick={(e) => { e.stopPropagation(); speak(word.word); }} className="p-1.5 hover:bg-blue-50 rounded-lg transition-colors">
                 <Volume2 size={20} className="text-blue-400 hover:text-blue-600" />
@@ -122,11 +123,10 @@ function FlashCard({
             <div className="text-orange-400 font-bold italic text-sm mb-4">
               /{word.ipa?.replace(/\//g, '')}/
             </div>
-            {/* Vietnamese meaning removed from front as requested */}
           </div>
           
           <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide">
-            <div className="text-slate-600 text-[15px] leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: word.ex }} />
+            <div className="text-slate-600 text-sm sm:text-[15px] leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: word.ex }} />
           </div>
 
           {word.syns.length > 0 && (
@@ -147,7 +147,7 @@ function FlashCard({
         </div>
         {/* Back */}
         <div
-          className="absolute inset-0 bg-indigo-50 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-4 border-indigo-200 p-8 flex flex-col"
+          className="absolute inset-0 bg-indigo-50 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-4 border-indigo-200 p-5 sm:p-8 flex flex-col"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
           {/* Bookmark Button (Unlearned) - Left */}
@@ -172,16 +172,16 @@ function FlashCard({
             <Star size={16} fill={isInNotebook ? "currentColor" : "none"} />
           </button>
 
-          <div className="mt-10 mb-4">
-            <div className="text-3xl font-black text-blue-600 mb-2">{word.word}</div>
-            <div className="text-red-500 font-black text-lg tracking-tight leading-tight">{limitMeanings(word.mean)}</div>
+          <div className="mt-6 sm:mt-10 mb-4">
+            <div className="text-2xl sm:text-3xl font-black text-blue-600 mb-2">{word.word}</div>
+            <div className="text-red-500 font-black text-base sm:text-lg tracking-tight leading-tight">{limitMeanings(word.mean)}</div>
           </div>
 
-          <div className="space-y-4 text-[15px] flex-1 overflow-y-auto pr-2 scrollbar-hide">
+          <div className="space-y-4 text-sm sm:text-[15px] flex-1 overflow-y-auto pr-2 scrollbar-hide">
             <div className="flex flex-col gap-2">
-              <div className="text-slate-700 leading-relaxed font-medium bg-white/40 p-4 rounded-2xl border border-white/60 shadow-sm" dangerouslySetInnerHTML={{ __html: word.ex }} />
+              <div className="text-slate-700 leading-relaxed font-medium bg-white/40 p-3 sm:p-4 rounded-2xl border border-white/60 shadow-sm" dangerouslySetInnerHTML={{ __html: word.ex }} />
               {word.exVi && (
-                <div className="text-slate-500 italic leading-relaxed pl-4 border-l-2 border-blue-200 py-1 bg-slate-50/50 rounded-r-xl pr-3" dangerouslySetInnerHTML={{ __html: word.exVi }} />
+                <div className="text-slate-500 italic leading-relaxed pl-4 border-l-2 border-blue-200 py-1 bg-slate-50/50 rounded-r-xl pr-3 text-xs sm:text-[13px]" dangerouslySetInnerHTML={{ __html: word.exVi }} />
               )}
             </div>
 
@@ -311,6 +311,25 @@ export function ScrambleGame({ words, onSRSUpdate }: { words: VocabWord[], onSRS
   const [canNext, setCanNext] = useState(false);
   const [showAns, setShowAns] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const touchStartRef = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartRef.current === null) return;
+    const touchEndClientX = e.changedTouches[0].clientX;
+    const distance = touchStartRef.current - touchEndClientX;
+    touchStartRef.current = null;
+
+    const minSwipeDistance = 50;
+    if (distance > minSwipeDistance && idx < list.length - 1) {
+      setIdx(i => i + 1);
+    } else if (distance < -minSwipeDistance && idx > 0) {
+      setIdx(i => i - 1);
+    }
+  };
 
   const item = list[idx];
   const scrambled = useMemo(() => {
@@ -378,29 +397,33 @@ export function ScrambleGame({ words, onSRSUpdate }: { words: VocabWord[], onSRS
   };
 
   return (
-    <div className="max-w-lg mx-auto text-center space-y-6">
+    <div 
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className="max-w-lg mx-auto text-center space-y-6"
+    >
       <div
-        className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8 cursor-text"
+        className="bg-white rounded-3xl shadow-lg border border-slate-100 p-5 sm:p-8 cursor-text"
         onClick={handleCardClick}
       >
-        <div className="flex items-center justify-center gap-3 mb-4">
+        <div className="flex items-center justify-center gap-3 mb-3">
           <button onClick={() => speak(item.word)} className="p-2 rounded-xl bg-blue-50 text-blue-500 hover:bg-blue-100 transition-colors">
             <Volume2 size={20} />
           </button>
           <span className="text-slate-400 text-sm font-medium">/{item.ipa}/</span>
           <span className="text-red-500 font-bold">{limitMeanings(item.mean)}</span>
         </div>
-        <div className="text-4xl font-black tracking-[0.3em] text-slate-700 mb-8 bg-slate-50 rounded-2xl py-6">{scrambled}</div>
+        <div className="text-2xl sm:text-4xl font-black tracking-[0.3em] text-slate-700 mb-4 sm:mb-8 bg-slate-50 rounded-2xl py-4 sm:py-6">{scrambled}</div>
         
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-4 sm:mb-8">
           <div 
-            className="relative w-full max-w-sm h-24 bg-white rounded-3xl border-2 border-slate-100 flex items-center justify-center shadow-sm group focus-within:border-blue-400 transition-all cursor-text"
+            className="relative w-full max-w-sm h-16 sm:h-24 bg-white rounded-3xl border-2 border-slate-100 flex items-center justify-center shadow-sm group focus-within:border-blue-400 transition-all cursor-text"
             onClick={() => inputRef.current?.focus()}
           >
             {/* Centered Wrapper for both layers */}
             <div className="relative inline-flex items-center">
               {/* Visual Layer (Underneath Input, but selective pointer events) */}
-              <div className="relative flex items-center font-mono text-3xl font-black tracking-[0.4em] uppercase z-20 pointer-events-none pr-[0.4em]">
+              <div className="relative flex items-center font-mono text-xl sm:text-3xl font-black tracking-[0.4em] uppercase z-20 pointer-events-none pr-[0.4em]">
                 {item.word.split("").map((char, i) => {
                   const typed = input[i];
                   if (!typed) return <span key={i} className="text-slate-100">.</span>;
@@ -439,11 +462,13 @@ export function ScrambleGame({ words, onSRSUpdate }: { words: VocabWord[], onSRS
                   } 
                 }}
                 style={{ WebkitTextFillColor: "transparent", color: "transparent" }}
-                className="absolute inset-0 w-full h-full bg-transparent caret-blue-600 outline-none text-left text-3xl font-mono font-black tracking-[0.4em] uppercase z-10 pr-[0.4em]"
+                className="absolute inset-0 w-full h-full bg-transparent caret-blue-600 outline-none text-left text-xl sm:text-3xl font-mono font-black tracking-[0.4em] uppercase z-10 pr-[0.4em]"
                 autoComplete="off"
                 autoFocus
                 inputMode="text"
                 spellCheck={false}
+                autoCapitalize="none"
+                autoCorrect="off"
               />
             </div>
           </div>
@@ -459,7 +484,7 @@ export function ScrambleGame({ words, onSRSUpdate }: { words: VocabWord[], onSRS
           <div className={`mt-3 font-bold text-sm ${msg.ok ? "text-emerald-600" : "text-red-500"}`}>{msg.text}</div>
         )}
         {showAns && <div className="mt-2 text-blue-600 font-black text-lg">👉 {item.word}</div>}
-        <div className="mt-6 text-[10px] text-slate-400 font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+        <div className="mt-6 text-[10px] text-slate-400 font-bold uppercase tracking-widest hidden lg:flex items-center justify-center gap-2">
           <span>Mẹo: Nhấn phím</span>
           <kbd className="px-2 py-1 bg-slate-800 text-white rounded-lg border-b-2 border-slate-950 font-black shadow-md">`</kbd>
           <span className="ml-1 text-[#94a3b8] normal-case font-bold">(dấu huyền)</span>
@@ -490,6 +515,26 @@ export function FillGame({ words, allWords, onSRSUpdate }: { words: VocabWord[];
   const [idx, setIdx] = useState(0);
   const [revealed, setRevealed] = useState<string[]>([]);
   const [isCorrect, setIsCorrect] = useState(false);
+  const touchStartRef = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartRef.current === null) return;
+    const touchEndClientX = e.changedTouches[0].clientX;
+    const distance = touchStartRef.current - touchEndClientX;
+    touchStartRef.current = null;
+
+    const minSwipeDistance = 50;
+    if (distance > minSwipeDistance && isCorrect && idx < list.length - 1) {
+      setIdx(i => i + 1);
+    } else if (distance < -minSwipeDistance && idx > 0) {
+      setIdx(i => i - 1);
+    }
+  };
+
   const item = list[idx];
 
   const actualWord = useMemo(() => {
@@ -554,10 +599,14 @@ export function FillGame({ words, allWords, onSRSUpdate }: { words: VocabWord[];
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8 text-center">
-        <div className="text-2xl font-black text-red-500 mb-6">{limitMeanings(item.mean)}</div>
-        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 text-slate-700 text-xl font-bold italic mb-8">
+    <div 
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className="max-w-2xl mx-auto space-y-6"
+    >
+      <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-5 sm:p-8 text-center">
+        <div className="text-xl sm:text-2xl font-black text-red-500 mb-4 sm:mb-6">{limitMeanings(item.mean)}</div>
+        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 sm:p-6 text-slate-700 text-lg sm:text-xl font-bold italic mb-4 sm:mb-8">
           &ldquo;
           {sentenceParts.map((p, i) => (
             p.toLowerCase() === actualWord.toLowerCase()
@@ -587,7 +636,7 @@ export function FillGame({ words, allWords, onSRSUpdate }: { words: VocabWord[];
                     : "bg-white border-slate-200 text-slate-700 hover:border-blue-400 hover:text-blue-600 hover:scale-[1.02]"
                 }`}
               >
-                <span className={isRevealed ? "text-[13px]" : "text-base"}>{d}</span>
+                <span className={`font-bold leading-tight text-center ${isRevealed ? "text-[10px] sm:text-[13px]" : (d.length > 12 ? "text-[11px] sm:text-base" : d.length > 10 ? "text-[12px] sm:text-base" : "text-sm sm:text-base")}`}>{d}</span>
                 {isRevealed && (
                   <span className="text-[10px] font-medium opacity-80 mt-1 leading-tight text-center">
                     {limitMeanings(source?.mean || "---")}
@@ -604,7 +653,7 @@ export function FillGame({ words, allWords, onSRSUpdate }: { words: VocabWord[];
         </button>
       </div>
       <div className="text-sm text-slate-400 text-center">{idx + 1} / {list.length}</div>
-      <div className="mt-4 text-[10px] text-slate-400 font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+      <div className="mt-4 text-[10px] text-slate-400 font-bold uppercase tracking-widest hidden lg:flex items-center justify-center gap-2">
         <span>Mẹo: Nhấn phím</span>
         <kbd className="px-2 py-1 bg-slate-800 text-white rounded-lg border-b-2 border-slate-950 font-black shadow-md">`</kbd>
         <span className="ml-1 text-[#94a3b8] normal-case font-bold">(dấu huyền)</span>
@@ -620,10 +669,12 @@ export function MatchGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSUpd
   const [set, setSet] = useState(getSet);
   const [matched, setMatched] = useState<Record<string | number, boolean>>({});
   const [dragging, setDragging] = useState<string | number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | number | null>(null);
   const viWords = useMemo(() => [...set].sort(() => Math.random() - 0.5), [set]);
 
-  const handleDrop = (targetId: string | number) => {
-    if (dragging === targetId) {
+  const handleDrop = (targetId: string | number, sourceId?: string | number) => {
+    const finalSourceId = sourceId ?? dragging;
+    if (finalSourceId === targetId) {
       const w = set.find(x => x.id === targetId);
       if (w && onSRSUpdate) {
         onSRSUpdate(w.word, w.mean, true);
@@ -636,37 +687,51 @@ export function MatchGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSUpd
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8">
+      <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-3 sm:p-8">
         <div className="space-y-3 mb-6">
           {set.map(w => (
-            <div key={w.id} className="flex items-center gap-4">
-              <button onClick={() => speak(w.word)} className="w-32 sm:w-40 flex items-center gap-3 bg-blue-50 hover:bg-blue-100 rounded-2xl p-3 transition-colors font-black text-blue-700 text-base flex-shrink-0">
-                {w.word} <Volume2 size={14} className="text-blue-400" />
+            <div key={w.id} className="flex items-center gap-2 sm:gap-4">
+              <button onClick={() => speak(w.word)} className="w-24 sm:w-40 flex items-center gap-1.5 sm:gap-3 bg-blue-50 hover:bg-blue-100 rounded-xl sm:rounded-2xl p-2 sm:p-3 transition-colors font-black text-blue-700 text-xs sm:text-base flex-shrink-0">
+                <span className="truncate">{w.word}</span> <Volume2 size={12} className="text-blue-400 flex-shrink-0" />
               </button>
               <div
-                className={`flex-1 min-h-[3rem] p-3 rounded-2xl border-2 border-dashed flex items-center justify-center transition-all text-sm leading-tight text-center ${matched[w.id] ? "bg-emerald-50 border-emerald-300 text-emerald-600 font-bold" : "border-blue-200 bg-white"}`}
+                onClick={() => {
+                  if (selectedId !== null) {
+                    handleDrop(w.id, selectedId);
+                    setSelectedId(null);
+                  }
+                }}
                 onDragOver={e => e.preventDefault()}
                 onDrop={() => handleDrop(w.id)}
+                className={`flex-1 min-h-[2.5rem] sm:min-h-[3rem] p-2 sm:p-3 rounded-xl sm:rounded-2xl border-2 border-dashed flex items-center justify-center transition-all text-xs sm:text-sm leading-tight text-center cursor-pointer ${
+                  selectedId !== null && !matched[w.id] ? "border-indigo-300 bg-indigo-50/10" : "border-blue-200 bg-white"
+                } ${matched[w.id] ? "bg-emerald-50 border-emerald-300 text-emerald-600 font-bold" : ""}`}
               >
                 {matched[w.id] ? limitMeanings(w.mean) : ""}
               </div>
             </div>
           ))}
         </div>
-        <div className="flex flex-wrap gap-2 justify-center p-4 bg-slate-50 rounded-2xl">
+        <div className="flex flex-wrap gap-2 justify-center p-3 sm:p-4 bg-slate-50 rounded-2xl">
           {viWords.filter(w => !matched[w.id]).map(w => (
             <div
               key={w.id}
               draggable
               onDragStart={() => setDragging(w.id)}
-              className="px-4 py-2 bg-amber-400 text-white font-bold rounded-xl cursor-grab active:cursor-grabbing shadow-sm hover:scale-105 transition-transform text-sm"
+              onClick={() => {
+                setSelectedId(prev => prev === w.id ? null : w.id);
+              }}
+              style={{ touchAction: "none" }}
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 text-white font-bold rounded-lg sm:rounded-xl cursor-grab active:cursor-grabbing shadow-sm hover:scale-105 transition-all text-xs sm:text-sm ${
+                selectedId === w.id ? "bg-blue-600 scale-105 ring-4 ring-blue-300" : "bg-amber-400"
+              }`}
             >{limitMeanings(w.mean)}</div>
           ))}
         </div>
       </div>
       {Object.keys(matched).length === set.length && (
         <div className="text-center">
-          <button onClick={() => { setSet(getSet()); setMatched({}); }} className="px-8 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-colors flex items-center gap-2 mx-auto">
+          <button onClick={() => { setSet(getSet()); setMatched({}); setSelectedId(null); }} className="px-8 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-colors flex items-center gap-2 mx-auto">
             <RotateCcw size={16} /> Bộ từ mới
           </button>
         </div>
@@ -683,6 +748,25 @@ export function SynonymGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSU
   const [dropped, setDropped] = useState<string[]>([]);
   const [revealed, setRevealed] = useState<string[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
+  const touchStartRef = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartRef.current === null) return;
+    const touchEndClientX = e.changedTouches[0].clientX;
+    const distance = touchStartRef.current - touchEndClientX;
+    touchStartRef.current = null;
+
+    const minSwipeDistance = 50;
+    if (distance > minSwipeDistance && isCompleted && idx < list.length - 1) {
+      setIdx(i => i + 1);
+    } else if (distance < -minSwipeDistance && idx > 0) {
+      setIdx(i => i - 1);
+    }
+  };
 
   const item = list[idx];
   
@@ -766,24 +850,28 @@ export function SynonymGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSU
   };
 
   return (
-    <div className="max-w-lg mx-auto space-y-6">
-      <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8 text-center">
-        <div className="space-y-2 mb-8">
+    <div 
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className="max-w-lg mx-auto space-y-6"
+    >
+      <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-5 sm:p-8 text-center">
+        <div className="space-y-2 mb-4 sm:mb-8">
           <div className="flex items-center justify-center gap-3">
-            <h2 className="text-4xl font-black text-blue-600">{item.word}</h2>
+            <h2 className="text-2xl sm:text-4xl font-black text-blue-600">{item.word}</h2>
             <button onClick={() => speak(item.word)} className="p-2 rounded-xl bg-blue-50 text-blue-500 transition-colors hover:bg-blue-100 group">
               <Volume2 size={24} className="group-hover:scale-110 transition-transform" />
             </button>
           </div>
-          <div className="text-xl font-bold text-red-500">{limitMeanings(item.mean)}</div>
+          <div className="text-lg sm:text-xl font-bold text-red-500">{limitMeanings(item.mean)}</div>
           <div className="text-slate-400 text-[10px] font-black uppercase tracking-widest pt-2">
             HÃY CLICK CHỌN {synsToFind.length} TỪ ĐỒNG NGHĨA
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 justify-center mb-10 min-h-[50px]">
+        <div className="flex flex-wrap gap-2 justify-center mb-4 sm:mb-10 min-h-[40px] sm:min-h-[50px]">
           {synsToFind.map((_, i) => (
-            <div key={i} className={`min-w-32 px-4 h-14 rounded-2xl border-2 flex items-center justify-center text-[13px] font-bold transition-all ${dropped[i] ? "bg-emerald-50 border-emerald-300 text-emerald-600 shadow-sm" : "border-slate-100 border-dashed bg-slate-50/50"}`}>
+            <div key={i} className={`min-w-[7rem] sm:min-w-32 px-3 sm:px-4 h-10 sm:h-14 rounded-xl sm:rounded-2xl border-2 flex items-center justify-center text-[12px] sm:text-[13px] font-bold transition-all ${dropped[i] ? "bg-emerald-50 border-emerald-300 text-emerald-600 shadow-sm" : "border-slate-100 border-dashed bg-slate-50/50"}`}>
               {dropped[i] ? dropped[i] : ""}
             </div>
           ))}
@@ -814,7 +902,7 @@ export function SynonymGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSU
                     : "bg-white border-slate-200 text-slate-700 hover:border-blue-400 hover:text-blue-600 hover:scale-[1.02] active:scale-95"
                 }`}
               >
-                <span className={isRevealed ? "text-[12px]" : "text-base"}>{p.split('(')[0].trim()}</span>
+                <span className={`font-black leading-tight text-center ${isRevealed ? "text-[10px] sm:text-[12px]" : (p.length > 12 ? "text-[11px] sm:text-base" : p.length > 10 ? "text-[12px] sm:text-base" : "text-sm sm:text-base")}`}>{p.split('(')[0].trim()}</span>
                 {isRevealed && !isUsed && (
                   <span className="text-[10px] font-medium opacity-80 mt-1 leading-tight text-center">
                     {limitMeanings(sourceWord?.mean || "---")}
@@ -868,7 +956,26 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
   const [globalFlip, setGlobalFlip] = useState<"front" | "back" | null>(null);
   const [hasMounted, setHasMounted] = useState(false);
 
-  useEffect(() => { setHasMounted(true); }, []);
+  useEffect(() => {
+    setHasMounted(true);
+    if (typeof window !== "undefined") {
+      Promise.all([
+        import("mobile-drag-drop"),
+        import("mobile-drag-drop/scroll-behaviour")
+      ]).then(([mod, scrollMod]) => {
+        mod.polyfill({
+          dragImageTranslateOverride: scrollMod.scrollBehaviourDragImageTranslateOverride
+        });
+      });
+
+      // Dummy non-passive touchmove listener to allow polyfill to prevent default scroll on iOS 10+
+      const dummyTouchMove = () => {};
+      window.addEventListener("touchmove", dummyTouchMove, { passive: false });
+      return () => {
+        window.removeEventListener("touchmove", dummyTouchMove);
+      };
+    }
+  }, []);
 
   // Load status từ DB
   useEffect(() => {
@@ -994,41 +1101,41 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-lg border-b border-slate-100 shadow-sm">
-        <div className="max-w-5xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
+      <div className="relative lg:sticky lg:top-0 z-20 bg-white/80 backdrop-blur-lg border-b border-slate-100 shadow-sm">
+        <div className="max-w-5xl mx-auto px-4 py-2 sm:py-4">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 sm:gap-4 w-full">
               <div>
-                <div className="text-xs text-slate-400 font-bold uppercase tracking-widest">Ngày {dayNumber}</div>
-                <h1 className="text-xl font-black text-slate-800 flex items-center flex-wrap gap-2.5">
+                <div className="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-widest">Ngày {dayNumber}</div>
+                <h1 className="text-base sm:text-xl font-black text-slate-800 flex items-center flex-wrap gap-2">
                   <span id={hasMounted ? "vocab-title-target" : undefined}>{title}</span>
                   <button
                     onClick={() => startVocabTour(true)}
                     id={hasMounted ? "vocab-guide-btn" : undefined}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg font-bold text-[8px] sm:text-[10px] uppercase tracking-wider transition-all shadow-sm"
                     title="Khởi động Tour hướng dẫn"
                   >
-                    <Compass size={12} className="animate-pulse" />
+                    <Compass size={10} className="animate-pulse" />
                     Hướng dẫn nhanh
                   </button>
                 </h1>
               </div>
 
               <div className="flex items-center gap-2" id={hasMounted ? "vocab-filters-target" : undefined}>
-                <div className="flex bg-slate-100 rounded-2xl p-1 gap-1">
+                <div className="flex bg-slate-100 rounded-xl sm:rounded-2xl p-0.5 sm:p-1 gap-0.5 sm:gap-1">
                   <button
                     onClick={() => setFilterMode("all")}
                     id={hasMounted ? "vocab-filter-all-btn" : undefined}
                     title="Chơi game với tất cả các từ"
-                    className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${filterMode === "all" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                    className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black transition-all ${filterMode === "all" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
                   >TẤT CẢ ({data.length})</button>
                   <button
                     onClick={() => setFilterMode("starred")}
                     id={hasMounted ? "vocab-filter-unlearned-btn" : undefined}
                     title="Chơi game với các từ có nhãn chưa thuộc"
-                    className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1 ${filterMode === "starred" ? "bg-white text-rose-500 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                    className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black transition-all flex items-center gap-1 ${filterMode === "starred" ? "bg-white text-rose-500 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
                   >
-                    <BookOpen size={12} className={filterMode === "starred" ? "text-rose-500" : "text-slate-400"} fill={filterMode === "starred" ? "currentColor" : "none"} />
+                    <BookOpen size={10} className={filterMode === "starred" ? "text-rose-500" : "text-slate-400"} fill={filterMode === "starred" ? "currentColor" : "none"} />
                     CHƯA THUỘC ({unlearnedCount})
                   </button>
                 </div>
@@ -1036,7 +1143,7 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
             </div>
           </div>
 
-          <div className="flex gap-1 overflow-x-auto">
+          <div className="flex gap-1 overflow-x-auto scrollbar-hide">
             {(() => {
               const libraryTab = TABS.find(t => t.id === "library");
               if (!libraryTab) return null;
@@ -1134,6 +1241,13 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
         }
         .animate-shake {
           animation: shake 0.2s ease-in-out 0s 2;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
     </div>

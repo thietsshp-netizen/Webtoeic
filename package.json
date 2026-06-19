@@ -33,6 +33,7 @@
     "driver.js": "^1.4.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.7.0",
+    "mobile-drag-drop": "^3.0.0-rc.0",
     "next": "16.2.2",
     "next-auth": "^4.24.13",
     "nextjs-toploader": "^3.9.17",
