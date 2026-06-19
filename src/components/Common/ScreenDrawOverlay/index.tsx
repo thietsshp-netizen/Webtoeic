@@ -2,15 +2,15 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { 
-  Pencil, 
-  Highlighter, 
-  Square, 
-  Circle as CircleIcon, 
-  Type, 
-  Trash2, 
-  X, 
-  GripVertical, 
+import {
+  Pencil,
+  Highlighter,
+  Square,
+  Circle as CircleIcon,
+  Type,
+  Trash2,
+  X,
+  GripVertical,
   MousePointer,
   Eraser,
   Hand,
@@ -111,17 +111,17 @@ const COLOR_SLOT_NAMES = ['Đỏ', 'Xanh dương', 'Tím', 'Xanh lá', 'Cam', 'N
 // Bảng màu preset Apple-style (48 màu, 8 cột × 6 hàng)
 const PALETTE_COLORS: string[] = [
   // Đỏ & Hồng
-  '#FF3B30','#FF6B6B','#FF2D55','#FF375F','#D70015','#C41230','#FFCDD2','#FF8A80',
+  '#FF3B30', '#FF6B6B', '#FF2D55', '#FF375F', '#D70015', '#C41230', '#FFCDD2', '#FF8A80',
   // Cam & Đào
-  '#FF9500','#FF9F0A','#FF6000','#FF8C42','#FFA07A','#FFAB40','#FF7043','#BF360C',
+  '#FF9500', '#FF9F0A', '#FF6000', '#FF8C42', '#FFA07A', '#FFAB40', '#FF7043', '#BF360C',
   // Vàng & Amber
-  '#FFCC00','#FFD60A','#FFB300','#FFCA28','#F9A825','#FFF176','#FFF9C4','#FF8F00',
+  '#FFCC00', '#FFD60A', '#FFB300', '#FFCA28', '#F9A825', '#FFF176', '#FFF9C4', '#FF8F00',
   // Xanh lá & Teal
-  '#34C759','#30D158','#00C853','#43A047','#2E7D32','#00BFA5','#26C6DA','#1B5E20',
+  '#34C759', '#30D158', '#00C853', '#43A047', '#2E7D32', '#00BFA5', '#26C6DA', '#1B5E20',
   // Xanh dương & Indigo
-  '#007AFF','#0A84FF','#5AC8FA','#1E88E5','#1565C0','#5856D6','#3949AB','#0D47A1',
+  '#007AFF', '#0A84FF', '#5AC8FA', '#1E88E5', '#1565C0', '#5856D6', '#3949AB', '#0D47A1',
   // Tím & Nâu & Trắng/Đen
-  '#AF52DE','#BF5AF2','#8E24AA','#A2845E','#6D4C41','#5C4033','#000000','#FFFFFF',
+  '#AF52DE', '#BF5AF2', '#8E24AA', '#A2845E', '#6D4C41', '#5C4033', '#000000', '#FFFFFF',
 ];
 
 export interface DrawElement {
@@ -300,7 +300,7 @@ export const erasePixelFromElements = (
 // Tạo CSS selector duy nhất cho phần tử HTML
 export const generateUniqueSelector = (el: HTMLElement): string => {
   if (el.id) return `#${CSS.escape(el.id)}`;
-  
+
   // Check if it already has a data-draw-id
   let drawId = el.getAttribute('data-draw-id');
   if (drawId) return `[data-draw-id="${drawId}"]`;
@@ -315,7 +315,7 @@ export const generateUniqueSelector = (el: HTMLElement): string => {
     try {
       const helpers = Array.from(document.querySelectorAll(classSelector));
       if (helpers.length === 1) return classSelector;
-    } catch (e) {}
+    } catch (e) { }
   }
 
   // Fallback: Generate and assign a new data-draw-id to ensure 100% unique selector stability
@@ -331,7 +331,7 @@ export const findBestAnchor = (
   canvas: HTMLCanvasElement | null
 ): { selector: string; rect: DOMRect; priority: number } | null => {
   if (!canvas) return null;
-  
+
   const originalPointerEvents = canvas.style.pointerEvents;
   canvas.style.pointerEvents = 'none';
 
@@ -381,10 +381,10 @@ export const findBestAnchor = (
             }
             break;
           }
-        } catch (e) {}
+        } catch (e) { }
       }
     }
-    
+
     // Nếu tìm thấy span (ưu tiên cao nhất), dừng tìm kiếm sớm
     if (bestAnchorInfo && bestAnchorInfo.priority === 0) {
       break;
@@ -395,9 +395,9 @@ export const findBestAnchor = (
   return bestAnchorInfo;
 };
 
-export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({ 
-  isActive, 
-  setIsActive 
+export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
+  isActive,
+  setIsActive
 }) => {
   const [tool, setToolState] = useState<DrawTool>('pencil');
   const [color, setColor] = useState<DrawColor>('#EF4444');
@@ -419,7 +419,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const editingSlotRef = useRef<number>(-1);
   const [pencilSize, setPencilSize] = useState(2);
   const [highlightSize, setHighlightSize] = useState(16);
-  
+
   // Custom Pen Styles (Bút bi, Bút máy, Bút lông)
   const [penStyle, setPenStyle] = useState<'ballpoint' | 'fountain' | 'brush'>('ballpoint');
   const [showPenStyleMenu, setShowPenStyleMenu] = useState(false);
@@ -473,7 +473,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
-  
+
   // Ref lưu phần tử neo đang vẽ active
   const activeAnchorRef = useRef<{ selector: string; rect: DOMRect; priority: number } | null>(null);
 
@@ -487,12 +487,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       console.warn("Invalid selector lookup:", el.anchorSelector);
     }
     if (!domEl) return null; // Anchor đã biến mất khỏi DOM hoặc selector sai
-    
+
     if (!canvasRect) return el;
     const rect = domEl.getBoundingClientRect();
     const dx = rect.left - canvasRect.left;
     const dy = rect.top - canvasRect.top;
-    
+
     return {
       ...el,
       x: el.x !== undefined ? el.x + dx : undefined,
@@ -510,11 +510,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const canvasRect = canvas.getBoundingClientRect();
-    
+
     // Thu thập các phần tử đã được chuyển đổi sang hệ toạ độ tuyệt đối
     const absoluteElements: DrawElement[] = [];
     const elementTranslationOffsets = new Map<string, { dx: number; dy: number }>();
-    
+
     elements.forEach(el => {
       const translated = getTranslatedElement(el, canvasRect);
       if (translated) {
@@ -533,7 +533,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     });
 
     const erasedAbsoluteElements = erasePixelFromElements(ex, ey, eraserRadius, absoluteElements, eraserTargets);
-    
+
     const nextElements = erasedAbsoluteElements.map(el => {
       let baseId = el.id;
       if (el.id.includes('_split_')) {
@@ -684,7 +684,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   // Ghi nhớ tuỳ chọn vẽ viết vào localStorage (Client-side only)
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
+
     const storedPencilSize = localStorage.getItem('webtoeic_pencil_size');
     if (storedPencilSize) setPencilSize(parseFloat(storedPencilSize));
 
@@ -793,20 +793,20 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     const timer = setTimeout(() => {
       let tempElements = [...elements];
       let jsonStr = JSON.stringify(tempElements);
-      
+
       // 1. TỐI ƯU CHỦ ĐỘNG: Nếu chuỗi JSON lớn hơn 3MB, dọn dẹp các nét vẽ Pencil/Highlight tự do cũ nhất
       const LIMIT_WARN = 3 * 1024 * 1024; // 3MB
       const LIMIT_SAFE = 2 * 1024 * 1024; // 2MB
-      
+
       if (jsonStr.length > LIMIT_WARN) {
         console.warn(`[DrawOverlay] Dung lượng nét vẽ lớn (${(jsonStr.length / 1024 / 1024).toFixed(2)}MB), bắt đầu chủ động dọn dẹp...`);
-        
+
         // Tìm và lọc loại bỏ dần các nét vẽ tự do (Pencil/Highlight) từ cũ nhất (đầu mảng)
         // Giữ lại các nét vẽ quan trọng như hình dạng (shapes) và chữ nháp (text)
         let pruned = false;
         while (jsonStr.length > LIMIT_SAFE && tempElements.length > 0) {
           const firstFreeHandIdx = tempElements.findIndex(el => el.type === 'pencil' || el.type === 'highlight');
-          
+
           if (firstFreeHandIdx !== -1) {
             tempElements.splice(firstFreeHandIdx, 1);
             jsonStr = JSON.stringify(tempElements);
@@ -816,7 +816,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             break;
           }
         }
-        
+
         if (pruned) {
           console.log(`[DrawOverlay] Đã chủ động dọn dẹp đưa dung lượng về ${(jsonStr.length / 1024 / 1024).toFixed(2)}MB`);
         }
@@ -845,7 +845,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   useEffect(() => {
     try {
       localStorage.setItem('webtoeic_draw_color', color);
-    } catch (err) {}
+    } catch (err) { }
   }, [color]);
   // Tải cấu hình phím tắt và bút clone từ Database (hoặc LocalStorage dự phòng) khi công cụ vẽ kích hoạt
   useEffect(() => {
@@ -897,7 +897,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (localEraserTargets) {
         try {
           setEraserTargets(JSON.parse(localEraserTargets));
-        } catch (e) {}
+        } catch (e) { }
       }
       if (localEraserMode === 'stroke' || localEraserMode === 'pixel') {
         setEraserMode(localEraserMode);
@@ -916,7 +916,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (ev.ctrlKey || ev.metaKey) parts.push('ctrl');
       if (ev.shiftKey && ev.key !== 'Shift') parts.push('shift');
       if (ev.altKey) parts.push('alt');
-      
+
       const k = ev.key.toLowerCase();
       if (k !== 'control' && k !== 'meta' && k !== 'shift' && k !== 'alt') {
         if (ev.code === 'Space') parts.push('space');
@@ -958,7 +958,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         eraserTargets: draftEraserTargets,
         eraserMode: draftEraserMode
       };
-      
+
       const res = await fetch("/api/admin/draw-settings", {
         method: "POST",
         headers: {
@@ -1072,13 +1072,13 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       // Quan sát thêm các vùng chứa chính của giao diện có thể co giãn khi đóng/mở sidebar
       const mainEl = document.querySelector('main');
       if (mainEl) resizeObserver.observe(mainEl);
-      
+
       const flexEl = document.querySelector('.flex-1');
       if (flexEl) resizeObserver.observe(flexEl);
-      
+
       const sidebarEl = document.querySelector('[class*="sidebar"]');
       if (sidebarEl) resizeObserver.observe(sidebarEl);
-      
+
       const playerEl = document.querySelector('[class*="Player"]');
       if (playerEl) resizeObserver.observe(playerEl);
     }
@@ -1156,7 +1156,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     // 2. NẾU ĐANG BẬT CHẾ ĐỘ ĐÈN CHIẾU (Flashlight / Spotlight) -> Vẽ Đèn chiếu TRƯỚC TIÊN
     if (isFlashlightActive) {
       ctx.save();
-      
+
       ctx.beginPath();
       // Vẽ hình chữ nhật bao phủ toàn bộ màn hình (Outer path)
       ctx.rect(0, 0, window.innerWidth, window.innerHeight);
@@ -1164,7 +1164,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       // Vẽ hình học đèn chiếu bên trong (Inner path) tại vị trí trỏ chuột
       const { x, y } = mousePosRef.current;
       const size = flashlightSize; // Bán kính hình tròn hoặc nửa chiều rộng hình chữ nhật
-      
+
       if (flashlightShape === 'circle') {
         ctx.arc(x, y, size, 0, Math.PI * 2);
       } else {
@@ -1178,7 +1178,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       // Giúp đục lỗ sáng 100% trong veo tự nhiên, tránh được mọi lỗi GPU/Alpha Composition của trình duyệt
       ctx.fillStyle = "rgba(15, 23, 42, 0.65)"; // Màu tối mờ đẹp (Slate 900)
       ctx.fill('evenodd');
-      
+
       ctx.restore();
     }
 
@@ -1190,7 +1190,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const isSelected = el.id === selectedId;
 
       ctx.save();
-      
+
       // Nếu đối tượng được chọn, tạo bóng mờ phát sáng nhẹ màu xanh dương để học viên nhận biết
       if (isSelected) {
         ctx.shadowColor = '#3B82F6';
@@ -1363,7 +1363,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             if (w > maxLineWidth) maxLineWidth = w;
           });
           ctx.restore();
-          
+
           const linesCount = lines.length;
           const paddingX = 6;
           const paddingY = 3;
@@ -1462,7 +1462,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             if (w > maxLineWidth) maxLineWidth = w;
           });
           ctx.restore();
-          
+
           const linesCount = lines.length;
           const paddingX = 6;
           const paddingY = 3;
@@ -1542,7 +1542,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     });
 
     const canvasRect = canvas.getBoundingClientRect();
-    
+
     // Gom nhóm toạ độ neo duy nhất để lưu vào cache
     const rectCache = new Map<string, DOMRect>();
     elements.forEach(el => {
@@ -1563,10 +1563,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (!el.anchorSelector) return el;
       const rect = rectCache.get(el.anchorSelector);
       if (!rect) return null; // anchor không còn hiển thị hoặc không tồn tại
-      
+
       const dx = rect.left - canvasRect.left;
       const dy = rect.top - canvasRect.top;
-      
+
       return {
         ...el,
         x: el.x !== undefined ? el.x + dx : undefined,
@@ -1597,7 +1597,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     // 4. Vẽ nét vẽ nháp đang di chuột (Active Stroke) nếu đang vẽ trong chế độ Đèn chiếu
     if (isDrawingRef.current && activePointsRef.current.length > 0) {
       ctx.save();
-      
+
       if (hasSnappedRef.current && recognizedShapeRef.current) {
         // Nếu đã nhận dạng và snap hình học chuẩn đẹp thành công dưới đèn chiếu
         const shape = recognizedShapeRef.current;
@@ -1611,7 +1611,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         ctx.beginPath();
         if (shape.type === 'rectangle' && shape.rect) {
           ctx.rect(shape.rect.x, shape.rect.y, shape.rect.w, shape.rect.h);
-          
+
           ctx.save();
           ctx.globalAlpha = tool === 'highlight' ? 0.35 : 0.3; // giữ độ trong suốt mờ highlight chuẩn
           ctx.fillStyle = color;
@@ -1692,7 +1692,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           drawElement(tempEl);
         }
       }
-      
+
       ctx.restore();
     }
   };
@@ -1764,7 +1764,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           } else {
             maxLineWidth = el.size * 0.6 * el.text.length; // Fallback
           }
-          
+
           const width = maxLineWidth + 12;
           const height = el.size * lines.length * 1.3 + 8;
           if (x >= el.x && x <= el.x + width && y >= el.y && y <= el.y + height) {
@@ -1783,7 +1783,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     const canvasRect = canvas?.getBoundingClientRect();
     const el = getTranslatedElement(originalEl, canvasRect);
     if (!el) return null;
-    
+
     let x1 = 0, y1 = 0, x2 = 0, y2 = 0;
     if (el.type === 'rectangle') {
       x1 = Math.min(el.x!, el.x! + el.width!) - 4;
@@ -1803,7 +1803,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     } else if (el.type === 'text') {
       x1 = el.x!;
       y1 = el.y!;
-      
+
       const lines = el.text!.split('\n');
       let maxLineWidth = 0;
       const canvas = canvasRef.current;
@@ -1824,7 +1824,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const paddingY = 3;
       const width = maxLineWidth + paddingX * 2;
       const height = el.size * lines.length * 1.2 + paddingY * 2;
-      
+
       x2 = el.x! + width;
       y2 = el.y! + height;
     } else if (el.type === 'pencil' || el.type === 'highlight') {
@@ -1845,7 +1845,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     }
 
     const handleSize = 8; // Vùng sai số click node (8px)
-    
+
     // Check Top-Left (nw)
     if (Math.abs(x - x1) <= handleSize && Math.abs(y - y1) <= handleSize) return 'nw';
     // Check Top-Right (ne)
@@ -2012,10 +2012,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (ev.ctrlKey || ev.metaKey) parts.push('ctrl');
       if (ev.shiftKey) parts.push('shift');
       if (ev.altKey) parts.push('alt');
-      
+
       if (ev.code === 'Space') parts.push('space');
       else parts.push(k);
-      
+
       return parts.join('+');
     };
 
@@ -2043,9 +2043,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const ghostmodeKey = stateRef.current.customHotkeys.ghostmode || 'space';
       if (pressedHotkeyCheck === ghostmodeKey.toLowerCase()) {
         const target = e.target as HTMLElement;
-        const isInput = 
-          target.tagName === 'INPUT' || 
-          target.tagName === 'TEXTAREA' || 
+        const isInput =
+          target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
           target.isContentEditable ||
           stateRef.current.textInput !== null;
         if (!isInput) {
@@ -2058,9 +2058,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const target = e.target as HTMLElement;
 
       // 1. KIỂM TRA INPUT SOẠN THẢO NHÁP ĐANG ACTIVE:
-      const isInput = 
-        target.tagName === 'INPUT' || 
-        target.tagName === 'TEXTAREA' || 
+      const isInput =
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
         target.isContentEditable ||
         currentTextInput !== null; // Bảo vệ an toàn tuyệt đối khi đang mở ô gõ chữ nháp
 
@@ -2170,7 +2170,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         e.preventDefault();
         clearCanvas();
       }
-      
+
       // Xử lý tăng giảm kích thước qua các phím chuẩn [ và ]
       else if (pressedHotkey === '[') {
         e.preventDefault();
@@ -2225,7 +2225,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
       // Nhấn Ctrl+Y / Cmd+Y hoặc Ctrl+Shift+Z / Cmd+Shift+Z để Redo
       const isRedo = ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') ||
-                     ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'z');
+        ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'z');
       if (isRedo) {
         e.preventDefault();
         const { undoStack: currentUndoStack, redoStack: currentRedoStack } = stateRef.current;
@@ -2251,7 +2251,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     const handleBlur = () => {
       setIsShiftPressed(false);
     };
- 
+
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
     window.addEventListener("blur", handleBlur);
@@ -2278,7 +2278,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (!isDraggingToolbar) return;
       const dx = e.clientX - dragStartRef.current.x;
       const dy = e.clientY - dragStartRef.current.y;
-      
+
       setToolbarPos({
         x: Math.max(10, Math.min(window.innerWidth - 460, dragStartRef.current.posX + dx)),
         y: Math.max(10, Math.min(window.innerHeight - 80, dragStartRef.current.posY + dy))
@@ -2406,20 +2406,20 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         // Tìm vùng chứa (container/div) có thanh cuộn dọc gần nhất nằm dưới tọa độ chuột
         const findScrollable = (el: HTMLElement | null): HTMLElement | null => {
           if (!el) return null;
-          
+
           const hasScrollableOverflow = (element: HTMLElement) => {
             const style = window.getComputedStyle(element);
             const overflowY = style.overflowY || style.overflow || '';
             const classNameStr = typeof element.className === 'string'
               ? element.className
               : (typeof element.className === 'object' && element.className !== null
-                 ? (element.className as any).baseVal || ''
-                 : '');
-            const isScrollable = overflowY.includes('auto') || 
-                                 overflowY.includes('scroll') || 
-                                 overflowY.includes('overlay') || 
-                                 classNameStr.includes('overflow-y-') ||
-                                 classNameStr.includes('overflow-auto');
+                ? (element.className as any).baseVal || ''
+                : '');
+            const isScrollable = overflowY.includes('auto') ||
+              overflowY.includes('scroll') ||
+              overflowY.includes('overlay') ||
+              classNameStr.includes('overflow-y-') ||
+              classNameStr.includes('overflow-auto');
             return isScrollable && (element.scrollHeight - element.clientHeight > 1);
           };
 
@@ -2456,7 +2456,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
           elements.forEach(el => {
             if (el.type === 'eraser') return;
-            
+
             let isTarget = false;
             if (el.type === 'pencil') isTarget = pencilErasable;
             else if (el.type === 'highlight') isTarget = highlightErasable;
@@ -2615,7 +2615,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         }
         else if (el.type === 'pencil' || el.type === 'highlight') {
           if (!startPoints || startPoints.length === 0 || !startBBox) return el;
-          
+
           const { minX, minY, maxX, maxY } = startBBox;
           const startW = maxX - minX;
           const startH = maxY - minY;
@@ -2675,7 +2675,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (isDrawingRef.current && lastPointRef.current) {
         events.forEach((evt: any) => {
           const { x: ex, y: ey } = getCanvasCoords(evt.clientX, evt.clientY, canvas);
-          
+
           // Lọc khoảng cách tối thiểu giữa các điểm để tránh răng cưa góc cạnh và tích tụ độ mờ (opacity accumulation)
           const lastPt = activePointsRef.current[activePointsRef.current.length - 1];
           if (lastPt) {
@@ -2720,7 +2720,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             document.body.scrollBy({ left: -dx, top: -dy, behavior: 'auto' });
           }
         }
-        
+
         lastPointRef.current = { x, y };
         return;
       }
@@ -2730,7 +2730,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
       setElements(prev => prev.map(el => {
         if (el.id !== selectedId) return el;
-        
+
         if (el.type === 'pencil' || el.type === 'highlight' || el.type === 'eraser') {
           return {
             ...el,
@@ -2746,7 +2746,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       }));
 
       lastPointRef.current = { x, y };
-    } 
+    }
     else {
       // Logic vẽ vẽ trực tiếp mượt mà để đạt hiệu năng tối đa khi đang rê chuột
       events.forEach((evt: any) => {
@@ -2761,7 +2761,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           const dx = ex - pt.x;
           const dy = ey - pt.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          
+
           // Vẽ chậm (khoảng cách nhỏ) -> nét dày đậm (hệ số lên đến 1.6)
           // Vẽ nhanh (khoảng cách lớn) -> nét thanh mảnh (hệ số giảm xuống 0.15)
           speedFactor = Math.max(0.15, Math.min(1.6, 1.45 - dist * 0.08));
@@ -2807,7 +2807,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           if (pts.length >= 3) {
             const prev2 = pts[pts.length - 3];
             const prev1 = pts[pts.length - 2];
-            const curr  = pts[pts.length - 1];
+            const curr = pts[pts.length - 1];
             const midX = (prev1.x + curr.x) / 2;
             const midY = (prev1.y + curr.y) / 2;
             ctx.beginPath();
@@ -2822,7 +2822,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           }
 
           lastPointRef.current = { x: ex, y: ey };
-        } 
+        }
         else if (tool === 'eraser') {
           const { eraserMode, eraserTargets } = stateRef.current;
           if (eraserMode === 'stroke') {
@@ -2836,7 +2836,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
             elements.forEach(el => {
               if (el.type === 'eraser') return;
-              
+
               let isTarget = false;
               if (el.type === 'pencil') isTarget = pencilErasable;
               else if (el.type === 'highlight') isTarget = highlightErasable;
@@ -2881,7 +2881,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           ctx.lineTo(points[i].x, points[i].y);
         }
         ctx.stroke();
-      } 
+      }
       else if (tool === 'rectangle' || tool === 'circle') {
         if (canvasSnapshotRef.current) {
           ctx.putImageData(canvasSnapshotRef.current, 0, 0);
@@ -3125,7 +3125,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               penStyle: tool === 'pencil' ? penStyle : undefined
             };
           }
-        } 
+        }
         else if (tool === 'rectangle' || tool === 'circle') {
           const startPoint = points[0];
           const w = ex - startPoint.x;
@@ -3281,18 +3281,18 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   // ============================================================
 
   /** Khoảng cách Euclid giữa 2 điểm */
-  const ptDist = (a: {x:number,y:number}, b: {x:number,y:number}) =>
+  const ptDist = (a: { x: number, y: number }, b: { x: number, y: number }) =>
     Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
 
   /** Tổng chiều dài đường đi qua mảng điểm */
-  const pathLength = (pts: {x:number,y:number}[]) => {
+  const pathLength = (pts: { x: number, y: number }[]) => {
     let l = 0;
     for (let i = 1; i < pts.length; i++) l += ptDist(pts[i - 1], pts[i]);
     return l;
   };
 
   /** Ramer-Douglas-Peucker đơn giản hoá mảng điểm */
-  const rdpSimplify = (p: {x:number,y:number}[], eps: number): {x:number,y:number}[] => {
+  const rdpSimplify = (p: { x: number, y: number }[], eps: number): { x: number, y: number }[] => {
     if (p.length <= 2) return p;
     const s = p[0], e = p[p.length - 1];
     const dx = e.x - s.x, dy = e.y - s.y;
@@ -3305,7 +3305,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (d > maxD) { maxD = d; idx = i; }
     }
     if (maxD > eps) {
-      const left  = rdpSimplify(p.slice(0, idx + 1), eps);
+      const left = rdpSimplify(p.slice(0, idx + 1), eps);
       const right = rdpSimplify(p.slice(idx), eps);
       return [...left.slice(0, -1), ...right];
     }
@@ -3313,7 +3313,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   };
 
   /** Phát hiện Đường thẳng */
-  const shapeDetectLine = (pts: {x:number, y:number}[]) => {
+  const shapeDetectLine = (pts: { x: number, y: number }[]) => {
     const totalLen = pathLength(pts);
     if (totalLen < 15) return null;
     const d = ptDist(pts[0], pts[pts.length - 1]);
@@ -3370,10 +3370,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (area < 100) return null;
 
       // [SỬA LỖI 2]: Chu vi chuẩn toán học bao gồm cả đoạn nối tắt khép kín
-      const totalPerimeter = totalLen + closing; 
+      const totalPerimeter = totalLen + closing;
 
       // Tính tỷ lệ lấp đầy hộp bao quanh
-      const boxArea = w * h > 0 ? w * h : 1; 
+      const boxArea = w * h > 0 ? w * h : 1;
       const ratio = area / boxArea;
 
       // Tính chỉ số Đẳng chu Q dựa trên Chu vi đã chuẩn hóa
@@ -3557,7 +3557,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     if (tool === 'text') return 'text';
     return 'crosshair';
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tool, eraserSize, color, selectedId, isGrabbingPage, isShiftPressed, hoveredResizeHandle]);
 
   // Set cursor trực tiếp lên DOM canvas mỗi khi cursorStyle thay đổi
@@ -3589,20 +3589,20 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               const clickX = e.clientX - rect.left;
               const clickY = e.clientY - rect.top;
               const clickedElement = findElementAtPosition(clickX, clickY);
-              
+
               if (clickedElement && clickedElement.type === 'text') {
                 const translatedEl = getTranslatedElement(clickedElement, rect);
                 const startX = translatedEl ? (translatedEl.x ?? clickedElement.x ?? 0) : (clickedElement.x ?? 0);
                 const startY = translatedEl ? (translatedEl.y ?? clickedElement.y ?? 0) : (clickedElement.y ?? 0);
-                
+
                 setSelectedId(null);
                 setEditingTextId(clickedElement.id);
                 // Đổi toạ độ từ canvas sang client coordinate để hiển thị textarea đúng vị trí
                 // Trừ đi 4px cho cả x và y để bù trừ (offset) phần padding: 4px của textarea, 
                 // giúp chữ trong ô gõ đè khít 100% lên chữ vẽ cũ trên canvas mà không bị lệch hay rung giật.
-                setTextInput({ 
-                  x: startX + rect.left - 4, 
-                  y: startY + rect.top - 4 
+                setTextInput({
+                  x: startX + rect.left - 4,
+                  y: startY + rect.top - 4
                 });
                 const loadedVal = clickedElement.text || "";
                 textInputValRef.current = loadedVal;
@@ -3629,17 +3629,17 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               const clickX = e.clientX - rect.left;
               const clickY = e.clientY - rect.top;
               const clickedElement = findElementAtPosition(clickX, clickY);
-              
+
               if (clickedElement && clickedElement.type === 'text') {
                 const translatedEl = getTranslatedElement(clickedElement, rect);
                 const startX = translatedEl ? (translatedEl.x ?? clickedElement.x ?? 0) : (clickedElement.x ?? 0);
                 const startY = translatedEl ? (translatedEl.y ?? clickedElement.y ?? 0) : (clickedElement.y ?? 0);
-                
+
                 setSelectedId(null);
                 setEditingTextId(clickedElement.id);
-                setTextInput({ 
-                  x: startX + rect.left - 4, 
-                  y: startY + rect.top - 4 
+                setTextInput({
+                  x: startX + rect.left - 4,
+                  y: startY + rect.top - 4
                 });
                 const loadedVal = clickedElement.text || "";
                 textInputValRef.current = loadedVal;
@@ -3648,7 +3648,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             }
           }
         }}
-        style={{ 
+        style={{
           cursor: cursorStyle,
           pointerEvents: (tool === 'cursor' || textInput || isShiftPressed) ? 'none' : 'auto',
           touchAction: 'none'
@@ -3724,7 +3724,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       )}
 
       {/* 3. Floating Toolbar (2 hàng dọc mờ mịn, icon siêu nhỏ gọn bằng 1/2) */}
-      <div 
+      <div
         className={styles.toolbar}
         style={{
           left: `${toolbarPos.x}px`,
@@ -3740,8 +3740,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         {/* Hàng 1: Công cụ vẽ cơ bản (Các icon size=12 nhỏ gọn bằng ~1/2 cũ) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           {/* Nắm kéo di chuyển toolbar */}
-          <div 
-            className={styles.dragHandle} 
+          <div
+            className={styles.dragHandle}
             onMouseDown={handleToolbarMouseDown}
             title="Kéo thả di chuyển thanh công cụ"
             style={{ padding: '0 2px', marginRight: '2px' }}
@@ -3791,10 +3791,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 e.preventDefault();
                 setShowPenStyleMenu(prev => !prev);
               }}
-              style={{ 
-                width: '10px', 
-                padding: 0, 
-                borderTopLeftRadius: 0, 
+              style={{
+                width: '10px',
+                padding: 0,
+                borderTopLeftRadius: 0,
                 borderBottomLeftRadius: 0,
                 marginLeft: '-1px',
                 borderLeft: '1px solid rgba(255,255,255,0.1)'
@@ -3806,14 +3806,14 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
             {/* Menu chọn đầu bút mờ mịn Glassmorphism - Tự động đổi vị trí Lên/Xuống tránh tràn viền màn hình */}
             {showPenStyleMenu && (
-              <div 
+              <div
                 className={styles.penStyleMenu}
                 style={{
                   bottom: toolbarPos.y < 160 ? 'auto' : '125%',
                   top: toolbarPos.y < 160 ? '125%' : 'auto',
                 }}
               >
-                <div 
+                <div
                   className={`${styles.penStyleItem} ${penStyle === 'ballpoint' ? styles.penStyleItemActive : ''}`}
                   onPointerDown={(e) => {
                     e.stopPropagation();
@@ -3826,7 +3826,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 >
                   <span>✒️ Bút bi (Đều nét)</span>
                 </div>
-                <div 
+                <div
                   className={`${styles.penStyleItem} ${penStyle === 'fountain' ? styles.penStyleItemActive : ''}`}
                   onPointerDown={(e) => {
                     e.stopPropagation();
@@ -3839,7 +3839,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 >
                   <span>🖋️ Bút máy (Thanh đậm vừa)</span>
                 </div>
-                <div 
+                <div
                   className={`${styles.penStyleItem} ${penStyle === 'brush' ? styles.penStyleItemActive : ''}`}
                   onPointerDown={(e) => {
                     e.stopPropagation();
@@ -3888,10 +3888,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 e.preventDefault();
                 setFlashlightShape(prev => prev === 'circle' ? 'rectangle' : 'circle');
               }}
-              style={{ 
-                width: '10px', 
-                padding: 0, 
-                borderTopLeftRadius: 0, 
+              style={{
+                width: '10px',
+                padding: 0,
+                borderTopLeftRadius: 0,
                 borderBottomLeftRadius: 0,
                 marginLeft: '-1px',
                 borderLeft: '1px solid rgba(255,255,255,0.1)'
@@ -4030,12 +4030,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           <div className={styles.sizeIndicator} title="Kích cỡ nét: Phím [ giảm, ] tăng" style={{ padding: '0 4px', fontSize: '9px' }}>
             <span>Size:</span>
             <span>
-              {tool === 'eraser' 
-                ? `${eraserSize}px` 
-                : tool === 'text' 
-                  ? `${fontSize}px` 
-                  : tool === 'highlight' 
-                    ? `${highlightSize}px` 
+              {tool === 'eraser'
+                ? `${eraserSize}px`
+                : tool === 'text'
+                  ? `${fontSize}px`
+                  : tool === 'highlight'
+                    ? `${highlightSize}px`
                     : `${pencilSize}px`}
             </span>
           </div>
@@ -4100,19 +4100,19 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
         {/* Hàng 2: Toàn bộ nút Bút Clone được xếp ở dưới để tối giản không gian (Chỉ hiện khi nhấn nút toggle) */}
         {showClones && clonedTools.length > 0 && (
-          <div 
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '6px', 
-              paddingTop: '6px', 
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              paddingTop: '6px',
               borderTop: '1px solid rgba(255, 255, 255, 0.08)',
               paddingLeft: '18px',
               flexWrap: 'wrap'
             }}
           >
             <span style={{ fontSize: '9px', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em', marginRight: '4px' }}>Bút nhanh:</span>
-            
+
             {/* Cloned Pencils */}
             {clonedTools.filter(c => c.baseType === 'pencil').map(clone => (
               <button
@@ -4204,8 +4204,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 <Settings size={18} style={{ color: '#38bdf8' }} />
                 <span>Cấu hình công cụ vẽ màn hình (Admin)</span>
               </h3>
-              <button 
-                className={styles.btnCloseModal} 
+              <button
+                className={styles.btnCloseModal}
                 onClick={() => setShowSettings(false)}
               >
                 <X size={18} />
@@ -4213,7 +4213,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             </div>
 
             <div className={styles.modalTabs}>
-              <button 
+              <button
                 className={`${styles.modalTab} ${activeTab === 'shortcuts' ? styles.modalTabActive : ''}`}
                 onClick={() => {
                   setActiveTab('shortcuts');
@@ -4222,7 +4222,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               >
                 Phím tắt công cụ
               </button>
-              <button 
+              <button
                 className={`${styles.modalTab} ${activeTab === 'clones' ? styles.modalTabActive : ''}`}
                 onClick={() => {
                   setActiveTab('clones');
@@ -4231,7 +4231,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               >
                 Quản lý Bút vẽ clone
               </button>
-              <button 
+              <button
                 className={`${styles.modalTab} ${activeTab === 'eraser' ? styles.modalTabActive : ''}`}
                 onClick={() => {
                   setActiveTab('eraser');
@@ -4252,10 +4252,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                       <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)' }}>Điều chỉnh kích thước chữ hiển thị trên màn hình</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <input 
-                        type="number" 
-                        min="8" 
-                        max="100" 
+                      <input
+                        type="number"
+                        min="8"
+                        max="100"
                         value={draftFontSize || ''}
                         onChange={(e) => {
                           const val = parseInt(e.target.value);
@@ -4269,7 +4269,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                           // Đảm bảo khi blur ra ngoài thì cỡ chữ nằm trong khoảng hợp lệ [8, 100]
                           setDraftFontSize(prev => Math.min(100, Math.max(8, prev || 14)));
                         }}
-                        style={{ 
+                        style={{
                           width: '72px',
                           background: 'rgba(255, 255, 255, 0.08)',
                           border: '1px solid rgba(255, 255, 255, 0.15)',
@@ -4311,55 +4311,55 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                       <div key={key} className={styles.hotkeyItem}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           {key.startsWith('color') && (
-                            <div 
-                              style={{ 
-                                width: '12px', 
-                                height: '12px', 
-                                borderRadius: '50%', 
+                            <div
+                              style={{
+                                width: '12px',
+                                height: '12px',
+                                borderRadius: '50%',
                                 backgroundColor: colorSlots[parseInt(key.replace('color', '')) - 1],
                                 border: '1px solid rgba(255,255,255,0.2)'
-                              }} 
+                              }}
                             />
                           )}
                           {renderHotkeyIcon()}
                           <span className={styles.hotkeyLabel}>{HOTKEY_NAMES[key] || key}</span>
                         </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <button 
-                          className={`${styles.hotkeyButton} ${listeningKeyFor === key ? styles.hotkeyListeningActive : ''}`}
-                          onClick={() => setListeningKeyFor(key)}
-                        >
-                          {listeningKeyFor === key ? 'NHẤN PHÍM...' : (draftHotkeys[key] || 'KHÔNG DÙNG')}
-                        </button>
-                        {draftHotkeys[key] && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <button
-                            style={{
-                              background: 'rgba(239, 68, 68, 0.15)',
-                              border: 'none',
-                              color: '#ef4444',
-                              cursor: 'pointer',
-                              padding: '6px',
-                              borderRadius: '6px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              transition: 'all 0.15s ease'
-                            }}
-                            onClick={() => {
-                              setDraftHotkeys(prev => ({
-                                ...prev,
-                                [key]: ''
-                              }));
-                            }}
-                            title="Xóa phím tắt"
+                            className={`${styles.hotkeyButton} ${listeningKeyFor === key ? styles.hotkeyListeningActive : ''}`}
+                            onClick={() => setListeningKeyFor(key)}
                           >
-                            <X size={14} />
+                            {listeningKeyFor === key ? 'NHẤN PHÍM...' : (draftHotkeys[key] || 'KHÔNG DÙNG')}
                           </button>
-                        )}
+                          {draftHotkeys[key] && (
+                            <button
+                              style={{
+                                background: 'rgba(239, 68, 68, 0.15)',
+                                border: 'none',
+                                color: '#ef4444',
+                                cursor: 'pointer',
+                                padding: '6px',
+                                borderRadius: '6px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                transition: 'all 0.15s ease'
+                              }}
+                              onClick={() => {
+                                setDraftHotkeys(prev => ({
+                                  ...prev,
+                                  [key]: ''
+                                }));
+                              }}
+                              title="Xóa phím tắt"
+                            >
+                              <X size={14} />
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
                 </div>
               )}
 
@@ -4367,15 +4367,15 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 <div>
                   <div className={styles.cloneForm}>
                     <div className={styles.cloneFormRow}>
-                      <input 
-                        type="text" 
-                        placeholder="Tên bút clone (vd: Bút vẽ đỏ 4px)..." 
-                        value={newCloneName} 
+                      <input
+                        type="text"
+                        placeholder="Tên bút clone (vd: Bút vẽ đỏ 4px)..."
+                        value={newCloneName}
                         onChange={(e) => setNewCloneName(e.target.value)}
                         className={styles.cloneInput}
                       />
-                      <select 
-                        value={newCloneBaseType} 
+                      <select
+                        value={newCloneBaseType}
                         onChange={(e) => setNewCloneBaseType(e.target.value as any)}
                         className={styles.cloneSelect}
                       >
@@ -4422,23 +4422,23 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                         <div className={styles.cloneFormRow} style={{ marginTop: '0px', gap: '12px', marginBottom: '12px', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
                             <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '11px', color: 'rgba(255,255,255,0.8)' }}>
-                              <input 
-                                type="checkbox" 
-                                checked={newCloneTextHasBorder} 
+                              <input
+                                type="checkbox"
+                                checked={newCloneTextHasBorder}
                                 onChange={(e) => setNewCloneTextHasBorder(e.target.checked)}
                                 style={{ width: '15px', height: '15px', cursor: 'pointer' }}
                               />
                               <span>Đóng khung viền (Border)</span>
                             </label>
-                            
+
                             {newCloneTextHasBorder && (
                               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingLeft: '23px' }}>
                                 <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)' }}>Độ dày:</span>
-                                <input 
-                                  type="number" 
-                                  min="1" 
-                                  max="10" 
-                                  value={newCloneTextBorderWidth} 
+                                <input
+                                  type="number"
+                                  min="1"
+                                  max="10"
+                                  value={newCloneTextBorderWidth}
                                   onChange={(e) => setNewCloneTextBorderWidth(Math.max(1, parseInt(e.target.value) || 1))}
                                   className={styles.cloneSelect}
                                   style={{ width: '60px', padding: '3px 6px', textAlign: 'center' }}
@@ -4451,24 +4451,24 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1, borderLeft: '1px solid rgba(255,255,255,0.08)', paddingLeft: '12px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                               <span style={{ fontSize: '11px', fontWeight: 'bold', color: 'rgba(255,255,255,0.8)' }}>Tô màu nền:</span>
-                              <input 
-                                type="color" 
-                                value={newCloneTextBgColor} 
+                              <input
+                                type="color"
+                                value={newCloneTextBgColor}
                                 onChange={(e) => setNewCloneTextBgColor(e.target.value)}
                                 style={{ width: '26px', height: '20px', border: '1px solid rgba(255,255,255,0.2)', padding: 0, borderRadius: '4px', cursor: 'pointer', background: 'none' }}
                               />
                             </div>
-                            
+
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                               <div style={{ display: 'flex', justifyContent: 'between', fontSize: '10px', color: 'rgba(255,255,255,0.5)' }}>
                                 <span>Độ trong suốt nền:</span>
                                 <span style={{ marginLeft: 'auto', color: '#38bdf8', fontWeight: 'bold' }}>{newCloneTextBgOpacity}%</span>
                               </div>
-                              <input 
-                                type="range" 
-                                min="0" 
-                                max="100" 
-                                value={newCloneTextBgOpacity} 
+                              <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={newCloneTextBgOpacity}
                                 onChange={(e) => setNewCloneTextBgOpacity(parseInt(e.target.value))}
                                 style={{ width: '100%', cursor: 'pointer', height: '4px' }}
                               />
@@ -4480,7 +4480,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
                     <div className={styles.cloneColorGrid}>
                       {PALETTE_COLORS.map((c) => (
-                        <div 
+                        <div
                           key={c}
                           className={`${styles.cloneColorSelectDot} ${newCloneColor === c ? styles.cloneColorSelectDotActive : ''}`}
                           style={{ backgroundColor: c }}
@@ -4489,9 +4489,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                         />
                       ))}
                       {/* Nút chọn màu custom bằng bảng màu hệ thống */}
-                      <label 
+                      <label
                         className={`${styles.cloneColorSelectDot}`}
-                        style={{ 
+                        style={{
                           background: 'linear-gradient(135deg, red, orange, yellow, green, blue, purple)',
                           display: 'flex',
                           alignItems: 'center',
@@ -4505,9 +4505,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                         title="Chọn màu tự do..."
                       >
                         +
-                        <input 
-                          type="color" 
-                          value={newCloneColor} 
+                        <input
+                          type="color"
+                          value={newCloneColor}
                           onChange={(e) => setNewCloneColor(e.target.value)}
                           style={{ display: 'none' }}
                         />
@@ -4515,18 +4515,18 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                     </div>
 
                     <div className={styles.cloneFormRow} style={{ gap: '10px' }}>
-                      <button 
+                      <button
                         className={`${styles.hotkeyButton} ${listeningKeyFor === 'newClone' ? styles.hotkeyListeningActive : ''}`}
                         onClick={() => setListeningKeyFor('newClone')}
                         style={{ flex: 2 }}
                       >
-                        {listeningKeyFor === 'newClone' 
-                          ? 'NHẤN PHÍM TẮT...' 
-                          : newCloneHotkey 
-                            ? `Phím tắt: ${newCloneHotkey.toUpperCase()}` 
+                        {listeningKeyFor === 'newClone'
+                          ? 'NHẤN PHÍM TẮT...'
+                          : newCloneHotkey
+                            ? `Phím tắt: ${newCloneHotkey.toUpperCase()}`
                             : 'Gán phím tắt...'}
                       </button>
-                      
+
                       {editingCloneId && (
                         <button
                           className={styles.btnCancel}
@@ -4545,7 +4545,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                         </button>
                       )}
 
-                      <button 
+                      <button
                         className={styles.btnCreateClone}
                         style={{ flex: 3 }}
                         onClick={() => {
@@ -4603,7 +4603,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                             };
                             setDraftClonedTools(prev => [...prev, newClone]);
                           }
-                          
+
                           setNewCloneName('');
                           setNewCloneHotkey('');
                           setNewCloneTextHasBorder(false);
@@ -4624,8 +4624,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                       </div>
                     ) : (
                       draftClonedTools.map((clone) => (
-                        <div 
-                          key={clone.id} 
+                        <div
+                          key={clone.id}
                           className={`${styles.cloneItem} ${editingCloneId === clone.id ? styles.cloneItemEditing : ''}`}
                           onClick={() => {
                             setEditingCloneId(clone.id);
@@ -4648,7 +4648,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                             <div className={styles.cloneItemColorDot} style={{ backgroundColor: clone.color }} />
                             <div>
                               <div className={styles.cloneItemName}>
-                                {clone.name} 
+                                {clone.name}
                                 {editingCloneId === clone.id && (
                                   <span style={{ fontSize: '10px', color: '#38bdf8', marginLeft: '6px', fontStyle: 'italic', fontWeight: 'normal' }}>
                                     (Đang sửa)
@@ -4656,21 +4656,20 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                                 )}
                               </div>
                               <div className={styles.cloneItemMeta}>
-                                {clone.baseType === 'pencil' 
-                                  ? 'Bút chì' 
-                                  : clone.baseType === 'highlight' 
-                                    ? 'Highlight' 
-                                    : clone.baseType === 'rectangle' 
-                                      ? 'Hình chữ nhật' 
-                                      : `Chữ viết (${clone.textSize}px, ${
-                                          clone.textStyle === 'bold' ? 'Đậm' : clone.textStyle === 'italic' ? 'Nghiêng' : clone.textStyle === 'bold-italic' ? 'Đậm & Nghiêng' : 'Thường'
-                                        })`}
+                                {clone.baseType === 'pencil'
+                                  ? 'Bút chì'
+                                  : clone.baseType === 'highlight'
+                                    ? 'Highlight'
+                                    : clone.baseType === 'rectangle'
+                                      ? 'Hình chữ nhật'
+                                      : `Chữ viết (${clone.textSize}px, ${clone.textStyle === 'bold' ? 'Đậm' : clone.textStyle === 'italic' ? 'Nghiêng' : clone.textStyle === 'bold-italic' ? 'Đậm & Nghiêng' : 'Thường'
+                                      })`}
                               </div>
                             </div>
                           </div>
                           <div className={styles.cloneItemRight}>
                             <span className={styles.cloneItemHotkey}>{clone.hotkey}</span>
-                            <button 
+                            <button
                               className={styles.btnDeleteClone}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -4700,22 +4699,22 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                     <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)' }}>Chọn cách thức hoạt động khi di chuột tẩy xóa.</span>
                     <div style={{ display: 'flex', gap: '16px', marginTop: '10px' }}>
                       <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: '600' }}>
-                        <input 
-                          type="radio" 
-                          name="eraserMode" 
-                          value="pixel" 
-                          checked={draftEraserMode === 'pixel'} 
+                        <input
+                          type="radio"
+                          name="eraserMode"
+                          value="pixel"
+                          checked={draftEraserMode === 'pixel'}
                           onChange={() => setDraftEraserMode('pixel')}
                           style={{ width: '16px', height: '16px', cursor: 'pointer' }}
                         />
                         <span>Xóa điểm như hiện tại (Pixel Eraser)</span>
                       </label>
                       <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: '600' }}>
-                        <input 
-                          type="radio" 
-                          name="eraserMode" 
-                          value="stroke" 
-                          checked={draftEraserMode === 'stroke'} 
+                        <input
+                          type="radio"
+                          name="eraserMode"
+                          value="stroke"
+                          checked={draftEraserMode === 'stroke'}
                           onChange={() => setDraftEraserMode('stroke')}
                           style={{ width: '16px', height: '16px', cursor: 'pointer' }}
                         />
@@ -4734,9 +4733,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                       <Pencil size={16} style={{ color: 'rgba(255,255,255,0.4)' }} />
                       <span className={styles.hotkeyLabel}>Nét vẽ bút chì (Pencil)</span>
                     </div>
-                    <input 
-                      type="checkbox" 
-                      checked={draftEraserTargets.pencil} 
+                    <input
+                      type="checkbox"
+                      checked={draftEraserTargets.pencil}
                       onChange={(e) => setDraftEraserTargets(prev => ({ ...prev, pencil: e.target.checked }))}
                       style={{ width: '18px', height: '18px', cursor: 'pointer' }}
                     />
@@ -4747,9 +4746,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                       <Highlighter size={16} style={{ color: 'rgba(255,255,255,0.4)' }} />
                       <span className={styles.hotkeyLabel}>Bút dạ quang (Highlight)</span>
                     </div>
-                    <input 
-                      type="checkbox" 
-                      checked={draftEraserTargets.highlight} 
+                    <input
+                      type="checkbox"
+                      checked={draftEraserTargets.highlight}
                       onChange={(e) => setDraftEraserTargets(prev => ({ ...prev, highlight: e.target.checked }))}
                       style={{ width: '18px', height: '18px', cursor: 'pointer' }}
                     />
@@ -4760,9 +4759,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                       <Square size={16} style={{ color: 'rgba(255,255,255,0.4)' }} />
                       <span className={styles.hotkeyLabel}>Hình học (Hình vuông, hình tròn)</span>
                     </div>
-                    <input 
-                      type="checkbox" 
-                      checked={draftEraserTargets.shapes} 
+                    <input
+                      type="checkbox"
+                      checked={draftEraserTargets.shapes}
                       onChange={(e) => setDraftEraserTargets(prev => ({ ...prev, shapes: e.target.checked }))}
                       style={{ width: '18px', height: '18px', cursor: 'pointer' }}
                     />
@@ -4773,9 +4772,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                       <Type size={16} style={{ color: 'rgba(255,255,255,0.4)' }} />
                       <span className={styles.hotkeyLabel}>Văn bản (Text)</span>
                     </div>
-                    <input 
-                      type="checkbox" 
-                      checked={draftEraserTargets.text} 
+                    <input
+                      type="checkbox"
+                      checked={draftEraserTargets.text}
                       onChange={(e) => setDraftEraserTargets(prev => ({ ...prev, text: e.target.checked }))}
                       style={{ width: '18px', height: '18px', cursor: 'pointer' }}
                     />
@@ -4785,15 +4784,15 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             </div>
 
             <div className={styles.modalFooter}>
-              <button 
-                className={styles.btnCancel} 
+              <button
+                className={styles.btnCancel}
                 onClick={() => setShowSettings(false)}
                 disabled={isSavingSettings}
               >
                 Hủy
               </button>
-              <button 
-                className={styles.btnSave} 
+              <button
+                className={styles.btnSave}
                 onClick={handleSaveSettings}
                 disabled={isSavingSettings}
               >
