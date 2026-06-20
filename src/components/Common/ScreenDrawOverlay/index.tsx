@@ -1493,19 +1493,27 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   useEffect(() => {
     if (isActive) {
-      document.body.classList.add('drawing-mode-active');
-      const styleEl = document.createElement('style');
-      styleEl.id = 'drawing-mode-selection-blocker';
-      styleEl.innerHTML = `
-        body.drawing-mode-active,
-        body.drawing-mode-active *,
-        body.drawing-mode-active .select-text {
-          user-select: none !important;
-          -webkit-user-select: none !important;
-          -webkit-touch-callout: none !important;
-        }
-      `;
-      document.head.appendChild(styleEl);
+      if (isShiftPressed) {
+        document.body.classList.remove('drawing-mode-active');
+      } else {
+        document.body.classList.add('drawing-mode-active');
+      }
+
+      let styleEl = document.getElementById('drawing-mode-selection-blocker');
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = 'drawing-mode-selection-blocker';
+        styleEl.innerHTML = `
+          body.drawing-mode-active,
+          body.drawing-mode-active *,
+          body.drawing-mode-active .select-text {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -webkit-touch-callout: none !important;
+          }
+        `;
+        document.head.appendChild(styleEl);
+      }
 
       return () => {
         document.body.classList.remove('drawing-mode-active');
@@ -1513,7 +1521,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         if (el) el.remove();
       };
     }
-  }, [isActive]);
+  }, [isActive, isShiftPressed]);
 
   useEffect(() => {
     if (!isActive) {
