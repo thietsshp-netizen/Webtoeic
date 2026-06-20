@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Không có quyền thực hiện" }, { status: 403 });
     }
 
-    const { name, email, password, days, role } = await req.json();
+    const { name, email, password, days, role, classCode } = await req.json();
 
     if (!email || !password || !name) {
       return NextResponse.json(
@@ -60,7 +60,8 @@ export async function POST(req: Request) {
         email,
         password: hashedPassword,
         role: role || "USER",
-        accountExpiresAt: expiresAt
+        accountExpiresAt: expiresAt,
+        classCode: classCode || null
       },
     });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
@@ -47,9 +47,24 @@ export default function EnrollmentMatrix() {
 
   // Create User Modal States
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newUserData, setNewUserData] = useState({ name: "", email: "", password: "", days: "", role: "USER" });
+  const [newUserData, setNewUserData] = useState({ name: "", email: "", password: "", days: "", role: "USER", classCode: "" });
   const [isCreating, setIsCreating] = useState(false);
   const [createError, setCreateError] = useState("");
+  const [showAddUserClassList, setShowAddUserClassList] = useState(false);
+  const [addUserClassSearch, setAddUserClassSearch] = useState("");
+  const addUserClassSelectRef = useRef<HTMLDivElement>(null);
+
+  // Click outside to close searchable class dropdown in Add User Modal
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (addUserClassSelectRef.current && !addUserClassSelectRef.current.contains(e.target as Node)) {
+        setShowAddUserClassList(false);
+        setAddUserClassSearch("");
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Device Management Modal States
   const [showDeviceModal, setShowDeviceModal] = useState<{ userId: string; name: string } | null>(null);
@@ -426,7 +441,7 @@ export default function EnrollmentMatrix() {
       if (!res.ok) throw new Error(result.message || "Lỗi tạo tài khoản");
       
       setShowAddModal(false);
-      setNewUserData({ name: "", email: "", password: "", days: "", role: "USER" });
+      setNewUserData({ name: "", email: "", password: "", days: "", role: "USER", classCode: "" });
       fetchData(); // Refresh list realtime
     } catch (e: any) {
       setCreateError(e.message);
@@ -985,6 +1000,70 @@ export default function EnrollmentMatrix() {
                     <option value="USER">Học viên (USER)</option>
                     <option value="ADMIN">Quản trị viên (ADMIN)</option>
                   </select>
+                </div>
+              </div>
+
+              {/* Lớp học (ClassCode) */}
+              <div>
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1">Lớp học (Không bắt buộc)</label>
+                <div ref={addUserClassSelectRef} className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"><CalendarCheck size={18} /></span>
+                  <input
+                    type="text"
+                    placeholder="Tìm và chọn lớp học..."
+                    className="w-full pl-12 pr-10 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition-all font-bold text-slate-700 cursor-pointer text-left placeholder-slate-400"
+                    value={showAddUserClassList ? addUserClassSearch : (newUserData.classCode || "")}
+                    onFocus={() => {
+                      setShowAddUserClassList(true);
+                      setAddUserClassSearch("");
+                    }}
+                    onChange={(e) => {
+                      setAddUserClassSearch(e.target.value);
+                      setShowAddUserClassList(true);
+                    }}
+                  />
+                  {newUserData.classCode && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setNewUserData({...newUserData, classCode: ""});
+                        setAddUserClassSearch("");
+                        setShowAddUserClassList(false);
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-slate-100 rounded-full transition-all text-slate-400 hover:text-slate-600"
+                      title="Bỏ chọn lớp"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                  {showAddUserClassList && (
+                    <div className="absolute left-0 mt-1 w-full max-h-[180px] overflow-y-auto bg-white border border-slate-100 rounded-2xl shadow-xl z-[10002] no-scrollbar py-1">
+                      {((data?.classes || []).filter(c => c.code.toLowerCase().includes(addUserClassSearch.toLowerCase())).length > 0) ? (
+                        (data?.classes || [])
+                          .filter(c => c.code.toLowerCase().includes(addUserClassSearch.toLowerCase()))
+                          .map(cls => (
+                            <button
+                              key={cls.code}
+                              type="button"
+                              onClick={() => {
+                                setNewUserData({...newUserData, classCode: cls.code});
+                                setShowAddUserClassList(false);
+                                setAddUserClassSearch("");
+                              }}
+                              className={clsx(
+                                "w-full text-left px-4 py-3 text-xs font-bold hover:bg-blue-50 hover:text-blue-600 transition-colors truncate block border-b border-slate-50 last:border-0",
+                                cls.code === newUserData.classCode ? "text-blue-600 bg-blue-50/50" : "text-slate-700"
+                              )}
+                            >
+                              {cls.code} ({cls.sessionCount} buổi)
+                            </button>
+                          ))
+                      ) : (
+                        <div className="px-4 py-3 text-xs text-slate-400 italic">Không tìm thấy lớp học nào</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
