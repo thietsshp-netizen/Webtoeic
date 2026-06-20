@@ -3193,7 +3193,7 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 select-text">
+      <div className="flex-1 overflow-y-auto p-4 select-text webtoeic-scroll-container">
         {wordFamilies.map((fam, famIdx) => {
           const displayTitle = fam.key;
           const isRoot = fam.type === 'root' || (typeof fam.originalValue === 'string' && fam.originalValue.trimStart().startsWith('Gốc:'));

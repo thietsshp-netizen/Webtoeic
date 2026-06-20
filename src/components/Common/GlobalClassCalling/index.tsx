@@ -465,7 +465,7 @@ export const GlobalClassCalling: React.FC = () => {
           position: "fixed",
           top: "14px",
           right: "62px",
-          zIndex: 99999,
+          zIndex: 999999999,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

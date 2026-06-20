@@ -426,6 +426,7 @@ interface SubSVGOverlayProps {
   onSelect: (id: string | null) => void;
   onUpdateElements: React.Dispatch<React.SetStateAction<DrawElement[]>>;
   domUpdateKey: number;
+  editingTextId: string | null;
 }
 
 const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
@@ -435,7 +436,8 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
   selectedId,
   onSelect,
   onUpdateElements,
-  domUpdateKey
+  domUpdateKey,
+  editingTextId
 }) => {
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [visibleElementIds, setVisibleElementIds] = useState<Set<string>>(new Set());
@@ -655,6 +657,7 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
         }
 
         if (el.type === 'text') {
+          if (el.id === editingTextId) return null;
           const lines = el.text ? el.text.split('\n') : [];
           return (
             <g
@@ -677,10 +680,17 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
                   fontSize={el.size}
                   fontFamily="sans-serif"
                   fontWeight="500"
-                  alignmentBaseline="before-edge"
+                  dominantBaseline="text-before-edge"
                   style={isSelected ? { filter: 'drop-shadow(0px 0px 4px #3B82F6)' } : undefined}
                 >
-                  {line.replace(/\*\*/g, '')}
+                  {line.split('**').map((part, pIdx) => {
+                    const isBold = pIdx % 2 === 1;
+                    return (
+                      <tspan key={pIdx} fontWeight={isBold ? "bold" : "500"}>
+                        {part}
+                      </tspan>
+                    );
+                  })}
                 </text>
               ))}
             </g>
@@ -703,7 +713,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [domUpdateKey, setDomUpdateKey] = useState(0);
 
   const findScrollContainer = (clientX: number, clientY: number): HTMLElement | null => {
-    const containers = Array.from(document.querySelectorAll('.webtoeic-scroll-container'));
+    const containers = Array.from(document.querySelectorAll('.webtoeic-scroll-container')).reverse();
     for (const container of containers) {
       const cRect = container.getBoundingClientRect();
       if (
@@ -797,30 +807,57 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   // Helper dịch chuyển toạ độ tương đối của DrawElement thành toạ độ tuyệt đối trên Canvas
   const getTranslatedElement = (el: DrawElement, canvasRect: DOMRect | null | undefined): DrawElement | null => {
-    if (!el.anchorSelector) return el;
-    let domEl: Element | null = null;
-    try {
-      domEl = document.querySelector(el.anchorSelector);
-    } catch (e) {
-      console.warn("Invalid selector lookup:", el.anchorSelector);
-    }
-    if (!domEl) return null; // Anchor đã biến mất khỏi DOM hoặc selector sai
-
     if (!canvasRect) return el;
-    const rect = domEl.getBoundingClientRect();
-    const dx = rect.left - canvasRect.left;
-    const dy = rect.top - canvasRect.top;
 
-    return {
-      ...el,
-      x: el.x !== undefined ? el.x + dx : undefined,
-      y: el.y !== undefined ? el.y + dy : undefined,
-      points: el.points.map(pt => ({
-        ...pt,
-        x: pt.x + dx,
-        y: pt.y + dy
-      }))
-    };
+    if (el.anchorSelector) {
+      let domEl: Element | null = null;
+      try {
+        domEl = document.querySelector(el.anchorSelector);
+      } catch (e) {
+        console.warn("Invalid selector lookup:", el.anchorSelector);
+      }
+      if (!domEl) return null; // Anchor đã biến mất khỏi DOM hoặc selector sai
+
+      const rect = domEl.getBoundingClientRect();
+      const dx = rect.left - canvasRect.left;
+      const dy = rect.top - canvasRect.top;
+
+      return {
+        ...el,
+        x: el.x !== undefined ? el.x + dx : undefined,
+        y: el.y !== undefined ? el.y + dy : undefined,
+        points: el.points.map(pt => ({
+          ...pt,
+          x: pt.x + dx,
+          y: pt.y + dy
+        }))
+      };
+    } else if (el.containerSelector) {
+      let domEl: Element | null = null;
+      try {
+        domEl = document.querySelector(el.containerSelector);
+      } catch (e) {
+        console.warn("Invalid selector lookup:", el.containerSelector);
+      }
+      if (!domEl) return null;
+
+      const rect = domEl.getBoundingClientRect();
+      const dx = rect.left - canvasRect.left - domEl.scrollLeft;
+      const dy = rect.top - canvasRect.top - domEl.scrollTop;
+
+      return {
+        ...el,
+        x: el.x !== undefined ? el.x + dx : undefined,
+        y: el.y !== undefined ? el.y + dy : undefined,
+        points: el.points.map(pt => ({
+          ...pt,
+          x: pt.x + dx,
+          y: pt.y + dy
+        }))
+      };
+    }
+
+    return el;
   };
 
   // Helper thực hiện tẩy Pixel có tính toán neo toạ độ (DOM Anchoring Aware)
@@ -2198,9 +2235,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             maxLineWidth = el.size * 0.6 * el.text.length; // Fallback
           }
 
-          const width = maxLineWidth + 12;
-          const height = el.size * lines.length * 1.3 + 8;
-          if (x >= el.x && x <= el.x + width && y >= el.y && y <= el.y + height) {
+          const width = maxLineWidth;
+          const height = el.size * lines.length * 1.3;
+          // Dùng dung sai cực nhỏ (3px) để bù đắp sai lệch hiển thị/hotspot mà không lo click ra ngoài vẫn nhận
+          if (x >= el.x - 3 && x <= el.x + width + 3 && y >= el.y - 3 && y <= el.y + height + 3) {
             return originalEl;
           }
         }
@@ -3724,8 +3762,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (!canvas) return;
 
       const rect = canvas.getBoundingClientRect();
-      const x = textInput.x - rect.left;
-      const y = textInput.y - rect.top;
+      const x = textInput.x + 4 - rect.left; // Bù trừ padding-left 4px của textarea
+      const y = textInput.y + 2 - rect.top;  // Bù trừ padding-top 2px của textarea
 
       let dx = 0;
       let dy = 0;
@@ -4112,6 +4150,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             onSelect={setSelectedId}
             onUpdateElements={setElements}
             domUpdateKey={domUpdateKey}
+            editingTextId={editingTextId}
           />,
           container
         );
@@ -4145,11 +4184,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 setSelectedId(null);
                 setEditingTextId(clickedElement.id);
                 // Đổi toạ độ từ canvas sang client coordinate để hiển thị textarea đúng vị trí
-                // Trừ đi 4px cho cả x và y để bù trừ (offset) phần padding: 4px của textarea, 
-                // giúp chữ trong ô gõ đè khít 100% lên chữ vẽ cũ trên canvas mà không bị lệch hay rung giật.
+                // Bù trừ padding (left: 4px, top: 2px) của textarea để chữ trùng khớp hoàn hảo.
                 setTextInput({
                   x: startX + rect.left - 4,
-                  y: startY + rect.top - 4
+                  y: startY + rect.top - 2
                 });
                 const loadedVal = clickedElement.text || "";
                 textInputValRef.current = loadedVal;
@@ -4160,10 +4198,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
             setSelectedId(null);
             setEditingTextId(null);
-            // Căn chỉnh chính xác vị trí gõ chữ vào đúng điểm click chuột
-            const offsetX = 7; // padding-left + border-left
-            const offsetY = 5 + (fontSize / 2); // padding-top + border-top + 1/2 cỡ chữ
-            setTextInput({ x: e.clientX - offsetX, y: e.clientY - offsetY });
+            // Bù trừ padding 4px bên trái và nửa chiều cao chữ để căn giữa chiều dọc theo đúng điểm click chuột
+            const offsetY = 2 + (fontSize * 1.3) / 2;
+            setTextInput({ x: e.clientX - 4, y: e.clientY - offsetY });
             textInputValRef.current = "";
             setActiveTextVal("");
           }
@@ -4186,7 +4223,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 setEditingTextId(clickedElement.id);
                 setTextInput({
                   x: startX + rect.left - 4,
-                  y: startY + rect.top - 4
+                  y: startY + rect.top - 2
                 });
                 const loadedVal = clickedElement.text || "";
                 textInputValRef.current = loadedVal;

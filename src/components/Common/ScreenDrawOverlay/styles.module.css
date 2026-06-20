@@ -6,7 +6,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 99998; /* Đặt canvas vẽ nháp trên cùng tất cả (Video giải thích z-index 9998, Sổ tay ngữ pháp z-index 9999) */
+  z-index: 99999998; /* Đặt canvas vẽ nháp trên cùng tất cả các popup, modal, video, v.v. */
   display: block;
   user-select: none;
   -webkit-user-select: none;
@@ -16,7 +16,7 @@
 /* Kính mờ Glassmorphism cho Toolbar */
 .toolbar {
   position: fixed;
-  z-index: 99999; /* Thanh điều khiển công cụ vẽ trên cả canvas */
+  z-index: 99999999; /* Thanh điều khiển công cụ vẽ trên cả canvas */
   display: flex;
   align-items: center;
   gap: 6px;
@@ -190,7 +190,7 @@
 /* CSS cho Textarea tạm thời khi gõ text */
 .richTextInput {
   position: fixed;
-  z-index: 99999;
+  z-index: 99999999;
   background: transparent !important;
   border: 1px dashed rgba(59, 130, 246, 0.6) !important;
   outline: none !important;
@@ -355,7 +355,7 @@
   background: rgba(15, 23, 42, 0.45);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  z-index: 999999; /* Đặt lớp phủ modal cao nhất trên cả canvas (99998) và toolbar (99999) */
+  z-index: 999999999; /* Đặt lớp phủ modal cao nhất trên cả canvas (99999998) và toolbar (99999999) */
   display: flex;
   align-items: center;
   justify-content: center;
