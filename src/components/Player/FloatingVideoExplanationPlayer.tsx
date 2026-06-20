@@ -22,6 +22,14 @@ interface Timestamp {
   targetIndex?: number | null;
 }
 
+interface FlatTimestamp {
+  videoIndex: number;
+  stampIndex: number;
+  label: string;
+  time: number;
+  targetIndex?: number | null;
+}
+
 interface VideoExplanation {
   title?: string;
   videoUrl: string;
@@ -62,10 +70,32 @@ export default function FloatingVideoExplanationPlayer({
   const [activeStampIndex, setActiveStampIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [driveTimeParam, setDriveTimeParam] = useState("");
+  const [ytStartParam, setYtStartParam] = useState("");
+  const pendingDirectSeekRef = useRef<number | null>(null);
   const [customSize, setCustomSize] = useState<{ width: number; height: number } | null>(null);
   const [isResizingActive, setIsResizingActive] = useState(false);
   const dragX = useMotionValue(0);
   const dragY = useMotionValue(0);
+
+  // Gộp tất cả timestamps từ tất cả video và sắp xếp theo targetIndex
+  const allTimestamps: FlatTimestamp[] = [];
+  videos.forEach((video, videoIndex) => {
+    (video.timestamps || []).forEach((stamp, stampIndex) => {
+      allTimestamps.push({
+        videoIndex,
+        stampIndex,
+        label: stamp.label,
+        time: stamp.time,
+        targetIndex: stamp.targetIndex,
+      });
+    });
+  });
+
+  allTimestamps.sort((a, b) => {
+    const aVal = a.targetIndex ?? 0;
+    const bVal = b.targetIndex ?? 0;
+    return aVal - bVal;
+  });
 
   // Reset toạ độ kéo khi thay đổi zoom mode hoặc kích thước tùy chỉnh để trở về mặc định
   useEffect(() => {
@@ -186,33 +216,68 @@ export default function FloatingVideoExplanationPlayer({
     return fileId;
   };
 
-  const handleSeek = (seconds: number, index: number) => {
-    setActiveStampIndex(index);
+  const handleSeek = (seconds: number, stampIndex: number, targetVideoIndex: number, targetIdx?: number | null) => {
+    const isSameVideo = targetVideoIndex === activeVideoIndex;
+    setActiveStampIndex(stampIndex);
 
-    if (videoType === "youtube") {
-      const iframe = iframeRef.current;
-      if (iframe?.contentWindow) {
-        iframe.contentWindow.postMessage(
-          JSON.stringify({ event: "command", func: "seekTo", args: [seconds, true] }), "*"
-        );
-        iframe.contentWindow.postMessage(
-          JSON.stringify({ event: "command", func: "playVideo", args: [] }), "*"
-        );
+    if (!isSameVideo) {
+      setActiveVideoIndex(targetVideoIndex);
+      
+      const targetVideo = videos[targetVideoIndex];
+      const targetVideoType = targetVideo?.videoType || "youtube";
+      
+      if (targetVideoType === "youtube") {
+        setYtStartParam(`&start=${seconds}`);
+      } else if (targetVideoType === "google-drive") {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        setDriveTimeParam(`&t=${m}m${s}s`);
+      } else if (targetVideoType === "direct") {
+        pendingDirectSeekRef.current = seconds;
       }
-    } else if (videoType === "google-drive") {
-      const m = Math.floor(seconds / 60);
-      const s = seconds % 60;
-      setDriveTimeParam(`&t=${m}m${s}s`);
-    } else if (videoType === "direct" && videoRef.current) {
-      videoRef.current.currentTime = seconds;
-      videoRef.current.play().catch(() => {});
+    } else {
+      if (videoType === "youtube") {
+        const iframe = iframeRef.current;
+        if (iframe?.contentWindow) {
+          iframe.contentWindow.postMessage(
+            JSON.stringify({ event: "command", func: "seekTo", args: [seconds, true] }), "*"
+          );
+          iframe.contentWindow.postMessage(
+            JSON.stringify({ event: "command", func: "playVideo", args: [] }), "*"
+          );
+        }
+      } else if (videoType === "google-drive") {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        setDriveTimeParam(`&t=${m}m${s}s`);
+      } else if (videoType === "direct" && videoRef.current) {
+        videoRef.current.currentTime = seconds;
+        videoRef.current.play().catch(() => {});
+      }
     }
 
-    const targetIdx = timestamps[index]?.targetIndex;
     if (targetIdx !== undefined && targetIdx !== null && onQuestionSync) {
       onQuestionSync(targetIdx);
     }
   };
+
+  // Hỗ trợ tự động tua đối với direct video khi đổi video
+  useEffect(() => {
+    if (videoType === "direct" && videoRef.current && pendingDirectSeekRef.current !== null) {
+      const targetTime = pendingDirectSeekRef.current;
+      pendingDirectSeekRef.current = null;
+      
+      const handleCanPlay = () => {
+        if (videoRef.current) {
+          videoRef.current.currentTime = targetTime;
+          videoRef.current.play().catch(() => {});
+          videoRef.current.removeEventListener("canplay", handleCanPlay);
+        }
+      };
+      
+      videoRef.current.addEventListener("canplay", handleCanPlay);
+    }
+  }, [videoUrl, videoType]);
 
   // Tự động chuyển video và mốc thời gian phù hợp khi câu hỏi hiện tại thay đổi
   useEffect(() => {
@@ -257,7 +322,7 @@ export default function FloatingVideoExplanationPlayer({
 
   const ytId = videoType === "youtube" ? getYouTubeId(videoUrl) : "";
   const driveId = videoType === "google-drive" ? getDriveId(videoUrl) : "";
-  const ytEmbedUrl = `https://www.youtube.com/embed/${ytId}?enablejsapi=1&version=3&autoplay=1`;
+  const ytEmbedUrl = `https://www.youtube.com/embed/${ytId}?enablejsapi=1&version=3&autoplay=1${ytStartParam}`;
   const driveEmbedUrl = `https://drive.google.com/file/d/${driveId}/preview?autoplay=1${driveTimeParam}`;
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -360,12 +425,12 @@ export default function FloatingVideoExplanationPlayer({
               <ChevronLeft size={14} />
             </button>
             <div ref={mobileScrollRef} className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none max-w-full scroll-smooth px-6">
-              {timestamps.map((stamp, idx) => {
-                const isActive = activeStampIndex === idx;
+              {allTimestamps.map((stamp) => {
+                const isActive = activeVideoIndex === stamp.videoIndex && activeStampIndex === stamp.stampIndex;
                 return (
                   <button
-                    key={idx}
-                    onClick={() => handleSeek(stamp.time, idx)}
+                    key={`${stamp.videoIndex}-${stamp.stampIndex}`}
+                    onClick={() => handleSeek(stamp.time, stamp.stampIndex, stamp.videoIndex, stamp.targetIndex)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border whitespace-nowrap active:scale-95 flex items-center gap-1.5 shrink-0 ${
                       isActive ? "bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-200" : "bg-white border-slate-100 text-slate-700 active:bg-blue-50"
                     }`}
@@ -555,12 +620,12 @@ export default function FloatingVideoExplanationPlayer({
             </button>
 
             <div ref={desktopScrollRef} className="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-none max-w-full scroll-smooth px-8">
-              {timestamps.map((stamp, idx) => {
-                const isActive = activeStampIndex === idx;
+              {allTimestamps.map((stamp) => {
+                const isActive = activeVideoIndex === stamp.videoIndex && activeStampIndex === stamp.stampIndex;
                 return (
                   <button
-                    key={idx}
-                    onClick={() => handleSeek(stamp.time, idx)}
+                    key={`${stamp.videoIndex}-${stamp.stampIndex}`}
+                    onClick={() => handleSeek(stamp.time, stamp.stampIndex, stamp.videoIndex, stamp.targetIndex)}
                     className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border whitespace-nowrap active:scale-95 flex items-center gap-1.5 shadow-sm shrink-0 ${
                       isActive
                         ? "bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-100"
