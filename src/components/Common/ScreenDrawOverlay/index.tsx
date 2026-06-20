@@ -164,6 +164,72 @@ export const getElementFont = (size: number, textStyle?: string): string => {
   return `${stylePart} ${size}px sans-serif`;
 };
 
+interface PointObj {
+  x: number;
+  y: number;
+  pressure?: number;
+  time?: number;
+}
+
+export const simplifyPath = (points: PointObj[], sqTolerance = 0.36): PointObj[] => {
+  if (points.length <= 2) return points;
+
+  const sqObliqueDistance = (p: PointObj, p1: PointObj, p2: PointObj) => {
+    let x = p1.x;
+    let y = p1.y;
+    let dx = p2.x - x;
+    let dy = p2.y - y;
+
+    if (dx !== 0 || dy !== 0) {
+      const t = ((p.x - x) * dx + (p.y - y) * dy) / (dx * dx + dy * dy);
+      if (t > 1) {
+        x = p2.x;
+        y = p2.y;
+      } else if (t > 0) {
+        x += dx * t;
+        y += dy * t;
+      }
+    }
+
+    dx = p.x - x;
+    dy = p.y - y;
+
+    return dx * dx + dy * dy;
+  };
+
+  const simplifyDPStep = (
+    pts: PointObj[],
+    first: number,
+    last: number,
+    sqTol: number,
+    simplified: PointObj[]
+  ) => {
+    let maxSqDist = sqTol;
+    let index = -1;
+
+    for (let i = first + 1; i < last; i++) {
+      const sqDist = sqObliqueDistance(pts[i], pts[first], pts[last]);
+
+      if (sqDist > maxSqDist) {
+        index = i;
+        maxSqDist = sqDist;
+      }
+    }
+
+    if (index !== -1) {
+      if (index - first > 1) simplifyDPStep(pts, first, index, sqTol, simplified);
+      simplified.push(pts[index]);
+      if (last - index > 1) simplifyDPStep(pts, index, last, sqTol, simplified);
+    }
+  };
+
+  const simplified: PointObj[] = [points[0]];
+  simplifyDPStep(points, 0, points.length - 1, sqTolerance, simplified);
+  simplified.push(points[points.length - 1]);
+
+  return simplified;
+};
+
 export const checkIntersection = (ex: number, ey: number, el: DrawElement, eraserRadius: number): boolean => {
   const buffer = eraserRadius + 6; // Extra buffer to make it easy to hit
 
@@ -439,22 +505,41 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
   domUpdateKey,
   editingTextId
 }) => {
-  const [size, setSize] = useState({ width: 0, height: 0 });
+  const [scrollPos, setScrollPos] = useState({ left: 0, top: 0 });
+  const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const [visibleElementIds, setVisibleElementIds] = useState<Set<string>>(new Set());
 
-  // 1. Cập nhật kích thước SVG theo kích thước cuộn của container
+  // 1. Cập nhật kích thước viewport và vị trí cuộn thực tế của container thay vì kích thước toàn trang
   useEffect(() => {
-    const updateSize = () => {
-      setSize({
-        width: container.scrollWidth,
-        height: container.scrollHeight
+    if (!container) return;
+
+    const handleScroll = () => {
+      setScrollPos({
+        left: container.scrollLeft,
+        top: container.scrollTop
       });
     };
-    updateSize();
+
+    const handleResize = () => {
+      setViewportSize({
+        width: container.clientWidth,
+        height: container.clientHeight
+      });
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
     
-    const ro = new ResizeObserver(updateSize);
+    // Khởi tạo giá trị ban đầu
+    handleScroll();
+    handleResize();
+
+    const ro = new ResizeObserver(handleResize);
     ro.observe(container);
-    return () => ro.disconnect();
+
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+      ro.disconnect();
+    };
   }, [container]);
 
   // 2. Chuyển đổi tọa độ các phần tử sang hệ tương đối bên trong container cuộn
@@ -530,7 +615,12 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
   return (
     <svg 
       className="sub-svg-overlay" 
-      style={{ width: size.width, height: size.height }}
+      style={{ 
+        width: viewportSize.width, 
+        height: viewportSize.height,
+        transform: `translate3d(${scrollPos.left}px, ${scrollPos.top}px, 0px)`
+      }}
+      viewBox={`${scrollPos.left} ${scrollPos.top} ${viewportSize.width} ${viewportSize.height}`}
     >
       {renderedElements.map(el => {
         if (!el) return null;
@@ -3255,6 +3345,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       events.forEach((evt: any) => {
         const { x: ex, y: ey } = getCanvasCoords(evt.clientX, evt.clientY, canvas);
         const pt = lastPointRef.current;
+
+        if (pt) {
+          const dist = Math.sqrt((ex - pt.x) ** 2 + (ey - pt.y) ** 2);
+          if (dist < 1.0) return; // Lọc bỏ điểm vẽ quá ngắn để tránh quá tải GPU/CPU
+        }
 
         const currentPressure = evt.pressure !== undefined && evt.pressure > 0 ? evt.pressure : 0.5;
 
