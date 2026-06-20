@@ -1669,6 +1669,28 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     drawAllElements();
   }, [isFlashlightActive, flashlightSize, flashlightShape, domUpdateKey]);
 
+  // Ngăn chặn Safari trên iPad/iOS tự động nhận diện gestures cuộn/phóng to gây mất nét (pointercancel)
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !isActive) return;
+
+    const preventDefaultTouch = (e: Event) => {
+      if (tool !== 'cursor') {
+        e.preventDefault();
+      }
+    };
+
+    canvas.addEventListener('touchstart', preventDefaultTouch as any, { passive: false });
+    canvas.addEventListener('touchmove', preventDefaultTouch as any, { passive: false });
+    canvas.addEventListener('gesturestart', preventDefaultTouch as any, { passive: false });
+
+    return () => {
+      canvas.removeEventListener('touchstart', preventDefaultTouch as any);
+      canvas.removeEventListener('touchmove', preventDefaultTouch as any);
+      canvas.removeEventListener('gesturestart', preventDefaultTouch as any);
+    };
+  }, [isActive, tool]);
+
   // Lắng nghe di chuyển chuột toàn màn hình cho Đèn chiếu (kể cả khi không vẽ)
   useEffect(() => {
     if (!isFlashlightActive || !isActive) return;
@@ -3826,7 +3848,33 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     activePointsRef.current = [];
   };
 
+  const handlePointerCancel = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    // Chỉ hủy nét vẽ nháp đang dở dang nếu bị cancel, tránh lưu nét đứt đoạn do tì đè tay (palm rejection)
+    if (isDrawingRef.current) {
+      isDrawingRef.current = false;
+      activePointsRef.current = [];
+      drawAllElements();
+    }
+    if (resizingInfo) {
+      setResizingInfo(null);
+    }
+    if (holdTimerRef.current) {
+      clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = null;
+    }
+    if (pendingTimerRef.current) {
+      clearTimeout(pendingTimerRef.current);
+      pendingTimerRef.current = null;
+    }
+    setShapePending(false);
 
+    const canvas = canvasRef.current;
+    if (canvas) {
+      try {
+        canvas.releasePointerCapture(e.pointerId);
+      } catch (err) {}
+    }
+  };
 
   // Hoàn thành nhập text và vẽ lưu vào Vector state
   const handleTextSubmit = (shouldSwitchToHand = false) => {
@@ -4269,7 +4317,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
         onClick={(e) => {
           if (tool === 'text') {
             const canvas = canvasRef.current;
