@@ -686,7 +686,7 @@ export default function GrammarHandbook() {
         </div>
 
         {/* Content area */}
-        <div className={`flex-1 overflow-y-auto p-6 custom-vertical-scrollbar w-full ${tab === 'practice' ? 'bg-slate-50/50' : ''}`}>
+        <div className={`flex-1 overflow-y-auto p-6 custom-vertical-scrollbar w-full webtoeic-scroll-container ${tab === 'practice' ? 'bg-slate-50/50' : ''}`}>
           {tab === "theory" ? (
             <>
               <div
