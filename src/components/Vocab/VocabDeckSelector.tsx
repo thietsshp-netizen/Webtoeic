@@ -122,10 +122,34 @@ export default function VocabDeckSelector({
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
-      if (event.target && !document.body.contains(event.target as Node)) {
+      const target = event.target as HTMLElement;
+      if (!target) return;
+
+      // Ignore if element is not in the main body (extension overlays, etc.)
+      if (!document.body.contains(target)) {
         return;
       }
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+
+      // Check if target is related to a drawing or overlay tool
+      const isDrawingOrOverlay = (el: HTMLElement | null, depth = 0): boolean => {
+        if (!el || depth > 5) return false;
+        const tag = el.tagName.toLowerCase();
+        if (tag === 'canvas') return true;
+        
+        const id = el.id || '';
+        const className = typeof el.className === 'string' ? el.className : '';
+        const testRegex = /draw|paint|brush|pencil|screendraw|overlay|screenshot|capture/i;
+        
+        if (testRegex.test(id) || testRegex.test(className)) return true;
+        
+        return isDrawingOrOverlay(el.parentElement, depth + 1);
+      };
+
+      if (isDrawingOrOverlay(target)) {
+        return;
+      }
+
+      if (containerRef.current && !containerRef.current.contains(target)) {
         onClose();
       }
     };
