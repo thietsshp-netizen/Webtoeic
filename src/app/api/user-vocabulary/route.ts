@@ -15,15 +15,31 @@ export async function GET(req: Request) {
 
     const { searchParams } = new URL(req.url);
     const all = searchParams.get("all") === "true";
+    const deckId = searchParams.get("deckId");
+
+    const whereClause: any = { userId: userId };
+    if (!all) {
+      whereClause.isStarred = true;
+    }
+    
+    if (deckId) {
+      if (deckId === 'uncategorized') {
+        whereClause.deckId = null;
+      } else {
+        whereClause.deckId = deckId;
+      }
+    }
 
     // Fetch dictionary/starred vocabulary
     const dictVocabs = await (prisma as any).userVocabulary.findMany({
-      where: all ? { userId: userId } : { userId: userId, isStarred: true },
+      where: whereClause,
+      include: { deck: true },
       orderBy: { createdAt: 'desc' },
     });
 
     return NextResponse.json(dictVocabs.map((v: any) => ({
       ...v,
+      deck: v.deck,
       source: 'dictionary'
     })));
   } catch (error: any) {
@@ -49,7 +65,7 @@ export async function POST(request: Request) {
     const { 
       word, partOfSpeech, definition, translation, ipa, 
       example, exampleTranslation, action,
-      synonyms, antonyms, collocations, wordFamily
+      synonyms, antonyms, collocations, wordFamily, deckId
     } = body;
 
     if (!word || !definition) {
@@ -60,22 +76,37 @@ export async function POST(request: Request) {
       where: {
         userId: userId,
         word: { equals: word.trim(), mode: 'insensitive' },
-        // Simplify: Just match the word and userId to avoid definition mismatch issues
+        definition: { equals: definition.trim(), mode: 'insensitive' }
       },
     });
+
+    if (action === 'update-deck') {
+      if (existing) {
+        const updated = await (prisma as any).userVocabulary.update({
+          where: { id: existing.id },
+          data: {
+            deckId: (deckId && deckId !== 'uncategorized') ? deckId : null
+          },
+          include: { deck: true }
+        });
+        return NextResponse.json({ ...updated, deck: updated.deck });
+      }
+      return NextResponse.json({ error: 'Từ vựng chưa được gắn sao' }, { status: 404 });
+    }
 
     if (action === 'toggle-unlearned') {
       if (existing) {
         const updated = await (prisma as any).userVocabulary.update({
           where: { id: existing.id },
-          data: { isUnlearned: !existing.isUnlearned }
+          data: { isUnlearned: !existing.isUnlearned },
+          include: { deck: true }
         });
         // Cleanup if both flags are false
         if (!updated.isStarred && !updated.isUnlearned) {
           await (prisma as any).userVocabulary.delete({ where: { id: updated.id } });
           return NextResponse.json({ action: 'deleted' });
         }
-        return NextResponse.json(updated);
+        return NextResponse.json({ ...updated, deck: updated.deck });
       } else {
         // Create new record just for unlearned
         const created = await (prisma as any).userVocabulary.create({
@@ -84,10 +115,12 @@ export async function POST(request: Request) {
             ipa, example, exampleTranslation,
             synonyms, antonyms, collocations, wordFamily,
             isStarred: false,
-            isUnlearned: true
-          }
+            isUnlearned: true,
+            deckId: (deckId && deckId !== 'uncategorized') ? deckId : null
+          },
+          include: { deck: true }
         });
-        return NextResponse.json(created);
+        return NextResponse.json({ ...created, deck: created.deck });
       }
     }
 
@@ -95,27 +128,33 @@ export async function POST(request: Request) {
       if (existing) {
         const updated = await (prisma as any).userVocabulary.update({
           where: { id: existing.id },
-          data: { isStarred: false }
+          data: { isStarred: false },
+          include: { deck: true }
         });
         if (!updated.isStarred && !updated.isUnlearned) {
           await (prisma as any).userVocabulary.delete({ where: { id: updated.id } });
           return NextResponse.json({ action: 'deleted' });
         }
-        return NextResponse.json(updated);
+        return NextResponse.json({ ...updated, deck: updated.deck });
       }
       return NextResponse.json({ success: true });
     }
 
     if (existing) {
-      // If saving and already exists, only update isStarred and isUnlearned flags to preserve old definition/examples
+      // If saving and already exists, update flags and potentially update the deckId
+      const updateData: any = { 
+        isStarred: true,
+        isUnlearned: true // Reset to unlearned when re-starred
+      };
+      if (deckId !== undefined) {
+        updateData.deckId = (deckId && deckId !== 'uncategorized') ? deckId : null;
+      }
       const updated = await (prisma as any).userVocabulary.update({
         where: { id: existing.id },
-        data: { 
-          isStarred: true,
-          isUnlearned: true // Reset to unlearned when re-starred
-        }
+        data: updateData,
+        include: { deck: true }
       });
-      return NextResponse.json(updated);
+      return NextResponse.json({ ...updated, deck: updated.deck });
     }
 
     const newVocab = await (prisma as any).userVocabulary.create({
@@ -133,11 +172,13 @@ export async function POST(request: Request) {
         collocations,
         wordFamily,
         isStarred: true,
-        isUnlearned: true // Default to true when newly starred
+        isUnlearned: true, // Default to true when newly starred
+        deckId: (deckId && deckId !== 'uncategorized') ? deckId : null
       },
+      include: { deck: true }
     });
 
-    return NextResponse.json(newVocab);
+    return NextResponse.json({ ...newVocab, deck: newVocab.deck });
   } catch (error: any) {
     const msg = error?.message || String(error) || 'Unknown error';
     console.error('[UserVocab API] Error processing:', msg);

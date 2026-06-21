@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import "mobile-drag-drop/default.css";
 import { Star, Volume2, RotateCcw, ChevronRight, ChevronLeft, BookOpen, Shuffle, PenLine, Link2, Lightbulb, Replace, Layers, HelpCircle, Compass } from "lucide-react";
 import confetti from "canvas-confetti";
+import { AnimatePresence } from "framer-motion";
+import VocabDeckSelector from "./VocabDeckSelector";
 import VocabGuideModal from "@/components/Vocab/VocabGuideModal";
 import { startVocabTour } from "@/components/Toeic/toeicTour";
 import { speakVocab } from "@/lib/vocab-audio";
@@ -53,12 +55,22 @@ export function limitMeanings(mean: string): string {
   return parts.slice(0, 2).join("; ");
 }
 
+function getWordFontSize(word: string): string {
+  if (!word) return "text-2xl sm:text-3xl";
+  if (word.length > 15) return "text-lg sm:text-xl break-all";
+  if (word.length > 10) return "text-xl sm:text-2xl break-words";
+  return "text-2xl sm:text-3xl break-words";
+}
+
 // ---- FLASHCARD COMPONENT ----
 function FlashCard({
   word,
   isInNotebook,
   isUnlearned,
-  onToggleNotebook,
+  currentDeckId,
+  currentDeckName,
+  onSelectDeck,
+  onUnstar,
   onToggleUnlearned,
   index,
   globalFlip
@@ -66,12 +78,16 @@ function FlashCard({
   word: VocabWord;
   isInNotebook: boolean;
   isUnlearned: boolean;
-  onToggleNotebook: () => void;
+  currentDeckId: string | null | undefined;
+  currentDeckName?: string;
+  onSelectDeck: (deckId: string | null) => Promise<void>;
+  onUnstar: () => Promise<void>;
   onToggleUnlearned: () => void;
   index: number;
   globalFlip: "front" | "back" | null;
 }) {
   const [flipped, setFlipped] = useState(false);
+  const [showDeckSelector, setShowDeckSelector] = useState(false);
 
   useEffect(() => {
     if (globalFlip === "front") setFlipped(false);
@@ -84,39 +100,57 @@ function FlashCard({
       style={{ perspective: "1000px" }}
       onClick={() => { setFlipped(!flipped); speak(word.word); }}
     >
+      {/* Stationary Bookmark Button (Unlearned) - Left */}
+      <button
+        onClick={(e) => { e.stopPropagation(); onToggleUnlearned(); }}
+        className={`absolute top-3 left-3 p-1.5 rounded-lg transition-all vocab-unlearned-toggle-btn z-[60] ${isUnlearned ? "text-rose-500 bg-rose-50 scale-105 shadow-sm ring-1 ring-rose-100" : "text-slate-200 hover:text-rose-400 hover:bg-slate-50"}`}
+        title="Đánh dấu chưa thuộc"
+      >
+        <BookOpen size={16} fill={isUnlearned ? "currentColor" : "none"} />
+      </button>
+
+      {/* Index number - Center Top */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-slate-50 rounded-full text-[8px] text-slate-400 font-black tracking-widest border border-slate-100 shadow-sm z-[60] pointer-events-none">
+        #{index + 1}
+      </div>
+
+      {/* Stationary Star Button (Notebook) - Right */}
+      <div className="absolute top-3 right-3 z-[60]" onClick={(e) => e.stopPropagation()}>
+        <button
+          onClick={() => setShowDeckSelector(!showDeckSelector)}
+          className={`p-1.5 rounded-lg transition-all vocab-star-toggle-btn ${isInNotebook ? "text-amber-400 bg-amber-50 scale-105 shadow-sm ring-1 ring-amber-100" : "text-slate-200 hover:text-amber-300 hover:bg-slate-50"}`}
+          title="Lưu/xoá từ khỏi từ vựng của bạn"
+        >
+          <Star size={16} fill={isInNotebook ? "currentColor" : "none"} />
+        </button>
+        <AnimatePresence>
+          {showDeckSelector && (
+            <VocabDeckSelector
+              word={word.word}
+              currentDeckId={currentDeckId}
+              onSelectDeck={async (deckId) => {
+                await onSelectDeck(deckId);
+              }}
+              onUnstar={async () => {
+                await onUnstar();
+                setShowDeckSelector(false);
+              }}
+              onClose={() => setShowDeckSelector(false)}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+
       <div
         className="absolute inset-0 transition-transform duration-700 ease-in-out"
         style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "rotateY(0)" }}
       >
         {/* Front */}
-        <div className="absolute inset-0 bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-200 p-5 sm:p-8 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all">
-          {/* Bookmark Button (Unlearned) - Left */}
-          <button
-            onClick={(e) => { e.stopPropagation(); onToggleUnlearned(); }}
-            className={`absolute top-3 left-3 p-1.5 rounded-lg transition-all vocab-unlearned-toggle-btn ${isUnlearned ? "text-rose-500 bg-rose-50 scale-105 shadow-sm ring-1 ring-rose-100" : "text-slate-200 hover:text-rose-400 hover:bg-slate-50"}`}
-            title="Đánh dấu chưa thuộc"
-          >
-            <BookOpen size={16} fill={isUnlearned ? "currentColor" : "none"} />
-          </button>
-
-          {/* Index number - Center Top */}
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-slate-50 rounded-full text-[8px] text-slate-400 font-black tracking-widest border border-slate-100 shadow-sm">
-            #{index + 1}
-          </div>
-
-          {/* Star Button (Notebook) - Right */}
-          <button
-            onClick={(e) => { e.stopPropagation(); onToggleNotebook(); }}
-            className={`absolute top-3 right-3 p-1.5 rounded-lg transition-all vocab-star-toggle-btn ${isInNotebook ? "text-amber-400 bg-amber-50 scale-105 shadow-sm ring-1 ring-amber-100" : "text-slate-200 hover:text-amber-300 hover:bg-slate-50"}`}
-            title="Lưu/xoá từ khỏi từ vựng của bạn"
-          >
-            <Star size={16} fill={isInNotebook ? "currentColor" : "none"} />
-          </button>
-
+        <div className="absolute inset-0 bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-200 p-5 sm:p-8 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all overflow-hidden">
           <div className="mt-6 sm:mt-10 mb-2">
-            <div className="text-2xl sm:text-3xl font-black text-blue-600 mb-2 flex items-center gap-3">
-              {word.word}
-              <button onClick={(e) => { e.stopPropagation(); speak(word.word); }} className="p-1.5 hover:bg-blue-50 rounded-lg transition-colors">
+            <div className={`font-black text-blue-600 mb-2 flex items-center gap-3 flex-wrap ${getWordFontSize(word.word)}`}>
+              <span>{word.word}</span>
+              <button onClick={(e) => { e.stopPropagation(); speak(word.word); }} className="p-1.5 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0">
                 <Volume2 size={20} className="text-blue-400 hover:text-blue-600" />
               </button>
             </div>
@@ -126,13 +160,13 @@ function FlashCard({
           </div>
           
           <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide">
-            <div className="text-slate-600 text-sm sm:text-[15px] leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: word.ex }} />
+            <div className="text-slate-600 text-sm sm:text-[15px] leading-relaxed font-medium break-words" dangerouslySetInnerHTML={{ __html: word.ex }} />
           </div>
 
           {word.syns.length > 0 && (
-            <div className="mt-6 pt-4 border-t border-slate-50 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center gap-2">
-              <span className="opacity-50 italic lowercase font-bold">Hints:</span>
-              <span className="bg-teal-50 px-2 py-0.5 rounded-lg flex gap-2">
+            <div className="mt-6 pt-4 border-t border-slate-50 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center gap-2 flex-wrap">
+              <span className="opacity-50 italic lowercase font-bold flex-shrink-0">Hints:</span>
+              <span className="bg-teal-50 px-2 py-0.5 rounded-lg flex gap-2 flex-wrap break-words">
                 {word.syns
                   .filter(s => s && s.toString() !== '[object Object]')
                   .slice(0, 2)
@@ -144,44 +178,26 @@ function FlashCard({
               </span>
             </div>
           )}
+          {/* Deck Name */}
+          <div className="mt-auto pt-4 text-center text-[10px] text-slate-400 font-bold tracking-wide italic">
+            ({currentDeckName || "bộ thẻ tổng"})
+          </div>
         </div>
         {/* Back */}
         <div
-          className="absolute inset-0 bg-indigo-50 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-4 border-indigo-200 p-5 sm:p-8 flex flex-col"
+          className="absolute inset-0 bg-indigo-50 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-4 border-indigo-200 p-5 sm:p-8 flex flex-col overflow-hidden"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
-          {/* Bookmark Button (Unlearned) - Left */}
-          <button
-            onClick={(e) => { e.stopPropagation(); onToggleUnlearned(); }}
-            className={`absolute top-3 left-3 p-1.5 rounded-lg transition-all ${isUnlearned ? "text-rose-500 bg-rose-50 scale-105 shadow-sm" : "text-slate-200 hover:text-rose-400 hover:bg-slate-50"}`}
-          >
-            <BookOpen size={16} fill={isUnlearned ? "currentColor" : "none"} />
-          </button>
-
-          {/* Index number - Center Top */}
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-white/80 rounded-full text-[8px] text-slate-400 font-black tracking-widest border border-blue-100/50 shadow-sm">
-            #{index + 1}
-          </div>
-
-          {/* Star Button (Notebook) - Right */}
-          <button
-            onClick={(e) => { e.stopPropagation(); onToggleNotebook(); }}
-            className={`absolute top-3 right-3 p-1.5 rounded-xl transition-all ${isInNotebook ? "text-amber-400 bg-amber-50 scale-105 shadow-sm" : "text-slate-200 hover:text-amber-300 hover:bg-slate-50"}`}
-            title="Lưu/xoá từ khỏi từ vựng của bạn"
-          >
-            <Star size={16} fill={isInNotebook ? "currentColor" : "none"} />
-          </button>
-
           <div className="mt-6 sm:mt-10 mb-4">
-            <div className="text-2xl sm:text-3xl font-black text-blue-600 mb-2">{word.word}</div>
-            <div className="text-red-500 font-black text-base sm:text-lg tracking-tight leading-tight">{limitMeanings(word.mean)}</div>
+            <div className={`font-black text-blue-600 mb-2 ${getWordFontSize(word.word)}`}>{word.word}</div>
+            <div className="text-red-500 font-black text-base sm:text-lg tracking-tight leading-tight break-words">{limitMeanings(word.mean)}</div>
           </div>
 
           <div className="space-y-4 text-sm sm:text-[15px] flex-1 overflow-y-auto pr-2 scrollbar-hide">
             <div className="flex flex-col gap-2">
-              <div className="text-slate-700 leading-relaxed font-medium bg-white/40 p-3 sm:p-4 rounded-2xl border border-white/60 shadow-sm" dangerouslySetInnerHTML={{ __html: word.ex }} />
+              <div className="text-slate-700 leading-relaxed font-medium bg-white/40 p-3 sm:p-4 rounded-2xl border border-white/60 shadow-sm break-words" dangerouslySetInnerHTML={{ __html: word.ex }} />
               {word.exVi && (
-                <div className="text-slate-500 italic leading-relaxed pl-4 border-l-2 border-blue-200 py-1 bg-slate-50/50 rounded-r-xl pr-3 text-xs sm:text-[13px]" dangerouslySetInnerHTML={{ __html: word.exVi }} />
+                <div className="text-slate-500 italic leading-relaxed pl-4 border-l-2 border-blue-200 py-1 bg-slate-50/50 rounded-r-xl pr-3 text-xs sm:text-[13px] break-words" dangerouslySetInnerHTML={{ __html: word.exVi }} />
               )}
             </div>
 
@@ -295,6 +311,10 @@ function FlashCard({
                 </div>
               )}
             </div>
+          </div>
+          {/* Deck Name (Back) */}
+          <div className="mt-auto pt-4 text-center text-[10px] text-slate-400/80 font-bold tracking-wide italic">
+            ({currentDeckName || "bộ thẻ tổng"})
           </div>
         </div>
       </div>
@@ -992,6 +1012,26 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
   const [globalFlip, setGlobalFlip] = useState<"front" | "back" | null>(null);
   const [hasMounted, setHasMounted] = useState(false);
 
+  // Deck states
+  const [decks, setDecks] = useState<any[]>([]);
+  const [selectedDeckId, setSelectedDeckId] = useState<string | null>(null); // null means "Tất cả"
+  const [uncategorizedCount, setUncategorizedCount] = useState(0);
+  const [userVocabs, setUserVocabs] = useState<any[]>([]);
+
+  const fetchDecks = useCallback(async () => {
+    if (!userId) return;
+    try {
+      const res = await fetch("/api/vocab-decks");
+      if (res.ok) {
+        const d = await res.json();
+        setDecks(d.decks || []);
+        setUncategorizedCount(d.uncategorizedCount || 0);
+      }
+    } catch (e) {
+      console.error("Failed to load decks", e);
+    }
+  }, [userId]);
+
   useEffect(() => {
     setHasMounted(true);
     if (typeof window !== "undefined") {
@@ -1023,6 +1063,7 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
         const res = await fetch("/api/user-vocabulary?all=true");
         const allData = await res.json();
         if (Array.isArray(allData)) {
+          setUserVocabs(allData);
           // Notebook IDs: Những từ có isStarred = true
           const starred = new Set(allData.filter(v => v.isStarred).map(v => v.word.trim().toLowerCase() + "|" + v.definition.trim().toLowerCase()));
           setNotebookIds(starred);
@@ -1039,34 +1080,93 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
     };
 
     loadData();
-  }, [vocabDayId, userId]);
+    if (vocabDayId === "personal-vocab") {
+      fetchDecks();
+    }
+  }, [vocabDayId, userId, fetchDecks]);
 
-  const toggleNotebook = async (word: VocabWord) => {
+  const handleDeckSelect = async (word: VocabWord, deckId: string | null) => {
+    if (!userId) return;
     const key = word.word.trim().toLowerCase() + "|" + word.mean.trim().toLowerCase();
-    const newSet = new Set(notebookIds);
-    const isAdding = !newSet.has(key);
+    
+    // Check if it already exists in userVocabs
+    const existing = userVocabs.find(v => v.word.toLowerCase() === word.word.toLowerCase() && v.definition.trim() === word.mean.trim());
 
-    if (isAdding) newSet.add(key);
-    else newSet.delete(key);
-    setNotebookIds(newSet);
+    const payload = {
+      word: word.word,
+      definition: word.mean,
+      ipa: word.ipa,
+      example: word.ex,
+      exampleTranslation: word.exVi,
+      synonyms: word.synonyms,
+      antonyms: word.antonyms,
+      collocations: word.collocations,
+      wordFamily: word.wordFamily,
+      deckId: deckId,
+      action: existing ? 'update-deck' : 'save'
+    };
 
-    if (userId) {
-      await fetch("/api/user-vocabulary", {
+    try {
+      const res = await fetch("/api/user-vocabulary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        // Update userVocabs
+        setUserVocabs(prev => {
+          const next = prev.filter(v => !(v.word.toLowerCase() === word.word.toLowerCase() && v.definition === word.mean));
+          return [...next, updated];
+        });
+        // Update notebookIds
+        const newNotebook = new Set(notebookIds);
+        newNotebook.add(key);
+        setNotebookIds(newNotebook);
+        
+        // Dispatch global event
+        window.dispatchEvent(new CustomEvent('vocab-updated'));
+        
+        // Reload deck counts
+        await fetchDecks();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleUnstar = async (word: VocabWord) => {
+    if (!userId) return;
+    const key = word.word.trim().toLowerCase() + "|" + word.mean.trim().toLowerCase();
+    try {
+      const res = await fetch("/api/user-vocabulary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: isAdding ? 'save' : 'delete',
           word: word.word,
           definition: word.mean,
-          ipa: word.ipa,
-          example: word.ex,
-          exampleTranslation: word.exVi,
-          synonyms: word.synonyms,
-          antonyms: word.antonyms,
-          collocations: word.collocations
+          action: 'delete'
         })
       });
-      window.dispatchEvent(new CustomEvent('vocab-updated'));
+      if (res.ok) {
+        const result = await res.json();
+        if (result.action === 'deleted') {
+          setUserVocabs(prev => prev.filter(v => !(v.word.toLowerCase() === word.word.toLowerCase() && v.definition === word.mean)));
+        } else {
+          setUserVocabs(prev => prev.map(v => (v.word.toLowerCase() === word.word.toLowerCase() && v.definition === word.mean) ? { ...v, isStarred: false } : v));
+        }
+        
+        const newNotebook = new Set(notebookIds);
+        newNotebook.delete(key);
+        setNotebookIds(newNotebook);
+        
+        // Dispatch global event
+        window.dispatchEvent(new CustomEvent('vocab-updated'));
+        
+        await fetchDecks();
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -1112,14 +1212,27 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
     }
   };
 
-  const unlearnedCount = useMemo(() => {
+  const filteredData = useMemo(() => {
+    if (vocabDayId !== "personal-vocab" || !selectedDeckId) {
+      return data;
+    }
     return data.filter(w => {
+      const entry = userVocabs.find(v => v.word.toLowerCase() === w.word.toLowerCase() && v.definition.trim() === w.mean.trim());
+      if (selectedDeckId === "uncategorized") {
+        return !entry || !entry.deckId;
+      }
+      return entry && entry.deckId === selectedDeckId;
+    });
+  }, [data, vocabDayId, selectedDeckId, userVocabs]);
+
+  const unlearnedCount = useMemo(() => {
+    return filteredData.filter(w => {
       const key = w.word.trim().toLowerCase() + "|" + w.mean.trim().toLowerCase();
       return unlearnedIds.has(key);
     }).length;
-  }, [data, unlearnedIds]);
+  }, [filteredData, unlearnedIds]);
 
-  const activeWords = filterMode === "all" ? data : data.filter(w => {
+  const activeWords = filterMode === "all" ? filteredData : filteredData.filter(w => {
     const key = w.word.trim().toLowerCase() + "|" + w.mean.trim().toLowerCase();
     return unlearnedIds.has(key);
   });
@@ -1179,11 +1292,46 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
             </div>
           </div>
 
-          <div className="flex gap-1 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-1 overflow-x-auto scrollbar-hide items-center">
             {(() => {
               const libraryTab = TABS.find(t => t.id === "library");
               if (!libraryTab) return null;
               const Icon = libraryTab.icon;
+              
+              if (vocabDayId === "personal-vocab") {
+                const isActive = tab === "library";
+                return (
+                  <select
+                    value={selectedDeckId || ""}
+                    title="Dữ liệu nạp vào các trò chơi sẽ lấy từ bộ thẻ mà bạn chọn ở đây"
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setSelectedDeckId(val === "" ? null : val);
+                      setTab("library");
+                    }}
+                    onClick={() => {
+                      if (tab !== "library") {
+                        setTab("library");
+                      }
+                    }}
+                    className={`text-xs font-black uppercase tracking-widest px-5 py-2.5 rounded-xl border-none outline-none cursor-pointer transition-all duration-300 appearance-none bg-no-repeat pr-8 ${isActive ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 bg-slate-100"}`}
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='${isActive ? "%23ffffff" : "%2364748b"}' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E")`,
+                      backgroundPosition: 'right 0.5rem center',
+                      backgroundSize: '1.25em 1.25em'
+                    }}
+                  >
+                    <option value="" className="text-slate-800 bg-white">📚 Bộ từ vựng tổng ({data.length})</option>
+                    <option value="uncategorized" className="text-slate-800 bg-white">📚 Bộ thẻ tổng (mặc định) ({uncategorizedCount})</option>
+                    {decks.map(deck => (
+                      <option key={deck.id} value={deck.id} className="text-slate-800 bg-white">
+                        📚 {deck.name} ({deck.count})
+                      </option>
+                    ))}
+                  </select>
+                );
+              }
+
               return (
                 <button
                   key="library"
@@ -1246,7 +1394,14 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
                       index={idx}
                       isInNotebook={notebookIds.has(key)}
                       isUnlearned={unlearnedIds.has(key)}
-                      onToggleNotebook={() => toggleNotebook(word)}
+                      currentDeckId={userVocabs.find(v => v.word.toLowerCase() === word.word.toLowerCase() && v.definition.trim() === word.mean.trim())?.deckId}
+                      currentDeckName={(() => {
+                        const deckId = userVocabs.find(v => v.word.toLowerCase() === word.word.toLowerCase() && v.definition.trim() === word.mean.trim())?.deckId;
+                        if (!deckId) return "bộ thẻ tổng";
+                        return decks.find(d => d.id === deckId)?.name || "bộ thẻ tổng";
+                      })()}
+                      onSelectDeck={(deckId) => handleDeckSelect(word, deckId)}
+                      onUnstar={() => handleUnstar(word)}
                       onToggleUnlearned={() => toggleUnlearned(word)}
                       globalFlip={globalFlip}
                     />

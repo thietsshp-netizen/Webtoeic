@@ -81,6 +81,7 @@ import {
 import { ScrambleGame, FillGame, MatchGame, SynonymGame, VocabWord } from "@/components/Vocab/VocabGamePlayer";
 import DeviceManagement from "@/components/Account/DeviceManagement";
 import { startVocabTour } from "@/components/Toeic/toeicTour";
+import VocabDeckSelector from "@/components/Vocab/VocabDeckSelector";
 
 function HomeContent() {
   const { data: session, status, update } = useSession() as any;
@@ -147,11 +148,20 @@ function HomeContent() {
   const [loadingStats, setLoadingStats] = useState(false);
   const [myVocab, setMyVocab] = useState<any[]>([]);
   const [loadingVocab, setLoadingVocab] = useState(false);
+  const [decks, setDecks] = useState<any[]>([]);
+  const [selectedDeckId, setSelectedDeckId] = useState<string | null>(null);
+  const [uncategorizedCount, setUncategorizedCount] = useState(0);
   const [globalFlip, setGlobalFlip] = useState<"front" | "back" | null>(null);
   const [showVocabGuide, setShowVocabGuide] = useState(false);
   const [showReviewGuide, setShowReviewGuide] = useState(false);
   const [hasClosedReviewGuide, setHasClosedReviewGuide] = useState(false);
   const [hasClosedVocabGuide, setHasClosedVocabGuide] = useState(false);
+
+  const deckFilteredVocab = myVocab.filter(v => {
+    if (!selectedDeckId) return true;
+    if (selectedDeckId === "uncategorized") return !v.deckId;
+    return v.deckId === selectedDeckId;
+  });
 
   // Dashboard Sidebar States
   const [collapsed, setCollapsed] = useState(false);
@@ -334,6 +344,21 @@ function HomeContent() {
 
 
 
+  const fetchDecks = useCallback(async () => {
+    if (status === "authenticated") {
+      try {
+        const res = await fetch("/api/vocab-decks");
+        if (res.ok) {
+          const d = await res.json();
+          setDecks(d.decks || []);
+          setUncategorizedCount(d.uncategorizedCount || 0);
+        }
+      } catch (e) {
+        console.error("Failed to load decks on dashboard", e);
+      }
+    }
+  }, [status]);
+
   // Global vocabulary update listener
   const fetchVocab = useCallback(() => {
     if (status === "authenticated") {
@@ -350,8 +375,9 @@ function HomeContent() {
         })
         .catch(err => console.error(err))
         .finally(() => setLoadingVocab(false));
+      fetchDecks();
     }
-  }, [status]);
+  }, [status, fetchDecks]);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -359,6 +385,13 @@ function HomeContent() {
       return () => window.removeEventListener('vocab-updated', fetchVocab);
     }
   }, [status, fetchVocab]);
+
+  useEffect(() => {
+    if (activeTab === "dashboard" && status === "authenticated" && dashTab === "vocab") {
+      setSelectedDeckId(null);
+      fetchVocab();
+    }
+  }, [activeTab, status, dashTab, fetchVocab]);
 
   const handleSRSUpdate = useCallback(async (word: string, definition: string, isCorrect: boolean) => {
     // Tìm ID của từ dựa trên word và definition trong myVocab
@@ -384,6 +417,45 @@ function HomeContent() {
       console.error("SRS Update failed:", err);
     }
   }, [myVocab]);
+
+  const handleSelectDeck = useCallback(async (vocab: any, deckId: string | null) => {
+    try {
+      const res = await fetch('/api/user-vocabulary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          word: vocab.word,
+          definition: vocab.definition,
+          action: 'update-deck',
+          deckId: deckId
+        })
+      });
+      if (res.ok) {
+        fetchVocab();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [fetchVocab]);
+
+  const handleUnstar = useCallback(async (vocab: any) => {
+    try {
+      const res = await fetch('/api/user-vocabulary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          word: vocab.word,
+          definition: vocab.definition,
+          action: 'delete'
+        })
+      });
+      if (res.ok) {
+        fetchVocab();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [fetchVocab]);
 
   // Auto-trigger guides for new users
   useEffect(() => {
@@ -1655,7 +1727,7 @@ function HomeContent() {
                                 vocabFilter === "all" ? "bg-white shadow-sm text-blue-600" : "text-slate-400 hover:text-slate-500"
                               )}
                             >
-                              TẤT CẢ ({myVocab.length})
+                              TẤT CẢ ({deckFilteredVocab.length})
                             </button>
                             <button
                               id="vocab-filter-unlearned-btn"
@@ -1665,7 +1737,7 @@ function HomeContent() {
                                 vocabFilter === "unlearned" ? "bg-white shadow-sm text-rose-500" : "text-slate-400 hover:text-slate-500"
                               )}
                             >
-                              CHƯA THUỘC ({myVocab.filter(v => v.isUnlearned).length})
+                              CHƯA THUỘC ({deckFilteredVocab.filter(v => v.isUnlearned).length})
                             </button>
                             <button
                               id="vocab-filter-review-btn"
@@ -1675,37 +1747,50 @@ function HomeContent() {
                                 vocabFilter === "review" ? "bg-white shadow-sm text-amber-500" : "text-slate-400 hover:text-slate-500"
                               )}
                             >
-                              CẦN ÔN TẬP ({myVocab.filter(v => !v.nextReviewDate || new Date(v.nextReviewDate) <= new Date()).length})
+                              CẦN ÔN TẬP ({deckFilteredVocab.filter(v => !v.nextReviewDate || new Date(v.nextReviewDate) <= new Date()).length})
                             </button>
                           </div>
                         </div>
 
                         {/* Sub-navigation for Vocab Modes (Horizontal scrollable style) */}
-                        {/* Sub-navigation for Vocab Modes (Horizontal scrollable style) */}
-                        <div className="flex gap-1 overflow-x-auto scrollbar-hide bg-slate-50/80 p-1.5 rounded-2xl border border-slate-100/50 mb-5 sm:mb-12 whitespace-nowrap">
-                          {/* Nút Thư viện riêng biệt */}
-                          {(() => {
-                            const Icon = BookOpen;
-                            const isActive = vocabMode === "library";
-                            return (
-                              <button
-                                id="vocab-mode-library-btn"
-                                onClick={() => setVocabMode("library")}
-                                className={clsx(
-                                  "flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap",
-                                  isActive
-                                    ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
-                                    : "text-slate-400 hover:text-slate-700 hover:bg-white"
-                                )}
-                              >
-                                <Icon size={14} fill={isActive ? "currentColor" : "none"} />
-                                Thư viện
-                              </button>
-                            );
-                          })()}
+                        <div className="flex gap-1 overflow-x-auto scrollbar-hide bg-slate-50/80 p-1.5 rounded-2xl border border-slate-100/50 mb-5 sm:mb-12 whitespace-nowrap items-center">
+                          {/* Nút Thư viện & Chọn bộ thẻ gộp làm một */}
+                          <select
+                            value={selectedDeckId || ""}
+                            title="Dữ liệu nạp vào các trò chơi sẽ lấy từ bộ thẻ mà bạn chọn ở đây"
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setSelectedDeckId(val === "" ? null : val);
+                              setVocabMode("library");
+                            }}
+                            onClick={() => {
+                              if (vocabMode !== "library") {
+                                setVocabMode("library");
+                              }
+                            }}
+                            className={clsx(
+                              "text-[10px] font-black uppercase tracking-widest px-5 py-2.5 rounded-xl border-none outline-none cursor-pointer transition-all duration-300 appearance-none bg-no-repeat pr-8",
+                              vocabMode === "library"
+                                ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
+                                : "text-slate-400 hover:text-slate-700 hover:bg-white bg-slate-100/80"
+                            )}
+                            style={{
+                              backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='${vocabMode === "library" ? "%23ffffff" : "%2364748b"}' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E")`,
+                              backgroundPosition: 'right 0.5rem center',
+                              backgroundSize: '1.25em 1.25em'
+                            }}
+                          >
+                            <option value="" className="text-slate-800 bg-white">📚 Bộ từ vựng tổng ({myVocab.length})</option>
+                            <option value="uncategorized" className="text-slate-800 bg-white">📚 Bộ thẻ tổng (mặc định) ({uncategorizedCount})</option>
+                            {decks.map(deck => (
+                              <option key={deck.id} value={deck.id} className="text-slate-800 bg-white">
+                                📚 {deck.name} ({deck.count})
+                              </option>
+                            ))}
+                          </select>
 
                           {/* Dải 4 trò chơi còn lại */}
-                          <div id="vocab-games-target" className="flex gap-1 whitespace-nowrap">
+                          <div id="vocab-games-target" className="flex gap-1 whitespace-nowrap items-center">
                             {[
                               { id: "scramble", label: "Xếp chữ", icon: Shuffle },
                               { id: "fill", label: "Điền từ", icon: PenLine },
@@ -1737,7 +1822,7 @@ function HomeContent() {
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                             {[1, 2, 3, 4].map(i => <div key={i} className="h-32 bg-slate-50 animate-pulse rounded-3xl" />)}
                           </div>
-                        ) : myVocab.length > 0 ? (
+                        ) : deckFilteredVocab.length > 0 ? (
                           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                             {vocabMode === "library" && (
                               <>
@@ -1753,10 +1838,10 @@ function HomeContent() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                   {(() => {
                                     const filtered = vocabFilter === "review"
-                                      ? myVocab.filter(v => !v.nextReviewDate || new Date(v.nextReviewDate) <= new Date())
+                                      ? deckFilteredVocab.filter(v => !v.nextReviewDate || new Date(v.nextReviewDate) <= new Date())
                                       : vocabFilter === "unlearned"
-                                        ? myVocab.filter(v => v.isUnlearned)
-                                        : myVocab;
+                                        ? deckFilteredVocab.filter(v => v.isUnlearned)
+                                        : deckFilteredVocab;
 
                                     return filtered.map((vocab, idx) => (
                                       <DashVocabCard
@@ -1776,10 +1861,10 @@ function HomeContent() {
                               <div className="bg-white/50 backdrop-blur-sm border border-slate-100 rounded-3xl sm:rounded-[3rem] p-3 sm:p-8 md:p-16">
                                 {(() => {
                                   const filteredWords = vocabFilter === "review"
-                                    ? myVocab.filter(v => !v.nextReviewDate || new Date(v.nextReviewDate) <= new Date())
+                                    ? deckFilteredVocab.filter(v => !v.nextReviewDate || new Date(v.nextReviewDate) <= new Date())
                                     : vocabFilter === "unlearned"
-                                      ? myVocab.filter(v => v.isUnlearned)
-                                      : myVocab;
+                                      ? deckFilteredVocab.filter(v => v.isUnlearned)
+                                      : deckFilteredVocab;
 
                                   const gameWords: VocabWord[] = filteredWords.map(v => ({
                                     id: v.id,
@@ -2030,9 +2115,17 @@ function cleanSynonyms(syns: string): string {
     .join(', ');
 }
 
+function getWordFontSize(word: string): string {
+  if (!word) return "text-3xl";
+  if (word.length > 15) return "text-lg sm:text-xl break-all";
+  if (word.length > 10) return "text-2xl sm:text-3xl break-words";
+  return "text-3xl break-words";
+}
+
 function DashVocabCard({ vocab, index, onUpdate, globalFlip }: any) {
   const [flipped, setFlipped] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showDeckSelector, setShowDeckSelector] = useState(false);
 
   // Sync with global flip command
   useEffect(() => {
@@ -2081,34 +2174,75 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip }: any) {
       style={{ perspective: "1000px" }}
       onClick={() => { setFlipped(!flipped); speak(vocab.word); }}
     >
+      {/* Stationary BookOpen toggle (Unlearned status) - Left */}
+      <div className="absolute top-3 left-3 z-[60]" onClick={(e) => e.stopPropagation()}>
+        <button
+          onClick={toggleUnlearned}
+          className={`p-1.5 rounded-lg transition-all vocab-unlearned-toggle-btn ${vocab.isUnlearned ? "text-rose-500 bg-rose-50 scale-105 shadow-sm ring-1 ring-rose-100" : "text-slate-200 hover:text-rose-400 hover:bg-slate-50"}`}
+        >
+          <BookOpen size={16} fill={vocab.isUnlearned ? "currentColor" : "none"} />
+        </button>
+      </div>
+
+      {/* Stationary Star/Deck toggle - Right */}
+      <div className="absolute top-3 right-3 z-[60]" onClick={(e) => e.stopPropagation()}>
+        <button
+          onClick={() => setShowDeckSelector(!showDeckSelector)}
+          className={`p-1.5 rounded-lg transition-all text-amber-400 bg-amber-50 scale-105 shadow-sm ring-1 ring-amber-100 vocab-star-toggle-btn`}
+        >
+          <Star size={16} fill="currentColor" />
+        </button>
+        <AnimatePresence>
+          {showDeckSelector && (
+            <VocabDeckSelector
+              word={vocab.word}
+              currentDeckId={vocab.deckId}
+              onSelectDeck={async (deckId) => {
+                try {
+                  await fetch('/api/user-vocabulary', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ word: vocab.word, definition: vocab.definition, action: 'update-deck', deckId })
+                  });
+                  onUpdate();
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
+              onUnstar={async () => {
+                try {
+                  await fetch('/api/user-vocabulary', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ word: vocab.word, definition: vocab.definition, action: 'delete' })
+                  });
+                  onUpdate();
+                } catch (err) {
+                  console.error(err);
+                } finally {
+                  setShowDeckSelector(false);
+                }
+              }}
+              onClose={() => setShowDeckSelector(false)}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+
       <div
         className="absolute inset-0 transition-transform duration-700 ease-in-out"
         style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "rotateY(0)" }}
       >
         {/* Front */}
-        <div className="absolute inset-0 bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-100 p-8 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all">
-          <button
-            onClick={toggleUnlearned}
-            className={`absolute top-3 left-3 p-1.5 rounded-lg transition-all vocab-unlearned-toggle-btn ${vocab.isUnlearned ? "text-rose-500 bg-rose-50 scale-105 shadow-sm ring-1 ring-rose-100" : "text-slate-200 hover:text-rose-400 hover:bg-slate-50"}`}
-          >
-            <BookOpen size={16} fill={vocab.isUnlearned ? "currentColor" : "none"} />
-          </button>
-
+        <div className="absolute inset-0 bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-100 p-8 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all overflow-hidden">
           <div className="absolute top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-slate-50 rounded-full text-[8px] text-slate-400 font-black tracking-widest border border-slate-100 shadow-sm">
             #{index + 1}
           </div>
 
-          <button
-            onClick={toggleStarred}
-            className={`absolute top-3 right-3 p-1.5 rounded-lg transition-all text-amber-400 bg-amber-50 scale-105 shadow-sm ring-1 ring-amber-100 vocab-star-toggle-btn`}
-          >
-            <Star size={16} fill="currentColor" />
-          </button>
-
           <div className="mt-10 mb-2 text-left">
-            <div className="text-3xl font-black text-blue-600 mb-2 flex items-center gap-3">
-              {vocab.word}
-              <button onClick={(e) => { e.stopPropagation(); speak(vocab.word); }} className="p-1.5 hover:bg-blue-50 rounded-lg transition-colors">
+            <div className={`font-black text-blue-600 mb-2 flex items-center gap-3 flex-wrap ${getWordFontSize(vocab.word)}`}>
+              <span>{vocab.word}</span>
+              <button onClick={(e) => { e.stopPropagation(); speak(vocab.word); }} className="p-1.5 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0">
                 <Volume2 size={20} className="text-blue-400" />
               </button>
             </div>
@@ -2120,18 +2254,18 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip }: any) {
           <div className="flex-1 overflow-y-auto pr-1 text-left scrollbar-hide">
             {vocab.example ? (
               <div 
-                className="text-slate-600 text-[15px] leading-relaxed font-medium"
+                className="text-slate-600 text-[15px] leading-relaxed font-medium break-words"
                 dangerouslySetInnerHTML={{ __html: vocab.example }}
               />
             ) : (
-              <div className="text-slate-600 text-[15px] leading-relaxed font-medium">---</div>
+              <div className="text-slate-600 text-[15px] leading-relaxed font-medium break-words">---</div>
             )}
           </div>
 
           {vocab.synonyms && (
-            <div className="mt-6 pt-4 border-t border-slate-50 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center gap-2">
+            <div className="mt-6 pt-4 border-t border-slate-50 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center gap-2 flex-wrap">
               <span className="opacity-50 italic lowercase font-bold">Hints:</span>
-              <span className="bg-teal-50 px-2 py-0.5 rounded-lg">
+              <span className="bg-teal-50 px-2 py-0.5 rounded-lg break-words">
                 {cleanSynonyms(vocab.synonyms)}
               </span>
             </div>
@@ -2155,11 +2289,15 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip }: any) {
               />
             ))}
           </div>
+          {/* Deck Name */}
+          <div className="mt-2.5 text-center text-[10px] text-slate-400 font-bold tracking-wide italic">
+            ({vocab.deck?.name || "bộ thẻ tổng"})
+          </div>
         </div>
 
         {/* Back */}
         <div
-          className="absolute inset-0 bg-indigo-50 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-4 border-indigo-200 p-8 flex flex-col text-left"
+          className="absolute inset-0 bg-indigo-50 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-4 border-indigo-200 p-8 flex flex-col text-left overflow-hidden"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
           <div className="absolute top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-white/80 rounded-full text-[8px] text-slate-400 font-black tracking-widest border border-blue-100/50 shadow-sm">
@@ -2167,21 +2305,21 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip }: any) {
           </div>
 
           <div className="mt-10 mb-4">
-            <div className="text-3xl font-black text-blue-600 mb-2">{vocab.word}</div>
-            <div className="text-red-500 font-black text-lg tracking-tight leading-tight">{limitMeanings(vocab.translation)}</div>
+            <div className={`font-black text-blue-600 mb-2 ${getWordFontSize(vocab.word)}`}>{vocab.word}</div>
+            <div className="text-red-500 font-black text-lg tracking-tight leading-tight break-words">{limitMeanings(vocab.translation)}</div>
           </div>
 
           <div className="space-y-4 text-[15px] flex-1 overflow-y-auto pr-2 scrollbar-hide">
             <div className="flex flex-col gap-2">
               {vocab.example && (
                 <div 
-                  className="text-slate-700 leading-relaxed font-medium bg-white/40 p-4 rounded-2xl border border-white/60 shadow-sm"
+                  className="text-slate-700 leading-relaxed font-medium bg-white/40 p-4 rounded-2xl border border-white/60 shadow-sm break-words"
                   dangerouslySetInnerHTML={{ __html: vocab.example }}
                 />
               )}
               {vocab.exampleTranslation && (
                 <div 
-                  className="text-slate-500 italic leading-relaxed pl-4 border-l-2 border-blue-200 py-1 bg-slate-50/50 rounded-r-xl pr-3"
+                  className="text-slate-500 italic leading-relaxed pl-4 border-l-2 border-blue-200 py-1 bg-slate-50/50 rounded-r-xl pr-3 break-words"
                   dangerouslySetInnerHTML={{ __html: vocab.exampleTranslation }}
                 />
               )}
@@ -2319,6 +2457,10 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip }: any) {
                 )}
               />
             ))}
+          </div>
+          {/* Deck Name (Back) */}
+          <div className="mt-2 text-center text-[10px] text-slate-400/80 font-bold tracking-wide italic">
+            ({vocab.deck?.name || "bộ thẻ tổng"})
           </div>
         </div>
       </div>

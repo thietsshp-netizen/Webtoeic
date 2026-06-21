@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, X, ChevronRight, BookOpen, Layers, Hash, List, Star, Link2, Replace } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import VocabDeckSelector from '../Vocab/VocabDeckSelector';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -68,6 +69,7 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
   const [activeSection, setActiveSection] = useState<string>('meaning-1');
   const [userVocabs, setUserVocabs] = useState<any[]>([]);
   const [isStarring, setIsStarring] = useState<string | null>(null);
+  const [activeDeckSelector, setActiveDeckSelector] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState<{ top?: number; left: number; bottom?: number } | null>(null);
@@ -174,7 +176,7 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
 
     // Optimistic UI update
     if (isStarred) {
-      setUserVocabs(prev => prev.filter(v => !(v.word.toLowerCase() === wordKey && v.definition === meaning.definition)));
+      setUserVocabs(prev => prev.filter(v => !(v.word.toLowerCase().trim() === wordKey && v.definition.trim().toLowerCase() === meaning.definition.trim().toLowerCase())));
     } else {
       setUserVocabs(prev => [...prev, {
         word: data.word,
@@ -244,6 +246,13 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
           }
         }
       } else {
+        const savedItem = await res.json();
+        if (savedItem && savedItem.id) {
+          setUserVocabs(prev => {
+            const next = prev.filter(v => !(v.word.toLowerCase().trim() === wordKey && v.definition.trim().toLowerCase() === meaning.definition.trim().toLowerCase()));
+            return [...next, savedItem];
+          });
+        }
         // Dispatch event to update other components (like Dashboard)
         window.dispatchEvent(new CustomEvent('vocab-updated'));
       }
@@ -251,6 +260,93 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
       console.error("Error toggling star:", err);
     } finally {
       setIsStarring(null);
+    }
+  };
+
+  const handleDeckSelect = async (meaning: any, deckId: string | null) => {
+    if (!data) return;
+    const wordKey = data.word.toLowerCase().trim();
+    const existingVocab = userVocabs.find(v =>
+      v.word.toLowerCase().trim() === wordKey &&
+      v.definition.trim() === meaning.definition.trim()
+    );
+
+    const aggregatedCollocations = deduplicate(
+      [
+        ...(data.data?.meanings?.flatMap(m => m.collocations || []) || []),
+        ...(data.data?.common_structures || [])
+      ],
+      item => item.structure
+    ).map(c => `${c.structure}: ${c.meaning}`).join(', ');
+
+    const aggregatedFamily = deduplicate(
+      [
+        ...(data.data?.meanings?.flatMap(m => m.word_family || []) || []),
+        ...(data.data?.word_family || [])
+      ],
+      item => item.word
+    ).map(f => `${f.word} (${f.meaning})`).join(', ');
+
+    const vocabData = {
+      word: word, 
+      partOfSpeech: meaning.part_of_speech,
+      definition: meaning.definition || meaning.meaning || meaning.translation || '',
+      translation: meaning.definition || meaning.meaning || meaning.translation || '',
+      ipa: meaning.ipa || (data.data as any)?.phonetic || (data.data?.meanings?.[0]?.ipa) || '',
+      example: meaning.example,
+      exampleTranslation: meaning.translation || meaning.translation_example || meaning.exampleTranslation,
+      synonyms: Array.isArray(meaning.synonyms) 
+        ? meaning.synonyms.map((s: any) => typeof s === 'object' ? `${s.word} (${s.meaning})` : s).join(', ') 
+         : '',
+      antonyms: Array.isArray(meaning.antonyms) 
+        ? meaning.antonyms.map((a: any) => typeof a === 'object' ? `${a.word} (${a.meaning})` : a).join(', ') 
+        : '',
+      collocations: aggregatedCollocations || '',
+      wordFamily: aggregatedFamily || '',
+      deckId: deckId,
+      action: existingVocab ? 'update-deck' : 'save'
+    };
+
+    try {
+      const res = await fetch('/api/user-vocabulary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(vocabData)
+      });
+
+      if (res.ok) {
+        const updatedItem = await res.json();
+        setUserVocabs(prev => {
+          const next = prev.filter(v => !(v.word.toLowerCase().trim() === wordKey && v.definition.trim().toLowerCase() === meaning.definition.trim().toLowerCase()));
+          return [...next, updatedItem];
+        });
+        window.dispatchEvent(new CustomEvent('vocab-updated'));
+      }
+    } catch (err) {
+      console.error("Error selecting deck:", err);
+    }
+  };
+
+  const handleUnstar = async (meaning: any) => {
+    if (!data) return;
+    const wordKey = data.word.toLowerCase().trim();
+    try {
+      const res = await fetch('/api/user-vocabulary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          word: data.word,
+          definition: meaning.definition,
+          action: 'delete'
+        })
+      });
+      if (res.ok) {
+        setUserVocabs(prev => prev.filter(v => !(v.word.toLowerCase().trim() === wordKey && v.definition.trim().toLowerCase() === meaning.definition.trim().toLowerCase())));
+        window.dispatchEvent(new CustomEvent('vocab-updated'));
+        setActiveDeckSelector(null);
+      }
+    } catch (err) {
+      console.error("Error unstarring:", err);
     }
   };
 
@@ -604,7 +700,12 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
                 </div>
               ) : (
                 data.data?.meanings?.map((m, idx) => {
-                  const isStarred = userVocabs.some(v => v.word.toLowerCase() === data.word.toLowerCase() && v.definition === m.definition);
+                  const matchingVocab = userVocabs.find(v => 
+                    v.word.trim().toLowerCase() === data.word.trim().toLowerCase() && 
+                    v.definition.trim().toLowerCase() === m.definition.trim().toLowerCase()
+                  );
+                  const isStarred = !!matchingVocab;
+                  const deckName = matchingVocab?.deck ? matchingVocab.deck.name : "Bộ thẻ tổng (mặc định)";
 
                   return (
                     <section key={idx} id={`meaning-${idx + 1}`} className="space-y-2 group/section">
@@ -615,8 +716,10 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
                         <div className="relative group/star">
                           <button
                             type="button"
-                            onClick={(e) => toggleStar(e, m)}
-                            disabled={isStarring === m.definition}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveDeckSelector(prev => prev === m.definition ? null : m.definition);
+                            }}
                             className={cn(
                               "p-1.5 rounded-lg transition-all tour-dict-star-btn",
                               isStarred ? "text-yellow-500 bg-yellow-50" : "text-slate-300 hover:bg-slate-50 hover:text-yellow-500"
@@ -625,11 +728,31 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
                             <Star size={14} fill={isStarred ? "currentColor" : "none"} className={isStarring === m.definition ? "animate-pulse" : ""} />
                           </button>
 
+                          <AnimatePresence>
+                            {activeDeckSelector === m.definition && (
+                              <VocabDeckSelector
+                                word={data.word}
+                                currentDeckId={userVocabs.find(v => 
+                                  v.word.trim().toLowerCase() === data.word.trim().toLowerCase() && 
+                                  v.definition.trim().toLowerCase() === m.definition.trim().toLowerCase()
+                                )?.deckId}
+                                onSelectDeck={(deckId) => handleDeckSelect(m, deckId)}
+                                onUnstar={() => handleUnstar(m)}
+                                onClose={() => setActiveDeckSelector(null)}
+                              />
+                            )}
+                          </AnimatePresence>
+
                           {/* Tooltip */}
-                          <div className="absolute right-full top-1/2 -translate-y-1/2 mr-3 opacity-0 group-hover/star:opacity-100 transition-all pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[9px] font-bold px-3 py-1.5 rounded-lg shadow-xl z-50 translate-x-1 group-hover/star:translate-x-0">
-                            Lưu từ này vào từ vựng để học qua game
-                            <div className="absolute left-full top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-900 rotate-45 -translate-x-1"></div>
-                          </div>
+                          {activeDeckSelector !== m.definition && (
+                            <div className="absolute right-full top-1/2 -translate-y-1/2 mr-3 opacity-0 group-hover/star:opacity-100 transition-all pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[9px] font-bold px-3 py-1.5 rounded-lg shadow-xl z-50 translate-x-1 group-hover/star:translate-x-0">
+                              {isStarred 
+                                ? `Từ này đã được thêm vào bộ thẻ "${deckName}" của bạn`
+                                : "Lưu từ này vào từ vựng để học qua game"
+                              }
+                              <div className="absolute left-full top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-900 rotate-45 -translate-x-1"></div>
+                            </div>
+                          )}
                         </div>
                       </div>
 
