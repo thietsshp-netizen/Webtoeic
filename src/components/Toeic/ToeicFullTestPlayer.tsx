@@ -129,7 +129,15 @@ export default function ToeicFullTestPlayer({
   const mainScrollRef = useRef<HTMLDivElement>(null);
   const sidebarScrollRef = useRef<HTMLDivElement>(null);
   const questionRefs = useRef<Map<number, HTMLButtonElement>>(new Map());
-  const [confirmConfig, setConfirmConfig] = useState<{ isOpen: boolean, message: string, onConfirm: () => void } | null>(null);
+  const [confirmConfig, setConfirmConfig] = useState<{
+    isOpen: boolean;
+    message: string;
+    onConfirm: () => void;
+    title?: string;
+    onCancel?: () => void;
+    confirmText?: string;
+    cancelText?: string;
+  } | null>(null);
 
   const lastScrolledNo = useRef<number | null>(null);
 
@@ -310,6 +318,12 @@ export default function ToeicFullTestPlayer({
       const target = e.target as HTMLElement;
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
 
+      if (e.ctrlKey && e.shiftKey && (e.key === 'd' || e.key === 'D')) {
+        e.preventDefault();
+        setIsTeachPaused(prev => !prev);
+        return;
+      }
+
       if (e.key === 'Enter') {
         e.preventDefault();
         
@@ -333,6 +347,92 @@ export default function ToeicFullTestPlayer({
     window.addEventListener('keydown', handleRecKeyDown);
     return () => window.removeEventListener('keydown', handleRecKeyDown);
   }, [isTeachingMode, recTimestamps, recElapsed, teachingStartNo, allQuestions, showTeachSetup, showTeachFinish]);
+
+  // Cảnh báo người dùng khi reload hoặc tắt tab khi đang giảng bài
+  useEffect(() => {
+    if (!isAdmin || !isTeachingMode) return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "Bạn có chắc chắn muốn rời đi? Tiến trình giảng bài chưa lưu sẽ bị mất.";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isAdmin, isTeachingMode]);
+
+  // Tự động lưu trạng thái giảng bài vào localStorage để phòng khi reload/crash
+  useEffect(() => {
+    if (!isAdmin || !isTeachingMode) return;
+    const sessionData = {
+      teachingStartNo,
+      teachStartTime,
+      recTimestamps,
+      recElapsed,
+      isTeachPaused,
+      teachingTitle,
+      teachingVideoUrl,
+      teachingVideoType,
+      teachingSaveType,
+      teachingOverwriteIndex,
+      isTeachingMode: true
+    };
+    localStorage.setItem(`teaching_session_${lessonId}`, JSON.stringify(sessionData));
+  }, [
+    isAdmin,
+    isTeachingMode,
+    teachingStartNo,
+    teachStartTime,
+    recTimestamps,
+    recElapsed,
+    isTeachPaused,
+    teachingTitle,
+    teachingVideoUrl,
+    teachingVideoType,
+    teachingSaveType,
+    teachingOverwriteIndex,
+    lessonId
+  ]);
+
+  // Khôi phục phiên giảng bài nếu phát hiện có dữ liệu cũ chưa lưu
+  useEffect(() => {
+    if (!mounted || !isAdmin) return;
+    const saved = localStorage.getItem(`teaching_session_${lessonId}`);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.isTeachingMode) {
+          setConfirmConfig({
+            isOpen: true,
+            title: "Khôi phục phiên giảng",
+            message: `Hệ thống phát hiện phiên giảng bài "${parsed.teachingTitle}" đang dở dang (đã ghi ${parsed.recTimestamps?.length || 0} câu tại ${formatRec(parsed.recElapsed)}). Bạn có muốn khôi phục không?`,
+            confirmText: "Khôi phục",
+            cancelText: "Xóa phiên cũ",
+            onConfirm: () => {
+              setTeachingStartNo(parsed.teachingStartNo);
+              setTeachStartTime(parsed.teachStartTime);
+              setRecTimestamps(parsed.recTimestamps || []);
+              setRecElapsed(parsed.recElapsed || 0);
+              setIsTeachPaused(parsed.isTeachPaused ?? false);
+              setTeachingTitle(parsed.teachingTitle || "");
+              setTeachingVideoUrl(parsed.teachingVideoUrl || "");
+              setTeachingVideoType(parsed.teachingVideoType || "direct");
+              setTeachingSaveType(parsed.teachingSaveType || "new");
+              setTeachingOverwriteIndex(parsed.teachingOverwriteIndex || 0);
+              setIsTeachingMode(true);
+              setConfirmConfig(null);
+            },
+            onCancel: () => {
+              localStorage.removeItem(`teaching_session_${lessonId}`);
+              setConfirmConfig(null);
+            }
+          });
+        }
+      } catch (e) {
+        console.error("Lỗi khi phục hồi phiên giảng bài:", e);
+      }
+    }
+  }, [mounted, isAdmin, lessonId]);
 
   const handleNextStampClick = () => {
     const lastStamp = recTimestamps[recTimestamps.length - 1];
@@ -415,6 +515,7 @@ export default function ToeicFullTestPlayer({
       if (!res.ok) throw new Error("API call failed");
 
       showToast("Đã lưu mốc bài giảng thành công!", "success");
+      localStorage.removeItem(`teaching_session_${lessonId}`);
       setIsTeachingMode(false);
       setShowTeachFinish(false);
       window.location.reload();
@@ -426,11 +527,11 @@ export default function ToeicFullTestPlayer({
     }
   };
 
-  const formatRec = (s: number) => {
+  function formatRec(s: number) {
     const m = Math.floor(s / 60);
     const sec = s % 60;
     return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-  };
+  }
 
   const getListeningScore = (correct: number) => {
     if (correct >= 91) return 495;
@@ -747,7 +848,7 @@ export default function ToeicFullTestPlayer({
                         ? "bg-emerald-50 hover:bg-emerald-100 border-emerald-100 text-emerald-600"
                         : "bg-yellow-50 hover:bg-yellow-100 border-yellow-100 text-yellow-600"
                     }`}
-                    title={isTeachPaused ? "Tiếp tục" : "Tạm dừng"}
+                    title="ctrl+shift+D"
                   >
                     {isTeachPaused ? <Play size={10} className="fill-emerald-600 text-emerald-600" /> : <Pause size={10} className="fill-yellow-600 text-yellow-600" />}
                   </button>
@@ -1197,9 +1298,12 @@ export default function ToeicFullTestPlayer({
       {confirmConfig && (
         <ConfirmModal
           isOpen={confirmConfig.isOpen}
+          title={confirmConfig.title}
           message={confirmConfig.message}
           onConfirm={confirmConfig.onConfirm}
-          onCancel={() => setConfirmConfig(null)}
+          onCancel={confirmConfig.onCancel || (() => setConfirmConfig(null))}
+          confirmText={confirmConfig.confirmText}
+          cancelText={confirmConfig.cancelText}
         />
       )}
 
@@ -1421,6 +1525,22 @@ export default function ToeicFullTestPlayer({
                 className="flex-1 py-3.5 bg-white border border-slate-200 text-slate-600 font-black text-xs rounded-xl hover:bg-slate-100 transition-all uppercase tracking-wider"
               >
                 Quay lại
+              </button>
+              <button
+                onClick={() => {
+                  if (window.confirm("Bạn có chắc chắn muốn hủy và xóa toàn bộ dữ liệu phiên giảng bài này không?")) {
+                    setIsTeachingMode(false);
+                    setShowTeachFinish(false);
+                    setRecTimestamps([]);
+                    setRecElapsed(0);
+                    setIsTeachPaused(false);
+                    localStorage.removeItem(`teaching_session_${lessonId}`);
+                    showToast("Đã xóa phiên giảng bài thành công!", "success");
+                  }
+                }}
+                className="flex-1 py-3.5 bg-white border border-red-250 hover:bg-red-50 text-red-600 font-black text-xs rounded-xl transition-all uppercase tracking-wider"
+              >
+                Xóa / Ghi lại
               </button>
               <button
                 onClick={handleFinishTeaching}
