@@ -34,13 +34,15 @@ export async function POST(req: Request) {
       );
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+
     // Mặc định là +7 ngày nếu không truyền lên số ngày cụ thể
     const daysNum = days !== undefined ? parseInt(days) : 7;
     const expiresAt = new Date(Date.now() + daysNum * 24 * 60 * 60 * 1000);
 
     // Kiểm tra xem email đã tồn tại chưa
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     if (existingUser) {
@@ -57,7 +59,7 @@ export async function POST(req: Request) {
     const newUser = await prisma.user.create({
       data: {
         name,
-        email,
+        email: normalizedEmail,
         password: hashedPassword,
         role: role || "USER",
         accountExpiresAt: expiresAt,
@@ -75,7 +77,7 @@ export async function POST(req: Request) {
       try {
         await transporter.sendMail({
           from: `"Mr. Thiệt - hoctoeic" <${process.env.GMAIL_USER}>`,
-          to: email,
+          to: normalizedEmail,
           subject: `🎓 Tài khoản hoctoeic của bạn đã sẵn sàng!`,
           html: `
 <!DOCTYPE html>
@@ -115,7 +117,7 @@ export async function POST(req: Request) {
                       <td style="padding:8px 0;border-bottom:1px solid #e2e8f0;">
                         <span style="color:#94a3b8;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Email</span>
                         <br/>
-                        <span style="color:#1e293b;font-size:15px;font-weight:800;">${email}</span>
+                        <span style="color:#1e293b;font-size:15px;font-weight:800;">${normalizedEmail}</span>
                       </td>
                     </tr>
                     <tr>
@@ -178,7 +180,7 @@ export async function POST(req: Request) {
 </html>
           `,
         });
-        console.log(`✅ Đã gửi email chào mừng đến: ${email}`);
+        console.log(`✅ Đã gửi email chào mừng đến: ${normalizedEmail}`);
       } catch (emailError) {
         // Không fail nếu email lỗi, chỉ log để debug
         console.error("⚠️ Lỗi gửi email chào mừng:", emailError);

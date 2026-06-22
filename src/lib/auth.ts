@@ -26,8 +26,10 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Vui lòng nhập Email và Mật khẩu");
         }
 
+        const normalizedEmail = credentials.email.toLowerCase().trim();
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
+          where: { email: normalizedEmail }
         });
 
         // Nếu chưa có user (đăng ký lần đầu qua form login - optional logic)
@@ -49,19 +51,20 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account }) {
       console.log("SignIn Callback - User:", user.email);
+      const normalizedEmail = (user.email as string).toLowerCase().trim();
       const dbUser = await prisma.user.findUnique({
-        where: { email: user.email as string },
+        where: { email: normalizedEmail },
         select: { id: true, role: true, accountExpiresAt: true, createdAt: true }
       });
       console.log("SignIn Callback - dbUser found:", !!dbUser);
 
       // ĐẶC QUYỀN ADMIN: Tự động gán Role Admin và BỎ QUA tất cả các kiểm tra chặn
-      const isAdmin = user.email === "thietsshp@gmail.com";
+      const isAdmin = normalizedEmail === "thietsshp@gmail.com";
       if (isAdmin) {
         try {
           if (dbUser && dbUser.role !== "ADMIN") {
             await prisma.user.update({
-              where: { email: user.email as string },
+              where: { email: normalizedEmail },
               data: { role: "ADMIN" }
             });
           }
