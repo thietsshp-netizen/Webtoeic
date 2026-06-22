@@ -880,7 +880,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [redoStack, setRedoStack] = useState<DrawElement[][]>([]);
 
   const saveToUndoStack = (currentElements: DrawElement[]) => {
-    setUndoStack(prev => [...prev.slice(-49), currentElements]);
+    setUndoStack(prev => [...prev.slice(-14), currentElements]);
     setRedoStack([]);
   };
 
@@ -1603,6 +1603,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     if (!isActive) return;
 
     let ticking = false;
+    let isMounted = true;
+    let timer: NodeJS.Timeout | null = null;
+
     const requestRedraw = () => {
       if (isDrawingRef.current) return; // Bỏ qua yêu cầu vẽ lại từ hệ thống khi người dùng đang vẽ
       if (!ticking) {
@@ -1619,7 +1622,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     };
 
     // Delay nhỏ để DOM render xong canvas
-    const timer = setTimeout(() => {
+    timer = setTimeout(() => {
+      if (!isMounted) return;
       initCanvas();
       window.addEventListener("resize", initCanvas);
       window.addEventListener('scroll', handleScrollCapture, { capture: true, passive: true });
@@ -1651,13 +1655,14 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     }
 
     return () => {
+      isMounted = false;
+      if (timer) clearTimeout(timer);
       window.removeEventListener("resize", initCanvas);
       window.removeEventListener('scroll', handleScrollCapture, { capture: true });
       window.removeEventListener('webtoeic-toggle-global-draw-state', requestRedraw);
       window.removeEventListener('webtoeic-toggle-global-draw', requestRedraw);
       window.removeEventListener('transitionend', requestRedraw, { capture: true });
       window.removeEventListener('animationend', requestRedraw, { capture: true });
-      clearTimeout(timer);
       if (resizeObserver) {
         resizeObserver.disconnect();
       }
