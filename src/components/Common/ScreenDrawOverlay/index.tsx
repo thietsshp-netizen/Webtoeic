@@ -16,7 +16,8 @@ import {
   Hand,
   ChevronDown,
   Settings,
-  Plus
+  Plus,
+  RotateCcw
 } from "lucide-react";
 import { createPortal } from "react-dom";
 import styles from "./styles.module.css";
@@ -4001,6 +4002,20 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     }
   };
 
+  // Khởi động lại toàn bộ công cụ vẽ (đưa về trạng thái ban đầu)
+  const hardResetDrawTool = () => {
+    setElements([]);
+    setUndoStack([]);
+    setRedoStack([]);
+    localStorage.removeItem('webtoeic_canvas_elements');
+    setSelectedId(null);
+    const canvas = canvasRef.current;
+    const ctx = ctxRef.current;
+    if (canvas && ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  };
+
   // ============================================================
   // SHAPE RECOGNITION: Phát hiện và làm đẹp hình vẽ (GoodNotes style)
   // ============================================================
@@ -4791,6 +4806,16 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             data-tooltip="Xóa hết (Ctrl+Backspace)"
           >
             <Trash2 size={12} />
+          </button>
+
+          {/* Nút Reset toàn bộ công cụ */}
+          <button
+            className={`${styles.btn} ${styles.btnTrash}`}
+            style={{ color: '#38bdf8' }}
+            onClick={hardResetDrawTool}
+            data-tooltip="Làm mới hoàn toàn"
+          >
+            <RotateCcw size={12} />
           </button>
 
           {/* Nút Cài đặt Gear */}
