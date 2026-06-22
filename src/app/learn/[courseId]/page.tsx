@@ -47,6 +47,9 @@ export default async function CourseLearnPage({
       userId,
       lessonId: { in: lessonIds }
     },
+    orderBy: {
+      updatedAt: 'desc'
+    },
     include: {
       question: {
         include: {
@@ -60,10 +63,18 @@ export default async function CourseLearnPage({
     }
   });
 
-  const totalQuestionsDone = attempts.length;
-  const correctQuestions = attempts.filter((a: any) => a.isCorrect).length;
-  const incorrectQuestions = totalQuestionsDone - correctQuestions;
-  const flaggedQuestions = attempts.filter((a: any) => a.isFlagged).length;
+  // Dedup - chỉ giữ kết quả mới nhất cho mỗi câu hỏi
+  const seenQuestions = new Set<string>();
+  const latestAttempts = attempts.filter((a: any) => {
+    if (seenQuestions.has(a.questionId)) return false;
+    seenQuestions.add(a.questionId);
+    return true;
+  });
+
+  const totalQuestionsDone = latestAttempts.length;
+  const correctQuestions = latestAttempts.filter((a: any) => a.isCorrect).length;
+  const incorrectQuestions = latestAttempts.filter((a: any) => !a.isCorrect && a.userAnswer && a.userAnswer.trim() !== "").length;
+  const flaggedQuestions = latestAttempts.filter((a: any) => a.isFlagged).length;
 
   const correctRate = totalQuestionsDone > 0 ? Math.round((correctQuestions / totalQuestionsDone) * 100) : 0;
 
@@ -73,7 +84,7 @@ export default async function CourseLearnPage({
     partStats[i] = { total: 0, correct: 0 };
   }
 
-  attempts.forEach((a: any) => {
+  latestAttempts.forEach((a: any) => {
     const partNumber = a.question?.group?.part?.partNumber;
     if (partNumber && partStats[partNumber]) {
       partStats[partNumber].total++;

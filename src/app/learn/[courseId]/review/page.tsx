@@ -72,8 +72,12 @@ export default async function ReviewPage({
     }
   });
 
-  // Chỉ giữ câu sai (đã trả lời) HOẶC câu gắn cờ HOẶC câu có ghi chú
+  // Chỉ giữ câu sai (đã trả lời) HOẶC câu gắn cờ HOẶC câu có ghi chú, và chỉ lấy lần làm bài mới nhất (dedup)
+  const seenReviewQuestions = new Set<string>();
   const filteredAttempts = attempts.filter(a => {
+    if (seenReviewQuestions.has(a.questionId)) return false;
+    seenReviewQuestions.add(a.questionId);
+
     const hasAnswer = a.userAnswer && a.userAnswer !== "";
     const isIncorrect = a.isCorrect === false && hasAnswer;
     const isFlagged = a.isFlagged;
