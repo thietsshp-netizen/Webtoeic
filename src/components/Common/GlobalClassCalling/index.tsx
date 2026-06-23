@@ -81,8 +81,8 @@ export const GlobalClassCalling: React.FC = () => {
   // 1. Fetch trạng thái buổi học đang hoạt động của lớp được chọn (Khai báo trước để dùng trong useEffect)
   const fetchActiveSession = useCallback(async (classCode: string) => {
     if (!classCode) return;
-    // Ngăn chặn ghi đè nếu vừa cập nhật tại client trong vòng 2.5 giây qua
-    if (Date.now() - lastLocalUpdate.current < 2500) return;
+    // Ngăn chặn ghi đè nếu vừa cập nhật tại client trong vòng 5 giây qua (chờ API lưu xong DB)
+    if (Date.now() - lastLocalUpdate.current < 5000) return;
 
     try {
       const res = await fetch(`/api/admin/classes/sessions?classCode=${classCode}`);
@@ -220,6 +220,18 @@ export const GlobalClassCalling: React.FC = () => {
   // 3. Logic chọn học viên tiếp theo (Next Student) - Xử lý ngay tại Client trước để tạo trải nghiệm mượt mà
   const handleCallStudent = useCallback(async (index: number) => {
     if (!activeSession || presentStudents.length === 0) return;
+
+    // Ngăn chặn bấm/gọi quá nhanh (chặn đúp trong vòng 800ms cho mọi nguồn gọi)
+    if (isThrottled.current) return;
+    isThrottled.current = true;
+    setTimeout(() => {
+      isThrottled.current = false;
+    }, 800);
+
+    // Hủy focus của phần tử hiện tại (như nút bấm) để phím Enter không kích hoạt lại sự kiện click của nút đó
+    if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
 
     let targetIdx = index;
     if (targetIdx < 0 || targetIdx >= presentStudents.length) {
@@ -400,14 +412,6 @@ export const GlobalClassCalling: React.FC = () => {
 
       if (e.key === "Enter") {
         e.preventDefault();
-        
-        // Throttling phím Enter để ngăn bấm đúp liên tục gây lag
-        if (isThrottled.current) return;
-        isThrottled.current = true;
-        setTimeout(() => {
-          isThrottled.current = false;
-        }, 500);
-
         handleNextStudent();
       }
     };
