@@ -2244,14 +2244,15 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
       termRegex.lastIndex = 0;
       const parts = text.split(termRegex);
       return parts.map((part, i) => {
+        const formattedPart = part.replace(/\//g, '/\u200b');
         if (part.toLowerCase() === termLower) {
           return (
             <span key={i} className="text-amber-600 font-bold">
-              {part}
+              {formattedPart}
             </span>
           );
         }
-        return part;
+        return formattedPart;
       });
     };
 
@@ -2287,7 +2288,9 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
       }
 
       // Check if it is a list or synonym line that should be displayed in a 2-column grid
-      const isGridLine = cleanLine.startsWith('=') || cleanLine.startsWith('~') || cleanLine.startsWith('><') || cleanLine.includes('↔') || cleanLine.includes('|');
+      // Example lines (starting with '→', '->', '-') should NOT use grid layout even if they contain '|' or '||'
+      const isExampleLine = cleanLine.startsWith('→') || cleanLine.startsWith('->') || cleanLine.startsWith('-');
+      const isGridLine = !isExampleLine && (cleanLine.startsWith('=') || cleanLine.startsWith('~') || cleanLine.startsWith('><') || cleanLine.includes('↔') || cleanLine.includes('|'));
       if (isGridLine) {
         const rawItems = cleanLine.includes('↔') 
           ? cleanLine.split('↔') 
@@ -2338,15 +2341,15 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
                           <span
                             key={tIdx}
                             onClick={() => speak(cleanSpeech)}
-                            className="cursor-pointer hover:underline text-slate-900 font-semibold inline-flex items-center gap-0.5 shrink-0"
+                            className="cursor-pointer hover:underline text-slate-900 font-semibold inline-block"
                             title={`Nghe: ${cleanSpeech}`}
                           >
-                            <span>{highlightTerm(tok)}</span>
-                            <Volume2 className="w-3.5 h-3.5 text-slate-400/80 hover:text-blue-600 transition-colors shrink-0" />
+                            {highlightTerm(tok)}
+                            <Volume2 className="w-3.5 h-3.5 text-slate-400/80 hover:text-blue-600 transition-colors shrink-0 inline-block align-middle ml-1" />
                           </span>
                         );
                       }
-                      return <span key={tIdx}>{highlightTerm(tok)}</span>;
+                      return <span key={tIdx} className="inline">{highlightTerm(tok)}</span>;
                     })}
                   </div>
                 );
@@ -2357,9 +2360,10 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
       }
 
       // Default/Normal Line rendering (1 column)
-      const tokens = cleanLine.split(/([,;=~:|]|\->|↔|\[.*?\]|\(.*?\))/g);
+      // We match double pipe "||" first so it doesn't get split into separate pipes.
+      const tokens = cleanLine.split(/(\|\||[,;=~:|]|\->|↔|\[.*?\]|\(.*?\))/g);
       return (
-        <div key={idx} className={`${lineClass} flex flex-wrap items-center gap-x-1.5 gap-y-0.5`}>
+        <div key={idx} className={`${lineClass} inline-block w-full`}>
           {tokens.map((tok: string, tIdx: number) => {
             if (!tok) return null;
 
@@ -2381,10 +2385,10 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
               );
             }
 
-            // 2. Delimiter or symbol
-            if (/^([,;=~:|]|\->|↔)$/.test(tok.trim())) {
+            // 2. Delimiter or symbol (including double pipe)
+            if (/^(\|\||[,;=~:|]|\->|↔)$/.test(tok.trim())) {
               return (
-                <span key={tIdx} className="text-slate-400 font-semibold mx-0.5">
+                <span key={tIdx} className="text-slate-400 font-semibold mx-1">
                   {tok}
                 </span>
               );
@@ -2416,24 +2420,24 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
             if (hasEnglishLetters && !hasVietnamese) {
               const cleanSpeech = trimmedCore.replace(/\(.*?\)/g, '').trim();
               return (
-                <span key={tIdx} className="inline-flex items-center gap-0.5">
+                <span key={tIdx} className="inline">
                   {prefix && <span className="text-slate-400 font-bold mr-0.5">{prefix}</span>}
                   <span
                     onClick={() => speak(cleanSpeech)}
-                    className="cursor-pointer hover:underline text-slate-900 font-semibold inline-flex items-center gap-0.5"
+                    className="cursor-pointer hover:underline text-slate-900 font-semibold inline"
                     title={`Nghe: ${cleanSpeech}`}
                   >
-                    <span>{highlightTerm(coreText)}</span>
-                    <Volume2 className="w-3.5 h-3.5 text-slate-400/80 hover:text-blue-600 transition-colors shrink-0" />
+                    {highlightTerm(coreText)}
+                    <Volume2 className="w-3.5 h-3.5 text-slate-400/80 hover:text-blue-600 transition-colors shrink-0 inline-block align-middle ml-1" />
                   </span>
                 </span>
               );
             }
 
             return (
-              <span key={tIdx}>
+              <span key={tIdx} className="inline">
                 {prefix && <span className="text-slate-400 font-bold mr-0.5">{prefix}</span>}
-                <span>{highlightTerm(coreText)}</span>
+                {highlightTerm(coreText)}
               </span>
             );
           })}
