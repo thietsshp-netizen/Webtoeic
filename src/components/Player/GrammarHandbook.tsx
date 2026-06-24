@@ -63,6 +63,11 @@ export default function GrammarHandbook() {
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState<string | null>(null); // 'r' | 'b' | 'br'
 
+  // States cho thước phân chia Split View
+  const [splitRatio, setSplitRatio] = useState(50); // tỷ lệ phần trăm (0 - 100)
+  const [isDraggingSplit, setIsDraggingSplit] = useState(false);
+  const splitContainerRef = useRef<HTMLDivElement>(null);
+
   // Lưu trạng thái trước khi Maximize
   const preMaximizeState = useRef({ width: 1000, height: 650, x: 100, y: 80 });
 
@@ -174,9 +179,35 @@ export default function GrammarHandbook() {
     toggleMaximize();
   };
 
-  // Lắng nghe chuột toàn màn hình khi kéo thả hoặc co giãn
+  const handleSplitDragStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDraggingSplit(true);
+  };
+
+  const handleSplitTouchStart = (e: React.TouchEvent) => {
+    setIsDraggingSplit(true);
+  };
+
+  // Lắng nghe chuột/touch toàn màn hình khi kéo thả hoặc co giãn
   useEffect(() => {
+    const updateSplitRatio = (clientX: number, clientY: number) => {
+      if (splitContainerRef.current) {
+        const rect = splitContainerRef.current.getBoundingClientRect();
+        if (splitMode === "vertical") {
+          const ratio = ((clientX - rect.left) / rect.width) * 100;
+          setSplitRatio(Math.max(0, Math.min(100, ratio)));
+        } else if (splitMode === "horizontal") {
+          const ratio = ((clientY - rect.top) / rect.height) * 100;
+          setSplitRatio(Math.max(0, Math.min(100, ratio)));
+        }
+      }
+    };
+
     const handleMouseMove = (e: MouseEvent) => {
+      if (isDraggingSplit) {
+        updateSplitRatio(e.clientX, e.clientY);
+      }
+
       if (isDragging) {
         const deltaX = e.clientX - dragStart.current.x;
         const deltaY = e.clientY - dragStart.current.y;
@@ -203,21 +234,32 @@ export default function GrammarHandbook() {
       }
     };
 
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isDraggingSplit && e.touches[0]) {
+        updateSplitRatio(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+
     const handleMouseUp = () => {
       setIsDragging(false);
       setIsResizing(null);
+      setIsDraggingSplit(false);
     };
 
-    if (isDragging || isResizing) {
+    if (isDragging || isResizing || isDraggingSplit) {
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);
+      window.addEventListener("touchmove", handleTouchMove, { passive: true });
+      window.addEventListener("touchend", handleMouseUp);
     }
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleMouseUp);
     };
-  }, [isDragging, isResizing, position.x, position.y, width, height]);
+  }, [isDragging, isResizing, isDraggingSplit, splitMode, position.x, position.y, width, height]);
 
   // Rút gọn title để hiển thị trên tab: giữ "Bài X" + tên chủ đề chính
 
@@ -482,7 +524,7 @@ export default function GrammarHandbook() {
           })}
         </div>
         {/* Khoảng trống 1/2 trang ở cuối */}
-        <div className="h-[40vh] w-full shrink-0" />
+        <div className="h-[100vh] w-full shrink-0" />
       </div>
     );
   };
@@ -695,7 +737,7 @@ export default function GrammarHandbook() {
                 dangerouslySetInnerHTML={{ __html: activeLesson.htmlContent }}
               />
               {/* Khoảng trống 1/2 trang ở cuối */}
-              <div className="h-[40vh] w-full shrink-0" />
+              <div className="h-[100vh] w-full shrink-0" />
             </>
           ) : (
             renderPractice(activeLesson, zoomValue, false)
@@ -813,26 +855,55 @@ export default function GrammarHandbook() {
           {/* DUNG LƯỢNG NỘI DUNG LÝ THUYẾT NGUYÊN BẢN HTML */}
           <div className="flex-1 flex overflow-hidden bg-white select-text">
             {splitMode === "vertical" ? (
-              <>
+              <div ref={splitContainerRef} className="flex-1 flex overflow-hidden bg-white select-text w-full relative">
                 {/* Cột trái */}
-                <div className="flex-1 relative flex flex-col overflow-hidden border-r-2 border-slate-300">
+                <div 
+                  className="relative flex flex-col overflow-hidden"
+                  style={{ width: `${splitRatio}%`, flexShrink: 0, flexGrow: 0 }}
+                >
                   {renderPane(1, pane1Tab, setPane1Tab, zoom1, setZoom1)}
+                </div>
+
+                {/* Thước kẻ phân chia dọc */}
+                <div className="w-1.5 bg-slate-200 relative overflow-visible shrink-0 z-30">
+                  <div
+                    onMouseDown={handleSplitDragStart}
+                    onTouchStart={handleSplitTouchStart}
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-indigo-600 border border-indigo-500 shadow-md text-white flex items-center justify-center cursor-col-resize active:scale-110 active:bg-indigo-700 transition-all select-none z-40"
+                  >
+                    <span className="text-[10px] font-black select-none">&lt;&gt;</span>
+                  </div>
                 </div>
 
                 {/* Cột phải */}
-                <div className="flex-1 relative flex flex-col overflow-hidden">
+                <div className="relative flex flex-col overflow-hidden flex-1">
                   {renderPane(2, pane2Tab, setPane2Tab, zoom2, setZoom2)}
                 </div>
-              </>
+              </div>
             ) : splitMode === "horizontal" ? (
-              <div className="flex-1 flex flex-col overflow-hidden w-full">
+              <div ref={splitContainerRef} className="flex-1 flex flex-col overflow-hidden bg-white select-text w-full relative">
                 {/* Phần trên */}
-                <div className="flex-1 relative flex flex-col overflow-hidden border-b-2 border-slate-300">
+                <div 
+                  className="relative flex flex-col overflow-hidden w-full"
+                  style={{ height: `${splitRatio}%`, flexShrink: 0, flexGrow: 0 }}
+                >
                   {renderPane(1, pane1Tab, setPane1Tab, zoom1, setZoom1)}
                 </div>
 
+                {/* Thước kẻ phân chia ngang */}
+                <div className="h-1.5 bg-slate-200 relative overflow-visible shrink-0 z-30 w-full">
+                  <div
+                    onMouseDown={handleSplitDragStart}
+                    onTouchStart={handleSplitTouchStart}
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-indigo-600 border border-indigo-500 shadow-md text-white flex items-center justify-center cursor-row-resize active:scale-110 active:bg-indigo-700 transition-all select-none z-40"
+                    style={{ transform: "translate(-50%, -50%) rotate(90deg)" }}
+                  >
+                    <span className="text-[10px] font-black select-none">&lt;&gt;</span>
+                  </div>
+                </div>
+
                 {/* Phần dưới */}
-                <div className="flex-1 relative flex flex-col overflow-hidden">
+                <div className="relative flex flex-col overflow-hidden flex-1 w-full">
                   {renderPane(2, pane2Tab, setPane2Tab, zoom2, setZoom2)}
                 </div>
               </div>
