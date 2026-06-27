@@ -17,7 +17,48 @@ export const GlobalClassCalling: React.FC = () => {
   const [activeSession, setActiveSession] = useState<any>(null);
   const [presentStudents, setPresentStudents] = useState<any[]>([]);
   const [callingStudentId, setCallingStudentId] = useState<string | null>(null);
+  const [suggestedNextStudentId, setSuggestedNextStudentId] = useState<string | null>(null);
   const lastLocalUpdate = useRef<number>(0);
+
+  // Cập nhật học viên gợi ý tiếp theo một cách nhất quán (chỉ thay đổi khi gợi ý cũ không còn hợp lệ)
+  useEffect(() => {
+    if (presentStudents.length === 0) {
+      setSuggestedNextStudentId(null);
+      return;
+    }
+    const activeStudents = presentStudents.filter(s => !s.isMuted);
+    if (activeStudents.length === 0) {
+      setSuggestedNextStudentId(null);
+      return;
+    }
+    if (activeStudents.length === 1) {
+      setSuggestedNextStudentId(activeStudents[0].id);
+      return;
+    }
+
+    const candidates = activeStudents.map((s) => ({
+      ...s,
+      originalIndex: presentStudents.findIndex(p => p.id === s.id)
+    }));
+
+    // Loại trừ người đang phát biểu hiện tại nếu lớp học có nhiều hơn 1 học viên không bị tắt mic
+    const eligibleCandidates = candidates.filter(c => c.id !== callingStudentId);
+    const finalCandidates = eligibleCandidates.length > 0 ? eligibleCandidates : candidates;
+
+    // Tìm speakCount nhỏ nhất trong số các ứng viên
+    const minSpeakCount = Math.min(...finalCandidates.map(c => c.speakCount));
+
+    // Lọc các ứng viên có số lần phát biểu ít nhất
+    const bestCandidates = finalCandidates.filter(c => c.speakCount === minSpeakCount);
+
+    // Kiểm tra xem gợi ý hiện tại có còn thuộc nhóm ứng viên tốt nhất này không
+    const isCurrentSuggestedValid = bestCandidates.some(c => c.id === suggestedNextStudentId);
+    if (!isCurrentSuggestedValid) {
+      // Chọn ngẫu nhiên một người trong số các ứng viên tốt nhất để làm gợi ý tiếp theo
+      const randIdx = Math.floor(Math.random() * bestCandidates.length);
+      setSuggestedNextStudentId(bestCandidates[randIdx].id);
+    }
+  }, [presentStudents, callingStudentId, suggestedNextStudentId]);
   
   const toggleMuteStudent = async (studentId: string) => {
     if (!activeSession) return;
@@ -87,6 +128,10 @@ export const GlobalClassCalling: React.FC = () => {
     try {
       const res = await fetch(`/api/admin/classes/sessions?classCode=${classCode}`);
       const data = await res.json();
+      
+      // Ngăn chặn ghi đè nếu trong lúc đang fetch có sự kiện gọi tên tại client
+      if (Date.now() - lastLocalUpdate.current < 5000) return;
+
       if (data.sessions && data.sessions.length > 0) {
         // Tìm buổi học đang hoạt động (isActive = true) hoặc buổi mới nhất
         const active = data.sessions.find((s: any) => s.isActive) || data.sessions[0];
@@ -318,7 +363,12 @@ export const GlobalClassCalling: React.FC = () => {
   // Helper tính toán và lấy index học viên tiếp theo theo thuật toán thông minh
   const getSmartNextStudentIndex = useCallback(() => {
     if (presentStudents.length === 0) return -1;
-    
+    if (suggestedNextStudentId) {
+      const idx = presentStudents.findIndex(p => p.id === suggestedNextStudentId);
+      if (idx !== -1) return idx;
+    }
+
+    // Dự phòng nếu suggestedNextStudentId chưa kịp set
     const activeStudents = presentStudents.filter(s => !s.isMuted);
     if (activeStudents.length === 0) return -1;
     if (activeStudents.length === 1) {
@@ -330,20 +380,13 @@ export const GlobalClassCalling: React.FC = () => {
       originalIndex: presentStudents.findIndex(p => p.id === s.id)
     }));
     
-    // Loại trừ người đang phát biểu hiện tại nếu lớp học có nhiều hơn 1 học viên không bị tắt mic
     const eligibleCandidates = candidates.filter(c => c.id !== callingStudentId);
     const finalCandidates = eligibleCandidates.length > 0 ? eligibleCandidates : candidates;
-    
-    // Tìm speakCount nhỏ nhất trong số các ứng viên
     const minSpeakCount = Math.min(...finalCandidates.map(c => c.speakCount));
-    
-    // Lọc các ứng viên có số lần phát biểu ít nhất
     const bestCandidates = finalCandidates.filter(c => c.speakCount === minSpeakCount);
-    
-    // Chọn ngẫu nhiên một người trong số các ứng viên tốt nhất để tạo sự công bằng và bất ngờ
     const randIdx = Math.floor(Math.random() * bestCandidates.length);
     return bestCandidates[randIdx].originalIndex;
-  }, [presentStudents, callingStudentId]);
+  }, [presentStudents, callingStudentId, suggestedNextStudentId]);
 
   // Gọi người tiếp theo
   const handleNextStudent = useCallback(() => {
@@ -360,16 +403,8 @@ export const GlobalClassCalling: React.FC = () => {
 
   // Lấy thông tin học viên tiếp theo dự kiến hiển thị lên UI preview
   const getNextStudentPreview = () => {
-    const activeStudents = presentStudents.filter(s => !s.isMuted);
-    if (activeStudents.length === 0) return null;
-    if (activeStudents.length === 1) return activeStudents[0];
-
-    const eligibleCandidates = activeStudents.filter(s => s.id !== callingStudentId);
-    const finalCandidates = eligibleCandidates.length > 0 ? eligibleCandidates : activeStudents;
-    const minSpeakCount = Math.min(...finalCandidates.map(s => s.speakCount));
-    const bestCandidates = finalCandidates.filter(s => s.speakCount === minSpeakCount);
-    
-    return bestCandidates[0];
+    if (!suggestedNextStudentId) return null;
+    return presentStudents.find(s => s.id === suggestedNextStudentId) || null;
   };
 
   const nextStudentPreview = getNextStudentPreview();
