@@ -464,7 +464,10 @@ export const GlobalClassCalling: React.FC = () => {
     <>
       {/* Nút kích hoạt nổi ở góc trên bên phải, cạnh nút Draw */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={(e) => {
+          setIsOpen(!isOpen);
+          e.currentTarget.blur();
+        }}
         style={{
           position: "fixed",
           top: "14px",
@@ -500,6 +503,13 @@ export const GlobalClassCalling: React.FC = () => {
           ref={widgetRef}
           style={{ left: `${position.x}px`, top: `${position.y}px` }}
           onKeyDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            const target = e.target as HTMLElement;
+            const button = target.closest("button");
+            if (button) {
+              button.blur();
+            }
+          }}
           className={clsx(
             "fixed z-[99998] bg-slate-900/90 backdrop-blur-xl border border-white/10 shadow-2xl select-none transition-[width,padding,border-radius] duration-200",
             isMinimized ? "w-[300px] p-3 rounded-2xl" : "w-[350px] p-5 rounded-3xl"
