@@ -153,3 +153,25 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: error.message || "Lỗi Server" }, { status: error.message === "Không có quyền truy cập" ? 403 : 500 });
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    await verifyAdmin();
+
+    const { searchParams } = new URL(req.url);
+    const sessionId = searchParams.get("sessionId");
+
+    if (!sessionId) {
+      return NextResponse.json({ error: "Thiếu ID buổi học (sessionId)" }, { status: 400 });
+    }
+
+    const deletedSession = await (prisma as any).classSession.delete({
+      where: { id: sessionId }
+    });
+
+    return NextResponse.json({ success: true, session: deletedSession });
+  } catch (error: any) {
+    console.error("[ADMIN_SESSIONS_DELETE]", error);
+    return NextResponse.json({ error: error.message || "Lỗi Server" }, { status: error.message === "Không có quyền truy cập" ? 403 : 500 });
+  }
+}

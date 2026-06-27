@@ -325,6 +325,29 @@ export default function EnrollmentMatrix() {
     }
   };
 
+  const handleDeleteSession = async (sessionId: string, sessionTitle: string, attendanceCount: number) => {
+    const confirmMessage = attendanceCount > 0 
+      ? `⚠️ CẢNH BÁO: Buổi học "${sessionTitle}" đã có ${attendanceCount} học viên điểm danh.\nBạn có CHẮC CHẮN muốn xóa buổi học này không? Hành động này sẽ xóa sạch dữ liệu điểm danh của buổi học đó và không thể hoàn tác!`
+      : `Bạn có chắc chắn muốn xóa buổi học "${sessionTitle}" không?`;
+      
+    if (!window.confirm(confirmMessage)) return;
+
+    try {
+      const res = await fetch(`/api/admin/classes/sessions?sessionId=${sessionId}`, {
+        method: "DELETE"
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Lỗi xóa buổi học");
+      
+      if (selectedClassForSessions) {
+        fetchSessions(selectedClassForSessions);
+      }
+      fetchData(); // Cập nhật lại đếm buổi vắng toàn bộ trang
+    } catch (e: any) {
+      alert(e.message);
+    }
+  };
+
   const handleOpenAbsenceDetail = async (student: Student) => {
     setShowAbsenceDetailModal(student);
     if (!student.classCode) return;
@@ -1218,17 +1241,27 @@ export default function EnrollmentMatrix() {
                           <div key={s.id} className="flex flex-col gap-2 p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
                             <div className="flex items-center justify-between gap-2">
                               <span className="text-sm font-bold text-slate-800 uppercase italic truncate">{s.title}</span>
-                              <button
-                                onClick={() => handleToggleSessionActive(s.id, s.isActive)}
-                                className={clsx(
-                                  "shrink-0 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all border",
-                                  s.isActive
-                                    ? "bg-emerald-50 border-emerald-200 text-emerald-600 hover:bg-emerald-100"
-                                    : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-slate-200"
-                                )}
-                              >
-                                {s.isActive ? "Đang mở" : "Khóa"}
-                              </button>
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <button
+                                  onClick={() => handleToggleSessionActive(s.id, s.isActive)}
+                                  className={clsx(
+                                    "px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all border",
+                                    s.isActive
+                                      ? "bg-emerald-50 border-emerald-200 text-emerald-600 hover:bg-emerald-100"
+                                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-slate-200"
+                                  )}
+                                >
+                                  {s.isActive ? "Đang mở" : "Khóa"}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteSession(s.id, s.title, s.attendances.length)}
+                                  className="p-1.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-colors"
+                                  title="Xóa buổi học này"
+                                >
+                                  <Trash2 size={12} />
+                                </button>
+                              </div>
                             </div>
                             <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold">
                               <span>Có mặt: {s.attendances.length} học viên</span>
