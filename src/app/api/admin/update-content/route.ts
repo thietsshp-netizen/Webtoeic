@@ -124,14 +124,19 @@ export async function PUT(req: Request) {
       const question = await prisma.toeicQuestion.findUnique({ where: { id }, include: { group: true } });
       if (!question) return NextResponse.json({ success: false, error: "Question not found" }, { status: 404 });
 
-      if (field === "questionText") {
-        await prisma.toeicQuestion.update({ where: { id }, data: { questionText: value } });
-        syncLogs.push(`✅ [Bảng: ToeicQuestion] [Cột: questionText] Đã sửa.`);
+      if (["questionText", "optionA", "optionB", "optionC", "optionD", "correctAnswer", "explanation"].includes(field)) {
+        await prisma.toeicQuestion.update({ where: { id }, data: { [field]: value } });
+        syncLogs.push(`✅ [Bảng: ToeicQuestion] [Cột: ${field}] Đã sửa.`);
         totalUpdates++;
-        if (question.group) {
+        if (field === "questionText" && question.group) {
           const newTranscript = replaceTranscriptSegment(question.group.transcript || "", "Q", value);
           await prisma.toeicQuestionGroup.update({ where: { id: question.group.id }, data: { transcript: newTranscript } });
           syncLogs.push(`🚀 [Bảng: ToeicQuestionGroup] [Cột: transcript] Đã đồng bộ.`);
+        } else if (["optionA", "optionB", "optionC", "optionD"].includes(field) && question.group) {
+          const optLabel = field.replace("option", "").toUpperCase();
+          const newTranscript = replaceTranscriptSegment(question.group.transcript || "", optLabel, value);
+          await prisma.toeicQuestionGroup.update({ where: { id: question.group.id }, data: { transcript: newTranscript } });
+          syncLogs.push(`🚀 [Bảng: ToeicQuestionGroup] [Cột: transcript (Nhãn ${optLabel})] Đã đồng bộ.`);
         }
       } else {
         const columns: ("metadata" | "explanation")[] = ["metadata", "explanation"];
