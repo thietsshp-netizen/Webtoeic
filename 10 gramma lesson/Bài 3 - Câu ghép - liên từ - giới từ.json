@@ -232,7 +232,145 @@
       },
       {
         "partNumber": 3,
-        "title": "Bài tập 3: Giới từ trên lớp",
+        "title": "Bài tập 3: Liên từ về nhà",
+        "type": "multiple_choice",
+        "instruction": "Chọn liên từ chính xác nhất để hoàn tất các câu bài tập về nhà dưới đây:",
+        "questions": [
+          {
+            "id": "b3_p3_q11",
+            "questionText": "11. Ms. Abe will order supplies tomorrow,-----------tell her right away if you need anything.",
+            "options": {
+              "A": "than",
+              "B": "wait",
+              "C": "so",
+              "D": "about"
+            },
+            "correctAnswer": "C",
+            "explanation": "Nối hai mệnh đề chỉ quan hệ nguyên nhân - kết quả (Cô Abe sẽ đặt văn phòng phẩm vào ngày mai, VÌ VẬY hãy báo cho cô ấy ngay nếu cần gì). Chọn liên từ 'so'.",
+            "sentenceTranslation": "Cô Abe sẽ đặt mua đồ dùng vào ngày mai, vì vậy hãy nói với cô ấy ngay lập tức nếu bạn cần bất cứ thứ gì."
+          },
+          {
+            "id": "b3_p3_q12",
+            "questionText": "12. The Knysya Theater requests that all electronic devices be silenced-----------the play begins.",
+            "options": {
+              "A": "also",
+              "B": "but",
+              "C": "unless",
+              "D": "before"
+            },
+            "correctAnswer": "D",
+            "explanation": "Dịch nghĩa: 'Nhà hát Knysya yêu cầu tắt tiếng tất cả các thiết bị điện tử TRƯỚC KHI vở diễn bắt đầu'. Chọn liên từ thời gian 'before'.",
+            "sentenceTranslation": "Nhà hát Knysya yêu cầu tắt tiếng tất cả các thiết bị điện tử trước khi vở kịch bắt đầu."
+          },
+          {
+            "id": "b3_p3_q13",
+            "questionText": "13. The employee help desk will be moved to room 530-----------the Human Resources offices are being renovated.",
+            "options": {
+              "A": "opposite",
+              "B": "that",
+              "C": "while",
+              "D": "anywhere"
+            },
+            "correctAnswer": "C",
+            "explanation": "Nối hai hành động diễn ra song hành (Bàn trợ giúp sẽ được di chuyển TRONG KHI văn phòng nhân sự được cải tạo). Chọn liên từ 'while'.",
+            "sentenceTranslation": "Bàn trợ giúp nhân viên sẽ được chuyển đến phòng 530 trong khi văn phòng Nhân sự đang được cải tạo."
+          },
+          {
+            "id": "b3_p3_q14",
+            "questionText": "14. -----------the CEO and the CFO are authorized to sign checks over $10,000.",
+            "options": {
+              "A": "Each",
+              "B": "Either",
+              "C": "Both",
+              "D": "Whoever"
+            },
+            "correctAnswer": "C",
+            "explanation": "Có liên từ 'and' liên kết. Cấu trúc song hành: Both A and B (Cả A và B). Chọn 'Both'.",
+            "sentenceTranslation": "Cả Giám đốc điều hành (CEO) và Giám đốc tài chính (CFO) đều được ủy quyền ký các tờ séc trị giá trên 10.000 USD."
+          },
+          {
+            "id": "b3_p3_q15",
+            "questionText": "15. -----------the printer cartridge was installed correctly, it leaked some ink.",
+            "options": {
+              "A": "Although",
+              "B": "So",
+              "C": "If",
+              "D": "However"
+            },
+            "correctAnswer": "A",
+            "explanation": "Mối quan hệ nhượng bộ/đối lập (Mặc dù lắp đúng nhưng vẫn bị rò mực). Chọn liên từ 'Although'.",
+            "sentenceTranslation": "Mặc dù hộp mực máy in đã được lắp đúng cách nhưng nó vẫn bị rò rỉ một ít mực."
+          },
+          {
+            "id": "b3_p3_q16",
+            "questionText": "16. A new barbershop is opening-----------the neighborhood already has three others.",
+            "options": {
+              "A": "among",
+              "B": "that",
+              "C": "prior to",
+              "D": "even though"
+            },
+            "correctAnswer": "D",
+            "explanation": "Mối quan hệ nhượng bộ/đối lập giữa hai mệnh đề (Một tiệm cắt tóc mới vẫn mở MẶC DÙ khu phố đã có 3 tiệm khác). Chọn liên từ 'even though'.",
+            "sentenceTranslation": "Một tiệm cắt tóc mới đang mở cửa mặc dù khu vực lân cận đã có ba tiệm khác."
+          },
+          {
+            "id": "b3_p3_q17",
+            "questionText": "17. Enjoy one month free when you start your company on Rooster’s e-mail-----------Web hosting service.",
+            "options": {
+              "A": "then",
+              "B": "yet",
+              "C": "but",
+              "D": "and"
+            },
+            "correctAnswer": "D",
+            "explanation": "Nối hai danh từ/cụm danh từ song hành trong dịch vụ (email và web hosting). Chọn liên từ 'and'.",
+            "sentenceTranslation": "Thưởng thức một tháng miễn phí khi bạn khởi động công ty của mình trên dịch vụ email và lưu trữ Web của Rooster."
+          },
+          {
+            "id": "b3_p3_q18",
+            "questionText": "18. Our company’s efforts to hire new workers have intensified-----------so many employees have recently retired.",
+            "options": {
+              "A": "because",
+              "B": "although",
+              "C": "instead",
+              "D": "unless"
+            },
+            "correctAnswer": "A",
+            "explanation": "Đứng trước mệnh đề chỉ nguyên nhân (vì có quá nhiều nhân viên mới nghỉ hưu). Chọn liên từ 'because'.",
+            "sentenceTranslation": "Những nỗ lực tuyển dụng công nhân mới của công ty chúng tôi đã tăng cường vì rất nhiều nhân viên đã nghỉ hưu gần đây."
+          },
+          {
+            "id": "b3_p3_q19",
+            "questionText": "19. -----------your Fromo grocery order is placed before 10:00 A.M., it will be delivered the same day.",
+            "options": {
+              "A": "That",
+              "B": "Such",
+              "C": "As long as",
+              "D": "In spite of"
+            },
+            "correctAnswer": "C",
+            "explanation": "Nối mệnh đề điều kiện (Miễn là/Chỉ cần đặt trước 10h sáng...). Chọn liên từ 'As long as'.",
+            "sentenceTranslation": "Miễn là đơn đặt hàng tạp hóa Fromo của bạn được đặt trước 10:00 sáng, nó sẽ được giao trong cùng ngày."
+          },
+          {
+            "id": "b3_p3_q20",
+            "questionText": "20. Conference attendees will share accommodations-----------they submit a special request for a single room.",
+            "options": {
+              "A": "even",
+              "B": "unless",
+              "C": "similarly",
+              "D": "also"
+            },
+            "correctAnswer": "B",
+            "explanation": "Nối mệnh đề điều kiện phủ định (Sẽ ở chung phòng TRỪ KHI họ gửi yêu cầu phòng đơn). Chọn liên từ 'unless'.",
+            "sentenceTranslation": "Những người tham dự hội nghị sẽ ở chung phòng trừ khi họ gửi yêu cầu đặc biệt cho một phòng đơn."
+          }
+        ]
+      },
+      {
+        "partNumber": 4,
+        "title": "Bài tập 4: Giới từ trên lớp",
         "type": "multiple_choice",
         "instruction": "Chọn giới từ thích hợp nhất để hoàn thành các câu trắc nghiệm ngữ pháp dưới đây:",
         "questions": [
@@ -369,8 +507,8 @@
         ]
       },
       {
-        "partNumber": 4,
-        "title": "Bài tập 4: Giới từ về nhà",
+        "partNumber": 5,
+        "title": "Bài tập 5: Giới từ về nhà",
         "type": "multiple_choice",
         "instruction": "Chọn giới từ chính xác nhất để hoàn tất các câu bài tập về nhà dưới đây:",
         "questions": [
