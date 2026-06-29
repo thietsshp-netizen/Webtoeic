@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { X, Maximize2, Minimize2, BookOpen, Loader2, Columns2, Rows2, ZoomIn, ZoomOut } from "lucide-react";
+import { X, Maximize2, Minimize2, BookOpen, Loader2, Columns2, Rows2, ZoomIn, ZoomOut, Lock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useParams } from "next/navigation";
+import Link from "next/link";
 
 interface SubQuestion {
   q: string;
@@ -43,10 +45,14 @@ interface Lesson {
 }
 
 export default function GrammarHandbook() {
+  const params = useParams();
+  const courseId = params?.courseId as string;
   const [isOpen, setIsOpen] = useState(false);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(false);
+  const [hasAccess, setHasAccess] = useState(true);
+  const [accessErrorType, setAccessErrorType] = useState<"UNAUTHORIZED" | "EXPIRED" | "FORBIDDEN" | null>(null);
   const [isMaximized, setIsMaximized] = useState(false);
   const [splitMode, setSplitMode] = useState<"none" | "vertical" | "horizontal">("none");
   const [zoom1, setZoom1] = useState(100);
@@ -86,27 +92,38 @@ export default function GrammarHandbook() {
 
   // Gọi API tải dữ liệu 10 bài ngữ pháp khi mở lần đầu
   useEffect(() => {
-    if (!isOpen || lessons.length > 0) return;
+    if (!isOpen || (lessons.length > 0 && hasAccess)) return;
 
     async function fetchGrammar() {
       try {
         setLoading(true);
-        const res = await fetch(`/api/grammar?t=${Date.now()}`, { cache: "no-store" });
+        const res = await fetch(`/api/grammar?courseId=${courseId || ""}&t=${Date.now()}`, { cache: "no-store" });
         const data = await res.json();
-        if (data.success) {
+        
+        if (res.status === 401) {
+          setHasAccess(false);
+          setAccessErrorType("UNAUTHORIZED");
+        } else if (res.status === 403) {
+          setHasAccess(false);
+          setAccessErrorType(data.error === "EXPIRED" ? "EXPIRED" : "FORBIDDEN");
+        } else if (data.success) {
           setLessons(data.lessons);
           if (data.lessons.length > 0) {
             setActiveLesson(data.lessons[0]);
           }
+          setHasAccess(true);
+        } else {
+          setHasAccess(false);
         }
       } catch (err) {
         console.error("Lỗi lấy dữ liệu sổ tay ngữ pháp:", err);
+        setHasAccess(false);
       } finally {
         setLoading(false);
       }
     }
     fetchGrammar();
-  }, [isOpen, lessons.length]);
+  }, [isOpen, lessons.length, courseId, hasAccess]);
 
   // Khởi tạo vị trí tối ưu trên màn hình Client
   useEffect(() => {
@@ -790,6 +807,11 @@ export default function GrammarHandbook() {
                     <Loader2 size={9} className="animate-spin" />
                     <span>Đang tải...</span>
                   </div>
+                ) : !hasAccess ? (
+                  <div className="flex items-center gap-1.5 text-slate-400 text-[9px] font-bold italic uppercase tracking-wider">
+                    <Lock size={9} />
+                    <span>Nội dung đang khóa</span>
+                  </div>
                 ) : (
                   lessons.map(lesson => {
                     const isActive = activeLesson?.id === lesson.id;
@@ -854,7 +876,43 @@ export default function GrammarHandbook() {
 
           {/* DUNG LƯỢNG NỘI DUNG LÝ THUYẾT NGUYÊN BẢN HTML */}
           <div className="flex-1 flex overflow-hidden bg-white select-text">
-            {splitMode === "vertical" ? (
+            {!hasAccess ? (
+              /* --- PREMIUM LOCK UI --- */
+              <div className="flex-1 flex items-center justify-center p-8 bg-white select-none">
+                <div className="text-center max-w-md">
+                  <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-3xl flex items-center justify-center mx-auto mb-5 rotate-12 shadow-md">
+                    <Lock size={32} />
+                  </div>
+                  <h3 className="text-lg font-black text-slate-800 mb-2 uppercase tracking-wide">NỘI DUNG ĐANG KHÓA</h3>
+                  <p className="text-slate-500 text-xs font-semibold mb-6 leading-relaxed px-4">
+                    {accessErrorType === "EXPIRED"
+                      ? "Tài khoản của bạn đã hết hạn sử dụng. Vui lòng liên hệ Admin để đăng ký khóa học chính thức và tiếp tục học tập!"
+                      : accessErrorType === "FORBIDDEN"
+                      ? "Tài khoản của bạn chưa được cấp quyền truy cập. Vui lòng liên hệ Admin để được hỗ trợ mở khóa!"
+                      : "Bạn cần đăng nhập và tham gia khóa học này để xem các nội dung chi tiết."}
+                  </p>
+                  <div className="flex flex-col gap-2.5 items-center">
+                    {accessErrorType === "UNAUTHORIZED" ? (
+                      <Link 
+                        href="/?tab=dashboard" 
+                        className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-blue-600/20 active:scale-95"
+                      >
+                        ĐĂNG NHẬP NGAY
+                      </Link>
+                    ) : (
+                      <a
+                        href="https://m.me/101690955494114"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-green-600/20 active:scale-95 block text-center"
+                      >
+                        LIÊN HỆ MỞ KHÓA
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ) : splitMode === "vertical" ? (
               <div ref={splitContainerRef} className="flex-1 flex overflow-hidden bg-white select-text w-full relative">
                 {/* Cột trái */}
                 <div 
