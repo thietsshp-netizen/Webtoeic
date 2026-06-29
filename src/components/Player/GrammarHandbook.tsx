@@ -362,7 +362,7 @@ export default function GrammarHandbook() {
                           </p>
 
                           {subQ.options && (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 select-none">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 select-text">
                               {Object.entries(subQ.options).map(([optKey, optVal]) => {
                                 const isSelected = subChosenAnswer === optKey;
                                 const isCorrectOption = subQ.correctAnswer === optKey;
@@ -439,7 +439,7 @@ export default function GrammarHandbook() {
                 {/* THỨ HAI: Nếu câu hỏi thông thường dạng Multiple Choice và có options trực tiếp */}
                 {!q.subQuestions && q.options && (
                   <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 select-none">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 select-text">
                       {Object.entries(q.options).map(([optKey, optVal]) => {
                         const isSelected = chosenAnswer === optKey;
                         const isCorrectOption = q.correctAnswer === optKey;
