@@ -383,16 +383,21 @@ export default function GrammarHandbook() {
                                   }
                                 }
 
+                                const isSubAnswered = !!subChosenAnswer;
                                 return (
                                   <div
                                     key={optKey}
-                                    onClick={() => handleSelectOption(lesson.id, currentPartIdx, `${q.id}-${subIdx}`, optKey)}
-                                    className={`border rounded-xl p-3.5 text-[13px] font-bold cursor-pointer transition-all active:scale-[0.98] flex items-center gap-2.5 ${optionStyle}`}
+                                    className={`border rounded-xl p-3.5 text-[13px] font-bold flex items-center gap-2.5 ${optionStyle}`}
                                   >
-                                    <span className={`w-5.5 h-5.5 rounded-lg font-black text-[11px] flex items-center justify-center shrink-0 shadow-sm ${badgeStyle}`}>
+                                    <span
+                                      onClick={() => !isSubAnswered && handleSelectOption(lesson.id, currentPartIdx, `${q.id}-${subIdx}`, optKey)}
+                                      className={`w-5.5 h-5.5 rounded-lg font-black text-[11px] flex items-center justify-center shrink-0 shadow-sm transition-all select-none ${
+                                        !isSubAnswered ? "cursor-pointer hover:scale-110 active:scale-90" : "cursor-default"
+                                      } ${badgeStyle}`}
+                                    >
                                       {optKey}
                                     </span>
-                                    <span className="leading-snug">{optVal}</span>
+                                    <span className="leading-snug select-text">{optVal}</span>
                                   </div>
                                 );
                               })}
@@ -443,6 +448,7 @@ export default function GrammarHandbook() {
                       {Object.entries(q.options).map(([optKey, optVal]) => {
                         const isSelected = chosenAnswer === optKey;
                         const isCorrectOption = q.correctAnswer === optKey;
+                        const isAnswered = !!chosenAnswer;
 
                         let optionStyle = "border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-600";
                         let badgeStyle = "bg-slate-100 text-slate-500";
@@ -463,13 +469,17 @@ export default function GrammarHandbook() {
                         return (
                           <div
                             key={optKey}
-                            onClick={() => handleSelectOption(lesson.id, currentPartIdx, q.id, optKey)}
-                            className={`border rounded-xl p-4 text-[13px] font-bold cursor-pointer transition-all active:scale-[0.98] flex items-center gap-3 ${optionStyle}`}
+                            className={`border rounded-xl p-4 text-[13px] font-bold flex items-center gap-3 ${optionStyle}`}
                           >
-                            <span className={`w-5.5 h-5.5 rounded-lg font-black text-[11px] flex items-center justify-center shrink-0 shadow-sm ${badgeStyle}`}>
+                            <span
+                              onClick={() => !isAnswered && handleSelectOption(lesson.id, currentPartIdx, q.id, optKey)}
+                              className={`w-5.5 h-5.5 rounded-lg font-black text-[11px] flex items-center justify-center shrink-0 shadow-sm transition-all select-none ${
+                                !isAnswered ? "cursor-pointer hover:scale-110 active:scale-90" : "cursor-default"
+                              } ${badgeStyle}`}
+                            >
                               {optKey}
                             </span>
-                            <span className="leading-snug">{optVal}</span>
+                            <span className="leading-snug select-text">{optVal}</span>
                           </div>
                         );
                       })}
