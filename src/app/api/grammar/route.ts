@@ -20,32 +20,65 @@ export async function GET(request: Request) {
     }
 
     const session = (await getServerSession(authOptions)) as any;
-    if (!session) {
+    if (!session || !session.user?.id) {
       return NextResponse.json(
         { success: false, error: "UNAUTHORIZED", message: "Bạn cần đăng nhập và tham gia khóa học này để xem các nội dung chi tiết." },
         { status: 401 }
       );
     }
 
-    const isExpired = session.user?.role !== "ADMIN" && session.user?.expiresAt && new Date(session.user.expiresAt) < new Date();
-    if (isExpired) {
+    // Lấy thông tin user trực tiếp từ DB để tránh stale session (hết hạn ảo)
+    const dbUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { role: true, accountExpiresAt: true, classCode: true }
+    });
+
+    if (!dbUser) {
       return NextResponse.json(
-        { success: false, error: "EXPIRED", message: "Tài khoản của bạn đã hết hạn sử dụng. Vui lòng liên hệ Admin để đăng ký khóa học chính thức và tiếp tục học tập!" },
-        { status: 403 }
+        { success: false, error: "UNAUTHORIZED", message: "Người dùng không tồn tại trong hệ thống." },
+        { status: 401 }
       );
     }
 
-    if (session.user?.role !== "ADMIN") {
-      const enrollment = await prisma.enrollment.findUnique({
-        where: {
-          userId_courseId: {
-            userId: session.user.id,
-            courseId: courseId,
-          },
-        },
-      });
+    if (dbUser.role !== "ADMIN") {
+      const isExpired = dbUser.accountExpiresAt && new Date(dbUser.accountExpiresAt) < new Date();
+      if (isExpired) {
+        return NextResponse.json(
+          { success: false, error: "EXPIRED", message: "Tài khoản của bạn đã hết hạn sử dụng. Vui lòng liên hệ Admin để đăng ký khóa học chính thức và tiếp tục học tập!" },
+          { status: 403 }
+        );
+      }
 
-      if (!enrollment) {
+      // Sổ tay ngữ pháp là tài nguyên chung. Học viên có quyền truy cập nếu:
+      // - Có lượt đăng ký khóa học (enrollment) tương ứng với courseId được yêu cầu
+      // - Hoặc có ít nhất một enrollment bất kỳ trong hệ thống
+      // - Hoặc đã được xếp vào lớp (classCode không phải null)
+      let hasAccess = false;
+
+      // 1. Kiểm tra enrollment cụ thể trước
+      if (courseId) {
+        const enrollment = await prisma.enrollment.findUnique({
+          where: {
+            userId_courseId: {
+              userId: session.user.id,
+              courseId: courseId,
+            },
+          },
+        });
+        if (enrollment) hasAccess = true;
+      }
+
+      // 2. Nếu chưa có, kiểm tra lớp học hoặc enrollment bất kỳ
+      if (!hasAccess) {
+        const hasClassOrAnyEnrollment = dbUser.classCode || await prisma.enrollment.findFirst({
+          where: { userId: session.user.id }
+        });
+        if (hasClassOrAnyEnrollment) {
+          hasAccess = true;
+        }
+      }
+
+      if (!hasAccess) {
         return NextResponse.json(
           { success: false, error: "FORBIDDEN", message: "Tài khoản của bạn chưa được cấp quyền truy cập. Vui lòng liên hệ Admin để được hỗ trợ mở khóa!" },
           { status: 403 }

@@ -56,26 +56,40 @@ export default async function LessonDetailPage({
   }
 
   // 1. KIỂM TRA QUYỀN TRUY CẬP
-  const isExpired = session?.user?.role !== "ADMIN" && session?.user?.expiresAt && new Date(session.user.expiresAt) < new Date();
-
   let hasAccess = false;
-  if (lesson.isPreview) {
-    // Luôn cho phép xem các bài học thử/miễn phí, kể cả tài khoản hết hạn
-    hasAccess = true;
-  } else if (!isExpired) {
-    if (session?.user?.role === "ADMIN") {
-      hasAccess = true;
-    } else if (session) {
-      const enrollment = await prisma.enrollment.findUnique({
-        where: {
-          userId_courseId: {
-            userId: session.user.id,
-            courseId: courseId,
-          },
-        },
-      });
-      if (enrollment) hasAccess = true;
+  let isExpired = false;
+
+  if (session?.user?.id) {
+    // Lấy thông tin user trực tiếp từ DB để tránh stale session (hết hạn ảo)
+    const dbUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { role: true, accountExpiresAt: true }
+    });
+
+    if (dbUser) {
+      isExpired = !!(dbUser.role !== "ADMIN" && dbUser.accountExpiresAt && new Date(dbUser.accountExpiresAt) < new Date());
+      
+      if (lesson.isPreview) {
+        // Luôn cho phép xem các bài học thử/miễn phí, kể cả tài khoản hết hạn
+        hasAccess = true;
+      } else if (!isExpired) {
+        if (dbUser.role === "ADMIN") {
+          hasAccess = true;
+        } else {
+          const enrollment = await prisma.enrollment.findUnique({
+            where: {
+              userId_courseId: {
+                userId: session.user.id,
+                courseId: courseId,
+              },
+            },
+          });
+          if (enrollment) hasAccess = true;
+        }
+      }
     }
+  } else if (lesson.isPreview) {
+    hasAccess = true;
   }
 
   // 1.1 GHI NHẬN TIẾN ĐỘ BÀI HỌC (START/VIEW)
