@@ -271,9 +271,11 @@ const PassageHTMLRenderer = memo(({
           margin-left: auto !important;
           margin-right: auto !important;
         }
-        /* Tự động căn giữa các div có border hoặc mockup điện thoại */
+        /* Tự động căn giữa và giãn rộng các div có border hoặc mockup điện thoại theo khung chứa */
         .toeic-passage-content div[style*="width"], 
         .toeic-passage-content div[style*="max-width"] {
+          width: 100% !important;
+          max-width: 100% !important;
           margin-left: auto !important;
           margin-right: auto !important;
         }
