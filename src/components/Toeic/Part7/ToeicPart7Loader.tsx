@@ -186,6 +186,10 @@ export default async function ToeicPart7LoaderV2({
 
         targetGroups = targetGroups.filter(g => {
           const m = g.metadata as any;
+          const comp = String(m?.complexity || m?.Complexity || "single").toLowerCase();
+          const isMultiPassage = label.startsWith("Đoạn đôi") || label.startsWith("Đoạn ba");
+          if (!isMultiPassage && comp !== "single") return false;
+
           const cat = String(m?.category || (Array.isArray(m?.categories) ? m.categories[0] : "") || "khác").toLowerCase();
 
           if (label === "Email") return cat.includes("email");

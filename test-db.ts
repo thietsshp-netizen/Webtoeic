@@ -1,8 +1,19 @@
 import { prisma } from './src/lib/prisma';
 async function main() {
-  const count = await prisma.lesson.count();
-  console.log("Lesson count:", count);
-  const lessons = await prisma.lesson.findMany({ take: 5 });
-  console.log("Sample lessons:", lessons.map(l => ({ id: l.id, title: l.title })));
+  const lessons = await prisma.lesson.findMany({
+    where: {
+      title: {
+        contains: 'Text-'
+      }
+    }
+  });
+
+  console.log(`Found ${lessons.length} lessons:`);
+  lessons.forEach(l => {
+    console.log(`- ID: ${l.id}`);
+    console.log(`  Title: ${l.title}`);
+    console.log(`  ContentType: ${l.contentType}`);
+    console.log(`  Content:`, l.content);
+  });
 }
 main();

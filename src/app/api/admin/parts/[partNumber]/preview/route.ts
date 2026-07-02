@@ -121,6 +121,9 @@ export const POST = async (
             const label = chunk.base;
             targetGroups = targetGroups.filter(g => {
               const m = g.metadata as any;
+              const comp = String(m?.complexity || m?.Complexity || "single").toLowerCase();
+              if (comp !== "single") return false;
+
               const cat = String(m?.category || (Array.isArray(m?.categories) ? m.categories[0] : "") || "khác").toLowerCase();
               
               if (label === "Email") return cat.includes("email");
