@@ -209,6 +209,23 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
 
   useEffect(() => {
     async function fetchLesson() {
+      if (lessonId.startsWith("temp")) {
+        const defaultNewLesson = {
+          id: lessonId,
+          title: draftData?.title || "Bài học mới",
+          contentType: draftData?.contentType || "TEXT",
+          content: draftData?.content || "",
+          videoUrl: draftData?.videoUrl || "",
+          videoExplanation: draftData?.videoExplanation || "",
+          isPreview: draftData?.isPreview || false,
+          order: draftData?.order || 0,
+          sectionId: draftData?.sectionId || ""
+        };
+        setLesson(defaultNewLesson);
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       try {
         const res = await fetch(`/api/lessons/${lessonId}`);
@@ -249,6 +266,11 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
   };
 
   const handleSave = async () => {
+    if (lessonId.startsWith("temp")) {
+      alert("Bài học mới chưa được tạo chính thức. Vui lòng bấm nút 'LƯU TẤT CẢ' ở thanh công cụ phía trên trước để lưu cấu trúc bài học!");
+      return;
+    }
+
     if (lesson.contentType === "TOEIC_TEST" && !lesson.toeicTestId) {
       alert("Vui lòng chọn một đề thi TOEIC!");
       return;
