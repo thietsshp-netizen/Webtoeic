@@ -314,8 +314,5 @@ export const authOptions: NextAuthOptions = {
     error: "/auth/signin",  // Mọi lỗi xác thực đều đưa về trang Đăng nhập custom
   },
   debug: true,
-  httpOptions: {
-    timeout: 10000,
-  },
   secret: process.env.NEXTAUTH_SECRET,
 };
