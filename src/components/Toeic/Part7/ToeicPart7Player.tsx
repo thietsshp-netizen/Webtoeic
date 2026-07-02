@@ -292,10 +292,12 @@ const PassageHTMLRenderer = memo(({
           margin-bottom: 10px !important;
           clear: both !important;
         }
-        /* Hủy bỏ thước cuộn dọc riêng và giới hạn chiều cao nội bộ trong đoạn văn */
+        /* Hủy bỏ thước cuộn dọc riêng, giới hạn chiều cao và cố định chiều cao nội bộ trong đoạn văn */
         .toeic-passage-content div[style*="overflow-y"],
         .toeic-passage-content div[style*="overflow-y: auto"],
-        .toeic-passage-content div[style*="max-height"] {
+        .toeic-passage-content div[style*="max-height"],
+        .toeic-passage-content div[style*="height"] {
+          height: auto !important;
           max-height: none !important;
           overflow-y: visible !important;
         }
