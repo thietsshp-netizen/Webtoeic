@@ -175,8 +175,8 @@ export default function ToeicLibrarySelector({ onSelect, onClose }: ToeicLibrary
                      <option value="advertisement">ADVERTISEMENT</option>
                      <option value="flyer">FLYER</option>
                      <option value="memo">MEMO</option>
-                     <option value="text-message">TEXT MESSAGE</option>
-                     <option value="chat-discussion">CHAT DISCUSSION</option>
+                     <option value="text-message chain">TEXT MESSAGE CHAIN</option>
+                     <option value="chat discussion">CHAT DISCUSSION</option>
                    </select>
                  </div>
                </>

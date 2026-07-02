@@ -134,13 +134,16 @@ export const POST = async (
               if (label === "Memo") return cat.includes("memo");
               if (label === "Report") return cat.includes("report");
               if (label === "Form") return cat.includes("form");
+              if (label === "Text-message Chain") return cat.includes("text-message chain") || cat.includes("text-message") || cat.includes("text message");
+              if (label === "Chat Discussion") return cat.includes("chat discussion") || cat.includes("chat");
               
               if (label === "Biểu mẫu & Lịch trình") {
                 return cat.includes("schedule") || cat.includes("menu") || cat.includes("coupon") || cat.includes("flyer") || cat.includes("chart") || cat.includes("table") || cat.includes("checklist") || cat.includes("list") || cat.includes("price");
               }
-              if (label === "Blog & Tương tác") {
+              if (label.startsWith("Blog & Tương tác")) {
                 const isMain = cat.includes("email") || cat.includes("article") || cat.includes("advertisement") || cat.includes("letter") || cat.includes("notice") || cat.includes("web page") ||
                                cat.includes("information") || cat.includes("announcement") || cat.includes("memo") || cat.includes("report") || cat.includes("form") ||
+                               cat.includes("text-message") || cat.includes("chat") ||
                                cat.includes("schedule") || cat.includes("menu") || cat.includes("coupon") || cat.includes("flyer") || cat.includes("chart") || cat.includes("table") || cat.includes("checklist") || cat.includes("list") || cat.includes("price");
                 return !isMain;
               }

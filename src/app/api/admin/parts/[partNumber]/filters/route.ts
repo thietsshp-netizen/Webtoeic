@@ -124,8 +124,10 @@ export const GET = async (
         "Memo": [],
         "Report": [],
         "Form": [],
+        "Text-message Chain": [],
+        "Chat Discussion": [],
         "Biểu mẫu & Lịch trình": [], // Schedule, Menu, Coupon, Flyer, Chart, Table, Checklist, etc.
-        "Blog & Tương tác": [] // Blog, Forum, Chat, Review, etc.
+        "Blog & Tương tác (Brochure, Thư mời, Hướng dẫn, Biển báo, Review, Hợp đồng, Hóa đơn,...)": [] // Blog, Forum, Chat, Review, etc.
       };
 
       singleGroups.forEach(g => {
@@ -134,6 +136,8 @@ export const GET = async (
         
         if (cat.includes("email")) categorizedGroups["Email"].push(g);
         else if (cat.includes("article")) categorizedGroups["Article"].push(g);
+        else if (cat.includes("text-message chain") || cat.includes("text-message") || cat.includes("text message")) categorizedGroups["Text-message Chain"].push(g);
+        else if (cat.includes("chat discussion") || cat.includes("chat")) categorizedGroups["Chat Discussion"].push(g);
         else if (cat.includes("advertisement")) categorizedGroups["Advertisement"].push(g);
         else if (cat.includes("letter")) categorizedGroups["Letter"].push(g);
         else if (cat.includes("notice")) categorizedGroups["Notice"].push(g);
@@ -146,7 +150,7 @@ export const GET = async (
         else if (cat.includes("schedule") || cat.includes("menu") || cat.includes("coupon") || cat.includes("flyer") || cat.includes("chart") || cat.includes("table") || cat.includes("checklist") || cat.includes("list") || cat.includes("price")) {
           categorizedGroups["Biểu mẫu & Lịch trình"].push(g);
         } else {
-          categorizedGroups["Blog & Tương tác"].push(g);
+          categorizedGroups["Blog & Tương tác (Brochure, Thư mời, Hướng dẫn, Biển báo, Review, Hợp đồng, Hóa đơn,...)"].push(g);
         }
       });
 
@@ -154,7 +158,7 @@ export const GET = async (
         if (items.length === 0) return;
 
         // Đặc cách các loại chỉ cần 1 nhóm nếu số lượng <= 40
-        const isSingleChunk = ["Web Page", "Information", "Announcement", "Memo", "Report", "Form", "Biểu mẫu & Lịch trình", "Blog & Tương tác"].includes(label);
+        const isSingleChunk = ["Web Page", "Information", "Announcement", "Memo", "Report", "Form", "Biểu mẫu & Lịch trình", "Text-message Chain", "Chat Discussion"].includes(label) || label.startsWith("Blog & Tương tác");
         
         if (isSingleChunk && items.length <= 40) {
           categoriesByComplexity.single.push(`${label} (1-${items.length})`);
