@@ -34,6 +34,56 @@ const formatMMSS = (secs: number): string => {
   return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 };
 
+// Smart JSON sanitizer to clean up double quotes, newlines, and markdown blocks from pasted AI results
+const sanitizeJSONString = (str: string): string => {
+  if (!str) return "[]";
+  let cleaned = str.trim();
+  
+  // 1. Strip markdown code block wrappers
+  cleaned = cleaned.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+  
+  // 2. Fix literal newlines inside string values:
+  // We split the content into lines. If a line does not look like the start of a new JSON structure or property,
+  // we merge it with the previous line and insert \n.
+  const lines = cleaned.split(/\r?\n/);
+  const mergedLines: string[] = [];
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    // If this line does not start with { or } or [ or ] or a double-quoted property name like "start":, "end":, "text":, "ipa":, "vietnamese":, "note":,
+    // and the previous line didn't end with a comma, or if it's clearly a continuation:
+    const isJsonToken = /^[\[\{\}\]\,]$/.test(line) || 
+                        /^\s*\"(start|end|text|ipa|vietnamese|note)\"\s*\:/.test(line) ||
+                        /^\s*\}\s*\,?\s*$/.test(line) ||
+                        /^\s*\{\s*$/.test(line);
+                        
+    if (i > 0 && !isJsonToken) {
+      // Merge with previous line by appending escaped \n
+      mergedLines[mergedLines.length - 1] += "\\n" + lines[i];
+    } else {
+      mergedLines.push(lines[i]);
+    }
+  }
+  cleaned = mergedLines.join("\n");
+  
+  // 3. Fix unescaped double quotes inside string values!
+  const propertyRegex = /^\s*\"(text|ipa|vietnamese|note)\"\s*:\s*\"(.*)\"\s*\,?\s*$/;
+  const finalLines = cleaned.split("\n");
+  for (let j = 0; j < finalLines.length; j++) {
+    const line = finalLines[j];
+    const match = line.match(propertyRegex);
+    if (match) {
+      const propName = match[1];
+      const propValue = match[2];
+      // Escape any double quotes that are NOT already escaped
+      // (i.e. double quotes not preceded by a backslash)
+      const escapedValue = propValue.replace(/(?<!\\)\"/g, '\\"');
+      const hasComma = line.trim().endsWith(",");
+      finalLines[j] = `  "${propName}": "${escapedValue}"${hasComma ? "," : ""}`;
+    }
+  }
+  return finalLines.join("\n");
+};
+
 interface TimeInputProps {
   value: number;
   onChange: (val: number) => void;
@@ -347,10 +397,22 @@ ${JSON.stringify(data.subtitles, null, 2)}`;
 
     setSaving(true);
     try {
+      let finalContent = lesson.content;
+      if (lesson.contentType === "YOUTUBE_DICTATION" && lesson.content) {
+        try {
+          finalContent = sanitizeJSONString(lesson.content);
+          JSON.parse(finalContent); // Verify it is now perfectly valid JSON
+        } catch (e) {
+          alert("Lỗi: Dữ liệu phụ đề có cấu trúc JSON không hợp lệ sau khi tự động dọn dẹp. Vui lòng kiểm tra lại ngoặc kép hoặc dấu phẩy!");
+          setSaving(false);
+          return;
+        }
+      }
+
       const payload = {
         ...lesson,
         contentType: lesson.contentType || "TEXT",
-        content: lesson.content,
+        content: finalContent,
         toeicTestId: lesson.contentType === "TOEIC_TEST" && lesson.toeicTestId ? lesson.toeicTestId : null,
         vocabDayId: lesson.contentType === "VOCAB_GAME" && lesson.vocabDayId ? lesson.vocabDayId : null,
       };
@@ -524,7 +586,8 @@ ${JSON.stringify(data.subtitles, null, 2)}`;
               {/* Preview parsed JSON */}
               {(() => {
                 try {
-                  const parsed = JSON.parse(lesson.content || "[]");
+                  const sanitized = sanitizeJSONString(lesson.content || "[]");
+                  const parsed = JSON.parse(sanitized);
                   if (!Array.isArray(parsed)) throw new Error();
                   return (
                     <div className="mt-4 p-5 bg-white rounded-2xl border border-slate-200 space-y-3">
