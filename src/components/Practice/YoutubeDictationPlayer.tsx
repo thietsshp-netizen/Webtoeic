@@ -11,6 +11,7 @@ interface Subtitle {
   text: string;
   ipa?: string;
   vietnamese?: string;
+  note?: string;
 }
 
 interface YoutubeDictationPlayerProps {
@@ -36,6 +37,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [mode, setMode] = useState<"listen" | "dictation">("listen");
   const [showIpa, setShowIpa] = useState<boolean>(true);
+  const [showNotes, setShowNotes] = useState<boolean>(true);
   const [fontSize, setFontSize] = useState<number>(14);
   const [leftWidth, setLeftWidth] = useState<number>(60); // 60% left (video), 40% right (subtitles)
   const [isResizing, setIsResizing] = useState<boolean>(false);
@@ -521,6 +523,15 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   />
                   <span>Hiện IPA</span>
                 </label>
+                <label className="flex items-center gap-1.5 cursor-pointer select-none normal-case font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-3">
+                  <input
+                    type="checkbox"
+                    checked={showNotes}
+                    onChange={(e) => setShowNotes(e.target.checked)}
+                    className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
+                  />
+                  <span>Giải nghĩa</span>
+                </label>
                 <div className="flex items-center gap-1 border-l border-slate-200 pl-3">
                   <button
                     type="button"
@@ -643,6 +654,14 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                             {sub.vietnamese}
                           </p>
                         )}
+                        {sub.note && showNotes && (
+                          <p 
+                            style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
+                            className="text-amber-600 font-semibold leading-relaxed"
+                          >
+                            {sub.note}
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>
@@ -666,6 +685,15 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                         className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
                       />
                       <span>IPA</span>
+                    </label>
+                    <label className="flex items-center gap-1 cursor-pointer select-none font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-3">
+                      <input
+                        type="checkbox"
+                        checked={showNotes}
+                        onChange={(e) => setShowNotes(e.target.checked)}
+                        className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
+                      />
+                      <span>Note</span>
                     </label>
                     <div className="flex items-center gap-1 border-l border-slate-200 pl-3 normal-case">
                       <button
@@ -703,6 +731,14 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     className="text-slate-600 leading-relaxed font-semibold italic"
                   >
                     {subtitles[currentIndex]?.vietnamese}
+                  </p>
+                )}
+                {subtitles[currentIndex]?.note && showNotes && (
+                  <p 
+                    style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
+                    className="text-amber-600 leading-relaxed font-semibold"
+                  >
+                    {subtitles[currentIndex]?.note}
                   </p>
                 )}
               </div>

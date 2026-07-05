@@ -151,6 +151,7 @@ YOUR TASKS:
 3. For each final merged sentence object:
    - Add "ipa" (phonetic transcription in US English).
    - Add "vietnamese" (natural and friendly Vietnamese translation).
+   - Add "note" (If the sentence contains any idioms, slangs, phrasal verbs, or US cultural names/references, explain them briefly in Vietnamese. Start the note with a * symbol. Example: "* 'spill the beans': tiết lộ bí mật". If there are none, return null or empty string "").
 4. Return ONLY a valid JSON array of the processed objects. Do not write any markdown formatting (do not wrap in \`\`\`json blocks) or explanations.
 
 Example of merging:
@@ -167,7 +168,8 @@ Merged result:
     "end": 46.0,
     "text": "Hey. Hey. Ho ho. Hello. See a guy who doesn't want to know standing right here.",
     "ipa": "/heɪ. heɪ. hoʊ hoʊ. həˈloʊ. si ə ɡaɪ hu ˈdʌznt wɑnt tu noʊ ˈstændɪŋ raɪt hɪr./",
-    "vietnamese": "Này, này. Hô hô. Xin chào. Có một anh chàng không muốn biết giới tính con mình đang đứng ngay đây này."
+    "vietnamese": "Này, này. Hô hô. Xin chào. Có một anh chàng không muốn biết giới tính con mình đang đứng ngay đây này.",
+    "note": "* 'standing right here': Đang đứng ngay tại đây (cách nhấn mạnh vị trí hiện tại)."
   }
 ]
 
