@@ -214,9 +214,14 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 } catch (e) {}
               },
               onStateChange: (event: any) => {
-                if (!isMounted) return;
                 if (event.data === window.YT.PlayerState.PLAYING) {
                   setIsPlaying(true);
+                  try {
+                    if (playerRef.current && typeof playerRef.current.unloadModule === "function") {
+                      playerRef.current.unloadModule("captions");
+                      playerRef.current.unloadModule("cc");
+                    }
+                  } catch (e) {}
                 } else if (event.data === window.YT.PlayerState.PAUSED) {
                   setIsPlaying(false);
                 }
