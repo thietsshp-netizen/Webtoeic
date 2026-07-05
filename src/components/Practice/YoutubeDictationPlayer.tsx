@@ -455,10 +455,14 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     } else {
       if (!playerRef.current) return;
       if (isPlaying) {
-        playerRef.current.pauseVideo();
+        if (typeof playerRef.current.pauseVideo === "function") {
+          playerRef.current.pauseVideo();
+        }
         setIsPlaying(false);
       } else {
-        playerRef.current.playVideo();
+        if (typeof playerRef.current.playVideo === "function") {
+          playerRef.current.playVideo();
+        }
         setIsPlaying(true);
       }
     }
@@ -589,7 +593,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     <div ref={outerContainerRef} className={`flex flex-col lg:flex-row gap-0 h-[calc(100vh-140px)] min-h-[500px] w-full overflow-hidden ${isResizing ? "select-none" : ""}`}>
       {/* LEFT COLUMN: Video Player */}
       <div style={{ width: `${leftWidth}%` }} className="flex flex-col gap-4 h-full pr-3 min-w-[320px] shrink-0">
-        <div className="relative aspect-video w-full rounded-3xl overflow-hidden bg-slate-900 border-4 border-white shadow-xl">
+        <div className="relative w-full aspect-video rounded-3xl overflow-hidden bg-slate-900 border-4 border-white shadow-xl flex items-center justify-center">
           {isDirectVideo ? (
             <video
               ref={videoRef}
