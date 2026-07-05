@@ -105,6 +105,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const containerRef = useRef<HTMLDivElement>(null);
   const outerContainerRef = useRef<HTMLDivElement>(null);
   const lastSeekTimeRef = useRef<number>(0);
+  const hasRestoredRef = useRef<boolean>(false);
 
   const startResizing = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -220,21 +221,31 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
   // Restore progress from localStorage once player and subtitles are ready
   useEffect(() => {
-    if (playerReady && subtitles.length > 0 && playerRef.current && typeof playerRef.current.seekTo === "function") {
+    if (playerReady && subtitles.length > 0 && playerRef.current && typeof playerRef.current.seekTo === "function" && !hasRestoredRef.current) {
+      hasRestoredRef.current = true; // Mark restore attempt completed
       const saved = localStorage.getItem(`youtube-dictation-progress-${lessonId}`);
       if (saved) {
         const idx = parseInt(saved, 10);
         if (idx >= 0 && idx < subtitles.length) {
           setCurrentIndex(idx);
-          playerRef.current.seekTo(subtitles[idx].start, true);
+          // Use a 600ms timeout to ensure the player finished initial load and accepts seek stably
+          setTimeout(() => {
+            if (playerRef.current && typeof playerRef.current.seekTo === "function") {
+              playerRef.current.seekTo(subtitles[idx].start, true);
+              playerRef.current.pauseVideo();
+            }
+          }, 600);
         }
       }
+    } else if (playerReady && subtitles.length > 0 && !hasRestoredRef.current) {
+      // If there is no playerRef or seekTo capability yet but conditions are ready and no progress saved
+      hasRestoredRef.current = true;
     }
   }, [playerReady, subtitles, lessonId]);
 
   // Save progress to localStorage when index changes
   useEffect(() => {
-    if (subtitles.length > 0) {
+    if (subtitles.length > 0 && hasRestoredRef.current) {
       localStorage.setItem(`youtube-dictation-progress-${lessonId}`, currentIndex.toString());
     }
   }, [currentIndex, subtitles, lessonId]);
@@ -252,15 +263,17 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
           // Find and update active subtitle based on time (only in listening mode to prevent snapping during dictation typing)
           if (mode === "listen" && subtitles.length > 0) {
-            // Check if current active subtitle is still valid. If it is, keep it active to prevent jumping/snapping back
-            const currentSub = subtitles[currentIndex];
-            const isCurrentActive = currentSub && time >= currentSub.start && time <= currentSub.end;
-            
-            if (!isCurrentActive) {
-              const index = subtitles.findIndex((sub) => time >= sub.start && time <= sub.end);
-              if (index !== -1 && index !== currentIndex) {
-                setCurrentIndex(index);
+            // Scan backwards to find the latest matching subtitle (prioritizes newer segments when times overlap)
+            let foundIndex = -1;
+            for (let i = subtitles.length - 1; i >= 0; i--) {
+              const sub = subtitles[i];
+              if (time >= sub.start && time <= sub.end) {
+                foundIndex = i;
+                break;
               }
+            }
+            if (foundIndex !== -1 && foundIndex !== currentIndex) {
+              setCurrentIndex(foundIndex);
             }
           }
         } catch (e) {}
