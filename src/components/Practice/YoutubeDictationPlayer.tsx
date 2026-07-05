@@ -181,50 +181,76 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
     }
 
+    let isMounted = true;
+    let pollInterval: NodeJS.Timeout;
+
     const setupPlayer = () => {
-      if (window.YT && window.YT.Player) {
-        playerRef.current = new window.YT.Player("youtube-dictation-iframe", {
-          playerVars: {
-            controls: 0,
-            cc_load_policy: 0,
-            iv_load_policy: 3,
-            modestbranding: 1,
-            rel: 0,
-            showinfo: 0,
-            disablekb: 1,
-            fs: 0
-          },
-          events: {
-            onReady: () => {
-              setPlayerReady(true);
-              try {
-                if (playerRef.current && typeof playerRef.current.unloadModule === "function") {
-                  playerRef.current.unloadModule("captions");
-                  playerRef.current.unloadModule("cc");
+      if (!isMounted) return;
+      const element = document.getElementById("youtube-dictation-iframe");
+      if (!element) return;
+
+      try {
+        if (window.YT && window.YT.Player) {
+          playerRef.current = new window.YT.Player("youtube-dictation-iframe", {
+            playerVars: {
+              controls: 1,
+              cc_load_policy: 0,
+              iv_load_policy: 3,
+              modestbranding: 1,
+              rel: 0,
+              showinfo: 0,
+              enablejsapi: 1,
+              origin: window.location.origin
+            },
+            events: {
+              onReady: () => {
+                if (!isMounted) return;
+                setPlayerReady(true);
+                try {
+                  if (playerRef.current && typeof playerRef.current.unloadModule === "function") {
+                    playerRef.current.unloadModule("captions");
+                    playerRef.current.unloadModule("cc");
+                  }
+                } catch (e) {}
+              },
+              onStateChange: (event: any) => {
+                if (!isMounted) return;
+                if (event.data === window.YT.PlayerState.PLAYING) {
+                  setIsPlaying(true);
+                } else if (event.data === window.YT.PlayerState.PAUSED) {
+                  setIsPlaying(false);
                 }
-              } catch (e) {}
+              },
             },
-            onStateChange: (event: any) => {
-              if (event.data === window.YT.PlayerState.PLAYING) {
-                setIsPlaying(true);
-              } else if (event.data === window.YT.PlayerState.PAUSED) {
-                setIsPlaying(false);
-              }
-            },
-          },
-        });
+          });
+        }
+      } catch (err) {
+        console.error("Error binding YT Player:", err);
       }
     };
 
-    if (window.YT && window.YT.Player) {
-      setupPlayer();
-    } else {
-      window.onYouTubeIframeAPIReady = setupPlayer;
+    if (!window.YT) {
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName("script")[0];
+      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
     }
 
+    const checkAndInit = () => {
+      if (window.YT && window.YT.Player && typeof window.YT.Player === "function") {
+        setupPlayer();
+      } else {
+        pollInterval = setTimeout(checkAndInit, 100);
+      }
+    };
+
+    checkAndInit();
+
     return () => {
-      // Cleanup window ready callback
+      isMounted = false;
+      if (pollInterval) clearTimeout(pollInterval);
       window.onYouTubeIframeAPIReady = undefined;
+      setPlayerReady(false);
     };
   }, [videoId]);
 
@@ -496,8 +522,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           {videoId ? (
             <iframe
               id="youtube-dictation-iframe"
-              ref={iframeRef}
-              src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&version=3&rel=0&controls=0&cc_load_policy=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0`}
+              src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&version=3&rel=0&controls=1&cc_load_policy=0&iv_load_policy=3&modestbranding=1`}
               className="w-full h-full border-none"
               allow="autoplay; encrypted-media"
               allowFullScreen
