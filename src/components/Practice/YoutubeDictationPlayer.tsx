@@ -595,6 +595,20 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               ref={videoRef}
               src={directVideoUrl}
               className="w-full h-full object-contain bg-black"
+              onError={(e) => {
+                const vid = e.currentTarget;
+                const errCode = vid.error?.code;
+                const errMsg = vid.error?.message || "Unknown error";
+                const codeMap: Record<number, string> = {
+                  1: "MEDIA_ERR_ABORTED – Người dùng hủy tải",
+                  2: "MEDIA_ERR_NETWORK – Lỗi mạng khi tải video",
+                  3: "MEDIA_ERR_DECODE – Lỗi giải mã (codec không hỗ trợ?)",
+                  4: "MEDIA_ERR_SRC_NOT_SUPPORTED – URL không hợp lệ hoặc bị chặn CORS",
+                };
+                const desc = errCode ? codeMap[errCode] : "Lỗi không xác định";
+                console.error("[Video Error]", errCode, errMsg, directVideoUrl);
+                alert(`❌ Lỗi tải video:\n${desc}\n\nURL: ${directVideoUrl}\n\nKiểm tra:\n• Bucket Supabase đã đặt Public chưa?\n• URL có dạng .../object/public/... không?\n• Có CORS Policy cho domain này chưa?`);
+              }}
               onTimeUpdate={() => {
                 if (!videoRef.current) return;
                 const time = videoRef.current.currentTime;
@@ -636,6 +650,30 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             </div>
           )}
         </div>
+
+        {/* Active Subtitle Panel directly under video */}
+        {subtitles.length > 0 && subtitles[currentIndex] && (
+          <div className="bg-slate-900 text-white p-5 rounded-3xl border border-slate-800 shadow-xl flex flex-col gap-2 transition-all">
+            <div className="text-lg font-bold text-center text-indigo-300 leading-snug">
+              {subtitles[currentIndex].text}
+            </div>
+            {showIpa && subtitles[currentIndex].ipa && (
+              <div className="text-xs font-medium text-center text-slate-400 font-mono">
+                {subtitles[currentIndex].ipa}
+              </div>
+            )}
+            {subtitles[currentIndex].vietnamese && (
+              <div className="text-sm font-medium text-center text-amber-200 leading-normal border-t border-slate-800/80 pt-2 mt-1">
+                {subtitles[currentIndex].vietnamese}
+              </div>
+            )}
+            {showNotes && subtitles[currentIndex].note && (
+              <div className="text-[11px] text-center text-emerald-400 bg-emerald-950/40 py-1.5 px-3 rounded-xl border border-emerald-900/30 mt-1">
+                {subtitles[currentIndex].note}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Video Controls & Information */}
         <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-4">
