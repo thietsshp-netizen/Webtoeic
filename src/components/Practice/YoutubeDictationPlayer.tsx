@@ -101,12 +101,28 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
   const playerRef = useRef<any>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const dictationTextareaRef = useRef<HTMLTextAreaElement>(null);
   const activeSubRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const outerContainerRef = useRef<HTMLDivElement>(null);
   const lastSeekTimeRef = useRef<number>(0);
   const hasRestoredRef = useRef<boolean>(false);
+
+  // --- Detect video type ---
+  const isDirectVideo = !!(videoUrl && !videoUrl.includes("youtube.com") && !videoUrl.includes("youtu.be"));
+
+  // Convert Google Drive view link to direct stream link
+  const getDirectVideoUrl = (url: string): string => {
+    if (!url) return "";
+    // Google Drive: https://drive.google.com/file/d/FILE_ID/view
+    const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+    if (driveMatch) {
+      return `https://drive.google.com/uc?export=download&id=${driveMatch[1]}`;
+    }
+    return url; // Return as-is for Supabase, Cloudflare R2, etc.
+  };
+  const directVideoUrl = getDirectVideoUrl(videoUrl);
 
   const startResizing = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -259,16 +275,37 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     };
   }, [videoId]);
 
-  // Restore progress from localStorage once player and subtitles are ready
+  // Restore progress: works for both YouTube and HTML5 video
   useEffect(() => {
-    if (playerReady && subtitles.length > 0 && playerRef.current && typeof playerRef.current.seekTo === "function" && !hasRestoredRef.current) {
-      hasRestoredRef.current = true; // Mark restore attempt completed
+    if (subtitles.length === 0 || hasRestoredRef.current) return;
+
+    if (isDirectVideo) {
+      // For direct video: restore when video element is mounted and can seek
+      hasRestoredRef.current = true;
       const saved = localStorage.getItem(`youtube-dictation-progress-${lessonId}`);
       if (saved) {
         const idx = parseInt(saved, 10);
         if (idx >= 0 && idx < subtitles.length) {
           setCurrentIndex(idx);
-          // Use a 600ms timeout to ensure the player finished initial load and accepts seek stably
+          setTimeout(() => {
+            if (videoRef.current) {
+              videoRef.current.currentTime = subtitles[idx].start;
+            }
+          }, 400);
+        }
+      }
+      setPlayerReady(true);
+      return;
+    }
+
+    // For YouTube: wait for playerReady
+    if (playerReady && playerRef.current && typeof playerRef.current.seekTo === "function") {
+      hasRestoredRef.current = true;
+      const saved = localStorage.getItem(`youtube-dictation-progress-${lessonId}`);
+      if (saved) {
+        const idx = parseInt(saved, 10);
+        if (idx >= 0 && idx < subtitles.length) {
+          setCurrentIndex(idx);
           setTimeout(() => {
             if (playerRef.current && typeof playerRef.current.seekTo === "function") {
               playerRef.current.seekTo(subtitles[idx].start, true);
@@ -278,10 +315,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         }
       }
     } else if (playerReady && subtitles.length > 0 && !hasRestoredRef.current) {
-      // If there is no playerRef or seekTo capability yet but conditions are ready and no progress saved
       hasRestoredRef.current = true;
     }
-  }, [playerReady, subtitles, lessonId]);
+  }, [playerReady, subtitles, lessonId, isDirectVideo]);
 
   // Save progress to localStorage when index changes
   useEffect(() => {
@@ -290,8 +326,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     }
   }, [currentIndex, subtitles, lessonId]);
 
-  // Poll current time from YouTube Player API
+  // Poll current time from YouTube Player API (YouTube mode only)
   useEffect(() => {
+    if (isDirectVideo) return; // HTML5 video uses onTimeUpdate events instead
     const interval = setInterval(() => {
       // Skip automatic time tracking for 1.2 seconds after manual seek to allow YouTube player to stabilize
       if (Date.now() - lastSeekTimeRef.current < 1200) return;
@@ -386,33 +423,56 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   // Handle seeking & playing a specific subtitle row
   const playSubtitleRow = (index: number) => {
     if (index < 0 || index >= subtitles.length) return;
-    lastSeekTimeRef.current = Date.now(); // Mark manual seeking timestamp
+    lastSeekTimeRef.current = Date.now();
     setCurrentIndex(index);
     const sub = subtitles[index];
-    if (playerRef.current && typeof playerRef.current.seekTo === "function") {
-      playerRef.current.seekTo(sub.start, true);
-      playerRef.current.playVideo();
-      setIsPlaying(true);
-    }
-  };
-
-  // Play/Pause YouTube video
-  const togglePlay = () => {
-    if (!playerRef.current) return;
-    if (isPlaying) {
-      playerRef.current.pauseVideo();
-      setIsPlaying(false);
+    if (isDirectVideo) {
+      if (videoRef.current) {
+        videoRef.current.currentTime = sub.start;
+        videoRef.current.play().catch(() => {});
+        setIsPlaying(true);
+      }
     } else {
-      playerRef.current.playVideo();
-      setIsPlaying(true);
+      if (playerRef.current && typeof playerRef.current.seekTo === "function") {
+        playerRef.current.seekTo(sub.start, true);
+        playerRef.current.playVideo();
+        setIsPlaying(true);
+      }
     }
   };
 
-  // Change Playback Speed
+  // Play/Pause video (both modes)
+  const togglePlay = () => {
+    if (isDirectVideo) {
+      if (!videoRef.current) return;
+      if (isPlaying) {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        videoRef.current.play().catch(() => {});
+        setIsPlaying(true);
+      }
+    } else {
+      if (!playerRef.current) return;
+      if (isPlaying) {
+        playerRef.current.pauseVideo();
+        setIsPlaying(false);
+      } else {
+        playerRef.current.playVideo();
+        setIsPlaying(true);
+      }
+    }
+  };
+
+  // Change Playback Speed (both modes)
   const handleSpeedChange = (speed: number) => {
     setPlaybackRate(speed);
-    if (playerRef.current && typeof playerRef.current.setPlaybackRate === "function") {
-      playerRef.current.setPlaybackRate(speed);
+    if (isDirectVideo) {
+      if (videoRef.current) videoRef.current.playbackRate = speed;
+    } else {
+      if (playerRef.current && typeof playerRef.current.setPlaybackRate === "function") {
+        playerRef.current.setPlaybackRate(speed);
+      }
     }
   };
 
@@ -513,9 +573,15 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value);
     setCurrentTime(val);
-    if (playerRef.current && typeof playerRef.current.seekTo === "function") {
-      lastSeekTimeRef.current = Date.now();
-      playerRef.current.seekTo(val, true);
+    if (isDirectVideo) {
+      if (videoRef.current) {
+        videoRef.current.currentTime = val;
+      }
+    } else {
+      if (playerRef.current && typeof playerRef.current.seekTo === "function") {
+        lastSeekTimeRef.current = Date.now();
+        playerRef.current.seekTo(val, true);
+      }
     }
   };
 
@@ -524,7 +590,39 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       {/* LEFT COLUMN: Video Player */}
       <div style={{ width: `${leftWidth}%` }} className="flex flex-col gap-4 h-full pr-3 min-w-[320px] shrink-0">
         <div className="relative aspect-video w-full rounded-3xl overflow-hidden bg-slate-900 border-4 border-white shadow-xl">
-          {videoId ? (
+          {isDirectVideo ? (
+            <video
+              ref={videoRef}
+              src={directVideoUrl}
+              className="w-full h-full object-contain bg-black"
+              onTimeUpdate={() => {
+                if (!videoRef.current) return;
+                const time = videoRef.current.currentTime;
+                setCurrentTime(time);
+                // Find and update active subtitle based on time (only in listen mode)
+                if (mode === "listen" && subtitles.length > 0) {
+                  let foundIndex = -1;
+                  for (let i = subtitles.length - 1; i >= 0; i--) {
+                    const sub = subtitles[i];
+                    if (time >= sub.start && time <= sub.end) {
+                      foundIndex = i;
+                      break;
+                    }
+                  }
+                  if (foundIndex !== -1 && foundIndex !== currentIndex) {
+                    setCurrentIndex(foundIndex);
+                  }
+                }
+              }}
+              onDurationChange={() => {
+                if (videoRef.current) setDuration(videoRef.current.duration);
+              }}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              controls
+              preload="metadata"
+            />
+          ) : videoId ? (
             <iframe
               id="youtube-dictation-iframe"
               src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&version=3&rel=0&controls=1&cc_load_policy=0&iv_load_policy=3&modestbranding=1`}

@@ -84,6 +84,93 @@ const sanitizeJSONString = (str: string): string => {
   return finalLines.join("\n");
 };
 
+// Check if a URL is a YouTube URL
+const isYouTubeUrl = (url: string): boolean => {
+  if (!url) return false;
+  return url.includes("youtube.com") || url.includes("youtu.be");
+};
+
+// Parse subtitle file content (.ass, .srt, .vtt) and extract timecodes + text
+// Returns { start, end, text, vietnamese? } - vietnamese is extracted from bilingual files (e.g. ASS with dual languages)
+const parseSubtitleFile = (rawContent: string): Array<{start: number, end: number, text: string, vietnamese?: string}> => {
+  const result: Array<{start: number, end: number, text: string, vietnamese?: string}> = [];
+  const content = rawContent.trim();
+
+  const timeToSeconds = (t: string): number => {
+    // Handles HH:MM:SS.mmm or HH:MM:SS,mmm or MM:SS.mmm
+    const parts = t.split(/:/);
+    if (parts.length === 3) {
+      const ms = parseFloat(parts[2].replace(',', '.'));
+      return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + ms;
+    } else if (parts.length === 2) {
+      const ms = parseFloat(parts[1].replace(',', '.'));
+      return parseInt(parts[0]) * 60 + ms;
+    }
+    return 0;
+  };
+
+  // Detect format
+  if (content.includes('[Script Info]') || (content.includes('Format:') && content.includes('Dialogue:'))) {
+    // ASS/SSA format
+    const dialogueRegex = /Dialogue:[^,]*,([\d:.]+),([\d:.]+),[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,(.+)/gm;
+    let m;
+    while ((m = dialogueRegex.exec(content)) !== null) {
+      const rawText = m[3];
+
+      // Split on \N (ASS hard line break), then for each segment:
+      // - strip color/style tags
+      // - detect if it contains Vietnamese characters (has diacritics like ắ,ổ,ạ,ừ...)
+      // - keep only the English segments and join them
+      const segments = rawText.split(/\\N/);
+      const cleanedSegments = segments.map(seg => seg.replace(/\{[^}]*\}/g, '').replace(/\\n/gi, ' ').trim());
+
+      const hasVietnamese = (s: string) => /[àáâãèéêìíòóôõùúýăđơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i.test(s);
+
+      const englishParts = cleanedSegments.filter(s => s && !hasVietnamese(s));
+      const vietnameseParts = cleanedSegments.filter(s => s && hasVietnamese(s));
+
+      const text = englishParts.join(' ').trim();
+      const vietnamese = vietnameseParts.join(' ').trim() || undefined;
+
+      // Skip metadata/watermark lines
+      const isMetadata = /downloaded from|shared by|http|www\.|sapo\.pt/i.test(text);
+      if (text && !isMetadata) {
+        result.push({ start: timeToSeconds(m[1]), end: timeToSeconds(m[2]), text, vietnamese });
+      }
+    }
+  } else if (content.includes('WEBVTT')) {
+    // VTT format
+    const blocks = content.split(/\n\n+/);
+    for (const block of blocks) {
+      const lines = block.split(/\n/).filter(Boolean);
+      const timingLine = lines.find(l => l.includes('-->'));
+      if (!timingLine) continue;
+      const [startStr, endStr] = timingLine.split('-->').map(s => s.trim().split(' ')[0]);
+      const text = lines
+        .filter(l => !l.includes('-->') && !/^\d+$/.test(l.trim()) && !l.startsWith('WEBVTT'))
+        .join(' ')
+        .replace(/<[^>]+>/g, '')  // strip tags
+        .trim();
+      if (text) result.push({ start: timeToSeconds(startStr), end: timeToSeconds(endStr), text });
+    }
+  } else {
+    // SRT format
+    const blocks = content.split(/\n\n+/);
+    for (const block of blocks) {
+      const lines = block.split(/\n/).filter(Boolean);
+      if (lines.length < 2) continue;
+      const timingLine = lines.find(l => l.includes('-->'));
+      if (!timingLine) continue;
+      const [startStr, endStr] = timingLine.split('-->').map(s => s.trim());
+      const textLines = lines.filter(l => !l.includes('-->') && !/^\d+$/.test(l.trim()));
+      const text = textLines.join(' ').replace(/<[^>]+>/g, '').trim();
+      if (text) result.push({ start: timeToSeconds(startStr), end: timeToSeconds(endStr), text });
+    }
+  }
+
+  return result;
+};
+
 interface TimeInputProps {
   value: number;
   onChange: (val: number) => void;
@@ -173,6 +260,7 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
   const [questionsList, setQuestionsList] = useState<any[]>([]);
   const [isProcessingSub, setIsProcessingSub] = useState(false);
   const [generatedPrompt, setGeneratedPrompt] = useState<string>("");
+  const [pastedSubsRaw, setPastedSubsRaw] = useState<string>("");
 
   const handleAutoFetchSubtitles = async () => {
     if (!lesson?.videoUrl) {
@@ -235,6 +323,66 @@ ${JSON.stringify(data.subtitles, null, 2)}`;
     } finally {
       setIsProcessingSub(false);
     }
+  };
+
+  const handleParseSubtitleFile = () => {
+    if (!pastedSubsRaw.trim()) {
+      alert("Vui lòng dán nội dung file phụ đề (.ass, .srt, .vtt) vào ô bên trên!");
+      return;
+    }
+    const parsed = parseSubtitleFile(pastedSubsRaw);
+    if (parsed.length === 0) {
+      alert("Không thể nhận diện định dạng phụ đề. Vui lòng kiểm tra lại file (.ass, .srt, .vtt).");
+      return;
+    }
+    const promptTemplate = `You are an expert English teacher. I will provide you with a JSON array of English subtitle segments with timestamps.
+Because subtitle files often cut lines in the middle of sentences, the segments may be fragmented.
+
+YOUR TASKS:
+1. Merge adjacent segments that belong to the same grammatical sentence or complete thought into one single subtitle object.
+2. For merged sentences:
+   - "start" must be the start time of the first segment you merged.
+   - "end" must be the end time of the last segment you merged.
+   - "text" must be the combined clean sentence text.
+3. For each final merged sentence object:
+   - Add "ipa" (phonetic transcription in US English).
+   - Add "vietnamese" (natural and friendly Vietnamese translation).
+   - Add "note" (If the sentence contains any idioms, slangs, phrasal verbs, or US cultural names/references, explain them briefly in Vietnamese. Start the note with a * symbol. Example: "* 'spill the beans': tiết lộ bí mật". If there are none, return null or empty string "").
+4. Return ONLY a valid JSON array of the processed objects. Do not write any markdown formatting (do not wrap in \`\`\`json blocks) or explanations.
+
+Subtitles to process:
+${JSON.stringify(parsed, null, 2)}`;
+    setGeneratedPrompt(promptTemplate);
+    alert(`Đã phân tích thành công ${parsed.length} dòng phụ đề! Hãy copy Prompt bên dưới và dán vào Gemini.`);
+  };
+
+  // Directly generate subtitle JSON from bilingual ASS file (no Gemini needed)
+  const handleDirectJsonFromSubtitle = () => {
+    if (!pastedSubsRaw.trim()) {
+      alert("Vui lòng dán nội dung file phụ đề (.ass, .srt, .vtt) vào ô bên trên!");
+      return;
+    }
+    const parsed = parseSubtitleFile(pastedSubsRaw);
+    if (parsed.length === 0) {
+      alert("Không thể nhận diện định dạng phụ đề. Vui lòng kiểm tra lại file.");
+      return;
+    }
+    const hasBilingual = parsed.some(s => s.vietnamese);
+    if (!hasBilingual) {
+      alert("File phụ đề này không có bản dịch tiếng Việt sẵn. Hãy dùng nút \"Tạo Prompt Gemini\" bên dưới.");
+      return;
+    }
+    // Build subtitle JSON directly from bilingual data
+    const subtitleJson = parsed.map(s => ({
+      start: s.start,
+      end: s.end,
+      text: s.text,
+      ipa: "",
+      vietnamese: s.vietnamese || "",
+      note: ""
+    }));
+    updateDraft({ content: JSON.stringify(subtitleJson, null, 2) });
+    alert(`✅ Đã tạo ${subtitleJson.length} dòng phụ đề trực tiếp từ file! IPA và Chú thích để trống — có thể bổ sung sau bằng Gemini nếu cần.`);
   };
 
   // Tự động tải danh sách câu hỏi thực tế của bài học này từ database
@@ -517,24 +665,79 @@ ${JSON.stringify(data.subtitles, null, 2)}`;
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row gap-3 items-end">
                 <div className="flex-1 w-full">
-                  <label className="text-xs font-bold text-slate-600 ml-1">Đường dẫn Video YouTube</label>
+                  <label className="text-xs font-bold text-slate-600 ml-1">Đường dẫn Video (YouTube, Google Drive, Supabase, .mp4...)</label>
                   <input
                     type="text"
                     value={lesson.videoUrl || ""}
                     onChange={(e) => updateDraft({ videoUrl: e.target.value })}
                     className="w-full mt-1.5 p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-medium bg-white transition-all"
-                    placeholder="Dán link YouTube (ví dụ: https://www.youtube.com/watch?v=...) hoặc link nhúng..."
+                    placeholder="YouTube: https://youtube.com/watch?v=... | Drive: https://drive.google.com/file/d/.../view | Hoặc link .mp4 trực tiếp..."
                   />
                 </div>
-                <button
-                  type="button"
-                  onClick={handleAutoFetchSubtitles}
-                  disabled={isProcessingSub}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-widest px-6 rounded-2xl active:scale-95 transition-all shadow-md shadow-indigo-150 disabled:bg-slate-350 shrink-0 h-[52px] flex items-center justify-center"
-                >
-                  {isProcessingSub ? "Đang xử lý..." : "⚡ Tải phụ đề & Tạo Prompt"}
-                </button>
+                {isYouTubeUrl(lesson.videoUrl || "") && (
+                  <button
+                    type="button"
+                    onClick={handleAutoFetchSubtitles}
+                    disabled={isProcessingSub}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-widest px-6 rounded-2xl active:scale-95 transition-all shadow-md shadow-indigo-150 disabled:bg-slate-350 shrink-0 h-[52px] flex items-center justify-center"
+                  >
+                    {isProcessingSub ? "Đang xử lý..." : "⚡ Tải phụ đề & Tạo Prompt"}
+                  </button>
+                )}
               </div>
+
+              {/* Non-YouTube: Upload subtitle file directly */}
+              {lesson.videoUrl && !isYouTubeUrl(lesson.videoUrl) && (
+                <div className="space-y-3 p-5 bg-teal-50 rounded-2xl border border-teal-200">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-teal-800 uppercase tracking-widest">📄 Tạo phụ đề từ file (.ass / .srt / .vtt)</span>
+                  </div>
+                  <label className="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-teal-400 rounded-2xl cursor-pointer bg-white hover:bg-teal-50 transition-colors">
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-2xl">📂</span>
+                      {pastedSubsRaw ? (
+                        <span className="text-sm font-bold text-emerald-700">✅ Đã tải file phụ đề thành công!</span>
+                      ) : (
+                        <span className="text-sm font-bold text-teal-700">Bấm để chọn file .ass, .srt hoặc .vtt</span>
+                      )}
+                      <span className="text-xs text-slate-400">Hỗ trợ file song ngữ (EN + VI) và file chỉ tiếng Anh</span>
+                    </div>
+                    <input
+                      type="file"
+                      accept=".ass,.ssa,.srt,.vtt,.txt"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                          setPastedSubsRaw((ev.target?.result as string) || "");
+                        };
+                        reader.readAsText(file, "utf-8");
+                      }}
+                    />
+                  </label>
+                  {pastedSubsRaw && (
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={handleDirectJsonFromSubtitle}
+                        className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-widest px-4 py-3 rounded-2xl active:scale-95 transition-all shadow-md"
+                      >
+                        ✅ Tạo JSON trực tiếp (có sẵn bản dịch)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleParseSubtitleFile}
+                        className="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs uppercase tracking-widest px-4 py-3 rounded-2xl active:scale-95 transition-all shadow-md"
+                      >
+                        🤖 Tạo Prompt Gemini (thêm IPA + Chú thích)
+                      </button>
+                    </div>
+                  )}
+                  <p className="text-[10px] text-teal-700 italic">💡 File .ass song ngữ (EN + VI): dùng nút xanh lá để tạo JSON ngay. File chỉ có tiếng Anh: dùng nút xanh ngọc để nhờ Gemini dịch.</p>
+                </div>
+              )}
 
               {generatedPrompt && (
                 <div className="p-5 bg-amber-50 rounded-2xl border border-amber-200 space-y-3">
