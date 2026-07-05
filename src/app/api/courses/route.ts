@@ -1,12 +1,18 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 export const dynamic = 'force-dynamic';
 
 // [GET] Lấy danh sách khóa học cho Dashboard
 export async function GET() {
   try {
+    const session = await getServerSession(authOptions) as any;
+    const isAdmin = session?.user?.role === "ADMIN";
+
     const rawCourses = await prisma.course.findMany({
+      where: isAdmin ? {} : { isPublic: true },
       orderBy: { createdAt: 'desc' },
       include: {
         sections: {

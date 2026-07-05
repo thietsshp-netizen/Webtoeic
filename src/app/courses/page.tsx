@@ -17,6 +17,7 @@ export default async function CoursesPage() {
   let courses: any[] = [];
   try {
     courses = await prisma.course.findMany({
+      where: isAdmin ? {} : { isPublic: true },
       orderBy: { createdAt: 'desc' },
       include: {
         _count: {
