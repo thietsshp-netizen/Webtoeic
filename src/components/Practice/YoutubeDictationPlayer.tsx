@@ -78,6 +78,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [currentTime, setCurrentTime] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [mode, setMode] = useState<"listen" | "dictation">("listen");
@@ -93,7 +94,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
   // States for live editing
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [editFields, setEditFields] = useState<{ text: string; ipa: string; vietnamese: string; note: string }>({ text: "", ipa: "", vietnamese: "", note: "" });
+  const [editFields, setEditFields] = useState<{ text: string; ipa: string; vietnamese: string; note: string; start: number; end: number }>({ text: "", ipa: "", vietnamese: "", note: "", start: 0, end: 0 });
   const [isSavingEdit, setIsSavingEdit] = useState<boolean>(false);
 
   const [playerReady, setPlayerReady] = useState<boolean>(false);
@@ -184,16 +185,24 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       if (window.YT && window.YT.Player) {
         playerRef.current = new window.YT.Player("youtube-dictation-iframe", {
           playerVars: {
-            controls: 1,
+            controls: 0,
             cc_load_policy: 0,
             iv_load_policy: 3,
             modestbranding: 1,
             rel: 0,
-            showinfo: 0
+            showinfo: 0,
+            disablekb: 1,
+            fs: 0
           },
           events: {
             onReady: () => {
               setPlayerReady(true);
+              try {
+                if (playerRef.current && typeof playerRef.current.unloadModule === "function") {
+                  playerRef.current.unloadModule("captions");
+                  playerRef.current.unloadModule("cc");
+                }
+              } catch (e) {}
             },
             onStateChange: (event: any) => {
               if (event.data === window.YT.PlayerState.PLAYING) {
@@ -260,6 +269,13 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         try {
           const time = playerRef.current.getCurrentTime();
           setCurrentTime(time);
+
+          if (typeof playerRef.current.getDuration === "function") {
+            const dur = playerRef.current.getDuration();
+            if (dur && dur !== duration) {
+              setDuration(dur);
+            }
+          }
 
           // Find and update active subtitle based on time (only in listening mode to prevent snapping during dictation typing)
           if (mode === "listen" && subtitles.length > 0) {
@@ -417,6 +433,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       ipa: sub.ipa || "",
       vietnamese: sub.vietnamese || "",
       note: sub.note || "",
+      start: sub.start,
+      end: sub.end,
     });
   };
 
@@ -430,6 +448,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         ipa: editFields.ipa,
         vietnamese: editFields.vietnamese,
         note: editFields.note,
+        start: editFields.start,
+        end: editFields.end,
       };
 
       const res = await fetch(`/api/lessons/${lessonId}`, {
@@ -452,6 +472,22 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     }
   };
 
+  const formatTime = (secs: number) => {
+    if (typeof secs !== 'number' || isNaN(secs)) return '00:00';
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseFloat(e.target.value);
+    setCurrentTime(val);
+    if (playerRef.current && typeof playerRef.current.seekTo === "function") {
+      lastSeekTimeRef.current = Date.now();
+      playerRef.current.seekTo(val, true);
+    }
+  };
+
   return (
     <div ref={outerContainerRef} className={`flex flex-col lg:flex-row gap-0 h-[calc(100vh-140px)] min-h-[500px] w-full overflow-hidden ${isResizing ? "select-none" : ""}`}>
       {/* LEFT COLUMN: Video Player */}
@@ -461,7 +497,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             <iframe
               id="youtube-dictation-iframe"
               ref={iframeRef}
-              src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&version=3&rel=0&controls=1&cc_load_policy=0&iv_load_policy=3&modestbranding=1`}
+              src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&version=3&rel=0&controls=0&cc_load_policy=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0`}
               className="w-full h-full border-none"
               allow="autoplay; encrypted-media"
               allowFullScreen
@@ -474,43 +510,64 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         </div>
 
         {/* Video Controls & Information */}
-        <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={togglePlay}
-              className={`p-3.5 rounded-2xl text-white font-bold transition-all shadow-md active:scale-95 ${
-                isPlaying ? "bg-amber-500 shadow-amber-200" : "bg-blue-600 shadow-blue-200"
-              }`}
-            >
-              {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-            </button>
-            <button
-              onClick={() => playSubtitleRow(currentIndex)}
-              className="p-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all active:scale-95"
-              title="Nghe lại dòng hiện tại (phím b)"
-            >
-              <RotateCcw size={18} />
-            </button>
+        <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-4">
+          {/* Custom Timeline Slider */}
+          <div className="flex items-center gap-3 w-full">
+            <span className="text-xs font-mono font-bold text-slate-500 min-w-[40px] text-right">{formatTime(currentTime)}</span>
+            <input
+              type="range"
+              min={0}
+              max={duration || 100}
+              step={0.1}
+              value={currentTime}
+              onChange={handleSliderChange}
+              className="flex-1 h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-indigo-600 focus:outline-none"
+              style={{
+                background: `linear-gradient(to right, #4f46e5 0%, #4f46e5 ${duration ? (currentTime / duration) * 100 : 0}%, #f1f5f9 ${duration ? (currentTime / duration) * 100 : 0}%, #f1f5f9 100%)`
+              }}
+            />
+            <span className="text-xs font-mono font-bold text-slate-500 min-w-[40px]">{formatTime(duration)}</span>
           </div>
 
-          {/* Speed Selector */}
-          <div className="flex items-center gap-2">
-            <Settings size={16} className="text-slate-400" />
-            <span className="text-xs font-bold text-slate-500">Tốc độ phát:</span>
-            <div className="flex gap-1 bg-slate-100 p-1 rounded-xl">
-              {[0.75, 1, 1.25, 1.5].map((speed) => (
-                <button
-                  key={speed}
-                  onClick={() => handleSpeedChange(speed)}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                    playbackRate === speed
-                      ? "bg-white text-slate-800 shadow-sm"
-                      : "text-slate-500 hover:text-slate-800"
-                  }`}
-                >
-                  {speed}x
-                </button>
-              ))}
+          {/* Action buttons & Speed control row */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-slate-100">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={togglePlay}
+                className={`p-3.5 rounded-2xl text-white font-bold transition-all shadow-md active:scale-95 ${
+                  isPlaying ? "bg-amber-500 shadow-amber-200" : "bg-blue-600 shadow-blue-200"
+                }`}
+              >
+                {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+              </button>
+              <button
+                onClick={() => playSubtitleRow(currentIndex)}
+                className="p-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all active:scale-95"
+                title="Nghe lại dòng hiện tại (phím b)"
+              >
+                <RotateCcw size={18} />
+              </button>
+            </div>
+
+            {/* Speed Selector */}
+            <div className="flex items-center gap-2">
+              <Settings size={16} className="text-slate-400" />
+              <span className="text-xs font-bold text-slate-500">Tốc độ phát:</span>
+              <div className="flex gap-1 bg-slate-100 p-1 rounded-xl">
+                {[0.75, 1, 1.25, 1.5].map((speed) => (
+                  <button
+                    key={speed}
+                    onClick={() => handleSpeedChange(speed)}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                      playbackRate === speed
+                        ? "bg-white text-slate-800 shadow-sm"
+                        : "text-slate-500 hover:text-slate-800"
+                    }`}
+                  >
+                    {speed}x
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -631,6 +688,28 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   >
                     {isEditing ? (
                       <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase">Thời gian bắt đầu (s)</label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={editFields.start}
+                              onChange={(e) => setEditFields({ ...editFields, start: parseFloat(e.target.value) || 0 })}
+                              className="w-full p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-slate-700"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase">Thời gian kết thúc (s)</label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={editFields.end}
+                              onChange={(e) => setEditFields({ ...editFields, end: parseFloat(e.target.value) || 0 })}
+                              className="w-full p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-slate-700"
+                            />
+                          </div>
+                        </div>
                         <div className="space-y-1">
                           <label className="text-[10px] font-bold text-slate-400 uppercase">Text tiếng Anh</label>
                           <textarea
