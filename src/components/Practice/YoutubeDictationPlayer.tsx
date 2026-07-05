@@ -28,6 +28,51 @@ declare global {
   }
 }
 
+const renderFormattedNote = (noteText: string, fontSize: number) => {
+  if (!noteText) return null;
+  const parts = noteText
+    .split(/(?:\*|\r?\n)/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+
+  return (
+    <p 
+      style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
+      className="mt-1 leading-relaxed text-slate-600"
+    >
+      {parts.map((part, pIdx) => {
+        const colonIndex = part.indexOf(":");
+        if (colonIndex === -1) {
+          return (
+            <span key={pIdx} className="text-amber-700 font-medium mr-2">
+              {part}
+            </span>
+          );
+        }
+
+        const term = part.substring(0, colonIndex).trim();
+        const definition = part.substring(colonIndex + 1).trim();
+        const cleanTerm = term.replace(/^['"]|['"]$/g, "");
+
+        return (
+          <span key={pIdx} className="inline mr-3.5">
+            <span className="font-extrabold text-slate-400 mr-1 select-none">
+              {pIdx + 1}.
+            </span>
+            <span className="font-extrabold text-indigo-600 mr-1">
+              {cleanTerm}
+            </span>
+            <span className="text-slate-400 font-bold mr-1">:</span>
+            <span className="text-amber-700 font-medium">
+              {definition}
+            </span>
+          </span>
+        );
+      })}
+    </p>
+  );
+};
+
 export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, courseId }: YoutubeDictationPlayerProps) {
   const { isAdminMode } = useAdminEdit();
   const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
@@ -36,7 +81,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [mode, setMode] = useState<"listen" | "dictation">("listen");
-  const [showIpa, setShowIpa] = useState<boolean>(true);
+  const [showIpa, setShowIpa] = useState<boolean>(false);
   const [showNotes, setShowNotes] = useState<boolean>(true);
   const [fontSize, setFontSize] = useState<number>(14);
   const [leftWidth, setLeftWidth] = useState<number>(60); // 60% left (video), 40% right (subtitles)
@@ -48,7 +93,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
   // States for live editing
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [editFields, setEditFields] = useState<{ text: string; ipa: string; vietnamese: string }>({ text: "", ipa: "", vietnamese: "" });
+  const [editFields, setEditFields] = useState<{ text: string; ipa: string; vietnamese: string; note: string }>({ text: "", ipa: "", vietnamese: "", note: "" });
   const [isSavingEdit, setIsSavingEdit] = useState<boolean>(false);
 
   const [playerReady, setPlayerReady] = useState<boolean>(false);
@@ -358,6 +403,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       text: sub.text,
       ipa: sub.ipa || "",
       vietnamese: sub.vietnamese || "",
+      note: sub.note || "",
     });
   };
 
@@ -370,6 +416,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         text: editFields.text,
         ipa: editFields.ipa,
         vietnamese: editFields.vietnamese,
+        note: editFields.note,
       };
 
       const res = await fetch(`/api/lessons/${lessonId}`, {
@@ -598,6 +645,16 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                             className="w-full p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs text-slate-600"
                           />
                         </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-400 uppercase">Giải thích từ vựng (Ghi chú)</label>
+                          <textarea
+                            value={editFields.note}
+                            onChange={(e) => setEditFields({ ...editFields, note: e.target.value })}
+                            rows={2}
+                            className="w-full p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs text-amber-700 font-medium"
+                            placeholder="Ví dụ: * 'phrase': giải thích"
+                          />
+                        </div>
                         <div className="flex justify-end gap-2 pt-1 border-t">
                           <button
                             onClick={() => setEditingIndex(null)}
@@ -654,14 +711,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                             {sub.vietnamese}
                           </p>
                         )}
-                        {sub.note && showNotes && (
-                          <p 
-                            style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
-                            className="text-amber-600 font-semibold leading-relaxed"
-                          >
-                            {sub.note}
-                          </p>
-                        )}
+                        {sub.note && showNotes && renderFormattedNote(sub.note, fontSize)}
                       </div>
                     )}
                   </div>
@@ -733,14 +783,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     {subtitles[currentIndex]?.vietnamese}
                   </p>
                 )}
-                {subtitles[currentIndex]?.note && showNotes && (
-                  <p 
-                    style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
-                    className="text-amber-600 leading-relaxed font-semibold"
-                  >
-                    {subtitles[currentIndex]?.note}
-                  </p>
-                )}
+                {subtitles[currentIndex]?.note && showNotes && renderFormattedNote(subtitles[currentIndex]?.note, fontSize)}
               </div>
 
               {/* Dictation Match View */}
