@@ -17,6 +17,7 @@ import ToeicPart6Loader from "@/components/Toeic/Part6/ToeicPart6Loader";
 import ToeicPart7LoaderV2 from "@/components/Toeic/Part7/ToeicPart7Loader";
 import ToeicFullTestLoader from "@/components/Toeic/ToeicFullTestLoader";
 import { AdminEditProvider } from "@/components/Admin/AdminEditProvider";
+import YoutubeDictationPlayer from "@/components/Practice/YoutubeDictationPlayer";
 
 export default async function LessonDetailPage({
   params,
@@ -270,6 +271,13 @@ export default async function LessonDetailPage({
                     nextLessonId={nextLesson?.id}
                     jumpToQ={q}
                     videoExplanation={normalizedExplanation}
+                  />
+                ) : lesson.contentType === "YOUTUBE_DICTATION" ? (
+                  <YoutubeDictationPlayer
+                    lessonId={lesson.id}
+                    videoUrl={lesson.videoUrl || ""}
+                    content={lesson.content || "[]"}
+                    courseId={courseId}
                   />
                 ) : (
                   <CourseContentRenderer content={lesson.content} />

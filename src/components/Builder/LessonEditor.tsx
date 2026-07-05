@@ -121,6 +121,69 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
   const [loadingPreview, setLoadingPreview] = useState(false);
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const [questionsList, setQuestionsList] = useState<any[]>([]);
+  const [isProcessingSub, setIsProcessingSub] = useState(false);
+  const [generatedPrompt, setGeneratedPrompt] = useState<string>("");
+
+  const handleAutoFetchSubtitles = async () => {
+    if (!lesson?.videoUrl) {
+      alert("Vui lòng nhập đường dẫn video YouTube trước!");
+      return;
+    }
+    setIsProcessingSub(true);
+    setGeneratedPrompt("");
+    try {
+      const res = await fetch("/api/admin/youtube/auto-subtitle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ videoUrl: lesson.videoUrl }),
+      });
+      const data = await res.json();
+      if (data.success && data.subtitles) {
+        const promptTemplate = `You are an expert English teacher. I will provide you with a JSON array of raw English subtitle segments with timestamps from YouTube.
+Because YouTube automatically cuts lines in the middle of sentences based on length constraints, the segments are often fragmented (e.g. ending in the middle of a phrase).
+
+YOUR TASKS:
+1. Merge adjacent segments that belong to the same grammatical sentence or complete thought into one single subtitle object.
+2. For merged sentences:
+   - "start" must be the start time of the first segment you merged.
+   - "end" must be the end time of the last segment you merged.
+   - "text" must be the combined clean sentence text.
+3. For each final merged sentence object:
+   - Add "ipa" (phonetic transcription in US English).
+   - Add "vietnamese" (natural and friendly Vietnamese translation).
+4. Return ONLY a valid JSON array of the processed objects. Do not write any markdown formatting (do not wrap in \`\`\`json blocks) or explanations.
+
+Example of merging:
+Raw:
+[
+  {"start": 36.88, "end": 41.36, "text": "Hey. Hey. Ho ho. Hello. See a guy who"},
+  {"start": 40.0, "end": 42.0, "text": "doesn't want to know standing right"},
+  {"start": 41.36, "end": 46.0, "text": "here."}
+]
+Merged result:
+[
+  {
+    "start": 36.88,
+    "end": 46.0,
+    "text": "Hey. Hey. Ho ho. Hello. See a guy who doesn't want to know standing right here.",
+    "ipa": "/heɪ. heɪ. hoʊ hoʊ. həˈloʊ. si ə ɡaɪ hu ˈdʌznt wɑnt tu noʊ ˈstændɪŋ raɪt hɪr./",
+    "vietnamese": "Này, này. Hô hô. Xin chào. Có một anh chàng không muốn biết giới tính con mình đang đứng ngay đây này."
+  }
+]
+
+Subtitles to process:
+${JSON.stringify(data.subtitles, null, 2)}`;
+        setGeneratedPrompt(promptTemplate);
+        alert("Tải phụ đề thô thành công! Vui lòng copy prompt bên dưới dán vào Gemini để nhờ dịch.");
+      } else {
+        throw new Error(data.error || "Không thể xử lý phụ đề");
+      }
+    } catch (e: any) {
+      alert(`Lỗi: ${e.message}`);
+    } finally {
+      setIsProcessingSub(false);
+    }
+  };
 
   // Tự động tải danh sách câu hỏi thực tế của bài học này từ database
   useEffect(() => {
@@ -366,17 +429,133 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
           <label className="text-[11px] font-black text-slate-400 uppercase ml-2 tracking-widest">Loại bài học</label>
           <select 
             value={lesson.contentType || "TEXT"}
-            onChange={(e) => updateDraft({ contentType: e.target.value })}
+            onChange={(e) => {
+              const newType = e.target.value;
+              const updates: any = { contentType: newType };
+              if (newType === "YOUTUBE_DICTATION" && (lesson.content === "<p></p>" || !lesson.content)) {
+                updates.content = "";
+              }
+              updateDraft(updates);
+            }}
             className="w-full p-4 rounded-2xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-700 bg-slate-50"
           >
             <option value="TEXT">Văn bản / Đa phương tiện tự do (Quill)</option>
             <option value="TOEIC_TEST">Làm đề Full Test (7 Part)</option>
             <option value="DYNAMIC_PART">Luyện tập theo từng Part (Smart Filter)</option>
             <option value="VOCAB_GAME">Học từ vựng (Vocabulary Game)</option>
+            <option value="YOUTUBE_DICTATION">Luyện nghe & Chép chính tả YouTube (JSON Subtitle)</option>
           </select>
         </div>
 
-        {lesson.contentType === "DYNAMIC_PART" ? (
+        {lesson.contentType === "YOUTUBE_DICTATION" ? (
+          <div className="space-y-6 p-8 bg-indigo-50/50 rounded-3xl border border-indigo-100 shadow-sm">
+            <label className="text-[11px] font-black text-indigo-600 uppercase ml-2 tracking-widest">Cấu hình Luyện nghe YouTube</label>
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row gap-3 items-end">
+                <div className="flex-1 w-full">
+                  <label className="text-xs font-bold text-slate-600 ml-1">Đường dẫn Video YouTube</label>
+                  <input
+                    type="text"
+                    value={lesson.videoUrl || ""}
+                    onChange={(e) => updateDraft({ videoUrl: e.target.value })}
+                    className="w-full mt-1.5 p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-medium bg-white transition-all"
+                    placeholder="Dán link YouTube (ví dụ: https://www.youtube.com/watch?v=...) hoặc link nhúng..."
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleAutoFetchSubtitles}
+                  disabled={isProcessingSub}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-widest px-6 rounded-2xl active:scale-95 transition-all shadow-md shadow-indigo-150 disabled:bg-slate-350 shrink-0 h-[52px] flex items-center justify-center"
+                >
+                  {isProcessingSub ? "Đang xử lý..." : "⚡ Tải phụ đề & Tạo Prompt"}
+                </button>
+              </div>
+
+              {generatedPrompt && (
+                <div className="p-5 bg-amber-50 rounded-2xl border border-amber-200 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-black text-amber-800 uppercase tracking-widest">Prompt cho Gemini (Copy cái này):</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(generatedPrompt);
+                        alert("Đã copy Prompt thành công!");
+                      }}
+                      className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all active:scale-95"
+                    >
+                      📋 Copy Prompt
+                    </button>
+                  </div>
+                  <textarea
+                    readOnly
+                    value={generatedPrompt}
+                    rows={6}
+                    className="w-full mt-1.5 p-3 rounded-xl border border-amber-100 outline-none text-xs font-mono bg-white/80 text-slate-700"
+                  />
+                  <p className="text-[11px] text-amber-800 italic">
+                    💡 Hãy copy đoạn trên dán vào Gemini Web (Miễn phí) rồi copy kết quả JSON dán vào ô bên dưới.
+                  </p>
+                </div>
+              )}
+
+              <div>
+                <label className="text-xs font-bold text-slate-600 ml-1">Dữ liệu JSON phụ đề (Với IPA và Dịch Việt)</label>
+                <textarea
+                  value={lesson.content || ""}
+                  onChange={(e) => updateDraft({ content: e.target.value })}
+                  rows={10}
+                  className="w-full mt-1.5 p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none text-xs font-mono bg-white transition-all"
+                  placeholder='Ví dụ:
+[
+  {
+    "start": 0.5,
+    "end": 3.5,
+    "text": "Welcome back to the show.",
+    "ipa": "/ˈwɛlkəm bæk tu ðə ʃoʊ/",
+    "vietnamese": "Chào mừng trở lại chương trình."
+  }
+]'
+                />
+              </div>
+
+              {/* Preview parsed JSON */}
+              {(() => {
+                try {
+                  const parsed = JSON.parse(lesson.content || "[]");
+                  if (!Array.isArray(parsed)) throw new Error();
+                  return (
+                    <div className="mt-4 p-5 bg-white rounded-2xl border border-slate-200 space-y-3">
+                      <p className="text-xs font-bold text-slate-700">Xem trước danh sách phụ đề ({parsed.length} câu):</p>
+                      <div className="max-h-[300px] overflow-y-auto space-y-3 divide-y divide-slate-100 text-xs pr-2">
+                        {parsed.map((item: any, idx: number) => (
+                          <div key={idx} className={`${idx > 0 ? "pt-3" : ""} flex flex-col gap-1`}>
+                            <div className="flex justify-between font-mono text-[10px] text-slate-400">
+                              <span className="font-bold">Dòng {idx + 1}</span>
+                              <span>{item.start}s - {item.end}s</span>
+                            </div>
+                            <p className="font-bold text-slate-800">{item.text}</p>
+                            {item.ipa && <p className="text-indigo-600 font-mono font-bold">{item.ipa}</p>}
+                            {item.vietnamese && <p className="text-slate-500">{item.vietnamese}</p>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                } catch (e) {
+                  if (lesson.content) {
+                    return (
+                      <p className="text-xs text-red-500 font-semibold italic mt-2">
+                        ⚠️ Định dạng JSON không hợp lệ. Vui lòng kiểm tra lại cú pháp (ngoặc kép, dấu phẩy).
+                      </p>
+                    );
+                  }
+                  return null;
+                }
+              })()}
+            </div>
+          </div>
+        ) : lesson.contentType === "DYNAMIC_PART" ? (
           <div className="space-y-4 p-8 bg-blue-50/50 rounded-3xl border border-blue-100">
              <label className="text-[11px] font-black text-blue-500 uppercase ml-2 tracking-widest">Cấu hình Luyện tập theo Part</label>
              <SmartPartSelector 

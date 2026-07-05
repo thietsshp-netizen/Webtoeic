@@ -6,6 +6,8 @@ import LessonEditor from "@/components/Builder/LessonEditor";
 import { ChevronLeft, Layout, Settings, Eye, Share2, Loader2, X, Save, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
 
+import { AdminEditProvider } from "@/components/Admin/AdminEditProvider";
+
 interface Course {
   id: string;
   title: string;
@@ -148,7 +150,7 @@ export default function CourseBuilderPage({ params }: BuilderPageProps) {
     if (!hasChanges) {
        alert("Không có thay đổi nào cần lưu!");
        return;
-    }
+     }
 
     setIsSavingAll(true);
     try {
@@ -246,7 +248,8 @@ export default function CourseBuilderPage({ params }: BuilderPageProps) {
                        draftDeletions.lessons.length;
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden font-sans text-slate-900">
+    <AdminEditProvider>
+      <div className="flex h-screen bg-slate-50 overflow-hidden font-sans text-slate-900">
       
       {/* SIDEBAR TRÁI (SYLLABUS TREE) */}
       <div 
@@ -506,5 +509,6 @@ export default function CourseBuilderPage({ params }: BuilderPageProps) {
         </div>
       )}
     </div>
+    </AdminEditProvider>
   );
 }
