@@ -664,10 +664,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   };
 
   return (
-    <div ref={outerContainerRef} className={`flex flex-col lg:flex-row gap-0 h-[calc(100vh-140px)] min-h-[500px] w-full overflow-hidden ${isResizing ? "select-none" : ""}`}>
-      {/* LEFT COLUMN: Video Player */}
-      <div style={{ width: `${leftWidth}%` }} className="flex flex-col gap-4 h-full pr-3 min-w-[320px] shrink-0">
-        <div className="relative w-full aspect-video rounded-3xl overflow-hidden bg-slate-900 border-4 border-white shadow-xl flex items-center justify-center">
+    <div ref={outerContainerRef} className="flex flex-col w-full bg-slate-50 pb-12">
+      {/* TOP: Video Player (Centered, takes full-width with a max-width limit) */}
+      <div className="w-full flex justify-center bg-slate-900 shadow-inner p-4 shrink-0">
+        <div className="w-full max-w-5xl aspect-video rounded-3xl overflow-hidden bg-black border-4 border-slate-800 shadow-2xl relative flex items-center justify-center">
           {isDirectVideo ? (
             <video
               ref={videoRef}
@@ -678,10 +678,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 const errCode = vid.error?.code;
                 const errMsg = vid.error?.message || "Unknown error";
                 const codeMap: Record<number, string> = {
-                  1: "MEDIA_ERR_ABORTED – Người dùng hủy tải",
-                  2: "MEDIA_ERR_NETWORK – Lỗi mạng khi tải video",
-                  3: "MEDIA_ERR_DECODE – Lỗi giải mã (codec không hỗ trợ?)",
-                  4: "MEDIA_ERR_SRC_NOT_SUPPORTED – URL không hợp lệ hoặc bị chặn CORS",
+                  1: "MEDIA_ERR_ABORTED - Người dùng hủy tải",
+                  2: "MEDIA_ERR_NETWORK - Lỗi mạng khi tải video",
+                  3: "MEDIA_ERR_DECODE - Lỗi giải mã (codec không hỗ trợ?)",
+                  4: "MEDIA_ERR_SRC_NOT_SUPPORTED - URL không hợp lệ hoặc bị chặn CORS",
                 };
                 const desc = errCode ? codeMap[errCode] : "Lỗi không xác định";
                 console.error("[Video Error]", errCode, errMsg, directVideoUrl);
@@ -728,175 +728,57 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             </div>
           )}
         </div>
+      </div>
 
-        {/* Active Subtitle Panel directly under video */}
-        {subtitles.length > 0 && subtitles[currentIndex] && (
-          <div className="bg-slate-900 text-white p-6 rounded-3xl border border-slate-800 shadow-xl flex flex-col gap-2.5 transition-all">
-            <div 
-              style={{ fontSize: `${fontSize + 4}px` }}
-              className="font-bold text-center text-indigo-300 leading-snug"
-            >
-              {subtitles[currentIndex].text}
-            </div>
-            {showIpa && subtitles[currentIndex].ipa && (
-              <div 
-                style={{ fontSize: `${Math.max(12, fontSize - 2)}px` }}
-                className="font-medium text-center text-slate-400 font-mono"
-              >
-                {subtitles[currentIndex].ipa}
-              </div>
-            )}
-            {subtitles[currentIndex].vietnamese && (
-              <div 
-                style={{ fontSize: `${fontSize}px` }}
-                className="font-medium text-center text-amber-200 leading-normal border-t border-slate-800/80 pt-3 mt-1.5"
-              >
-                {subtitles[currentIndex].vietnamese}
-              </div>
-            )}
-            {showNotes && subtitles[currentIndex].note && (
-              <div 
-                style={{ fontSize: `${Math.max(11, fontSize - 4)}px` }}
-                className="text-center text-emerald-400 bg-emerald-950/40 py-1.5 px-3 rounded-xl border border-emerald-900/30 mt-1.5"
-              >
-                {subtitles[currentIndex].note}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Video Controls & Information */}
-        <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-4">
-          {/* Custom Timeline Slider */}
-          <div className="flex items-center gap-3 w-full">
-            <span className="text-xs font-mono font-bold text-slate-500 min-w-[40px] text-right">{formatTime(currentTime)}</span>
-            <input
-              type="range"
-              min={0}
-              max={duration || 100}
-              step={0.1}
-              value={currentTime}
-              onChange={handleSliderChange}
-              className="flex-1 h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-indigo-600 focus:outline-none"
-              style={{
-                background: `linear-gradient(to right, #4f46e5 0%, #4f46e5 ${duration ? (currentTime / duration) * 100 : 0}%, #f1f5f9 ${duration ? (currentTime / duration) * 100 : 0}%, #f1f5f9 100%)`
-              }}
-            />
-            <span className="text-xs font-mono font-bold text-slate-500 min-w-[40px]">{formatTime(duration)}</span>
-          </div>
-
-          {/* Action buttons & Speed control row */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-slate-100">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={togglePlay}
-                className={`p-3.5 rounded-2xl text-white font-bold transition-all shadow-md active:scale-95 ${
-                  isPlaying ? "bg-amber-500 shadow-amber-200" : "bg-blue-600 shadow-blue-200"
-                }`}
-              >
-                {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-              </button>
-              <button
-                onClick={() => playSubtitleRow(currentIndex)}
-                className="p-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all active:scale-95"
-                title="Nghe lại dòng hiện tại (phím b)"
-              >
-                <RotateCcw size={18} />
-              </button>
-            </div>
-
-            {/* Speed Selector */}
+      {/* BOTTOM: Workspace (Centered, matching video width) */}
+      <div className="w-full max-w-5xl mx-auto p-4 flex flex-col gap-4">
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[500px]">
+          {/* Shared Header (Mode Switcher, Checkboxes, Font Controls, Tooltip) */}
+          <div className="p-3 bg-slate-50 border-b text-xs font-black text-slate-400 tracking-wider uppercase shrink-0 flex flex-wrap items-center justify-between gap-3 select-none">
             <div className="flex items-center gap-2">
-              <Settings size={16} className="text-slate-400" />
-              <span className="text-xs font-bold text-slate-500">Tốc độ phát:</span>
-              <div className="flex gap-1 bg-slate-100 p-1 rounded-xl">
-                {[0.75, 1, 1.25, 1.5].map((speed) => (
-                  <button
-                    key={speed}
-                    onClick={() => handleSpeedChange(speed)}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                      playbackRate === speed
-                        ? "bg-white text-slate-800 shadow-sm"
-                        : "text-slate-500 hover:text-slate-800"
-                    }`}
-                  >
-                    {speed}x
-                  </button>
-                ))}
-              </div>
+              <span>{mode === "listen" ? "Phụ đề" : "Chính tả"} ({subtitles.length} câu)</span>
             </div>
-          </div>
-        </div>
 
-        {/* Shortcuts Cheat Sheet */}
-        <div className="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 flex items-start gap-3">
-          <HelpCircle className="text-blue-500 w-5 h-5 shrink-0 mt-0.5" />
-          <div className="text-xs text-blue-700 leading-relaxed font-medium">
-            <p className="font-bold mb-1">Mẹo học nhanh bằng phím tắt:</p>
-            <ul className="list-disc pl-4 space-y-1">
-              <li>Nhấn phím <strong>n</strong> để chuyển qua câu tiếp theo.</li>
-              <li>Nhấn phím <strong>v</strong> để quay lại câu trước đó.</li>
-              <li>Nhấn phím <strong>b</strong> để nghe lại câu hiện tại.</li>
-              <li>Nhấn phím <strong>Space</strong> (Khoảng trắng) để Tạm dừng/Phát video.</li>
-              <li><em>Lưu ý:</em> Khi đang gõ chính tả, vui lòng nhấn giữ thêm phím <strong>Alt</strong> (Alt + n, Alt + v, Alt + b) để dùng phím tắt.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Mode switch */}
+              <div className="flex bg-slate-200 p-0.5 rounded-lg border border-slate-250">
+                <button
+                  onClick={() => setMode("listen")}
+                  className={`px-2.5 py-1 rounded-md text-[10px] font-black transition-all flex items-center gap-1 ${
+                    mode === "listen" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-800"
+                  }`}
+                  title="🔊 Luyện Nghe & Đọc Dịch"
+                >
+                  <Volume2 size={12} />
+                  <span>Nghe & Dịch</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setMode("dictation");
+                    setTimeout(() => dictationTextareaRef.current?.focus(), 100);
+                  }}
+                  className={`px-2.5 py-1 rounded-md text-[10px] font-black transition-all flex items-center gap-1 ${
+                    mode === "dictation" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-800"
+                  }`}
+                  title="✏️ Nghe Chép Chính Tả"
+                >
+                  <Edit size={12} />
+                  <span>Chính tả</span>
+                </button>
+              </div>
 
-      {/* VERTICAL DRAG DIVIDER */}
-      <div className="hidden lg:flex w-2 bg-slate-100 hover:bg-slate-200 h-full self-stretch flex-shrink-0 z-30 relative items-center justify-center mx-0.5">
-        <button 
-          type="button"
-          onMouseDown={startResizing}
-          className="w-6 h-6 rounded-full bg-white border-2 border-indigo-500 hover:border-indigo-600 text-indigo-500 shadow-md flex items-center justify-center cursor-col-resize z-40 transition-all hover:scale-110 active:scale-95"
-          title="Nắm vào đây để kéo chỉnh chiều rộng"
-        >
-          <div className="w-1.5 h-1.5 rounded-full bg-current" />
-        </button>
-      </div>
-
-      {/* RIGHT COLUMN: Subtitles & Dictation Panel */}
-      <div style={{ width: `${100 - leftWidth}%` }} className="flex flex-col gap-4 h-full pl-3 min-w-[280px] shrink-0">
-        {/* Toggle Mode */}
-        <div className="bg-slate-100 p-1.5 rounded-2xl border border-slate-200 flex shrink-0">
-          <button
-            onClick={() => setMode("listen")}
-            className={`flex-1 py-3 text-xs font-black rounded-xl transition-all ${
-              mode === "listen" ? "bg-white text-slate-800 shadow-sm" : "text-slate-500 hover:text-slate-800"
-            }`}
-          >
-            🔊 Luyện Nghe & Đọc Dịch
-          </button>
-          <button
-            onClick={() => {
-              setMode("dictation");
-              setTimeout(() => dictationTextareaRef.current?.focus(), 100);
-            }}
-            className={`flex-1 py-3 text-xs font-black rounded-xl transition-all ${
-              mode === "dictation" ? "bg-white text-slate-800 shadow-sm" : "text-slate-500 hover:text-slate-800"
-            }`}
-          >
-            ✏️ Nghe Chép Chính Tả
-          </button>
-        </div>
-
-        {/* Subtitles Area / Dictation Box */}
-        {mode === "listen" ? (
-          <div className="flex-1 bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0">
-            <div className="p-4 bg-slate-50 border-b text-xs font-black text-slate-400 tracking-wider uppercase shrink-0 flex items-center justify-between">
-              <span>Danh sách phụ đề ({subtitles.length} câu)</span>
-              <div className="flex items-center gap-3">
-                <label className="flex items-center gap-1.5 cursor-pointer select-none normal-case font-bold text-slate-500 hover:text-indigo-600 transition-colors">
+              {/* Show options */}
+              <div className="flex items-center gap-2.5">
+                <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors normal-case">
                   <input
                     type="checkbox"
                     checked={showIpa}
                     onChange={(e) => setShowIpa(e.target.checked)}
                     className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
                   />
-                  <span>Hiện IPA</span>
+                  <span>IPA</span>
                 </label>
-                <label className="flex items-center gap-1.5 cursor-pointer select-none normal-case font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-3">
+                <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2.5 normal-case">
                   <input
                     type="checkbox"
                     checked={showNotes}
@@ -905,49 +787,77 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   />
                   <span>Giải nghĩa</span>
                 </label>
-                <div className="flex items-center gap-1 border-l border-slate-200 pl-3">
+              </div>
+
+              {/* FontSize */}
+              <div className="flex items-center gap-1 border-l border-slate-200 pl-2.5">
+                <button
+                  type="button"
+                  onClick={() => setFontSize(prev => Math.max(12, prev - 2))}
+                  className="w-5.5 h-5.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[9px] flex items-center justify-center transition-all active:scale-95"
+                  title="Giảm cỡ chữ"
+                >
+                  A-
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFontSize(prev => Math.min(24, prev + 2))}
+                  className="w-5.5 h-5.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[9px] flex items-center justify-center transition-all active:scale-95"
+                  title="Tăng cỡ chữ"
+                >
+                  A+
+                </button>
+              </div>
+
+              {/* Timing shifter */}
+              {mode === "listen" && (
+                <div className="flex items-center gap-1 border-l border-slate-200 pl-2.5">
                   <button
                     type="button"
-                    onClick={() => setFontSize(prev => Math.max(12, prev - 2))}
-                    className="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center transition-all active:scale-95"
-                    title="Giảm cỡ chữ"
+                    onClick={() => shiftAllSubtitles(-0.25)}
+                    className="px-1.5 py-0.5 rounded bg-red-50 hover:bg-red-105 text-red-650 font-bold text-[9px] transition-all active:scale-95"
+                    title="Toàn bộ sub xuất hiện sớm hơn 0.25s"
                   >
-                    A-
+                    -0.25s
                   </button>
                   <button
                     type="button"
-                    onClick={() => setFontSize(prev => Math.min(24, prev + 2))}
-                    className="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center transition-all active:scale-95"
-                    title="Tăng cỡ chữ"
+                    onClick={() => shiftAllSubtitles(0.25)}
+                    className="px-1.5 py-0.5 rounded bg-emerald-50 hover:bg-emerald-105 text-emerald-655 font-bold text-[9px] transition-all active:scale-95"
+                    title="Toàn bộ sub xuất hiện muộn hơn 0.25s"
                   >
-                    A+
+                    +0.25s
                   </button>
                 </div>
-                {isAdminMode && (
-                  <div className="flex items-center gap-1 border-l border-slate-200 pl-3">
-                    <span className="text-[10px] font-bold text-slate-400 mr-1 normal-case select-none">Dịch sub:</span>
-                    <button
-                      type="button"
-                      onClick={() => shiftAllSubtitles(-0.25)}
-                      className="px-1.5 py-0.5 rounded bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[10px] transition-all active:scale-95"
-                      title="Toàn bộ sub xuất hiện sớm hơn 0.25s"
-                    >
-                      -0.25s
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => shiftAllSubtitles(0.25)}
-                      className="px-1.5 py-0.5 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-bold text-[10px] transition-all active:scale-95"
-                      title="Toàn bộ sub xuất hiện muộn hơn 0.25s"
-                    >
-                      +0.25s
-                    </button>
-                  </div>
-                )}
+              )}
+
+              {/* Help Circle Tooltip */}
+              <div className="relative group border-l border-slate-200 pl-2.5">
+                <button 
+                  type="button" 
+                  className="flex items-center justify-center w-5.5 h-5.5 text-slate-400 hover:text-indigo-650 transition-colors bg-white rounded border border-slate-200 shadow-sm"
+                  title="Hướng dẫn phím tắt"
+                >
+                  <HelpCircle size={12} />
+                </button>
+                
+                <div className="absolute top-full right-0 mt-2 w-72 p-4 bg-slate-900 text-white text-xs rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none normal-case">
+                  <p className="font-bold mb-2 text-indigo-300">Mẹo học nhanh bằng phím tắt:</p>
+                  <ul className="list-disc pl-4 space-y-1.5 text-slate-350">
+                    <li>Nhấn phím <strong className="text-white">n</strong> để chuyển qua câu tiếp theo.</li>
+                    <li>Nhấn phím <strong className="text-white">v</strong> để quay lại câu trước đó.</li>
+                    <li>Nhấn phím <strong className="text-white">b</strong> để nghe lại câu hiện tại.</li>
+                    <li>Nhấn phím <strong className="text-white">Space</strong> để Tạm dừng/Phát video.</li>
+                    <li><em className="text-slate-400">Khi đang gõ chính tả:</em> nhấn giữ thêm phím <strong className="text-white">Alt</strong> (Alt + n, Alt + v, Alt + b).</li>
+                  </ul>
+                </div>
               </div>
             </div>
-            
-            <div ref={containerRef} className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin">
+          </div>
+
+          {/* Conditional content */}
+          {mode === "listen" ? (
+            <div ref={containerRef} className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin relative">
               {subtitles.map((sub, idx) => {
                 const isActive = currentIndex === idx;
                 const isEditing = editingIndex === idx;
@@ -957,9 +867,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     key={idx}
                     ref={isActive ? activeSubRef : null}
                     onClick={() => !isEditing && playSubtitleRow(idx)}
-                    className={`p-4 rounded-2xl border transition-all cursor-pointer group ${
+                    className={`p-2.5 px-3.5 rounded-2xl border transition-all cursor-pointer group ${
                       isActive
-                        ? "bg-indigo-50/50 border-indigo-200 shadow-sm"
+                        ? "bg-red-50/80 border-red-200 shadow-md ring-1 ring-red-300"
                         : "border-slate-100 hover:border-slate-200 hover:bg-slate-50"
                     }`}
                   >
@@ -977,8 +887,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                                 placeholder="Ví dụ: 8:27.67 hoặc 507.67"
                               />
                               <div className="flex flex-col gap-0.5 justify-center shrink-0">
-                                <button type="button" onClick={() => adjustEditTime('start', 0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Tăng 0.25s">+</button>
-                                <button type="button" onClick={() => adjustEditTime('start', -0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Giảm 0.25s">-</button>
+                                <button type="button" onClick={() => adjustEditTime('start', 0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-655" title="Tăng 0.25s">+</button>
+                                <button type="button" onClick={() => adjustEditTime('start', -0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-655" title="Giảm 0.25s">-</button>
                               </div>
                             </div>
                           </div>
@@ -993,8 +903,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                                 placeholder="Ví dụ: 8:30.80 hoặc 510.80"
                               />
                               <div className="flex flex-col gap-0.5 justify-center shrink-0">
-                                <button type="button" onClick={() => adjustEditTime('end', 0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Tăng 0.25s">+</button>
-                                <button type="button" onClick={() => adjustEditTime('end', -0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Giảm 0.25s">-</button>
+                                <button type="button" onClick={() => adjustEditTime('end', 0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-655" title="Tăng 0.25s">+</button>
+                                <button type="button" onClick={() => adjustEditTime('end', -0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-655" title="Giảm 0.25s">-</button>
                               </div>
                             </div>
                           </div>
@@ -1039,7 +949,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                         <div className="flex justify-end gap-2 pt-1 border-t">
                           <button
                             onClick={() => setEditingIndex(null)}
-                            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[10px] font-bold"
+                            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-650 rounded-lg text-[10px] font-bold"
                           >
                             Hủy
                           </button>
@@ -1053,9 +963,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                         </div>
                       </div>
                     ) : (
-                      <div className="space-y-1.5 relative">
+                      <div className="space-y-0.5 relative">
                         {/* Time tag */}
-                        <div className="flex justify-between items-center text-[10px] font-mono font-bold text-slate-400">
+                        <div className="flex justify-between items-center text-[9px] font-mono font-bold text-slate-400">
                           <span>{formatTimeDetailed(sub.start)} - {formatTimeDetailed(sub.end)}</span>
                           {isAdminMode && (
                             <button
@@ -1063,7 +973,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                                 e.stopPropagation();
                                 startEdit(idx, sub);
                               }}
-                              className="text-slate-400 hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-slate-100"
+                              className="text-slate-400 hover:text-indigo-650 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-slate-100"
                               title="Sửa nhanh phụ đề dòng này"
                             >
                               <Edit size={12} />
@@ -1072,14 +982,14 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                         </div>
                         <p 
                           style={{ fontSize: `${fontSize}px` }}
-                          className={`font-bold leading-relaxed ${isActive ? "text-indigo-900" : "text-slate-800"}`}
+                          className={`font-bold leading-snug ${isActive ? "text-red-600 font-black" : "text-slate-800"}`}
                         >
                           {sub.text}
                         </p>
                         {sub.ipa && showIpa && (
                           <p 
                             style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
-                            className="font-mono text-indigo-600/80 font-semibold"
+                            className="font-mono text-indigo-650/80 font-semibold"
                           >
                             {sub.ipa}
                           </p>
@@ -1087,7 +997,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                         {sub.vietnamese && (
                           <p 
                             style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
-                            className="text-slate-500 font-medium leading-relaxed"
+                            className={`font-medium leading-snug ${isActive ? "text-red-500/90 font-semibold" : "text-slate-500"}`}
                           >
                             {sub.vietnamese}
                           </p>
@@ -1099,142 +1009,142 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 );
               })}
             </div>
-          </div>
-        ) : (
-          <div className="flex-1 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 flex flex-col justify-between gap-6 min-h-0">
-            {/* Target Sentence Display Layer & Typing Area */}
-            <div className="space-y-4 flex-1 flex flex-col justify-center">
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-3 relative overflow-hidden">
-                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex justify-between items-center">
-                  <span>Câu thứ {currentIndex + 1} / {subtitles.length}</span>
-                  <div className="flex items-center gap-3">
-                    <label className="flex items-center gap-1 cursor-pointer select-none font-bold text-slate-500 hover:text-indigo-600 transition-colors">
-                      <input
-                        type="checkbox"
-                        checked={showIpa}
-                        onChange={(e) => setShowIpa(e.target.checked)}
-                        className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
-                      />
-                      <span>IPA</span>
-                    </label>
-                    <label className="flex items-center gap-1 cursor-pointer select-none font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-3">
-                      <input
-                        type="checkbox"
-                        checked={showNotes}
-                        onChange={(e) => setShowNotes(e.target.checked)}
-                        className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
-                      />
-                      <span>Note</span>
-                    </label>
-                    <div className="flex items-center gap-1 border-l border-slate-200 pl-3 normal-case">
-                      <button
-                        type="button"
-                        onClick={() => setFontSize(prev => Math.max(12, prev - 2))}
-                        className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[10px] flex items-center justify-center transition-all active:scale-95"
-                        title="Giảm cỡ chữ"
-                      >
-                        A-
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setFontSize(prev => Math.min(24, prev + 2))}
-                        className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[10px] flex items-center justify-center transition-all active:scale-95"
-                        title="Tăng cỡ chữ"
-                      >
-                        A+
-                      </button>
+          ) : (
+            <div className="flex-1 p-5 flex flex-col justify-between gap-4 min-h-0 overflow-y-auto">
+              {/* Target Sentence Display Layer & Typing Area */}
+              <div className="space-y-4 flex-1 flex flex-col justify-center">
+                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-3 relative overflow-hidden">
+                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex justify-between items-center">
+                    <span>Câu thứ {currentIndex + 1} / {subtitles.length}</span>
+                    <div className="flex items-center gap-3">
+                      <label className="flex items-center gap-1 cursor-pointer select-none font-bold text-slate-500 hover:text-indigo-600 transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={showIpa}
+                          onChange={(e) => setShowIpa(e.target.checked)}
+                          className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
+                        />
+                        <span>IPA</span>
+                      </label>
+                      <label className="flex items-center gap-1 cursor-pointer select-none font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-3">
+                        <input
+                          type="checkbox"
+                          checked={showNotes}
+                          onChange={(e) => setShowNotes(e.target.checked)}
+                          className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
+                        />
+                        <span>Note</span>
+                      </label>
+                      <div className="flex items-center gap-1 border-l border-slate-200 pl-3 normal-case">
+                        <button
+                          type="button"
+                          onClick={() => setFontSize(prev => Math.max(12, prev - 2))}
+                          className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[10px] flex items-center justify-center transition-all active:scale-95"
+                          title="Giảm cỡ chữ"
+                        >
+                          A-
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFontSize(prev => Math.min(24, prev + 2))}
+                          className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[10px] flex items-center justify-center transition-all active:scale-95"
+                          title="Tăng cỡ chữ"
+                        >
+                          A+
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-                
-                {/* Hints (IPA & Vietnamese) */}
-                {subtitles[currentIndex]?.ipa && showIpa && (
-                  <p 
-                    style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
-                    className="font-mono text-indigo-600 font-semibold"
-                  >
-                    {subtitles[currentIndex]?.ipa}
-                  </p>
-                )}
-                {subtitles[currentIndex]?.vietnamese && (
-                  <p 
-                    style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
-                    className="text-slate-600 leading-relaxed font-semibold italic"
-                  >
-                    {subtitles[currentIndex]?.vietnamese}
-                  </p>
-                )}
-                {subtitles[currentIndex]?.note && showNotes && renderFormattedNote(subtitles[currentIndex]?.note, fontSize)}
-              </div>
-
-              {/* Dictation Match View */}
-              <div className="relative w-full min-h-[100px] bg-slate-50 p-5 rounded-2xl border border-slate-200 flex items-start">
-                {/* Visual Matching Layer */}
-                <div 
-                  style={{ fontSize: `${fontSize + 2}px`, width: "calc(100% - 40px)" }}
-                  className="absolute inset-5 z-20 pointer-events-none break-words whitespace-pre-wrap select-text text-slate-300 font-mono font-bold leading-relaxed tracking-[0.02em] m-0 p-0 border-0"
-                >
-                  {targetText.split("").map((char, i) => {
-                    const typed = dictationInput[i];
-                    const isAlphaNumeric = /[a-zA-Z0-9]/.test(char);
-                    if (!isAlphaNumeric) return <span key={i} className="text-slate-400">{char}</span>;
-                    if (!typed) return <span key={i} className="text-slate-350">_</span>;
-                    const isCorrect = typed.toLowerCase() === char.toLowerCase();
-                    return (
-                      <span
-                        key={i}
-                        className={`${isCorrect ? "text-emerald-600" : "text-red-500 bg-red-100"} transition-colors`}
-                      >
-                        {typed}
-                      </span>
-                    );
-                  })}
+                  
+                  {/* Hints (IPA & Vietnamese) */}
+                  {subtitles[currentIndex]?.ipa && showIpa && (
+                    <p 
+                      style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
+                      className="font-mono text-indigo-650 font-semibold"
+                    >
+                      {subtitles[currentIndex]?.ipa}
+                    </p>
+                  )}
+                  {subtitles[currentIndex]?.vietnamese && (
+                    <p 
+                      style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
+                      className="text-slate-605 leading-relaxed font-semibold italic"
+                    >
+                      {subtitles[currentIndex]?.vietnamese}
+                    </p>
+                  )}
+                  {subtitles[currentIndex]?.note && showNotes && renderFormattedNote(subtitles[currentIndex]?.note, fontSize)}
                 </div>
 
-                {/* Secret textarea to capture keyboard focus */}
-                <textarea
-                  ref={dictationTextareaRef}
-                  value={dictationInput}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (val.length <= targetText.length) setDictationInput(val);
-                  }}
-                  style={{ WebkitTextFillColor: "transparent", color: "transparent", caretColor: "#3b82f6", fontSize: `${fontSize + 2}px` }}
-                  className="w-full h-full bg-transparent outline-none resize-none absolute inset-5 z-10 m-0 p-0 border-0 font-mono font-bold leading-relaxed tracking-[0.02em] pointer-events-auto overflow-hidden"
-                  spellCheck={false}
-                  autoComplete="off"
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                  placeholder={isCompleted ? "" : "Hãy nhấn vào đây và gõ những gì bạn nghe thấy..."}
-                />
-                
-                {isCompleted && (
-                  <div className="absolute right-4 bottom-4 z-30 text-emerald-600 flex items-center gap-1.5 font-bold text-xs bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 shadow-sm animate-bounce">
-                    <CheckCircle className="w-4 h-4" /> Chính xác!
+                {/* Dictation Match View */}
+                <div className="relative w-full min-h-[100px] bg-slate-50 p-5 rounded-2xl border border-slate-200 flex items-start">
+                  {/* Visual Matching Layer */}
+                  <div 
+                    style={{ fontSize: `${fontSize + 2}px`, width: "calc(100% - 40px)" }}
+                    className="absolute inset-5 z-20 pointer-events-none break-words whitespace-pre-wrap select-text text-slate-300 font-mono font-bold leading-relaxed tracking-[0.02em] m-0 p-0 border-0"
+                  >
+                    {targetText.split("").map((char, i) => {
+                      const typed = dictationInput[i];
+                      const isAlphaNumeric = /[a-zA-Z0-9]/.test(char);
+                      if (!isAlphaNumeric) return <span key={i} className="text-slate-400">{char}</span>;
+                      if (!typed) return <span key={i} className="text-slate-350">_</span>;
+                      const isCorrect = typed.toLowerCase() === char.toLowerCase();
+                      return (
+                        <span
+                          key={i}
+                          className={`${isCorrect ? "text-emerald-600" : "text-red-500 bg-red-105"} transition-colors`}
+                        >
+                          {typed}
+                        </span>
+                      );
+                    })}
                   </div>
-                )}
+
+                  {/* Secret textarea to capture keyboard focus */}
+                  <textarea
+                    ref={dictationTextareaRef}
+                    value={dictationInput}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val.length <= targetText.length) setDictationInput(val);
+                    }}
+                    style={{ WebkitTextFillColor: "transparent", color: "transparent", caretColor: "#3b82f6", fontSize: `${fontSize + 2}px` }}
+                    className="w-full h-full bg-transparent outline-none resize-none absolute inset-5 z-10 m-0 p-0 border-0 font-mono font-bold leading-relaxed tracking-[0.02em] pointer-events-auto overflow-hidden"
+                    spellCheck={false}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    placeholder={isCompleted ? "" : "Hãy nhấn vào đây và gõ những gì bạn nghe thấy..."}
+                  />
+                  
+                  {isCompleted && (
+                    <div className="absolute right-4 bottom-4 z-30 text-emerald-600 flex items-center gap-1.5 font-bold text-xs bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 shadow-sm animate-bounce">
+                      <CheckCircle className="w-4 h-4" /> Chính xác!
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Navigation buttons */}
+              <div className="flex gap-3 pt-4 border-t shrink-0">
+                <button
+                  onClick={() => playSubtitleRow(currentIndex - 1)}
+                  disabled={currentIndex === 0}
+                  className="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-xs"
+                >
+                  <ChevronLeft size={16} /> Quay Lại (Alt+v)
+                </button>
+                <button
+                  onClick={() => playSubtitleRow(currentIndex + 1)}
+                  disabled={currentIndex === subtitles.length - 1}
+                  className="flex-1 py-3 px-4 bg-indigo-600 hover:bg-indigo-755 text-white font-bold rounded-2xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-xs shadow-md shadow-indigo-100"
+                >
+                  Tiếp Theo (Alt+n) <ChevronRight size={16} />
+                </button>
               </div>
             </div>
-
-            {/* Navigation buttons */}
-            <div className="flex gap-3 pt-4 border-t shrink-0">
-              <button
-                onClick={() => playSubtitleRow(currentIndex - 1)}
-                disabled={currentIndex === 0}
-                className="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-xs"
-              >
-                <ChevronLeft size={16} /> Quay Lại (Alt+v)
-              </button>
-              <button
-                onClick={() => playSubtitleRow(currentIndex + 1)}
-                disabled={currentIndex === subtitles.length - 1}
-                className="flex-1 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-xs shadow-md shadow-indigo-100"
-              >
-                Tiếp Theo (Alt+n) <ChevronRight size={16} />
-              </button>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
