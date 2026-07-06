@@ -589,6 +589,44 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     }
   };
 
+  const adjustEditTime = (field: 'start' | 'end', offset: number) => {
+    const currentVal = parseTimeToSeconds(editFields[field]);
+    const newVal = Math.max(0, parseFloat((currentVal + offset).toFixed(2)));
+    setEditFields((prev: any) => ({
+      ...prev,
+      [field]: formatTimeDetailed(newVal)
+    }));
+  };
+
+  const shiftAllSubtitles = async (offset: number) => {
+    if (subtitles.length === 0) return;
+    const confirmMsg = `Bạn có chắc muốn dịch chuyển TOÀN BỘ phụ đề ${offset > 0 ? "muộn hơn" : "sớm hơn"} ${Math.abs(offset)} giây?`;
+    if (!window.confirm(confirmMsg)) return;
+
+    try {
+      const updatedSubtitles = subtitles.map(sub => ({
+        ...sub,
+        start: Math.max(0, parseFloat((sub.start + offset).toFixed(2))),
+        end: Math.max(0, parseFloat((sub.end + offset).toFixed(2))),
+      }));
+
+      const res = await fetch(`/api/lessons/${lessonId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content: JSON.stringify(updatedSubtitles),
+        }),
+      });
+
+      if (!res.ok) throw new Error("Cập nhật thất bại");
+
+      setSubtitles(updatedSubtitles);
+      showToast(`Đã dịch chuyển toàn bộ phụ đề ${offset > 0 ? "muộn hơn" : "sớm hơn"} ${Math.abs(offset)}s!`, "success");
+    } catch (e) {
+      showToast("Lỗi khi dịch chuyển phụ đề!", "error");
+    }
+  };
+
   const formatTime = (secs: number) => {
     if (typeof secs !== 'number' || isNaN(secs)) return '00:00';
     const m = Math.floor(secs / 60);
@@ -885,6 +923,27 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     A+
                   </button>
                 </div>
+                {isAdminMode && (
+                  <div className="flex items-center gap-1 border-l border-slate-200 pl-3">
+                    <span className="text-[10px] font-bold text-slate-400 mr-1 normal-case select-none">Dịch sub:</span>
+                    <button
+                      type="button"
+                      onClick={() => shiftAllSubtitles(-0.5)}
+                      className="px-1.5 py-0.5 rounded bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[10px] transition-all active:scale-95"
+                      title="Toàn bộ sub xuất hiện sớm hơn 0.5s"
+                    >
+                      -0.5s
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => shiftAllSubtitles(0.5)}
+                      className="px-1.5 py-0.5 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-bold text-[10px] transition-all active:scale-95"
+                      title="Toàn bộ sub xuất hiện muộn hơn 0.5s"
+                    >
+                      +0.5s
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
             
@@ -909,23 +968,35 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                         <div className="grid grid-cols-2 gap-2">
                           <div className="space-y-1">
                             <label className="text-[10px] font-bold text-slate-400 uppercase">Thời gian bắt đầu</label>
-                            <input
-                              type="text"
-                              value={editFields.start}
-                              onChange={(e) => setEditFields({ ...editFields, start: e.target.value })}
-                              className="w-full p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-slate-700"
-                              placeholder="Ví dụ: 8:27.67 hoặc 507.67"
-                            />
+                            <div className="flex gap-1">
+                              <input
+                                type="text"
+                                value={editFields.start}
+                                onChange={(e) => setEditFields({ ...editFields, start: e.target.value })}
+                                className="flex-1 p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-slate-700 min-w-0"
+                                placeholder="Ví dụ: 8:27.67 hoặc 507.67"
+                              />
+                              <div className="flex flex-col gap-0.5 justify-center shrink-0">
+                                <button type="button" onClick={() => adjustEditTime('start', 0.5)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Tăng 0.5s">+</button>
+                                <button type="button" onClick={() => adjustEditTime('start', -0.5)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Giảm 0.5s">-</button>
+                              </div>
+                            </div>
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] font-bold text-slate-400 uppercase">Thời gian kết thúc</label>
-                            <input
-                              type="text"
-                              value={editFields.end}
-                              onChange={(e) => setEditFields({ ...editFields, end: e.target.value })}
-                              className="w-full p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-slate-700"
-                              placeholder="Ví dụ: 8:30.80 hoặc 510.80"
-                            />
+                            <div className="flex gap-1">
+                              <input
+                                type="text"
+                                value={editFields.end}
+                                onChange={(e) => setEditFields({ ...editFields, end: e.target.value })}
+                                className="flex-1 p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-slate-700 min-w-0"
+                                placeholder="Ví dụ: 8:30.80 hoặc 510.80"
+                              />
+                              <div className="flex flex-col gap-0.5 justify-center shrink-0">
+                                <button type="button" onClick={() => adjustEditTime('end', 0.5)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Tăng 0.5s">+</button>
+                                <button type="button" onClick={() => adjustEditTime('end', -0.5)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Giảm 0.5s">-</button>
+                              </div>
+                            </div>
                           </div>
                         </div>
                         <div className="space-y-1">
