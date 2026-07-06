@@ -575,6 +575,20 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     return `${m}:${s.toString().padStart(2, '0')}`;
   };
 
+  const formatTimeDetailed = (secs: number) => {
+    if (typeof secs !== 'number' || isNaN(secs)) return '00:00.00';
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    const s = Math.floor(secs % 60);
+    const ms = (secs % 1).toFixed(2).substring(2);
+    
+    const hStr = h > 0 ? `${h}:` : '';
+    const mStr = h > 0 ? m.toString().padStart(2, '0') : m.toString();
+    const sStr = s.toString().padStart(2, '0');
+    
+    return `${hStr}${mStr}:${sStr}.${ms}`;
+  };
+
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value);
     setCurrentTime(val);
@@ -950,7 +964,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                       <div className="space-y-1.5 relative">
                         {/* Time tag */}
                         <div className="flex justify-between items-center text-[10px] font-mono font-bold text-slate-400">
-                          <span>{sub.start}s - {sub.end}s</span>
+                          <span>{formatTimeDetailed(sub.start)} - {formatTimeDetailed(sub.end)}</span>
                           {isAdminMode && (
                             <button
                               onClick={(e) => {
