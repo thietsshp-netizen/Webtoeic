@@ -95,7 +95,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
   // States for live editing
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [editFields, setEditFields] = useState<{ text: string; ipa: string; vietnamese: string; note: string; start: number; end: number }>({ text: "", ipa: "", vietnamese: "", note: "", start: 0, end: 0 });
+  const [editFields, setEditFields] = useState<{ text: string; ipa: string; vietnamese: string; note: string; start: string; end: string }>({ text: "", ipa: "", vietnamese: "", note: "", start: "", end: "" });
   const [isSavingEdit, setIsSavingEdit] = useState<boolean>(false);
 
   const [playerReady, setPlayerReady] = useState<boolean>(false);
@@ -529,9 +529,30 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       ipa: sub.ipa || "",
       vietnamese: sub.vietnamese || "",
       note: sub.note || "",
-      start: sub.start,
-      end: sub.end,
+      start: formatTimeDetailed(sub.start),
+      end: formatTimeDetailed(sub.end),
     });
+  };
+
+  const parseTimeToSeconds = (str: string | number): number => {
+    if (str === undefined || str === null) return 0;
+    if (typeof str === 'number') return str;
+    const cleanStr = str.trim();
+    if (!cleanStr.includes(':')) {
+      return parseFloat(cleanStr) || 0;
+    }
+    const parts = cleanStr.split(':');
+    if (parts.length === 2) {
+      const mins = parseInt(parts[0], 10) || 0;
+      const secs = parseFloat(parts[1]) || 0;
+      return mins * 60 + secs;
+    } else if (parts.length === 3) {
+      const hours = parseInt(parts[0], 10) || 0;
+      const mins = parseInt(parts[1], 10) || 0;
+      const secs = parseFloat(parts[2]) || 0;
+      return hours * 3600 + mins * 60 + secs;
+    }
+    return parseFloat(cleanStr) || 0;
   };
 
   const saveLiveEdit = async (idx: number) => {
@@ -544,8 +565,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         ipa: editFields.ipa,
         vietnamese: editFields.vietnamese,
         note: editFields.note,
-        start: editFields.start,
-        end: editFields.end,
+        start: parseTimeToSeconds(editFields.start),
+        end: parseTimeToSeconds(editFields.end),
       };
 
       const res = await fetch(`/api/lessons/${lessonId}`, {
@@ -887,23 +908,23 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                       <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
                         <div className="grid grid-cols-2 gap-2">
                           <div className="space-y-1">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase">Thời gian bắt đầu (s)</label>
+                            <label className="text-[10px] font-bold text-slate-400 uppercase">Thời gian bắt đầu</label>
                             <input
-                              type="number"
-                              step="0.01"
+                              type="text"
                               value={editFields.start}
-                              onChange={(e) => setEditFields({ ...editFields, start: parseFloat(e.target.value) || 0 })}
+                              onChange={(e) => setEditFields({ ...editFields, start: e.target.value })}
                               className="w-full p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-slate-700"
+                              placeholder="Ví dụ: 8:27.67 hoặc 507.67"
                             />
                           </div>
                           <div className="space-y-1">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase">Thời gian kết thúc (s)</label>
+                            <label className="text-[10px] font-bold text-slate-400 uppercase">Thời gian kết thúc</label>
                             <input
-                              type="number"
-                              step="0.01"
+                              type="text"
                               value={editFields.end}
-                              onChange={(e) => setEditFields({ ...editFields, end: parseFloat(e.target.value) || 0 })}
+                              onChange={(e) => setEditFields({ ...editFields, end: e.target.value })}
                               className="w-full p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-slate-700"
+                              placeholder="Ví dụ: 8:30.80 hoặc 510.80"
                             />
                           </div>
                         </div>
