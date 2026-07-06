@@ -34,6 +34,7 @@ export default function CourseBuilderPage({ params }: BuilderPageProps) {
     lessons: string[]
   }>({ books: [], sections: [], lessons: [] });
   const [isSavingAll, setIsSavingAll] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
 
   // --- RESIZABLE SIDEBAR ---
@@ -168,6 +169,14 @@ export default function CourseBuilderPage({ params }: BuilderPageProps) {
       const result = await res.json();
       if (!result.success) throw new Error(result.error);
 
+      // Nếu đang chọn một bài học tạm thời vừa được lưu, cập nhật sang ID thật để giữ vị trí
+      if (selectedLessonId && selectedLessonId.startsWith("temp") && result.mappings?.lessons) {
+        const mappedId = result.mappings.lessons[selectedLessonId];
+        if (mappedId) {
+          setSelectedLessonId(mappedId);
+        }
+      }
+
       // Xóa draft sau khi lưu thành công
       setDraftLessons({});
       setDraftSections({});
@@ -175,8 +184,8 @@ export default function CourseBuilderPage({ params }: BuilderPageProps) {
       setDraftDeletions({ books: [], sections: [], lessons: [] });
       alert("Đã lưu toàn bộ thay đổi thành công!");
       
-      // Có thể reload lại dữ liệu syllabus nếu cần
-      window.location.reload(); 
+      // Tải lại Syllabus Tree mà không cần reload trang
+      setRefreshTrigger(prev => prev + 1);
     } catch (err: any) {
       alert("Lỗi khi lưu: " + err.message);
     } finally {
@@ -291,6 +300,7 @@ export default function CourseBuilderPage({ params }: BuilderPageProps) {
               onSectionDraftUpdate={handleSectionDraftUpdate}
               onLessonDraftUpdate={handleLessonDraftUpdate}
               onDeletionsUpdate={handleDeletionsUpdate}
+              refreshTrigger={refreshTrigger}
             />
          </div>
       </div>
@@ -364,6 +374,7 @@ export default function CourseBuilderPage({ params }: BuilderPageProps) {
                   return newDraft;
                 });
               }}
+              onSaveAll={handleSaveAll}
             />
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-center p-20">

@@ -23,6 +23,10 @@ export async function POST(
   try {
     const { lessons, sections, books, deletions } = await req.json();
 
+    const bookMapping: Record<string, string> = {};
+    const sectionMapping: Record<string, string> = {};
+    const lessonMapping: Record<string, string> = {};
+
     await prisma.$transaction(async (tx) => {
       // --- PHẦN 1: XỬ LÝ XÓA ---
       if (deletions) {
@@ -38,7 +42,6 @@ export async function POST(
       }
 
       // --- PHẦN 2: XỬ LÝ SÁCH (BOOKS) ---
-      const bookMapping: Record<string, string> = {};
       if (books && typeof books === "object") {
         for (const [id, data] of Object.entries(books as Record<string, DraftData>)) {
           if (deletions?.books?.includes(id)) continue;
@@ -64,7 +67,6 @@ export async function POST(
       }
 
       // --- PHẦN 3: XỬ LÝ CHƯƠNG (SECTIONS) ---
-      const sectionMapping: Record<string, string> = {};
       if (sections && typeof sections === "object") {
         for (const [id, data] of Object.entries(sections as Record<string, DraftData>)) {
           if (deletions?.sections?.includes(id)) continue;
@@ -107,7 +109,7 @@ export async function POST(
             : data.sectionId;
 
           if (id.startsWith("temp")) {
-            await tx.lesson.create({
+            const newLesson = await tx.lesson.create({
               data: {
                 title: data.title || "Bài học mới",
                 order: data.order || 0,
@@ -121,6 +123,7 @@ export async function POST(
                 isPreview: data.isPreview || false
               }
             });
+            lessonMapping[id] = newLesson.id;
           } else {
             await tx.lesson.update({
               where: { id },
@@ -142,7 +145,14 @@ export async function POST(
       }
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ 
+      success: true, 
+      mappings: {
+        books: bookMapping,
+        sections: sectionMapping,
+        lessons: lessonMapping
+      }
+    });
   } catch (error: any) {
     console.error("Batch save error:", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

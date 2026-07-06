@@ -55,6 +55,7 @@ interface AdminSyllabusSidebarProps {
   onSectionDraftUpdate?: (id: string, data: any) => void;
   onLessonDraftUpdate?: (id: string, data: any) => void;
   onDeletionsUpdate?: (type: 'books' | 'sections' | 'lessons', id: string) => void;
+  refreshTrigger?: number;
 }
 
 export default function AdminSyllabusSidebar({ 
@@ -67,7 +68,8 @@ export default function AdminSyllabusSidebar({
   onBookDraftUpdate,
   onSectionDraftUpdate,
   onLessonDraftUpdate,
-  onDeletionsUpdate
+  onDeletionsUpdate,
+  refreshTrigger = 0
 }: AdminSyllabusSidebarProps) {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
@@ -121,7 +123,7 @@ export default function AdminSyllabusSidebar({
       }
     }
     fetchSyllabus();
-  }, [courseId]);
+  }, [courseId, refreshTrigger]);
 
   const handleAddBook = () => {
     const tempId = `temp-book-${Date.now()}`;

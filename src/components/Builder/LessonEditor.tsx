@@ -12,6 +12,7 @@ interface LessonEditorProps {
   draftData?: any;
   onDraftUpdate: (data: any) => void;
   onSaveSuccess: () => void;
+  onSaveAll?: () => Promise<void>;
 }
 
 // Helper to parse MM:SS string to seconds
@@ -248,7 +249,7 @@ function TimeInput({ value, onChange }: TimeInputProps) {
 }
 
 
-export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSaveSuccess }: LessonEditorProps) {
+export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSaveSuccess, onSaveAll }: LessonEditorProps) {
   const [lesson, setLesson] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -530,7 +531,17 @@ ${JSON.stringify(parsed, null, 2)}`;
 
   const handleSave = async () => {
     if (lessonId.startsWith("temp")) {
-      alert("Bài học mới chưa được tạo chính thức. Vui lòng bấm nút 'LƯU TẤT CẢ' ở thanh công cụ phía trên trước để lưu cấu trúc bài học!");
+      if (onSaveAll) {
+        setSaving(true);
+        try {
+          await onSaveAll();
+        } catch (err) {}
+        finally {
+          setSaving(false);
+        }
+      } else {
+        alert("Bài học mới chưa được tạo chính thức. Vui lòng bấm nút 'LƯU TẤT CẢ' ở thanh công cụ phía trên trước để lưu cấu trúc bài học!");
+      }
       return;
     }
 

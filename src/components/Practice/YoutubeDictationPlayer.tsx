@@ -84,7 +84,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const [mode, setMode] = useState<"listen" | "dictation">("listen");
   const [showIpa, setShowIpa] = useState<boolean>(false);
   const [showNotes, setShowNotes] = useState<boolean>(true);
-  const [fontSize, setFontSize] = useState<number>(14);
+  const [fontSize, setFontSize] = useState<number>(18);
   const [leftWidth, setLeftWidth] = useState<number>(60); // 60% left (video), 40% right (subtitles)
   const [isResizing, setIsResizing] = useState<boolean>(false);
 
@@ -657,22 +657,34 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
         {/* Active Subtitle Panel directly under video */}
         {subtitles.length > 0 && subtitles[currentIndex] && (
-          <div className="bg-slate-900 text-white p-5 rounded-3xl border border-slate-800 shadow-xl flex flex-col gap-2 transition-all">
-            <div className="text-lg font-bold text-center text-indigo-300 leading-snug">
+          <div className="bg-slate-900 text-white p-6 rounded-3xl border border-slate-800 shadow-xl flex flex-col gap-2.5 transition-all">
+            <div 
+              style={{ fontSize: `${fontSize + 4}px` }}
+              className="font-bold text-center text-indigo-300 leading-snug"
+            >
               {subtitles[currentIndex].text}
             </div>
             {showIpa && subtitles[currentIndex].ipa && (
-              <div className="text-xs font-medium text-center text-slate-400 font-mono">
+              <div 
+                style={{ fontSize: `${Math.max(12, fontSize - 2)}px` }}
+                className="font-medium text-center text-slate-400 font-mono"
+              >
                 {subtitles[currentIndex].ipa}
               </div>
             )}
             {subtitles[currentIndex].vietnamese && (
-              <div className="text-sm font-medium text-center text-amber-200 leading-normal border-t border-slate-800/80 pt-2 mt-1">
+              <div 
+                style={{ fontSize: `${fontSize}px` }}
+                className="font-medium text-center text-amber-200 leading-normal border-t border-slate-800/80 pt-3 mt-1.5"
+              >
                 {subtitles[currentIndex].vietnamese}
               </div>
             )}
             {showNotes && subtitles[currentIndex].note && (
-              <div className="text-[11px] text-center text-emerald-400 bg-emerald-950/40 py-1.5 px-3 rounded-xl border border-emerald-900/30 mt-1">
+              <div 
+                style={{ fontSize: `${Math.max(11, fontSize - 4)}px` }}
+                className="text-center text-emerald-400 bg-emerald-950/40 py-1.5 px-3 rounded-xl border border-emerald-900/30 mt-1.5"
+              >
                 {subtitles[currentIndex].note}
               </div>
             )}
