@@ -928,19 +928,19 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     <span className="text-[10px] font-bold text-slate-400 mr-1 normal-case select-none">Dịch sub:</span>
                     <button
                       type="button"
-                      onClick={() => shiftAllSubtitles(-0.5)}
+                      onClick={() => shiftAllSubtitles(-0.25)}
                       className="px-1.5 py-0.5 rounded bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[10px] transition-all active:scale-95"
-                      title="Toàn bộ sub xuất hiện sớm hơn 0.5s"
+                      title="Toàn bộ sub xuất hiện sớm hơn 0.25s"
                     >
-                      -0.5s
+                      -0.25s
                     </button>
                     <button
                       type="button"
-                      onClick={() => shiftAllSubtitles(0.5)}
+                      onClick={() => shiftAllSubtitles(0.25)}
                       className="px-1.5 py-0.5 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-bold text-[10px] transition-all active:scale-95"
-                      title="Toàn bộ sub xuất hiện muộn hơn 0.5s"
+                      title="Toàn bộ sub xuất hiện muộn hơn 0.25s"
                     >
-                      +0.5s
+                      +0.25s
                     </button>
                   </div>
                 )}
@@ -977,8 +977,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                                 placeholder="Ví dụ: 8:27.67 hoặc 507.67"
                               />
                               <div className="flex flex-col gap-0.5 justify-center shrink-0">
-                                <button type="button" onClick={() => adjustEditTime('start', 0.5)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Tăng 0.5s">+</button>
-                                <button type="button" onClick={() => adjustEditTime('start', -0.5)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Giảm 0.5s">-</button>
+                                <button type="button" onClick={() => adjustEditTime('start', 0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Tăng 0.25s">+</button>
+                                <button type="button" onClick={() => adjustEditTime('start', -0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Giảm 0.25s">-</button>
                               </div>
                             </div>
                           </div>
@@ -993,8 +993,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                                 placeholder="Ví dụ: 8:30.80 hoặc 510.80"
                               />
                               <div className="flex flex-col gap-0.5 justify-center shrink-0">
-                                <button type="button" onClick={() => adjustEditTime('end', 0.5)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Tăng 0.5s">+</button>
-                                <button type="button" onClick={() => adjustEditTime('end', -0.5)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Giảm 0.5s">-</button>
+                                <button type="button" onClick={() => adjustEditTime('end', 0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Tăng 0.25s">+</button>
+                                <button type="button" onClick={() => adjustEditTime('end', -0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-650" title="Giảm 0.25s">-</button>
                               </div>
                             </div>
                           </div>
