@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Play, Pause, RotateCcw, Volume2, Settings, Edit, Check, X, CheckCircle, ChevronLeft, ChevronRight, HelpCircle } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
+import { showToast } from "@/components/UI/Toast";
 
 interface Subtitle {
   start: number;
@@ -559,9 +560,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
       setSubtitles(updatedSubtitles);
       setEditingIndex(null);
-      alert("Đã cập nhật phụ đề thành công!");
+      showToast("Đã cập nhật phụ đề thành công!", "success");
     } catch (e) {
-      alert("Lỗi khi cập nhật phụ đề!");
+      showToast("Lỗi khi cập nhật phụ đề!", "error");
     } finally {
       setIsSavingEdit(false);
     }
