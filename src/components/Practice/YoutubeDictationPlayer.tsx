@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Play, Pause, RotateCcw, Volume2, Settings, Edit, Check, X, CheckCircle, ChevronLeft, ChevronRight, HelpCircle } from "lucide-react";
+import { Play, Pause, RotateCcw, Volume2, Settings, Edit, Check, X, CheckCircle, ChevronLeft, ChevronRight, HelpCircle, Maximize2, Minimize2 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
 import { showToast } from "@/components/UI/Toast";
@@ -85,9 +85,12 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const [mode, setMode] = useState<"listen" | "dictation">("listen");
   const [showIpa, setShowIpa] = useState<boolean>(false);
   const [showNotes, setShowNotes] = useState<boolean>(true);
+  const [showSubOnVideo, setShowSubOnVideo] = useState<boolean>(true);
   const [fontSize, setFontSize] = useState<number>(18);
   const [leftWidth, setLeftWidth] = useState<number>(60); // 60% left (video), 40% right (subtitles)
   const [isResizing, setIsResizing] = useState<boolean>(false);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
 
   // State for dictation input
   const [dictationInput, setDictationInput] = useState<string>("");
@@ -124,6 +127,28 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     return url; // Return as-is for Supabase, Cloudflare R2, etc.
   };
   const directVideoUrl = getDirectVideoUrl(videoUrl);
+
+  // Handle fullscreen change events (e.g. user presses ESC)
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(document.fullscreenElement === videoContainerRef.current);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!videoContainerRef.current) return;
+    if (!document.fullscreenElement) {
+      videoContainerRef.current.requestFullscreen().catch((err) => {
+        console.error("Lỗi khi mở toàn màn hình:", err);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
 
   const startResizing = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -275,6 +300,30 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       setPlayerReady(false);
     };
   }, [videoId]);
+
+  // Disable native subtitles (softsubs) in direct video files to avoid overlap with React overlay
+  useEffect(() => {
+    if (!isDirectVideo) return;
+    const disableTracks = () => {
+      if (videoRef.current) {
+        const tracks = videoRef.current.textTracks;
+        for (let i = 0; i < tracks.length; i++) {
+          tracks[i].mode = "disabled";
+        }
+      }
+    };
+    
+    const videoEl = videoRef.current;
+    if (videoEl) {
+      videoEl.addEventListener("loadedmetadata", disableTracks);
+      disableTracks();
+    }
+    return () => {
+      if (videoEl) {
+        videoEl.removeEventListener("loadedmetadata", disableTracks);
+      }
+    };
+  }, [videoUrl, isDirectVideo]);
 
   // Restore progress: works for both YouTube and HTML5 video
   useEffect(() => {
@@ -484,7 +533,12 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   // Hotkeys handling
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const isTyping = document.activeElement?.tagName === "INPUT" || document.activeElement?.tagName === "TEXTAREA";
+      const activeEl = document.activeElement as HTMLElement | null;
+      const isTyping = 
+        (activeEl?.tagName === "INPUT" && 
+         (activeEl as HTMLInputElement).type !== "checkbox" && 
+         (activeEl as HTMLInputElement).type !== "radio") || 
+        activeEl?.tagName === "TEXTAREA";
       
       // Shortcuts without modifiers when NOT typing
       if (!isTyping) {
@@ -667,7 +721,16 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     <div ref={outerContainerRef} className="flex flex-col w-full bg-slate-50 pb-12">
       {/* TOP: Video Player (Centered, takes full-width with a max-width limit) */}
       <div className="w-full flex justify-center bg-slate-900 shadow-inner p-4 shrink-0">
-        <div className="w-full max-w-5xl aspect-video rounded-3xl overflow-hidden bg-black border-4 border-slate-800 shadow-2xl relative flex items-center justify-center">
+        <div 
+          ref={videoContainerRef}
+          tabIndex={-1}
+          onMouseLeave={() => videoContainerRef.current?.focus()}
+          className={`w-full bg-black relative flex items-center justify-center group/video transition-all outline-none ${
+            isFullscreen 
+              ? "max-w-none h-full rounded-none border-0 shadow-none" 
+              : "max-w-5xl aspect-video rounded-3xl border-4 border-slate-800 shadow-2xl"
+          }`}
+        >
           {isDirectVideo ? (
             <video
               ref={videoRef}
@@ -691,6 +754,13 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 if (!videoRef.current) return;
                 const time = videoRef.current.currentTime;
                 setCurrentTime(time);
+
+                // Aggressively disable native text tracks
+                const tracks = videoRef.current.textTracks;
+                for (let i = 0; i < tracks.length; i++) {
+                  tracks[i].mode = "disabled";
+                }
+
                 // Find and update active subtitle based on time (only in listen mode)
                 if (mode === "listen" && subtitles.length > 0) {
                   let foundIndex = -1;
@@ -709,7 +779,16 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               onDurationChange={() => {
                 if (videoRef.current) setDuration(videoRef.current.duration);
               }}
-              onPlay={() => setIsPlaying(true)}
+              onPlay={() => {
+                setIsPlaying(true);
+                // Disable native text tracks on play
+                if (videoRef.current) {
+                  const tracks = videoRef.current.textTracks;
+                  for (let i = 0; i < tracks.length; i++) {
+                    tracks[i].mode = "disabled";
+                  }
+                }
+              }}
               onPause={() => setIsPlaying(false)}
               controls
               preload="metadata"
@@ -725,6 +804,50 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           ) : (
             <div className="flex items-center justify-center h-full text-slate-400 font-bold">
               Chưa có video URL hợp lệ
+            </div>
+          )}
+
+          {/* Custom Fullscreen Toggle Button */}
+          {videoUrl && (
+            <button
+              onClick={toggleFullscreen}
+              className="absolute top-4 right-4 z-30 p-2.5 rounded-xl bg-black/60 hover:bg-black/85 text-white/80 hover:text-white border border-white/10 hover:border-white/20 transition-all hover:scale-105 opacity-0 group-hover/video:opacity-100 focus:opacity-100 shadow-md backdrop-blur-sm pointer-events-auto"
+              title={isFullscreen ? "Thoát toàn màn hình" : "Xem toàn màn hình"}
+            >
+              {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+            </button>
+          )}
+
+          {/* Subtitle Overlay đè lên video */}
+          {showSubOnVideo && mode === "listen" && subtitles[currentIndex] && (
+            <div className="absolute bottom-10 left-0 right-0 pointer-events-none flex flex-col items-center justify-center px-4 text-center z-50 select-none">
+              <div className="bg-black/70 px-5 py-2.5 rounded-2xl max-w-[85%] border border-white/10 shadow-2xl backdrop-blur-sm">
+                <p 
+                  style={{ 
+                    fontSize: `${isFullscreen ? fontSize * 1.5 : fontSize + 2}px`,
+                    color: '#ef4444'
+                  }} 
+                  className="font-extrabold leading-normal drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
+                >
+                  {subtitles[currentIndex].text}
+                </p>
+                {showIpa && subtitles[currentIndex].ipa && (
+                  <p 
+                    style={{ fontSize: `${isFullscreen ? (fontSize - 1) * 1.5 : fontSize - 1}px` }} 
+                    className="text-indigo-300 font-mono font-semibold mt-0.5"
+                  >
+                    {subtitles[currentIndex].ipa}
+                  </p>
+                )}
+                {subtitles[currentIndex].vietnamese && (
+                  <p 
+                    style={{ fontSize: `${isFullscreen ? (fontSize - 1) * 1.5 : fontSize - 1}px` }} 
+                    className="text-slate-200 mt-1 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] font-medium"
+                  >
+                    {subtitles[currentIndex].vietnamese}
+                  </p>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -743,7 +866,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               {/* Mode switch */}
               <div className="flex bg-slate-200 p-0.5 rounded-lg border border-slate-250">
                 <button
-                  onClick={() => setMode("listen")}
+                  onClick={(e) => {
+                    setMode("listen");
+                    e.currentTarget.blur();
+                  }}
                   className={`px-2.5 py-1 rounded-md text-[10px] font-black transition-all flex items-center gap-1 ${
                     mode === "listen" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-800"
                   }`}
@@ -773,7 +899,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   <input
                     type="checkbox"
                     checked={showIpa}
-                    onChange={(e) => setShowIpa(e.target.checked)}
+                    onChange={(e) => {
+                      setShowIpa(e.target.checked);
+                      e.target.blur();
+                    }}
                     className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
                   />
                   <span>IPA</span>
@@ -782,10 +911,25 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   <input
                     type="checkbox"
                     checked={showNotes}
-                    onChange={(e) => setShowNotes(e.target.checked)}
+                    onChange={(e) => {
+                      setShowNotes(e.target.checked);
+                      e.target.blur();
+                    }}
                     className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
                   />
                   <span>Giải nghĩa</span>
+                </label>
+                <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2.5 normal-case">
+                  <input
+                    type="checkbox"
+                    checked={showSubOnVideo}
+                    onChange={(e) => {
+                      setShowSubOnVideo(e.target.checked);
+                      e.target.blur();
+                    }}
+                    className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
+                  />
+                  <span>Sub trên video</span>
                 </label>
               </div>
 
@@ -793,7 +937,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               <div className="flex items-center gap-1 border-l border-slate-200 pl-2.5">
                 <button
                   type="button"
-                  onClick={() => setFontSize(prev => Math.max(12, prev - 2))}
+                  onClick={(e) => {
+                    setFontSize(prev => Math.max(12, prev - 2));
+                    e.currentTarget.blur();
+                  }}
                   className="w-5.5 h-5.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[9px] flex items-center justify-center transition-all active:scale-95"
                   title="Giảm cỡ chữ"
                 >
@@ -801,7 +948,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 </button>
                 <button
                   type="button"
-                  onClick={() => setFontSize(prev => Math.min(24, prev + 2))}
+                  onClick={(e) => {
+                    setFontSize(prev => Math.min(24, prev + 2));
+                    e.currentTarget.blur();
+                  }}
                   className="w-5.5 h-5.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[9px] flex items-center justify-center transition-all active:scale-95"
                   title="Tăng cỡ chữ"
                 >
@@ -814,7 +964,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 <div className="flex items-center gap-1 border-l border-slate-200 pl-2.5">
                   <button
                     type="button"
-                    onClick={() => shiftAllSubtitles(-0.25)}
+                    onClick={(e) => {
+                      shiftAllSubtitles(-0.25);
+                      e.currentTarget.blur();
+                    }}
                     className="px-1.5 py-0.5 rounded bg-red-50 hover:bg-red-105 text-red-650 font-bold text-[9px] transition-all active:scale-95"
                     title="Toàn bộ sub xuất hiện sớm hơn 0.25s"
                   >
@@ -822,7 +975,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   </button>
                   <button
                     type="button"
-                    onClick={() => shiftAllSubtitles(0.25)}
+                    onClick={(e) => {
+                      shiftAllSubtitles(0.25);
+                      e.currentTarget.blur();
+                    }}
                     className="px-1.5 py-0.5 rounded bg-emerald-50 hover:bg-emerald-105 text-emerald-655 font-bold text-[9px] transition-all active:scale-95"
                     title="Toàn bộ sub xuất hiện muộn hơn 0.25s"
                   >
@@ -857,7 +1013,11 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
           {/* Conditional content */}
           {mode === "listen" ? (
-            <div ref={containerRef} className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin relative">
+            <div 
+              ref={containerRef} 
+              onClick={() => videoContainerRef.current?.focus()}
+              className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin relative"
+            >
               {subtitles.map((sub, idx) => {
                 const isActive = currentIndex === idx;
                 const isEditing = editingIndex === idx;
