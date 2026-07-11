@@ -551,7 +551,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         } else if (e.code === "KeyB") {
           e.preventDefault();
           playSubtitleRow(currentIndex);
-        } else if (e.key === " ") {
+        } else if (e.key === " " || e.code === "Backquote") {
           e.preventDefault();
           togglePlay();
         }
@@ -567,6 +567,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         } else if (e.code === "KeyB") {
           e.preventDefault();
           playSubtitleRow(currentIndex);
+        } else if (e.code === "Backquote" || e.code === "Space") {
+          e.preventDefault();
+          togglePlay();
         }
       }
     };
@@ -1003,8 +1006,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     <li>Nhấn phím <strong className="text-white">n</strong> để chuyển qua câu tiếp theo.</li>
                     <li>Nhấn phím <strong className="text-white">v</strong> để quay lại câu trước đó.</li>
                     <li>Nhấn phím <strong className="text-white">b</strong> để nghe lại câu hiện tại.</li>
-                    <li>Nhấn phím <strong className="text-white">Space</strong> để Tạm dừng/Phát video.</li>
-                    <li><em className="text-slate-400">Khi đang gõ chính tả:</em> nhấn giữ thêm phím <strong className="text-white">Alt</strong> (Alt + n, Alt + v, Alt + b).</li>
+                    <li>Nhấn phím <strong className="text-white">Space</strong> hoặc phím <strong className="text-white">`</strong> (dấu nháy đơn trên Tab) để Tạm dừng/Phát video.</li>
+                    <li><em className="text-slate-400">Khi đang gõ chính tả:</em> nhấn giữ thêm phím <strong className="text-white">Alt</strong> (Alt + n, Alt + v, Alt + b, Alt + Space / Alt + `).</li>
                   </ul>
                 </div>
               </div>
