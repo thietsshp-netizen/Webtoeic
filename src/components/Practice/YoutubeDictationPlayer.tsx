@@ -1034,17 +1034,18 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     }`}
                   >
                     {isEditing ? (
-                      <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="space-y-1">
+                      <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
+                        <div className="grid grid-cols-12 gap-x-3 gap-y-2">
+                          {/* Row 1: Start Time, End Time, IPA */}
+                          <div className="col-span-6 md:col-span-3 space-y-1">
                             <label className="text-[10px] font-bold text-slate-400 uppercase">Thời gian bắt đầu</label>
                             <div className="flex gap-1">
                               <input
                                 type="text"
                                 value={editFields.start}
                                 onChange={(e) => setEditFields({ ...editFields, start: e.target.value })}
-                                className="flex-1 p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-slate-700 min-w-0"
-                                placeholder="Ví dụ: 8:27.67 hoặc 507.67"
+                                className="flex-1 p-1.5 px-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-slate-700 min-w-0"
+                                placeholder="Ví dụ: 8:27.67"
                               />
                               <div className="flex flex-col gap-0.5 justify-center shrink-0">
                                 <button type="button" onClick={() => adjustEditTime('start', 0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-655" title="Tăng 0.25s">+</button>
@@ -1052,15 +1053,16 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                               </div>
                             </div>
                           </div>
-                          <div className="space-y-1">
+
+                          <div className="col-span-6 md:col-span-3 space-y-1">
                             <label className="text-[10px] font-bold text-slate-400 uppercase">Thời gian kết thúc</label>
                             <div className="flex gap-1">
                               <input
                                 type="text"
                                 value={editFields.end}
                                 onChange={(e) => setEditFields({ ...editFields, end: e.target.value })}
-                                className="flex-1 p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-slate-700 min-w-0"
-                                placeholder="Ví dụ: 8:30.80 hoặc 510.80"
+                                className="flex-1 p-1.5 px-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-slate-700 min-w-0"
+                                placeholder="Ví dụ: 8:30.80"
                               />
                               <div className="flex flex-col gap-0.5 justify-center shrink-0">
                                 <button type="button" onClick={() => adjustEditTime('end', 0.25)} className="px-1 py-0.5 text-[8px] font-bold bg-slate-100 hover:bg-slate-200 rounded text-slate-655" title="Tăng 0.25s">+</button>
@@ -1068,58 +1070,67 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                               </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 uppercase">Text tiếng Anh</label>
-                          <textarea
-                            value={editFields.text}
-                            onChange={(e) => setEditFields({ ...editFields, text: e.target.value })}
-                            rows={2}
-                            className="w-full p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-bold text-slate-800"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 uppercase">Phiên âm IPA</label>
-                          <input
-                            type="text"
-                            value={editFields.ipa}
-                            onChange={(e) => setEditFields({ ...editFields, ipa: e.target.value })}
-                            className="w-full p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-indigo-600"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 uppercase">Dịch tiếng Việt</label>
-                          <textarea
-                            value={editFields.vietnamese}
-                            onChange={(e) => setEditFields({ ...editFields, vietnamese: e.target.value })}
-                            rows={2}
-                            className="w-full p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs text-slate-600"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 uppercase">Giải thích từ vựng (Ghi chú)</label>
-                          <textarea
-                            value={editFields.note}
-                            onChange={(e) => setEditFields({ ...editFields, note: e.target.value })}
-                            rows={2}
-                            className="w-full p-2 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs text-amber-700 font-medium"
-                            placeholder="Ví dụ: * 'phrase': giải thích"
-                          />
-                        </div>
-                        <div className="flex justify-end gap-2 pt-1 border-t">
-                          <button
-                            onClick={() => setEditingIndex(null)}
-                            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-650 rounded-lg text-[10px] font-bold"
-                          >
-                            Hủy
-                          </button>
-                          <button
-                            onClick={() => saveLiveEdit(idx)}
-                            disabled={isSavingEdit}
-                            className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-[10px] font-bold flex items-center gap-1"
-                          >
-                            {isSavingEdit ? "Lưu..." : <><Check size={10} /> Lưu</>}
-                          </button>
+
+                          <div className="col-span-12 md:col-span-6 space-y-1">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase">Phiên âm IPA</label>
+                            <input
+                              type="text"
+                              value={editFields.ipa}
+                              onChange={(e) => setEditFields({ ...editFields, ipa: e.target.value })}
+                              className="w-full p-1.5 px-2.5 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-mono font-bold text-indigo-600"
+                            />
+                          </div>
+
+                          {/* Row 2: English Text, Vietnamese Text */}
+                          <div className="col-span-12 md:col-span-6 space-y-1">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase">Text tiếng Anh</label>
+                            <textarea
+                              value={editFields.text}
+                              onChange={(e) => setEditFields({ ...editFields, text: e.target.value })}
+                              rows={1.5}
+                              className="w-full p-1.5 px-2.5 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs font-bold text-slate-800 resize-y min-h-[38px]"
+                            />
+                          </div>
+
+                          <div className="col-span-12 md:col-span-6 space-y-1">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase">Dịch tiếng Việt</label>
+                            <textarea
+                              value={editFields.vietnamese}
+                              onChange={(e) => setEditFields({ ...editFields, vietnamese: e.target.value })}
+                              rows={1.5}
+                              className="w-full p-1.5 px-2.5 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs text-slate-600 resize-y min-h-[38px]"
+                            />
+                          </div>
+
+                          {/* Row 3: Vocabulary Notes, Actions */}
+                          <div className="col-span-12 md:col-span-9 space-y-1">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase">Giải thích từ vựng (Ghi chú)</label>
+                            <textarea
+                              value={editFields.note}
+                              onChange={(e) => setEditFields({ ...editFields, note: e.target.value })}
+                              rows={1.5}
+                              className="w-full p-1.5 px-2.5 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs text-amber-700 font-medium resize-y min-h-[38px]"
+                              placeholder="Ví dụ: * 'phrase': giải thích"
+                            />
+                          </div>
+
+                          <div className="col-span-12 md:col-span-3 flex items-end justify-end gap-2 pb-1.5">
+                            <button
+                              type="button"
+                              onClick={() => setEditingIndex(null)}
+                              className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-655 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer"
+                            >
+                              Hủy
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => saveLiveEdit(idx)}
+                              disabled={isSavingEdit}
+                              className="px-3.5 py-2 bg-indigo-650 hover:bg-indigo-755 text-white rounded-xl text-xs font-bold flex items-center gap-1 transition-all active:scale-95 disabled:opacity-50 cursor-pointer shadow-md shadow-indigo-100"
+                            >
+                              {isSavingEdit ? "Lưu..." : <><Check size={12} /> Lưu</>}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ) : (
