@@ -1118,7 +1118,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                             <button
                               type="button"
                               onClick={() => setEditingIndex(null)}
-                              className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-655 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer"
+                              className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer"
                             >
                               Hủy
                             </button>
@@ -1126,7 +1126,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                               type="button"
                               onClick={() => saveLiveEdit(idx)}
                               disabled={isSavingEdit}
-                              className="px-3.5 py-2 bg-indigo-650 hover:bg-indigo-755 text-white rounded-xl text-xs font-bold flex items-center gap-1 transition-all active:scale-95 disabled:opacity-50 cursor-pointer shadow-md shadow-indigo-100"
+                              className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1 transition-all active:scale-95 disabled:opacity-50 cursor-pointer shadow-md shadow-indigo-100"
                             >
                               {isSavingEdit ? "Lưu..." : <><Check size={12} /> Lưu</>}
                             </button>
