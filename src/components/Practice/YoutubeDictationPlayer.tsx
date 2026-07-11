@@ -861,8 +861,27 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[500px]">
           {/* Shared Header (Mode Switcher, Checkboxes, Font Controls, Tooltip) */}
           <div className="p-3 bg-slate-50 border-b text-xs font-black text-slate-400 tracking-wider uppercase shrink-0 flex flex-wrap items-center justify-between gap-3 select-none">
-            <div className="flex items-center gap-2">
-              <span>{mode === "listen" ? "Phụ đề" : "Chính tả"} ({subtitles.length} câu)</span>
+            <div className="flex items-center gap-1.5 normal-case">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Tốc độ:</span>
+              <div className="flex bg-slate-200 p-0.5 rounded-lg border border-slate-250">
+                {[0.5, 0.7, 1, 1.2].map((speed) => (
+                  <button
+                    key={speed}
+                    type="button"
+                    onClick={(e) => {
+                      handleSpeedChange(speed);
+                      e.currentTarget.blur();
+                    }}
+                    className={`px-2 py-0.5 rounded text-[10px] font-black transition-all ${
+                      playbackRate === speed
+                        ? "bg-white text-indigo-600 shadow-sm"
+                        : "text-slate-500 hover:text-slate-800"
+                    }`}
+                  >
+                    {speed}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
@@ -1006,8 +1025,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     <li>Nhấn phím <strong className="text-white">n</strong> để chuyển qua câu tiếp theo.</li>
                     <li>Nhấn phím <strong className="text-white">v</strong> để quay lại câu trước đó.</li>
                     <li>Nhấn phím <strong className="text-white">b</strong> để nghe lại câu hiện tại.</li>
-                    <li>Nhấn phím <strong className="text-white">Space</strong> hoặc phím <strong className="text-white">`</strong> (dấu nháy đơn trên Tab) để Tạm dừng/Phát video.</li>
-                    <li><em className="text-slate-400">Khi đang gõ chính tả:</em> nhấn giữ thêm phím <strong className="text-white">Alt</strong> (Alt + n, Alt + v, Alt + b, Alt + Space / Alt + `).</li>
+                    <li>Nhấn phím <strong className="text-white">Space</strong> hoặc phím <strong className="text-white">~</strong> (nút nằm giữa Esc và Tab) để Tạm dừng/Phát video.</li>
+                    <li><em className="text-slate-400">Khi đang gõ chính tả:</em> nhấn giữ thêm phím <strong className="text-white">Alt</strong> (Alt + n, Alt + v, Alt + b, Alt + Space / Alt + ~).</li>
                   </ul>
                 </div>
               </div>
