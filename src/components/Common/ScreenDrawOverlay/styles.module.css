@@ -799,7 +799,7 @@
   pointer-events: none;
   will-change: transform;
   overflow: visible;
-  z-index: 99;
+  z-index: 99999999;
 }
 
 
