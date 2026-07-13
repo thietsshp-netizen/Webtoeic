@@ -20,8 +20,6 @@ export async function getBrowserFingerprint(): Promise<string> {
     screen: `${window.screen.width}x${window.screen.height}x${window.screen.colorDepth}`,
     cpu: navigator.hardwareConcurrency || "unknown",
     memory: (navigator as any).deviceMemory || "unknown",
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    language: navigator.language,
   };
 
   // Canvas Fingerprinting
