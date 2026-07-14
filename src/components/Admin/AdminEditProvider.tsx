@@ -34,21 +34,13 @@ export function AdminEditProvider({ children }: { children: React.ReactNode }) {
       {/* Floating Admin Toggle Button */}
       {canEdit && (
         <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end gap-3 pointer-events-none">
-          <div className={`transition-all duration-300 transform ${isAdminMode ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'}`}>
-             <div className="bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-2xl mb-2 flex items-center gap-2 border border-white/10">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Live Editing Active
-             </div>
-          </div>
-          
           <button
             onClick={() => setIsAdminMode(!isAdminMode)}
-            className={`pointer-events-auto w-14 h-14 rounded-2xl shadow-2xl flex items-center justify-center transition-all duration-500 transform hover:scale-110 active:scale-95 ${
+            className={`group pointer-events-auto w-14 h-14 rounded-2xl shadow-2xl flex items-center justify-center transition-all duration-500 transform hover:scale-110 active:scale-95 ${
               isAdminMode 
                 ? "bg-indigo-600 text-white ring-4 ring-indigo-100" 
                 : "bg-white text-slate-400 border border-slate-100 hover:text-indigo-600"
             }`}
-            title={isAdminMode ? "Tắt chế độ chỉnh sửa" : "Bật chế độ chỉnh sửa"}
           >
             {isAdminMode ? <Eye size={24} /> : <Edit3 size={24} />}
             
@@ -57,6 +49,12 @@ export function AdminEditProvider({ children }: { children: React.ReactNode }) {
                isAdminMode ? "bg-emerald-500" : "bg-slate-200"
             }`}>
                {isAdminMode ? <Edit3 size={10} className="text-white" /> : <Lock size={10} className="text-slate-400" />}
+            </div>
+
+            {/* Custom Premium Tooltip */}
+            <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 border border-white/10 translate-x-2 group-hover:translate-x-0 flex items-center gap-2">
+              {isAdminMode && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
+              <span>{isAdminMode ? "Live Editing Active" : "Bật chế độ chỉnh sửa"}</span>
             </div>
           </button>
         </div>
