@@ -6,7 +6,7 @@ import GrammarHandbook from "@/components/Player/GrammarHandbook";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { ChevronLeft, Share2, HelpCircle, ChevronRight, Menu, Pencil } from "lucide-react";
+import { ChevronLeft, Share2, HelpCircle, ChevronRight, Menu, Pencil, X } from "lucide-react";
 import { AdminEditProvider } from "@/components/Admin/AdminEditProvider";
 import { ScreenDrawOverlay } from "@/components/Common/ScreenDrawOverlay";
 
@@ -103,7 +103,7 @@ export default function LearnLayout({
     <AdminEditProvider>
       <div className="flex flex-col h-screen bg-white overflow-hidden">
         {/* Top Navbar Học tập */}
-        <header className="h-14 border-b flex items-center justify-between px-6 bg-slate-900 text-white flex-shrink-0 z-50">
+        <header className="h-14 border-b flex items-center justify-between px-6 bg-slate-900 text-white flex-shrink-0 z-[999999999]">
           <div className="flex items-center gap-4">
             {/* Nút Quay lại Dashboard */}
             <Link
@@ -130,15 +130,15 @@ export default function LearnLayout({
                   setIsDrawingActive(nextActive);
                   window.dispatchEvent(new CustomEvent("webtoeic-toggle-global-draw", { detail: { active: nextActive } }));
                 }}
-                style={{ zIndex: 99999, position: "relative" }}
-                className={`p-2 rounded-full transition-all flex items-center justify-center border ${
+                style={{ zIndex: 999999999, position: "relative" }}
+                className={`cursor-pointer w-[38px] h-[38px] rounded-full transition-all flex items-center justify-center border ${
                   isDrawingActive 
-                    ? "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20 scale-105" 
+                    ? "bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/20 scale-105" 
                     : "text-slate-300 border-white/20 hover:text-white hover:bg-white/10"
                 }`}
-                title="Bật/Tắt công cụ vẽ viết lên màn hình (Ctrl+Shift+B)"
+                title={isDrawingActive ? "Tắt công cụ vẽ viết lên màn hình (Ctrl+Shift+B)" : "Bật công cụ vẽ viết lên màn hình (Ctrl+Shift+B)"}
               >
-                <Pencil size={15} />
+                {isDrawingActive ? <X size={18} /> : <Pencil size={18} />}
               </button>
             )}
 

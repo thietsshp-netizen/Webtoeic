@@ -37,7 +37,7 @@ export const GlobalScreenDraw: React.FC = () => {
 
   // Nếu đang ở trang học tập ([courseId]/lesson), chúng ta đã có nút bút chì tích hợp trên thanh header rồi
   // Do đó, ta sẽ ẩn nút nổi ở trang học tập này để tránh bị trùng lặp 2 nút bút chì gây rối mắt
-  const isLearnPage = pathname?.includes("/learn/") && pathname?.includes("/lesson/");
+  const isLearnPage = pathname?.includes("/learn/");
 
   return (
     <>

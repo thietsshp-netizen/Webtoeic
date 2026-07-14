@@ -4,10 +4,13 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { CalendarCheck, X, Play, Users, Shuffle, RotateCcw, GripVertical, Calendar, Loader2, Minimize2, Maximize2, Mic, MicOff } from "lucide-react";
 import { clsx } from "clsx";
+import { usePathname } from "next/navigation";
 
 export const GlobalClassCalling: React.FC = () => {
   const { data: session } = useSession();
   const isAdmin = (session?.user as any)?.role === "ADMIN";
+  const pathname = usePathname();
+  const isLearnPage = pathname?.startsWith("/learn/");
 
   // States
   const [isOpen, setIsOpen] = useState(false);
@@ -505,8 +508,8 @@ export const GlobalClassCalling: React.FC = () => {
         }}
         style={{
           position: "fixed",
-          top: "14px",
-          right: "62px",
+          top: isLearnPage ? "9px" : "14px",
+          right: isLearnPage ? "216px" : "62px",
           zIndex: 999999999,
           display: "flex",
           alignItems: "center",
