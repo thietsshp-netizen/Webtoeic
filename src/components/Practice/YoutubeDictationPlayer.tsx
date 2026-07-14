@@ -113,6 +113,13 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const lastSeekTimeRef = useRef<number>(0);
   const hasRestoredRef = useRef<boolean>(false);
 
+  // Refs for keydown hotkeys
+  const editingIndexRef = useRef<number | null>(null);
+  editingIndexRef.current = editingIndex;
+  const isSavingEditRef = useRef<boolean>(false);
+  isSavingEditRef.current = isSavingEdit;
+  const saveLiveEditRef = useRef<((idx: number) => Promise<void>) | null>(null);
+
   // --- Detect video type ---
   const isDirectVideo = !!(videoUrl && !videoUrl.includes("youtube.com") && !videoUrl.includes("youtu.be"));
 
@@ -533,6 +540,15 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   // Hotkeys handling
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Save subtitle shortcut: Cmd+S / Ctrl+S
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        if (editingIndexRef.current !== null && !isSavingEditRef.current) {
+          e.preventDefault();
+          saveLiveEditRef.current?.(editingIndexRef.current);
+          return;
+        }
+      }
+
       const activeEl = document.activeElement as HTMLElement | null;
       const isTyping = 
         (activeEl?.tagName === "INPUT" && 
@@ -645,6 +661,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       setIsSavingEdit(false);
     }
   };
+
+  saveLiveEditRef.current = saveLiveEdit;
 
   const adjustEditTime = (field: 'start' | 'end', offset: number) => {
     const currentVal = parseTimeToSeconds(editFields[field]);
