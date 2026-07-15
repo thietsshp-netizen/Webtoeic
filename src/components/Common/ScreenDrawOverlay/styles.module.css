@@ -6,7 +6,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 99999998; /* Đặt canvas vẽ nháp trên cùng tất cả các popup, modal, video, v.v. */
+  z-index: 1000000000; /* Đặt canvas vẽ nháp trên cùng tất cả các popup, modal, video, v.v. (trên cả header) */
   display: block;
   user-select: none;
   -webkit-user-select: none;
@@ -16,7 +16,7 @@
 /* Kính mờ Glassmorphism cho Toolbar */
 .toolbar {
   position: fixed;
-  z-index: 99999999; /* Thanh điều khiển công cụ vẽ trên cả canvas */
+  z-index: 1000000002; /* Thanh điều khiển công cụ vẽ trên cả canvas */
   display: flex;
   align-items: center;
   gap: 6px;
@@ -176,7 +176,7 @@
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  z-index: 20005;
+  z-index: 1000000008;
 }
 
 .btn[data-tooltip]:hover::before,
@@ -188,7 +188,7 @@
 /* CSS cho Textarea tạm thời khi gõ text */
 .richTextInput {
   position: fixed;
-  z-index: 99999999;
+  z-index: 1000000003;
   background: transparent !important;
   border: 1px dashed rgba(59, 130, 246, 0.6) !important;
   outline: none !important;
@@ -218,7 +218,7 @@
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 9997;
+  z-index: 1000000000;
   background: radial-gradient(ellipse at center, rgba(99,217,124,0.20) 0%, transparent 68%);
   animation: shapeFlashOverlay 0.55s ease-out forwards;
 }
@@ -228,7 +228,7 @@
   bottom: 22px;
   left: 50%;
   transform: translateX(-50%) scale(1);
-  z-index: 10001;
+  z-index: 1000000005;
   width: 9px;
   height: 9px;
   border-radius: 50%;
@@ -258,7 +258,7 @@
   flex-direction: column;
   gap: 2px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  z-index: 20002;
+  z-index: 1000000006;
   min-width: 150px;
 }
 
@@ -297,7 +297,7 @@
   border-radius: 12px;
   padding: 10px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05);
-  z-index: 20003;
+  z-index: 1000000007;
   animation: paletteFadeIn 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -347,7 +347,7 @@
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.85);
-  z-index: 999999999; /* Đặt lớp phủ modal cao nhất trên cả canvas (99999998) và toolbar (99999999) */
+  z-index: 1000000010; /* Đặt lớp phủ modal cao nhất trên cả canvas và toolbar */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -799,7 +799,7 @@
   pointer-events: none;
   will-change: transform;
   overflow: visible;
-  z-index: 99999999;
+  z-index: 1000000001;
 }
 
 

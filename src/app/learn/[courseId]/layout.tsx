@@ -130,7 +130,7 @@ export default function LearnLayout({
                   setIsDrawingActive(nextActive);
                   window.dispatchEvent(new CustomEvent("webtoeic-toggle-global-draw", { detail: { active: nextActive } }));
                 }}
-                style={{ zIndex: 999999999, position: "relative" }}
+                style={{ zIndex: 1000000010, position: "relative" }}
                 className={`cursor-pointer w-[38px] h-[38px] rounded-full transition-all flex items-center justify-center border ${
                   isDrawingActive 
                     ? "bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/20 scale-105" 
