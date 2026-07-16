@@ -31,8 +31,10 @@ declare global {
 
 const renderFormattedNote = (noteText: string, fontSize: number) => {
   if (!noteText) return null;
+  
+  // Split by *, newlines, or numbered list indicators (e.g., "2. ", "3. ")
   const parts = noteText
-    .split(/(?:\*|\r?\n)/)
+    .split(/(?:\*|\r?\n|\s*\d+\.\s+)/)
     .map((p) => p.trim())
     .filter(Boolean);
 
@@ -42,6 +44,71 @@ const renderFormattedNote = (noteText: string, fontSize: number) => {
       className="mt-1 leading-relaxed text-slate-600"
     >
       {parts.map((part, pIdx) => {
+        // Case 1: Category: 'Phrase' (meaning) or Category: 'Phrase' meaning
+        // Example: "Collocation: 'stuffed animals' (thú nhồi bông)"
+        // Transforms to: "stuffed animals (collocation): thú nhồi bông"
+        const categoryQuotedRegex = /^([A-Za-z0-9\/\s\-]+)\s*:\s*['"](.*?)['"](?=\s*(?::|\(|\s+nghĩa\s+là|\s+là|$))\s*(.*)$/;
+        const catMatch = part.match(categoryQuotedRegex);
+        
+        if (catMatch) {
+          const category = catMatch[1].trim();
+          const phrase = catMatch[2].trim();
+          const rest = catMatch[3].trim();
+          
+          // Clean up surrounding parentheses from the translation if present (e.g. "(thú nhồi bông)" -> "thú nhồi bông")
+          let cleanRest = rest;
+          if (cleanRest.startsWith("(") && cleanRest.endsWith(")")) {
+            cleanRest = cleanRest.substring(1, cleanRest.length - 1).trim();
+          }
+          // Strip trailing period if present
+          if (cleanRest.endsWith(".")) {
+            cleanRest = cleanRest.substring(0, cleanRest.length - 1).trim();
+          }
+          
+          return (
+            <span key={pIdx} className="inline mr-3.5">
+              <span className="font-extrabold text-slate-400 mr-1 select-none">
+                {pIdx + 1}.
+              </span>
+              <span className="font-extrabold text-purple-600 mr-1">
+                {phrase}
+              </span>
+              <span className="text-slate-400 font-medium text-[11px] italic mr-1">
+                ({category.toLowerCase()})
+              </span>
+              <span className="text-slate-400 font-bold mr-1.5">:</span>
+              <span className="text-amber-700 font-medium">
+                {cleanRest}
+              </span>
+            </span>
+          );
+        }
+
+        // Case 2: 'Phrase': meaning
+        // Example: "'check out': xem thử"
+        const quotedRegex = /^['"](.*?)['"](?=\s*(?::|\(|\s+nghĩa\s+là|\s+là|$))\s*:\s*(.*)$/;
+        const quotedMatch = part.match(quotedRegex);
+        if (quotedMatch) {
+          const phrase = quotedMatch[1].trim();
+          const meaning = quotedMatch[2].trim();
+          
+          return (
+            <span key={pIdx} className="inline mr-3.5">
+              <span className="font-extrabold text-slate-400 mr-1 select-none">
+                {pIdx + 1}.
+              </span>
+              <span className="font-extrabold text-purple-600 mr-1">
+                {phrase}
+              </span>
+              <span className="text-slate-400 font-bold mr-1">:</span>
+              <span className="text-amber-700 font-medium">
+                {meaning}
+              </span>
+            </span>
+          );
+        }
+
+        // Case 3: Standard term: definition fallback
         const colonIndex = part.indexOf(":");
         if (colonIndex === -1) {
           return (
@@ -60,7 +127,7 @@ const renderFormattedNote = (noteText: string, fontSize: number) => {
             <span className="font-extrabold text-slate-400 mr-1 select-none">
               {pIdx + 1}.
             </span>
-            <span className="font-extrabold text-indigo-600 mr-1">
+            <span className="font-extrabold text-purple-600 mr-1">
               {cleanTerm}
             </span>
             <span className="text-slate-400 font-bold mr-1">:</span>
