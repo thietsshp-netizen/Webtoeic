@@ -1377,9 +1377,21 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (ev.shiftKey && ev.key !== 'Shift') parts.push('shift');
       if (ev.altKey) parts.push('alt');
 
-      const k = ev.key.toLowerCase();
+      let k = ev.key.toLowerCase();
+      // IME Telex/VNI fallback using physical code
+      if (k === 'process' && ev.code) {
+        const code = ev.code;
+        if (code.startsWith('Key')) {
+          k = code.substring(3).toLowerCase();
+        } else if (code.startsWith('Digit')) {
+          k = code.substring(5);
+        } else if (code === 'Space') {
+          k = 'space';
+        }
+      }
+
       if (k !== 'control' && k !== 'meta' && k !== 'shift' && k !== 'alt') {
-        if (ev.code === 'Space') parts.push('space');
+        if (ev.code === 'Space' || k === 'space') parts.push('space');
         else parts.push(k);
       }
       return parts.join('+');
@@ -2630,7 +2642,19 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   // Phím tắt bàn phím thông minh (IME-proof) - BIND DUY NHẤT 1 LẦN để đạt độ nhạy phản hồi 100%
   useEffect(() => {
     const getEventHotkeyString = (ev: KeyboardEvent): string => {
-      const k = ev.key.toLowerCase();
+      let k = ev.key.toLowerCase();
+      // IME Telex/VNI fallback using physical code
+      if (k === 'process' && ev.code) {
+        const code = ev.code;
+        if (code.startsWith('Key')) {
+          k = code.substring(3).toLowerCase();
+        } else if (code.startsWith('Digit')) {
+          k = code.substring(5);
+        } else if (code === 'Space') {
+          k = 'space';
+        }
+      }
+
       // Nếu chỉ nhấn phím bổ trợ đơn độc, không được xem là tổ hợp phím tắt
       if (k === 'control' || k === 'meta' || k === 'shift' || k === 'alt') {
         return '';
@@ -2641,7 +2665,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (ev.shiftKey) parts.push('shift');
       if (ev.altKey) parts.push('alt');
 
-      if (ev.code === 'Space') parts.push('space');
+      if (ev.code === 'Space' || k === 'space') parts.push('space');
       else parts.push(k);
 
       return parts.join('+');
