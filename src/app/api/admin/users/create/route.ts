@@ -147,6 +147,10 @@ export async function POST(req: Request) {
             <table width="100%" cellpadding="0" cellspacing="0" style="background:#eff6ff;border-left:4px solid #1e40af;border-radius:0 8px 8px 0;margin-bottom:28px;">
               <tr>
                 <td style="padding:16px 20px;">
+                  <p style="color:#e11d48;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;">⚠️ Lưu ý quan trọng</p>
+                  <p style="color:#475569;font-size:13px;line-height:1.6;margin:0 0 16px;">
+                    <strong>Mỗi tài khoản chỉ được đăng nhập trên 1 máy tính (hoặc laptop).</strong> Nên bạn nhớ chọn thiết bị mình thường sử dụng để đăng nhập nhé.
+                  </p>
                   <p style="color:#1e40af;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;">💡 Mẹo hay</p>
                   <p style="color:#475569;font-size:13px;line-height:1.6;margin:0;">
                     Sau khi đăng nhập, bạn có thể <strong>đổi mật khẩu và tên hiển thị</strong> theo ý muốn bằng cách:<br/>
