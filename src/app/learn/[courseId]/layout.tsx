@@ -53,13 +53,14 @@ export default function LearnLayout({
     return () => window.removeEventListener("webtoeic-toggle-global-draw-state", handleGlobalDrawState);
   }, []);
 
-  // Tự động ẩn sidebar khi màn hình nhỏ (< 1280px)
+  // Tự động ẩn sidebar khi màn hình nhỏ (< 1280px) và ghi nhớ lựa chọn ẩn của học viên
   useEffect(() => {
     const handleResize = () => {
+      const isCollapsed = localStorage.getItem("toeic-sidebar-collapsed") === "true";
       if (window.innerWidth < 1280) {
         setSidebarOpen(false);
       } else {
-        setSidebarOpen(true);
+        setSidebarOpen(!isCollapsed);
       }
     };
     
@@ -196,7 +197,11 @@ export default function LearnLayout({
 
           {/* Nút Toggle Sidebar (Floating at the edge) - Standardized White & Middle */}
           <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={() => {
+              const nextState = !sidebarOpen;
+              setSidebarOpen(nextState);
+              localStorage.setItem("toeic-sidebar-collapsed", String(!nextState));
+            }}
             className={`absolute top-1/2 -translate-y-1/2 z-[60] w-6 h-14 bg-white border border-slate-200 shadow-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-slate-50 transition-all duration-500 rounded-r-xl ${
               sidebarOpen ? "left-[280px] sm:left-[340px] -ml-px" : "left-0 sm:left-14"
             }`}
