@@ -117,6 +117,46 @@ export async function PUT(req: Request) {
         });
         syncLogs.push(`✅ [Bảng: ToeicQuestionGroup] [Cột: metadata.hotspots] Đã cập nhật ${newHotspots.length} hotspots.`);
         totalUpdates++;
+      } else if (field === "metadata.timestamps") {
+        let currentMetadata: any = {};
+        if (group.metadata) {
+          if (typeof group.metadata === 'string') {
+            try {
+              currentMetadata = JSON.parse(group.metadata);
+            } catch (e) {
+              console.error("Lỗi parse metadata string:", e);
+            }
+          } else if (typeof group.metadata === 'object') {
+            currentMetadata = JSON.parse(JSON.stringify(group.metadata));
+          }
+        }
+
+        const rawVal = String(value).trim();
+        const match = rawVal.match(/^([\d\.]+)\s*-\s*([\d\.]+)$/);
+        if (!match) {
+          return NextResponse.json({ success: false, error: "Định dạng timestamp không hợp lệ. Vui lòng nhập dạng 'start - end', ví dụ: '2.5 - 4.1'" }, { status: 400 });
+        }
+        const start = parseFloat(match[1]);
+        const end = parseFloat(match[2]);
+
+        if (isNaN(start) || isNaN(end) || start < 0 || end <= start) {
+          return NextResponse.json({ success: false, error: "Thời gian không hợp lệ. start phải >= 0 và end phải > start." }, { status: 400 });
+        }
+
+        if (!currentMetadata.timestamps) {
+          currentMetadata.timestamps = {};
+        }
+
+        const timestampKey = sid || "question";
+        currentMetadata.timestamps[timestampKey] = { start, end };
+
+        await prisma.toeicQuestionGroup.update({
+          where: { id },
+          data: { metadata: currentMetadata }
+        });
+
+        syncLogs.push(`✅ [Bảng: ToeicQuestionGroup] [Cột: metadata.timestamps.${timestampKey}] Đã cập nhật: ${start} - ${end}`);
+        totalUpdates++;
       }
     } 
     // 2. TARGET QUESTION

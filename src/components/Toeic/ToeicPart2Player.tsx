@@ -399,19 +399,51 @@ export default function ToeicPart2Player({
     });
   })();
 
-  const data = useMemo(() => {
+  const [data, setData] = useState<any[]>(() => {
     if (!rawData || !Array.isArray(rawData)) return [];
     return [...rawData].sort((a, b) => {
       const aNo = a.questions?.[0]?.questionNo || 999;
       const bNo = b.questions?.[0]?.questionNo || 999;
       return aNo - bNo;
     });
+  });
+
+  useEffect(() => {
+    if (rawData && Array.isArray(rawData)) {
+      setData([...rawData].sort((a, b) => {
+        const aNo = a.questions?.[0]?.questionNo || 999;
+        const bNo = b.questions?.[0]?.questionNo || 999;
+        return aNo - bNo;
+      }));
+    } else {
+      setData([]);
+    }
   }, [rawData]);
+
+  const handleUpdateLocalTimestamp = (groupId: string, key: string, start: number, end: number) => {
+    setData(prev => prev.map(g => {
+      if (g.id !== groupId) return g;
+      const existingMetadata = g.metadata
+        ? (typeof g.metadata === 'string' ? JSON.parse(g.metadata) : JSON.parse(JSON.stringify(g.metadata)))
+        : {};
+      const updatedMetadata = {
+        ...existingMetadata,
+        timestamps: {
+          ...(existingMetadata.timestamps || {}),
+          [key]: { start, end }
+        }
+      };
+      return {
+        ...g,
+        metadata: updatedMetadata
+      };
+    }));
+  };
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
 
-  const { isAdminMode } = useAdminEdit();
+  const { isAdminMode, canEdit } = useAdminEdit();
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-slate-400 gap-3">
@@ -605,6 +637,42 @@ export default function ToeicPart2Player({
   }
 
   const basePath = (questionData.metadata as any)?.vietnamese ? "metadata.vietnamese" : "explanation";
+
+  const renderTimestamp = (key: string) => {
+    if (!canEdit) return null;
+    const ts = (currentGroup?.metadata as any)?.timestamps?.[key];
+    
+    if (isAdminMode) {
+      return (
+        <AdminInlineEditor
+          target="group"
+          id={currentGroup?.id}
+          field="metadata.timestamps"
+          sid={key}
+          value={ts ? `${ts.start} - ${ts.end}` : "0.0 - 0.0"}
+          onSaveSuccess={(newVal) => {
+            const match = newVal.trim().match(/^([\d\.]+)\s*-\s*([\d\.]+)$/);
+            if (match) {
+              const start = parseFloat(match[1]);
+              const end = parseFloat(match[2]);
+              handleUpdateLocalTimestamp(currentGroup.id, key, start, end);
+            }
+          }}
+        >
+          <span className="inline-flex items-center ml-2 text-[11px] font-mono bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded border border-indigo-100 cursor-pointer hover:bg-indigo-100 transition-colors" title="Click to edit timestamp (format: start - end)">
+            [{ts ? `${ts.start.toFixed(2)}s - ${ts.end.toFixed(2)}s` : "no ts"}]
+          </span>
+        </AdminInlineEditor>
+      );
+    }
+
+    if (!ts) return null;
+    return (
+      <span className="inline-flex items-center ml-2 text-[11px] font-mono bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded border border-slate-200">
+        [{ts.start.toFixed(2)}s - {ts.end.toFixed(2)}s]
+      </span>
+    );
+  };
 
   const engParts = parseOptionsFromText(currentGroup?.transcript || "");
   const vieParts = parseOptionsFromText(explanationObj.vietText || "");
@@ -941,7 +1009,7 @@ export default function ToeicPart2Player({
 
   }, [currentGroup?.audioUrl]);
 
-  const playSegment = (label: string) => {
+  const playSegment = React.useCallback((label: string) => {
     const timestamps = (currentGroup?.metadata as any)?.timestamps;
     if (!wavesurfer.current || !timestamps?.[label]) return;
 
@@ -960,7 +1028,12 @@ export default function ToeicPart2Player({
       ws.play().catch(() => ws.play());
       setPlayingSegmentLabel(label);
     }, 50);
-  };
+  }, [currentGroup]);
+
+  const latestPlaySegmentRef = useRef(playSegment);
+  useEffect(() => {
+    latestPlaySegmentRef.current = playSegment;
+  }, [playSegment]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -1009,7 +1082,7 @@ export default function ToeicPart2Player({
       } else if (['1', '2', '3', '4'].includes(e.key)) {
         e.preventDefault();
         const labels = ['question', 'A', 'B', 'C'];
-        playSegment(labels[parseInt(e.key) - 1]);
+        latestPlaySegmentRef.current(labels[parseInt(e.key) - 1]);
         return;
       }
 
@@ -1173,7 +1246,10 @@ export default function ToeicPart2Player({
                     </div>
                     <div className="flex-1 text-lg font-bold text-slate-800 leading-relaxed min-h-[40px]">
                       {mode === 'dictation' ? (
-                        <DictationSentence targetText={richData?.question?.en || engParts.find(p => p.label === '?')?.text || questionData.questionText || ""} />
+                        <div className="flex items-center gap-2 flex-wrap min-h-[40px]">
+                          <DictationSentence targetText={richData?.question?.en || engParts.find(p => p.label === '?')?.text || questionData.questionText || ""} />
+                          {renderTimestamp('question')}
+                        </div>
                       ) : (revealMode || isHintMode) ? (
                         <div className="space-y-2">
                           <div className="font-bold text-slate-900 text-[17px]">
@@ -1199,23 +1275,26 @@ export default function ToeicPart2Player({
                               }
 
                               return (
-                                <AdminInlineEditor
-                                  target={target as "question" | "group"}
-                                  id={id}
-                                  field={field}
-                                  sid={sid}
-                                  value={displayValue}
-                                  multiline
-                                >
-                                  <FormattedText
-                                    text={displayValue}
-                                    revealed={revealMode}
-                                    currentIndex={currentIndex}
-                                    hintMode={isHintMode}
-                                    wordsToMask={hintMasksMap['Q']}
-                                    startHintIndex={1}
-                                  />
-                                </AdminInlineEditor>
+                                <div className="inline-flex items-center gap-2 flex-wrap">
+                                  <AdminInlineEditor
+                                    target={target as "question" | "group"}
+                                    id={id}
+                                    field={field}
+                                    sid={sid}
+                                    value={displayValue}
+                                    multiline
+                                  >
+                                    <FormattedText
+                                      text={displayValue}
+                                      revealed={revealMode}
+                                      currentIndex={currentIndex}
+                                      hintMode={isHintMode}
+                                      wordsToMask={hintMasksMap['Q']}
+                                      startHintIndex={1}
+                                    />
+                                  </AdminInlineEditor>
+                                  {renderTimestamp('question')}
+                                </div>
                               );
                             })()}
                           </div>
@@ -1319,9 +1398,14 @@ export default function ToeicPart2Player({
                                   )}
                                 </div>
                                 <div className="flex-1">
-                                  {mode === 'dictation' ? (<DictationSentence targetText={targetEngText} />) : (revealMode || isHintMode) ? (
+                                  {mode === 'dictation' ? (
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <DictationSentence targetText={targetEngText} />
+                                      {renderTimestamp(opt)}
+                                    </div>
+                                  ) : (revealMode || isHintMode) ? (
                                     <div className="space-y-1.5">
-                                      <div className="font-semibold text-slate-800">
+                                      <div className="font-semibold text-slate-800 flex items-center gap-2 flex-wrap">
                                         <AdminInlineEditor
                                           target="group"
                                           id={currentGroup?.id}
@@ -1338,6 +1422,7 @@ export default function ToeicPart2Player({
                                             startHintIndex={1 + (hintMasksMap['Q']?.length || 0) + (['A', 'B', 'C'].indexOf(opt) * 2)}
                                           />
                                         </AdminInlineEditor>
+                                        {renderTimestamp(opt)}
                                       </div>
                                       {viText && revealMode && (
                                         <div className={`text-xs italic mt-0.5 ${isCorrectTarget ? 'text-emerald-700/80 font-medium' : 'text-slate-500'}`}>

@@ -22,6 +22,7 @@ interface AdminInlineEditorProps {
   value: string;
   className?: string;
   multiline?: boolean;
+  onSaveSuccess?: (newValue: string) => void;
 }
 
 export function AdminInlineEditor({ 
@@ -32,7 +33,8 @@ export function AdminInlineEditor({
   sid, 
   value: initialValue,
   className = "",
-  multiline = false
+  multiline = false,
+  onSaveSuccess
 }: AdminInlineEditorProps) {
   const router = useRouter();
   const { isAdminMode } = useAdminEdit();
@@ -137,6 +139,7 @@ export function AdminInlineEditor({
         setSyncLogs(data.logs || ["Đã cập nhật thành công!"]);
         // Trigger background refresh to update UI props
         router.refresh();
+        if (onSaveSuccess) onSaveSuccess(currentValue);
       } else {
         throw new Error(data.error || "Lỗi không xác định từ Server");
       }
