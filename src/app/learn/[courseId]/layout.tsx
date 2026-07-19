@@ -20,6 +20,8 @@ export default function LearnLayout({
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isDrawingActive, setIsDrawingActive] = useState(false);
   const [courseTitle, setCourseTitle] = useState("Đang tải...");
+  const [sidebarWidth, setSidebarWidth] = useState(340);
+  const [isResizing, setIsResizing] = useState(false);
 
   useEffect(() => {
     if (params?.courseId) {
@@ -70,6 +72,50 @@ export default function LearnLayout({
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Khôi phục kích thước sidebar đã lưu từ localStorage
+  useEffect(() => {
+    const savedWidth = localStorage.getItem("toeic-sidebar-width");
+    if (savedWidth) {
+      const parsed = parseInt(savedWidth, 10);
+      if (parsed >= 240 && parsed <= 600) {
+        setSidebarWidth(parsed);
+      }
+    }
+  }, []);
+
+  const startResizing = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+  };
+
+  const stopResizing = () => {
+    setIsResizing(false);
+  };
+
+  const resize = (e: MouseEvent) => {
+    if (isResizing) {
+      const newWidth = e.clientX;
+      if (newWidth >= 240 && newWidth <= 600) {
+        setSidebarWidth(newWidth);
+        localStorage.setItem("toeic-sidebar-width", String(newWidth));
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isResizing) {
+      window.addEventListener("mousemove", resize);
+      window.addEventListener("mouseup", stopResizing);
+    } else {
+      window.removeEventListener("mousemove", resize);
+      window.removeEventListener("mouseup", stopResizing);
+    }
+    return () => {
+      window.removeEventListener("mousemove", resize);
+      window.removeEventListener("mouseup", stopResizing);
+    };
+  }, [isResizing]);
 
   const { data: session } = useSession();
 
@@ -162,10 +208,13 @@ export default function LearnLayout({
 
         {/* Main Learning Workspace */}
         <div className="flex flex-1 overflow-hidden relative">
-          {/* Sidebar Bên Trái (Collapsible) */}
+          {/* Sidebar Bên Trái (Collapsible & Resizable) */}
           <div 
-            className={`h-full transition-all duration-300 ease-in-out bg-[#fbfcfd] flex-shrink-0 relative overflow-hidden flex flex-col ${
-              sidebarOpen ? "w-[280px] sm:w-[340px] border-r border-slate-100" : "w-0 sm:w-14 sm:border-r border-slate-100"
+            style={sidebarOpen ? { width: `${sidebarWidth}px` } : {}}
+            className={`h-full bg-[#fbfcfd] flex-shrink-0 relative overflow-hidden flex flex-col ${
+              isResizing ? "" : "transition-all duration-300 ease-in-out"
+            } ${
+              sidebarOpen ? "border-r border-slate-100" : "w-0 sm:w-14 sm:border-r border-slate-100"
             }`}
           >
             {/* Collapsed State Indicator */}
@@ -190,9 +239,19 @@ export default function LearnLayout({
             )}
 
             {/* Actual Sidebar Content */}
-            <div className={`w-[280px] sm:w-[340px] h-full transition-opacity duration-300 ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}> 
+            <div className={`w-full h-full transition-opacity duration-300 ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}> 
               <LearnSidebar />
             </div>
+
+            {/* Drag handle line */}
+            {sidebarOpen && (
+              <div
+                onMouseDown={startResizing}
+                className={`absolute top-0 right-0 w-1.5 h-full cursor-col-resize hover:bg-indigo-500/20 active:bg-indigo-500/40 z-50 transition-colors ${
+                  isResizing ? "bg-indigo-500/30" : ""
+                }`}
+              />
+            )}
           </div>
 
           {/* Nút Toggle Sidebar (Floating at the edge) - Standardized White & Middle */}
@@ -202,8 +261,11 @@ export default function LearnLayout({
               setSidebarOpen(nextState);
               localStorage.setItem("toeic-sidebar-collapsed", String(!nextState));
             }}
-            className={`absolute top-1/2 -translate-y-1/2 z-[60] w-6 h-14 bg-white border border-slate-200 shadow-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-slate-50 transition-all duration-500 rounded-r-xl ${
-              sidebarOpen ? "left-[280px] sm:left-[340px] -ml-px" : "left-0 sm:left-14"
+            style={sidebarOpen ? { left: `${sidebarWidth}px` } : {}}
+            className={`absolute top-1/2 -translate-y-1/2 z-[60] w-6 h-14 bg-white border border-slate-200 shadow-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-slate-50 rounded-r-xl ${
+              isResizing ? "" : "transition-all duration-300 ease-in-out"
+            } ${
+              sidebarOpen ? "-ml-px" : "left-0 sm:left-14"
             }`}
             title={sidebarOpen ? "Thu gọn menu" : "Mở rộng menu"}
           >

@@ -312,7 +312,7 @@ export default function LearnSidebar() {
     <>
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
       
-      <div id="learn-course-sidebar" className="w-[340px] flex-shrink-0 border-r border-slate-100 bg-[#fbfcfd] flex flex-col h-full shadow-[1px_0_10px_rgba(0,0,0,0.02)] relative">
+      <div id="learn-course-sidebar" className="w-full flex-shrink-0 border-r border-slate-100 bg-[#fbfcfd] flex flex-col h-full shadow-[1px_0_10px_rgba(0,0,0,0.02)] relative">
         {/* Target ảo luôn tồn tại trên DOM để Driver.js đục sáng khít khao bảng Review Center */}
         <div id="review-center-panel-target" className="absolute inset-0 pointer-events-none z-0" />
         
