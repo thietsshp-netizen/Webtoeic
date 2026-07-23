@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSession, signOut, signIn } from "next-auth/react";
 import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
+import { getFriendlyErrorMessage } from "@/app/auth/signin/page";
 import { clsx } from "clsx";
 import CourseCard from "@/components/Course/CourseCard";
 import PlacementTest from "@/components/PlacementTest/PlacementTest";
@@ -99,13 +100,6 @@ function HomeContent() {
   const [dashShowCredentials, setDashShowCredentials] = useState(false);
   const [dashError, setDashError] = useState("");
 
-  const ERROR_MESSAGES: Record<string, string> = {
-    OAuthAccountNotLinked: "Email này không được phép đăng nhập theo cách này.",
-    CredentialsSignin:     "Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại.",
-    SessionRequired:       "Bạn cần đăng nhập để tiếp tục.",
-    Default:               "Đã xảy ra lỗi, vui lòng thử lại sau.",
-  };
-
   const handleDashboardCredentialsLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setDashIsLoading(true);
@@ -120,12 +114,13 @@ function HomeContent() {
       });
 
       if (res?.error) {
-        setDashError(ERROR_MESSAGES[res.error] ?? ERROR_MESSAGES.Default);
+        setDashError(getFriendlyErrorMessage(res.error, null, dashEmail));
       } else {
         window.location.href = "/?tab=dashboard";
       }
-    } catch (err) {
-      setDashError("Đã xảy ra lỗi hệ thống, vui lòng thử lại.");
+    } catch (err: any) {
+      console.error("Dashboard Login Error:", err);
+      setDashError(err?.message || "Đã xảy ra lỗi kết nối. Vui lòng kiểm tra lại mạng hoặc thử lại sau.");
     } finally {
       setDashIsLoading(false);
     }

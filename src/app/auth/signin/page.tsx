@@ -7,16 +7,70 @@ import { GraduationCap, Mail, Lock, ArrowRight, ShieldCheck, Eye, EyeOff } from 
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ERROR_MESSAGES: Record<string, string> = {
-  OAuthAccountNotLinked: "Email này không được phép đăng nhập theo cách này.",
-  CredentialsSignin:     "Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại.",
-  SessionRequired:       "Bạn cần đăng nhập để tiếp tục.",
-  ExpiredAccount:        "Tài khoản dùng thử của bạn đã hết hạn (7 ngày). Vui lòng liên hệ Admin để đăng ký khóa học chính thức!",
-  DeviceLimitLocked:     "Tài khoản đã quá hạn 30 ngày và đạt giới hạn thiết bị. Không thể đăng ký thêm thiết bị mới. Vui lòng liên hệ Admin.",
-  DeviceLimitTrial:      "Tài khoản đã đạt giới hạn thiết bị đăng nhập. Bạn có thể quản lý và đổi thiết bị trong mục Cài đặt tài khoản ở Dashboard.",
-  Callback:              "Đăng nhập thất bại. Tài khoản của bạn có thể đã hết hạn hoặc bị giới hạn thiết bị.",
-  Default:               "Đã xảy ra lỗi, vui lòng thử lại sau.",
-};
+export function getFriendlyErrorMessage(
+  rawError?: string | null,
+  deviceType?: string | null,
+  emailParam?: string | null
+): string {
+  if (!rawError) return "";
+
+  const errStr = decodeURIComponent(rawError);
+
+  // 1. Device limit locked (> 30 days & reached device limit)
+  if (errStr.includes("DeviceLimitLocked")) {
+    const deviceLabel = deviceType === "MOBILE" ? "Điện thoại" : deviceType === "PC" ? "Máy tính" : "thiết bị";
+    return `Tài khoản đã tạo hơn 30 ngày và đã đạt giới hạn 1 ${deviceLabel} đăng nhập. Vui lòng đăng nhập bằng đúng ${deviceLabel} bạn đã dùng trước đó hoặc liên hệ Admin để xử lý!`;
+  }
+
+  // 2. Device limit trial (reached device limit during trial)
+  if (errStr.includes("DeviceLimitTrial")) {
+    const deviceLabel = deviceType === "MOBILE" ? "Điện thoại" : deviceType === "PC" ? "Máy tính" : "thiết bị";
+    return `Tài khoản đã đạt giới hạn 1 ${deviceLabel} đăng nhập. Bạn có thể đổi/xóa thiết bị cũ trong mục 'Cài đặt tài khoản' ở Dashboard.`;
+  }
+
+  // 3. Expired account
+  if (errStr.includes("ExpiredAccount")) {
+    return emailParam
+      ? `Tài khoản ${decodeURIComponent(emailParam)} đã hết hạn dùng thử (7 ngày). Vui lòng liên hệ Admin để đăng ký khóa học chính thức!`
+      : "Tài khoản dùng thử của bạn đã hết hạn (7 ngày). Vui lòng liên hệ Admin để đăng ký khóa học chính thức!";
+  }
+
+  // 4. OAuth Account Not Linked (Bấm nút Google nhưng Email đã tạo bằng Mật khẩu)
+  if (errStr.includes("OAuthAccountNotLinked")) {
+    return "Email này đã được khởi tạo bằng Email & Mật khẩu (được cấp). Vui lòng điền Email và Mật khẩu ở khung bên dưới để đăng nhập thay vì bấm nút Google.";
+  }
+
+  // 5. Session required
+  if (errStr.includes("SessionRequired")) {
+    return "Bạn cần đăng nhập để tiếp tục.";
+  }
+
+  // 6. Callback or AccessDenied
+  if (errStr.includes("Callback") || errStr.includes("AccessDenied")) {
+    return "Đăng nhập thất bại. Tài khoản của bạn có thể đã đạt giới hạn thiết bị đăng nhập. Vui lòng đăng nhập bằng đúng thiết bị đã dùng trước đó hoặc liên hệ Admin.";
+  }
+
+  // 7. Standard NextAuth CredentialsSignin fallback
+  if (errStr === "CredentialsSignin" || errStr.includes("CredentialsSignin")) {
+    return "Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại.";
+  }
+
+  // 8. Custom Vietnamese error messages returned from authorize() or API
+  if (
+    errStr.includes("không") ||
+    errStr.includes("chưa") ||
+    errStr.includes("Mật khẩu") ||
+    errStr.includes("Tài khoản") ||
+    errStr.includes("Email") ||
+    errStr.includes("hết hạn") ||
+    errStr.includes("thiết bị")
+  ) {
+    return errStr;
+  }
+
+  // 9. Generic default
+  return "Đăng nhập thất bại. Vui lòng kiểm tra lại email/mật khẩu hoặc liên hệ Admin.";
+}
 
 function SignInForm() {
   const router = useRouter();
@@ -29,11 +83,9 @@ function SignInForm() {
 
   const urlError = searchParams.get("error") ?? "";
   const emailParam = searchParams.get("email") ?? "";
+  const deviceTypeParam = searchParams.get("type") ?? "";
   
-  let initialError = ERROR_MESSAGES[urlError] ?? (urlError ? ERROR_MESSAGES.Default : "");
-  if (urlError === "ExpiredAccount" && emailParam) {
-    initialError = `Tài khoản ${decodeURIComponent(emailParam)} đã hết hạn dùng thử (7 ngày). Vui lòng liên hệ Admin để đăng ký khóa học chính thức!`;
-  }
+  const initialError = getFriendlyErrorMessage(urlError, deviceTypeParam, emailParam);
   
   const [error, setError] = useState(initialError);
 
@@ -54,12 +106,13 @@ function SignInForm() {
       });
 
       if (res?.error) {
-        setError(ERROR_MESSAGES[res.error] ?? ERROR_MESSAGES.Default);
+        setError(getFriendlyErrorMessage(res.error, deviceTypeParam, email));
       } else {
         router.push(callbackUrl);
       }
-    } catch (err) {
-      setError("Đã xảy ra lỗi hệ thống, vui lòng thử lại.");
+    } catch (err: any) {
+      console.error("Login Error:", err);
+      setError(err?.message || "Đã xảy ra lỗi kết nối. Vui lòng kiểm tra lại mạng hoặc thử lại sau.");
     } finally {
       setIsLoading(false);
     }

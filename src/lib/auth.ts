@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Vui lòng nhập Email và Mật khẩu");
+          throw new Error("Vui lòng nhập đầy đủ Email và Mật khẩu.");
         }
 
         const normalizedEmail = credentials.email.toLowerCase().trim();
@@ -32,16 +32,18 @@ export const authOptions: NextAuthOptions = {
           where: { email: normalizedEmail }
         });
 
-        // Nếu chưa có user (đăng ký lần đầu qua form login - optional logic)
-        // Hoặc user sai mật khẩu
-        if (!user || !user.password) {
-          throw new Error("Tài khoản không tồn tại");
+        if (!user) {
+          throw new Error("Tài khoản (Email) này chưa được đăng ký trong hệ thống.");
+        }
+
+        if (!user.password) {
+          throw new Error("Tài khoản này được tạo bằng nút Google (chưa có mật khẩu). Vui lòng bấm vào nút 'Đăng nhập bằng Google' ở trên.");
         }
 
         const isPasswordMatch = await bcrypt.compare(credentials.password, user.password);
 
         if (!isPasswordMatch) {
-          throw new Error("Mật khẩu không chính xác");
+          throw new Error("Mật khẩu không chính xác. Vui lòng kiểm tra lại.");
         }
 
         return user;
@@ -50,8 +52,11 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account }) {
+      if (!user?.email) {
+        return false;
+      }
       console.log("SignIn Callback - User:", user.email);
-      const normalizedEmail = (user.email as string).toLowerCase().trim();
+      const normalizedEmail = user.email.toLowerCase().trim();
       const dbUser = await prisma.user.findUnique({
         where: { email: normalizedEmail },
         select: { id: true, role: true, accountExpiresAt: true, createdAt: true }
