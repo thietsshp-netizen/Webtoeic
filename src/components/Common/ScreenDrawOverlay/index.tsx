@@ -369,14 +369,14 @@ export const erasePixelFromElements = (
 };
 
 // Tạo CSS selector duy nhất cho phần tử HTML
-export const generateUniqueSelector = (el: HTMLElement): string => {
+export const generateUniqueSelector = (el: HTMLElement, limitElement?: HTMLElement): string => {
   if (el.id) return `#${CSS.escape(el.id)}`;
 
   // Check if it already has a data-draw-id (for backwards compatibility if any)
   let drawId = el.getAttribute('data-draw-id');
   if (drawId) return `[data-draw-id="${drawId}"]`;
 
-  // Check if it has a globally unique class name
+  // Check if it has a globally/locally unique class name
   const classes = Array.from(el.classList)
     .filter(c => c && typeof c === 'string' && !c.includes('active') && !c.includes('hover') && !c.includes('selected') && !c.includes('drawing') && !c.startsWith('draw-'))
     .map(c => CSS.escape(c));
@@ -384,7 +384,9 @@ export const generateUniqueSelector = (el: HTMLElement): string => {
   if (classes.length > 0) {
     const classSelector = `.${classes.join('.')}`;
     try {
-      const helpers = Array.from(document.querySelectorAll(classSelector));
+      const helpers = limitElement 
+        ? Array.from(limitElement.querySelectorAll(classSelector))
+        : Array.from(document.querySelectorAll(classSelector));
       if (helpers.length === 1) return classSelector;
     } catch (e) { }
   }
@@ -392,20 +394,10 @@ export const generateUniqueSelector = (el: HTMLElement): string => {
   // Fallback: Xây dựng structural selector đi ngược lên trên
   const path: string[] = [];
   let current: HTMLElement | null = el;
-  while (current && current !== document.documentElement && current !== document.body) {
+  while (current && current !== document.documentElement && current !== document.body && current !== limitElement) {
     if (current.id) {
       path.unshift(`#${CSS.escape(current.id)}`);
       break;
-    }
-    
-    // Nếu gặp khung cuộn, định danh theo chỉ số của nó trên trang để đảm bảo cô lập
-    if (current.classList.contains('webtoeic-scroll-container')) {
-      const containers = Array.from(document.querySelectorAll('.webtoeic-scroll-container'));
-      const idx = containers.indexOf(current);
-      if (idx !== -1) {
-        path.unshift(`.webtoeic-scroll-container:nth-of-type(${idx + 1})`);
-        break;
-      }
     }
 
     const tagName = current.tagName.toLowerCase();
@@ -420,6 +412,10 @@ export const generateUniqueSelector = (el: HTMLElement): string => {
       break;
     }
   }
+  // Nếu đường dẫn không bắt đầu bằng ID và không bị giới hạn bởi limitElement, thêm body vào đầu đường dẫn để đảm bảo tính tuyệt đối
+  if (!limitElement && path.length > 0 && !path[0].startsWith('#')) {
+    path.unshift('body');
+  }
   return path.join(' > ');
 };
 
@@ -427,12 +423,25 @@ export const generateUniqueSelector = (el: HTMLElement): string => {
 export const findBestAnchor = (
   clientX: number,
   clientY: number,
-  canvas: HTMLCanvasElement | null
+  canvas: HTMLCanvasElement | null,
+  container?: HTMLElement | null
 ): { selector: string; rect: DOMRect; priority: number } | null => {
   if (!canvas) return null;
 
   const originalPointerEvents = canvas.style.pointerEvents;
   canvas.style.pointerEvents = 'none';
+
+  // Bypass the active textarea if it is on screen during the hit test
+  const textarea = (
+    document.querySelector('.' + styles.richTextInput) ||
+    document.querySelector('[contenteditable="true"]') ||
+    document.querySelector('[class*="richTextInput"]')
+  ) as HTMLElement | null;
+  console.log("findBestAnchor - textarea found:", !!textarea, styles.richTextInput);
+  const originalTextareaEvents = textarea ? textarea.style.pointerEvents : '';
+  if (textarea) {
+    textarea.style.pointerEvents = 'none';
+  }
 
   // Quét các điểm xung quanh để tìm phần tử chữ cụ thể (như span) thay vì thẻ div bao ngoài khi người dùng vẽ lệch/vẽ gạch chân dưới chữ
   const offsets = [
@@ -475,9 +484,13 @@ export const findBestAnchor = (
       const selector = targetSelectors[i];
       const anchor = el.closest(selector) as HTMLElement | null;
       if (anchor) {
-        let uniqueSelector = generateUniqueSelector(anchor);
+        if (anchor === container) continue; // Skip container itself
+        let uniqueSelector = generateUniqueSelector(anchor, container || undefined);
         try {
-          let found = document.querySelector(uniqueSelector);
+          // If queried relatively or globally, confirm matches
+          let found = container 
+            ? container.querySelector(':scope > ' + uniqueSelector) 
+            : document.querySelector(uniqueSelector);
           if (found === anchor) {
             const info = { selector: uniqueSelector, rect: anchor.getBoundingClientRect(), priority: i };
             if (!bestAnchorInfo || info.priority < bestAnchorInfo.priority) {
@@ -496,6 +509,9 @@ export const findBestAnchor = (
   }
 
   canvas.style.pointerEvents = originalPointerEvents;
+  if (textarea) {
+    textarea.style.pointerEvents = originalTextareaEvents;
+  }
   return bestAnchorInfo;
 };
 
@@ -591,8 +607,11 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
     const cRect = container.getBoundingClientRect();
     return elements.map(el => {
       if (el.anchorSelector) {
-        const anchor = container.querySelector(el.anchorSelector) as HTMLElement | null;
-        if (anchor) {
+        const isGlobal = el.anchorSelector.startsWith('body') || el.anchorSelector.startsWith('#');
+        const anchor = isGlobal
+          ? (document.querySelector(el.anchorSelector) as HTMLElement | null)
+          : (container.querySelector(':scope > ' + el.anchorSelector) as HTMLElement | null);
+        if (anchor && (isGlobal ? container.contains(anchor) : true)) {
           const anchorRect = anchor.getBoundingClientRect();
           const anchorLocalX = anchorRect.left - cRect.left + container.scrollLeft;
           const anchorLocalY = anchorRect.top - cRect.top + container.scrollTop;
@@ -651,8 +670,11 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
 
     elements.forEach(el => {
       if (el.anchorSelector) {
-        const anchor = container.querySelector(el.anchorSelector) as HTMLElement | null;
-        if (anchor) {
+        const isGlobal = el.anchorSelector.startsWith('body') || el.anchorSelector.startsWith('#');
+        const anchor = isGlobal
+          ? (document.querySelector(el.anchorSelector) as HTMLElement | null)
+          : (container.querySelector(':scope > ' + el.anchorSelector) as HTMLElement | null);
+        if (anchor && (isGlobal ? container.contains(anchor) : true)) {
           const existingIds = anchor.getAttribute('data-element-ids') || '';
           const idList = existingIds ? existingIds.split(',') : [];
           if (!idList.includes(el.id)) {
@@ -865,11 +887,30 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     const originalPointerEvents = canvas.style.pointerEvents;
     canvas.style.pointerEvents = 'none';
+
+    // Bypass the active textarea if it is on screen during the hit test
+    const textarea = (
+      document.querySelector('.' + styles.richTextInput) ||
+      document.querySelector('[contenteditable="true"]') ||
+      document.querySelector('[class*="richTextInput"]')
+    ) as HTMLElement | null;
+    console.log("findScrollContainer - textarea found:", !!textarea, styles.richTextInput);
+    const originalTextareaEvents = textarea ? textarea.style.pointerEvents : '';
+    if (textarea) {
+      textarea.style.pointerEvents = 'none';
+    }
+
     const topElement = document.elementFromPoint(clientX, clientY) as HTMLElement | null;
+    console.log("findScrollContainer - topElement:", topElement?.tagName, topElement?.className);
     canvas.style.pointerEvents = textInput ? 'none' : 'auto';
+    if (textarea) {
+      textarea.style.pointerEvents = originalTextareaEvents;
+    }
 
     if (!topElement) return null;
-    return topElement.closest('.webtoeic-scroll-container') as HTMLElement | null;
+    const res = topElement.closest('.webtoeic-scroll-container') as HTMLElement | null;
+    console.log("findScrollContainer - result:", !!res);
+    return res;
   };
 
   const setTool = (newTool: DrawTool) => {
@@ -3155,7 +3196,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       saveToUndoStack(elements);
       // 2. Chế độ vẽ vẽ: Chụp snapshot canvas và khởi tạo toạ độ kèm lực nhấn ban đầu
       setSelectedId(null);
-      activeAnchorRef.current = findBestAnchor(e.clientX, e.clientY, canvas);
+      const container = findScrollContainer(e.clientX, e.clientY);
+      activeAnchorRef.current = findBestAnchor(e.clientX, e.clientY, canvas, container);
 
       // Nếu là Eraser, lập tức kiểm tra va chạm để xóa nét luôn khi click xuống
       const { eraserMode, eraserTargets } = stateRef.current;
@@ -3686,6 +3728,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const ex = e.clientX - (rect?.left || 0);
       const ey = e.clientY - (rect?.top || 0);
 
+      const startPt = points[0];
+      const container = rect ? findScrollContainer(startPt.x + rect.left, startPt.y + rect.top) : null;
+
       let activeAnchor = activeAnchorRef.current;
       if (rect && points.length > 0) {
         const sampleIndices = [
@@ -3698,7 +3743,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             const pt = points[idx];
             const testX = pt.x + rect.left;
             const testY = pt.y + rect.top;
-            const anchor = findBestAnchor(testX, testY, canvas);
+            const anchor = findBestAnchor(testX, testY, canvas, container);
             if (anchor) {
               if (!activeAnchor || anchor.priority < activeAnchor.priority) {
                 activeAnchor = anchor;
@@ -3714,9 +3759,6 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       let containerSelector: string | undefined = undefined;
       let textHash: string | undefined = undefined;
       let textContent: string | undefined = undefined;
-
-      const startPt = points[0];
-      const container = rect ? findScrollContainer(startPt.x + rect.left, startPt.y + rect.top) : null;
 
       let allPointsInside = true;
       if (container && rect) {
@@ -4015,9 +4057,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       let textHash: string | undefined = undefined;
       let textContent: string | undefined = undefined;
 
+      console.log("handleTextSubmit - textInput:", textInput.x, textInput.y, "rect:", rect.left, rect.top);
       const container = findScrollContainer(textInput.x, textInput.y);
+      console.log("handleTextSubmit - container found:", !!container);
 
-      const bestAnchor = findBestAnchor(textInput.x, textInput.y, canvas);
+      const bestAnchor = findBestAnchor(textInput.x, textInput.y, canvas, container);
+      console.log("handleTextSubmit - bestAnchor:", bestAnchor);
       if (bestAnchor) {
         anchorSelector = bestAnchor.selector;
         dx = bestAnchor.rect.left - rect.left;
