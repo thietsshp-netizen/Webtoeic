@@ -372,13 +372,13 @@ export const erasePixelFromElements = (
 export const generateUniqueSelector = (el: HTMLElement): string => {
   if (el.id) return `#${CSS.escape(el.id)}`;
 
-  // Check if it already has a data-draw-id
+  // Check if it already has a data-draw-id (for backwards compatibility if any)
   let drawId = el.getAttribute('data-draw-id');
   if (drawId) return `[data-draw-id="${drawId}"]`;
 
   // Check if it has a globally unique class name
   const classes = Array.from(el.classList)
-    .filter(c => c && typeof c === 'string' && !c.includes('active') && !c.includes('hover') && !c.includes('selected') && !c.includes('drawing'))
+    .filter(c => c && typeof c === 'string' && !c.includes('active') && !c.includes('hover') && !c.includes('selected') && !c.includes('drawing') && !c.startsWith('draw-'))
     .map(c => CSS.escape(c));
 
   if (classes.length > 0) {
@@ -389,10 +389,38 @@ export const generateUniqueSelector = (el: HTMLElement): string => {
     } catch (e) { }
   }
 
-  // Fallback: Generate and assign a new data-draw-id to ensure 100% unique selector stability
-  drawId = `draw-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
-  el.setAttribute('data-draw-id', drawId);
-  return `[data-draw-id="${drawId}"]`;
+  // Fallback: Xây dựng structural selector đi ngược lên trên
+  const path: string[] = [];
+  let current: HTMLElement | null = el;
+  while (current && current !== document.documentElement && current !== document.body) {
+    if (current.id) {
+      path.unshift(`#${CSS.escape(current.id)}`);
+      break;
+    }
+    
+    // Nếu gặp khung cuộn, định danh theo chỉ số của nó trên trang để đảm bảo cô lập
+    if (current.classList.contains('webtoeic-scroll-container')) {
+      const containers = Array.from(document.querySelectorAll('.webtoeic-scroll-container'));
+      const idx = containers.indexOf(current);
+      if (idx !== -1) {
+        path.unshift(`.webtoeic-scroll-container:nth-of-type(${idx + 1})`);
+        break;
+      }
+    }
+
+    const tagName = current.tagName.toLowerCase();
+    const parentEl: HTMLElement | null = current.parentElement;
+    if (parentEl) {
+      const siblings = Array.from(parentEl.children);
+      const index = siblings.indexOf(current);
+      path.unshift(`${tagName}:nth-child(${index + 1})`);
+      current = parentEl;
+    } else {
+      path.unshift(tagName);
+      break;
+    }
+  }
+  return path.join(' > ');
 };
 
 // Helper tìm phần tử neo phù hợp nhất (Bubble up) và tạo Selector
@@ -510,6 +538,21 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const [visibleElementIds, setVisibleElementIds] = useState<Set<string>>(new Set());
 
+  // Đồng bộ hóa tức thời các nét vẽ mới vào visibleElementIds để hiển thị ngay lập tức (trước khi Paint) mà không chờ IntersectionObserver bất đồng bộ
+  React.useLayoutEffect(() => {
+    setVisibleElementIds(prev => {
+      let changed = false;
+      const next = new Set(prev);
+      elements.forEach(el => {
+        if (!next.has(el.id)) {
+          next.add(el.id);
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+  }, [elements]);
+
   // 1. Cập nhật kích thước viewport và vị trí cuộn thực tế của container thay vì kích thước toàn trang
   useEffect(() => {
     if (!container) return;
@@ -578,17 +621,25 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
 
   // 3. Virtualization bằng IntersectionObserver để ẩn các nét ngoài tầm nhìn nhằm giải phóng VRAM
   useEffect(() => {
+    // Trước tiên, dọn dẹp tất cả các thuộc tính data-element-ids cũ trong container
+    container.querySelectorAll('[data-element-ids]').forEach(node => {
+      node.removeAttribute('data-element-ids');
+    });
+
     const observer = new IntersectionObserver((entries) => {
       setVisibleElementIds(prev => {
         const next = new Set(prev);
         entries.forEach(entry => {
-          const id = entry.target.getAttribute('data-element-id');
-          if (id) {
-            if (entry.isIntersecting) {
-              next.add(id);
-            } else {
-              next.delete(id);
-            }
+          const idsStr = entry.target.getAttribute('data-element-ids');
+          if (idsStr) {
+            const ids = idsStr.split(',');
+            ids.forEach(id => {
+              if (entry.isIntersecting) {
+                next.add(id);
+              } else {
+                next.delete(id);
+              }
+            });
           }
         });
         return next;
@@ -600,9 +651,14 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
 
     elements.forEach(el => {
       if (el.anchorSelector) {
-        const anchor = container.querySelector(el.anchorSelector);
+        const anchor = container.querySelector(el.anchorSelector) as HTMLElement | null;
         if (anchor) {
-          anchor.setAttribute('data-element-id', el.id);
+          const existingIds = anchor.getAttribute('data-element-ids') || '';
+          const idList = existingIds ? existingIds.split(',') : [];
+          if (!idList.includes(el.id)) {
+            idList.push(el.id);
+            anchor.setAttribute('data-element-ids', idList.join(','));
+          }
           observer.observe(anchor);
         }
       }
@@ -804,19 +860,16 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [domUpdateKey, setDomUpdateKey] = useState(0);
 
   const findScrollContainer = (clientX: number, clientY: number): HTMLElement | null => {
-    const containers = Array.from(document.querySelectorAll('.webtoeic-scroll-container')).reverse();
-    for (const container of containers) {
-      const cRect = container.getBoundingClientRect();
-      if (
-        clientX >= cRect.left &&
-        clientX <= cRect.right &&
-        clientY >= cRect.top &&
-        clientY <= cRect.bottom
-      ) {
-        return container as HTMLElement;
-      }
-    }
-    return null;
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+
+    const originalPointerEvents = canvas.style.pointerEvents;
+    canvas.style.pointerEvents = 'none';
+    const topElement = document.elementFromPoint(clientX, clientY) as HTMLElement | null;
+    canvas.style.pointerEvents = textInput ? 'none' : 'auto';
+
+    if (!topElement) return null;
+    return topElement.closest('.webtoeic-scroll-container') as HTMLElement | null;
   };
 
   const setTool = (newTool: DrawTool) => {
@@ -3668,7 +3721,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       let allPointsInside = true;
       if (container && rect) {
         const cRect = container.getBoundingClientRect();
-        const padding = 2; // 2px margin buffer
+        const padding = 24; // 24px margin buffer to accommodate drawings slightly near/outside borders
         for (const pt of points) {
           const clientX = pt.x + rect.left;
           const clientY = pt.y + rect.top;
