@@ -510,7 +510,7 @@ export const GlobalClassCalling: React.FC = () => {
           position: "fixed",
           top: isLearnPage ? "9px" : "14px",
           right: isLearnPage ? "216px" : "62px",
-          zIndex: 999999999,
+          zIndex: 1000000005,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -549,7 +549,7 @@ export const GlobalClassCalling: React.FC = () => {
             }
           }}
           className={clsx(
-            "fixed z-[99998] bg-slate-900/90 backdrop-blur-xl border border-white/10 shadow-2xl select-none transition-[width,padding,border-radius] duration-200",
+            "fixed z-[1000000005] bg-slate-900/90 backdrop-blur-xl border border-white/10 shadow-2xl select-none transition-[width,padding,border-radius] duration-200",
             isMinimized ? "w-[300px] p-3 rounded-2xl" : "w-[350px] p-5 rounded-3xl"
           )}
         >
