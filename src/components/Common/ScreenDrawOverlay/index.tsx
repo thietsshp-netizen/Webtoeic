@@ -437,7 +437,6 @@ export const findBestAnchor = (
     document.querySelector('[contenteditable="true"]') ||
     document.querySelector('[class*="richTextInput"]')
   ) as HTMLElement | null;
-  console.log("findBestAnchor - textarea found:", !!textarea, styles.richTextInput);
   const originalTextareaEvents = textarea ? textarea.style.pointerEvents : '';
   if (textarea) {
     textarea.style.pointerEvents = 'none';
@@ -894,23 +893,19 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       document.querySelector('[contenteditable="true"]') ||
       document.querySelector('[class*="richTextInput"]')
     ) as HTMLElement | null;
-    console.log("findScrollContainer - textarea found:", !!textarea, styles.richTextInput);
     const originalTextareaEvents = textarea ? textarea.style.pointerEvents : '';
     if (textarea) {
       textarea.style.pointerEvents = 'none';
     }
 
     const topElement = document.elementFromPoint(clientX, clientY) as HTMLElement | null;
-    console.log("findScrollContainer - topElement:", topElement?.tagName, topElement?.className);
     canvas.style.pointerEvents = textInput ? 'none' : 'auto';
     if (textarea) {
       textarea.style.pointerEvents = originalTextareaEvents;
     }
 
     if (!topElement) return null;
-    const res = topElement.closest('.webtoeic-scroll-container') as HTMLElement | null;
-    console.log("findScrollContainer - result:", !!res);
-    return res;
+    return topElement.closest('.webtoeic-scroll-container') as HTMLElement | null;
   };
 
   const setTool = (newTool: DrawTool) => {
@@ -4057,12 +4052,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       let textHash: string | undefined = undefined;
       let textContent: string | undefined = undefined;
 
-      console.log("handleTextSubmit - textInput:", textInput.x, textInput.y, "rect:", rect.left, rect.top);
       const container = findScrollContainer(textInput.x, textInput.y);
-      console.log("handleTextSubmit - container found:", !!container);
 
       const bestAnchor = findBestAnchor(textInput.x, textInput.y, canvas, container);
-      console.log("handleTextSubmit - bestAnchor:", bestAnchor);
       if (bestAnchor) {
         anchorSelector = bestAnchor.selector;
         dx = bestAnchor.rect.left - rect.left;
