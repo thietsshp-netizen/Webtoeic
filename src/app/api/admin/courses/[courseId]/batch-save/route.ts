@@ -58,8 +58,8 @@ export async function POST(
             await (tx as any).book.updateMany({
               where: { id },
               data: {
-                title: data.title,
-                order: data.order
+                ...(data.title !== undefined && { title: data.title }),
+                ...(data.order !== undefined && { order: data.order })
               }
             });
           }
@@ -89,9 +89,9 @@ export async function POST(
             await tx.section.updateMany({
               where: { id },
               data: {
-                title: data.title,
-                order: data.order,
-                bookId: finalBookId
+                ...(data.title !== undefined && { title: data.title }),
+                ...(data.order !== undefined && { order: data.order }),
+                ...(finalBookId !== undefined && { bookId: finalBookId })
               }
             });
           }
@@ -128,16 +128,16 @@ export async function POST(
             await tx.lesson.update({
               where: { id },
               data: {
-                title: data.title,
-                sectionId: finalSectionId,
-                contentType: data.contentType,
-                content: data.content,
-                videoUrl: data.videoUrl,
-                videoExplanation: data.videoExplanation,
-                toeicTestId: data.toeicTestId === "" ? null : (data.toeicTestId || undefined),
-                vocabDayId: data.vocabDayId === "" ? null : (data.vocabDayId || undefined),
-                isPreview: data.isPreview,
-                order: data.order
+                ...(data.title !== undefined && { title: data.title }),
+                ...(finalSectionId !== undefined && { sectionId: finalSectionId }),
+                ...(data.contentType !== undefined && { contentType: data.contentType }),
+                ...(data.content !== undefined && { content: data.content }),
+                ...(data.videoUrl !== undefined && { videoUrl: data.videoUrl }),
+                ...(data.videoExplanation !== undefined && { videoExplanation: data.videoExplanation }),
+                ...(data.toeicTestId !== undefined && { toeicTestId: data.toeicTestId === "" ? null : data.toeicTestId }),
+                ...(data.vocabDayId !== undefined && { vocabDayId: data.vocabDayId === "" ? null : data.vocabDayId }),
+                ...(data.isPreview !== undefined && { isPreview: data.isPreview }),
+                ...(data.order !== undefined && { order: data.order })
               }
             });
           }

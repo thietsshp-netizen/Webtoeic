@@ -263,6 +263,11 @@ export default function LessonEditor({ lessonId, draftData, onDraftUpdate, onSav
   const [generatedPrompt, setGeneratedPrompt] = useState<string>("");
   const [pastedSubsRaw, setPastedSubsRaw] = useState<string>("");
 
+  const [pastedIeltsP1, setPastedIeltsP1] = useState<string>("");
+  const [pastedIeltsP2, setPastedIeltsP2] = useState<string>("");
+  const [pastedIeltsP3, setPastedIeltsP3] = useState<string>("");
+  const [isIeltsRestored, setIsIeltsRestored] = useState<boolean>(false);
+
   const handleAutoFetchSubtitles = async () => {
     if (!lesson?.videoUrl) {
       alert("Vui lòng nhập đường dẫn video YouTube trước!");
@@ -523,10 +528,68 @@ ${JSON.stringify(parsed, null, 2)}`;
     }
   }, [draftData]);
 
+  useEffect(() => {
+    if (lesson?.contentType === "IELTS_READING" && lesson?.content && !isIeltsRestored) {
+      try {
+        const parsed = JSON.parse(lesson.content);
+        if (Array.isArray(parsed)) {
+          if (parsed[0]) setPastedIeltsP1(JSON.stringify(parsed[0], null, 2));
+          if (parsed[1]) setPastedIeltsP2(JSON.stringify(parsed[1], null, 2));
+          if (parsed[2]) setPastedIeltsP3(JSON.stringify(parsed[2], null, 2));
+          setIsIeltsRestored(true);
+        }
+      } catch (e) {
+        console.warn("Failed to parse existing IELTS Reading content", e);
+      }
+    }
+  }, [lesson, isIeltsRestored]);
+
+  // Reset flag if lessonId changes
+  useEffect(() => {
+    setIsIeltsRestored(false);
+    setPastedIeltsP1("");
+    setPastedIeltsP2("");
+    setPastedIeltsP3("");
+  }, [lessonId]);
+
   const updateDraft = (updates: any) => {
     const newLesson = { ...lesson, ...updates };
     setLesson(newLesson);
     onDraftUpdate(updates);
+  };
+
+  const handleIeltsImageUpload = async (file: File, pIdx: number, gIdx: number, parsedContent: any[]) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/admin/upload-ielts-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (data.success && data.url) {
+        // Cập nhật trường image_url của group tương ứng
+        const updated = JSON.parse(JSON.stringify(parsedContent));
+        updated[pIdx].question_groups[gIdx].image_url = data.url;
+
+        // Lưu lại JSON đã cập nhật
+        const finalJson = JSON.stringify(updated, null, 2);
+        updateDraft({ content: finalJson });
+
+        // Đồng bộ lại với text dán trên UI
+        if (pIdx === 0) setPastedIeltsP1(JSON.stringify(updated[0], null, 2));
+        if (pIdx === 1) setPastedIeltsP2(JSON.stringify(updated[1], null, 2));
+        if (pIdx === 2) setPastedIeltsP3(JSON.stringify(updated[2], null, 2));
+
+        alert(`✅ Tải ảnh lên thành công!\nẢnh được cập nhật tại: ${data.url}\nVui lòng bấm nút "LƯU THAY ĐỔI" ở góc trên bên phải để ghi nhận vào DB.`);
+      } else {
+        alert(`❌ Tải ảnh lên thất bại: ${data.error || 'Lỗi không xác định'}`);
+      }
+    } catch (err: any) {
+      alert(`❌ Lỗi kết nối khi tải ảnh lên: ${err.message}`);
+    }
   };
 
   const handleSave = async () => {
@@ -570,6 +633,7 @@ ${JSON.stringify(parsed, null, 2)}`;
 
       const payload = {
         ...lesson,
+        title: draftData?.title !== undefined ? draftData.title : lesson.title,
         contentType: lesson.contentType || "TEXT",
         content: finalContent,
         toeicTestId: lesson.contentType === "TOEIC_TEST" && lesson.toeicTestId ? lesson.toeicTestId : null,
@@ -667,6 +731,7 @@ ${JSON.stringify(parsed, null, 2)}`;
             <option value="DYNAMIC_PART">Luyện tập theo từng Part (Smart Filter)</option>
             <option value="VOCAB_GAME">Học từ vựng (Vocabulary Game)</option>
             <option value="YOUTUBE_DICTATION">Luyện nghe & Chép chính tả YouTube (JSON Subtitle)</option>
+            <option value="IELTS_READING">Luyện tập IELTS Reading (Bộ 3 Passage)</option>
           </select>
         </div>
 
@@ -991,6 +1056,230 @@ ${JSON.stringify(parsed, null, 2)}`;
                 )}
              </div>
            </div>
+        ) : lesson.contentType === "IELTS_READING" ? (
+          <div className="space-y-6 p-8 bg-orange-50/50 rounded-3xl border border-orange-100 shadow-sm">
+            <label className="text-[11px] font-black text-orange-600 uppercase ml-2 tracking-widest">Cấu hình IELTS Reading Test (Bộ 3 Passage)</label>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="text-xs font-bold text-slate-600 ml-1 font-sans">JSON Passage 1 (Cột D dòng tương ứng với Passage 1)</label>
+                <textarea
+                  value={pastedIeltsP1}
+                  onChange={(e) => setPastedIeltsP1(e.target.value)}
+                  rows={8}
+                  className="w-full mt-1.5 p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-orange-500 outline-none text-xs font-mono bg-white transition-all text-slate-700"
+                  placeholder="Dán JSON của Passage 1 vào đây..."
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-600 ml-1 font-sans">JSON Passage 2 (Cột D dòng tương ứng với Passage 2)</label>
+                <textarea
+                  value={pastedIeltsP2}
+                  onChange={(e) => setPastedIeltsP2(e.target.value)}
+                  rows={8}
+                  className="w-full mt-1.5 p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-orange-500 outline-none text-xs font-mono bg-white transition-all text-slate-700"
+                  placeholder="Dán JSON của Passage 2 vào đây..."
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-600 ml-1 font-sans">JSON Passage 3 (Cột D dòng tương ứng với Passage 3)</label>
+                <textarea
+                  value={pastedIeltsP3}
+                  onChange={(e) => setPastedIeltsP3(e.target.value)}
+                  rows={8}
+                  className="w-full mt-1.5 p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-orange-500 outline-none text-xs font-mono bg-white transition-all text-slate-700"
+                  placeholder="Dán JSON của Passage 3 vào đây..."
+                />
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    try {
+                      // Hàm tự động sửa các lỗi JSON thông thường (dấu phẩy thừa, dấu ngoặc kép xoắn, thiếu ngoặc đóng...)
+                      const tryParseAndFixJSON = (str: string): any => {
+                        let clean = str.trim();
+                        if (!clean) return null;
+
+                        // 1. Sửa dấu ngoặc kép xoắn (smart/curly quotes) thành ngoặc kép chuẩn
+                        clean = clean.replace(/[\u201c\u201d]/g, '"').replace(/[\u2018\u2019]/g, "'");
+
+                        // 2. Sửa lỗi dấu phẩy thừa trước dấu đóng ngoặc: ,} hoặc ,]
+                        clean = clean.replace(/,\s*}/g, '}').replace(/,\s*]/g, ']');
+
+                        // 3. Sửa lỗi comment hai dấu gạch chéo // trong JSON (thường gặp khi gen code)
+                        clean = clean.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '$1');
+
+                        try {
+                          return JSON.parse(clean);
+                        } catch (e: any) {
+                          // Thử sửa lỗi tự động nếu thiếu ngoặc đóng
+                          let attempts = 0;
+                          while (attempts < 5) {
+                            try {
+                              return JSON.parse(clean);
+                            } catch (e2) {
+                              const msg = (e2 as Error).message;
+                              if (msg.includes('Expected \'}') || msg.includes('Expected \']')) {
+                                clean += msg.includes('\'}') ? '}' : ']';
+                              } else {
+                                break;
+                              }
+                            }
+                            attempts++;
+                          }
+                          throw e; // Quăng lỗi gốc nếu vẫn không sửa được
+                        }
+                      };
+
+                      if (!pastedIeltsP1.trim() && !pastedIeltsP2.trim() && !pastedIeltsP3.trim()) {
+                        alert("Vui lòng dán dữ liệu JSON vào ít nhất một ô!");
+                        return;
+                      }
+
+                      const arr = [];
+
+                      if (pastedIeltsP1.trim()) {
+                        const p1 = tryParseAndFixJSON(pastedIeltsP1);
+                        if (p1) {
+                          arr.push(p1);
+                        }
+                      }
+                      if (pastedIeltsP2.trim()) {
+                        const p2 = tryParseAndFixJSON(pastedIeltsP2);
+                        if (p2) {
+                          arr.push(p2);
+                        }
+                      }
+                      if (pastedIeltsP3.trim()) {
+                        const p3 = tryParseAndFixJSON(pastedIeltsP3);
+                        if (p3) {
+                          arr.push(p3);
+                        }
+                      }
+
+                      const gopContent = JSON.stringify(arr, null, 2);
+                      const updates: any = { content: gopContent };
+                      
+                      updateDraft(updates);
+                      alert(`✅ Đã gộp và cập nhật nội dung bài đọc cho ${arr.length} Passage thành công! Hãy bấm "Lưu thay đổi" ở sơ đồ cây bên trái để lưu vào hệ thống.`);
+                    } catch (e: any) {
+                      alert(`❌ Lỗi định dạng JSON ở một trong các ô dán vào (không thể tự động sửa). Chi tiết: ${e.message}`);
+                    }
+                  }}
+                  className="bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-widest px-6 py-3.5 rounded-2xl active:scale-95 transition-all shadow-md shrink-0 flex items-center gap-2 cursor-pointer font-sans"
+                >
+                  ⚡ Gộp & Cập nhật bài học
+                </button>
+              </div>
+
+              {(() => {
+                try {
+                  if (!lesson.content) return null;
+                  const parsed = JSON.parse(lesson.content);
+                  if (!Array.isArray(parsed)) return null;
+
+                  return (
+                    <div className="p-5 bg-white rounded-2xl border border-slate-200 space-y-3 font-sans text-slate-800">
+                      <p className="text-xs font-bold text-slate-700 uppercase tracking-wide">Tóm tắt dữ liệu IELTS đã gộp ({parsed.length} Passages):</p>
+                      <div className="space-y-4 text-xs">
+                        {parsed.map((p: any, idx: number) => {
+                          const qCount = p.question_groups?.reduce((sum: number, g: any) => sum + (g.questions?.length || 0), 0) || 0;
+                          return (
+                            <div key={idx} className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <span className="font-bold text-slate-800">Passage {p.passage_number || idx + 1}: {p.passage_title || "Không có tiêu đề"}</span>
+                                  <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Test: {p.test_title || "Chưa đặt"}</p>
+                                </div>
+                                <span className="bg-orange-100 text-orange-600 font-bold px-2 py-0.5 rounded text-[10px]">
+                                  {qCount} câu hỏi
+                                </span>
+                              </div>
+
+                              {/* Kiểm tra các nhóm câu hỏi cần hình ảnh minh họa */}
+                              {p.question_groups?.map((g: any, gIdx: number) => {
+                                const needsImage = ["DIAGRAM_LABEL", "DIAGRAM_MAP_LABEL", "FLOWCHART_COMPLETION", "FLOW_CHART_COMPLETION", "DIAGRAM_LABEL_COMPLETION"].includes(g.question_type) || g.image_url;
+                                if (!needsImage) return null;
+
+                                const hasActualImage = g.image_url && g.image_url !== "placeholder_image_path.png" && !g.image_url.includes("placeholder");
+
+                                return (
+                                  <div key={gIdx} className={`p-3.5 rounded-xl border ${hasActualImage ? 'bg-emerald-50/40 border-emerald-100' : 'bg-amber-50/40 border-amber-100'} space-y-2`}>
+                                    <div className="flex justify-between items-center">
+                                      <span className="font-semibold text-slate-700">
+                                        📸 Nhóm {gIdx + 1} ({g.question_type}): {hasActualImage ? 'Đã có hình ảnh' : 'Chưa có hình ảnh thực tế'}
+                                      </span>
+                                      {g.image_url && (
+                                        <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
+                                          {g.image_url}
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    {/* Upload box hỗ trợ Paste + Drag Drop */}
+                                    <div
+                                      tabIndex={0}
+                                      onDragOver={(e) => e.preventDefault()}
+                                      onDrop={async (e) => {
+                                        e.preventDefault();
+                                        const file = e.dataTransfer.files?.[0];
+                                        if (file) handleIeltsImageUpload(file, idx, gIdx, parsed);
+                                      }}
+                                      onPaste={async (e) => {
+                                        const file = e.clipboardData.files?.[0] || e.clipboardData.items[0]?.getAsFile();
+                                        if (file) {
+                                          e.preventDefault();
+                                          handleIeltsImageUpload(file, idx, gIdx, parsed);
+                                        }
+                                      }}
+                                      className="border-2 border-dashed border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-55 bg-white focus:bg-blue-50/10 rounded-xl p-4 text-center cursor-pointer hover:bg-slate-100/60 transition-all space-y-1.5 select-none outline-none"
+                                      onClick={(e) => {
+                                        // Nếu người dùng click vào vùng trống, chỉ kích hoạt input file.
+                                        // Nếu người dùng muốn Paste, họ click vào là đã được focus nhờ tabIndex={0}.
+                                        if (e.target === e.currentTarget || (e.target as HTMLElement).tagName === 'DIV' || (e.target as HTMLElement).tagName === 'P') {
+                                          const input = document.createElement('input');
+                                          input.type = 'file';
+                                          input.accept = 'image/*';
+                                          input.onchange = (eEvent) => {
+                                            const file = (eEvent.target as HTMLInputElement).files?.[0];
+                                            if (file) handleIeltsImageUpload(file, idx, gIdx, parsed);
+                                          };
+                                          input.click();
+                                        }
+                                      }}
+                                    >
+                                      {hasActualImage ? (
+                                        <div className="flex flex-col items-center gap-1.5">
+                                          <img src={g.image_url} className="max-h-24 object-contain rounded border bg-white" />
+                                          <p className="text-[10px] text-slate-500">Kéo thả hoặc Paste (Ctrl+V) ảnh khác để thay thế</p>
+                                        </div>
+                                      ) : (
+                                        <div className="py-2 text-slate-400">
+                                          <p className="font-semibold">⚠️ Kéo thả, Paste (Ctrl+V) hoặc click để chọn ảnh sơ đồ</p>
+                                          <p className="text-[10px] mt-0.5">Hệ thống sẽ lưu vào thư mục ielts-reading-pic</p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                } catch (e) {
+                  return null;
+                }
+              })()}
+
+            </div>
+          </div>
         ) : (
           <>
             {/* KHUNG SOẠN THẢO CHÍNH */}
@@ -1007,7 +1296,7 @@ ${JSON.stringify(parsed, null, 2)}`;
         )}
 
         {/* KHU VỰC CẤU HÌNH VIDEO GIẢI THÍCH ĐỘC LẬP (NON-DESTRUCTIVE ADD-ON) */}
-        {["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC"].includes(lesson.contentType) && (() => {
+        {["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC", "IELTS_READING"].includes(lesson.contentType) && (() => {
           // Trích xuất danh sách video (tự động chuẩn hóa để tương thích ngược)
           const rawExplanation = lesson.videoExplanation;
           const videosListRaw: any[] = Array.isArray(rawExplanation)

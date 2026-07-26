@@ -18,6 +18,7 @@ import ToeicPart7LoaderV2 from "@/components/Toeic/Part7/ToeicPart7Loader";
 import ToeicFullTestLoader from "@/components/Toeic/ToeicFullTestLoader";
 import { AdminEditProvider } from "@/components/Admin/AdminEditProvider";
 import YoutubeDictationPlayer from "@/components/Practice/YoutubeDictationPlayer";
+import IeltsReadingLoader from "@/components/Ielts/IeltsReadingLoader";
 
 export default async function LessonDetailPage({
   params,
@@ -136,7 +137,7 @@ export default async function LessonDetailPage({
   return (
     <div className="flex flex-col h-full bg-[#f8fafc]">
       {/* HEADER BÀI HỌC (LUÔN HIỂN THỊ) */}
-      <div className={`p-6 bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC"].includes(lesson.contentType as string) ? "pr-24" : ""}`}>
+      <div className={`p-6 bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC", "IELTS_READING"].includes(lesson.contentType as string) ? "pr-24" : ""}`}>
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
             {lesson.contentType === "VIDEO" ? <PlayCircle size={24} /> : <FileText size={24} />}
@@ -180,9 +181,8 @@ export default async function LessonDetailPage({
         </div>
       </div>
 
-      {/* VÙNG NỘI DUNG BÀI GIẢNG */}
-      <div className={`flex-1 ${lesson.contentType === "TOEIC_TEST" || lesson.contentType === "PART6_DYNAMIC" || lesson.contentType === "PART7_DYNAMIC" || lesson.contentType === "DYNAMIC_PART" ? "overflow-hidden pb-0 lg:pb-0" : "overflow-y-auto pb-4 lg:pb-10"} pt-4 px-4 lg:pt-0 lg:px-10 relative`}>
-        <div className={`mx-auto ${lesson.contentType === "TOEIC_TEST" || lesson.contentType === "PART6_DYNAMIC" || lesson.contentType === "PART7_DYNAMIC" || lesson.contentType === "DYNAMIC_PART" ? "h-full flex flex-col max-w-[1700px] overflow-hidden" : "max-w-[1200px]"}`}>
+      <div className={`flex-1 ${lesson.contentType === "TOEIC_TEST" || lesson.contentType === "PART6_DYNAMIC" || lesson.contentType === "PART7_DYNAMIC" || lesson.contentType === "DYNAMIC_PART" || lesson.contentType === "IELTS_READING" ? "overflow-hidden pb-0 lg:pb-0" : "overflow-y-auto pb-4 lg:pb-10"} pt-4 px-4 lg:pt-0 lg:px-10 relative`}>
+        <div className={`mx-auto ${lesson.contentType === "TOEIC_TEST" || lesson.contentType === "PART6_DYNAMIC" || lesson.contentType === "PART7_DYNAMIC" || lesson.contentType === "DYNAMIC_PART" || lesson.contentType === "IELTS_READING" ? "h-full flex flex-col max-w-[1700px] overflow-hidden" : "max-w-[1200px]"}`}>
 
           {hasAccess ? (
             /* --- NẾU CÓ QUYỀN: HIỆN NỘI DUNG THẬT --- */
@@ -271,6 +271,12 @@ export default async function LessonDetailPage({
                     nextLessonId={nextLesson?.id}
                     jumpToQ={q}
                     videoExplanation={normalizedExplanation}
+                  />
+                ) : lesson.contentType === "IELTS_READING" ? (
+                  <IeltsReadingLoader
+                    lessonId={lesson.id}
+                    courseId={courseId}
+                    nextLessonId={nextLesson?.id}
                   />
                 ) : lesson.contentType === "YOUTUBE_DICTATION" ? (
                   <YoutubeDictationPlayer
