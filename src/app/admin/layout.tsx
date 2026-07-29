@@ -62,6 +62,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <Link href="/admin/part5-ingestion" className="block p-3 rounded-lg hover:bg-gray-100 font-medium text-blue-600 truncate border-t border-slate-50 mt-4 pt-4">
             ✨ Nhập dữ liệu Part 5 (AI)
           </Link>
+          <Link href="/admin/word-families" className="block p-3 rounded-lg hover:bg-gray-100 font-medium text-purple-600 truncate mt-2">
+            ☁️ Quản lý Đám mây từ
+          </Link>
         </nav>
 
         {/* RESIZER HANDLE */}

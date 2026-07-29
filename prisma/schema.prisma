@@ -427,3 +427,16 @@ model VocabDeck {
   @@index([userId])
 }
 
+model WordFamily {
+  id            String   @id @default(cuid())
+  key           String
+  part          Int      @default(5)
+  words         String[] // Array of strings (words in the family)
+  originalValue String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([key, part])
+  @@index([key])
+  @@index([part])
+}

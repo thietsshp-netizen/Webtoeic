@@ -9,7 +9,7 @@ import {
   CheckCircleIcon, EyeIcon, ClockIcon, FlagIcon, TrophyIcon, ArrowRightOnRectangleIcon,
   XMarkIcon
 } from '@heroicons/react/24/solid';
-import { Send, LayoutDashboard, ChevronRight, Play, Pause, Volume2, HelpCircle, CheckCircle2, XCircle, Info, Lightbulb, Flag, ChevronsLeftRight, Star } from "lucide-react";
+import { Send, LayoutDashboard, ChevronRight, Play, Pause, Volume2, HelpCircle, CheckCircle2, XCircle, Info, Lightbulb, Flag, ChevronsLeftRight, Star, Check, X, Loader2, Edit2, Trash2, Plus } from "lucide-react";
 import { AdminInlineEditor } from "@/components/Admin/AdminInlineEditor";
 import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
 import confetti from 'canvas-confetti';
@@ -18,7 +18,7 @@ import FlagSelector, { FlagColor } from '../Player/FlagSelector';
 import { startToeicPartTour } from './toeicTour';
 import FloatingVideoExplanationPlayer from '../Player/FloatingVideoExplanationPlayer';
 import { useRouter } from 'next/navigation';
-import part1WordFamiliesData from "@/data/part1_word_families.json";
+import part1WordFamiliesDataStatic from "@/data/part1_word_families.json";
 import { useDictionary } from "@/components/Dictionary/DictionaryProvider";
 
 function parseOptionsFromText(text: string) {
@@ -508,10 +508,22 @@ export default function ToeicPart1Player({
     });
   }, [rawData]);
 
+  const [wordFamiliesData, setWordFamiliesData] = useState<any[]>(part1WordFamiliesDataStatic);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
   const [activeWordFamily, setActiveWordFamily] = useState<any[]>([]);
   const [popoverPos, setPopoverPos] = useState({ x: 100, y: 100 });
+
+  useEffect(() => {
+    fetch("/api/word-families?part=1")
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && res.data) {
+          setWordFamiliesData(res.data);
+        }
+      })
+      .catch((err) => console.error("Lỗi tải word families từ DB:", err));
+  }, []);
   const { openDictionary } = useDictionary();
 
   const renderInteractiveText = (text: string, highlightPhrase?: string) => {
@@ -658,8 +670,8 @@ export default function ToeicPart1Player({
       const cleanText = text.trim();
       let bestWordFams: any[] = [];
 
-      for (let i = 0; i < part1WordFamiliesData.length; i++) {
-        const fam = part1WordFamiliesData[i];
+      for (let i = 0; i < wordFamiliesData.length; i++) {
+        const fam = wordFamiliesData[i];
         if (!fam.words) continue;
 
         const foundMember = fam.words.find((member: string) => {
@@ -736,7 +748,7 @@ export default function ToeicPart1Player({
 
     const candidates: MatchCandidate[] = [];
 
-    part1WordFamiliesData.forEach((fam, dbIdx) => {
+    wordFamiliesData.forEach((fam, dbIdx) => {
       if (!fam.words) return;
       fam.words.forEach((member: string) => {
         const isPhrase = member.includes(' ');
@@ -834,7 +846,7 @@ export default function ToeicPart1Player({
       const wordLower = match.matchedWord.toLowerCase();
       const matchedFamsForWord: any[] = [];
 
-      part1WordFamiliesData.forEach((fam: any) => {
+      wordFamiliesData.forEach((fam: any) => {
         if (!fam.words) return;
         const hasWord = fam.words.some((m: string) => {
           const mLower = m.toLowerCase();
@@ -2912,6 +2924,7 @@ export default function ToeicPart1Player({
 }
 
 interface WordFamilyEntry {
+  id?: string;
   key: string;
   originalValue: string;
   type: string;
@@ -2926,38 +2939,229 @@ interface DraggablePopoverProps {
   onPositionChange: (pos: { x: number; y: number }) => void;
 }
 
-function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }: DraggablePopoverProps) {
-  const wordFamily = wordFamilies[0];
+function WordFamilyPopover({ wordFamilies: initialWordFamilies, position, onClose, onPositionChange }: DraggablePopoverProps) {
+  const { isAdminMode } = useAdminEdit();
+  const [wordFamilies, setWordFamilies] = useState(initialWordFamilies);
+  
+  useEffect(() => {
+    setWordFamilies(initialWordFamilies);
+  }, [initialWordFamilies]);
+
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingField, setEditingField] = useState<"key" | "line" | null>(null);
+  const [editingLineIdx, setEditingLineIdx] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const startEditKey = (id: string, currentValue: string) => {
+    setEditingId(id);
+    setEditingField("key");
+    setEditingLineIdx(null);
+    setEditValue(currentValue);
+  };
+
+  const startLineEdit = (id: string, idx: number, currentValue: string) => {
+    setEditingId(id);
+    setEditingField("line");
+    setEditingLineIdx(idx);
+    setEditValue(currentValue);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditingField(null);
+    setEditingLineIdx(null);
+    setEditValue("");
+  };
+
+  const saveKeyEdit = async (id: string) => {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/admin/update-content", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          target: "wordFamily",
+          id,
+          field: "key",
+          value: editValue,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setWordFamilies(prev => prev.map(fam => {
+          if (fam.id === id) {
+            return { ...fam, key: editValue };
+          }
+          return fam;
+        }));
+        cancelEdit();
+      } else {
+        alert(data.error || "Lỗi lưu dữ liệu");
+      }
+    } catch (err: any) {
+      alert(err.message || "Lỗi kết nối");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const saveLineEdit = async (id: string, idx: number, originalValue: string) => {
+    setSaving(true);
+    try {
+      const lines = originalValue.split('\n');
+      if (idx >= lines.length) {
+        lines.push(editValue);
+      } else {
+        lines[idx] = editValue;
+      }
+      const newValue = lines.filter(line => line.trim().length > 0 || line === "").join('\n');
+
+      const res = await fetch("/api/admin/update-content", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          target: "wordFamily",
+          id,
+          field: "originalValue",
+          value: newValue,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setWordFamilies(prev => prev.map(fam => {
+          if (fam.id === id) {
+            return { ...fam, originalValue: newValue };
+          }
+          return fam;
+        }));
+        cancelEdit();
+      } else {
+        alert(data.error || "Lỗi lưu dữ liệu");
+      }
+    } catch (err: any) {
+      alert(err.message || "Lỗi kết nối");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const deleteLine = async (id: string, idx: number, originalValue: string) => {
+    if (!confirm("Bạn có chắc chắn muốn xóa dòng này không?")) return;
+    setSaving(true);
+    try {
+      const lines = originalValue.split('\n');
+      const filteredLines = lines.filter((_, i) => i !== idx);
+      const newValue = filteredLines.join('\n');
+
+      const res = await fetch("/api/admin/update-content", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          target: "wordFamily",
+          id,
+          field: "originalValue",
+          value: newValue,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setWordFamilies(prev => prev.map(fam => {
+          if (fam.id === id) {
+            return { ...fam, originalValue: newValue };
+          }
+          return fam;
+        }));
+        cancelEdit();
+      } else {
+        alert(data.error || "Lỗi lưu dữ liệu");
+      }
+    } catch (err: any) {
+      alert(err.message || "Lỗi kết nối");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const startAddLine = (id: string, originalValue: string) => {
+    const lines = originalValue.split('\n');
+    startLineEdit(id, lines.length, "");
+  };
+
+  const speak = async (text: string, type: 'uk' | 'us' = 'us') => {
+    if (typeof window === 'undefined') return;
+
+    const fallbackSpeak = (t: string) => {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(t);
+      const voices = window.speechSynthesis.getVoices();
+      const voice = voices.find(v => {
+        if (type === 'uk') return v.lang === 'en-GB';
+        return v.lang === 'en-US' || v.lang === 'en_US';
+      }) || voices.find(v => v.lang.startsWith('en'));
+      if (voice) utterance.voice = voice;
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    };
+
+    const cleanSpeechText = text.replace(/\s*\([^)]*\)/g, '').trim();
+    if (cleanSpeechText.includes(' ')) {
+      fallbackSpeak(cleanSpeechText);
+      return;
+    }
+
+    const cleanWord = cleanSpeechText.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const cacheKey = `${cleanWord}_${type}`;
+
+    if (audioCache.has(cacheKey)) {
+      const cachedUrl = audioCache.get(cacheKey)!;
+      if (cachedUrl === 'tts') {
+        fallbackSpeak(cleanSpeechText);
+      } else {
+        const audio = new Audio(cachedUrl);
+        audio.play().catch(() => fallbackSpeak(cleanSpeechText));
+      }
+      return;
+    }
+
+    try {
+      const audioUrl = `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(cleanWord)}&type=${type === 'uk' ? '1' : '2'}`;
+      audioCache.set(cacheKey, audioUrl);
+      const audio = new Audio(audioUrl);
+      await audio.play();
+    } catch (err) {
+      fallbackSpeak(cleanSpeechText);
+    }
+  };
+
   const popoverRef = useRef<HTMLDivElement>(null);
-  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (target.closest('.popover-header')) {
-      e.preventDefault();
-      setDragStart({ x: e.clientX, y: e.clientY });
-      setStartPos({ x: position.x, y: position.y });
-    }
+    if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('input')) return;
+    setIsDragging(true);
+    setDragStart({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    });
   };
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (dragStart) {
-        const dx = e.clientX - dragStart.x;
-        const dy = e.clientY - dragStart.y;
-        onPositionChange({
-          x: startPos.x + dx,
-          y: startPos.y + dy
-        });
-      }
+      if (!isDragging) return;
+      onPositionChange({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
     };
 
     const handleMouseUp = () => {
-      setDragStart(null);
+      setIsDragging(false);
     };
 
-    if (dragStart) {
+    if (isDragging) {
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseup', handleMouseUp);
     }
@@ -2966,201 +3170,32 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [dragStart, startPos, onPositionChange]);
+  }, [isDragging, dragStart, onPositionChange]);
 
-  const formatContent = (val: string, key: string, type: string, roots?: string[], displayTitle?: string, matchedWord?: string) => {
-    const lines = val.split('\n');
+  const getDisplayTitle = (keyStr: string, matchedWord?: string): string => {
+    if (!matchedWord) return keyStr.split(/[,/]/)[0].trim();
 
-    // Parse "english word/phrase (translation)" pairs from a text segment and render as 2-column grid
-    const renderSegment = (textStr: string, termLower: string): React.ReactNode => {
-      const regex = /([a-zA-Z0-9\s''\/↔\-]+?)\s*(\((?:"[^"]*"|[^)]+)\))/g;
-      const pairs: { eng: string; trans: string; isMatch: boolean }[] = [];
-      let lastIndex = 0;
-      let prefixText = '';
-      let match;
+    const mLower = matchedWord.toLowerCase();
+    const items = keyStr.split(/[,/]/).map(item => item.trim());
 
-      regex.lastIndex = 0;
-      while ((match = regex.exec(textStr)) !== null) {
-        const engWord = match[1].trim();
-        const translation = match[2];
-
-        if (pairs.length === 0 && match.index > lastIndex) {
-          // Strip bracket delimiters [ ] （ ） and normalize known label text
-          prefixText = textStr.substring(lastIndex, match.index)
-            .replace(/^\s*[\[（]/, '')
-            .replace(/[\]）]\s*$/, '')
-            .replace(/Đồng nghĩa TOEIC hay gặp/gi, 'Các từ/cụm từ tương tự')
-            .trim();
-        }
-
-        const isMatch = !!(termLower && (
-          engWord.toLowerCase() === termLower.toLowerCase() ||
-          engWord.toLowerCase().includes(termLower.toLowerCase()) ||
-          termLower.toLowerCase().includes(engWord.toLowerCase())
-        ));
-
-        pairs.push({ eng: engWord, trans: translation, isMatch });
-        lastIndex = regex.lastIndex;
+    const isMatch = (member: string, target: string): boolean => {
+      const memberLower = member.toLowerCase();
+      if (memberLower === target) return true;
+      const stem = memberLower.endsWith('e') ? memberLower.slice(0, -1) : memberLower;
+      if (target.startsWith(stem)) {
+        const suffix = target.substring(stem.length);
+        return /^(s|es|ed|ing|er|est|ly|y|ely)?$/.test(suffix);
       }
-
-      // Strip trailing bracket delimiter from suffix
-      const suffixText = (lastIndex < textStr.length ? textStr.substring(lastIndex) : '')
-        .replace(/^\s*[\]）]\s*$/, '').trim();
-
-      if (pairs.length === 0) {
-        return <React.Fragment key="raw">{textStr}</React.Fragment>;
-      }
-
-      return (
-        <React.Fragment key="grid">
-          {prefixText && <span className="text-teal-700 font-medium">{prefixText}</span>}
-          <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 mt-1">
-            {pairs.map((p, i) => (
-              <div key={i} className="flex items-start gap-1 min-w-0">
-                {p.isMatch ? (
-                  <span
-                    onClick={() => speak(p.eng)}
-                    className="text-amber-600 font-bold cursor-pointer hover:underline inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap"
-                  >
-                    {p.eng}
-                    <Volume2 className="w-3 h-3 text-amber-500/70 shrink-0" />
-                  </span>
-                ) : (
-                  <strong
-                    onClick={() => speak(p.eng)}
-                    className="font-extrabold text-slate-900 cursor-pointer hover:underline inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap"
-                  >
-                    {p.eng}
-                    <Volume2 className="w-3 h-3 text-slate-400/70 shrink-0" />
-                  </strong>
-                )}
-                <span className="text-slate-500 font-normal text-xs leading-snug">{p.trans}</span>
-              </div>
-            ))}
-          </div>
-          {suffixText && <span className="text-slate-500">{suffixText}</span>}
-        </React.Fragment>
-      );
+      return false;
     };
 
-    const renderRichText = (raw: string, termLower: string): React.ReactNode[] => {
-      const bracketSplit = /([\[（][^\]）]*[\]）])/g;
-      const bracketParts = raw.split(bracketSplit);
-
-      const result: React.ReactNode[] = [];
-      bracketParts.forEach((seg, bIdx) => {
-        const isBracket = (seg.startsWith('[') && seg.endsWith(']')) || (seg.startsWith('（') && seg.endsWith('）'));
-
-        if (isBracket) {
-          result.push(
-            <span key={`br-${bIdx}`} className="text-teal-600 text-[0.9em] font-normal">
-              {renderSegment(seg, termLower)}
-            </span>
-          );
-        } else {
-          result.push(
-            <React.Fragment key={`seg-${bIdx}`}>
-              {renderSegment(seg, termLower)}
-            </React.Fragment>
-          );
-        }
-      });
-
-      return result;
-    };
-
-    return lines.map((line: string, idx: number) => {
-      const trimmed = line.trim();
-      if (trimmed.length === 0) return null;
-
-      let lineClass = "text-slate-700 text-sm leading-relaxed my-1.5 font-medium";
-      const lowerTrimmed = trimmed.toLowerCase();
-      if (
-        lowerTrimmed.startsWith('gốc:') ||
-        lowerTrimmed.startsWith('goc:') ||
-        lowerTrimmed.startsWith('tiền tố:') ||
-        lowerTrimmed.startsWith('tien to:') ||
-        lowerTrimmed.startsWith('hậu tố:') ||
-        lowerTrimmed.startsWith('hau to:')
-      ) {
-        lineClass = "text-red-600 text-sm leading-relaxed my-1.5 font-bold";
-      } else if (trimmed.startsWith('=') || trimmed.startsWith('~')) {
-        lineClass = "text-emerald-700 text-sm leading-relaxed my-1.5 font-bold";
-      } else if (trimmed.startsWith('><') || trimmed.includes('↔')) {
-        lineClass = "text-red-600 text-sm leading-relaxed my-1.5 font-bold";
-      } else if (trimmed.includes('->') || trimmed.startsWith('-')) {
-        lineClass = "text-indigo-700 text-sm leading-relaxed my-1.5 font-semibold";
-      }
-
-      const searchTerms = type === 'root' && roots
-        ? roots
-        : [matchedWord ? matchedWord.toLowerCase() : (displayTitle ? displayTitle.toLowerCase() : key.replace(/[\/,]/g, ' ').split(' ')[0])];
-
-      const isBullet = trimmed.startsWith('•') || trimmed.startsWith('*') || trimmed.startsWith('·');
-
-      const firstTerm = searchTerms[0] || '';
-      const termLower = firstTerm.toLowerCase();
-      const termRegex = firstTerm.length >= 2
-        ? (type === 'root'
-          ? new RegExp(`(${firstTerm})`, 'gi')
-          : new RegExp(`\\b(${firstTerm})\\b`, 'gi'))
-        : null;
-
-      if (isBullet) {
-        const bulletMatch = trimmed.match(/^([•*·]\s*)([\w\s/,'-]+?)(\s*(?:v|n|adj|adv|prep|conj|phr|phrase)?\.?:)([\s\S]*)/);
-        if (bulletMatch) {
-          const [, marker, exWord, colon, rest] = bulletMatch;
-          return (
-            <div key={idx} className={lineClass}>
-              <span>{marker}</span>
-              <span
-                onClick={() => speak(exWord.trim())}
-                className="font-bold text-slate-900 cursor-pointer hover:underline inline-flex items-center gap-0.5"
-              >
-                {exWord}
-                <Volume2 className="w-3.5 h-3.5 text-slate-400/70 shrink-0" />
-              </span>
-              <span className="font-semibold text-slate-600">{colon}</span>
-              {renderRichText(rest, termLower)}
-            </div>
-          );
-        }
-      }
-
-      const richParts = renderRichText(line, termLower);
-      return <div key={idx} className={lineClass}>{richParts}</div>;
-    });
-  };
-
-  const getDisplayTitle = (key: string, matchedWord?: string): string => {
-    if (!matchedWord) return key;
-    const clean = key.replace(/\s*\([^)]*\)/g, '');
-    const items = clean.split(/[,/]/).map(item => item.trim());
-
-    if (items.length === 1) {
-      return items[0].charAt(0).toUpperCase() + items[0].slice(1);
-    }
-
-    const target = matchedWord.toLowerCase().trim();
-    let bestItem = items[0];
+    let bestItem = items[0] || '';
     let bestScore = -1;
 
     items.forEach(item => {
-      const itemLower = item.toLowerCase();
-      if (itemLower === target) {
-        bestItem = item;
-        bestScore = 100;
-        return;
-      }
-
-      if (target.startsWith(itemLower) || itemLower.startsWith(target)) {
-        const score = Math.min(itemLower.length, target.length) / Math.max(itemLower.length, target.length);
-        if (score > bestScore) {
-          bestScore = score;
-          bestItem = item;
-        }
-      } else if (target.includes(itemLower) || itemLower.includes(target)) {
-        const score = 0.5 * (Math.min(itemLower.length, target.length) / Math.max(itemLower.length, target.length));
+      const cleanItem = item.replace(/\s*\([^)]*\)/g, '').trim();
+      if (isMatch(cleanItem, mLower)) {
+        const score = cleanItem.length;
         if (score > bestScore) {
           bestScore = score;
           bestItem = item;
@@ -3171,11 +3206,218 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
     return bestItem.charAt(0).toUpperCase() + bestItem.slice(1);
   };
 
+  const formatLine = (line: string, idx: number, key: string, type: string, roots?: string[], displayTitle?: string) => {
+    let cleanLine = line.trim();
+    if (cleanLine.length === 0) return null;
+
+    // Strip leading and trailing brackets from the entire line if they wrap the line
+    if (cleanLine.startsWith('[') && cleanLine.endsWith(']')) {
+      cleanLine = cleanLine.slice(1, -1);
+    }
+
+
+
+    let lineClass = "text-slate-700 text-sm leading-relaxed my-1.5 font-medium";
+    const lowerTrimmed = cleanLine.toLowerCase();
+    if (
+      lowerTrimmed.startsWith('gốc:') || 
+      lowerTrimmed.startsWith('goc:') || 
+      lowerTrimmed.startsWith('tiền tố:') || 
+      lowerTrimmed.startsWith('tien to:') ||
+      lowerTrimmed.startsWith('hậu tố:') || 
+      lowerTrimmed.startsWith('hau to:')
+    ) {
+      lineClass = "text-red-600 text-sm leading-relaxed my-1.5 font-bold";
+    } else if (cleanLine.startsWith('=') || cleanLine.startsWith('~')) {
+      lineClass = "text-emerald-700 text-sm leading-relaxed my-1.5 font-bold";
+    } else if (cleanLine.startsWith('><')) {
+      lineClass = "text-red-600 text-sm leading-relaxed my-1.5 font-bold";
+    } else if (cleanLine.includes('->') || cleanLine.startsWith('-')) {
+      lineClass = "text-indigo-700 text-sm leading-relaxed my-1.5 font-semibold";
+    }
+
+    const searchTerms = type === 'root' && roots
+      ? roots
+      : [displayTitle ? displayTitle.toLowerCase() : key.replace(/[\/,]/g, ' ').split(' ')[0]];
+    const firstTerm = searchTerms[0] || '';
+    const termLower = firstTerm.toLowerCase();
+    const termRegex = firstTerm.length >= 2
+      ? (type === 'root'
+        ? new RegExp(`(${firstTerm})`, 'gi')
+        : new RegExp(`\\b(${firstTerm})\\b`, 'gi'))
+      : null;
+
+    const vietnameseRegex = /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễđìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹ]/i;
+
+    const highlightTerm = (text: string) => {
+      if (!termRegex || !text) return text;
+      termRegex.lastIndex = 0;
+      const parts = text.split(termRegex);
+      return parts.map((part, i) => {
+        const formattedPart = part.replace(/\//g, '/\u200b');
+        if (part.toLowerCase() === termLower) {
+          return (
+            <span key={i} className="text-amber-600 font-bold">
+              {formattedPart}
+            </span>
+          );
+        }
+        return formattedPart;
+      });
+    };
+
+    // Check if it is a list or synonym line that should be displayed in a 2-column grid
+    const isExampleLine = cleanLine.startsWith('→') || cleanLine.startsWith('->') || cleanLine.startsWith('-');
+    const isGridLine = !isExampleLine && (cleanLine.startsWith('=') || cleanLine.startsWith('~') || cleanLine.startsWith('><') || cleanLine.includes('↔') || cleanLine.includes('|'));
+    if (isGridLine) {
+      const rawItems = cleanLine.includes('↔') 
+        ? cleanLine.split('↔') 
+        : (cleanLine.includes('|') ? cleanLine.split('|') : cleanLine.split(/,(?![^(]*\))/));
+      
+      let prefix = "";
+      const prefixMatch = rawItems[0].match(/^([=~><]+\s*)/);
+      if (prefixMatch) {
+        prefix = prefixMatch[1];
+        rawItems[0] = rawItems[0].slice(prefix.length);
+      }
+
+      return (
+        <div className={lineClass}>
+          {prefix && <span className="font-bold text-slate-500 mr-2">{prefix}</span>}
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-1">
+            {rawItems.map((item, i) => {
+              const word = item.trim();
+              if (!word) return null;
+
+              const tokens = word.split(/(\[.*?\]|\(.*?\))/g);
+              return (
+                <div key={i} className="flex items-start gap-1 min-w-0">
+                  {tokens.map((tok, tIdx) => {
+                    if (!tok) return null;
+                    if ((tok.startsWith('[') && tok.endsWith(']')) || (tok.startsWith('(') && tok.endsWith(')'))) {
+                      let displayTok = tok;
+                      if (displayTok.startsWith('[') && displayTok.endsWith(']')) {
+                        displayTok = displayTok.slice(1, -1);
+                        return (
+                          <span key={tIdx} className="text-teal-600 text-[0.85em] font-normal px-1 bg-teal-50/50 rounded whitespace-normal">
+                            {displayTok}
+                          </span>
+                        );
+                      }
+                      return (
+                        <span key={tIdx} className="text-slate-500 font-normal text-xs italic">
+                          {displayTok}
+                        </span>
+                      );
+                    }
+                    
+                    const hasVietnamese = vietnameseRegex.test(tok);
+                    const hasEnglishLetters = /[a-zA-Z0-9]/.test(tok);
+                    if (hasEnglishLetters && !hasVietnamese) {
+                      const cleanSpeech = tok.replace(/\(.*?\)/g, '').trim();
+                      return (
+                        <span
+                          key={tIdx}
+                          onClick={() => speak(cleanSpeech)}
+                          className="cursor-pointer hover:underline text-slate-900 font-semibold inline-block animate-in fade-in"
+                          title={`Nghe: ${cleanSpeech}`}
+                        >
+                          {highlightTerm(tok)}
+                          <Volume2 className="w-3.5 h-3.5 text-slate-400/80 hover:text-blue-600 transition-colors shrink-0 inline-block align-middle ml-1" />
+                        </span>
+                      );
+                    }
+                    return <span key={tIdx} className="inline">{highlightTerm(tok)}</span>;
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    // Default/Normal Line rendering (1 column)
+    const tokens = cleanLine.split(/(\|\||[,;=~:|]|\->|↔|\[.*?\]|\(.*?\))/g);
+    return (
+      <div className={`${lineClass} inline-block w-full`}>
+        {tokens.map((tok: string, tIdx: number) => {
+          if (!tok) return null;
+
+          if ((tok.startsWith('[') && tok.endsWith(']')) || (tok.startsWith('(') && tok.endsWith(')'))) {
+            let displayTok = tok;
+            if (displayTok.startsWith('[') && displayTok.endsWith(']')) {
+              displayTok = displayTok.slice(1, -1);
+              return (
+                <span key={tIdx} className="text-teal-600 text-[0.85em] font-normal px-1 bg-teal-50/50 rounded">
+                  {displayTok}
+                </span>
+              );
+            }
+            return (
+              <span key={tIdx} className="text-slate-500 font-normal text-xs italic">
+                {displayTok}
+              </span>
+            );
+          }
+
+          if (/^(\|\||[,;=~:|]|\->|↔)$/.test(tok.trim())) {
+            return (
+              <span key={tIdx} className="text-slate-400 font-semibold mx-1">
+                {tok}
+              </span>
+            );
+          }
+
+          const trimmedTok = tok.trim();
+          if (trimmedTok.length === 0) {
+            return <span key={tIdx}>&nbsp;</span>;
+          }
+          const bulletMatch = tok.match(/^([•*·\-]+\s*)(.*)/);
+          let prefix = "";
+          let coreText = tok;
+          if (bulletMatch) {
+            prefix = bulletMatch[1];
+            coreText = bulletMatch[2];
+          }
+          const trimmedCore = coreText.trim();
+          if (trimmedCore.length === 0) {
+            return <span key={tIdx}>{prefix}</span>;
+          }
+          const hasVietnamese = vietnameseRegex.test(trimmedCore);
+          const hasEnglishLetters = /[a-zA-Z0-9]/.test(trimmedCore);
+          if (hasEnglishLetters && !hasVietnamese) {
+            const cleanSpeech = trimmedCore.replace(/\(.*?\)/g, '').trim();
+            return (
+              <span key={tIdx} className="inline">
+                {prefix && <span className="text-slate-400 font-bold mr-0.5">{prefix}</span>}
+                <span
+                  onClick={() => speak(cleanSpeech)}
+                  className="cursor-pointer hover:underline text-slate-900 font-semibold inline"
+                  title={`Nghe: ${cleanSpeech}`}
+                >
+                  {highlightTerm(coreText)}
+                  <Volume2 className="w-3.5 h-3.5 text-slate-400/80 hover:text-blue-600 transition-colors shrink-0 inline-block align-middle ml-1" />
+                </span>
+              </span>
+            );
+          }
+          return (
+            <span key={tIdx} className="inline">
+              {prefix && <span className="text-slate-400 font-bold mr-0.5">{prefix}</span>}
+              {highlightTerm(coreText)}
+            </span>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <div
       ref={popoverRef}
       style={{ left: `${position.x}px`, top: `${position.y}px` }}
-      className="fixed z-[9999] w-max max-w-[min(680px,90vw)] max-h-[440px] overflow-hidden bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/80 flex flex-col animate-in zoom-in-95 duration-200"
+      className="fixed z-[9999] w-fit min-w-[350px] max-w-[650px] max-h-[400px] overflow-hidden bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/80 flex flex-col animate-in zoom-in-95 duration-200"
     >
       <div
         onMouseDown={handleMouseDown}
@@ -3183,38 +3425,172 @@ function WordFamilyPopover({ wordFamilies, position, onClose, onPositionChange }
       >
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-          <span className="font-bold text-xs uppercase tracking-wider text-slate-500">Mở rộng vốn từ Part 1</span>
+          <span className="font-bold text-xs uppercase tracking-wider text-slate-500">Mở rộng vốn từ</span>
         </div>
         <button
           onClick={onClose}
           className="p-1 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
         >
-          <XMarkIcon className="w-4 h-4" />
+          <X className="w-4 h-4" />
         </button>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 select-text webtoeic-scroll-container">
         {wordFamilies.map((fam, famIdx) => {
-          const displayTitle = fam.key;
+          const displayTitle = getDisplayTitle(fam.key, fam.matchedWord);
           const isRoot = fam.type === 'root' || (typeof fam.originalValue === 'string' && fam.originalValue.trimStart().startsWith('Gốc:'));
+          const lines = (fam.originalValue || "").split('\n');
+
           return (
-            <div key={famIdx}>
+            <div key={famIdx} className="relative">
               {famIdx > 0 && (
                 <div className="flex items-center gap-2 my-3">
                   <div className="flex-1 h-px bg-slate-200" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Nhóm khác</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Gốc từ</span>
                   <div className="flex-1 h-px bg-slate-200" />
                 </div>
               )}
-              <h4 className={`text-lg font-black mb-2 border-b pb-1.5 capitalize ${isRoot && famIdx > 0 ? 'text-amber-700 border-amber-100' : 'text-slate-800 border-slate-100'}`}>
-                {displayTitle}
-              </h4>
-              <div className="space-y-1">
-                {formatContent(fam.originalValue, fam.key, fam.type, fam.roots, displayTitle, fam.matchedWord)}
+              
+              {/* Inline Key Edit */}
+              <div className="group/title relative">
+                {editingId === fam.id && editingField === "key" ? (
+                  <div className="flex items-center gap-2 mb-2">
+                    <input
+                      type="text"
+                      className="w-full px-2 py-1 text-sm border-2 border-indigo-500 rounded-lg outline-none font-medium text-slate-800"
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      autoFocus
+                      disabled={saving}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") saveKeyEdit(fam.id!);
+                        if (e.key === "Escape") cancelEdit();
+                      }}
+                    />
+                    <button
+                      onClick={() => saveKeyEdit(fam.id!)}
+                      disabled={saving}
+                      className="p-1 bg-emerald-500 text-white rounded hover:bg-emerald-600 transition disabled:opacity-50"
+                    >
+                      {saving ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
+                    </button>
+                    <button
+                      onClick={cancelEdit}
+                      disabled={saving}
+                      className="p-1 bg-slate-100 text-slate-500 rounded hover:bg-slate-200 transition"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <h4 className={`text-lg font-black mb-2 border-b pb-1.5 capitalize flex items-center justify-between ${isRoot && famIdx > 0 ? 'text-amber-700 border-amber-100' : 'text-slate-800 border-slate-100'}`}>
+                    <span>{displayTitle}</span>
+                    {isAdminMode && fam.id && (
+                      <button
+                        onClick={() => startEditKey(fam.id!, fam.key)}
+                        className="opacity-0 group-hover/title:opacity-100 text-slate-400 hover:text-indigo-600 p-1 rounded-md transition duration-150 animate-in fade-in"
+                        title="Sửa nhóm từ (Key)"
+                      >
+                        <Edit2 size={13} />
+                      </button>
+                    )}
+                  </h4>
+                )}
               </div>
+
+              {/* Line-by-Line Edit & Content Rendering */}
+              <div className="space-y-1">
+                {lines.map((lineText, lineIdx) => {
+                  const isEditingThisLine = editingId === fam.id && editingField === "line" && editingLineIdx === lineIdx;
+
+                  if (isEditingThisLine) {
+                    return (
+                      <div key={lineIdx} className="flex items-center gap-2 my-1 animate-in slide-in-from-top-1 duration-150">
+                        <input
+                          type="text"
+                          className="flex-1 px-2.5 py-1 text-sm border-2 border-indigo-500 rounded-lg outline-none font-medium text-slate-850"
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          autoFocus
+                          disabled={saving}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") saveLineEdit(fam.id!, lineIdx, fam.originalValue);
+                            if (e.key === "Escape") cancelEdit();
+                          }}
+                        />
+                        <button
+                          onClick={() => saveLineEdit(fam.id!, lineIdx, fam.originalValue)}
+                          disabled={saving}
+                          className="p-1 bg-emerald-500 text-white rounded hover:bg-emerald-600 transition disabled:opacity-50"
+                          title="Lưu"
+                        >
+                          {saving ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />}
+                        </button>
+                        <button
+                          onClick={cancelEdit}
+                          disabled={saving}
+                          className="p-1 bg-slate-100 text-slate-500 rounded hover:bg-slate-200 transition"
+                          title="Hủy"
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div key={lineIdx} className="group/line relative pr-8">
+                      {formatLine(lineText, lineIdx, fam.key, fam.type, fam.roots, displayTitle)}
+                      {isAdminMode && fam.id && (
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover/line:opacity-100 transition-all duration-150 flex items-center gap-0.5 bg-white pl-1.5">
+                          <button
+                            onClick={() => startLineEdit(fam.id!, lineIdx, lineText)}
+                            className="text-slate-400 hover:text-indigo-600 p-0.5 rounded hover:bg-slate-100 transition"
+                            title="Sửa dòng này"
+                          >
+                            <Edit2 size={11} />
+                          </button>
+                          <button
+                            onClick={() => deleteLine(fam.id!, lineIdx, fam.originalValue)}
+                            className="text-slate-400 hover:text-red-600 p-0.5 rounded hover:bg-slate-100 transition"
+                            title="Xóa dòng này"
+                          >
+                            <Trash2 size={11} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Add New Line Control */}
+              {isAdminMode && fam.id && (
+                <div className="mt-3 pt-2 border-t border-dashed border-slate-150 flex justify-end">
+                  <button
+                    onClick={() => startAddLine(fam.id!, fam.originalValue)}
+                    className="flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 px-2 py-1 rounded-lg transition"
+                  >
+                    <Plus className="w-3 h-3" />
+                    Thêm dòng giải nghĩa
+                  </button>
+                </div>
+              )}
+
             </div>
           );
         })}
+        {editingId && (
+          <div className="mt-4 p-3 bg-slate-50 border border-slate-200/60 rounded-xl text-[11px] text-slate-600 space-y-1.5 leading-relaxed font-medium animate-in fade-in duration-200 shrink-0">
+            <div className="font-bold text-slate-700 flex items-center gap-1">💡 Hướng dẫn soạn thảo trực quan:</div>
+            <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-1 text-slate-500">
+              <div>• <span className="font-bold text-slate-700">Từ vựng + nghĩa:</span> <code className="px-1 bg-amber-50 text-amber-700 rounded font-semibold">look (nhìn)</code> (Tự tạo loa nghe)</div>
+              <div>• <span className="font-bold text-slate-700">Chia cột:</span> Dùng dấu <code className="px-1 bg-teal-50 text-teal-700 rounded font-semibold">|</code> hoặc <code className="px-1 bg-emerald-50 text-emerald-700 rounded font-semibold">=</code></div>
+              <div>• <span className="font-bold text-slate-700">Từ trái nghĩa:</span> Bắt đầu bằng <code className="px-1 bg-red-50 text-red-700 rounded font-semibold">&gt;&lt;</code></div>
+              <div>• <span className="font-bold text-slate-700">Ghi chú nhỏ:</span> Đặt trong ngoặc vuông <code className="px-1 bg-indigo-50 text-indigo-700 rounded font-semibold">[ghi chú]</code></div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

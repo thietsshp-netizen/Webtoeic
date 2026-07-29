@@ -197,6 +197,29 @@ export async function PUT(req: Request) {
         }
       }
     }
+    // 3. TARGET WORDFAMILY
+    else if (target === "wordFamily") {
+      const family = await prisma.wordFamily.findUnique({ where: { id } });
+      if (!family) return NextResponse.json({ success: false, error: "Word Family not found" }, { status: 404 });
+
+      if (field === "key") {
+        await prisma.wordFamily.update({ where: { id }, data: { key: value.trim() } });
+        syncLogs.push(`✅ [Bảng: WordFamily] [Cột: key] Đã sửa.`);
+        totalUpdates++;
+      } else if (field === "words") {
+        const wordsArr = Array.isArray(value)
+          ? value.map((w: string) => w.trim()).filter(Boolean)
+          : String(value).split(",").map((w: string) => w.trim()).filter(Boolean);
+
+        await prisma.wordFamily.update({ where: { id }, data: { words: wordsArr } });
+        syncLogs.push(`✅ [Bảng: WordFamily] [Cột: words] Đã sửa.`);
+        totalUpdates++;
+      } else if (field === "originalValue") {
+        await prisma.wordFamily.update({ where: { id }, data: { originalValue: value.trim() } });
+        syncLogs.push(`✅ [Bảng: WordFamily] [Cột: originalValue] Đã sửa.`);
+        totalUpdates++;
+      }
+    }
 
     if (totalUpdates === 0) {
       return NextResponse.json({ success: false, error: "Không tìm thấy vị trí dữ liệu phù hợp." }, { status: 400 });

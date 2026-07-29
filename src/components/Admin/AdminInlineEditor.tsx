@@ -15,7 +15,7 @@ const toast = {
 
 interface AdminInlineEditorProps {
   children: React.ReactNode;
-  target: "question" | "group";
+  target: "question" | "group" | "wordFamily";
   id: string;
   field: string;
   sid?: string;
