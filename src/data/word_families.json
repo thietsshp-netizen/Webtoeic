@@ -2868,17 +2868,16 @@
   {
     "id": "row-260",
     "type": "word",
-    "key": "Celebrate, mark, commemorate, keep, observe, honor, remember (V)",
+    "key": "Celebrate, mark, commemorate, observe, honor, remember (V)",
     "words": [
       "celebrate",
       "mark",
       "commemorate",
-      "keep",
       "observe",
       "honor",
       "remember"
     ],
-    "originalValue": "kỷ niệm, ăn mừng\r\n= Celebrate, mark, commemorate, keep, observe, honor, remember (V)"
+    "originalValue": "kỷ niệm, ăn mừng\r\n= Celebrate, mark, commemorate, observe, honor, remember (V)"
   },
   {
     "id": "row-261",
