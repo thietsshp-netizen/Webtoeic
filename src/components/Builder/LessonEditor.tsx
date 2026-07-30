@@ -55,7 +55,9 @@ const sanitizeJSONString = (str: string): string => {
     const isJsonToken = /^[\[\{\}\]\,]$/.test(line) || 
                         /^\s*\"(start|end|text|ipa|vietnamese|note)\"\s*\:/.test(line) ||
                         /^\s*\}\s*\,?\s*$/.test(line) ||
-                        /^\s*\{\s*$/.test(line);
+                        /^\s*\{\s*$/.test(line) ||
+                        /^\s*\{\s*\"(start|end|text|ipa|vietnamese|note)\"\s*\:/.test(line) ||
+                        /^\s*\{\s*\"/.test(line);
                         
     if (i > 0 && !isJsonToken) {
       // Merge with previous line by appending escaped \n
