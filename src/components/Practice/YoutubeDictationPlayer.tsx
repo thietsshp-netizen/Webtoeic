@@ -909,7 +909,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           {/* Subtitle Overlay đè lên video */}
           {showSubOnVideo && mode === "listen" && subtitles[currentIndex] && (
             <div className="absolute bottom-10 left-0 right-0 pointer-events-none flex flex-col items-center justify-center px-4 text-center z-50 select-none">
-              <div className="bg-black/70 px-5 py-2.5 rounded-2xl max-w-[85%] border border-white/10 shadow-2xl backdrop-blur-sm">
+              <div className="bg-black/40 px-4 py-1.5 rounded-xl max-w-[85%] shadow-lg">
                 <p 
                   style={{ 
                     fontSize: `${isFullscreen ? fontSize * 1.5 : fontSize + 2}px`,
