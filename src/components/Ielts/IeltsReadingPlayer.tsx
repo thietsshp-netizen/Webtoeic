@@ -16,11 +16,23 @@ import {
   Sparkles,
   Eye,
   EyeOff,
-  BookOpen
+  BookOpen,
+  Trash2
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { showToast } from "@/components/UI/Toast";
 import { useDictionary } from "@/components/Dictionary/DictionaryProvider";
+
+export interface UserHighlight {
+  id: string;
+  passageIdx: number;
+  selector: string; // CSS selector of parent sentence/p (e.g. '[data-sid="s1"]')
+  startOffset: number;
+  endOffset: number;
+  text: string;
+  color: string; // 'yellow' | 'green' | 'blue' | 'pink' | 'purple'
+  questionNo?: number;
+}
 
 // Helper chuyển giây thành chuỗi MM:SS
 const formatMMSS = (secs: number): string => {
@@ -51,6 +63,17 @@ const getEvidenceColor = (colorName: string): EvidenceColor => {
     orange: { bg: 'bg-orange-100', text: 'text-orange-850', border: 'border-orange-200', hexBg: '#fff7ed', hexBorder: '#ffedd5', hexText: '#9a3412', badgeBg: '#f97316', badgeText: '#ffffff' }
   };
   return map[colorName] || map.yellow;
+};
+
+const getUserHighlightHex = (color: string): string => {
+  const map: Record<string, string> = {
+    yellow: '#fef08a', // bright yellow
+    green: '#86efac',  // mint green
+    blue: '#93c5fd',   // sky blue
+    pink: '#fda4af',   // rose pink
+    purple: '#d8b4fe'  // lavender purple
+  };
+  return map[color] || '#fef08a';
 };
 
 // Hàm quy đổi từ số câu đúng sang Band Score IELTS Reading (Academic)
@@ -270,6 +293,11 @@ export default function IeltsReadingPlayer({
   // Menu nổi khi bôi đen text để highlight
   const [selectionMenu, setSelectionMenu] = useState<{ x: number; y: number; range: Range } | null>(null);
 
+  // Trạng thái highlight của học viên
+  const [userHighlights, setUserHighlights] = useState<UserHighlight[]>([]);
+  const [showUserHighlights, setShowUserHighlights] = useState(true);
+  const [activeHighlightMenu, setActiveHighlightMenu] = useState<{ id: string; x: number; y: number } | null>(null);
+
   const passageScrollRef = useRef<HTMLDivElement>(null);
   const questionsScrollRef = useRef<HTMLDivElement>(null);
 
@@ -402,6 +430,15 @@ export default function IeltsReadingPlayer({
         });
         setAnswers(restored);
       } catch (e) {}
+    }
+
+    const savedHighlights = localStorage.getItem(`ielts_reading_highlights_${lessonId}`);
+    if (savedHighlights) {
+      try {
+        setUserHighlights(JSON.parse(savedHighlights));
+      } catch (e) {}
+    } else {
+      setUserHighlights([]);
     }
   }, [lessonId]);
 
@@ -629,7 +666,9 @@ export default function IeltsReadingPlayer({
     setTimeSpent(0);
     setSelectedQuestionNo(null);
     setTooltip(null);
+    setUserHighlights([]);
     localStorage.removeItem(`ielts_reading_answers_${lessonId}`);
+    localStorage.removeItem(`ielts_reading_highlights_${lessonId}`);
   };
 
 
@@ -671,6 +710,38 @@ export default function IeltsReadingPlayer({
       el.removeEventListener('mouseup', handleNativeMouseUp);
     };
   }, [isSubmitted]);
+
+  // Click ra ngoài để đóng các menu nổi
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (activeHighlightMenu && !target.closest('.user-highlight') && !target.closest('[data-active-hl-menu="true"]')) {
+        setActiveHighlightMenu(null);
+      }
+    };
+    window.addEventListener('click', handleGlobalClick);
+    return () => window.removeEventListener('click', handleGlobalClick);
+  }, [activeHighlightMenu]);
+
+  // Lắng nghe phím tắt xóa/đóng khi đang mở menu sửa đổi highlight
+  useEffect(() => {
+    if (!activeHighlightMenu) return;
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (document.activeElement?.tagName === 'INPUT') {
+        return;
+      }
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        e.preventDefault();
+        handleDeleteHighlight(activeHighlightMenu.id);
+      } else if (e.key === 'Escape') {
+        setActiveHighlightMenu(null);
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeHighlightMenu, userHighlights]);
 
   // Hover xem dịch tiếng Việt
   const handleSentenceHover = (sid: string | null, e: React.MouseEvent, rect?: DOMRect) => {
@@ -714,99 +785,183 @@ export default function IeltsReadingPlayer({
 
 
 
+  // Tìm selector của thẻ chứa gần nhất để tái tạo highlight chính xác
+  const getContainerSelector = (el: HTMLElement): string => {
+    const sid = el.getAttribute('data-sid');
+    if (sid) {
+      return `[data-sid="${sid}"]`;
+    }
+    const root = passageScrollRef.current;
+    if (!root) return 'p';
+    let path = '';
+    let current: HTMLElement | null = el;
+    while (current && current !== root) {
+      let tagName = current.tagName.toLowerCase();
+      const parent = current.parentElement;
+      if (parent) {
+        const siblings = Array.from(parent.children);
+        const index = siblings.indexOf(current);
+        path = `${tagName}:nth-child(${index + 1})` + (path ? ' > ' + path : '');
+      } else {
+        path = tagName + (path ? ' > ' + path : '');
+      }
+      current = parent as HTMLElement | null;
+    }
+    return path ? `.ielts-passage-content ${path}` : 'p';
+  };
+
+  // Tính start/end offset của vùng chọn so với textContent gốc của thẻ chứa (bỏ qua tag html)
+  const getSelectionOffsets = (container: HTMLElement, range: Range) => {
+    const preRange = document.createRange();
+    preRange.selectNodeContents(container);
+    preRange.setEnd(range.startContainer, range.startOffset);
+    const startOffset = preRange.toString().length;
+    const endOffset = startOffset + range.toString().length;
+    return { startOffset, endOffset };
+  };
+
   // Tạo highlight cho học viên
   const applyUserHighlight = (color: string) => {
     if (!selectionMenu) return;
     const { range } = selectionMenu;
     
     try {
-      const textNodes: Text[] = [];
-      const getNodes = (node: Node) => {
-        if (node.nodeType === Node.TEXT_NODE) {
-          const nodeRange = document.createRange();
-          nodeRange.selectNode(node);
-          
-          const startsBeforeEnd = range.compareBoundaryPoints(Range.END_TO_START, nodeRange) < 0;
-          const endsAfterStart = range.compareBoundaryPoints(Range.START_TO_END, nodeRange) > 0;
-          
-          if (startsBeforeEnd && endsAfterStart) {
-            textNodes.push(node as Text);
-          }
-        } else {
-          for (let i = 0; i < node.childNodes.length; i++) {
-            getNodes(node.childNodes[i]);
-          }
+      let container = range.startContainer.parentElement?.closest('[data-sid]') as HTMLElement | null;
+      if (!container) {
+        container = range.startContainer.parentElement?.closest('p') as HTMLElement | null;
+      }
+      if (!container) {
+        container = range.commonAncestorContainer as HTMLElement;
+        if (container.nodeType === Node.TEXT_NODE) {
+          container = container.parentElement as HTMLElement;
         }
-      };
+      }
       
-      getNodes(range.commonAncestorContainer);
-
-      // Duyệt ngược từ cuối lên đầu để tránh làm lệch vị trí chèn
-      for (let i = textNodes.length - 1; i >= 0; i--) {
-        const textNode = textNodes[i];
-        let startOffset = 0;
-        let endOffset = textNode.length;
-
-        if (textNode === range.startContainer) {
-          startOffset = range.startOffset;
-        }
-        if (textNode === range.endContainer) {
-          endOffset = range.endOffset;
-        }
-
-        const selectedText = textNode.data.substring(startOffset, endOffset);
-        if (!selectedText.trim()) continue;
-
-        const span = document.createElement("span");
-        span.className = `user-highlight cursor-pointer`;
+      if (container) {
+        const selector = getContainerSelector(container);
+        const { startOffset, endOffset } = getSelectionOffsets(container, range);
+        const text = range.toString();
         
-        let bgHex = '#fef08a'; // yellow default
-        if (color === 'green') bgHex = '#bbf7d0';
-        else if (color === 'blue') bgHex = '#bfdbfe';
-        else if (color === 'pink') bgHex = '#fbcfe8';
-        else if (color === 'purple') bgHex = '#e9d5ff';
-
-        span.style.backgroundColor = bgHex;
-        span.style.color = '#000000';
-        span.style.borderRadius = '2px';
-        span.style.padding = '0 1px';
-
-        span.onclick = (e) => {
-          e.stopPropagation();
-          const parent = span.parentNode;
-          if (parent) {
-            while (span.firstChild) {
-              parent.insertBefore(span.firstChild, span);
-            }
-            parent.removeChild(span);
-            parent.normalize();
-          }
-        };
-
-        const originalText = textNode.data;
-        const beforeText = originalText.substring(0, startOffset);
-        const afterText = originalText.substring(endOffset);
-
-        const parent = textNode.parentNode;
-        if (parent) {
-          if (afterText) {
-            parent.insertBefore(document.createTextNode(afterText), textNode.nextSibling);
-          }
-          span.appendChild(document.createTextNode(selectedText));
-          parent.insertBefore(span, textNode.nextSibling);
-          if (beforeText) {
-            parent.insertBefore(document.createTextNode(beforeText), span);
-          }
-          parent.removeChild(textNode);
+        if (text.trim()) {
+          const newHighlight: UserHighlight = {
+            id: `user-hl-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            passageIdx: activePassageIdx,
+            selector,
+            startOffset,
+            endOffset,
+            text,
+            color
+          };
+          
+          const updated = [...userHighlights, newHighlight];
+          setUserHighlights(updated);
+          localStorage.setItem(`ielts_reading_highlights_${lessonId}`, JSON.stringify(updated));
         }
       }
     } catch (e) {
       console.error("Error highlighting:", e);
-      showToast("Không thể highlight đoạn văn này. Vui lòng chọn phạm vi ngắn hơn.", "error");
+      showToast("Không thể highlight đoạn văn này.", "error");
     }
     
     window.getSelection()?.removeAllRanges();
     setSelectionMenu(null);
+  };
+
+  // Áp dụng thẻ highlight vào DOM
+  const applyHighlight = (container: HTMLElement, hl: UserHighlight) => {
+    const textNodes: Text[] = [];
+    const findTextNodes = (node: Node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        textNodes.push(node as Text);
+      } else {
+        for (let i = 0; i < node.childNodes.length; i++) {
+          findTextNodes(node.childNodes[i]);
+        }
+      }
+    };
+    findTextNodes(container);
+
+    let charCount = 0;
+    let startNode: Text | null = null;
+    let startNodeOffset = 0;
+    let endNode: Text | null = null;
+    let endNodeOffset = 0;
+
+    for (const node of textNodes) {
+      const nodeLength = node.length;
+      if (!startNode && charCount + nodeLength >= hl.startOffset) {
+        startNode = node;
+        startNodeOffset = hl.startOffset - charCount;
+      }
+      if (!endNode && charCount + nodeLength >= hl.endOffset) {
+        endNode = node;
+        endNodeOffset = hl.endOffset - charCount;
+        break;
+      }
+      charCount += nodeLength;
+    }
+
+    if (startNode && endNode) {
+      try {
+        const range = document.createRange();
+        range.setStart(startNode, startNodeOffset);
+        range.setEnd(endNode, endNodeOffset);
+
+        const span = document.createElement("span");
+        span.className = "user-highlight cursor-pointer";
+        span.setAttribute("data-hl-id", hl.id);
+        span.style.backgroundColor = getUserHighlightHex(hl.color);
+        span.style.color = '#000000';
+        span.style.borderRadius = '2px';
+        span.style.padding = '0 1px';
+        
+        if (hl.questionNo) {
+          span.setAttribute("data-q", String(hl.questionNo));
+        }
+
+        span.onclick = (e) => {
+          e.stopPropagation();
+          const rect = span.getBoundingClientRect();
+          setActiveHighlightMenu({
+            id: hl.id,
+            x: rect.left + rect.width / 2,
+            y: rect.top - 55
+          });
+        };
+
+        range.surroundContents(span);
+      } catch (err) {
+        console.error("Error surrounding contents:", err);
+      }
+    }
+  };
+
+  const handleUpdateHighlightColor = (id: string, color: string) => {
+    const updated = userHighlights.map(hl => hl.id === id ? { ...hl, color } : hl);
+    setUserHighlights(updated);
+    localStorage.setItem(`ielts_reading_highlights_${lessonId}`, JSON.stringify(updated));
+    setActiveHighlightMenu(null);
+  };
+
+  const handleUpdateHighlightQuestionNo = (id: string, qNo: number | undefined) => {
+    const updated = userHighlights.map(hl => hl.id === id ? { ...hl, questionNo: qNo || undefined } : hl);
+    setUserHighlights(updated);
+    localStorage.setItem(`ielts_reading_highlights_${lessonId}`, JSON.stringify(updated));
+  };
+
+  const handleDeleteHighlight = (id: string) => {
+    const updated = userHighlights.filter(hl => hl.id !== id);
+    setUserHighlights(updated);
+    localStorage.setItem(`ielts_reading_highlights_${lessonId}`, JSON.stringify(updated));
+    setActiveHighlightMenu(null);
+  };
+
+  const handleClearAllHighlights = () => {
+    if (window.confirm("Bạn có muốn xóa toàn bộ highlight đã vẽ?")) {
+      setUserHighlights([]);
+      localStorage.removeItem(`ielts_reading_highlights_${lessonId}`);
+      setActiveHighlightMenu(null);
+    }
   };
 
   // Chuyển nhanh đến câu hỏi và Passage tương ứng
@@ -941,7 +1096,29 @@ export default function IeltsReadingPlayer({
         }}
       />
     );
-  }, [htmlContent, isSubmitted, showExplanation]);
+  }, [htmlContent, isSubmitted, showExplanation, userHighlights, showUserHighlights]);
+
+  // Áp dụng highlights vào DOM sau khi React kết thúc render/re-render nội dung bài đọc
+  useEffect(() => {
+    if (!passageScrollRef.current || !showUserHighlights) return;
+    
+    // Đợi 30ms để React hoàn tất vẽ htmlContent mới vào DOM
+    const timer = setTimeout(() => {
+      const container = passageScrollRef.current;
+      if (!container) return;
+      
+      userHighlights.forEach(hl => {
+        if (hl.passageIdx !== activePassageIdx) return;
+        
+        const targetEl = container.querySelector(hl.selector) as HTMLElement | null;
+        if (targetEl) {
+          applyHighlight(targetEl, hl);
+        }
+      });
+    }, 30);
+    
+    return () => clearTimeout(timer);
+  }, [memoizedPassageContent, userHighlights, showUserHighlights, activePassageIdx]);
 
   return (
     <div className="flex flex-col h-full overflow-hidden bg-slate-50 text-slate-855 font-sans">
@@ -964,6 +1141,22 @@ export default function IeltsReadingPlayer({
         }
         .ielts-passage-content.show-translations span[data-sid]:hover {
           background-color: rgba(254, 240, 138, 0.4);
+        }
+        /* Custom badge hiển thị số câu hỏi cho highlight của học viên */
+        .user-highlight[data-q]::after {
+          content: "Q" attr(data-q);
+          margin-left: 3px;
+          padding: 0 4px;
+          background-color: #2563eb;
+          color: #ffffff;
+          border-radius: 3px;
+          font-size: 9px;
+          font-weight: 900;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          vertical-align: middle;
+          line-height: 1.2;
         }
       `}</style>
 
@@ -1046,13 +1239,32 @@ export default function IeltsReadingPlayer({
           style={{ width: `${leftWidth}%` }}
           className="h-full flex flex-col bg-white border-r border-slate-200 overflow-hidden relative select-text"
         >
-          <div className="bg-slate-50 px-6 py-3.5 border-b border-slate-200 flex items-center justify-between text-slate-500">
+          <div className="bg-slate-50 px-6 py-2.5 border-b border-slate-200 flex items-center justify-between text-slate-500 select-none">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
               {passages[activePassageIdx]?.passage_title || `Passage ${activePassageIdx + 1}`}
             </span>
-            <div className="flex items-center gap-2 text-[10px]">
-              <PenTool className="w-3.5 h-3.5 text-slate-400" />
-              <span>Bôi đen để Highlight văn bản tự do</span>
+            <div className="flex items-center gap-3 text-[10px]">
+              <div className="flex items-center gap-1 text-slate-400">
+                <PenTool className="w-3.5 h-3.5" />
+                <span>Highlight tự do</span>
+              </div>
+              <div className="h-3.5 w-[1px] bg-slate-300" />
+              <button 
+                onClick={() => setShowUserHighlights(prev => !prev)} 
+                className={`p-1 rounded hover:bg-slate-200 transition-colors flex items-center gap-1 font-bold ${showUserHighlights ? 'text-blue-600' : 'text-slate-400'}`}
+                title={showUserHighlights ? "Tạm thời ẩn tất cả highlight cá nhân" : "Hiện lại highlight cá nhân"}
+              >
+                {showUserHighlights ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                <span>{showUserHighlights ? "Ẩn" : "Hiện"}</span>
+              </button>
+              <button 
+                onClick={handleClearAllHighlights} 
+                className="p-1 rounded hover:bg-red-50 hover:text-red-600 text-slate-400 transition-colors flex items-center gap-1 font-bold"
+                title="Xóa tất cả highlight cá nhân"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Xóa hết</span>
+              </button>
             </div>
           </div>
 
@@ -1156,10 +1368,10 @@ export default function IeltsReadingPlayer({
             >
               {/* 5 Nút màu */}
               {['yellow', 'green', 'blue', 'pink', 'purple'].map((color) => {
-                const bgClass = color === 'yellow' ? 'bg-yellow-300' :
-                                color === 'green' ? 'bg-emerald-350 bg-green-400' :
-                                color === 'blue' ? 'bg-sky-300 bg-blue-300' :
-                                color === 'pink' ? 'bg-rose-350 bg-pink-300' : 'bg-purple-300';
+                const bgClass = color === 'yellow' ? 'bg-[#fef08a]' :
+                                color === 'green' ? 'bg-[#86efac]' :
+                                color === 'blue' ? 'bg-[#93c5fd]' :
+                                color === 'pink' ? 'bg-[#fda4af]' : 'bg-[#d8b4fe]';
                 return (
                   <button 
                     key={color}
@@ -1167,7 +1379,7 @@ export default function IeltsReadingPlayer({
                       e.preventDefault();
                       applyUserHighlight(color);
                     }} 
-                    className={`w-4 h-4 rounded-full ${bgClass} hover:scale-110 active:scale-95 transition-transform`} 
+                    className={`w-4 h-4 rounded-full ${bgClass} border border-slate-200 hover:scale-110 active:scale-95 transition-transform`} 
                     title={`Highlight ${color === 'yellow' ? 'Vàng' : color === 'green' ? 'Lục' : color === 'blue' ? 'Lam' : color === 'pink' ? 'Hồng' : 'Tím'}`} 
                   />
                 );
@@ -1209,6 +1421,77 @@ export default function IeltsReadingPlayer({
                 }} 
                 className="p-1 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 active:scale-95 transition-all"
                 title="Hủy bôi đen"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
+          {/* Menu nổi khi click vào highlight cá nhân đã tạo */}
+          {activeHighlightMenu && (
+            <div 
+              data-active-hl-menu="true"
+              style={{ 
+                position: "fixed",
+                left: `${activeHighlightMenu.x}px`, 
+                top: `${activeHighlightMenu.y}px`,
+                transform: "translateX(-50%) translateY(-100%)",
+                marginTop: "-8px"
+              }}
+              className="z-55 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-xl flex items-center gap-2 animate-in fade-in zoom-in-95 duration-150 select-none"
+            >
+              {/* 5 Nút màu đổi nhanh */}
+              <div className="flex items-center gap-1">
+                {['yellow', 'green', 'blue', 'pink', 'purple'].map((color) => {
+                  const hex = getUserHighlightHex(color);
+                  const isCurrent = userHighlights.find(h => h.id === activeHighlightMenu.id)?.color === color;
+                  return (
+                    <button 
+                      key={color}
+                      onClick={() => handleUpdateHighlightColor(activeHighlightMenu.id, color)} 
+                      style={{ backgroundColor: hex }}
+                      className={`w-4 h-4 rounded-full border ${isCurrent ? 'border-slate-800 scale-110 shadow-sm' : 'border-slate-200'} hover:scale-110 active:scale-95 transition-transform`} 
+                      title={`Đổi sang màu ${color === 'yellow' ? 'Vàng' : color === 'green' ? 'Xanh lá' : color === 'blue' ? 'Xanh dương' : color === 'pink' ? 'Hồng' : 'Tím'}`} 
+                    />
+                  );
+                })}
+              </div>
+
+              <div className="w-[1px] h-4 bg-slate-200 mx-1"></div>
+
+              {/* Ô gán số thứ tự câu hỏi */}
+              <div className="flex items-center gap-1">
+                <span className="text-[9px] font-black text-slate-500 uppercase tracking-wider">Gán câu:</span>
+                <input 
+                  type="number"
+                  min="1"
+                  max="40"
+                  placeholder="--"
+                  value={userHighlights.find(h => h.id === activeHighlightMenu.id)?.questionNo || ""}
+                  onChange={(e) => {
+                    const val = e.target.value ? parseInt(e.target.value) : undefined;
+                    handleUpdateHighlightQuestionNo(activeHighlightMenu.id, val);
+                  }}
+                  className="w-10 h-6 border border-slate-300 rounded px-1 text-xs font-black text-slate-700 text-center focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div className="w-[1px] h-4 bg-slate-200 mx-1"></div>
+
+              {/* Nút xóa highlight */}
+              <button 
+                onClick={() => handleDeleteHighlight(activeHighlightMenu.id)} 
+                className="p-1 rounded text-red-500 hover:bg-red-50 hover:text-red-750 active:scale-95 transition-all"
+                title="Xóa highlight (phím tắt: Delete / Backspace)"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+
+              {/* Nút đóng menu */}
+              <button 
+                onClick={() => setActiveHighlightMenu(null)} 
+                className="p-1 rounded text-slate-400 hover:bg-slate-50 hover:text-slate-650 active:scale-95 transition-all border border-transparent hover:border-slate-200"
+                title="Đóng menu"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
