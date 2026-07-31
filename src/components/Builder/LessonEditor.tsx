@@ -68,16 +68,20 @@ const sanitizeJSONString = (str: string): string => {
   }
   cleaned = mergedLines.join("\n");
   
-  // 3. Fix typos like: "note":"" Mo" -> "note":""
-  cleaned = cleaned.replace(/"(text|ipa|vietnamese|note)"\s*:\s*""\s*[^"]*"/g, '"$1": ""');
+  // 3. Process each object block individually to prevent regex run-away
+  cleaned = cleaned.replace(/\{[^{}]*\}/g, (objectBlock) => {
+    // Fix typos like: "note":"" Mo" -> "note":"" (using non-comma non-brace class to avoid running over next fields)
+    let sanitizedBlock = objectBlock.replace(/"(text|ipa|vietnamese|note)"\s*:\s*""\s*[^",\}]*"/g, '"$1": ""');
 
-  // 4. Fix unescaped double quotes inside string values (works for both single-line and multi-line formats)
-  const stringFieldsRegex = /"(text|ipa|vietnamese|note)"\s*:\s*"(.*?)"\s*(?=,\s*"(start|end|text|ipa|vietnamese|note)"|\s*\})/g;
-  cleaned = cleaned.replace(stringFieldsRegex, (match, propName, propValue) => {
-    // Escape any double quotes that are NOT already escaped
-    // (i.e. double quotes not preceded by a backslash)
-    const escapedValue = propValue.replace(/(?<!\\)\"/g, '\\"');
-    return `"${propName}": "${escapedValue}"`;
+    // Escape unescaped double quotes inside string values within this block
+    const stringFieldsRegex = /"/g; // Wait, we will use the stringFieldsRegex inside
+    const stringRegex = /"(text|ipa|vietnamese|note)"\s*:\s*"(.*?)"\s*(?=,\s*"(start|end|text|ipa|vietnamese|note)"|\s*\})/g;
+    sanitizedBlock = sanitizedBlock.replace(stringRegex, (match, propName, propValue) => {
+      const escapedValue = propValue.replace(/(?<!\\)\"/g, '\\"');
+      return `"${propName}": "${escapedValue}"`;
+    });
+    
+    return sanitizedBlock;
   });
   
   return cleaned;
