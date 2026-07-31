@@ -8,6 +8,8 @@ export async function getBrowserFingerprint(): Promise<string> {
   if (typeof window === "undefined") return "";
 
   const ua = navigator.userAgent;
+  
+  // 1. Nhận diện Hệ điều hành
   let os = "unknown";
   if (ua.includes("Windows")) os = "Windows";
   else if (ua.includes("Macintosh")) os = "Mac";
@@ -15,35 +17,33 @@ export async function getBrowserFingerprint(): Promise<string> {
   else if (ua.includes("Android")) os = "Android";
   else if (ua.includes("Linux")) os = "Linux";
 
+  // 2. Nhận diện Trình duyệt chính (Định danh loại trình duyệt)
+  let browser = "unknown";
+  if (ua.includes("Firefox")) browser = "Firefox";
+  else if (ua.includes("Chrome") && !ua.includes("Edg") && !ua.includes("OPR")) browser = "Chrome";
+  else if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
+  else if (ua.includes("Edg")) browser = "Edge";
+  else if (ua.includes("OPR") || ua.includes("Opera")) browser = "Opera";
+
+  // 3. Múi giờ hệ thống (Rất ổn định, không đổi)
+  let timezone = "unknown";
+  try {
+    timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch (e) {}
+
+  // 4. Các chỉ số phần cứng bất biến (Không đổi khi zoom/thay màn hình)
   const hardwareInfo = {
     os,
-    screen: `${window.screen.width}x${window.screen.height}x${window.screen.colorDepth}`,
+    browser,
+    timezone,
+    colorDepth: window.screen.colorDepth,
     cpu: navigator.hardwareConcurrency || "unknown",
     memory: (navigator as any).deviceMemory || "unknown",
   };
 
-  // Canvas Fingerprinting
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  let canvasHash = "";
-  if (ctx) {
-    canvas.width = 200;
-    canvas.height = 50;
-    ctx.textBaseline = "top";
-    ctx.font = "14px 'Arial'";
-    ctx.textBaseline = "alphabetic";
-    ctx.fillStyle = "#f60";
-    ctx.fillRect(125, 1, 62, 20);
-    ctx.fillStyle = "#069";
-    ctx.fillText("Hoctoeic-Fingerprint-1.0", 2, 15);
-    ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
-    ctx.fillText("Hoctoeic-Fingerprint-1.0", 4, 17);
-    canvasHash = canvas.toDataURL();
-  }
-
-  const rawString = JSON.stringify(hardwareInfo) + canvasHash;
+  const rawString = JSON.stringify(hardwareInfo);
   
-  // Tạo hash đơn giản (MurmurHash hoặc SHA-256 giả lập)
+  // Tạo hash 32-bit từ chuỗi thông số bất biến
   let hash = 0;
   for (let i = 0; i < rawString.length; i++) {
     const char = rawString.charCodeAt(i);
