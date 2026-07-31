@@ -2760,6 +2760,17 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       return parts.join('+');
     };
 
+    const isTextEditableInput = (el: HTMLElement): boolean => {
+      if (el.tagName === 'TEXTAREA') return true;
+      if (el.isContentEditable) return true;
+      if (el.tagName === 'INPUT') {
+        const inputEl = el as HTMLInputElement;
+        const nonTextTypes = ['radio', 'checkbox', 'button', 'submit', 'image', 'file', 'range', 'color', 'reset'];
+        return !nonTextTypes.includes(inputEl.type);
+      }
+      return false;
+    };
+
     const handleKeyDown = (e: KeyboardEvent) => {
       // Tự động vẽ lại nhiều lần khi học viên bấm Ctrl+S / Ctrl+Shift+S để khớp toạ độ trong suốt 500ms hoạt họa co giãn giải thích
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
@@ -2784,11 +2795,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const ghostmodeKey = stateRef.current.customHotkeys.ghostmode || 'space';
       if (pressedHotkeyCheck === ghostmodeKey.toLowerCase()) {
         const target = e.target as HTMLElement;
-        const isInput =
-          target.tagName === 'INPUT' ||
-          target.tagName === 'TEXTAREA' ||
-          target.isContentEditable ||
-          stateRef.current.textInput !== null;
+        const isInput = isTextEditableInput(target) || stateRef.current.textInput !== null;
         if (!isInput) {
           e.preventDefault(); // Ngăn trình duyệt cuộn trang/thao tác mặc định
           setIsShiftPressed(true); // Vẫn dùng biến isShiftPressed làm cờ Ghost Mode
@@ -2799,11 +2806,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const target = e.target as HTMLElement;
 
       // 1. KIỂM TRA INPUT SOẠN THẢO NHÁP ĐANG ACTIVE:
-      const isInput =
-        target.tagName === 'INPUT' ||
-        target.tagName === 'TEXTAREA' ||
-        target.isContentEditable ||
-        currentTextInput !== null; // Bảo vệ an toàn tuyệt đối khi đang mở ô gõ chữ nháp
+      const isInput = isTextEditableInput(target) || currentTextInput !== null; // Bảo vệ an toàn tuyệt đối khi đang mở ô gõ chữ nháp
 
       // Nếu đang trong ô gõ chữ, chặn toàn bộ phím tắt công cụ vẽ vẽ của window
       if (isInput) {
