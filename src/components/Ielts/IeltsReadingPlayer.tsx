@@ -257,6 +257,7 @@ export default function IeltsReadingPlayer({
 
   // Tab active: Passage 1 (0), Passage 2 (1), Passage 3 (2)
   const [activePassageIdx, setActivePassageIdx] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
   // Câu trả lời của học viên: { questionNo: userResponseText }
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -297,6 +298,7 @@ export default function IeltsReadingPlayer({
   const [userHighlights, setUserHighlights] = useState<UserHighlight[]>([]);
   const [showUserHighlights, setShowUserHighlights] = useState(true);
   const [activeHighlightMenu, setActiveHighlightMenu] = useState<{ id: string; x: number; y: number } | null>(null);
+  const lastActiveMenuOpenTime = useRef<number>(0);
 
   const passageScrollRef = useRef<HTMLDivElement>(null);
   const questionsScrollRef = useRef<HTMLDivElement>(null);
@@ -399,6 +401,11 @@ export default function IeltsReadingPlayer({
     });
     return map;
   }, [passages, hintsActive, isSubmitted, showExplanation]);
+
+  // Đánh dấu đã mount lên Client
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Đếm ngược đồng hồ làm bài
   useEffect(() => {
@@ -715,6 +722,8 @@ export default function IeltsReadingPlayer({
   useEffect(() => {
     const handleGlobalClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
+      if (Date.now() - lastActiveMenuOpenTime.current < 200) return;
+      if (!document.body.contains(target)) return;
       if (activeHighlightMenu && !target.closest('.user-highlight') && !target.closest('[data-active-hl-menu="true"]')) {
         setActiveHighlightMenu(null);
       }
@@ -810,12 +819,45 @@ export default function IeltsReadingPlayer({
     return path ? `.ielts-passage-content ${path}` : 'p';
   };
 
-  // Tính start/end offset của vùng chọn so với textContent gốc của thẻ chứa (bỏ qua tag html)
+  // Tính start/end offset của vùng chọn so với textContent gốc của thẻ chứa (bỏ qua tag html và badge câu hỏi)
   const getSelectionOffsets = (container: HTMLElement, range: Range) => {
-    const preRange = document.createRange();
-    preRange.selectNodeContents(container);
-    preRange.setEnd(range.startContainer, range.startOffset);
-    const startOffset = preRange.toString().length;
+    const textNodes: Text[] = [];
+    const findTextNodes = (node: Node) => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const el = node as HTMLElement;
+        if (el.classList.contains('ielts-badge') || el.classList.contains('ielts-badge-wrapper')) {
+          return;
+        }
+      }
+      if (node.nodeType === Node.TEXT_NODE) {
+        textNodes.push(node as Text);
+      } else {
+        for (let i = 0; i < node.childNodes.length; i++) {
+          findTextNodes(node.childNodes[i]);
+        }
+      }
+    };
+    findTextNodes(container);
+
+    let startOffset = 0;
+    let foundStart = false;
+
+    for (const node of textNodes) {
+      if (node === range.startContainer) {
+        startOffset += range.startOffset;
+        foundStart = true;
+        break;
+      }
+      startOffset += node.length;
+    }
+
+    if (!foundStart) {
+      const preRange = document.createRange();
+      preRange.selectNodeContents(container);
+      preRange.setEnd(range.startContainer, range.startOffset);
+      startOffset = preRange.toString().length;
+    }
+
     const endOffset = startOffset + range.toString().length;
     return { startOffset, endOffset };
   };
@@ -826,19 +868,8 @@ export default function IeltsReadingPlayer({
     const { range } = selectionMenu;
     
     try {
-      let container = range.startContainer.parentElement?.closest('[data-sid]') as HTMLElement | null;
-      if (!container) {
-        container = range.startContainer.parentElement?.closest('p') as HTMLElement | null;
-      }
-      if (!container) {
-        container = range.commonAncestorContainer as HTMLElement;
-        if (container.nodeType === Node.TEXT_NODE) {
-          container = container.parentElement as HTMLElement;
-        }
-      }
-      
+      const container = passageScrollRef.current?.querySelector('.ielts-passage-content') as HTMLElement | null;
       if (container) {
-        const selector = getContainerSelector(container);
         const { startOffset, endOffset } = getSelectionOffsets(container, range);
         const text = range.toString();
         
@@ -846,7 +877,7 @@ export default function IeltsReadingPlayer({
           const newHighlight: UserHighlight = {
             id: `user-hl-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             passageIdx: activePassageIdx,
-            selector,
+            selector: '.ielts-passage-content',
             startOffset,
             endOffset,
             text,
@@ -856,6 +887,14 @@ export default function IeltsReadingPlayer({
           const updated = [...userHighlights, newHighlight];
           setUserHighlights(updated);
           localStorage.setItem(`ielts_reading_highlights_${lessonId}`, JSON.stringify(updated));
+
+          // Mở menu đổi màu/gán câu ngay lập tức cho highlight vừa tạo
+          lastActiveMenuOpenTime.current = Date.now();
+          setActiveHighlightMenu({
+            id: newHighlight.id,
+            x: selectionMenu.x,
+            y: selectionMenu.y - 10
+          });
         }
       }
     } catch (e) {
@@ -901,35 +940,67 @@ export default function IeltsReadingPlayer({
       charCount += nodeLength;
     }
 
+    const createHighlightSpan = (isLast: boolean) => {
+      const span = document.createElement("span");
+      span.className = "user-highlight cursor-pointer";
+      span.setAttribute("data-hl-id", hl.id);
+      span.style.backgroundColor = getUserHighlightHex(hl.color);
+      span.style.color = '#000000';
+      span.style.borderRadius = '2px';
+      span.style.padding = '0 1px';
+      
+      if (isLast && hl.questionNo) {
+        span.setAttribute("data-q", String(hl.questionNo));
+      }
+
+      span.onclick = (e) => {
+        e.stopPropagation();
+        const rect = span.getBoundingClientRect();
+        lastActiveMenuOpenTime.current = Date.now();
+        setActiveHighlightMenu({
+          id: hl.id,
+          x: rect.left + rect.width / 2,
+          y: rect.top - 55
+        });
+      };
+      return span;
+    };
+
     if (startNode && endNode) {
       try {
-        const range = document.createRange();
-        range.setStart(startNode, startNodeOffset);
-        range.setEnd(endNode, endNodeOffset);
+        if (startNode === endNode) {
+          const mid = startNode.splitText(startNodeOffset);
+          mid.splitText(endNodeOffset - startNodeOffset);
+          const span = createHighlightSpan(true);
+          mid.parentNode?.insertBefore(span, mid);
+          span.appendChild(mid);
+        } else {
+          const nodesToWrap: Text[] = [];
+          let collecting = false;
+          for (const node of textNodes) {
+            if (node === startNode) {
+              collecting = true;
+              const mid = node.splitText(startNodeOffset);
+              nodesToWrap.push(mid);
+              continue;
+            }
+            if (node === endNode) {
+              node.splitText(endNodeOffset);
+              nodesToWrap.push(node);
+              break;
+            }
+            if (collecting) {
+              nodesToWrap.push(node);
+            }
+          }
 
-        const span = document.createElement("span");
-        span.className = "user-highlight cursor-pointer";
-        span.setAttribute("data-hl-id", hl.id);
-        span.style.backgroundColor = getUserHighlightHex(hl.color);
-        span.style.color = '#000000';
-        span.style.borderRadius = '2px';
-        span.style.padding = '0 1px';
-        
-        if (hl.questionNo) {
-          span.setAttribute("data-q", String(hl.questionNo));
-        }
-
-        span.onclick = (e) => {
-          e.stopPropagation();
-          const rect = span.getBoundingClientRect();
-          setActiveHighlightMenu({
-            id: hl.id,
-            x: rect.left + rect.width / 2,
-            y: rect.top - 55
+          nodesToWrap.forEach((node, idx) => {
+            const isLast = idx === nodesToWrap.length - 1;
+            const span = createHighlightSpan(isLast);
+            node.parentNode?.insertBefore(span, node);
+            span.appendChild(node);
           });
-        };
-
-        range.surroundContents(span);
+        }
       } catch (err) {
         console.error("Error surrounding contents:", err);
       }
@@ -1013,8 +1084,9 @@ export default function IeltsReadingPlayer({
     if (!activePassage) return "";
     const pBody = activePassage.passages?.[0] || activePassage;
     const rawHtml = pBody.html_content || pBody.passage_body || "";
+    if (!isMounted) return rawHtml;
     return injectBadgesToHtml(rawHtml, hintsEvidenceMap);
-  }, [passages, activePassageIdx, hintsEvidenceMap]);
+  }, [passages, activePassageIdx, hintsEvidenceMap, isMounted]);
 
   // Phát hiện MATCHING_HEADINGS group trong passage hiện tại
   const matchingHeadingsGroup = useMemo(() => {
