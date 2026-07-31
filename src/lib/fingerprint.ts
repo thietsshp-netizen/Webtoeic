@@ -17,24 +17,15 @@ export async function getBrowserFingerprint(): Promise<string> {
   else if (ua.includes("Android")) os = "Android";
   else if (ua.includes("Linux")) os = "Linux";
 
-  // 2. Nhận diện Trình duyệt chính (Định danh loại trình duyệt)
-  let browser = "unknown";
-  if (ua.includes("Firefox")) browser = "Firefox";
-  else if (ua.includes("Chrome") && !ua.includes("Edg") && !ua.includes("OPR")) browser = "Chrome";
-  else if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
-  else if (ua.includes("Edg")) browser = "Edge";
-  else if (ua.includes("OPR") || ua.includes("Opera")) browser = "Opera";
-
-  // 3. Múi giờ hệ thống (Rất ổn định, không đổi)
+  // 2. Múi giờ hệ thống (Rất ổn định, không đổi)
   let timezone = "unknown";
   try {
     timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   } catch (e) {}
 
-  // 4. Các chỉ số phần cứng bất biến (Không đổi khi zoom/thay màn hình)
+  // 3. Các chỉ số phần cứng bất biến (Không đổi khi zoom/thay màn hình)
   const hardwareInfo = {
     os,
-    browser,
     timezone,
     colorDepth: window.screen.colorDepth,
     cpu: navigator.hardwareConcurrency || "unknown",
