@@ -68,23 +68,19 @@ const sanitizeJSONString = (str: string): string => {
   }
   cleaned = mergedLines.join("\n");
   
-  // 3. Fix unescaped double quotes inside string values!
-  const propertyRegex = /^\s*\"(text|ipa|vietnamese|note)\"\s*:\s*\"(.*)\"\s*\,?\s*$/;
-  const finalLines = cleaned.split("\n");
-  for (let j = 0; j < finalLines.length; j++) {
-    const line = finalLines[j];
-    const match = line.match(propertyRegex);
-    if (match) {
-      const propName = match[1];
-      const propValue = match[2];
-      // Escape any double quotes that are NOT already escaped
-      // (i.e. double quotes not preceded by a backslash)
-      const escapedValue = propValue.replace(/(?<!\\)\"/g, '\\"');
-      const hasComma = line.trim().endsWith(",");
-      finalLines[j] = `  "${propName}": "${escapedValue}"${hasComma ? "," : ""}`;
-    }
-  }
-  return finalLines.join("\n");
+  // 3. Fix typos like: "note":"" Mo" -> "note":""
+  cleaned = cleaned.replace(/"(text|ipa|vietnamese|note)"\s*:\s*""\s*[^"]*"/g, '"$1": ""');
+
+  // 4. Fix unescaped double quotes inside string values (works for both single-line and multi-line formats)
+  const stringFieldsRegex = /"(text|ipa|vietnamese|note)"\s*:\s*"(.*?)"\s*(?=,\s*"(start|end|text|ipa|vietnamese|note)"|\s*\})/g;
+  cleaned = cleaned.replace(stringFieldsRegex, (match, propName, propValue) => {
+    // Escape any double quotes that are NOT already escaped
+    // (i.e. double quotes not preceded by a backslash)
+    const escapedValue = propValue.replace(/(?<!\\)\"/g, '\\"');
+    return `"${propName}": "${escapedValue}"`;
+  });
+  
+  return cleaned;
 };
 
 // Check if a URL is a YouTube URL
