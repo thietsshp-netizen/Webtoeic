@@ -50,13 +50,13 @@ const sanitizeJSONString = (str: string): string => {
   const mergedLines: string[] = [];
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
-    // If this line does not start with { or } or [ or ] or a double-quoted property name like "start":, "end":, "text":, "ipa":, "vietnamese":, "note":,
+    // If this line does not start with { or } or [ or ] or a double-quoted property name like "start":, "end":, "text":, "ipa":, "vietnamese":, "slang_and_idiom":,
     // and the previous line didn't end with a comma, or if it's clearly a continuation:
     const isJsonToken = /^[\[\{\}\]\,]$/.test(line) || 
-                        /^\s*\"(start|end|text|ipa|vietnamese|note)\"\s*\:/.test(line) ||
+                        /^\s*\"(start|end|text|ipa|vietnamese|slang_and_idiom)\"\s*\:/.test(line) ||
                         /^\s*\}\s*\,?\s*$/.test(line) ||
                         /^\s*\{\s*$/.test(line) ||
-                        /^\s*\{\s*\"(start|end|text|ipa|vietnamese|note)\"\s*\:/.test(line) ||
+                        /^\s*\{\s*\"(start|end|text|ipa|vietnamese|slang_and_idiom)\"\s*\:/.test(line) ||
                         /^\s*\{\s*\"/.test(line);
                         
     if (i > 0 && !isJsonToken) {
@@ -70,12 +70,12 @@ const sanitizeJSONString = (str: string): string => {
   
   // 3. Process each object block individually to prevent regex run-away
   cleaned = cleaned.replace(/\{[^{}]*\}/g, (objectBlock) => {
-    // Fix typos like: "note":"" Mo" -> "note":"" (using non-comma non-brace class to avoid running over next fields)
-    let sanitizedBlock = objectBlock.replace(/"(text|ipa|vietnamese|note)"\s*:\s*""\s*[^",\}]*"/g, '"$1": ""');
+    // Fix typos like: "slang_and_idiom":"" Mo" -> "slang_and_idiom":"" (using non-comma non-brace class to avoid running over next fields)
+    let sanitizedBlock = objectBlock.replace(/"(text|ipa|vietnamese|slang_and_idiom)"\s*:\s*""\s*[^",\}]*"/g, '"$1": ""');
 
     // Escape unescaped double quotes inside string values within this block
     const stringFieldsRegex = /"/g; // Wait, we will use the stringFieldsRegex inside
-    const stringRegex = /"(text|ipa|vietnamese|note)"\s*:\s*"(.*?)"\s*(?=,\s*"(start|end|text|ipa|vietnamese|note)"|\s*\})/g;
+    const stringRegex = /"(text|ipa|vietnamese|slang_and_idiom)"\s*:\s*"(.*?)"\s*(?=,\s*"(start|end|text|ipa|vietnamese|slang_and_idiom)"|\s*\})/g;
     sanitizedBlock = sanitizedBlock.replace(stringRegex, (match, propName, propValue) => {
       const escapedValue = propValue.replace(/(?<!\\)\"/g, '\\"');
       return `"${propName}": "${escapedValue}"`;
@@ -297,7 +297,7 @@ YOUR TASKS:
 3. For each final merged sentence object:
    - Add "ipa" (phonetic transcription in US English).
    - Add "vietnamese" (natural and friendly Vietnamese translation).
-   - Add "note" (If the sentence contains any idioms, slangs, phrasal verbs, or US cultural names/references, explain them briefly in Vietnamese. Start the note with a * symbol. Example: "* 'spill the beans': tiết lộ bí mật". If there are none, return null or empty string "").
+   - Add "slang_and_idiom" (If the sentence contains any idioms, slangs, phrasal verbs, or US cultural names/references, explain them briefly in Vietnamese. Start the note with a * symbol. Example: "* 'spill the beans': tiết lộ bí mật". If there are none, return null or empty string "").
 4. Return ONLY a valid JSON array of the processed objects. Do not write any markdown formatting (do not wrap in \`\`\`json blocks) or explanations.
 
 Example of merging:
@@ -315,7 +315,7 @@ Merged result:
     "text": "Hey. Hey. Ho ho. Hello. See a guy who doesn't want to know standing right here.",
     "ipa": "/heɪ. heɪ. hoʊ hoʊ. həˈloʊ. si ə ɡaɪ hu ˈdʌznt wɑnt tu noʊ ˈstændɪŋ raɪt hɪr./",
     "vietnamese": "Này, này. Hô hô. Xin chào. Có một anh chàng không muốn biết giới tính con mình đang đứng ngay đây này.",
-    "note": "* 'standing right here': Đang đứng ngay tại đây (cách nhấn mạnh vị trí hiện tại)."
+    "slang_and_idiom": "* 'standing right here': Đang đứng ngay tại đây (cách nhấn mạnh vị trí hiện tại)."
   }
 ]
 
@@ -355,7 +355,7 @@ YOUR TASKS:
 3. For each final merged sentence object:
    - Add "ipa" (phonetic transcription in US English).
    - Add "vietnamese" (natural and friendly Vietnamese translation).
-   - Add "note" (If the sentence contains any idioms, slangs, phrasal verbs, or US cultural names/references, explain them briefly in Vietnamese. Start the note with a * symbol. Example: "* 'spill the beans': tiết lộ bí mật". If there are none, return null or empty string "").
+   - Add "slang_and_idiom" (If the sentence contains any idioms, slangs, phrasal verbs, or US cultural names/references, explain them briefly in Vietnamese. Start the note with a * symbol. Example: "* 'spill the beans': tiết lộ bí mật". If there are none, return null or empty string "").
 4. Return ONLY a valid JSON array of the processed objects. Do not write any markdown formatting (do not wrap in \`\`\`json blocks) or explanations.
 
 Subtitles to process:
@@ -387,7 +387,7 @@ ${JSON.stringify(parsed, null, 2)}`;
       text: s.text,
       ipa: "",
       vietnamese: s.vietnamese || "",
-      note: ""
+      slang_and_idiom: ""
     }));
     updateDraft({ content: JSON.stringify(subtitleJson, null, 2) });
     alert(`✅ Đã tạo ${subtitleJson.length} dòng phụ đề trực tiếp từ file! IPA và Chú thích để trống — có thể bổ sung sau bằng Gemini nếu cần.`);

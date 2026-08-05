@@ -12,7 +12,7 @@ interface Subtitle {
   text: string;
   ipa?: string;
   vietnamese?: string;
-  note?: string;
+  slang_and_idiom?: string;
 }
 
 interface YoutubeDictationPlayerProps {
@@ -165,7 +165,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
   // States for live editing
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [editFields, setEditFields] = useState<{ text: string; ipa: string; vietnamese: string; note: string; start: string; end: string }>({ text: "", ipa: "", vietnamese: "", note: "", start: "", end: "" });
+  const [editFields, setEditFields] = useState<{ text: string; ipa: string; vietnamese: string; slang_and_idiom: string; start: string; end: string }>({ text: "", ipa: "", vietnamese: "", slang_and_idiom: "", start: "", end: "" });
   const [isSavingEdit, setIsSavingEdit] = useState<boolean>(false);
 
   const [playerReady, setPlayerReady] = useState<boolean>(false);
@@ -668,7 +668,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       text: sub.text,
       ipa: sub.ipa || "",
       vietnamese: sub.vietnamese || "",
-      note: sub.note || "",
+      slang_and_idiom: sub.slang_and_idiom || "",
       start: formatTimeDetailed(sub.start),
       end: formatTimeDetailed(sub.end),
     });
@@ -704,7 +704,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         text: editFields.text,
         ipa: editFields.ipa,
         vietnamese: editFields.vietnamese,
-        note: editFields.note,
+        slang_and_idiom: editFields.slang_and_idiom,
         start: parseTimeToSeconds(editFields.start),
         end: parseTimeToSeconds(editFields.end),
       };
@@ -1209,12 +1209,12 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                             />
                           </div>
 
-                          {/* Row 3: Vocabulary Notes, Actions */}
+                          {/* Row 3: Slang & Idiom, Actions */}
                           <div className="col-span-12 md:col-span-9 space-y-1">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase">Giải thích từ vựng (Ghi chú)</label>
+                            <label className="text-[10px] font-bold text-slate-400 uppercase">Giải thích Slang & Idiom</label>
                             <textarea
-                              value={editFields.note}
-                              onChange={(e) => setEditFields({ ...editFields, note: e.target.value })}
+                              value={editFields.slang_and_idiom}
+                              onChange={(e) => setEditFields({ ...editFields, slang_and_idiom: e.target.value })}
                               rows={1.5}
                               className="w-full p-1.5 px-2.5 border border-slate-200 rounded-xl outline-none focus:ring-1 focus:ring-indigo-500 text-xs text-amber-700 font-medium resize-y min-h-[38px]"
                               placeholder="Ví dụ: * 'phrase': giải thích"
@@ -1280,7 +1280,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                             {sub.vietnamese}
                           </p>
                         )}
-                        {sub.note && showNotes && renderFormattedNote(sub.note, fontSize)}
+                        {sub.slang_and_idiom && showNotes && renderFormattedNote(sub.slang_and_idiom, fontSize)}
                       </div>
                     )}
                   </div>
@@ -1311,7 +1311,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                           onChange={(e) => setShowNotes(e.target.checked)}
                           className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
                         />
-                        <span>Note</span>
+                        <span>Slang/Idiom</span>
                       </label>
                       <div className="flex items-center gap-1 border-l border-slate-200 pl-3 normal-case">
                         <button
@@ -1351,7 +1351,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                       {subtitles[currentIndex]?.vietnamese}
                     </p>
                   )}
-                  {subtitles[currentIndex]?.note && showNotes && renderFormattedNote(subtitles[currentIndex]?.note, fontSize)}
+                  {subtitles[currentIndex]?.slang_and_idiom && showNotes && renderFormattedNote(subtitles[currentIndex]?.slang_and_idiom, fontSize)}
                 </div>
 
                 {/* Dictation Match View */}
