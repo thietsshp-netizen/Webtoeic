@@ -106,6 +106,7 @@ export default async function LessonDetailPage({
         },
         update: {
           // Chỉ cập nhật updatedAt để lưu vết lần học cuối
+          updatedAt: new Date(),
         },
         create: {
           userId: session.user.id,
