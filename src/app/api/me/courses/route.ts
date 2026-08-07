@@ -5,7 +5,7 @@ import { authOptions } from "@/lib/auth";
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions) as any;
 
@@ -13,12 +13,15 @@ export async function GET() {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
+    const { searchParams } = new URL(req.url);
+    const targetUserId = searchParams.get("userId");
     const isAdmin = session.user.role === "ADMIN";
-    const userId = session.user.id;
+
+    const userId = (isAdmin && targetUserId) ? targetUserId : session.user.id;
 
     let enrolledCourses: any[] = [];
 
-    if (isAdmin) {
+    if (isAdmin && !targetUserId) {
       enrolledCourses = await prisma.course.findMany({
         orderBy: { createdAt: "desc" },
         include: {

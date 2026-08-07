@@ -95,13 +95,17 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions) as any;
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const userId = session.user.id;
+
+    const { searchParams } = new URL(req.url);
+    const targetUserId = searchParams.get("userId");
+    const isAdmin = session.user.role === "ADMIN";
+    const userId = (isAdmin && targetUserId) ? targetUserId : session.user.id;
 
     const history = await prisma.fullTestAttempt.findMany({
       where: { userId },

@@ -13,14 +13,15 @@ interface Device {
   createdAt: string;
 }
 
-export default function DeviceManagement() {
+export default function DeviceManagement({ userId }: { userId?: string | null }) {
   const { data: session } = useSession();
   const [devices, setDevices] = useState<Device[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchDevices = async () => {
     try {
-      const res = await fetch("/api/me/devices");
+      const query = userId ? `?userId=${userId}` : "";
+      const res = await fetch(`/api/me/devices${query}`);
       const data = await res.json();
       if (data.success) {
         setDevices(data.devices);
@@ -28,15 +29,16 @@ export default function DeviceManagement() {
     } catch (e) {
       console.error("Lỗi lấy danh sách thiết bị:", e);
     } finally {
-      setLoading(false);
+      if (loading) setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchDevices();
-  }, []);
+  }, [userId]);
 
   const handleDelete = async (deviceId: string) => {
+    if (userId) return; // Không cho phép xóa ở chế độ xem hộ
     if (!window.confirm("Bạn có chắc chắn muốn xóa thiết bị này?")) return;
     
     try {
@@ -59,7 +61,7 @@ export default function DeviceManagement() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="bg-white border border-slate-100 rounded-[3rem] p-10 shadow-sm relative overflow-hidden">
         <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.4em] mb-8 flex items-center gap-4">
-          <div className="w-12 h-1 bg-amber-500 rounded-full" /> Thiết bị của tôi
+          <div className="w-12 h-1 bg-amber-500 rounded-full" /> {userId ? "Thiết bị của học viên" : "Thiết bị của tôi"}
         </h3>
 
         {/* Policy Box */}
@@ -111,7 +113,7 @@ export default function DeviceManagement() {
                     </div>
                   </div>
 
-                  {canReset && (
+                  {canReset && !userId && (
                     <div className="flex flex-col items-center gap-2">
                       <button
                         onClick={() => handleDelete(device.deviceId)}

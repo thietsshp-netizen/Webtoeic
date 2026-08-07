@@ -3,13 +3,45 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions) as any;
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const userId = session.user.id;
+    
+    const { searchParams } = new URL(req.url);
+    const targetUserId = searchParams.get("userId");
+    const isAdmin = session.user.role === "ADMIN";
+    const userId = (isAdmin && targetUserId) ? targetUserId : session.user.id;
+
+    let viewedUser = null;
+    if (isAdmin && targetUserId) {
+      const u = await prisma.user.findUnique({
+        where: { id: targetUserId },
+        select: {
+          name: true,
+          email: true,
+          createdAt: true,
+          accountExpiresAt: true
+        }
+      });
+      if (u) {
+        let daysLeft = null;
+        if (u.accountExpiresAt) {
+          const now = new Date();
+          const expiresAt = new Date(u.accountExpiresAt);
+          const diffTime = expiresAt.getTime() - now.getTime();
+          daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+        viewedUser = {
+          name: u.name,
+          email: u.email,
+          createdAt: u.createdAt.toISOString(),
+          daysLeft
+        };
+      }
+    }
 
     // 1. Bài học gần nhất đang học dở
     const lastLesson = await (prisma as any).lessonProgress.findFirst({
@@ -207,7 +239,8 @@ export async function GET() {
       fullTestHistory,
       averageScore: fullTestHistory.length > 0
         ? Math.round(fullTestHistory.reduce((sum: number, h: any) => sum + h.totalScore, 0) / fullTestHistory.length)
-        : 0
+        : 0,
+      viewedUser
     };
 
     return NextResponse.json(responseData);

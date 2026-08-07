@@ -6,12 +6,15 @@ import { authOptions } from "@/lib/auth";
 // GET: Lấy danh sách bộ thẻ của người dùng kèm số lượng từ
 export async function GET(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    const userId = (session?.user as any)?.id;
-    
-    if (!userId) {
+    const session = await getServerSession(authOptions) as any;
+    if (!session || !session.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const { searchParams } = new URL(req.url);
+    const targetUserId = searchParams.get("userId");
+    const isAdmin = session.user.role === "ADMIN";
+    const userId = (isAdmin && targetUserId) ? targetUserId : session.user.id;
 
         // Lấy các bộ thẻ kèm số lượng từ trong bộ
     const decks = await (prisma as any).vocabDeck.findMany({

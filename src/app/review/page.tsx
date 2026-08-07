@@ -13,14 +13,23 @@ export const revalidate = 0;
 export default async function GlobalReviewPage({
   searchParams
 }: {
-  searchParams: Promise<{ filter?: 'all' | 'incorrect' | 'flagged' | 'note', active?: string }>;
+  searchParams: Promise<{ filter?: 'all' | 'incorrect' | 'flagged' | 'note', active?: string, userId?: string }>;
 }) {
-  const { filter = 'all' } = await searchParams;
+  const { filter = 'all', userId: targetUserId } = await searchParams;
   const session = await getServerSession(authOptions) as any;
-  const userId = session?.user?.id;
-
-  if (!userId) {
+  if (!session?.user?.id) {
     redirect("/auth/signin");
+  }
+
+  const isAdmin = session.user.role === "ADMIN";
+  const userId = (isAdmin && targetUserId) ? targetUserId : session.user.id;
+
+  let viewedUser = null;
+  if (isAdmin && targetUserId) {
+    viewedUser = await prisma.user.findUnique({
+      where: { id: targetUserId },
+      select: { name: true, email: true }
+    });
   }
 
   // Lấy kết quả MỚI NHẤT của mỗi câu hỏi (distinct by questionId, lấy updatedAt lớn nhất)
@@ -89,38 +98,57 @@ export default async function GlobalReviewPage({
   }));
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50 p-4 lg:p-8">
-      {/* Breadcrumb / Header */}
-      <div className="mb-6 flex items-center justify-between px-4">
-         <div>
-            <Link href="/?tab=dashboard" className="text-slate-400 group flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:text-blue-600 transition-colors">
-               <ArrowLeft size={16} /> Quay lại Dashboard
-            </Link>
-            <h1 className="text-xl font-black text-slate-800 mt-2 italic uppercase tracking-tight">Trung Tâm Ôn Tập Tổng Hợp</h1>
-         </div>
-         <div className="hidden md:block">
-            <div className="bg-white px-6 py-3 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-8">
-               <div className="flex flex-col">
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Trạng thái</span>
-                  <span className="text-xs font-bold text-slate-700">Tất cả bài học</span>
-               </div>
-               <div className="w-px h-8 bg-slate-100" />
-               <div className="flex flex-col text-right">
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Cần ôn tập</span>
-                  <span className="text-xs font-black text-orange-600">{reviewItems.length} mục</span>
-               </div>
-            </div>
-         </div>
-      </div>
+    <div className="flex flex-col h-screen bg-slate-50 overflow-hidden">
+      {viewedUser && (
+        <div className="bg-amber-50 border-b border-amber-200 px-6 py-3.5 flex items-center justify-between text-amber-800 text-sm font-semibold shrink-0 z-30 shadow-sm">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
+            <span>Bạn đang xem câu cần ôn của học viên: <strong className="text-amber-950 font-black">{viewedUser.name || viewedUser.email}</strong> (Chế độ Chỉ Xem)</span>
+          </div>
+          <Link
+            href={`/?tab=dashboard&viewAsUser=${targetUserId}`}
+            className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-sm active:scale-95"
+          >
+            Quay lại Dashboard
+          </Link>
+        </div>
+      )}
+      
+      <div className="flex-1 flex flex-col p-4 lg:p-8 min-h-0 overflow-y-auto">
+        {/* Breadcrumb / Header */}
+        <div className="mb-6 flex items-center justify-between px-4">
+           <div>
+              <Link href={viewedUser ? `/?tab=dashboard&viewAsUser=${targetUserId}` : "/?tab=dashboard"} className="text-slate-400 group flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:text-blue-600 transition-colors">
+                 <ArrowLeft size={16} /> Quay lại Dashboard
+              </Link>
+              <h1 className="text-xl font-black text-slate-800 mt-2 italic uppercase tracking-tight">
+                Trung Tâm Ôn Tập Tổng Hợp {viewedUser ? `(${viewedUser.name || viewedUser.email})` : ""}
+              </h1>
+           </div>
+           <div className="hidden md:block">
+              <div className="bg-white px-6 py-3 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-8">
+                 <div className="flex flex-col">
+                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Trạng thái</span>
+                    <span className="text-xs font-bold text-slate-700">Tất cả bài học</span>
+                 </div>
+                 <div className="w-px h-8 bg-slate-100" />
+                 <div className="flex flex-col text-right">
+                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Cần ôn tập</span>
+                    <span className="text-xs font-black text-orange-600">{reviewItems.length} mục</span>
+                 </div>
+              </div>
+           </div>
+        </div>
 
-      <div className="flex-1 min-h-0">
-        <AdminEditProvider>
-          <ToeicReviewManager 
-            initialItems={reviewItems} 
-            courseId="global"
-            filterType={filter} 
-          />
-        </AdminEditProvider>
+        <div className="flex-1 min-h-0">
+          <AdminEditProvider>
+            <ToeicReviewManager 
+              initialItems={reviewItems} 
+              courseId="global"
+              filterType={filter} 
+            />
+          </AdminEditProvider>
+        </div>
       </div>
     </div>
   );

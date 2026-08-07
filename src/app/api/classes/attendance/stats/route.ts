@@ -5,22 +5,34 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
-  const session = await getServerSession(authOptions);
+export async function GET(req: Request) {
+  const session = await getServerSession(authOptions) as any;
   if (!session || !session.user) {
     return NextResponse.json({ error: "Chưa đăng nhập" }, { status: 401 });
   }
 
   try {
-    const userEmail = session.user.email;
-    if (!userEmail) {
-      return NextResponse.json({ error: "Email không xác định" }, { status: 400 });
-    }
+    const { searchParams } = new URL(req.url);
+    const targetUserId = searchParams.get("userId");
+    const isAdmin = session.user.role === "ADMIN";
 
-    const user = await prisma.user.findUnique({
-      where: { email: userEmail },
-      select: { id: true, classCode: true }
-    });
+    let user;
+    if (isAdmin && targetUserId) {
+      user = await prisma.user.findUnique({
+        where: { id: targetUserId },
+        select: { id: true, classCode: true }
+      });
+    } else {
+      const userEmail = session.user.email;
+      if (!userEmail) {
+        return NextResponse.json({ error: "Email không xác định" }, { status: 400 });
+      }
+
+      user = await prisma.user.findUnique({
+        where: { email: userEmail },
+        select: { id: true, classCode: true }
+      });
+    }
 
     if (!user) {
       return NextResponse.json({ error: "Không tìm thấy thông tin tài khoản" }, { status: 404 });

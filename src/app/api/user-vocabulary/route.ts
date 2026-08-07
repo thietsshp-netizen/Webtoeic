@@ -6,14 +6,16 @@ import { authOptions } from "@/lib/auth";
 // GET: Fetch user's saved vocabulary
 export async function GET(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    const userId = (session?.user as any)?.id;
-    
-    if (!userId) {
+    const session = await getServerSession(authOptions) as any;
+    if (!session || !session.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { searchParams } = new URL(req.url);
+    const targetUserId = searchParams.get("userId");
+    const isAdmin = session.user.role === "ADMIN";
+    const userId = (isAdmin && targetUserId) ? targetUserId : session.user.id;
+
     const all = searchParams.get("all") === "true";
     const deckId = searchParams.get("deckId");
 

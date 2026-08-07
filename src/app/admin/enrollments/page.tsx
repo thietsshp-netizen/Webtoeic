@@ -796,7 +796,7 @@ export default function EnrollmentMatrix() {
                               })}
                             </div>
                             <button
-                              onClick={() => router.push(`/admin/enrollments/${student.id}`)}
+                              onClick={() => router.push(`/?tab=dashboard&viewAsUser=${student.id}`)}
                               className="text-[10px] text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded font-bold whitespace-nowrap hover:bg-emerald-100 transition-colors"
                             >
                               Xem tiến độ
