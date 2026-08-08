@@ -1,5 +1,3 @@
-/* src/components/Common/ScreenDrawOverlay/styles.module.css */
-
 .canvas {
   position: fixed;
   top: 0;
@@ -11,6 +9,10 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
+  /* Kích hoạt tăng tốc phần cứng GPU để giảm thiểu độ trễ V-Sync khi share tab */
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 /* Kính mờ Glassmorphism cho Toolbar */
