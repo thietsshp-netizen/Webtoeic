@@ -1551,17 +1551,17 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     }
   };
 
-  const getCanvasCoords = (clientX: number, clientY: number, canvas: HTMLCanvasElement) => {
-    const rect = canvas.getBoundingClientRect();
+  const getCanvasCoords = (clientX: number, clientY: number, canvas: HTMLCanvasElement, rect?: DOMRect) => {
+    const r = rect || canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     const logicalWidth = canvas.width / dpr;
     const logicalHeight = canvas.height / dpr;
-    const scaleX = rect.width > 0 ? (logicalWidth / rect.width) : 1;
-    const scaleY = rect.height > 0 ? (logicalHeight / rect.height) : 1;
+    const scaleX = r.width > 0 ? (logicalWidth / r.width) : 1;
+    const scaleY = r.height > 0 ? (logicalHeight / r.height) : 1;
     return {
-      x: (clientX - rect.left) * scaleX,
-      y: (clientY - rect.top) * scaleY,
-      rect
+      x: (clientX - r.left) * scaleX,
+      y: (clientY - r.top) * scaleY,
+      rect: r
     };
   };
 
@@ -3256,6 +3256,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     const ctx = ctxRef.current;
     if (!canvas || !ctx) return;
 
+    // Cache the bounding rect once at the beginning of the pointermove event to avoid layout thrashing
+    const cachedRect = canvas.getBoundingClientRect();
+
     const nativeEvent = e.nativeEvent as any;
     let events: any[] = [nativeEvent];
     if (nativeEvent && typeof nativeEvent.getCoalescedEvents === 'function') {
@@ -3271,7 +3274,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     // Lấy toạ độ chuột hiện tại
     const lastEvent = events[events.length - 1] || nativeEvent;
-    const { x, y, rect } = getCanvasCoords(lastEvent.clientX, lastEvent.clientY, canvas);
+    const { x, y, rect } = getCanvasCoords(lastEvent.clientX, lastEvent.clientY, canvas, cachedRect);
 
     // --- CHECK FOR RESIZE HANDLE HOVER ---
     if (tool === 'hand' && selectedId && !resizingInfo && !isDrawingRef.current) {
@@ -3429,7 +3432,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       mousePosRef.current = { x, y };
       if (isDrawingRef.current && lastPointRef.current) {
         events.forEach((evt: any) => {
-          const { x: ex, y: ey } = getCanvasCoords(evt.clientX, evt.clientY, canvas);
+          const { x: ex, y: ey } = getCanvasCoords(evt.clientX, evt.clientY, canvas, cachedRect);
 
           // Lọc khoảng cách tối thiểu giữa các điểm để tránh răng cưa góc cạnh và tích tụ độ mờ (opacity accumulation)
           const lastPt = activePointsRef.current[activePointsRef.current.length - 1];
@@ -3505,7 +3508,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     else {
       // Logic vẽ vẽ trực tiếp mượt mà để đạt hiệu năng tối đa khi đang rê chuột
       events.forEach((evt: any) => {
-        const { x: ex, y: ey } = getCanvasCoords(evt.clientX, evt.clientY, canvas);
+        const { x: ex, y: ey } = getCanvasCoords(evt.clientX, evt.clientY, canvas, cachedRect);
         const pt = lastPointRef.current;
 
         if (pt) {
