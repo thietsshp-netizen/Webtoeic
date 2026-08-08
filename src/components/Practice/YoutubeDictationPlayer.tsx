@@ -73,7 +73,7 @@ const renderFormattedNote = (noteText: string, fontSize: number) => {
               <span className="font-extrabold text-purple-600 mr-1">
                 {phrase}
               </span>
-              <span className="text-slate-400 font-medium text-[11px] italic mr-1">
+              <span className="text-slate-400 font-medium text-[11px] italic">
                 ({category.toLowerCase()})
               </span>
               <span className="text-slate-400 font-bold mr-1.5">:</span>
@@ -97,10 +97,10 @@ const renderFormattedNote = (noteText: string, fontSize: number) => {
               <span className="font-extrabold text-slate-400 mr-1 select-none">
                 {pIdx + 1}.
               </span>
-              <span className="font-extrabold text-purple-600 mr-1">
+              <span className="font-extrabold text-purple-600">
                 {phrase}
               </span>
-              <span className="text-slate-400 font-bold mr-1">:</span>
+              <span className="text-slate-400 font-bold mr-1.5">:</span>
               <span className="text-amber-700 font-medium">
                 {meaning}
               </span>
@@ -127,10 +127,10 @@ const renderFormattedNote = (noteText: string, fontSize: number) => {
             <span className="font-extrabold text-slate-400 mr-1 select-none">
               {pIdx + 1}.
             </span>
-            <span className="font-extrabold text-purple-600 mr-1">
+            <span className="font-extrabold text-purple-600">
               {cleanTerm}
             </span>
-            <span className="text-slate-400 font-bold mr-1">:</span>
+            <span className="text-slate-400 font-bold mr-1.5">:</span>
             <span className="text-amber-700 font-medium">
               {definition}
             </span>
