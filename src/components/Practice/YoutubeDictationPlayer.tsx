@@ -469,6 +469,15 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             }
           }
 
+          // Auto-looping in dictation mode
+          if (mode === "dictation" && subtitles.length > 0) {
+            const currentSub = subtitles[currentIndex];
+            if (currentSub && time >= currentSub.end) {
+              lastSeekTimeRef.current = Date.now();
+              playerRef.current.seekTo(currentSub.start, true);
+            }
+          }
+
           // Find and update active subtitle based on time (only in listening mode to prevent snapping during dictation typing)
           if (mode === "listen" && subtitles.length > 0) {
             // Scan backwards to find the latest matching subtitle (prioritizes newer segments when times overlap)
@@ -563,6 +572,12 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         setIsPlaying(true);
       }
     }
+
+    if (mode === "dictation") {
+      setTimeout(() => {
+        dictationTextareaRef.current?.focus();
+      }, 50);
+    }
   };
 
   // Play/Pause video (both modes)
@@ -625,7 +640,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       
       // Shortcuts without modifiers when NOT typing
       if (!isTyping) {
-        if (e.code === "KeyN") {
+        if (e.code === "KeyN" || e.key === "Enter") {
           e.preventDefault();
           playSubtitleRow(currentIndex + 1);
         } else if (e.code === "KeyV") {
@@ -639,27 +654,35 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           togglePlay();
         }
       } 
-      // Shortcuts with Alt modifier when user is inside the typing box
-      else if (isTyping && e.altKey) {
-        if (e.code === "KeyN") {
-          e.preventDefault();
-          playSubtitleRow(currentIndex + 1);
-        } else if (e.code === "KeyV") {
-          e.preventDefault();
-          playSubtitleRow(currentIndex - 1);
-        } else if (e.code === "KeyB") {
-          e.preventDefault();
-          playSubtitleRow(currentIndex);
-        } else if (e.code === "Backquote" || e.code === "Space") {
+      // Shortcuts when user is typing in the box (e.g. dictation mode)
+      else if (isTyping) {
+        if (e.code === "Backquote") {
           e.preventDefault();
           togglePlay();
+        } else if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          playSubtitleRow(currentIndex + 1);
+        } else if (e.altKey) {
+          if (e.code === "KeyN") {
+            e.preventDefault();
+            playSubtitleRow(currentIndex + 1);
+          } else if (e.code === "KeyV") {
+            e.preventDefault();
+            playSubtitleRow(currentIndex - 1);
+          } else if (e.code === "KeyB") {
+            e.preventDefault();
+            playSubtitleRow(currentIndex);
+          } else if (e.code === "Space") {
+            e.preventDefault();
+            togglePlay();
+          }
         }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentIndex, subtitles, isPlaying]);
+  }, [currentIndex, subtitles, isPlaying, mode]);
 
   // Live Inline Editing Handlers
   const startEdit = (idx: number, sub: Subtitle) => {
@@ -847,6 +870,15 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 const tracks = videoRef.current.textTracks;
                 for (let i = 0; i < tracks.length; i++) {
                   tracks[i].mode = "disabled";
+                }
+
+                // Auto-looping in dictation mode
+                if (mode === "dictation" && subtitles.length > 0) {
+                  const currentSub = subtitles[currentIndex];
+                  if (currentSub && time >= currentSub.end) {
+                    videoRef.current.currentTime = currentSub.start;
+                    videoRef.current.play().catch(() => {});
+                  }
                 }
 
                 // Find and update active subtitle based on time (only in listen mode)
@@ -1365,7 +1397,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                       const typed = dictationInput[i];
                       const isAlphaNumeric = /[a-zA-Z0-9]/.test(char);
                       if (!isAlphaNumeric) return <span key={i} className="text-slate-400">{char}</span>;
-                      if (!typed) return <span key={i} className="text-slate-350">_</span>;
+                      if (!typed) return <span key={i} className="text-slate-350 mx-[1.5px]">_</span>;
                       const isCorrect = typed.toLowerCase() === char.toLowerCase();
                       return (
                         <span
@@ -1417,7 +1449,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   disabled={currentIndex === subtitles.length - 1}
                   className="flex-1 py-3 px-4 bg-indigo-600 hover:bg-indigo-755 text-white font-bold rounded-2xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-xs shadow-md shadow-indigo-100"
                 >
-                  Tiếp Theo (Alt+n) <ChevronRight size={16} />
+                  Tiếp Theo (Enter) <ChevronRight size={16} />
                 </button>
               </div>
             </div>
