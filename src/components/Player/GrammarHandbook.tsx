@@ -161,6 +161,39 @@ export default function GrammarHandbook() {
     preMaximizeState.current = { width: initialWidth, height: initialHeight, x: initialX, y: initialY };
   }, []);
 
+  // Tự động tăng/giảm kích thước hình ảnh (img) tỉ lệ thuận theo mức zoom của Pane tương ứng
+  useEffect(() => {
+    if (!activeLesson) return;
+
+    const timer = setTimeout(() => {
+      const panes = document.querySelectorAll(".grammar-handbook-content");
+      panes.forEach((pane, paneIdx) => {
+        // paneIdx === 0 tương ứng với zoom1 (Pane trái/trên), paneIdx === 1 tương ứng với zoom2 (Pane phải/dưới)
+        const zoomValue = paneIdx === 0 ? zoom1 : zoom2;
+        const images = pane.querySelectorAll("img");
+        images.forEach((img: HTMLImageElement) => {
+          let baseMaxWidth = img.getAttribute("data-base-max-width");
+          if (!baseMaxWidth) {
+            baseMaxWidth = img.style.maxWidth || "100%";
+            img.setAttribute("data-base-max-width", baseMaxWidth);
+          }
+
+          const match = baseMaxWidth.match(/^([\d.]+)(%|px|rem|em|vw)$/);
+          if (match) {
+            const val = parseFloat(match[1]);
+            const unit = match[2];
+            const scaledVal = val * (zoomValue / 100);
+            img.style.maxWidth = `${scaledVal}${unit}`;
+          } else {
+            img.style.maxWidth = `calc(${baseMaxWidth} * ${zoomValue / 100})`;
+          }
+        });
+      });
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [activeLesson, zoom1, zoom2, pane1Tab, pane2Tab]);
+
   // Xử lý kéo thả cửa sổ nổi
   const handleDragStart = (e: React.MouseEvent) => {
     if (isMaximized) return;
