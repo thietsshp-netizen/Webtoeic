@@ -205,6 +205,21 @@ const moveSuperscriptToEnd = (htmlStr: string) => {
   return htmlStr;
 };
 
+const cleanEvidenceSids = (sids: any[] | undefined): string[] => {
+  if (!sids || !Array.isArray(sids)) return [];
+  const result: string[] = [];
+  sids.forEach(item => {
+    if (typeof item === 'string') {
+      const clean = item.replace('cite:', '').trim();
+      clean.split(/[\s,]+/).forEach(s => {
+        const trimmed = s.trim();
+        if (trimmed) result.push(trimmed);
+      });
+    }
+  });
+  return result;
+};
+
 const InteractiveTranscript = ({ passages, revealed }: any) => {
   if (!passages || !passages.length) return null;
 
@@ -481,7 +496,7 @@ export default function ToeicPart34Player({
     const pj = typeof mj === 'string' ? JSON.parse(mj) : mj;
 
     parsedTranscript.forEach((item: any) => {
-      const evidenceFor = pj?.questions?.find((q: any) => q.evidence_sids?.includes(item.id));
+      const evidenceFor = pj?.questions?.find((q: any) => cleanEvidenceSids(q.evidence_sids).includes(item.id));
       const qNo = evidenceFor ? evidenceFor.question_no || (pj.questions.indexOf(evidenceFor) + (currentGroup.questions[0]?.questionNo || 1)) : null;
       if (qNo) {
         evidenceTextMap[qNo] = (evidenceTextMap[qNo] || "") + " " + item.english;
@@ -565,7 +580,7 @@ export default function ToeicPart34Player({
     parsedTranscript.forEach((item: any) => {
       const mj = (currentGroup.metadata as any)?.Json;
       const pj = typeof mj === 'string' ? JSON.parse(mj) : mj;
-      const evidenceFor = pj?.questions?.find((q: any) => q.evidence_sids?.includes(item.id));
+      const evidenceFor = pj?.questions?.find((q: any) => cleanEvidenceSids(q.evidence_sids).includes(item.id));
       const qNo = evidenceFor ? evidenceFor.question_no || (pj.questions.indexOf(evidenceFor) + (questions[0]?.questionNo || 1)) : null;
 
       const sentenceData = { ...item, qNo };
@@ -1084,21 +1099,14 @@ export default function ToeicPart34Player({
 
     // Lấy evidence_sids từ các nguồn có thể có (đảm bảo luôn là mảng)
     let rawSids: any = q.evidence_sids || q.evidenceSids || [];
-    let evidenceSids: string[] = [];
-
-    if (Array.isArray(rawSids)) {
-      evidenceSids = rawSids;
-    } else if (typeof rawSids === 'string') {
-      evidenceSids = rawSids.split(/[\s,]+/).filter(Boolean);
-    }
+    let evidenceSids: string[] = cleanEvidenceSids(Array.isArray(rawSids) ? rawSids : [rawSids]);
 
     if (evidenceSids.length === 0) {
       try {
         const meta = q.metadata as any;
         const qExpl = typeof q.explanation === 'string' ? JSON.parse(q.explanation) : q.explanation;
         let altSids = meta?.explanation_vn?.evidence_sids || meta?.Json?.evidence_sids || qExpl?.evidence_sids || [];
-        if (Array.isArray(altSids)) evidenceSids = altSids;
-        else if (typeof altSids === 'string') evidenceSids = altSids.split(/[\s,]+/).filter(Boolean);
+        evidenceSids = cleanEvidenceSids(Array.isArray(altSids) ? altSids : [altSids]);
       } catch (e) { }
     }
 
@@ -1718,7 +1726,7 @@ export default function ToeicPart34Player({
                       parsedTranscript.forEach((item: any) => {
                         const mj = (currentGroup.metadata as any)?.Json;
                         const pj = typeof mj === 'string' ? JSON.parse(mj) : mj;
-                        const evidenceFor = pj?.questions?.find((q: any) => q.evidence_sids?.includes(item.id));
+                        const evidenceFor = pj?.questions?.find((q: any) => cleanEvidenceSids(q.evidence_sids).includes(item.id));
                         const qNo = evidenceFor ? evidenceFor.question_no || (pj.questions.indexOf(evidenceFor) + (questions[0]?.questionNo || 1)) : null;
 
                         const sentenceData = { ...item, qNo };
