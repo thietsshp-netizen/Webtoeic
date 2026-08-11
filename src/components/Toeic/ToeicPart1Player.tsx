@@ -514,6 +514,528 @@ export default function ToeicPart1Player({
   const [activeWordFamily, setActiveWordFamily] = useState<any[]>([]);
   const [popoverPos, setPopoverPos] = useState({ x: 100, y: 100 });
 
+  const [selectedCloudIndex, setSelectedCloudIndex] = useState<number>(-1);
+  const pipWindowRef = useRef<any>(null);
+  const popupRef = useRef<Window | null>(null);
+  const lastVocabHotkeyTime = useRef<number>(0);
+
+  const getMatchedFamiliesForQuestion = (index: number) => {
+    const group = data[index];
+    if (!group) return [];
+    const qData = group.questions?.[0] || {};
+    const engP = parseOptionsFromText(group.transcript || "");
+    
+    // Combine all option texts
+    let combinedText = "";
+    ['A', 'B', 'C', 'D'].forEach(opt => {
+      const text = engP.find(p => p.label === opt)?.text || (qData as any)[`option${opt}`] || "";
+      combinedText += " " + text;
+    });
+
+    const cleanText = combinedText.toLowerCase();
+    if (!cleanText.trim()) return [];
+
+    const matchedFams: any[] = [];
+
+    wordFamiliesData.forEach((fam) => {
+      if (!fam.words) return;
+      
+      const found = fam.words.some((member: string) => {
+        const mLower = member.toLowerCase();
+        const escaped = mLower.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const isPhrase = mLower.includes(' ');
+        
+        let regex: RegExp;
+        if (isPhrase) {
+          regex = new RegExp(`\\b${escaped}\\b`, 'i');
+        } else {
+          regex = new RegExp(`\\b${escaped}(?:ing|ed|s|es|er|est|ly|y)?\\b`, 'i');
+        }
+        return regex.test(cleanText);
+      });
+
+      if (found) {
+        matchedFams.push({ ...fam, matchedWord: fam.key });
+      }
+    });
+
+    return matchedFams;
+  };
+
+  const formatValueToHtml = (val: string, key: string, type: string) => {
+    if (!val) return '';
+    const lines = val.split('\n');
+    const searchTerms = [key.replace(/[\/,]/g, ' ').split(' ')[0]];
+    const firstTerm = searchTerms[0] || '';
+    const termLower = firstTerm.toLowerCase();
+    
+    const highlightTerm = (text: string) => {
+      if (!firstTerm || firstTerm.length < 2 || !text) return text;
+      const escapedTerm = firstTerm.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      const termRegex = type === 'root' ? new RegExp(`(${escapedTerm})`, 'gi') : new RegExp(`\\b(${escapedTerm})\\b`, 'gi');
+      return text.split(termRegex).map((part) => {
+        if (part.toLowerCase() === termLower) {
+          return `<span class="highlight-term">${part}</span>`;
+        }
+        return part;
+      }).join('');
+    };
+
+    const highlightWords = (text: string) => {
+      return text.replace(/\b([a-zA-Z0-9'\s-]+)\s*\(([^)]+)\)/g, (match, eng, vi) => {
+        return `<strong style="color: #2563eb; font-weight: 800;">${eng.trim()}</strong> <span style="color: #475569;">(${vi})</span>`;
+      });
+    };
+
+    return lines.map((line) => {
+      let cleanLine = line.trim();
+      if (cleanLine.length === 0) return '';
+      if (cleanLine.startsWith('[') && cleanLine.endsWith(']')) {
+        cleanLine = cleanLine.slice(1, -1);
+      }
+      cleanLine = cleanLine.replace(/Đồng nghĩa TOEIC hay gặp/gi, 'Các từ/cụm từ tương tự');
+      
+      let className = "line-normal";
+      const lowerTrimmed = cleanLine.toLowerCase();
+      
+      if (
+        lowerTrimmed.startsWith('gốc:') || 
+        lowerTrimmed.startsWith('goc:') || 
+        lowerTrimmed.startsWith('tiền tố:') || 
+        lowerTrimmed.startsWith('tien to:') ||
+        lowerTrimmed.startsWith('hậu tố:') || 
+        lowerTrimmed.startsWith('hau to:')
+      ) {
+        className = "line-root";
+      } else if (cleanLine.startsWith('=') || cleanLine.startsWith('~')) {
+        className = "line-synonym";
+      } else if (cleanLine.startsWith('><')) {
+        className = "line-antonym";
+      } else if (cleanLine.includes('->') || cleanLine.startsWith('-')) {
+        className = "line-example";
+      }
+      
+      cleanLine = highlightWords(cleanLine);
+      return `<div class="${className}">${highlightTerm(cleanLine)}</div>`;
+    }).join('');
+  };
+
+  const updateCloudPopup = async (index: number, targetCloudIndex: number) => {
+    if (!isAdminMode && !canEdit) return;
+    const group = data[index];
+    if (!group) return;
+    const qData = group.questions?.[0] || {};
+    const correctAnswer = qData.correctAnswer?.toUpperCase();
+    const engP = parseOptionsFromText(group.transcript || "");
+
+    const matchedFamilies = getMatchedFamiliesForQuestion(index);
+
+    let activeIdx = targetCloudIndex;
+    let fam = null;
+    let paginationText = "";
+    if (matchedFamilies.length > 0) {
+      if (activeIdx < 0) activeIdx = matchedFamilies.length - 1;
+      if (activeIdx >= matchedFamilies.length) activeIdx = 0;
+      fam = matchedFamilies[activeIdx];
+      setSelectedCloudIndex(activeIdx);
+      paginationText = `${activeIdx + 1} / ${matchedFamilies.length}`;
+    } else {
+      setSelectedCloudIndex(-1);
+    }
+
+    const escapeHtml = (unsafe: string) => {
+      return (unsafe || '')
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    };
+
+    const optionHtmls = ['A', 'B', 'C', 'D'].map(opt => {
+      const text = engP.find(p => p.label === opt)?.text || (qData as any)[`option${opt}`] || "";
+      const isCorrect = correctAnswer === opt;
+      const color = isCorrect ? '#dc2626' : '#1e293b';
+      const fontWeight = isCorrect ? 'bold' : 'normal';
+      return `
+        <div style="margin-bottom: 8px; font-size: 14px; color: ${color}; font-weight: ${fontWeight};">
+          <strong>${opt}.</strong> ${escapeHtml(text)}
+        </div>
+      `;
+    }).join('');
+
+    const width = 420;
+    const height = 550;
+
+    const popupHtml = `
+      <div class="options-container" style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <div style="font-weight: 800; font-size: 15px; margin-bottom: 10px; color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">Đáp án Câu ${qData.questionNo || ''}</div>
+        ${optionHtmls}
+      </div>
+      
+      ${fam ? `
+      <div class="title-container">
+        <div>
+          <div class="title">Từ khóa: "${escapeHtml(fam.matchedWord || fam.key)}"</div>
+          <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Đám mây từ vựng - Câu ${qData.questionNo || ''}</div>
+        </div>
+        <div class="pagination-indicator">${paginationText}</div>
+      </div>
+      
+      <div class="family-item">
+        <div class="family-header">
+          <span class="family-key">${escapeHtml(fam.key)}</span>
+          <span class="family-badge ${fam.type === 'root' ? 'badge-root' : 'badge-word'}">
+            ${fam.type === 'root' ? 'Gốc từ' : 'Từ vựng'}
+          </span>
+        </div>
+        <div>
+          ${formatValueToHtml(fam.originalValue, fam.key, fam.type)}
+        </div>
+      </div>
+      ` : `
+      <div style="text-align: center; color: #64748b; font-size: 13px; padding: 20px;">
+        Không tìm thấy từ vựng khớp trong câu này.
+      </div>
+      `}
+    `;
+
+    const hasPiP = typeof window !== 'undefined' && 'documentPictureInPicture' in window;
+    
+    if (hasPiP) {
+      try {
+        let pipWindow = pipWindowRef.current;
+        const isClosed = !pipWindow || pipWindow.closed;
+        
+        if (isClosed) {
+          // @ts-ignore
+          pipWindow = await window.documentPictureInPicture.requestWindow({ width, height });
+          pipWindowRef.current = pipWindow;
+
+          try {
+            const leftPos = window.screenLeft || window.screenX || 0;
+            const topPos = (window.screenTop || window.screenY || 0) + (window.outerHeight || window.innerHeight || 800) - height;
+            pipWindow.moveTo(leftPos, topPos);
+          } catch (e) {}
+
+          const style = pipWindow.document.createElement('style');
+          style.textContent = `
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+              padding: 16px;
+              margin: 0;
+              background-color: #f8fafc;
+              color: #1e293b;
+            }
+            .title-container {
+              position: sticky;
+              top: 0;
+              background-color: #f8fafc;
+              padding-bottom: 12px;
+              border-bottom: 2px solid #e2e8f0;
+              margin-bottom: 16px;
+              z-index: 10;
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-end;
+            }
+            .title {
+              font-size: 16px;
+              font-weight: 800;
+              color: #0f172a;
+              margin: 0;
+            }
+            .pagination-indicator {
+              font-size: 12px;
+              font-weight: 700;
+              background-color: #e2e8f0;
+              color: #475569;
+              padding: 3px 8px;
+              border-radius: 6px;
+            }
+            .family-item {
+              background-color: #ffffff;
+              border: 1px solid #e2e8f0;
+              border-radius: 12px;
+              padding: 14px;
+              box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+            }
+            .family-header {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 12px;
+            }
+            .family-key {
+              font-weight: 800;
+              color: #2563eb;
+              font-size: 16px;
+            }
+            .family-badge {
+              font-size: 10px;
+              font-weight: 700;
+              padding: 2px 8px;
+              border-radius: 9999px;
+              text-transform: uppercase;
+            }
+            .badge-word {
+              background-color: #dbeafe;
+              color: #1e40af;
+            }
+            .badge-root {
+              background-color: #fef3c7;
+              color: #92400e;
+            }
+            .line-normal {
+              color: #334155;
+              font-size: 13.5px;
+              line-height: 1.6;
+              margin: 6px 0;
+              font-weight: 500;
+            }
+            .line-root {
+              color: #dc2626;
+              font-size: 13.5px;
+              line-height: 1.6;
+              margin: 6px 0;
+              font-weight: bold;
+            }
+            .line-synonym {
+              color: #047857;
+              font-size: 13.5px;
+              line-height: 1.6;
+              margin: 6px 0;
+              font-weight: bold;
+            }
+            .line-antonym {
+              color: #dc2626;
+              font-size: 13.5px;
+              line-height: 1.6;
+              margin: 6px 0;
+              font-weight: bold;
+            }
+            .line-example {
+              color: #4338ca;
+              font-size: 13.5px;
+              line-height: 1.6;
+              margin: 6px 0;
+              font-weight: 600;
+            }
+            .highlight-term {
+              color: #d97706;
+              font-weight: bold;
+            }
+          `;
+          pipWindow.document.head.appendChild(style);
+
+          const mainWindow = window;
+          pipWindow.document.addEventListener('keydown', (e: KeyboardEvent) => {
+            const isTargetKey = 
+              e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
+              e.key === ',' || e.key === '.' ||
+              e.key === '[' || e.key.toLowerCase() === 'ư' || 
+              e.key === ']' || e.key.toLowerCase() === 'ơ';
+            if (isTargetKey) {
+              e.preventDefault();
+              mainWindow.postMessage({ type: 'CYCLE_CLOUD', key: e.key }, '*');
+            }
+          });
+        }
+
+        pipWindow.document.body.innerHTML = popupHtml;
+        try {
+          window.focus();
+        } catch (e) {}
+        return;
+      } catch (err) {
+        console.error("PiP error, falling back to popup:", err);
+      }
+    }
+
+    let popup = popupRef.current;
+    if (!popup || popup.closed) {
+      popup = window.open("", "vocab_cloud", `width=${width},height=${height}`);
+      popupRef.current = popup;
+    }
+
+    if (popup) {
+      popup.document.open();
+      popup.document.write(`
+        <html>
+          <head>
+            <title>Gợi ý & Đám mây từ vựng</title>
+            <style>
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                padding: 16px;
+                margin: 0;
+                background-color: #f8fafc;
+                color: #1e293b;
+              }
+              .title-container {
+                position: sticky;
+                top: 0;
+                background-color: #f8fafc;
+                padding-bottom: 12px;
+                border-bottom: 2px solid #e2e8f0;
+                margin-bottom: 16px;
+                z-index: 10;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+              }
+              .title {
+                font-size: 16px;
+                font-weight: 800;
+                color: #0f172a;
+                margin: 0;
+              }
+              .pagination-indicator {
+                font-size: 12px;
+                font-weight: 700;
+                background-color: #e2e8f0;
+                color: #475569;
+                padding: 3px 8px;
+                border-radius: 6px;
+              }
+              .family-item {
+                background-color: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 14px;
+                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+              }
+              .family-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+              }
+              .family-key {
+                font-weight: 800;
+                color: #2563eb;
+                font-size: 16px;
+              }
+              .family-badge {
+                font-size: 10px;
+                font-weight: 700;
+                padding: 2px 8px;
+                border-radius: 9999px;
+                text-transform: uppercase;
+              }
+              .badge-word {
+                background-color: #dbeafe;
+                color: #1e40af;
+              }
+              .badge-root {
+                background-color: #fef3c7;
+                color: #92400e;
+              }
+              .line-normal {
+                color: #334155;
+                font-size: 13.5px;
+                line-height: 1.6;
+                margin: 6px 0;
+                font-weight: 500;
+              }
+              .line-root {
+                color: #dc2626;
+                font-size: 13.5px;
+                line-height: 1.6;
+                margin: 6px 0;
+                font-weight: bold;
+              }
+              .line-synonym {
+                color: #047857;
+                font-size: 13.5px;
+                line-height: 1.6;
+                margin: 6px 0;
+                font-weight: bold;
+              }
+              .line-antonym {
+                color: #dc2626;
+                font-size: 13.5px;
+                line-height: 1.6;
+                margin: 6px 0;
+                font-weight: bold;
+              }
+              .line-example {
+                color: #4338ca;
+                font-size: 13.5px;
+                line-height: 1.6;
+                margin: 6px 0;
+                font-weight: 600;
+              }
+              .highlight-term {
+                color: #d97706;
+                font-weight: bold;
+              }
+            </style>
+          </head>
+          <body>
+            ${popupHtml}
+             <script>
+              document.addEventListener('keydown', (e) => {
+                const isTargetKey = 
+                  e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
+                  e.key === ',' || e.key === '.' ||
+                  e.key === '[' || e.key.toLowerCase() === 'ư' || 
+                  e.key === ']' || e.key.toLowerCase() === 'ơ';
+                if (isTargetKey) {
+                  e.preventDefault();
+                  if (window.opener) {
+                    window.opener.postMessage({ type: 'CYCLE_CLOUD', key: e.key }, '*');
+                  }
+                }
+              });
+            </script>
+          </body>
+        </html>
+      `);
+      popup.document.close();
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (popupRef.current && !popupRef.current.closed) {
+        popupRef.current.close();
+      }
+      if (pipWindowRef.current && !pipWindowRef.current.closed) {
+        pipWindowRef.current.close();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    setSelectedCloudIndex(-1);
+    const isPopupActive = (popupRef.current && !popupRef.current.closed) || (pipWindowRef.current && !pipWindowRef.current.closed);
+    if (isPopupActive) {
+      updateCloudPopup(currentIndex, 0);
+    }
+  }, [currentIndex]);
+
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data && e.data.type === 'CYCLE_CLOUD') {
+        lastVocabHotkeyTime.current = Date.now();
+        const matchedFamilies = getMatchedFamiliesForQuestion(currentIndex);
+        if (matchedFamilies.length > 0) {
+          let nextIdx = 0;
+          const isNext = e.data.key === 'ArrowUp' || e.data.key === '.' || e.data.key === ']' || e.data.key?.toLowerCase() === 'ơ';
+          if (isNext) {
+            nextIdx = selectedCloudIndex === -1 ? 0 : (selectedCloudIndex + 1) % matchedFamilies.length;
+          } else {
+            nextIdx = selectedCloudIndex === -1 ? matchedFamilies.length - 1 : (selectedCloudIndex - 1 + matchedFamilies.length) % matchedFamilies.length;
+          }
+          updateCloudPopup(currentIndex, nextIdx);
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [currentIndex, selectedCloudIndex, wordFamiliesData]);
+
   useEffect(() => {
     fetch("/api/word-families?part=1")
       .then((res) => res.json())
@@ -583,7 +1105,7 @@ export default function ToeicPart1Player({
     setSelectedHotspotIndex(null);
   }, [currentIndex]);
 
-  const { isAdminMode } = useAdminEdit();
+  const { isAdminMode, canEdit } = useAdminEdit();
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-slate-400 gap-3">
@@ -1884,15 +2406,27 @@ export default function ToeicPart1Player({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Bỏ qua phím tắt nếu người dùng đang nhập liệu trong input, textarea hoặc contenteditable
-      const activeEl = document.activeElement;
-      if (
-        activeEl &&
-        (activeEl.tagName === 'INPUT' ||
+      const target = e.target as HTMLElement;
+      const activeEl = document.activeElement as HTMLElement | null;
+      const isInput = (
+        (activeEl && (
+          activeEl.tagName === 'INPUT' ||
           activeEl.tagName === 'TEXTAREA' ||
-          activeEl.getAttribute('contenteditable') === 'true')
-      ) {
+          activeEl.isContentEditable ||
+          activeEl.closest('[contenteditable]') !== null
+        )) ||
+        (target && (
+          target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable ||
+          (typeof target.closest === 'function' && target.closest('[contenteditable]') !== null)
+        ))
+      );
+      if (isInput) {
         return;
       }
+
+      console.log("[DEBUG P1 KEYDOWN] key:", e.key, "isAdminMode:", isAdminMode);
 
       if (e.key === '`') {
         e.preventDefault();
@@ -1905,9 +2439,13 @@ export default function ToeicPart1Player({
         } else { ws.playPause(); }
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
+        const timeSinceVocab = Date.now() - lastVocabHotkeyTime.current;
+        if (timeSinceVocab < 1200) return;
         setCurrentIndex(prev => Math.max(0, prev - 1));
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
+        const timeSinceVocab = Date.now() - lastVocabHotkeyTime.current;
+        if (timeSinceVocab < 1200) return;
         if (currentIndex === data.length - 1) {
           if (isFullTest && onNextPart) onNextPart();
         } else {
@@ -1935,6 +2473,24 @@ export default function ToeicPart1Player({
         e.preventDefault();
         const labels = ['A', 'B', 'C', 'D'];
         playSegment(labels[parseInt(e.key) - 1]);
+      } else if ((isAdminMode || canEdit) && (
+        e.key === ',' || e.key === '.' ||
+        e.key === '[' || e.key.toLowerCase() === 'ư' || 
+        e.key === ']' || e.key.toLowerCase() === 'ơ'
+      )) {
+        lastVocabHotkeyTime.current = Date.now();
+        e.preventDefault();
+        const matchedFamilies = getMatchedFamiliesForQuestion(currentIndex);
+        let nextIdx = 0;
+        if (matchedFamilies.length > 0) {
+          const isNext = e.key === '.' || e.key === ']' || e.key.toLowerCase() === 'ơ';
+          if (isNext) {
+            nextIdx = selectedCloudIndex === -1 ? 0 : (selectedCloudIndex + 1) % matchedFamilies.length;
+          } else {
+            nextIdx = selectedCloudIndex === -1 ? matchedFamilies.length - 1 : (selectedCloudIndex - 1 + matchedFamilies.length) % matchedFamilies.length;
+          }
+        }
+        updateCloudPopup(currentIndex, nextIdx);
       }
 
       // CTRL/CMD + SHIFT + S: Toggle Solution
@@ -1946,7 +2502,7 @@ export default function ToeicPart1Player({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, data.length, isFullTest, onNextPart]);
+  }, [currentIndex, data.length, isFullTest, onNextPart, isAdminMode, selectedCloudIndex, wordFamiliesData]);
 
   const changeSpeed = (speed: number) => {
     setPlaybackRate(speed);

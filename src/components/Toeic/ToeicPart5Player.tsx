@@ -200,6 +200,7 @@ export default function ToeicPart5Player({
   const { isAdminMode, canEdit } = useAdminEdit();
   const explainScrollRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<Window | null>(null);
+  const lastVocabHotkeyTime = useRef<number>(0);
 
   const [selectedCloudIndex, setSelectedCloudIndex] = useState<number>(-1);
 
@@ -390,6 +391,12 @@ export default function ToeicPart5Player({
       }).join('');
     };
 
+    const highlightWords = (text: string) => {
+      return text.replace(/\b([a-zA-Z0-9'\s-]+)\s*\(([^)]+)\)/g, (match, eng, vi) => {
+        return `<strong style="color: #2563eb; font-weight: 800;">${eng.trim()}</strong> <span style="color: #475569;">(${vi})</span>`;
+      });
+    };
+
     return lines.map((line) => {
       let cleanLine = line.trim();
       if (cleanLine.length === 0) return '';
@@ -418,6 +425,7 @@ export default function ToeicPart5Player({
         className = "line-example";
       }
       
+      cleanLine = highlightWords(cleanLine);
       return `<div class="${className}">${highlightTerm(cleanLine)}</div>`;
     }).join('');
   };
@@ -604,10 +612,16 @@ export default function ToeicPart5Player({
           `;
           pipWindow.document.head.appendChild(style);
 
+          const mainWindow = window;
           pipWindow.document.addEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            const isTargetKey = 
+              e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
+              e.key === ',' || e.key === '.' ||
+              e.key === '[' || e.key.toLowerCase() === 'ư' || 
+              e.key === ']' || e.key.toLowerCase() === 'ơ';
+            if (isTargetKey) {
               e.preventDefault();
-              window.postMessage({ type: 'CYCLE_CLOUD', key: e.key }, '*');
+              mainWindow.postMessage({ type: 'CYCLE_CLOUD', key: e.key }, '*');
             }
           });
         }
@@ -755,9 +769,14 @@ export default function ToeicPart5Player({
           </head>
           <body>
             ${popupHtml}
-            <script>
+             <script>
               document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                const isTargetKey = 
+                  e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
+                  e.key === ',' || e.key === '.' ||
+                  e.key === '[' || e.key.toLowerCase() === 'ư' || 
+                  e.key === ']' || e.key.toLowerCase() === 'ơ';
+                if (isTargetKey) {
                   e.preventDefault();
                   if (window.opener) {
                     window.opener.postMessage({ type: 'CYCLE_CLOUD', key: e.key }, '*');
@@ -798,10 +817,13 @@ export default function ToeicPart5Player({
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
       if (e.data && e.data.type === 'CYCLE_CLOUD') {
+        lastVocabHotkeyTime.current = Date.now();
+        console.log("[DEBUG MESSAGE] CYCLE_CLOUD key:", e.data.key, "updated lastVocabHotkeyTime to:", lastVocabHotkeyTime.current);
         const matchedFamilies = getMatchedFamiliesForQuestion(currentIndex);
         if (matchedFamilies.length > 0) {
           let nextIdx = 0;
-          if (e.data.key === 'ArrowUp') {
+          const isNext = e.data.key === 'ArrowUp' || e.data.key === '.' || e.data.key === ']' || e.data.key?.toLowerCase() === 'ơ';
+          if (isNext) {
             nextIdx = selectedCloudIndex === -1 ? 0 : (selectedCloudIndex + 1) % matchedFamilies.length;
           } else {
             nextIdx = selectedCloudIndex === -1 ? matchedFamilies.length - 1 : (selectedCloudIndex - 1 + matchedFamilies.length) % matchedFamilies.length;
@@ -1025,10 +1047,33 @@ export default function ToeicPart5Player({
     const handleKeyDown = (e: KeyboardEvent) => {
       // Bỏ qua phím tắt nếu đang gõ trong input/textarea/contentEditable
       const target = e.target as HTMLElement;
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+      const activeEl = document.activeElement as HTMLElement | null;
+      const isInput = (
+        (activeEl && (
+          activeEl.tagName === 'INPUT' ||
+          activeEl.tagName === 'TEXTAREA' ||
+          activeEl.isContentEditable ||
+          activeEl.closest('[contenteditable]') !== null
+        )) ||
+        (target && (
+          target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable ||
+          (typeof target.closest === 'function' && target.closest('[contenteditable]') !== null)
+        ))
+      );
+      if (isInput) return;
+
+      console.log("[DEBUG KEYDOWN] key:", e.key, "code:", e.code, "currentIndex:", currentIndex);
 
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
+        const timeSinceVocab = Date.now() - lastVocabHotkeyTime.current;
+        console.log("[DEBUG ARROWLEFT] timeSinceVocab:", timeSinceVocab, "lastVocabHotkeyTime:", lastVocabHotkeyTime.current);
+        if (timeSinceVocab < 1200) {
+          console.log("[DEBUG IGNORE] Ignored simulated ArrowLeft due to recent vocab hotkey. Diff:", timeSinceVocab);
+          return;
+        }
         if (currentIndex === 0) {
           if (isFullTest && onPrevPart) onPrevPart();
         } else {
@@ -1036,17 +1081,30 @@ export default function ToeicPart5Player({
         }
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
+        const timeSinceVocab = Date.now() - lastVocabHotkeyTime.current;
+        console.log("[DEBUG ARROWRIGHT] timeSinceVocab:", timeSinceVocab, "lastVocabHotkeyTime:", lastVocabHotkeyTime.current);
+        if (timeSinceVocab < 1200) {
+          console.log("[DEBUG IGNORE] Ignored simulated ArrowRight due to recent vocab hotkey. Diff:", timeSinceVocab);
+          return;
+        }
         if (currentIndex === questions.length - 1) {
           if (isFullTest && onNextPart) onNextPart();
         } else {
           setCurrentIndex(prev => prev + 1);
         }
-      } else if ((isAdminMode || canEdit) && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+      } else if ((isAdminMode || canEdit) && (
+        e.key === ',' || e.key === '.' ||
+        e.key === '[' || e.key.toLowerCase() === 'ư' || 
+        e.key === ']' || e.key.toLowerCase() === 'ơ'
+      )) {
+        lastVocabHotkeyTime.current = Date.now();
+        console.log("[DEBUG VOCAB KEY] updated lastVocabHotkeyTime to:", lastVocabHotkeyTime.current);
         e.preventDefault();
         const matchedFamilies = getMatchedFamiliesForQuestion(currentIndex);
         if (matchedFamilies.length > 0) {
           let nextIdx = 0;
-          if (e.key === 'ArrowUp') {
+          const isNext = e.key === '.' || e.key === ']' || e.key.toLowerCase() === 'ơ';
+          if (isNext) {
             nextIdx = selectedCloudIndex === -1 ? 0 : (selectedCloudIndex + 1) % matchedFamilies.length;
           } else {
             nextIdx = selectedCloudIndex === -1 ? matchedFamilies.length - 1 : (selectedCloudIndex - 1 + matchedFamilies.length) % matchedFamilies.length;

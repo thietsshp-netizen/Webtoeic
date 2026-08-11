@@ -399,6 +399,115 @@ export default function ToeicPart34Player({
   }, [rawData]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const currentGroup = data[currentIndex] || { questions: [] };
+
+  const parsedTranscript = useMemo(() => {
+    try {
+      const mj = (currentGroup.metadata as any)?.Json;
+      const pj = typeof mj === 'string' ? JSON.parse(mj) : mj;
+      // 1. Cấu trúc Mới (html_content + translation_map)
+      if (pj?.passages && Array.isArray(pj.passages) && pj.passages.length > 0) {
+        const p = pj.passages[0];
+        const html = p.html_content || "";
+        const tMap = p.translation_map || {};
+
+        const sentences: any[] = [];
+        const regex = /data-sid=['"]([^'"]+)['"]>([\s\S]*?)<\/div>/g;
+        let match;
+        while ((match = regex.exec(html)) !== null) {
+          const rawContent = match[2];
+          const speakerMatch = rawContent.match(/^<b>(.*?):<\/b>/);
+          let speaker = speakerMatch ? speakerMatch[1].trim() : "";
+
+          const cleanEnglish = rawContent
+            .replace(/<sup[^>]*>.*?<\/sup>/g, "")
+            .replace(/^<b>(.*?):<\/b>/g, "")
+            .replace(/\^{.*?}/g, "")
+            .replace(/<[^>]*>/g, "")
+            .trim();
+
+          const rawTranslation = tMap[match[1]] || "";
+          const processedTranslation = moveSuperscriptToEnd(rawTranslation);
+
+          sentences.push({
+            id: match[1],
+            speaker,
+            english: cleanEnglish,
+            viText: processedTranslation.replace(/<[^>]*>/g, "").trim()
+          });
+        }
+        if (sentences.length > 0) return sentences;
+      }
+
+      // 2. Cấu trúc Legacy
+      let t: any = null;
+      if (currentGroup.transcript) {
+        t = typeof currentGroup.transcript === 'string' ? JSON.parse(currentGroup.transcript) : currentGroup.transcript;
+      } else if (currentGroup.metadata && (currentGroup.metadata as any).transcript) {
+        t = typeof (currentGroup.metadata as any).transcript === 'string' ? JSON.parse((currentGroup.metadata as any).transcript) : (currentGroup.metadata as any).transcript;
+      }
+
+      if (t && t.english && Array.isArray(t.english)) {
+        return t.english.map((enObj: any) => {
+          const viMatch = t.vietnamese?.find((v: any) => v.sentenceID === enObj.sentenceID);
+          const rawVi = viMatch?.text || "";
+          const processedVi = moveSuperscriptToEnd(rawVi);
+          return { ...enObj, viText: processedVi.replace(/<[^>]*>/g, "").trim() };
+        });
+      }
+
+      if (Array.isArray(t)) {
+        return t.map(item => {
+          const rawVi = item.vietnamese || "";
+          const processedVi = moveSuperscriptToEnd(rawVi);
+          return { ...item, viText: processedVi.replace(/<[^>]*>/g, "").trim() };
+        });
+      }
+      return [];
+    } catch (e) {
+      console.error("Error parsing transcript:", e);
+      return [];
+    }
+  }, [currentGroup]);
+
+  const sharedKeywordsMap = useMemo(() => {
+    if (!parsedTranscript || !currentGroup.questions) return {};
+
+    const stopWords = new Set(['the', 'and', 'for', 'only', 'from', 'with', 'that', 'this', 'your', 'they', 'them', 'then', 'than', 'once', 'please', 'note', 'can', 'also', 'some', 'any', 'will', 'would', 'should', 'could', 'about', 'been', 'were', 'have', 'more', 'when', 'what', 'where', 'which', 'their', 'very', 'here', 'there', 'those', 'these', 'just', 'been', 'each', 'into']);
+
+    const evidenceTextMap: Record<number, string> = {};
+    const mj = (currentGroup.metadata as any)?.Json;
+    const pj = typeof mj === 'string' ? JSON.parse(mj) : mj;
+
+    parsedTranscript.forEach((item: any) => {
+      const evidenceFor = pj?.questions?.find((q: any) => q.evidence_sids?.includes(item.id));
+      const qNo = evidenceFor ? evidenceFor.question_no || (pj.questions.indexOf(evidenceFor) + (currentGroup.questions[0]?.questionNo || 1)) : null;
+      if (qNo) {
+        evidenceTextMap[qNo] = (evidenceTextMap[qNo] || "") + " " + item.english;
+      }
+    });
+
+    const resultMap: Record<number, string[]> = {};
+    currentGroup.questions.forEach((q: any) => {
+      const qNo = q.questionNo;
+      const correctOpt = q.correctAnswer;
+      const ansText = (q as any)[`option${correctOpt}`] || "";
+      const eviText = evidenceTextMap[qNo] || "";
+
+      if (!eviText) return;
+
+      const cleanRegex = /[^a-z0-9]/g;
+      const ansWords = ansText.toLowerCase().split(/[\s,.;!?]+/).map((w: string) => w.replace(cleanRegex, '')).filter((w: string) => w.length >= 3 && !stopWords.has(w));
+      const eviWords = new Set(eviText.toLowerCase().split(/[\s,.;!?]+/).map((w: string) => w.replace(cleanRegex, '')).filter((w: string) => w.length >= 3 && !stopWords.has(w)));
+
+      const shared = ansWords.filter((w: string) => eviWords.has(w));
+      if (shared.length) {
+        resultMap[qNo] = shared;
+      }
+    });
+    return resultMap;
+  }, [parsedTranscript, currentGroup]);
   const [showVideo, setShowVideo] = useState(false);
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -426,7 +535,7 @@ export default function ToeicPart34Player({
   });
   const [playbackRate, setPlaybackRate] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { isAdminMode } = useAdminEdit();
+  const { isAdminMode, canEdit } = useAdminEdit();
   const [hoveredTranslation, setHoveredTranslation] = useState<{ text: string, sid: string } | null>(null);
   const hoverTimeoutRef = useRef<any>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -439,6 +548,243 @@ export default function ToeicPart34Player({
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
   const [playingSegmentLabel, setPlayingSegmentLabel] = useState<string | null>(null);
+
+  const pipWindowRef = useRef<any>(null);
+  const popupRef = useRef<Window | null>(null);
+  const lastVocabHotkeyTime = useRef<number>(0);
+
+  const updateTranscriptPopup = async (index: number) => {
+    if (!isAdminMode && !canEdit) return;
+    const currentGroup = data[index];
+    if (!currentGroup) return;
+
+    // Group sentences by turn
+    const turns: any[] = [];
+    let currentTurn: any = null;
+
+    parsedTranscript.forEach((item: any) => {
+      const mj = (currentGroup.metadata as any)?.Json;
+      const pj = typeof mj === 'string' ? JSON.parse(mj) : mj;
+      const evidenceFor = pj?.questions?.find((q: any) => q.evidence_sids?.includes(item.id));
+      const qNo = evidenceFor ? evidenceFor.question_no || (pj.questions.indexOf(evidenceFor) + (questions[0]?.questionNo || 1)) : null;
+
+      const sentenceData = { ...item, qNo };
+
+      if (!currentTurn || (item.speaker && item.speaker !== currentTurn.speaker)) {
+        currentTurn = {
+          speaker: item.speaker,
+          sentences: [sentenceData]
+        };
+        turns.push(currentTurn);
+      } else {
+        currentTurn.sentences.push(sentenceData);
+      }
+    });
+
+    const escapeHtml = (unsafe: string) => {
+      return (unsafe || '')
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    };
+
+    const transcriptHtml = turns.map((turn, tIdx) => {
+      const speakerText = turn.speaker ? translateSpeakerToEnglish(turn.speaker) : "";
+      
+      const sentencesHtml = turn.sentences.map((s: any) => {
+        let sentenceStyle = "color: #334155; padding: 2px 4px; border-radius: 4px; font-size: 14px; font-weight: 500; display: inline;";
+        let badgeHtml = "";
+        
+        if (s.qNo) {
+          const styleIdx = (s.qNo - 1) % 3;
+          let bgColor = "#e0e7ff";
+          let textColor = "#4338ca";
+          let badgeColor = "#6366f1";
+          
+          if (styleIdx === 1) {
+            bgColor = "#d1fae5";
+            textColor = "#065f46";
+            badgeColor = "#10b981";
+          } else if (styleIdx === 2) {
+            bgColor = "#ffedd5";
+            textColor = "#9a3412";
+            badgeColor = "#f97316";
+          }
+          
+          sentenceStyle = `color: ${textColor}; background-color: ${bgColor}; padding: 2px 6px; border-radius: 6px; font-size: 14px; font-weight: bold; display: inline;`;
+          badgeHtml = `<span style="display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin-left: 4px; border-radius: 50%; font-size: 9px; font-weight: 900; color: #ffffff; background-color: ${badgeColor}; transform: translateY(-2px);">${s.qNo}</span>`;
+        }
+        
+        const cleanEnglish = s.english.replace(/\*\*/g, '').replace(/\$?\^\{.*?\}\$?/g, '');
+        
+        return `<span style="${sentenceStyle}">${escapeHtml(cleanEnglish)}${badgeHtml}</span>`;
+      }).join(' ');
+
+      return `
+        <div class="turn-item" style="display: flex; align-items: flex-start; gap: 8px; padding: 4px 6px; margin-bottom: 4px; border-bottom: 1px solid #f1f5f9;">
+          ${speakerText ? `
+            <div style="display: flex; align-items: center; gap: 4px; width: 55px; flex-shrink: 0; padding-top: 1px;">
+              <div style="width: 3px; height: 3px; border-radius: 50%; background-color: #6366f1;"></div>
+              <span style="font-size: 11px; font-weight: bold; color: #4338ca;">${escapeHtml(speakerText)}</span>
+            </div>
+          ` : ''}
+          <div style="flex-grow: 1; line-height: 1.45; font-size: 14px;">
+            ${sentencesHtml}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const answerKeyText = questions.map((q: any) => `${q.questionNo}_${q.correctAnswer?.toUpperCase()}`).join(', ');
+
+    const width = 520;
+    const height = 650;
+
+    const popupHtml = `
+      <div class="title-container">
+        <div>
+          <div class="title">Transcript & Evidence</div>
+          <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Part ${targetPart} - Nhóm câu hỏi ${questions[0]?.questionNo || ''} - ${questions[questions.length - 1]?.questionNo || ''}</div>
+        </div>
+      </div>
+      <div style="max-height: calc(100vh - 120px); overflow-y: auto; padding-right: 4px;">
+        ${transcriptHtml}
+      </div>
+      <div style="margin-top: 12px; padding-top: 10px; border-top: 2px dashed #cbd5e1; font-weight: 800; font-size: 13.5px; color: #475569; display: flex; align-items: center; gap: 8px;">
+        <span>Đáp án nhanh:</span>
+        <span style="color: #dc2626; font-size: 15px; font-weight: 900; background-color: #fef2f2; padding: 2px 10px; border-radius: 6px; border: 1px dashed #fca5a5;">
+          ${answerKeyText}
+        </span>
+      </div>
+    `;
+
+    const hasPiP = typeof window !== 'undefined' && 'documentPictureInPicture' in window;
+    
+    if (hasPiP) {
+      try {
+        let pipWindow = pipWindowRef.current;
+        const isClosed = !pipWindow || pipWindow.closed;
+        
+        if (isClosed) {
+          // @ts-ignore
+          pipWindow = await window.documentPictureInPicture.requestWindow({ width, height });
+          pipWindowRef.current = pipWindow;
+
+          try {
+            const leftPos = window.screenLeft || window.screenX || 0;
+            const topPos = (window.screenTop || window.screenY || 0) + (window.outerHeight || window.innerHeight || 800) - height;
+            pipWindow.moveTo(leftPos, topPos);
+          } catch (e) {}
+
+          const style = pipWindow.document.createElement('style');
+          style.textContent = `
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+              padding: 16px;
+              margin: 0;
+              background-color: #ffffff;
+              color: #1e293b;
+            }
+            .title-container {
+              position: sticky;
+              top: 0;
+              background-color: #ffffff;
+              padding-bottom: 12px;
+              border-bottom: 2px solid #e2e8f0;
+              margin-bottom: 16px;
+              z-index: 10;
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-end;
+            }
+            .title {
+              font-size: 16px;
+              font-weight: 800;
+              color: #0f172a;
+              margin: 0;
+            }
+          `;
+          pipWindow.document.head.appendChild(style);
+        }
+
+        pipWindow.document.body.innerHTML = popupHtml;
+        try {
+          window.focus();
+        } catch (e) {}
+        return;
+      } catch (err) {
+        console.error("PiP error, falling back to popup:", err);
+      }
+    }
+
+    let popup = popupRef.current;
+    if (!popup || popup.closed) {
+      popup = window.open("", "transcript_popup", `width=${width},height=${height}`);
+      popupRef.current = popup;
+    }
+
+    if (popup) {
+      popup.document.open();
+      popup.document.write(`
+        <html>
+          <head>
+            <title>Transcript & Evidence</title>
+            <style>
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                padding: 16px;
+                margin: 0;
+                background-color: #ffffff;
+                color: #1e293b;
+              }
+              .title-container {
+                position: sticky;
+                top: 0;
+                background-color: #ffffff;
+                padding-bottom: 12px;
+                border-bottom: 2px solid #e2e8f0;
+                margin-bottom: 16px;
+                z-index: 10;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+              }
+              .title {
+                font-size: 16px;
+                font-weight: 800;
+                color: #0f172a;
+                margin: 0;
+              }
+            </style>
+          </head>
+          <body>
+            ${popupHtml}
+          </body>
+        </html>
+      `);
+      popup.document.close();
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (popupRef.current && !popupRef.current.closed) {
+        popupRef.current.close();
+      }
+      if (pipWindowRef.current && !pipWindowRef.current.closed) {
+        pipWindowRef.current.close();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const isPopupActive = (popupRef.current && !popupRef.current.closed) || (pipWindowRef.current && !pipWindowRef.current.closed);
+    if (isPopupActive) {
+      updateTranscriptPopup(currentIndex);
+    }
+  }, [currentIndex, parsedTranscript]);
 
   // Lắng nghe sự kiện từ Tour để tự động mở bung Sidebar làm ví dụ
   useEffect(() => {
@@ -554,114 +900,7 @@ export default function ToeicPart34Player({
   const [vSplitWidth, setVSplitWidth] = useState(55); // % chiều rộng khung trái (Vertical)
   const [isResizingV, setIsResizingV] = useState(false);
 
-  const currentGroup = data[currentIndex] || { questions: [] };
 
-  const parsedTranscript = useMemo(() => {
-    try {
-      const mj = (currentGroup.metadata as any)?.Json;
-      const pj = typeof mj === 'string' ? JSON.parse(mj) : mj;
-      // 1. Cấu trúc Mới (html_content + translation_map)
-      if (pj?.passages && Array.isArray(pj.passages) && pj.passages.length > 0) {
-        const p = pj.passages[0];
-        const html = p.html_content || "";
-        const tMap = p.translation_map || {};
-
-        const sentences: any[] = [];
-        const regex = /data-sid=['"]([^'"]+)['"]>([\s\S]*?)<\/div>/g;
-        let match;
-        while ((match = regex.exec(html)) !== null) {
-          const rawContent = match[2];
-          const speakerMatch = rawContent.match(/^<b>(.*?):<\/b>/);
-          let speaker = speakerMatch ? speakerMatch[1].trim() : "";
-
-          const cleanEnglish = rawContent
-            .replace(/<sup[^>]*>.*?<\/sup>/g, "")
-            .replace(/^<b>(.*?):<\/b>/g, "")
-            .replace(/\^{.*?}/g, "")
-            .replace(/<[^>]*>/g, "")
-            .trim();
-
-          const rawTranslation = tMap[match[1]] || "";
-          const processedTranslation = moveSuperscriptToEnd(rawTranslation);
-
-          sentences.push({
-            id: match[1],
-            speaker,
-            english: cleanEnglish,
-            viText: processedTranslation.replace(/<[^>]*>/g, "").trim()
-          });
-        }
-        if (sentences.length > 0) return sentences;
-      }
-
-      // 2. Cấu trúc Legacy
-      let t: any = null;
-      if (currentGroup.transcript) {
-        t = typeof currentGroup.transcript === 'string' ? JSON.parse(currentGroup.transcript) : currentGroup.transcript;
-      } else if (currentGroup.metadata && (currentGroup.metadata as any).transcript) {
-        t = typeof (currentGroup.metadata as any).transcript === 'string' ? JSON.parse((currentGroup.metadata as any).transcript) : (currentGroup.metadata as any).transcript;
-      }
-
-      if (t && t.english && Array.isArray(t.english)) {
-        return t.english.map((enObj: any) => {
-          const viMatch = t.vietnamese?.find((v: any) => v.sentenceID === enObj.sentenceID);
-          const rawVi = viMatch?.text || "";
-          const processedVi = moveSuperscriptToEnd(rawVi);
-          return { ...enObj, viText: processedVi.replace(/<[^>]*>/g, "").trim() };
-        });
-      }
-
-      if (Array.isArray(t)) {
-        return t.map(item => {
-          const rawVi = item.vietnamese || "";
-          const processedVi = moveSuperscriptToEnd(rawVi);
-          return { ...item, viText: processedVi.replace(/<[^>]*>/g, "").trim() };
-        });
-      }
-      return [];
-    } catch (e) {
-      console.error("Error parsing transcript:", e);
-      return [];
-    }
-  }, [currentGroup]);
-
-  const sharedKeywordsMap = useMemo(() => {
-    if (!parsedTranscript || !currentGroup.questions) return {};
-
-    const stopWords = new Set(['the', 'and', 'for', 'only', 'from', 'with', 'that', 'this', 'your', 'they', 'them', 'then', 'than', 'once', 'please', 'note', 'can', 'also', 'some', 'any', 'will', 'would', 'should', 'could', 'about', 'been', 'were', 'have', 'more', 'when', 'what', 'where', 'which', 'their', 'very', 'here', 'there', 'those', 'these', 'just', 'been', 'each', 'into']);
-
-    const evidenceTextMap: Record<number, string> = {};
-    const mj = (currentGroup.metadata as any)?.Json;
-    const pj = typeof mj === 'string' ? JSON.parse(mj) : mj;
-
-    parsedTranscript.forEach((item: any) => {
-      const evidenceFor = pj?.questions?.find((q: any) => q.evidence_sids?.includes(item.id));
-      const qNo = evidenceFor ? evidenceFor.question_no || (pj.questions.indexOf(evidenceFor) + (currentGroup.questions[0]?.questionNo || 1)) : null;
-      if (qNo) {
-        evidenceTextMap[qNo] = (evidenceTextMap[qNo] || "") + " " + item.english;
-      }
-    });
-
-    const resultMap: Record<number, string[]> = {};
-    currentGroup.questions.forEach((q: any) => {
-      const qNo = q.questionNo;
-      const correctOpt = q.correctAnswer;
-      const ansText = (q as any)[`option${correctOpt}`] || "";
-      const eviText = evidenceTextMap[qNo] || "";
-
-      if (!eviText) return;
-
-      const cleanRegex = /[^a-z0-9]/g;
-      const ansWords = ansText.toLowerCase().split(/[\s,.;!?]+/).map((w: string) => w.replace(cleanRegex, '')).filter((w: string) => w.length >= 3 && !stopWords.has(w));
-      const eviWords = new Set(eviText.toLowerCase().split(/[\s,.;!?]+/).map((w: string) => w.replace(cleanRegex, '')).filter((w: string) => w.length >= 3 && !stopWords.has(w)));
-
-      const shared = ansWords.filter((w: string) => eviWords.has(w));
-      if (shared.length) {
-        resultMap[qNo] = shared;
-      }
-    });
-    return resultMap;
-  }, [parsedTranscript, currentGroup]);
 
   if (!data || data.length === 0) {
     return (
@@ -1144,14 +1383,34 @@ export default function ToeicPart34Player({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
-      const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+      const activeEl = document.activeElement as HTMLElement | null;
+      const isInput = (
+        (activeEl && (
+          activeEl.tagName === 'INPUT' ||
+          activeEl.tagName === 'TEXTAREA' ||
+          activeEl.isContentEditable ||
+          activeEl.closest('[contenteditable]') !== null
+        )) ||
+        (target && (
+          target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable ||
+          (typeof target.closest === 'function' && target.closest('[contenteditable]') !== null)
+        ))
+      );
 
-      // Phím số 1-3: Vẫn cho phép làm phím tắt khi đang chép chính tả (Dictation)
-      // nhưng sẽ chặn nếu đang gõ trong ô Ghi chú (Flag Note)
-      if (['1', '2', '3'].includes(e.key)) {
-        if (target.id === 'flag-note-textarea') return;
+      // Chặn phím tắt khi đang focus vào ô ghi chú Flag Note
+      if (target && target.id === 'flag-note-textarea') {
+        return;
+      }
+
+      const isDictation = (target && target.getAttribute('data-dictation') === 'true') || (activeEl && activeEl.getAttribute('data-dictation') === 'true');
+      if (isDictation) {
+        if (!['1', '2', '3', '`'].includes(e.key)) {
+          return;
+        }
       } else if (isInput) {
-        // Các phím khác (mũi tên, `) thì chặn nếu đang ở trong bất kỳ input nào
+        // Chặn hoàn toàn phím tắt nếu đang ở trong bất kỳ input/textarea nào khác
         return;
       }
 
@@ -1204,6 +1463,8 @@ export default function ToeicPart34Player({
         ws.setTime(Math.max(0, ws.getCurrentTime() - 5));
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
+        const timeSinceVocab = Date.now() - lastVocabHotkeyTime.current;
+        if (timeSinceVocab < 1200) return;
         if (currentIndex === 0) {
           if (isFullTest && onPrevPart) onPrevPart();
         } else {
@@ -1211,16 +1472,26 @@ export default function ToeicPart34Player({
         }
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
+        const timeSinceVocab = Date.now() - lastVocabHotkeyTime.current;
+        if (timeSinceVocab < 1200) return;
         if (currentIndex === data.length - 1) {
           if (isFullTest && onNextPart) onNextPart();
         } else {
           setCurrentIndex(prev => prev + 1);
         }
+      } else if ((isAdminMode || canEdit) && (
+        e.key === ',' || e.key === '.' ||
+        e.key === '[' || e.key.toLowerCase() === 'ư' || 
+        e.key === ']' || e.key.toLowerCase() === 'ơ'
+      )) {
+        lastVocabHotkeyTime.current = Date.now();
+        e.preventDefault();
+        updateTranscriptPopup(currentIndex);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, data.length, isFullTest, onPrevPart, onNextPart]);
+  }, [currentIndex, data.length, isFullTest, onPrevPart, onNextPart, isAdminMode, canEdit, parsedTranscript, questions, targetPart]);
 
   const totalQuestions = data.reduce((acc, g) => acc + (g.questions?.length || 0), 0);
 
