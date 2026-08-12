@@ -18,7 +18,8 @@ import {
   Settings,
   Plus,
   RotateCcw,
-  MessageSquare
+  MessageSquare,
+  ClipboardList
 } from "lucide-react";
 import { createPortal } from "react-dom";
 import styles from "./styles.module.css";
@@ -155,6 +156,10 @@ export interface DrawElement {
   textContent?: string;
   arrowX?: number;
   arrowY?: number;
+  absoluteX?: number;
+  absoluteY?: number;
+  absoluteArrowX?: number;
+  absoluteArrowY?: number;
 }
 
 interface ScreenDrawOverlayProps {
@@ -633,7 +638,9 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
             return {
               ...el,
               x: anchorLocalX + (el.x || 0),
-              y: anchorLocalY + (el.y || 0)
+              y: anchorLocalY + (el.y || 0),
+              arrowX: el.arrowX !== undefined ? anchorLocalX + el.arrowX : undefined,
+              arrowY: el.arrowY !== undefined ? anchorLocalY + el.arrowY : undefined
             };
           }
         }
@@ -719,7 +726,7 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
         const opacity = el.type === 'highlight' ? 0.35 : 1.0;
         
         const isInteractive = tool === 'hand';
-        const pointerEvents = isInteractive ? 'auto' : 'none';
+        const pointerEvents = 'none';
 
         if (el.type === 'pencil' || el.type === 'highlight' || el.type === 'eraser') {
           if (el.points.length === 0) return null;
@@ -870,6 +877,120 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
           );
         }
 
+        if (el.type === 'callout') {
+          if (el.id === editingTextId) return null;
+          const lines = el.text ? el.text.split('\n') : [];
+          
+          let maxLineWidth = 0;
+          lines.forEach(line => {
+            const cleanLine = line.replace(/\*\*/g, "");
+            const w = el.size * cleanLine.length * 0.6; // Ước lượng chiều rộng chữ trong SVG
+            if (w > maxLineWidth) maxLineWidth = w;
+          });
+          const paddingX = 6;
+          const paddingY = 3;
+          const rectX = el.x || 0;
+          const rectY = el.y || 0;
+          const rectW = maxLineWidth + paddingX * 2;
+          const rectH = el.size * lines.length * 1.2 + paddingY * 2;
+          
+          let arrowPath = '';
+          let headPath = '';
+          if (el.arrowX !== undefined && el.arrowY !== undefined) {
+            const boxCenterX = rectX + rectW / 2;
+            const boxCenterY = rectY + rectH / 2;
+            const dx = el.arrowX - boxCenterX;
+            const dy = el.arrowY - boxCenterY;
+            let startX = boxCenterX;
+            let startY = boxCenterY;
+
+            if (Math.abs(dx) > 0.01 || Math.abs(dy) > 0.01) {
+              const halfW = rectW / 2;
+              const halfH = rectH / 2;
+              const tX = halfW / Math.abs(dx);
+              const tY = halfH / Math.abs(dy);
+              const t = Math.min(tX, tY);
+              startX = boxCenterX + dx * t;
+              startY = boxCenterY + dy * t;
+            }
+            
+            arrowPath = `M ${startX} ${startY} L ${el.arrowX} ${el.arrowY}`;
+            
+            const theta = Math.atan2(el.arrowY - boxCenterY, el.arrowX - boxCenterX);
+            const headlen = 10;
+            const p1x = el.arrowX - headlen * Math.cos(theta - Math.PI / 6);
+            const p1y = el.arrowY - headlen * Math.sin(theta - Math.PI / 6);
+            const p2x = el.arrowX - headlen * Math.cos(theta + Math.PI / 6);
+            const p2y = el.arrowY - headlen * Math.sin(theta + Math.PI / 6);
+            headPath = `M ${el.arrowX} ${el.arrowY} L ${p1x} ${p1y} L ${p2x} ${p2y} Z`;
+          }
+          
+          return (
+            <g
+              key={el.id}
+              pointerEvents={pointerEvents}
+              cursor={isInteractive ? 'pointer' : 'default'}
+              onClick={(e) => {
+                if (isInteractive) {
+                  e.stopPropagation();
+                  onSelect(el.id);
+                }
+              }}
+              style={isSelected ? { filter: 'drop-shadow(0px 0px 4px #3B82F6)' } : undefined}
+            >
+              {arrowPath && (
+                <path 
+                  d={arrowPath} 
+                  stroke={strokeColor} 
+                  strokeWidth={el.textBorderWidth || 1.5}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="none"
+                />
+              )}
+              {headPath && (
+                <path 
+                  d={headPath} 
+                  fill={strokeColor} 
+                />
+              )}
+              <rect 
+                x={rectX}
+                y={rectY}
+                width={rectW}
+                height={rectH}
+                rx={4}
+                ry={4}
+                fill={el.textBgColor || '#ffffff'}
+                fillOpacity={el.textBgOpacity !== undefined ? el.textBgOpacity : 1.0}
+                stroke={el.textHasBorder !== false ? strokeColor : 'none'}
+                strokeWidth={el.textHasBorder !== false ? (el.textBorderWidth || 1.5) : 0}
+              />
+              {lines.map((line, idx) => (
+                <text
+                  key={idx}
+                  x={rectX + paddingX}
+                  y={rectY + paddingY + idx * (el.size * 1.2)}
+                  fill={el.color}
+                  fontSize={el.size}
+                  fontFamily="sans-serif"
+                  fontWeight="500"
+                  dominantBaseline="text-before-edge"
+                >
+                  {line.split('**').map((part, pIdx) => {
+                    const isBold = pIdx % 2 === 1;
+                    return (
+                      <tspan key={pIdx} fontWeight={isBold ? "bold" : "500"}>
+                        {part}
+                      </tspan>
+                    );
+                  })}
+                </text>
+              ))}
+            </g>
+          );
+        }
+
         return null;
       })}
     </svg>
@@ -997,11 +1118,32 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     if (el.anchorSelector) {
       let domEl: Element | null = null;
       try {
-        domEl = document.querySelector(el.anchorSelector);
+        if (el.containerSelector) {
+          const containerEl = document.querySelector(el.containerSelector);
+          if (containerEl) {
+            if (el.anchorSelector === el.containerSelector) {
+              domEl = containerEl;
+            } else {
+              domEl = containerEl.querySelector(el.anchorSelector);
+            }
+          }
+        }
+        if (!domEl) {
+          domEl = document.querySelector(el.anchorSelector);
+        }
       } catch (e) {
         console.warn("Invalid selector lookup:", el.anchorSelector);
       }
-      if (!domEl) return null; // Anchor đã biến mất khỏi DOM hoặc selector sai
+      if (!domEl) {
+        // Anchor không còn trong DOM → dùng tọa độ tuyệt đối thay vì bỏ qua
+        return {
+          ...el,
+          x: el.absoluteX !== undefined ? el.absoluteX : el.x,
+          y: el.absoluteY !== undefined ? el.absoluteY : el.y,
+          arrowX: el.absoluteArrowX !== undefined ? el.absoluteArrowX : el.arrowX,
+          arrowY: el.absoluteArrowY !== undefined ? el.arrowY : el.arrowY
+        };
+      }
 
       const rect = domEl.getBoundingClientRect();
       const dx = rect.left - canvasRect.left;
@@ -1026,7 +1168,16 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       } catch (e) {
         console.warn("Invalid selector lookup:", el.containerSelector);
       }
-      if (!domEl) return null;
+      if (!domEl) {
+        // Container không còn trong DOM → dùng tọa độ tuyệt đối
+        return {
+          ...el,
+          x: el.absoluteX !== undefined ? el.absoluteX : el.x,
+          y: el.absoluteY !== undefined ? el.absoluteY : el.y,
+          arrowX: el.absoluteArrowX !== undefined ? el.absoluteArrowX : el.arrowX,
+          arrowY: el.absoluteArrowY !== undefined ? el.arrowY : el.arrowY
+        };
+      }
 
       const rect = domEl.getBoundingClientRect();
       const dx = rect.left - canvasRect.left - domEl.scrollLeft;
@@ -1136,7 +1287,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [editingTextId, setEditingTextId] = useState<string | null>(null);
   const [activeTextVal, setActiveTextVal] = useState("");
   const textInputValRef = useRef("");
+  const isSubmittingTextRef = useRef(false);
   const [calloutArrowPos, setCalloutArrowPos] = useState<{ x: number; y: number } | null>(null);
+  const [showCommentHistory, setShowCommentHistory] = useState(false);
 
   // Trạng thái phóng to/thu nhỏ (Resize) các hình vẽ/text ở chế độ Bàn tay
   const [resizingInfo, setResizingInfo] = useState<{
@@ -1152,6 +1305,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     startSize: number;
     startArrowX?: number;
     startArrowY?: number;
+    startAbsoluteX?: number;
+    startAbsoluteY?: number;
+    startAbsoluteArrowX?: number;
+    startAbsoluteArrowY?: number;
     startPoints?: { x: number; y: number; pressure?: number }[];
     startBBox?: { minX: number; minY: number; maxX: number; maxY: number };
   } | null>(null);
@@ -1164,6 +1321,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const mousePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isShiftPressed, setIsShiftPressed] = useState(false); // Trạng thái nhấn giữ Shift tạm thời tương tác web bên dưới (Ghost mode)
   const [customHotkeys, setCustomHotkeys] = useState<Record<string, string>>(DEFAULT_HOTKEYS);
+  const getToolTooltip = (toolName: string, defaultName: string) => {
+    const key = customHotkeys[toolName];
+    if (!key || key.trim() === '') return defaultName;
+    return `${defaultName} — phím tắt: ${key.toUpperCase()}`;
+  };
   const [clonedTools, setClonedTools] = useState<ClonedTool[]>([]);
   const [activeCloneId, setActiveCloneId] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
@@ -1733,7 +1895,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   }, [isActive]);
 
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive) {
+      // Khi bảng vẽ tắt nhưng canvas read-only đang hiển thị (có callout/elements),
+      // cần khởi tạo context để drawAllElements() có thể vẽ lên canvas
+      setTimeout(() => initCanvas(), 50);
+      return;
+    }
 
     let ticking = false;
     let isMounted = true;
@@ -1885,6 +2052,19 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       calloutArrowPos,
     } = stateRef.current;
 
+    const drawRoundRect = (x: number, y: number, w: number, h: number, r: number) => {
+      // Luôn dùng cơ chế vẽ tay góc bo thủ công để đảm bảo an toàn tuyệt đối,
+      // tránh mọi lỗi ném Exception của hàm roundRect gốc trên một số trình duyệt
+      if (w < 2 * r) r = w / 2;
+      if (h < 2 * r) r = h / 2;
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    };
+
     // 1. Dọn dẹp canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -1910,7 +2090,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         // Vẽ hình chữ nhật bo góc rải sáng tại tâm trỏ chuột
         const rx = size * 1.5; // Rộng hơn cao một chút để rọi sáng văn bản
         const ry = size * 0.8;
-        ctx.roundRect(x - rx, y - ry, rx * 2, ry * 2, 8);
+        drawRoundRect(x - rx, y - ry, rx * 2, ry * 2, 8);
       }
 
       // Tô màu tối phủ ngoài bằng quy tắc 'evenodd' (Outer path XOR Inner path)
@@ -2117,7 +2297,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.fillStyle = el.textBgColor;
             ctx.globalAlpha = el.textBgOpacity !== undefined ? el.textBgOpacity : 1.0;
             ctx.beginPath();
-            ctx.roundRect(rectX, rectY, rectW, rectH, 4);
+            drawRoundRect(rectX, rectY, rectW, rectH, 4);
             ctx.fill();
             ctx.restore();
           }
@@ -2128,7 +2308,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.strokeStyle = el.color; // sử dụng màu chữ để vẽ viền hài hoà
             ctx.lineWidth = el.textBorderWidth || 1;
             ctx.beginPath();
-            ctx.roundRect(rectX, rectY, rectW, rectH, 4);
+            drawRoundRect(rectX, rectY, rectW, rectH, 4);
             ctx.stroke();
             ctx.restore();
           }
@@ -2240,7 +2420,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.fillStyle = hasBg;
             ctx.globalAlpha = el.textBgOpacity !== undefined ? el.textBgOpacity : 1.0;
             ctx.beginPath();
-            ctx.roundRect(rectX, rectY, rectW, rectH, 4);
+            drawRoundRect(rectX, rectY, rectW, rectH, 4);
             ctx.fill();
             ctx.restore();
           }
@@ -2251,7 +2431,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.strokeStyle = el.color;
             ctx.lineWidth = el.textBorderWidth || 1.5;
             ctx.beginPath();
-            ctx.roundRect(rectX, rectY, rectW, rectH, 4);
+            drawRoundRect(rectX, rectY, rectW, rectH, 4);
             ctx.stroke();
             ctx.restore();
           }
@@ -2408,46 +2588,132 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     // Gom nhóm toạ độ neo duy nhất để lưu vào cache
     const rectCache = new Map<string, DOMRect>();
+    const containerCache = new Map<string, { rect: DOMRect; scrollLeft: number; scrollTop: number }>();
     elements.forEach(el => {
-      if (el.anchorSelector && !rectCache.has(el.anchorSelector)) {
+      if (el.anchorSelector) {
+        const cacheKey = el.containerSelector ? `${el.containerSelector} ${el.anchorSelector}` : el.anchorSelector;
+        if (!rectCache.has(cacheKey)) {
+          let domEl: Element | null = null;
+          try {
+            if (el.containerSelector) {
+              const containerEl = document.querySelector(el.containerSelector);
+              if (containerEl) {
+                if (el.anchorSelector === el.containerSelector) {
+                  domEl = containerEl;
+                } else {
+                  domEl = containerEl.querySelector(el.anchorSelector);
+                }
+              }
+            }
+            if (!domEl) {
+              domEl = document.querySelector(el.anchorSelector);
+            }
+          } catch (e) {
+            console.warn("Invalid selector lookup:", el.anchorSelector);
+          }
+          if (domEl) {
+            rectCache.set(cacheKey, domEl.getBoundingClientRect());
+          }
+        }
+      }
+      if (el.containerSelector && !containerCache.has(el.containerSelector)) {
         let domEl: Element | null = null;
         try {
-          domEl = document.querySelector(el.anchorSelector);
+          domEl = document.querySelector(el.containerSelector);
         } catch (e) {
-          console.warn("Invalid selector lookup:", el.anchorSelector);
+          console.warn("Invalid selector lookup:", el.containerSelector);
         }
         if (domEl) {
-          rectCache.set(el.anchorSelector, domEl.getBoundingClientRect());
+          containerCache.set(el.containerSelector, {
+            rect: domEl.getBoundingClientRect(),
+            scrollLeft: domEl.scrollLeft,
+            scrollTop: domEl.scrollTop
+          });
         }
       }
     });
 
     const getTranslatedElementLocal = (el: DrawElement): DrawElement | null => {
-      if (!el.anchorSelector) return el;
-      const rect = rectCache.get(el.anchorSelector);
-      if (!rect) return null; // anchor không còn hiển thị hoặc không tồn tại
+      if (el.anchorSelector) {
+        const cacheKey = el.containerSelector ? `${el.containerSelector} ${el.anchorSelector}` : el.anchorSelector;
+        const rect = rectCache.get(cacheKey);
+        if (!rect) {
+          // Anchor không còn trong DOM (do scroll, trang thay đổi...) 
+          // → vẽ ở tọa độ tuyệt đối (không dịch chuyển) thay vì bỏ qua hoàn toàn
+          return {
+            ...el,
+            x: el.absoluteX !== undefined ? el.absoluteX : el.x,
+            y: el.absoluteY !== undefined ? el.absoluteY : el.y,
+            arrowX: el.absoluteArrowX !== undefined ? el.absoluteArrowX : el.arrowX,
+            arrowY: el.absoluteArrowY !== undefined ? el.absoluteArrowY : el.arrowY
+          };
+        }
 
-      const dx = rect.left - canvasRect.left;
-      const dy = rect.top - canvasRect.top;
+        const dx = rect.left - canvasRect.left;
+        const dy = rect.top - canvasRect.top;
 
-      return {
-        ...el,
-        x: el.x !== undefined ? el.x + dx : undefined,
-        y: el.y !== undefined ? el.y + dy : undefined,
-        arrowX: el.arrowX !== undefined ? el.arrowX + dx : undefined,
-        arrowY: el.arrowY !== undefined ? el.arrowY + dy : undefined,
-        points: el.points.map(pt => ({
-          ...pt,
-          x: pt.x + dx,
-          y: pt.y + dy
-        }))
-      };
+        return {
+          ...el,
+          x: el.x !== undefined ? el.x + dx : undefined,
+          y: el.y !== undefined ? el.y + dy : undefined,
+          arrowX: el.arrowX !== undefined ? el.arrowX + dx : undefined,
+          arrowY: el.arrowY !== undefined ? el.arrowY + dy : undefined,
+          points: el.points.map(pt => ({
+            ...pt,
+            x: pt.x + dx,
+            y: pt.y + dy
+          }))
+        };
+      } else if (el.containerSelector) {
+        const info = containerCache.get(el.containerSelector);
+        if (!info) {
+          // Container không còn trong DOM → dùng tọa độ tuyệt đối
+          return {
+            ...el,
+            x: el.absoluteX !== undefined ? el.absoluteX : el.x,
+            y: el.absoluteY !== undefined ? el.absoluteY : el.y,
+            arrowX: el.absoluteArrowX !== undefined ? el.absoluteArrowX : el.arrowX,
+            arrowY: el.absoluteArrowY !== undefined ? el.absoluteArrowY : el.arrowY
+          };
+        }
+
+        const dx = info.rect.left - canvasRect.left - info.scrollLeft;
+        const dy = info.rect.top - canvasRect.top - info.scrollTop;
+
+        return {
+          ...el,
+          x: el.x !== undefined ? el.x + dx : undefined,
+          y: el.y !== undefined ? el.y + dy : undefined,
+          arrowX: el.arrowX !== undefined ? el.arrowX + dx : undefined,
+          arrowY: el.arrowY !== undefined ? el.arrowY + dy : undefined,
+          points: el.points.map(pt => ({
+            ...pt,
+            x: pt.x + dx,
+            y: pt.y + dy
+          }))
+        };
+      }
+      return el;
     };
 
     const drawTranslatedElement = (el: DrawElement) => {
-      const translated = getTranslatedElementLocal(el);
-      if (!translated) return; // skip if anchor is missing/hidden
-      drawElement(translated);
+      try {
+        const translated = getTranslatedElementLocal(el);
+        console.log("[Canvas Draw]", {
+          id: el.id,
+          type: el.type,
+          text: el.text,
+          anchor: el.anchorSelector,
+          container: el.containerSelector,
+          originalCoords: { x: el.x, y: el.y, arrowX: el.arrowX, arrowY: el.arrowY },
+          translatedCoords: translated ? { x: translated.x, y: translated.y, arrowX: translated.arrowX, arrowY: translated.arrowY } : null,
+          screenSize: { width: window.innerWidth, height: window.innerHeight }
+        });
+        if (!translated) return; // skip if anchor is missing/hidden
+        drawElement(translated);
+      } catch (err) {
+        console.error("[Canvas Draw Error] Failed to draw element:", el, err);
+      }
     };
 
     // 1. Vẽ toàn bộ đối tượng được phép tẩy trước
@@ -2589,7 +2855,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const calloutColor = activeClone ? activeClone.color : color;
       const calloutBorderWidth = activeClone ? (activeClone.textBorderWidth || 1.5) : 1.5;
       const calloutBgColor = activeClone ? (activeClone.textBgColor || '#ffffff') : '#ffffff';
-      const calloutBgOpacity = activeClone ? (activeClone.textBgOpacity !== undefined ? activeClone.textBgOpacity : 1.0) : 1.0;
+      const calloutBgOpacity = activeClone ? (activeClone.textBgOpacity !== undefined ? activeClone.textBgOpacity : 0.0) : 0.0;
 
       // Vẽ đường mũi tên trước
       ctx.save();
@@ -2677,8 +2943,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       }
       else if (el.type === 'text' || el.type === 'callout') {
         if (el.x !== undefined && el.y !== undefined && el.text) {
-          // Nhấp trúng đầu mũi tên của Callout
-          if (el.type === 'callout') {
+          // 1. Nhấp trúng đầu mũi tên của Callout
+          if (el.type === 'callout' && tool === 'hand') {
             const arrowX = el.arrowX !== undefined ? el.arrowX : el.x;
             const arrowY = el.arrowY !== undefined ? el.arrowY : el.y;
             if (Math.abs(x - arrowX) <= 12 && Math.abs(y - arrowY) <= 12) {
@@ -2704,8 +2970,35 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
           const width = maxLineWidth;
           const height = el.size * lines.length * 1.3;
-          // Dùng dung sai cực nhỏ (3px) để bù đắp sai lệch hiển thị/hotspot mà không lo click ra ngoài vẫn nhận
-          if (x >= el.x - 3 && x <= el.x + width + 3 && y >= el.y - 3 && y <= el.y + height + 3) {
+
+          // 2. Nhấp trúng đường chỉ của mũi tên Callout (Đoạn thẳng từ tâm hộp chữ đến đầu mũi tên)
+          if (el.type === 'callout' && el.arrowX !== undefined && el.arrowY !== undefined) {
+            const boxCenterX = el.x + width / 2;
+            const boxCenterY = el.y + height / 2;
+            const px = x;
+            const py = y;
+            const x1 = boxCenterX;
+            const y1 = boxCenterY;
+            const x2 = el.arrowX;
+            const y2 = el.arrowY;
+            
+            const l2 = (x2 - x1) ** 2 + (y2 - y1) ** 2;
+            let dist = 999999;
+            if (l2 === 0) {
+              dist = Math.sqrt((px - x1) ** 2 + (py - y1) ** 2);
+            } else {
+              let t = ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / l2;
+              t = Math.max(0, Math.min(1, t));
+              dist = Math.sqrt((px - (x1 + t * (x2 - x1))) ** 2 + (py - (y1 + t * (y2 - y1))) ** 2);
+            }
+            
+            if (dist <= 8) {
+              return originalEl;
+            }
+          }
+
+          // 3. Nhấp trúng khung hộp chữ nháp (Dung sai 4px)
+          if (x >= el.x - 4 && x <= el.x + width + 4 && y >= el.y - 4 && y <= el.y + height + 4) {
             return originalEl;
           }
         }
@@ -3390,6 +3683,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               startSize: selectedEl.size || 14,
               startArrowX: selectedEl.arrowX,
               startArrowY: selectedEl.arrowY,
+              startAbsoluteX: selectedEl.absoluteX,
+              startAbsoluteY: selectedEl.absoluteY,
+              startAbsoluteArrowX: selectedEl.absoluteArrowX,
+              startAbsoluteArrowY: selectedEl.absoluteArrowY,
               startPoints: selectedEl.points ? [...selectedEl.points.map(pt => ({ ...pt }))] : undefined,
               startBBox: (selectedEl.type === 'pencil' || selectedEl.type === 'highlight') ? { minX, minY, maxX, maxY } : undefined
             });
@@ -3423,6 +3720,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             startSize: clickedElement.size || 14,
             startArrowX: clickedElement.arrowX,
             startArrowY: clickedElement.arrowY,
+            startAbsoluteX: clickedElement.absoluteX,
+            startAbsoluteY: clickedElement.absoluteY,
+            startAbsoluteArrowX: clickedElement.absoluteArrowX,
+            startAbsoluteArrowY: clickedElement.absoluteArrowY,
             startPoints: clickedElement.points ? [...clickedElement.points.map(pt => ({ ...pt }))] : undefined,
             startBBox: undefined
           });
@@ -3572,7 +3873,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     // --- ACTIVE RESIZE ACTION ---
     if (resizingInfo) {
-      const { elementId, handle, startX, startY, startElX, startElY, startWidth, startHeight, startRadius, startSize, startArrowX, startArrowY, startPoints, startBBox } = resizingInfo;
+      const { elementId, handle, startX, startY, startElX, startElY, startWidth, startHeight, startRadius, startSize, startArrowX, startArrowY, startAbsoluteX, startAbsoluteY, startAbsoluteArrowX, startAbsoluteArrowY, startPoints, startBBox } = resizingInfo;
       const dx = x - startX;
       const dy = y - startY;
 
@@ -3647,7 +3948,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             return {
               ...el,
               arrowX: finalArrowX,
-              arrowY: finalArrowY
+              arrowY: finalArrowY,
+              absoluteArrowX: startAbsoluteArrowX !== undefined ? startAbsoluteArrowX + dx : undefined,
+              absoluteArrowY: startAbsoluteArrowY !== undefined ? startAbsoluteArrowY + dy : undefined
             };
           }
 
@@ -3789,7 +4092,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           return {
             ...el,
             x: el.x! + dx,
-            y: el.y! + dy
+            y: el.y! + dy,
+            absoluteX: el.absoluteX !== undefined ? el.absoluteX + dx : undefined,
+            absoluteY: el.absoluteY !== undefined ? el.absoluteY + dy : undefined
           };
         }
       }));
@@ -4285,6 +4590,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           const h = ey - startPoint.y;
 
           if (tool === 'rectangle') {
+            const normX = Math.min(startPoint.x, ex);
+            const normY = Math.min(startPoint.y, ey);
+            const normW = Math.abs(w);
+            const normH = Math.abs(h);
             newElement = {
               id: elementId,
               type: 'rectangle',
@@ -4292,10 +4601,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               points: [],
               color: color,
               size: rectangleSize,
-              x: startPoint.x - dx,
-              y: startPoint.y - dy,
-              width: w,
-              height: h
+              x: normX - dx,
+              y: normY - dy,
+              width: normW,
+              height: normH
             };
           } else {
             const cx = startPoint.x + w / 2;
@@ -4364,13 +4673,22 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   // Hoàn thành nhập text và vẽ lưu vào Vector state
   const handleTextSubmit = (shouldSwitchToHand = false) => {
+    console.log("[handleTextSubmit] called. value =", JSON.stringify(textInputValRef.current), "editingTextId =", editingTextId, "isSubmitting =", isSubmittingTextRef.current);
+    if (isSubmittingTextRef.current) {
+      console.log("[handleTextSubmit] ignored due to double submission lock.");
+      return;
+    }
     if (!textInput) {
+      console.log("[handleTextSubmit] returned early because textInput is falsy.");
       setEditingTextId(null);
       return;
     }
 
+    isSubmittingTextRef.current = true;
+
     const value = textInputValRef.current.trim();
     if (!value) {
+      console.log("[handleTextSubmit] empty value - clearing textInput.");
       if (editingTextId) {
         // Nếu đang sửa và xoá sạch chữ, tiến hành xoá phần tử khỏi danh sách
         saveToUndoStack(elements);
@@ -4378,6 +4696,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       }
       setTextInput(null);
       setEditingTextId(null);
+      setTimeout(() => {
+        isSubmittingTextRef.current = false;
+      }, 50);
       return;
     }
 
@@ -4396,7 +4717,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       }));
     } else {
       const canvas = canvasRef.current;
-      if (!canvas) return;
+      if (!canvas) {
+        setTimeout(() => {
+          isSubmittingTextRef.current = false;
+        }, 50);
+        return;
+      }
 
       const rect = canvas.getBoundingClientRect();
       const x = textInput.x + 4 - rect.left; // Bù trừ padding-left 4px của textarea
@@ -4455,13 +4781,18 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         textHasBorder: (isTextClone || isCalloutClone) ? (activeClone.textHasBorder !== undefined ? activeClone.textHasBorder : true) : (isCallout ? true : undefined),
         textBorderWidth: (isTextClone || isCalloutClone) ? (activeClone.textBorderWidth !== undefined ? activeClone.textBorderWidth : 1.5) : (isCallout ? 1.5 : undefined),
         textBgColor: (isTextClone || isCalloutClone) ? (activeClone.textBgColor !== undefined ? activeClone.textBgColor : '#ffffff') : (isCallout ? '#ffffff' : undefined),
-        textBgOpacity: (isTextClone || isCalloutClone) ? (activeClone.textBgOpacity !== undefined ? activeClone.textBgOpacity : 1.0) : (isCallout ? 1.0 : undefined),
+        textBgOpacity: (isTextClone || isCalloutClone) ? (activeClone.textBgOpacity !== undefined ? activeClone.textBgOpacity : 0.0) : (isCallout ? 0.0 : undefined),
         x: x - dx,
         y: y - dy,
+        absoluteX: x,
+        absoluteY: y,
         text: textInputValRef.current,
         arrowX: isCallout && calloutArrowPos ? calloutArrowPos.x - dx : undefined,
-        arrowY: isCallout && calloutArrowPos ? calloutArrowPos.y - dy : undefined
+        arrowY: isCallout && calloutArrowPos ? calloutArrowPos.y - dy : undefined,
+        absoluteArrowX: isCallout && calloutArrowPos ? calloutArrowPos.x : undefined,
+        absoluteArrowY: isCallout && calloutArrowPos ? calloutArrowPos.y : undefined
       };
+      console.log("[handleTextSubmit] Adding new element:", newElement);
       setElements(prev => [...prev, newElement]);
     }
 
@@ -4473,6 +4804,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       setTool('hand');
       setSelectedId(targetId);
     }
+
+    setTimeout(() => {
+      isSubmittingTextRef.current = false;
+    }, 50);
   };
 
   // Xoá sạch canvas và state
@@ -4789,7 +5124,20 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     canvas.style.setProperty('cursor', cursorStyle, 'important');
   }, [cursorStyle, isActive]);
 
-  if (!isActive) return null;
+  // Khi không active nhưng vẫn có elements (vd: callout) → render canvas read-only để chú thích vẫn hiển thị
+  if (!isActive) {
+    if (elements.length === 0) return null;
+    return (
+      <canvas
+        ref={canvasRef}
+        className={styles.canvas}
+        style={{
+          pointerEvents: 'none', // Không nhận sự kiện chuột khi bảng vẽ tắt
+          cursor: 'default',
+        }}
+      />
+    );
+  }
 
   return (
     <>
@@ -5017,7 +5365,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               setSelectedId(null);
               setTool('cursor');
             }}
-            data-tooltip="Chuột làm bài — phím tắt: Ctrl+M"
+            data-tooltip={getToolTooltip('cursor', 'Chuột tương tác')}
           >
             <MousePointer size={12} />
           </button>
@@ -5026,7 +5374,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           <button
             className={`${styles.btn} ${tool === 'hand' ? styles.btnActive : ''}`}
             onClick={() => setTool('hand')}
-            data-tooltip="Bàn tay: chọn & di chuyển nét vẽ — phím tắt: Esc"
+            data-tooltip={getToolTooltip('hand', 'Bàn tay (Di chuyển)')}
           >
             <Hand size={12} />
           </button>
@@ -5040,7 +5388,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 setTool('pencil');
                 setActiveCloneId(null);
               }}
-              data-tooltip={`Cọ vẽ: ${penStyle === 'ballpoint' ? 'Bút bi' : penStyle === 'fountain' ? 'Bút máy' : 'Bút lông'} — phím tắt: B · Ctrl+Shift+B`}
+              data-tooltip={getToolTooltip('pencil', `Cọ vẽ: ${penStyle === 'ballpoint' ? 'Bút bi' : penStyle === 'fountain' ? 'Bút máy' : 'Bút lông'}`)}
               style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
             >
               <Pencil size={12} />
@@ -5125,7 +5473,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               setTool('highlight');
               setActiveCloneId(null);
             }}
-            data-tooltip="Bút highlight — phím tắt: H · Ctrl+Shift+H"
+            data-tooltip={getToolTooltip('highlight', 'Bút highlight')}
           >
             <Highlighter size={12} />
           </button>
@@ -5137,7 +5485,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               onClick={() => {
                 setIsFlashlightActive(prev => !prev);
               }}
-              data-tooltip="Tiêu điểm đèn chiếu — phím tắt: F"
+              data-tooltip={getToolTooltip('flashlight', 'Tiêu điểm đèn chiếu')}
               style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
             >
               <FlashIcon style={{ width: '12px', height: '12px' }} />
@@ -5171,7 +5519,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               setTool('eraser');
               setActiveCloneId(null);
             }}
-            data-tooltip="Cục tẩy — phím tắt: E"
+            data-tooltip={getToolTooltip('eraser', 'Cục tẩy')}
           >
             <Eraser size={12} />
           </button>
@@ -5184,7 +5532,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               setTool('rectangle');
               setActiveCloneId(null);
             }}
-            data-tooltip="Hình chữ nhật — phím tắt: R"
+            data-tooltip={getToolTooltip('rectangle', 'Hình chữ nhật')}
           >
             <Square size={12} />
           </button>
@@ -5197,7 +5545,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               setTool('circle');
               setActiveCloneId(null);
             }}
-            data-tooltip="Hình tròn — phím tắt: C"
+            data-tooltip={getToolTooltip('circle', 'Hình tròn')}
           >
             <CircleIcon size={12} />
           </button>
@@ -5210,7 +5558,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               setTool('text');
               setActiveCloneId(null);
             }}
-            data-tooltip="Viết chữ nháp — phím tắt: T"
+            data-tooltip={getToolTooltip('text', 'Viết chữ nháp')}
           >
             <Type size={12} />
           </button>
@@ -5223,7 +5571,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               setTool('callout');
               setActiveCloneId(null);
             }}
-            data-tooltip="Ghi chú mũi tên (Callout) — phím tắt: D"
+            data-tooltip={getToolTooltip('callout', 'Ghi chú mũi tên (Callout)')}
           >
             <MessageSquare size={12} />
           </button>
@@ -5335,6 +5683,16 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             data-tooltip="Làm mới hoàn toàn"
           >
             <RotateCcw size={12} />
+          </button>
+
+          {/* Nút Lịch sử comment */}
+          <button
+            className={`${styles.btn} ${showCommentHistory ? styles.btnActive : ''}`}
+            onClick={() => setShowCommentHistory(prev => !prev)}
+            data-tooltip="Lịch sử ghi chú & chú thích"
+            style={{ color: '#fbbf24' }}
+          >
+            <ClipboardList size={12} />
           </button>
 
           {/* Nút Cài đặt Gear */}
@@ -6117,6 +6475,92 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 {isSavingSettings ? 'Đang lưu...' : 'Lưu cài đặt'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {showCommentHistory && (
+        <div className={styles.historyPanel}>
+          <div className={styles.historyHeader}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ClipboardList size={16} style={{ color: '#fbbf24' }} />
+              <span style={{ fontWeight: 600 }}>Lịch sử Chú thích ({elements.filter(el => el.type === 'text' || el.type === 'callout').length})</span>
+            </div>
+            <button onClick={() => setShowCommentHistory(false)} className={styles.historyCloseBtn}>
+              <X size={14} />
+            </button>
+          </div>
+          <div className={styles.historyList}>
+            {elements.filter(el => el.type === 'text' || el.type === 'callout').length === 0 ? (
+              <div className={styles.historyEmpty}>
+                Không tìm thấy ghi chú nào đang hoạt động.
+              </div>
+            ) : (
+              elements.filter(el => el.type === 'text' || el.type === 'callout').map(el => {
+                const dateStr = !isNaN(parseInt(el.id)) 
+                  ? new Date(parseInt(el.id)).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+                  : "Vừa xong";
+                return (
+                  <div key={el.id} className={styles.historyItem}>
+                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '4px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span className={styles.historyBadge} style={{ backgroundColor: el.color + '22', color: el.color }}>
+                          {el.type === 'callout' ? 'Callout' : 'Text'}
+                        </span>
+                        <span className={styles.historyTime}>{dateStr}</span>
+                      </div>
+                      <div className={styles.historyText} style={{ color: el.color }}>
+                        {el.text || "(Trống)"}
+                      </div>
+                      <div className={styles.historyCoords}>
+                        Vị trí gốc: X={Math.round(el.x || 0)}, Y={Math.round(el.y || 0)}
+                        {el.anchorSelector ? ` · Neo: ${el.anchorSelector}` : ''}
+                      </div>
+                      {(() => {
+                        const canvasRect = canvasRef.current?.getBoundingClientRect();
+                        const translated = getTranslatedElement(el, canvasRect);
+                        let debugStatus = "";
+                        if (translated) {
+                          debugStatus = `X_dịch=${Math.round(translated.x || 0)}, Y_dịch=${Math.round(translated.y || 0)}`;
+                          if (el.absoluteX !== undefined) {
+                            debugStatus += ` (Đã định vị)`;
+                          }
+                        } else {
+                          debugStatus = "Hỏng neo (Fallback)";
+                        }
+                        return (
+                          <div className={styles.historyCoords} style={{ fontSize: '11px', color: '#fbbf24', marginTop: '2px', fontWeight: 500 }}>
+                            DEBUG: {debugStatus} | Container: {el.containerSelector ? 'Có' : 'Không'}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button 
+                        onClick={() => {
+                          setSelectedId(el.id);
+                          setTool('hand');
+                        }}
+                        className={styles.historyActionBtn}
+                        title="Chọn và Focus phần tử này"
+                      >
+                        🎯
+                      </button>
+                      <button 
+                        onClick={() => {
+                          saveToUndoStack(elements);
+                          setElements(prev => prev.filter(item => item.id !== el.id));
+                        }}
+                        className={styles.historyActionBtn}
+                        title="Xóa chú thích này"
+                        style={{ color: '#EF4444' }}
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       )}
