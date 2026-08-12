@@ -2202,9 +2202,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           }
 
           // 2. Draw text box background
-          if (el.textBgColor) {
+          const hasBg = el.textBgColor !== undefined ? el.textBgColor : '#ffffff';
+          if (hasBg) {
             ctx.save();
-            ctx.fillStyle = el.textBgColor;
+            ctx.fillStyle = hasBg;
             ctx.globalAlpha = el.textBgOpacity !== undefined ? el.textBgOpacity : 1.0;
             ctx.beginPath();
             ctx.roundRect(rectX, rectY, rectW, rectH, 4);
@@ -2213,10 +2214,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           }
 
           // 3. Draw text box border
-          if (el.textHasBorder) {
+          const hasBorder = el.textHasBorder !== undefined ? el.textHasBorder : true;
+          if (hasBorder) {
             ctx.save();
             ctx.strokeStyle = el.color;
-            ctx.lineWidth = el.textBorderWidth || 1.5;
+            ctx.lineWidth = el.textBorderWidth !== undefined ? el.textBorderWidth : 1.5;
             ctx.beginPath();
             ctx.roundRect(rectX, rectY, rectW, rectH, 4);
             ctx.stroke();
@@ -3165,12 +3167,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         if (!(e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)) {
           if (currentSelectedId) {
             e.preventDefault();
-            saveToUndoStack(elements);
+            saveToUndoStack(stateRef.current.elements);
             setElements(prev => prev.filter(el => el.id !== currentSelectedId));
             setSelectedId(null);
           } else if (currentTool && currentTool !== 'cursor' && currentTool !== 'hand' && currentTool !== 'eraser') {
             e.preventDefault();
-            saveToUndoStack(elements);
+            saveToUndoStack(stateRef.current.elements);
             // Xóa toàn bộ phần tử thuộc loại công cụ đang kích hoạt trên toolbar
             setElements(prev => prev.filter(el => el.type !== currentTool));
           }
@@ -4419,10 +4421,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         color: (isTextClone || isCalloutClone) ? activeClone.color : color,
         size: ((isTextClone || isCalloutClone) && activeClone.textSize) ? activeClone.textSize : fontSize,
         textStyle: (isTextClone || isCalloutClone) ? activeClone.textStyle : undefined,
-        textHasBorder: (isTextClone || isCalloutClone) ? activeClone.textHasBorder : (isCallout ? true : undefined),
-        textBorderWidth: (isTextClone || isCalloutClone) ? activeClone.textBorderWidth : (isCallout ? 1.5 : undefined),
-        textBgColor: (isTextClone || isCalloutClone) ? activeClone.textBgColor : (isCallout ? '#ffffff' : undefined),
-        textBgOpacity: (isTextClone || isCalloutClone) ? activeClone.textBgOpacity : (isCallout ? 1.0 : undefined),
+        textHasBorder: (isTextClone || isCalloutClone) ? (activeClone.textHasBorder !== undefined ? activeClone.textHasBorder : true) : (isCallout ? true : undefined),
+        textBorderWidth: (isTextClone || isCalloutClone) ? (activeClone.textBorderWidth !== undefined ? activeClone.textBorderWidth : 1.5) : (isCallout ? 1.5 : undefined),
+        textBgColor: (isTextClone || isCalloutClone) ? (activeClone.textBgColor !== undefined ? activeClone.textBgColor : '#ffffff') : (isCallout ? '#ffffff' : undefined),
+        textBgOpacity: (isTextClone || isCalloutClone) ? (activeClone.textBgOpacity !== undefined ? activeClone.textBgOpacity : 1.0) : (isCallout ? 1.0 : undefined),
         x: x - dx,
         y: y - dy,
         text: textInputValRef.current,
@@ -5653,7 +5655,13 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                       />
                       <select
                         value={newCloneBaseType}
-                        onChange={(e) => setNewCloneBaseType(e.target.value as any)}
+                        onChange={(e) => {
+                          const val = e.target.value as any;
+                          setNewCloneBaseType(val);
+                          if (val === 'callout') {
+                            setNewCloneTextHasBorder(true);
+                          }
+                        }}
                         className={styles.cloneSelect}
                       >
                         <option value="pencil">Bút chì gốc</option>
