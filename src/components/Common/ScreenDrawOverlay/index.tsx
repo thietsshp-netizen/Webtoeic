@@ -1427,8 +1427,14 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               localStorage.setItem('webtoeic_custom_hotkeys', JSON.stringify(merged));
             }
             if (dbCloned) {
-              setClonedTools(dbCloned);
-              localStorage.setItem('webtoeic_cloned_tools', JSON.stringify(dbCloned));
+              // Migration: callout clone cũ bị lưu thiếu textHasBorder → mặc định true
+              const migratedClones = dbCloned.map((c: ClonedTool) =>
+                c.baseType === 'callout' && c.textHasBorder === false
+                  ? { ...c, textHasBorder: true, textBgColor: c.textBgColor || '#ffffff', textBgOpacity: c.textBgOpacity !== undefined ? c.textBgOpacity : 1.0 }
+                  : c
+              );
+              setClonedTools(migratedClones);
+              localStorage.setItem('webtoeic_cloned_tools', JSON.stringify(migratedClones));
             }
             if (dbEraserTargets) {
               setEraserTargets(dbEraserTargets);
@@ -1454,7 +1460,16 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         const mergedLocal = { ...DEFAULT_HOTKEYS, ...JSON.parse(localHotkeys) };
         setCustomHotkeys(mergedLocal);
       }
-      if (localClones) setClonedTools(JSON.parse(localClones));
+      if (localClones) {
+        const parsedClones: ClonedTool[] = JSON.parse(localClones);
+        // Migration: callout clone cũ bị lưu thiếu textHasBorder → mặc định true
+        const migratedLocal = parsedClones.map(c =>
+          c.baseType === 'callout' && c.textHasBorder === false
+            ? { ...c, textHasBorder: true, textBgColor: c.textBgColor || '#ffffff', textBgOpacity: c.textBgOpacity !== undefined ? c.textBgOpacity : 1.0 }
+            : c
+        );
+        setClonedTools(migratedLocal);
+      }
       if (localEraserTargets) {
         try {
           setEraserTargets(JSON.parse(localEraserTargets));
@@ -2201,7 +2216,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.restore();
           }
 
-          // 2. Draw text box background - callout luôn có nền trắng
+          // 2. Draw text box background
           const hasBg = el.textBgColor || '#ffffff';
           if (hasBg) {
             ctx.save();
@@ -2213,14 +2228,16 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.restore();
           }
 
-          // 3. Draw text box border - callout luôn có viền
-          ctx.save();
-          ctx.strokeStyle = el.color;
-          ctx.lineWidth = el.textBorderWidth || 1.5;
-          ctx.beginPath();
-          ctx.roundRect(rectX, rectY, rectW, rectH, 4);
-          ctx.stroke();
-          ctx.restore();
+          // 3. Draw text box border - tôn trọng cài đặt textHasBorder của người dùng
+          if (el.textHasBorder !== false) {
+            ctx.save();
+            ctx.strokeStyle = el.color;
+            ctx.lineWidth = el.textBorderWidth || 1.5;
+            ctx.beginPath();
+            ctx.roundRect(rectX, rectY, rectW, rectH, 4);
+            ctx.stroke();
+            ctx.restore();
+          }
 
           // 4. Draw text lines
           ctx.fillStyle = el.color;
