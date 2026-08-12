@@ -2201,8 +2201,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.restore();
           }
 
-          // 2. Draw text box background
-          const hasBg = el.textBgColor !== undefined ? el.textBgColor : '#ffffff';
+          // 2. Draw text box background - callout luôn có nền trắng
+          const hasBg = el.textBgColor || '#ffffff';
           if (hasBg) {
             ctx.save();
             ctx.fillStyle = hasBg;
@@ -2213,17 +2213,14 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.restore();
           }
 
-          // 3. Draw text box border
-          const hasBorder = el.textHasBorder !== undefined ? el.textHasBorder : true;
-          if (hasBorder) {
-            ctx.save();
-            ctx.strokeStyle = el.color;
-            ctx.lineWidth = el.textBorderWidth !== undefined ? el.textBorderWidth : 1.5;
-            ctx.beginPath();
-            ctx.roundRect(rectX, rectY, rectW, rectH, 4);
-            ctx.stroke();
-            ctx.restore();
-          }
+          // 3. Draw text box border - callout luôn có viền
+          ctx.save();
+          ctx.strokeStyle = el.color;
+          ctx.lineWidth = el.textBorderWidth || 1.5;
+          ctx.beginPath();
+          ctx.roundRect(rectX, rectY, rectW, rectH, 4);
+          ctx.stroke();
+          ctx.restore();
 
           // 4. Draw text lines
           ctx.fillStyle = el.color;
