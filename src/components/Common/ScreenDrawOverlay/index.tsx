@@ -2199,8 +2199,25 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             const boxCenterX = rectX + rectW / 2;
             const boxCenterY = rectY + rectH / 2;
 
+            // Tính giao điểm của đường thẳng từ tâm hộp đến đầu mũi tên với cạnh viền hộp
+            const dx = el.arrowX - boxCenterX;
+            const dy = el.arrowY - boxCenterY;
+            let startX = boxCenterX;
+            let startY = boxCenterY;
+
+            if (Math.abs(dx) > 0.01 || Math.abs(dy) > 0.01) {
+              const halfW = rectW / 2;
+              const halfH = rectH / 2;
+              // Kiểm tra giao với cạnh trái/phải hay trên/dưới
+              const tX = halfW / Math.abs(dx);
+              const tY = halfH / Math.abs(dy);
+              const t = Math.min(tX, tY);
+              startX = boxCenterX + dx * t;
+              startY = boxCenterY + dy * t;
+            }
+
             ctx.beginPath();
-            ctx.moveTo(boxCenterX, boxCenterY);
+            ctx.moveTo(startX, startY);
             ctx.lineTo(el.arrowX, el.arrowY);
             ctx.stroke();
 
