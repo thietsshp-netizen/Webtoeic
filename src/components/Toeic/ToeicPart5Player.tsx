@@ -437,6 +437,16 @@ export default function ToeicPart5Player({
     const currentQ = questions[index];
     if (!currentQ) return;
 
+    const meta = currentQ.metadata as any;
+    let explainData: any = { overall: "", vocabulary: [] };
+    if (meta?.explanation) {
+      explainData = meta.explanation;
+    } else if (currentQ.explanation && typeof currentQ.explanation === 'string' && currentQ.explanation.startsWith('{')) {
+      explainData = JSON.parse(currentQ.explanation);
+    } else if (currentQ.explanation) {
+      explainData = { overall: currentQ.explanation, vocabulary: meta?.vocabulary || [] };
+    }
+
     const matchedFamilies = getMatchedFamiliesForQuestion(index);
     if (matchedFamilies.length === 0) return;
 
@@ -458,8 +468,8 @@ export default function ToeicPart5Player({
         .replace(/'/g, "&#039;");
     };
 
-    const width = 420;
-    const height = 480;
+    const width = 450;
+    const height = 580;
 
     const popupHtml = `
       <div class="title-container">
@@ -467,18 +477,62 @@ export default function ToeicPart5Player({
           <div class="title">Từ khóa: "${escapeHtml(fam.matchedWord || fam.key)}"</div>
           <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Đám mây từ vựng - Câu ${currentQ.questionNo || ''}</div>
         </div>
-        <div class="pagination-indicator">${activeIdx + 1} / ${matchedFamilies.length}</div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+          <div class="pagination-indicator">${activeIdx + 1} / ${matchedFamilies.length}</div>
+          ${currentQ.correctAnswer ? `<div class="correct-answer-badge">ĐÁP ÁN: <span style="color: #10b981; font-weight: 900; font-size: 12px; margin-left: 2px;">${currentQ.correctAnswer}</span></div>` : ''}
+        </div>
       </div>
       
-      <div class="family-item">
-        <div class="family-header">
-          <span class="family-key">${escapeHtml(fam.key)}</span>
-          <span class="family-badge ${fam.type === 'root' ? 'badge-root' : 'badge-word'}">
-            ${fam.type === 'root' ? 'Gốc từ' : 'Từ vựng'}
-          </span>
+      <div class="middle-scroll-container">
+        <div class="family-item">
+          <div class="family-header">
+            <span class="family-key">${escapeHtml(fam.key)}</span>
+            <span class="family-badge ${fam.type === 'root' ? 'badge-root' : 'badge-word'}">
+              ${fam.type === 'root' ? 'Gốc từ' : 'Từ vựng'}
+            </span>
+          </div>
+          <div>
+            ${formatValueToHtml(fam.originalValue, fam.key, fam.type)}
+          </div>
         </div>
-        <div>
-          ${formatValueToHtml(fam.originalValue, fam.key, fam.type)}
+      </div>
+
+      <div class="options-footer">
+        <div class="options-footer-title">Các phương án lựa chọn:</div>
+        <div class="options-grid">
+          ${(() => {
+            const cleanValue = (val: string) => {
+              if (!val) return '';
+              const trimmed = val.trim();
+              if (trimmed.toLowerCase() === 'none' || trimmed.toLowerCase() === 'null') return '';
+              return trimmed;
+            };
+            return ['A', 'B', 'C', 'D'].map(opt => {
+              const isCorrect = opt === currentQ.correctAnswer;
+              const label = currentQ[`option${opt}`] || '';
+              const breakdown = explainData.options_breakdown?.[opt] || {};
+              const meaning = cleanValue(breakdown.meaning);
+              const syns = cleanValue(breakdown.synonyms);
+              const ants = cleanValue(breakdown.antonyms);
+              return `
+                <div class="opt-row ${isCorrect ? 'opt-row-correct' : ''}">
+                  <span class="opt-badge ${isCorrect ? 'opt-badge-correct' : ''}">${opt}</span>
+                  <div class="opt-details">
+                    <div class="opt-main">
+                      <span class="opt-label">${escapeHtml(label)}</span>
+                      ${meaning ? `<span class="opt-eq">=</span> <span class="opt-meaning">${escapeHtml(meaning)}</span>` : ''}
+                    </div>
+                    ${(syns || ants) ? `
+                      <div class="opt-extra">
+                        ${syns ? `<span class="opt-syn">~ ${escapeHtml(syns)}</span>` : ''}
+                        ${ants ? `<span class="opt-ant">>< ${escapeHtml(ants)}</span>` : ''}
+                      </div>
+                    ` : ''}
+                  </div>
+                </div>
+              `;
+            }).join('');
+          })()}
         </div>
       </div>
     `;
@@ -510,6 +564,16 @@ export default function ToeicPart5Player({
               margin: 0;
               background-color: #f8fafc;
               color: #1e293b;
+              height: calc(100vh - 32px);
+              display: flex;
+              flex-direction: column;
+              box-sizing: border-box;
+            }
+            .middle-scroll-container {
+              flex: 1;
+              overflow-y: auto;
+              margin-bottom: 12px;
+              padding-right: 4px;
             }
             .title-container {
               position: sticky;
@@ -536,6 +600,104 @@ export default function ToeicPart5Player({
               color: #475569;
               padding: 3px 8px;
               border-radius: 6px;
+            }
+            .correct-answer-badge {
+              font-size: 10px;
+              color: #475569;
+              background-color: #ecfdf5;
+              border: 1px solid #a7f3d0;
+              padding: 2px 8px;
+              border-radius: 6px;
+              font-weight: 700;
+              display: inline-flex;
+              align-items: center;
+            }
+            .options-footer {
+              flex-shrink: 0;
+              border-top: 2px solid #e2e8f0;
+              padding-top: 12px;
+              margin-top: auto;
+              background-color: #f8fafc;
+            }
+            .options-footer-title {
+              font-size: 11px;
+              font-weight: 800;
+              color: #64748b;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+              margin-bottom: 8px;
+            }
+            .options-grid {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 8px;
+            }
+            .opt-row {
+              display: flex;
+              align-items: flex-start;
+              gap: 8px;
+              padding: 6px 10px;
+              border-radius: 8px;
+              background-color: #ffffff;
+              border: 1px solid #e2e8f0;
+            }
+            .opt-row-correct {
+              background-color: #ecfdf5;
+              border-color: #a7f3d0;
+            }
+            .opt-badge {
+              width: 20px;
+              height: 20px;
+              font-size: 11px;
+              font-weight: 800;
+              background-color: #f1f5f9;
+              color: #475569;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border: 1px solid #cbd5e1;
+              flex-shrink: 0;
+              margin-top: 2px;
+            }
+            .opt-badge-correct {
+              background-color: #10b981;
+              color: #ffffff;
+              border-color: #059669;
+            }
+            .opt-details {
+              display: flex;
+              flex-direction: column;
+              gap: 2px;
+              text-align: left;
+            }
+            .opt-main {
+              font-size: 13.5px;
+              font-weight: 500;
+            }
+            .opt-label {
+              font-weight: 800;
+              color: #0f172a;
+            }
+            .opt-eq {
+              color: #94a3b8;
+              margin: 0 4px;
+            }
+            .opt-meaning {
+              color: #475569;
+            }
+            .opt-extra {
+              display: flex;
+              gap: 12px;
+              font-size: 11.5px;
+              font-weight: 700;
+              margin-top: 1px;
+            }
+            .opt-syn {
+              color: #059669;
+            }
+            .opt-ant {
+              color: #dc2626;
             }
             .family-item {
               background-color: #ffffff;
@@ -666,6 +828,16 @@ export default function ToeicPart5Player({
                 margin: 0;
                 background-color: #f8fafc;
                 color: #1e293b;
+                height: calc(100vh - 32px);
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+              }
+              .middle-scroll-container {
+                flex: 1;
+                overflow-y: auto;
+                margin-bottom: 12px;
+                padding-right: 4px;
               }
               .title-container {
                 position: sticky;
@@ -692,6 +864,104 @@ export default function ToeicPart5Player({
                 color: #475569;
                 padding: 3px 8px;
                 border-radius: 6px;
+              }
+              .correct-answer-badge {
+                font-size: 10px;
+                color: #475569;
+                background-color: #ecfdf5;
+                border: 1px solid #a7f3d0;
+                padding: 2px 8px;
+                border-radius: 6px;
+                font-weight: 700;
+                display: inline-flex;
+                align-items: center;
+              }
+              .options-footer {
+                flex-shrink: 0;
+                border-top: 2px solid #e2e8f0;
+                padding-top: 12px;
+                margin-top: auto;
+                background-color: #f8fafc;
+              }
+              .options-footer-title {
+                font-size: 11px;
+                font-weight: 800;
+                color: #64748b;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                margin-bottom: 8px;
+              }
+              .options-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+              }
+              .opt-row {
+                display: flex;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 6px 10px;
+                border-radius: 8px;
+                background-color: #ffffff;
+                border: 1px solid #e2e8f0;
+              }
+              .opt-row-correct {
+                background-color: #ecfdf5;
+                border-color: #a7f3d0;
+              }
+              .opt-badge {
+                width: 20px;
+                height: 20px;
+                font-size: 11px;
+                font-weight: 800;
+                background-color: #f1f5f9;
+                color: #475569;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid #cbd5e1;
+                flex-shrink: 0;
+                margin-top: 2px;
+              }
+              .opt-badge-correct {
+                background-color: #10b981;
+                color: #ffffff;
+                border-color: #059669;
+              }
+              .opt-details {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                text-align: left;
+              }
+              .opt-main {
+                font-size: 13.5px;
+                font-weight: 500;
+              }
+              .opt-label {
+                font-weight: 800;
+                color: #0f172a;
+              }
+              .opt-eq {
+                color: #94a3b8;
+                margin: 0 4px;
+              }
+              .opt-meaning {
+                color: #475569;
+              }
+              .opt-extra {
+                display: flex;
+                gap: 12px;
+                font-size: 11.5px;
+                font-weight: 700;
+                margin-top: 1px;
+              }
+              .opt-syn {
+                color: #059669;
+              }
+              .opt-ant {
+                color: #dc2626;
               }
               .family-item {
                 background-color: #ffffff;
