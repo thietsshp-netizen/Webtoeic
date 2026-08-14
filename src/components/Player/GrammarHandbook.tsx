@@ -69,6 +69,12 @@ export default function GrammarHandbook() {
   // States cho Word Family Popover (Đám mây)
   const [wordFamiliesData, setWordFamiliesData] = useState<any[]>(wordFamiliesDataStatic);
   const [activeWordFamily, setActiveWordFamily] = useState<any[]>([]);
+  const [showDetModal, setShowDetModal] = useState(false);
+  const [detPopoverPos, setDetPopoverPos] = useState<{ x: number; y: number }>({ x: 300, y: 200 });
+  const [showNounModal, setShowNounModal] = useState(false);
+  const [nounPopoverPos, setNounPopoverPos] = useState<{ x: number; y: number }>({ x: 300, y: 200 });
+  const [showN1Modal, setShowN1Modal] = useState(false);
+  const [n1PopoverPos, setN1PopoverPos] = useState<{ x: number; y: number }>({ x: 300, y: 200 });
 
   useEffect(() => {
     fetch("/api/word-families?part=5")
@@ -170,8 +176,8 @@ export default function GrammarHandbook() {
       panes.forEach((pane, paneIdx) => {
         // paneIdx === 0 tương ứng với zoom1 (Pane trái/trên), paneIdx === 1 tương ứng với zoom2 (Pane phải/dưới)
         const zoomValue = paneIdx === 0 ? zoom1 : zoom2;
-        const images = pane.querySelectorAll("img");
-        images.forEach((img: HTMLImageElement) => {
+        const images = pane.querySelectorAll("img, .grammar-svg-wrapper");
+        images.forEach((img: any) => {
           let baseMaxWidth = img.getAttribute("data-base-max-width");
           if (!baseMaxWidth) {
             baseMaxWidth = img.style.maxWidth || "100%";
@@ -1174,6 +1180,28 @@ export default function GrammarHandbook() {
                 className="grammar-handbook-content select-text text-slate-700 w-full"
                 style={{ zoom: zoomValue / 100 }}
                 dangerouslySetInnerHTML={{ __html: activeLesson.htmlContent }}
+                onClick={(e) => {
+                  const target = e.target as HTMLElement;
+                  if (target.closest(".svg-click-det")) {
+                    setDetPopoverPos({
+                      x: position.x + (width - 600) / 2,
+                      y: position.y + (height - 450) / 2
+                    });
+                    setShowDetModal(true);
+                  } else if (target.closest(".svg-click-noun")) {
+                    setNounPopoverPos({
+                      x: position.x + (width - 620) / 2,
+                      y: position.y + (height - 520) / 2
+                    });
+                    setShowNounModal(true);
+                  } else if (target.closest(".svg-click-n1")) {
+                    setN1PopoverPos({
+                      x: position.x + (width - 600) / 2,
+                      y: position.y + (height - 450) / 2
+                    });
+                    setShowN1Modal(true);
+                  }
+                }}
               />
               {/* Khoảng trống 1/2 trang ở cuối */}
               <div className="h-[100vh] w-full shrink-0" />
@@ -1519,7 +1547,710 @@ export default function GrammarHandbook() {
           onPositionChange={(pos) => setPopoverPos(pos)}
         />
       )}
+      <AnimatePresence>
+        {showDetModal && (
+          <DeterminerModal
+            position={detPopoverPos}
+            onClose={() => setShowDetModal(false)}
+            onPositionChange={(pos) => setDetPopoverPos(pos)}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {showNounModal && (
+          <NounModal
+            position={nounPopoverPos}
+            onClose={() => setShowNounModal(false)}
+            onPositionChange={(pos) => setNounPopoverPos(pos)}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {showN1Modal && (
+          <N1Modal
+            position={n1PopoverPos}
+            onClose={() => setShowN1Modal(false)}
+            onPositionChange={(pos) => setN1PopoverPos(pos)}
+          />
+        )}
+      </AnimatePresence>
     </>
+  );
+}
+
+function DeterminerModal({
+  position,
+  onClose,
+  onPositionChange
+}: {
+  position: { x: number; y: number };
+  onClose: () => void;
+  onPositionChange: (pos: { x: number; y: number }) => void;
+}) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest("button") || (e.target as HTMLElement).closest("table")) return;
+    setIsDragging(true);
+    setDragStart({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    });
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      onPositionChange({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, dragStart, onPositionChange]);
+
+  return (
+    <div
+      style={{ left: `${position.x}px`, top: `${position.y}px` }}
+      className="fixed z-[9999] w-[600px] h-[450px] overflow-hidden bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/80 flex flex-col animate-in zoom-in-95 duration-200 select-text"
+    >
+      {/* Header */}
+      <div
+        onMouseDown={handleMouseDown}
+        className="px-4 py-2.5 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 flex items-center justify-between cursor-move select-none shrink-0"
+      >
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+          <span className="font-extrabold text-[12px] uppercase tracking-wider text-red-600">1. TỪ HẠN ĐỊNH (Det)</span>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-1 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Sub-Header text */}
+      <div className="px-4 py-2 bg-slate-50/50 border-b border-slate-100 shrink-0">
+        <p className="text-[10px] md:text-[11px] text-slate-500 italic leading-normal select-none">
+          Từ hạn định (Determiners) là những từ đứng ở đầu cụm danh từ, dùng để trả lời cho các câu hỏi: Xác định chưa? Của ai? Bao nhiêu? Vị trí/khoảng cách thế nào? Cái nào trong nhóm? nhằm giới hạn và làm rõ cho danh từ đi sau.
+        </p>
+      </div>
+
+      {/* Body */}
+      <div className="flex-1 overflow-y-auto p-4 custom-vertical-scrollbar webtoeic-scroll-container">
+        <div className="mb-2 font-bold text-slate-700 text-xs select-none">
+          Bảng phân loại Từ hạn định theo Chức năng
+        </div>
+        
+        <div className="overflow-x-auto border border-slate-200 rounded-lg">
+          <table className="w-full border-collapse text-[11px] md:text-xs">
+            <thead>
+              <tr className="bg-slate-50 text-slate-700 font-bold border-b border-slate-200">
+                <th className="p-2.5 text-left border-r border-slate-200 w-[28%] font-extrabold text-slate-800">Chức năng (Dùng để làm gì?)</th>
+                <th className="p-2.5 text-left border-r border-slate-200 w-[36%] font-extrabold text-slate-800">Nhóm từ hạn định tương ứng</th>
+                <th className="p-2.5 text-left w-[36%] font-extrabold text-slate-800">Ví dụ minh họa</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 text-slate-600">
+              {/* Row 1 */}
+              <tr className="hover:bg-slate-50/30 transition-colors">
+                <td className="p-2.5 border-r border-slate-200">
+                  <div className="font-bold text-red-600 text-[12px]">1. Xác định đối tượng</div>
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug font-normal">(Chỉ rõ người/vật đã biết hay chưa)</div>
+                </td>
+                <td className="p-2.5 border-r border-slate-200 leading-relaxed">
+                  <ul className="list-disc pl-3.5 space-y-0.5">
+                    <li><strong>Mạo từ bất định:</strong> a, an</li>
+                    <li><strong>Mạo từ xác định:</strong> the</li>
+                  </ul>
+                </td>
+                <td className="p-2.5 leading-relaxed">
+                  <ul className="list-disc pl-3.5 space-y-0.5">
+                    <li><strong className="text-red-600">a</strong> candidate <span className="text-slate-400 italic text-[10px] font-normal">(chưa rõ là ai)</span></li>
+                    <li><strong className="text-red-600">the</strong> manager <span className="text-slate-400 italic text-[10px] font-normal">(đã biết là ai)</span></li>
+                  </ul>
+                </td>
+              </tr>
+
+              {/* Row 2 */}
+              <tr className="hover:bg-slate-50/30 transition-colors">
+                <td className="p-2.5 border-r border-slate-200">
+                  <div className="font-bold text-red-600 text-[12px]">2. Chỉ định khoảng cách</div>
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug font-normal">(Chỉ vị trí gần/xa trong không gian, thời gian)</div>
+                </td>
+                <td className="p-2.5 border-r border-slate-200 leading-relaxed">
+                  <ul className="list-disc pl-3.5 space-y-0.5">
+                    <li><strong>Gần:</strong> this <span className="text-slate-400 italic text-[10px] font-normal">(số ít)</span>, these <span className="text-slate-400 italic text-[10px] font-normal">(số nhiều)</span></li>
+                    <li><strong>Xa:</strong> that <span className="text-slate-400 italic text-[10px] font-normal">(số ít)</span>, those <span className="text-slate-400 italic text-[10px] font-normal">(số nhiều)</span></li>
+                  </ul>
+                </td>
+                <td className="p-2.5 leading-relaxed">
+                  <ul className="list-disc pl-3.5 space-y-0.5">
+                    <li><strong className="text-red-600">this</strong> document <span className="text-slate-400 italic text-[10px] font-normal">(gần)</span></li>
+                    <li><strong className="text-red-600">those</strong> files <span className="text-slate-400 italic text-[10px] font-normal">(xa)</span></li>
+                  </ul>
+                </td>
+              </tr>
+
+              {/* Row 3 */}
+              <tr className="hover:bg-slate-50/30 transition-colors">
+                <td className="p-2.5 border-r border-slate-200">
+                  <div className="font-bold text-red-600 text-[12px]">3. Chỉ quyền sở hữu</div>
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug font-normal">(Chỉ ra người/vật đó thuộc về ai)</div>
+                </td>
+                <td className="p-2.5 border-r border-slate-200 leading-relaxed">
+                  <ul className="list-disc pl-3.5 space-y-0.5">
+                    <li><strong>Tính từ sở hữu:</strong> my, your, his, her, its, our, their</li>
+                    <li><strong>Sở hữu cách:</strong> tên riêng/N + 's</li>
+                  </ul>
+                </td>
+                <td className="p-2.5 leading-relaxed">
+                  <ul className="list-disc pl-3.5 space-y-0.5">
+                    <li><strong className="text-red-600">our</strong> client</li>
+                    <li><strong className="text-red-600">Mr. David's</strong> office</li>
+                  </ul>
+                </td>
+              </tr>
+
+              {/* Row 4 */}
+              <tr className="hover:bg-slate-50/30 transition-colors">
+                <td className="p-2.5 border-r border-slate-200">
+                  <div className="font-bold text-red-600 text-[12px]">4. Chỉ số lượng chính xác</div>
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug font-normal">(Đếm cụ thể hoặc xếp thứ tự)</div>
+                </td>
+                <td className="p-2.5 border-r border-slate-200 leading-relaxed">
+                  <ul className="list-disc pl-3.5 space-y-0.5">
+                    <li><strong>Số đếm:</strong> one, two, three...</li>
+                    <li><strong>Số thứ tự:</strong> first, second, last, next</li>
+                  </ul>
+                </td>
+                <td className="p-2.5 leading-relaxed">
+                  <ul className="list-disc pl-3.5 space-y-0.5">
+                    <li><strong className="text-red-600">three</strong> branches</li>
+                    <li>the <strong className="text-red-600">first</strong> round</li>
+                  </ul>
+                </td>
+              </tr>
+
+              {/* Row 5 */}
+              <tr className="hover:bg-slate-50/30 transition-colors">
+                <td className="p-2.5 border-r border-slate-200">
+                  <div className="font-bold text-red-600 text-[12px]">5. Chỉ số lượng ước chừng</div>
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug font-normal">(Nhiều, ít, một vài, toàn bộ)</div>
+                </td>
+                <td className="p-2.5 border-r border-slate-200 leading-relaxed">
+                  <ul className="list-disc pl-3.5 space-y-0.5">
+                    <li><strong>Nhiều:</strong> many, much, a lot of, plenty of</li>
+                    <li><strong>Ít:</strong> few, a few, little, a little</li>
+                    <li><strong>Vừa/Toàn bộ:</strong> some, any, all, most</li>
+                  </ul>
+                </td>
+                <td className="p-2.5 leading-relaxed">
+                  <ul className="list-disc pl-3.5 space-y-0.5">
+                    <li><strong className="text-red-600">many</strong> applicants</li>
+                    <li><strong className="text-red-600">little</strong> time</li>
+                    <li><strong className="text-red-600">some</strong> advice</li>
+                  </ul>
+                </td>
+              </tr>
+
+              {/* Row 6 */}
+              <tr className="hover:bg-slate-50/30 transition-colors">
+                <td className="p-2.5 border-r border-slate-200">
+                  <div className="font-bold text-red-600 text-[12px]">6. Phân phối & Lựa chọn</div>
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug font-normal">(Chia nhỏ hoặc chọn trong nhóm)</div>
+                </td>
+                <td className="p-2.5 border-r border-slate-200 leading-relaxed">
+                  <ul className="list-disc pl-3.5 space-y-0.5">
+                    <li><strong>Từng cá thể:</strong> each, every</li>
+                    <li><strong>Lựa chọn 1 trong 2:</strong> either, neither</li>
+                    <li><strong>Đối tượng khác:</strong> another, other, the other</li>
+                  </ul>
+                </td>
+                <td className="p-2.5 leading-relaxed">
+                  <ul className="list-disc pl-3.5 space-y-0.5">
+                    <li><strong className="text-red-600">each</strong> employee</li>
+                    <li><strong className="text-red-600">neither</strong> plan</li>
+                    <li><strong className="text-red-600">another</strong> option</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NounModal({
+  position,
+  onClose,
+  onPositionChange
+}: {
+  position: { x: number; y: number };
+  onClose: () => void;
+  onPositionChange: (pos: { x: number; y: number }) => void;
+}) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (
+      (e.target as HTMLElement).closest("button") ||
+      (e.target as HTMLElement).closest("table") ||
+      (e.target as HTMLElement).closest("svg")
+    ) return;
+    setIsDragging(true);
+    setDragStart({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    });
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      onPositionChange({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, dragStart, onPositionChange]);
+
+  const svgHtml = `
+<div style="width: 100%; max-width: 820px; margin: 12px auto; overflow: hidden; border-radius: 16px;">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 360" width="100%" height="100%">
+    <defs>
+      <!-- Mũi tên chỉ xuống -->
+      <marker id="arrow-down" viewBox="0 0 10 10" refX="5" refY="8" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 1 2 L 5 8 L 9 2 z" fill="#ffffff" />
+      </marker>
+    </defs>
+
+    <!-- Nền bo góc Dark Mode -->
+    <rect width="1000" height="360" rx="36" fill="#121212" />
+
+    <!-- Style cho Text và Nét vẽ -->
+    <style>
+      .tree-text {
+        fill: #ffffff;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 15px;
+      }
+      .tree-title {
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+      }
+      .tree-line {
+        stroke: #ffffff;
+        stroke-width: 1.5;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .tree-line-sub {
+        stroke: #ffffff;
+        stroke-width: 1.5;
+        fill: none;
+      }
+    </style>
+
+    <!-- 1. GỐC: DANH TỪ (NOUN) -->
+    <text x="350" y="80" text-anchor="middle" class="tree-text tree-title">DANH TỪ (NOUN)</text>
+    
+    <!-- Nhánh chính từ Gốc xuống 2 Cột -->
+    <path d="M 350 92 L 350 120" class="tree-line" />
+    <path d="M 200 120 L 500 120" class="tree-line" />
+    <path d="M 200 120 L 200 142" class="tree-line" marker-end="url(#arrow-down)" />
+    <path d="M 500 120 L 500 142" class="tree-line" marker-end="url(#arrow-down)" />
+
+    <!-- ========================================== -->
+    <!-- CỘT TRÁI: DANH TỪ ĐẾM ĐƯỢC                 -->
+    <!-- ========================================== -->
+    <text x="200" y="168" text-anchor="middle" class="tree-text">Danh từ đếm được</text>
+    <text x="200" y="192" text-anchor="middle" class="tree-text">(Countable Nouns)</text>
+
+    <!-- Nhánh từ Đếm được xuống Số ít / Số nhiều -->
+    <path d="M 200 204 L 200 230" class="tree-line" />
+    <path d="M 140 230 L 260 230" class="tree-line" />
+    <path d="M 140 230 L 140 252" class="tree-line" marker-end="url(#arrow-down)" />
+    <path d="M 260 230 L 260 252" class="tree-line" marker-end="url(#arrow-down)" />
+
+    <!-- Nhãn Số ít / Số nhiều -->
+    <text x="140" y="278" text-anchor="middle" class="tree-text">Số ít</text>
+    <text x="140" y="302" text-anchor="middle" class="tree-text">(Singular)</text>
+
+    <text x="260" y="278" text-anchor="middle" class="tree-text">Số nhiều</text>
+    <text x="260" y="302" text-anchor="middle" class="tree-text">(Plural)</text>
+
+    <!-- ========================================== -->
+    <!-- CỘT PHẢI: DANH TỪ KHÔNG ĐẾM ĐƯỢC           -->
+    <!-- ========================================== -->
+    <text x="500" y="168" text-anchor="middle" class="tree-text">Danh từ không đếm được</text>
+    <text x="500" y="192" text-anchor="middle" class="tree-text">(Uncountable Nouns)</text>
+
+    <!-- Nhánh cây dạng list phân cấp bên phải -->
+    <!-- Đường dọc -->
+    <path d="M 500 204 L 500 292" class="tree-line-sub" />
+    <!-- 3 Nhánh ngang -->
+    <path d="M 500 236 L 517 236" class="tree-line-sub" />
+    <path d="M 500 264 L 517 264" class="tree-line-sub" />
+    <path d="M 500 292 L 517 292" class="tree-line-sub" />
+
+    <!-- 3 Mục con -->
+    <text x="525" y="241" text-anchor="start" class="tree-text">Danh từ trừu tượng: information, advice...</text>
+    <text x="525" y="269" text-anchor="start" class="tree-text">Chất liệu / chất lỏng: water, gold...</text>
+    <text x="525" y="297" text-anchor="start" class="tree-text">Danh từ tập hợp: furniture, luggage...</text>
+  </svg>
+</div>
+`;
+
+  return (
+    <div
+      style={{ left: `${position.x}px`, top: `${position.y}px` }}
+      className="fixed z-[9999] w-[620px] h-[520px] overflow-hidden bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/80 flex flex-col animate-in zoom-in-95 duration-200 select-text"
+    >
+      {/* Header */}
+      <div
+        onMouseDown={handleMouseDown}
+        className="px-4 py-2.5 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 flex items-center justify-between cursor-move select-none shrink-0"
+      >
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+          <span className="font-extrabold text-[12px] uppercase tracking-wider text-red-600">II. DANH TỪ (N)</span>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-1 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Body */}
+      <div className="flex-1 overflow-y-auto p-4 custom-vertical-scrollbar webtoeic-scroll-container space-y-4">
+        {/* Section 1 */}
+        <div>
+          <h4 className="font-extrabold text-slate-800 text-sm border-b border-slate-100 pb-1 mb-2">
+            1. Định nghĩa & Bản chất
+          </h4>
+          <ul className="list-disc pl-4 text-xs text-slate-600 space-y-1.5">
+            <li>
+              <strong>Danh từ trung tâm (Head Noun)</strong> là từ khóa mang ý nghĩa cốt lõi nhất trong cụm danh từ (Noun Phrase).
+            </li>
+            <li>
+              Nó đóng vai trò là "hạt nhân" tiếp nhận mọi sự bổ nghĩa từ các thành phần đứng trước (tiền biến tố - Pre-modifiers) và đứng sau (hậu biến tố - Post-modifiers).
+            </li>
+            <li>
+              Trong một câu, danh từ trung tâm quyết định việc chia động từ chính theo số ít hay số nhiều (<em>S - V agreement / Sự hòa hợp Chủ-Vị</em>).
+            </li>
+          </ul>
+        </div>
+
+        {/* Section 2 */}
+        <div>
+          <h4 className="font-extrabold text-slate-800 text-sm border-b border-slate-100 pb-1 mb-2">
+            2. Chức năng ngữ pháp
+          </h4>
+          <div className="overflow-x-auto border border-slate-200 rounded-lg">
+            <table className="w-full border-collapse text-[11px] md:text-xs">
+              <thead>
+                <tr className="bg-slate-50 text-slate-700 font-bold border-b border-slate-200">
+                  <th className="p-2.5 text-left border-r border-slate-200 w-[28%] font-extrabold text-slate-800">Chức năng</th>
+                  <th className="p-2.5 text-left border-r border-slate-200 w-[38%] font-extrabold text-slate-800">Vị trí</th>
+                  <th className="p-2.5 text-left w-[34%] font-extrabold text-slate-800">Ví dụ cực ngắn</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 text-slate-600">
+                <tr className="hover:bg-slate-50/30 transition-colors">
+                  <td className="p-2.5 border-r border-slate-200 font-bold text-red-600">1. Chủ ngữ (S)</td>
+                  <td className="p-2.5 border-r border-slate-200">Đứng trước động từ</td>
+                  <td className="p-2.5"><strong>The cat</strong> sleeps.</td>
+                </tr>
+                <tr className="hover:bg-slate-50/30 transition-colors">
+                  <td className="p-2.5 border-r border-slate-200 font-bold text-red-600">2. Tân ngữ trực tiếp (O<sub>d</sub>)</td>
+                  <td className="p-2.5 border-r border-slate-200">Sau động từ hành động</td>
+                  <td className="p-2.5">I read a <strong>book</strong>.</td>
+                </tr>
+                <tr className="hover:bg-slate-50/30 transition-colors">
+                  <td className="p-2.5 border-r border-slate-200 font-bold text-red-600">3. Tân ngữ gián tiếp (O<sub>i</sub>)</td>
+                  <td className="p-2.5 border-r border-slate-200">Sau động từ (nhận tân ngữ trực tiếp)</td>
+                  <td className="p-2.5">She sent <strong>Tom</strong> a letter.</td>
+                </tr>
+                <tr className="hover:bg-slate-50/30 transition-colors">
+                  <td className="p-2.5 border-r border-slate-200 font-bold text-red-600">4. Tân ngữ giới từ (O<sub>prep</sub>)</td>
+                  <td className="p-2.5 border-r border-slate-200">Sau giới từ</td>
+                  <td className="p-2.5">Look at the <strong>board</strong>.</td>
+                </tr>
+                <tr className="hover:bg-slate-50/30 transition-colors">
+                  <td className="p-2.5 border-r border-slate-200 font-bold text-red-600">5. Bổ ngữ chủ ngữ (C<sub>s</sub>)</td>
+                  <td className="p-2.5 border-r border-slate-200">Sau <em>be / become / seem...</em></td>
+                  <td className="p-2.5">He is a <strong>teacher</strong>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Section 3 */}
+        <div>
+          <h4 className="font-extrabold text-slate-800 text-sm border-b border-slate-100 pb-1 mb-2">
+            3. Phân loại chi tiết
+          </h4>
+          
+          <div dangerouslySetInnerHTML={{ __html: svgHtml }} />
+
+          <div className="mt-3 space-y-2.5 text-xs text-slate-600">
+            <p>
+              <strong>1. Danh từ đếm được (Countable Nouns):</strong>
+            </p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>
+                <strong>Số ít (Singular):</strong> Bắt buộc có từ hạn định đi kèm (a, an, the, my...). Ví dụ: <em>a book, an apple</em>.
+              </li>
+              <li>
+                <strong>Số nhiều (Plural):</strong> Thường thêm đuôi -s/-es hoặc biến đổi bất quy tắc (<em>child &rarr; children, person &rarr; people</em>).
+              </li>
+            </ul>
+
+            <p>
+              <strong>2. Danh từ không đếm được (Uncountable Nouns):</strong>
+            </p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>
+                Không đi trực tiếp với <em>a/an</em> hoặc số đếm; không có dạng số nhiều thêm -s/-es.
+              </li>
+              <li>
+                Ví dụ: <em>information, equipment, furniture, advice, water, traffic</em>.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Section 4 - Dấu hiệu nhận biết */}
+        <div>
+          <h4 className="font-extrabold text-slate-800 text-sm border-b border-slate-100 pb-1 mb-2">
+            4. Dấu hiệu nhận biết danh từ (Hậu tố phổ biến)
+          </h4>
+          <p className="text-[11px] text-slate-500 mb-2 italic">
+            Nhìn đuôi từ để đoán danh từ nhanh khi làm bài tập:
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-600">
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+              <span className="font-bold text-red-600 block mb-1.5">&bull; Chỉ người / nghề nghiệp:</span>
+              <ul className="space-y-1 pl-1">
+                <li><strong className="text-slate-800">-er/-or:</strong> teacher, actor</li>
+                <li><strong className="text-slate-800">-ist:</strong> scientist</li>
+                <li><strong className="text-slate-800">-ant:</strong> assistant</li>
+                <li><strong className="text-slate-800">-ee:</strong> employee</li>
+              </ul>
+            </div>
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+              <span className="font-bold text-indigo-600 block mb-1.5">&bull; Chỉ khái niệm / hành động / trạng thái:</span>
+              <ul className="space-y-1 pl-1 grid grid-cols-2 gap-x-2">
+                <li><strong className="text-slate-800">-tion/-sion:</strong> action</li>
+                <li><strong className="text-slate-800">-ment:</strong> development</li>
+                <li><strong className="text-slate-800">-ness:</strong> happiness</li>
+                <li><strong className="text-slate-800">-ity:</strong> activity</li>
+                <li><strong className="text-slate-800">-ance/-ence:</strong> importance</li>
+                <li><strong className="text-slate-800">-ship:</strong> friendship</li>
+                <li><strong className="text-slate-800">-ism:</strong> tourism</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function N1Modal({
+  position,
+  onClose,
+  onPositionChange
+}: {
+  position: { x: number; y: number };
+  onClose: () => void;
+  onPositionChange: (pos: { x: number; y: number }) => void;
+}) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest("button") || (e.target as HTMLElement).closest("table")) return;
+    setIsDragging(true);
+    setDragStart({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    });
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      onPositionChange({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, dragStart, onPositionChange]);
+
+  return (
+    <div
+      style={{ left: `${position.x}px`, top: `${position.y}px` }}
+      className="fixed z-[9999] w-[600px] h-[450px] overflow-hidden bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/80 flex flex-col animate-in zoom-in-95 duration-200 select-text"
+    >
+      {/* Header */}
+      <div
+        onMouseDown={handleMouseDown}
+        className="px-4 py-2.5 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 flex items-center justify-between cursor-move select-none shrink-0"
+      >
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse"></span>
+          <span className="font-extrabold text-[12px] uppercase tracking-wider text-purple-600">Danh từ phụ bổ nghĩa (N1)</span>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-1 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Sub-Header text */}
+      <div className="px-4 py-2 bg-slate-50/50 border-b border-slate-100 shrink-0">
+        <p className="text-[10px] md:text-[11px] text-slate-500 italic leading-normal select-none">
+          Danh từ phụ bổ nghĩa (Noun Adjunct / Noun as Modifier) đứng trước một danh từ chính để bổ nghĩa cho nó (tương tự như một tính từ).
+        </p>
+      </div>
+
+      {/* Body */}
+      <div className="flex-1 overflow-y-auto p-4 custom-vertical-scrollbar webtoeic-scroll-container space-y-4">
+        {/* Section 1 */}
+        <div>
+          <h4 className="font-extrabold text-slate-800 text-xs border-b border-slate-100 pb-1 mb-1.5 select-none">
+            1. Vai trò chính
+          </h4>
+          <ul className="list-disc pl-4 text-xs text-slate-600 space-y-1">
+            <li>Đứng ngay trước một Danh từ chính để bổ nghĩa cho danh từ đó (đóng vai trò tương tự như một Tính từ).</li>
+            <li>Giúp trả lời câu hỏi: <em>Đây là loại gì? Dùng để làm gì? Bằng chất liệu gì?</em></li>
+            <li>Cùng với danh từ chính tạo thành Danh từ ghép (<em>Compound Noun</em>).</li>
+          </ul>
+        </div>
+
+        {/* Section 2 */}
+        <div>
+          <h4 className="font-extrabold text-slate-800 text-xs border-b border-slate-100 pb-1 mb-1.5 select-none">
+            2. Cấu trúc & Ví dụ cực ngắn
+          </h4>
+          <div className="mb-2 font-bold text-center text-xs bg-slate-50 border border-slate-100 py-1 rounded select-none">
+            <span className="text-purple-600">N1 (Danh từ phụ)</span> + <span className="text-red-600">N2 (Danh từ chính)</span>
+          </div>
+          <div className="overflow-x-auto border border-slate-200 rounded-lg">
+            <table className="w-full border-collapse text-[11px] md:text-xs">
+              <thead>
+                <tr className="bg-slate-50 text-slate-700 font-bold border-b border-slate-200">
+                  <th className="p-2 text-left border-r border-slate-200 w-[30%] font-extrabold text-slate-800">Cụm từ ghép</th>
+                  <th className="p-2 text-left border-r border-slate-200 w-[20%] font-extrabold text-slate-800">N1</th>
+                  <th className="p-2 text-left border-r border-slate-200 w-[20%] font-extrabold text-slate-800">N2</th>
+                  <th className="p-2 text-left w-[30%] font-extrabold text-slate-800">Giải thích nghĩa</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 text-slate-600">
+                <tr className="hover:bg-slate-50/30 transition-colors">
+                  <td className="p-2 border-r border-slate-200 font-bold text-purple-600">ticket office</td>
+                  <td className="p-2 border-r border-slate-200 font-medium">ticket</td>
+                  <td className="p-2 border-r border-slate-200">office</td>
+                  <td className="p-2">Văn phòng bán vé</td>
+                </tr>
+                <tr className="hover:bg-slate-50/30 transition-colors">
+                  <td className="p-2 border-r border-slate-200 font-bold text-purple-600">coffee cup</td>
+                  <td className="p-2 border-r border-slate-200 font-medium">coffee</td>
+                  <td className="p-2 border-r border-slate-200">cup</td>
+                  <td className="p-2">Cốc đựng cà phê</td>
+                </tr>
+                <tr className="hover:bg-slate-50/30 transition-colors">
+                  <td className="p-2 border-r border-slate-200 font-bold text-purple-600">leather shoes</td>
+                  <td className="p-2 border-r border-slate-200 font-medium">leather</td>
+                  <td className="p-2 border-r border-slate-200">shoes</td>
+                  <td className="p-2">Giày làm bằng da</td>
+                </tr>
+                <tr className="hover:bg-slate-50/30 transition-colors">
+                  <td className="p-2 border-r border-slate-200 font-bold text-purple-600">safety standard</td>
+                  <td className="p-2 border-r border-slate-200 font-medium">safety</td>
+                  <td className="p-2 border-r border-slate-200">standard</td>
+                  <td className="p-2">Tiêu chuẩn về an toàn</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Section 3 */}
+        <div>
+          <h4 className="font-extrabold text-slate-800 text-xs border-b border-slate-100 pb-1 mb-1.5 select-none">
+            3. Quy tắc cốt lõi (Cực hay bẫy trong thi cử)
+          </h4>
+          <p className="text-xs text-red-600 font-bold mb-1.5">
+            N1 luôn ở dạng SỐ ÍT (không thêm -s/-es), ngay cả khi N2 là số nhiều.
+          </p>
+          <ul className="list-disc pl-4 text-xs text-slate-600 space-y-1">
+            <li>
+              <strong>shoe store</strong> (cửa hàng giày) &mdash; <span className="text-red-500 line-through">shoes store</span> (sai)
+            </li>
+            <li>
+              <strong>car keys</strong> (chìa khóa xe hơi) &mdash; <span className="text-red-500 line-through">cars keys</span> (sai)
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 }
 
