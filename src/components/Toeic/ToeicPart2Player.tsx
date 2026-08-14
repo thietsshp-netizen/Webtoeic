@@ -76,7 +76,7 @@ const HintPhrase = ({ phrase, isReveal, questionIndex, hintIndex }: { phrase: st
           <span className="font-bold text-indigo-700 bg-indigo-50/50 px-2 rounded border-b-2 border-dashed border-indigo-300/50 whitespace-nowrap text-[17px]">{phrase}</span>
         </div>
         <div
-          className={`absolute inset-0 bg-indigo-600 rounded-sm border-b-2 border-indigo-700 shadow-sm flex items-center justify-center backface-hidden ${isShow ? 'opacity-0' : 'opacity-100 hover:bg-indigo-500 cursor-pointer'}`}
+          className={`absolute inset-0 bg-indigo-600 rounded-sm border-b-2 border-indigo-700 shadow-sm backface-hidden ${isShow ? 'opacity-0' : 'opacity-100 hover:bg-indigo-500 cursor-pointer'}`}
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateX(180deg)'
@@ -84,17 +84,18 @@ const HintPhrase = ({ phrase, isReveal, questionIndex, hintIndex }: { phrase: st
         >
           <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent pointer-events-none"></div>
           
-          {/* Visual segments representation of the word count */}
+          {/* Visual segments representation of the word count with "?" in each segment */}
           <div className="absolute inset-0 flex">
             {Array.from({ length: wordCount }).map((_, index) => (
               <div
                 key={index}
-                className="flex-1 h-full border-r border-dashed border-white/20 last:border-r-0"
-              />
+                className="flex-1 h-full flex items-center justify-center border-r border-dashed border-white/50 last:border-r-0"
+              >
+                <span className="text-[11px] text-white font-bold select-none">?</span>
+              </div>
             ))}
           </div>
 
-          <span className="relative text-[10px] text-white font-black select-none tracking-widest opacity-90 uppercase z-10">HINT</span>
           {hintIndex && (
             <div className="absolute -bottom-1.5 -right-1.5 w-4 h-4 bg-indigo-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center border border-white shadow-sm ring-2 ring-indigo-500/20 z-20">
               {hintIndex}
