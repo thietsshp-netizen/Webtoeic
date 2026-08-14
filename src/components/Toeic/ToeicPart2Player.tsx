@@ -1274,8 +1274,20 @@ export default function ToeicPart2Player({
   const hintMasksMap = useMemo(() => {
     const aux = new Set(['is', 'are', 'was', 'were', 'am', 'be', 'been', 'being', 'has', 'have', 'had']);
     const det = new Set(['a', 'an', 'the', 'some', 'any', 'this', 'that', 'these', 'those', 'my', 'your', 'his', 'her', 'its', 'our', 'their', 'last', 'next', 'each', 'every', 'all']);
-    const prep = new Set(['in', 'on', 'at', 'by', 'with', 'for', 'from', 'to', 'of', 'about', 'over', 'under', 'across', 'through', 'into', 'along', 'behind', 'beside', 'near', 'past', 'up', 'down']);
+    const prep = new Set([
+      'in', 'on', 'at', 'by', 'with', 'for', 'from', 'to', 'of', 'about', 'over', 'under', 
+      'across', 'through', 'into', 'along', 'behind', 'beside', 'near', 'past', 'up', 'down',
+      'above', 'below', 'between', 'among', 'throughout', 'within', 'without', 'against',
+      'during', 'before', 'after', 'towards', 'toward', 'upon', 'until', 'till', 'around',
+      'beyond', 'beneath', 'amid', 'amidst', 'except', 'besides', 'like', 'unlike', 'onto', 
+      'off', 'via', 'opposite'
+    ]);
     const adverbs = new Set(['downtown', 'upstairs', 'downstairs', 'nearby', 'outside', 'inside', 'away', 'here', 'there', 'soon', 'now', 'later', 'already', 'yet', 'still', 'everywhere', 'anywhere', 'somewhere', 'yesterday', 'today', 'tomorrow']);
+    const conj = new Set([
+      'and', 'or', 'but', 'so', 'yet', 'nor', 'although', 'though', 'because', 'since', 
+      'unless', 'while', 'whereas', 'whether', 'if', 'either', 'neither', 'both', 'once', 
+      'lest', 'that', 'as', 'than', 'whenever', 'wherever'
+    ]);
 
     const maskedGlobal = new Set<string>();
     const map: Record<string, string[]> = {};
@@ -1323,7 +1335,7 @@ export default function ToeicPart2Player({
           let npTokens = []; let j = i + 1;
           while (j < tokens.length && j < i + 4) {
             const nextWord = tokens[j].toLowerCase().replace(/[^\w]/g, '');
-            if (aux.has(nextWord) || prep.has(nextWord) || det.has(nextWord)) break;
+            if (aux.has(nextWord) || prep.has(nextWord) || det.has(nextWord) || conj.has(nextWord)) break;
             if (nextWord.endsWith('ing') || nextWord.endsWith('ed')) break;
             if (npTokens.length >= 1 && adverbs.has(nextWord)) break;
             npTokens.push(tokens[j].replace(/[^\w\s]+$/g, ''));
@@ -1335,7 +1347,7 @@ export default function ToeicPart2Player({
       }
       tokens.forEach((t: string) => {
         const clean = t.toLowerCase().replace(/[^\w]/g, '');
-        if (clean.length > 3 && !aux.has(clean) && !det.has(clean) && !prep.has(clean) && !whWords.has(clean)) {
+        if (clean.length > 3 && !aux.has(clean) && !det.has(clean) && !prep.has(clean) && !whWords.has(clean) && !conj.has(clean)) {
           if (!candidates.some(c => c.includes(t))) candidates.push(t.replace(/[^\w\s]+$/g, ''));
         }
       });

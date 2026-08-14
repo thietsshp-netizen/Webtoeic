@@ -1990,8 +1990,20 @@ export default function ToeicPart1Player({
   const hintMasksMap = useMemo(() => {
     const aux = new Set(['is', 'are', 'was', 'were', 'am', 'be', 'been', 'being', 'has', 'have', 'had']);
     const det = new Set(['a', 'an', 'the', 'some', 'any', 'this', 'that', 'these', 'those', 'my', 'your', 'his', 'her', 'its', 'our', 'their', 'last', 'next', 'each', 'every', 'all']);
-    const prep = new Set(['in', 'on', 'at', 'by', 'with', 'for', 'from', 'to', 'of', 'about', 'over', 'under', 'across', 'through', 'into', 'along', 'behind', 'beside', 'near', 'past', 'up', 'down']);
+    const prep = new Set([
+      'in', 'on', 'at', 'by', 'with', 'for', 'from', 'to', 'of', 'about', 'over', 'under', 
+      'across', 'through', 'into', 'along', 'behind', 'beside', 'near', 'past', 'up', 'down',
+      'above', 'below', 'between', 'among', 'throughout', 'within', 'without', 'against',
+      'during', 'before', 'after', 'towards', 'toward', 'upon', 'until', 'till', 'around',
+      'beyond', 'beneath', 'amid', 'amidst', 'except', 'besides', 'like', 'unlike', 'onto', 
+      'off', 'via', 'opposite'
+    ]);
     const adverbs = new Set(['downtown', 'upstairs', 'downstairs', 'nearby', 'outside', 'inside', 'away', 'here', 'there', 'soon', 'now', 'later', 'already', 'yet', 'still', 'everywhere', 'anywhere', 'somewhere', 'yesterday', 'today', 'tomorrow']);
+    const conj = new Set([
+      'and', 'or', 'but', 'so', 'yet', 'nor', 'although', 'though', 'because', 'since', 
+      'unless', 'while', 'whereas', 'whether', 'if', 'either', 'neither', 'both', 'once', 
+      'lest', 'that', 'as', 'than', 'whenever', 'wherever'
+    ]);
 
     const maskedGlobal = new Set<string>();
     const map: Record<string, string[]> = {};
@@ -2042,7 +2054,7 @@ export default function ToeicPart1Player({
           let j = i + 1;
           while (j < tokens.length && j < i + 4) {
             const nextWord = tokens[j].toLowerCase().replace(/[^\w]/g, '');
-            if (aux.has(nextWord) || prep.has(nextWord) || det.has(nextWord)) break;
+            if (aux.has(nextWord) || prep.has(nextWord) || det.has(nextWord) || conj.has(nextWord)) break;
 
             // Stop if we hit a verb (ing/ed) - it belongs to a VP
             if (nextWord.endsWith('ing') || nextWord.endsWith('ed')) break;
@@ -2065,7 +2077,7 @@ export default function ToeicPart1Player({
       tokens.forEach((t: string, idx: number) => {
         if (isProperNoun(idx)) return;
         const clean = t.toLowerCase().replace(/[^\w]/g, '');
-        if (clean.length > 4 && !aux.has(clean) && !det.has(clean) && !prep.has(clean)) {
+        if (clean.length > 4 && !aux.has(clean) && !det.has(clean) && !prep.has(clean) && !conj.has(clean)) {
           if (!candidates.some(c => c.includes(t))) candidates.push(t.replace(/[^\w\s]+$/g, ''));
         }
       });
