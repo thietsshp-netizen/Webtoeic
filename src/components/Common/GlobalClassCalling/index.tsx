@@ -129,7 +129,14 @@ export const GlobalClassCalling: React.FC = () => {
     if (Date.now() - lastLocalUpdate.current < 5000) return;
 
     try {
-      const res = await fetch(`/api/admin/classes/sessions?classCode=${classCode}`);
+      const res = await fetch(`/api/admin/classes/sessions?classCode=${encodeURIComponent(classCode)}`);
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        throw new Error("Response is not JSON");
+      }
       const data = await res.json();
       
       // Ngăn chặn ghi đè nếu trong lúc đang fetch có sự kiện gọi tên tại client

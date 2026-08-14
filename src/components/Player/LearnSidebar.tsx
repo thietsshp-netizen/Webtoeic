@@ -83,6 +83,13 @@ export default function LearnSidebar() {
       try {
         setLoading(true);
         const res = await fetch(`/api/courses/${courseId}/syllabus`);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const contentType = res.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+          throw new Error("Response is not JSON");
+        }
         const data = await res.json();
         if (data.success) {
           setBooks(data.books);

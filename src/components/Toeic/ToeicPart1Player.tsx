@@ -601,6 +601,36 @@ export default function ToeicPart1Player({
       });
     };
 
+    const highlightColon = (text: string) => {
+      if (
+        text.toLowerCase().startsWith('gốc:') ||
+        text.toLowerCase().startsWith('goc:') ||
+        text.toLowerCase().startsWith('tiền tố:') ||
+        text.toLowerCase().startsWith('tien to:') ||
+        text.toLowerCase().startsWith('hậu tố:') ||
+        text.toLowerCase().startsWith('hau to:') ||
+        text.toLowerCase().startsWith('ví dụ:') ||
+        text.toLowerCase().startsWith('vi du:')
+      ) {
+        return text;
+      }
+      const colonIndex = text.indexOf(':');
+      if (colonIndex > 0) {
+        const before = text.slice(0, colonIndex);
+        const after = text.slice(colonIndex);
+        const bulletRegex = /^([\s*•-]*)(.*)$/;
+        const match = before.match(bulletRegex);
+        if (match) {
+          const bullet = match[1];
+          const words = match[2].trim();
+          if (words && /[a-zA-Z]/.test(words) && !words.includes('[') && !words.includes('(') && !words.includes('<')) {
+            return `${bullet}<strong style="color: #2563eb; font-weight: 800;">${words}</strong>${after}`;
+          }
+        }
+      }
+      return text;
+    };
+
     return lines.map((line) => {
       let cleanLine = line.trim();
       if (cleanLine.length === 0) return '';
@@ -630,6 +660,7 @@ export default function ToeicPart1Player({
       }
       
       cleanLine = highlightWords(cleanLine);
+      cleanLine = highlightColon(cleanLine);
       return `<div class="${className}">${highlightTerm(cleanLine)}</div>`;
     }).join('');
   };
