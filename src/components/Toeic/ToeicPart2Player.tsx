@@ -50,6 +50,8 @@ const HintPhrase = ({ phrase, isReveal, questionIndex, hintIndex }: { phrase: st
 
   const isShow = revealed || isReveal;
 
+  const wordCount = phrase.trim().split(/\s+/).length;
+
   return (
     <div
       onClick={(e) => {
@@ -81,9 +83,20 @@ const HintPhrase = ({ phrase, isReveal, questionIndex, hintIndex }: { phrase: st
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent pointer-events-none"></div>
-          <span className="text-[10px] text-white font-black select-none tracking-widest opacity-90 uppercase">HINT</span>
+          
+          {/* Visual segments representation of the word count */}
+          <div className="absolute inset-0 flex">
+            {Array.from({ length: wordCount }).map((_, index) => (
+              <div
+                key={index}
+                className="flex-1 h-full border-r border-dashed border-white/20 last:border-r-0"
+              />
+            ))}
+          </div>
+
+          <span className="relative text-[10px] text-white font-black select-none tracking-widest opacity-90 uppercase z-10">HINT</span>
           {hintIndex && (
-            <div className="absolute -bottom-1.5 -right-1.5 w-4 h-4 bg-indigo-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center border border-white shadow-sm ring-2 ring-indigo-500/20">
+            <div className="absolute -bottom-1.5 -right-1.5 w-4 h-4 bg-indigo-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center border border-white shadow-sm ring-2 ring-indigo-500/20 z-20">
               {hintIndex}
             </div>
           )}
