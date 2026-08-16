@@ -1457,6 +1457,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         const parsed = JSON.parse(storedElements);
         if (Array.isArray(parsed) && parsed.length > 0) {
           setUndoStack([parsed]);
+          setElements(parsed);
         }
       } catch (e) {
         // bỏ qua
@@ -5215,19 +5216,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     canvas.style.setProperty('cursor', cursorStyle, 'important');
   }, [cursorStyle, isActive]);
 
-  // Khi không active nhưng vẫn có elements (vd: callout) → render canvas read-only để chú thích vẫn hiển thị
+  // Khi không active thì ẩn hoàn toàn lớp phủ vẽ nháp và các ghi chú
   if (!isActive) {
-    if (elements.length === 0) return null;
-    return (
-      <canvas
-        ref={canvasRef}
-        className={styles.canvas}
-        style={{
-          pointerEvents: 'none', // Không nhận sự kiện chuột khi bảng vẽ tắt
-          cursor: 'default',
-        }}
-      />
-    );
+    return null;
   }
 
   return (
