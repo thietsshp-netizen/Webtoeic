@@ -632,6 +632,25 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       }
 
       const activeEl = document.activeElement as HTMLElement | null;
+      const target = e.target as HTMLElement | null;
+
+      // Check if user is typing in the drawing overlay text editor
+      const isDrawingTyping = 
+        (activeEl && (
+          activeEl.isContentEditable ||
+          (typeof activeEl.closest === "function" && activeEl.closest("[contenteditable]") !== null) ||
+          (typeof activeEl.closest === "function" && activeEl.closest("[class*=\"richTextInput\"]") !== null)
+        )) ||
+        (target && (
+          target.isContentEditable ||
+          (typeof target.closest === "function" && target.closest("[contenteditable]") !== null) ||
+          (typeof target.closest === "function" && target.closest("[class*=\"richTextInput\"]") !== null)
+        ));
+
+      if (isDrawingTyping) {
+        return; // Bypass all movie player hotkeys completely while typing a drawing comment
+      }
+
       const isTyping = 
         (activeEl?.tagName === "INPUT" && 
          (activeEl as HTMLInputElement).type !== "checkbox" && 
@@ -649,7 +668,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         } else if (e.code === "KeyB") {
           e.preventDefault();
           playSubtitleRow(currentIndex);
-        } else if (e.key === " " || e.code === "Backquote") {
+        } else if (e.code === "Backquote") {
           e.preventDefault();
           togglePlay();
         }
@@ -672,9 +691,6 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           } else if (e.code === "KeyB") {
             e.preventDefault();
             playSubtitleRow(currentIndex);
-          } else if (e.code === "Space") {
-            e.preventDefault();
-            togglePlay();
           }
         }
       }
@@ -1142,8 +1158,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     <li>Nhấn phím <strong className="text-white">n</strong> để chuyển qua câu tiếp theo.</li>
                     <li>Nhấn phím <strong className="text-white">v</strong> để quay lại câu trước đó.</li>
                     <li>Nhấn phím <strong className="text-white">b</strong> để nghe lại câu hiện tại.</li>
-                    <li>Nhấn phím <strong className="text-white">Space</strong> hoặc phím <strong className="text-white">~</strong> (nút nằm giữa Esc và Tab) để Tạm dừng/Phát video.</li>
-                    <li><em className="text-slate-400">Khi đang gõ chính tả:</em> nhấn giữ thêm phím <strong className="text-white">Alt</strong> (Alt + n, Alt + v, Alt + b, Alt + Space / Alt + ~).</li>
+                    <li>Nhấn phím <strong className="text-white">~</strong> (nút nằm giữa Esc và Tab) để Tạm dừng/Phát video.</li>
+                    <li><em className="text-slate-400">Khi đang gõ chính tả:</em> nhấn giữ thêm phím <strong className="text-white">Alt</strong> (Alt + n, Alt + v, Alt + b, Alt + ~).</li>
                   </ul>
                 </div>
               </div>
@@ -1155,7 +1171,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             <div 
               ref={containerRef} 
               onClick={() => videoContainerRef.current?.focus()}
-              className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin relative"
+              className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin relative webtoeic-scroll-container"
             >
               {subtitles.map((sub, idx) => {
                 const isActive = currentIndex === idx;
