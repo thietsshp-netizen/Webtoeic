@@ -4008,15 +4008,17 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           };
         }
         else if (el.type === 'circle') {
-          const newRadius = Math.max(5, Math.sqrt((el.x! - x) ** 2 + (el.y! - y) ** 2));
+          const translatedEl = getTranslatedElement(el, cachedRect) || el;
+          const newRadius = Math.max(5, Math.sqrt((translatedEl.x! - x) ** 2 + (translatedEl.y! - y) ** 2));
           return {
             ...el,
             radius: newRadius
           };
         }
         else if (el.type === 'ellipse') {
-          const newRx = Math.max(5, Math.abs(x - el.x!));
-          const newRy = Math.max(5, Math.abs(y - el.y!));
+          const translatedEl = getTranslatedElement(el, cachedRect) || el;
+          const newRx = Math.max(5, Math.abs(x - translatedEl.x!));
+          const newRy = Math.max(5, Math.abs(y - translatedEl.y!));
           return {
             ...el,
             rx: newRx,
