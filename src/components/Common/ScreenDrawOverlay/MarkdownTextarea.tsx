@@ -14,6 +14,7 @@ interface RichTextInputProps {
   textBorderWidth?: number;
   textBgColor?: string;
   textBgOpacity?: number;
+  fontFamily?: string;
 }
 
 export const hexToRgba = (hex: string, opacity: number): string => {
@@ -41,6 +42,7 @@ export const MarkdownTextarea: React.FC<RichTextInputProps> = ({
   textBorderWidth,
   textBgColor,
   textBgOpacity,
+  fontFamily,
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -148,7 +150,7 @@ export const MarkdownTextarea: React.FC<RichTextInputProps> = ({
         padding: "2px 4px",
         borderRadius: "3px",
         lineHeight: 1.3,
-        fontFamily: "inherit",
+        fontFamily: fontFamily || "inherit",
         boxSizing: "border-box",
         minWidth: "60px",
         outline: "none",

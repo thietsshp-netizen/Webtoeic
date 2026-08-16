@@ -66,6 +66,7 @@ export interface ClonedTool {
   textBorderWidth?: number;
   textBgColor?: string;
   textBgOpacity?: number;
+  fontFamily?: string;
 }
 
 export const DEFAULT_HOTKEYS: Record<string, string> = {
@@ -160,6 +161,7 @@ export interface DrawElement {
   absoluteY?: number;
   absoluteArrowX?: number;
   absoluteArrowY?: number;
+  fontFamily?: string;
 }
 
 interface ScreenDrawOverlayProps {
@@ -167,12 +169,13 @@ interface ScreenDrawOverlayProps {
   setIsActive: (active: boolean) => void;
 }
 
-export const getElementFont = (size: number, textStyle?: string): string => {
+export const getElementFont = (size: number, textStyle?: string, fontFamily?: string): string => {
   let stylePart = '500';
   if (textStyle === 'bold') stylePart = 'bold';
   else if (textStyle === 'italic') stylePart = 'italic 500';
   else if (textStyle === 'bold-italic') stylePart = 'bold italic';
-  return `${stylePart} ${size}px sans-serif`;
+  const font = fontFamily || 'sans-serif';
+  return `${stylePart} ${size}px ${font}`;
 };
 
 interface PointObj {
@@ -858,7 +861,7 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
                   y={(el.y || 0) + idx * (el.size * 1.2)}
                   fill={el.color}
                   fontSize={el.size}
-                  fontFamily="sans-serif"
+                  fontFamily={el.fontFamily || "sans-serif"}
                   fontWeight="500"
                   dominantBaseline="text-before-edge"
                   style={isSelected ? { filter: 'drop-shadow(0px 0px 4px #3B82F6)' } : undefined}
@@ -973,7 +976,7 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
                   y={rectY + paddingY + idx * (el.size * 1.2)}
                   fill={el.color}
                   fontSize={el.size}
-                  fontFamily="sans-serif"
+                  fontFamily={el.fontFamily || "sans-serif"}
                   fontWeight="500"
                   dominantBaseline="text-before-edge"
                 >
@@ -1060,6 +1063,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [showPenStyleMenu, setShowPenStyleMenu] = useState(false);
   const [eraserSize, setEraserSize] = useState(24);
   const [fontSize, setFontSize] = useState(20);
+  const [fontFamily, setFontFamily] = useState<string>('sans-serif');
   const [lastActiveTool, setLastActiveTool] = useState<DrawTool>('pencil');
 
   const [eraserTargets, setEraserTargets] = useState<{
@@ -1337,6 +1341,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [draftHotkeys, setDraftHotkeys] = useState<Record<string, string>>(DEFAULT_HOTKEYS);
   const [draftClonedTools, setDraftClonedTools] = useState<ClonedTool[]>([]);
   const [draftFontSize, setDraftFontSize] = useState(20);
+  const [draftFontFamily, setDraftFontFamily] = useState<string>('sans-serif');
   const [activeTab, setActiveTab] = useState<'shortcuts' | 'clones' | 'eraser'>('shortcuts');
   const [listeningKeyFor, setListeningKeyFor] = useState<string | null>(null);
 
@@ -1347,6 +1352,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [newCloneHotkey, setNewCloneHotkey] = useState('');
   const [newCloneTextSize, setNewCloneTextSize] = useState<number>(20);
   const [newCloneTextStyle, setNewCloneTextStyle] = useState<'normal' | 'bold' | 'italic' | 'bold-italic'>('normal');
+  const [newCloneFontFamily, setNewCloneFontFamily] = useState<string>('sans-serif');
   const [newCloneTextHasBorder, setNewCloneTextHasBorder] = useState<boolean>(false);
   const [newCloneTextBorderWidth, setNewCloneTextBorderWidth] = useState<number>(1);
   const [newCloneTextBgColor, setNewCloneTextBgColor] = useState<string>('#FFFFFF');
@@ -1406,6 +1412,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     const storedFontSize = localStorage.getItem('webtoeic_font_size');
     if (storedFontSize) setFontSize(parseFloat(storedFontSize));
+
+    const storedFontFamily = localStorage.getItem('webtoeic_font_family');
+    if (storedFontFamily) setFontFamily(storedFontFamily);
 
     const storedRectangleSize = localStorage.getItem('webtoeic_rectangle_size');
     if (storedRectangleSize) setRectangleSize(parseFloat(storedRectangleSize));
@@ -1583,7 +1592,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           if (data.drawSettings) {
             // Hỗ trợ cả hai dạng: lồng nhau (data.drawSettings.drawSettings) hoặc phẳng (data.drawSettings)
             const settings = data.drawSettings.drawSettings || data.drawSettings;
-            const { customHotkeys: dbHotkeys, clonedTools: dbCloned, eraserTargets: dbEraserTargets, eraserMode: dbEraserMode } = settings;
+            const { customHotkeys: dbHotkeys, clonedTools: dbCloned, eraserTargets: dbEraserTargets, eraserMode: dbEraserMode, fontFamily: dbFontFamily } = settings;
             if (dbHotkeys) {
               const merged = { ...DEFAULT_HOTKEYS, ...dbHotkeys };
               setCustomHotkeys(merged);
@@ -1606,6 +1615,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             if (dbEraserMode) {
               setEraserMode(dbEraserMode);
               localStorage.setItem('webtoeic_eraser_mode', dbEraserMode);
+            }
+            if (dbFontFamily) {
+              setFontFamily(dbFontFamily);
+              localStorage.setItem('webtoeic_font_family', dbFontFamily);
             }
             return;
           }
@@ -1711,7 +1724,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         customHotkeys: draftHotkeys,
         clonedTools: draftClonedTools,
         eraserTargets: draftEraserTargets,
-        eraserMode: draftEraserMode
+        eraserMode: draftEraserMode,
+        fontFamily: draftFontFamily
       };
 
       const res = await fetch("/api/admin/draw-settings", {
@@ -1728,11 +1742,24 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         setEraserTargets(draftEraserTargets);
         setEraserMode(draftEraserMode);
         setFontSize(draftFontSize);
+        setFontFamily(draftFontFamily);
         localStorage.setItem('webtoeic_custom_hotkeys', JSON.stringify(draftHotkeys));
         localStorage.setItem('webtoeic_cloned_tools', JSON.stringify(draftClonedTools));
         localStorage.setItem('webtoeic_eraser_targets', JSON.stringify(draftEraserTargets));
         localStorage.setItem('webtoeic_eraser_mode', draftEraserMode);
         localStorage.setItem('webtoeic_font_size', draftFontSize.toString());
+        localStorage.setItem('webtoeic_font_family', draftFontFamily);
+
+        const { selectedId: currentSelectedId } = stateRef.current;
+        if (currentSelectedId) {
+          saveToUndoStack(elements);
+          setElements(prev => prev.map(el => {
+            if (el.id === currentSelectedId && (el.type === 'text' || el.type === 'callout')) {
+              return { ...el, fontFamily: draftFontFamily };
+            }
+            return el;
+          }));
+        }
         setShowSettings(false);
       } else {
         alert("Lưu cài đặt thất bại! Hãy chắc chắn bạn đã đăng nhập tài khoản Admin.");
@@ -2278,7 +2305,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           ctx.save();
           lines.forEach(line => {
             const cleanLine = line.replace(/\*\*/g, "");
-            ctx.font = getElementFont(el.size, el.textStyle);
+            ctx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
             const w = ctx.measureText(cleanLine).width;
             if (w > maxLineWidth) maxLineWidth = w;
           });
@@ -2326,11 +2353,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             parts.forEach((part) => {
               if (part.startsWith('**') && part.endsWith('**')) {
                 const cleanText = part.slice(2, -2);
-                ctx.font = `bold ${el.size}px sans-serif`;
+                ctx.font = `bold ${el.size}px ${el.fontFamily || 'sans-serif'}`;
                 ctx.fillText(cleanText, currentX, startY);
                 currentX += ctx.measureText(cleanText).width;
               } else if (part) {
-                ctx.font = getElementFont(el.size, el.textStyle);
+                ctx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
                 ctx.fillText(part, currentX, startY);
                 currentX += ctx.measureText(part).width;
               }
@@ -2354,7 +2381,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           ctx.save();
           lines.forEach(line => {
             const cleanLine = line.replace(/\*\*/g, "");
-            ctx.font = getElementFont(el.size, el.textStyle);
+            ctx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
             const w = ctx.measureText(cleanLine).width;
             if (w > maxLineWidth) maxLineWidth = w;
           });
@@ -2449,11 +2476,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             parts.forEach((part) => {
               if (part.startsWith('**') && part.endsWith('**')) {
                 const cleanText = part.slice(2, -2);
-                ctx.font = `bold ${el.size}px sans-serif`;
+                ctx.font = `bold ${el.size}px ${el.fontFamily || 'sans-serif'}`;
                 ctx.fillText(cleanText, currentX, startY);
                 currentX += ctx.measureText(cleanText).width;
               } else if (part) {
-                ctx.font = getElementFont(el.size, el.textStyle);
+                ctx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
                 ctx.fillText(part, currentX, startY);
                 currentX += ctx.measureText(part).width;
               }
@@ -2500,7 +2527,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           lines.forEach(line => {
             // Loại bỏ dấu sao khi đo chiều rộng thực tế của chữ
             const cleanLine = line.replace(/\*\*/g, "");
-            ctx.font = getElementFont(el.size, el.textStyle);
+            ctx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
             const w = ctx.measureText(cleanLine).width;
             if (w > maxLineWidth) maxLineWidth = w;
           });
@@ -2960,7 +2987,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             tempCtx.save();
             lines.forEach(line => {
               const cleanLine = line.replace(/\*\*/g, "");
-              tempCtx.font = getElementFont(el.size, el.textStyle);
+              tempCtx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
               const w = tempCtx.measureText(cleanLine).width;
               if (w > maxLineWidth) maxLineWidth = w;
             });
@@ -3044,7 +3071,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         tempCtx.save();
         lines.forEach(line => {
           const cleanLine = line.replace(/\*\*/g, "");
-          tempCtx.font = getElementFont(el.size, el.textStyle);
+          tempCtx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
           const w = tempCtx.measureText(cleanLine).width;
           if (w > maxLineWidth) maxLineWidth = w;
         });
@@ -3130,6 +3157,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     redoStack: DrawElement[][];
     toolbarPos: { x: number; y: number };
     calloutArrowPos: { x: number; y: number } | null;
+    fontFamily: string;
   }>({
     isActive,
     tool,
@@ -3159,7 +3187,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     eraserTargets: { pencil: true, highlight: true, shapes: true, text: true },
     eraserMode: 'pixel',
     toolbarPos: { x: 200, y: 120 },
-    calloutArrowPos: null
+    calloutArrowPos: null,
+    fontFamily: 'sans-serif'
   });
 
   // Cập nhật đồng bộ ngay trong render body để bảo đảm stateRef.current luôn có giá trị mới nhất trước khi bất kỳ useEffect hay render nào diễn ra
@@ -3193,6 +3222,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     redoStack,
     toolbarPos,
     calloutArrowPos,
+    fontFamily,
   };
 
 
@@ -4840,6 +4870,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         textBorderWidth: (isTextClone || isCalloutClone) ? (activeClone.textBorderWidth !== undefined ? activeClone.textBorderWidth : 1.5) : (isCallout ? 1.5 : undefined),
         textBgColor: (isTextClone || isCalloutClone) ? (activeClone.textBgColor !== undefined ? activeClone.textBgColor : '#ffffff') : (isCallout ? '#ffffff' : undefined),
         textBgOpacity: (isTextClone || isCalloutClone) ? (activeClone.textBgOpacity !== undefined ? activeClone.textBgOpacity : 0.0) : (isCallout ? 0.0 : undefined),
+        fontFamily: (isTextClone || isCalloutClone) ? activeClone.fontFamily : fontFamily,
         x: x - dx,
         y: y - dy,
         absoluteX: x,
@@ -5332,6 +5363,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               ? elements.find(el => el.id === editingTextId)?.textStyle
               : clonedTools.find(c => c.id === activeCloneId)?.textStyle
           }
+          fontFamily={
+            editingTextId
+              ? elements.find(el => el.id === editingTextId)?.fontFamily
+              : (clonedTools.find(c => c.id === activeCloneId)?.fontFamily || fontFamily)
+          }
           textHasBorder={
             (tool === 'callout' || (editingTextId && elements.find(el => el.id === editingTextId)?.type === 'callout'))
               ? true
@@ -5760,6 +5796,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               setDraftHotkeys({ ...customHotkeys });
               setDraftClonedTools([...clonedTools]);
               setDraftFontSize(fontSize);
+              setDraftFontFamily(fontFamily);
               setDraftEraserTargets({ ...eraserTargets });
               setDraftEraserMode(eraserMode);
               setShowSettings(true);
@@ -5769,6 +5806,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               setNewCloneBaseType('pencil');
               setNewCloneColor('#EF4444');
               setNewCloneHotkey('');
+              setNewCloneTextSize(20);
+              setNewCloneTextStyle('normal');
+              setNewCloneFontFamily('sans-serif');
               setNewCloneTextHasBorder(false);
               setNewCloneTextBorderWidth(1);
               setNewCloneTextBgColor('#FFFFFF');
@@ -6014,6 +6054,29 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                     </div>
                   </div>
 
+                  {/* Cấu hình font chữ nháp trực quan */}
+                  <div className={styles.hotkeyItem} style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '14px', marginBottom: '10px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
+                      <span className={styles.hotkeyLabel} style={{ fontWeight: 'bold' }}>Font chữ nháp mặc định</span>
+                      <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)' }}>Chọn phông chữ hiển thị cho công cụ text và callout</span>
+                    </div>
+                    <select
+                      value={draftFontFamily || 'sans-serif'}
+                      onChange={(e) => setDraftFontFamily(e.target.value)}
+                      className={styles.cloneSelect}
+                      style={{ width: '160px' }}
+                    >
+                      <option value="sans-serif">Sans-serif (Mặc định)</option>
+                      <option value="serif">Serif (Có chân)</option>
+                      <option value="monospace">Monospace (Lập trình)</option>
+                      <option value='"Comic Sans MS", cursive'>Comic Sans (Dễ thương)</option>
+                      <option value='"Playpen Sans", cursive'>Playpen Sans (Nét vẽ tự nhiên)</option>
+                      <option value='"Patrick Hand", cursive'>Patrick Hand (Viết tay gọn gàng)</option>
+                      <option value='"Caveat", cursive'>Caveat (Viết tay nghệ thuật)</option>
+                      <option value='"Pacifico", cursive'>Pacifico (Cursive điệu đà)</option>
+                    </select>
+                  </div>
+
                   {Object.keys(draftHotkeys).map((key) => {
                     // Trích xuất icon tương ứng để hiển thị bên cạnh nhãn phím tắt
                     const renderHotkeyIcon = () => {
@@ -6121,7 +6184,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
                     {(newCloneBaseType === 'text' || newCloneBaseType === 'callout') && (
                       <>
-                        <div className={styles.cloneFormRow} style={{ marginTop: '0px', gap: '10px', marginBottom: '12px' }}>
+                        <div className={styles.cloneFormRow} style={{ marginTop: '0px', gap: '8px', marginBottom: '12px' }}>
                           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>Cỡ chữ:</span>
                             <select
@@ -6143,10 +6206,28 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                               className={styles.cloneSelect}
                               style={{ width: '100%' }}
                             >
-                              <option value="normal">Thường (500)</option>
-                              <option value="bold">In đậm (Bold)</option>
-                              <option value="italic">Nghiêng (Italic)</option>
+                              <option value="normal">Thường</option>
+                              <option value="bold">In đậm</option>
+                              <option value="italic">Nghiêng</option>
                               <option value="bold-italic">Đậm & Nghiêng</option>
+                            </select>
+                          </div>
+                          <div style={{ flex: 1.2, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>Phông chữ:</span>
+                            <select
+                              value={newCloneFontFamily}
+                              onChange={(e) => setNewCloneFontFamily(e.target.value)}
+                              className={styles.cloneSelect}
+                              style={{ width: '100%' }}
+                            >
+                              <option value="sans-serif">Sans-serif</option>
+                              <option value="serif">Serif</option>
+                              <option value="monospace">Monospace</option>
+                              <option value='"Comic Sans MS", cursive'>Comic Sans</option>
+                              <option value='"Playpen Sans", cursive'>Playpen Sans</option>
+                              <option value='"Patrick Hand", cursive'>Patrick Hand</option>
+                              <option value='"Caveat", cursive'>Caveat</option>
+                              <option value='"Pacifico", cursive'>Pacifico</option>
                             </select>
                           </div>
                         </div>
@@ -6267,6 +6348,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                             setEditingCloneId(null);
                             setNewCloneName('');
                             setNewCloneHotkey('');
+                            setNewCloneFontFamily('sans-serif');
                             setNewCloneTextHasBorder(false);
                             setNewCloneTextBorderWidth(1);
                             setNewCloneTextBgColor('#FFFFFF');
@@ -6310,6 +6392,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                                   hotkey: newCloneHotkey,
                                   textSize: (newCloneBaseType === 'text' || newCloneBaseType === 'callout') ? newCloneTextSize : undefined,
                                   textStyle: (newCloneBaseType === 'text' || newCloneBaseType === 'callout') ? newCloneTextStyle : undefined,
+                                  fontFamily: (newCloneBaseType === 'text' || newCloneBaseType === 'callout') ? newCloneFontFamily : undefined,
                                   textHasBorder: (newCloneBaseType === 'text' || newCloneBaseType === 'callout') ? newCloneTextHasBorder : undefined,
                                   textBorderWidth: (newCloneBaseType === 'text' || newCloneBaseType === 'callout') ? newCloneTextBorderWidth : undefined,
                                   textBgColor: (newCloneBaseType === 'text' || newCloneBaseType === 'callout') ? newCloneTextBgColor : undefined,
@@ -6329,6 +6412,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                               hotkey: newCloneHotkey,
                               textSize: (newCloneBaseType === 'text' || newCloneBaseType === 'callout') ? newCloneTextSize : undefined,
                               textStyle: (newCloneBaseType === 'text' || newCloneBaseType === 'callout') ? newCloneTextStyle : undefined,
+                              fontFamily: (newCloneBaseType === 'text' || newCloneBaseType === 'callout') ? newCloneFontFamily : undefined,
                               textHasBorder: (newCloneBaseType === 'text' || newCloneBaseType === 'callout') ? newCloneTextHasBorder : undefined,
                               textBorderWidth: (newCloneBaseType === 'text' || newCloneBaseType === 'callout') ? newCloneTextBorderWidth : undefined,
                               textBgColor: (newCloneBaseType === 'text' || newCloneBaseType === 'callout') ? newCloneTextBgColor : undefined,
@@ -6339,6 +6423,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
                           setNewCloneName('');
                           setNewCloneHotkey('');
+                          setNewCloneFontFamily('sans-serif');
                           setNewCloneTextHasBorder(false);
                           setNewCloneTextBorderWidth(1);
                           setNewCloneTextBgColor('#FFFFFF');
@@ -6369,6 +6454,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                             if (clone.baseType === 'text' || clone.baseType === 'callout') {
                               setNewCloneTextSize(clone.textSize || 20);
                               setNewCloneTextStyle(clone.textStyle || 'normal');
+                              setNewCloneFontFamily(clone.fontFamily || 'sans-serif');
                               setNewCloneTextHasBorder(!!clone.textHasBorder);
                               setNewCloneTextBorderWidth(clone.textBorderWidth || 1);
                               setNewCloneTextBgColor(clone.textBgColor || '#FFFFFF');
