@@ -1005,6 +1005,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [color, setColor] = useState<DrawColor>('#EF4444');
   const [scrollContainers, setScrollContainers] = useState<HTMLElement[]>([]);
   const [domUpdateKey, setDomUpdateKey] = useState(0);
+  const copiedElementRef = useRef<DrawElement | null>(null);
 
   const findScrollContainer = (clientX: number, clientY: number): HTMLElement | null => {
     const canvas = canvasRef.current;
@@ -3269,7 +3270,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     const getEventHotkeyString = (ev: KeyboardEvent): string => {
       let k = ev.key.toLowerCase();
       // IME Telex/VNI fallback using physical code
-      if (k === 'process' && ev.code) {
+      if ((k === 'process' || ev.isComposing || k.length > 1 || !/^[a-z0-9]$/i.test(k)) && ev.code) {
         const code = ev.code;
         if (code.startsWith('Key')) {
           k = code.substring(3).toLowerCase();
@@ -3485,8 +3486,59 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         }
       }
 
+      // Nhấn Ctrl+C / Cmd+C để Copy phần tử đang chọn
+      const isCopy = (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c';
+      if (isCopy) {
+        if (currentSelectedId) {
+          e.preventDefault();
+          const elToCopy = stateRef.current.elements.find(el => el.id === currentSelectedId);
+          if (elToCopy) {
+            copiedElementRef.current = elToCopy;
+          }
+        }
+      }
+
+      // Nhấn Ctrl+V / Cmd+V để Paste tạo bản sao
+      const isPaste = (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v';
+      if (isPaste) {
+        if (copiedElementRef.current) {
+          e.preventDefault();
+          const baseEl = copiedElementRef.current;
+          const offset = 15; // Lệch 15px so với bản gốc để dễ nhận biết
+          const newId = `${baseEl.id}_copy_${Date.now()}`;
+          
+          let pastedEl: DrawElement = {
+            ...baseEl,
+            id: newId,
+          };
+          
+          if (baseEl.points && baseEl.points.length > 0) {
+            pastedEl.points = baseEl.points.map(pt => ({
+              ...pt,
+              x: pt.x + offset,
+              y: pt.y + offset
+            }));
+          }
+          if (baseEl.x !== undefined) pastedEl.x = baseEl.x + offset;
+          if (baseEl.y !== undefined) pastedEl.y = baseEl.y + offset;
+          if (baseEl.arrowX !== undefined) pastedEl.arrowX = baseEl.arrowX + offset;
+          if (baseEl.arrowY !== undefined) pastedEl.arrowY = baseEl.arrowY + offset;
+          if (baseEl.absoluteX !== undefined) pastedEl.absoluteX = baseEl.absoluteX + offset;
+          if (baseEl.absoluteY !== undefined) pastedEl.absoluteY = baseEl.absoluteY + offset;
+          if (baseEl.absoluteArrowX !== undefined) pastedEl.absoluteArrowX = baseEl.absoluteArrowX + offset;
+          if (baseEl.absoluteArrowY !== undefined) pastedEl.absoluteArrowY = baseEl.absoluteArrowY + offset;
+
+          saveToUndoStack(stateRef.current.elements);
+          setElements(prev => [...prev, pastedEl]);
+          setSelectedId(newId);
+          
+          // Cập nhật ref để paste tiếp theo lệch tiếp 15px
+          copiedElementRef.current = pastedEl;
+        }
+      }
+
       // Nhấn Backspace / Delete đơn lẻ để xoá duy nhất phần tử đang chọn hoặc tất cả nét vẽ của công cụ đang kích hoạt
-      const isBackspaceOrDelete = e.key === 'Backspace' || e.key === 'Delete' || e.code === 'Backspace' || e.code === 'Delete';
+      const isBackspaceOrDelete = (e.key === 'Backspace' || e.key === 'Delete' || e.code === 'Backspace' || e.code === 'Delete') && !e.isComposing;
       if (isBackspaceOrDelete) {
         if (!(e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)) {
           if (currentSelectedId) {
@@ -3954,8 +4006,14 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             };
           }
 
-          const origDiagonal = Math.sqrt((startX - el.x!) ** 2 + (startY - el.y!) ** 2);
-          const currDiagonal = Math.sqrt((x - el.x!) ** 2 + (y - el.y!) ** 2);
+          const canvas = canvasRef.current;
+          const canvasRect = canvas?.getBoundingClientRect();
+          const translatedEl = getTranslatedElement(el, canvasRect);
+          const absX = translatedEl ? (translatedEl.x ?? el.x ?? 0) : (el.x ?? 0);
+          const absY = translatedEl ? (translatedEl.y ?? el.y ?? 0) : (el.y ?? 0);
+
+          const origDiagonal = Math.sqrt((startX - absX) ** 2 + (startY - absY) ** 2);
+          const currDiagonal = Math.sqrt((x - absX) ** 2 + (y - absY) ** 2);
           if (origDiagonal > 0) {
             const scale = currDiagonal / origDiagonal;
             const newSize = Math.min(120, Math.max(8, Math.round(startSize * scale)));
