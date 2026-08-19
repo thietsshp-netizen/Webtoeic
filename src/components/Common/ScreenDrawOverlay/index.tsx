@@ -162,6 +162,7 @@ export interface DrawElement {
   absoluteArrowX?: number;
   absoluteArrowY?: number;
   fontFamily?: string;
+  textMaxWidth?: number;
 }
 
 interface ScreenDrawOverlayProps {
@@ -469,7 +470,7 @@ export const checkIntersection = (ex: number, ey: number, el: DrawElement, erase
 
   if (el.type === 'text' || el.type === 'callout') {
     if (el.x === undefined || el.y === undefined || !el.text) return false;
-    const lines = el.text.split('\n');
+    const lines = wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily);
     const linesCount = lines.length;
     let maxLineLen = 0;
     lines.forEach(l => {
@@ -617,6 +618,62 @@ export const generateUniqueSelector = (el: HTMLElement, limitElement?: HTMLEleme
   }
   return path.join(' > ');
 };
+
+export const getMaxWrapWidth = (): number => {
+  if (typeof window !== 'undefined') {
+    return window.innerWidth - 40;
+  }
+  return 800;
+};
+
+export const wrapTextLines = (
+  text: string,
+  maxWidth: number,
+  size: number,
+  textStyle?: string,
+  fontFamily?: string
+): string[] => {
+  if (!text) return [];
+  const lines = text.split('\n');
+  const resultLines: string[] = [];
+
+  if (typeof document === 'undefined') return lines;
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return lines;
+  ctx.font = getElementFont(size, textStyle, fontFamily);
+
+  for (const line of lines) {
+    const cleanLine = stripMarkdownTags(line);
+    if (ctx.measureText(cleanLine).width <= maxWidth) {
+      resultLines.push(line);
+      continue;
+    }
+
+    const words = line.split(' ');
+    let currentLine = "";
+    
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i];
+      const testLine = currentLine ? currentLine + " " + word : word;
+      const cleanTestLine = stripMarkdownTags(testLine);
+      const testWidth = ctx.measureText(cleanTestLine).width;
+      
+      if (testWidth > maxWidth && i > 0) {
+        resultLines.push(currentLine);
+        currentLine = word;
+      } else {
+        currentLine = testLine;
+      }
+    }
+    if (currentLine) {
+      resultLines.push(currentLine);
+    }
+  }
+
+  return resultLines;
+};
+
 
 // Helper tìm phần tử neo phù hợp nhất (Bubble up) và tạo Selector
 export const findBestAnchor = (
@@ -1062,7 +1119,7 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
 
         if (el.type === 'text') {
           if (el.id === editingTextId) return null;
-          const lines = el.text ? el.text.split('\n') : [];
+          const lines = el.text ? wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily) : [];
           return (
             <g
               key={el.id}
@@ -1103,7 +1160,7 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
 
         if (el.type === 'callout') {
           if (el.id === editingTextId) return null;
-          const lines = el.text ? el.text.split('\n') : [];
+          const lines = el.text ? wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily) : [];
           
           let maxLineWidth = 0;
           lines.forEach(line => {
@@ -2519,7 +2576,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         ctx.textBaseline = 'top';
 
         if (el.x !== undefined && el.y !== undefined && el.text) {
-          const lines = el.text.split('\n');
+          const lines = wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily);
           let maxLineWidth = 0;
           ctx.save();
           lines.forEach(line => {
@@ -2625,7 +2682,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         ctx.textBaseline = 'top';
 
         if (el.x !== undefined && el.y !== undefined && el.text) {
-          const lines = el.text.split('\n');
+          const lines = wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily);
           let maxLineWidth = 0;
           ctx.save();
           lines.forEach(line => {
@@ -2784,7 +2841,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           by2 = el.y + el.ry + 4;
           ctx.ellipse(el.x, el.y, el.rx + 4, el.ry + 4, 0, 0, 2 * Math.PI);
         } else if ((el.type === 'text' || el.type === 'callout') && el.x !== undefined && el.y !== undefined && el.text) {
-          const lines = el.text.split('\n');
+          const lines = wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily);
           let maxLineWidth = 0;
           ctx.save();
           lines.forEach(line => {
@@ -3125,7 +3182,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const y = textInput.y + 2 - rect.top;
 
       const textVal = textInputValRef.current || "";
-      const lines = textVal.split('\n');
+      const lines = wrapTextLines(textVal, getMaxWrapWidth(), fontSize);
       let maxLineWidth = 0;
       ctx.save();
       lines.forEach(line => {
@@ -3244,7 +3301,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             }
           }
 
-          const lines = el.text.split('\n');
+          const lines = wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily);
           let maxLineWidth = 0;
           const tempCtx = canvas?.getContext('2d');
           if (tempCtx) {
@@ -3331,7 +3388,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       x1 = el.x!;
       y1 = el.y!;
 
-      const lines = el.text!.split('\n');
+      const lines = wrapTextLines(el.text!, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily);
       let maxLineWidth = 0;
       const canvas = canvasRef.current;
       const tempCtx = canvas?.getContext('2d');
@@ -4991,6 +5048,71 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       }
     }
 
+    if (tool === 'hand' && selectedId) {
+      const draggedEl = elements.find(el => el.id === selectedId);
+      if (draggedEl && (draggedEl.type === 'text' || draggedEl.type === 'callout') && !draggedEl.anchorSelector) {
+        const canvas = canvasRef.current;
+        if (canvas) {
+          const rect = canvas.getBoundingClientRect();
+          
+          let targetX = draggedEl.x ?? 0;
+          let targetY = draggedEl.y ?? 0;
+          if (draggedEl.type === 'callout' && draggedEl.arrowX !== undefined && draggedEl.arrowY !== undefined) {
+            targetX = draggedEl.arrowX;
+            targetY = draggedEl.arrowY;
+          }
+          
+          const clientX = targetX + rect.left;
+          const clientY = targetY + rect.top;
+          
+          const container = findScrollContainer(clientX, clientY);
+          const bestAnchor = findBestAnchor(clientX, clientY, canvas, container);
+          
+          if (bestAnchor) {
+            const anchorSelector = bestAnchor.selector;
+            const dx = bestAnchor.rect.left - rect.left;
+            const dy = bestAnchor.rect.top - rect.top;
+            
+            const anchorEl = document.querySelector(anchorSelector) as HTMLElement | null;
+            const textContent = anchorEl ? normalizeText(anchorEl.textContent || "") : undefined;
+            const textHash = anchorEl ? calculateTextHash(anchorEl.textContent || "") : undefined;
+            const containerSelector = container ? generateUniqueSelector(container) : undefined;
+            
+            setElements(prev => prev.map(el => {
+              if (el.id === selectedId) {
+                const currentAbsX = (el.x ?? 0) + rect.left;
+                const currentAbsY = (el.y ?? 0) + rect.top;
+                const currentAbsArrowX = el.arrowX !== undefined ? el.arrowX + rect.left : undefined;
+                const currentAbsArrowY = el.arrowY !== undefined ? el.arrowY + rect.top : undefined;
+                
+                const newRelX = currentAbsX - rect.left - dx;
+                const newRelY = currentAbsY - rect.top - dy;
+                const newRelArrowX = currentAbsArrowX !== undefined ? currentAbsArrowX - rect.left - dx : undefined;
+                const newRelArrowY = currentAbsArrowY !== undefined ? currentAbsArrowY - rect.top - dy : undefined;
+                
+                return {
+                  ...el,
+                  anchorSelector,
+                  containerSelector,
+                  textHash,
+                  textContent,
+                  x: newRelX,
+                  y: newRelY,
+                  arrowX: newRelArrowX,
+                  arrowY: newRelArrowY,
+                  absoluteX: currentAbsX - rect.left,
+                  absoluteY: currentAbsY - rect.top,
+                  absoluteArrowX: currentAbsArrowX !== undefined ? currentAbsArrowX - rect.left : undefined,
+                  absoluteArrowY: currentAbsArrowY !== undefined ? currentAbsArrowY - rect.top : undefined,
+                };
+              }
+              return el;
+            }));
+          }
+        }
+      }
+    }
+
     isGrabbingPageRef.current = false;
     setIsGrabbingPage(false);
     lastPointRef.current = null;
@@ -5083,8 +5205,18 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       }
 
       const rect = canvas.getBoundingClientRect();
-      const x = textInput.x + 4 - rect.left; // Bù trừ padding-left 4px của textarea
-      const y = textInput.y + 2 - rect.top;  // Bù trừ padding-top 2px của textarea
+      
+      // Nhích tọa độ ô nhập chữ để luôn hiển thị trọn vẹn trong màn hình (tương tự như logic render style)
+      let editorX = textInput.x;
+      let editorY = textInput.y;
+      if (typeof window !== 'undefined') {
+        const margin = 20;
+        editorX = Math.max(margin, Math.min(editorX, window.innerWidth - 100));
+        editorY = Math.max(margin, Math.min(editorY, window.innerHeight - 100));
+      }
+
+      const x = editorX + 4 - rect.left; // Bù trừ padding-left 4px của textarea
+      const y = editorY + 2 - rect.top;  // Bù trừ padding-top 2px của textarea
 
       let dx = 0;
       let dy = 0;
@@ -5093,9 +5225,16 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       let textHash: string | undefined = undefined;
       let textContent: string | undefined = undefined;
 
-      const container = findScrollContainer(textInput.x, textInput.y);
+      const activeClone = stateRef.current.clonedTools.find(c => c.id === stateRef.current.activeCloneId);
+      const isCalloutClone = activeClone && activeClone.baseType === 'callout';
+      const isCallout = tool === 'callout' || isCalloutClone;
 
-      const bestAnchor = findBestAnchor(textInput.x, textInput.y, canvas, container);
+      const anchorClientX = (isCallout && calloutArrowPos) ? (calloutArrowPos.x + rect.left) : editorX;
+      const anchorClientY = (isCallout && calloutArrowPos) ? (calloutArrowPos.y + rect.top) : editorY;
+
+      const container = findScrollContainer(anchorClientX, anchorClientY);
+
+      const bestAnchor = findBestAnchor(anchorClientX, anchorClientY, canvas, container);
       if (bestAnchor) {
         anchorSelector = bestAnchor.selector;
         dx = bestAnchor.rect.left - rect.left;
@@ -5120,10 +5259,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       const newId = Date.now().toString();
       targetId = newId;
 
-      const activeClone = stateRef.current.clonedTools.find(c => c.id === stateRef.current.activeCloneId);
       const isTextClone = activeClone && activeClone.baseType === 'text';
-      const isCalloutClone = activeClone && activeClone.baseType === 'callout';
-      const isCallout = tool === 'callout' || isCalloutClone;
 
       const newElement: DrawElement = {
         id: newId,
@@ -5658,10 +5794,17 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                   : clonedTools.find(c => c.id === activeCloneId)?.textBgOpacity)
           }
           colorSlots={colorSlots}
-          style={{
-            left: textInput.x,
-            top: textInput.y,
-          }}
+          style={(() => {
+            if (!textInput) return {};
+            const margin = 20;
+            let left = textInput.x;
+            let top = textInput.y;
+            if (typeof window !== 'undefined') {
+              left = Math.max(margin, Math.min(left, window.innerWidth - 100));
+              top = Math.max(margin, Math.min(top, window.innerHeight - 100));
+            }
+            return { left, top };
+          })()}
           onChange={(newVal) => {
             textInputValRef.current = newVal;
             setActiveTextVal(newVal);

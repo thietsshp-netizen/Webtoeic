@@ -290,6 +290,8 @@ export const MarkdownTextarea: React.FC<RichTextInputProps> = ({
         ...style,
         position: 'fixed',
         zIndex: 1000000003,
+        maxWidth: 'calc(100vw - 40px)',
+        maxHeight: 'calc(100vh - 100px)',
       }}
     >
       <div

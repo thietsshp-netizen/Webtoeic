@@ -201,6 +201,9 @@
   word-break: break-word;
   box-shadow: none !important;
   caret-color: currentColor;
+  max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
 }
 
 /* ===== Shape Recognition Flash Animation ===== */
