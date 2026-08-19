@@ -126,30 +126,60 @@ export const MarkdownTextarea: React.FC<RichTextInputProps> = ({
   };
 
   // Chuyển đổi Markdown thô sang định dạng HTML tương ứng
+  // Quan trọng: xử lý TOÀN BỘ cú pháp markdown TRƯỚC khi escape HTML còn lại
+  // để tránh trường hợp ký tự như ~~ hoặc ** nằm trong <u>...</u> bị escape thành
+  // &lt;u&gt; và không còn được nhận dạng là thẻ HTML, hiển thị nguyên ký tự lạ
   const markdownToHtml = (md: string): string => {
     if (!md) return "";
-    let html = md
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
 
-    // Khôi phục thẻ <u> và </u> an toàn
-    html = html
-      .replace(/&lt;u&gt;/gi, "<u>")
-      .replace(/&lt;\/u&gt;/gi, "</u>");
+    // Bước 1: Xử lý toàn bộ cú pháp markdown trước tiên (chưa escape)
+    // Thay thế <font color="...">...</font> → placeholder tạm để không bị escape
+    // Dùng placeholders để bảo vệ thẻ HTML hợp lệ trong khi escape
+    const fontPlaceholders: string[] = [];
+    let processed = md.replace(/<font color=["']([^"']+)["']>([\s\S]*?)<\/font>/gi, (_match, color, content) => {
+      const idx = fontPlaceholders.length;
+      fontPlaceholders.push(`<font color="${color}">${content}</font>`);
+      return `\x00FONT${idx}\x00`;
+    });
 
-    // Khôi phục thẻ <font color="..."> và </font>
-    html = html
-      .replace(/&lt;font color="([^"]+)"&gt;/gi, '<font color="$1">')
-      .replace(/&lt;\/font&gt;/gi, '</font>');
+    // Thay thế <u>...</u> → placeholder
+    const uPlaceholders: string[] = [];
+    processed = processed.replace(/<u>([\s\S]*?)<\/u>/gi, (_match, content) => {
+      const idx = uPlaceholders.length;
+      uPlaceholders.push(`<u>${content}</u>`);
+      return `\x00UNDER${idx}\x00`;
+    });
 
-    // Chuyển đổi các cú pháp markdown khác sang html tag
-    html = html
+    // Chuyển đổi markdown syntax sang HTML
+    processed = processed
       .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
       .replace(/\*([^*]+)\*/g, "<i>$1</i>")
-      .replace(/~~([^~]+)~~/g, "<s>$1</s>")
-      .replace(/\n/g, "<br>");
-    return html;
+      .replace(/~~([^~]+)~~/g, "<s>$1</s>");
+
+    // Bước 2: Escape các ký tự đặc biệt còn lại (không phải thẻ HTML)
+    // Nhưng phải bỏ qua nội dung các thẻ HTML đã tạo (<b>, <i>, <s>, placeholder)
+    // Cách đơn giản: tách theo thẻ HTML, escape phần text thuần
+    const parts = processed.split(/(<[^>]+>|\x00FONT\d+\x00|\x00UNDER\d+\x00)/);
+    processed = parts.map((part, idx) => {
+      // Phần chẵn (0, 2, 4...) là text thuần, cần escape & (không escape < > vì đã xử lý)
+      if (idx % 2 === 0) {
+        return part.replace(/&/g, "&amp;");
+      }
+      return part; // Giữ nguyên thẻ HTML và placeholder
+    }).join('');
+
+    // Bước 3: Khôi phục các placeholder
+    uPlaceholders.forEach((ph, idx) => {
+      processed = processed.replace(`\x00UNDER${idx}\x00`, ph);
+    });
+    fontPlaceholders.forEach((ph, idx) => {
+      processed = processed.replace(`\x00FONT${idx}\x00`, ph);
+    });
+
+    // Bước 4: Chuyển \n thành <br>
+    processed = processed.replace(/\n/g, "<br>");
+
+    return processed;
   };
 
   const htmlToMarkdown = (html: string): string => {

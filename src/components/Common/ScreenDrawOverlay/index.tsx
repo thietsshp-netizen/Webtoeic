@@ -194,7 +194,7 @@ export const stripMarkdownTags = (line: string): string => {
     .replace(/\*/g, "")
     .replace(/<\/?u>/gi, "")
     .replace(/~~/g, "")
-    .replace(/<font color="[^"]+">/gi, "")
+    .replace(/<font color=["'][^"']+["']>/gi, "")
     .replace(/<\/font>/gi, "");
 };
 
@@ -231,7 +231,10 @@ export const parseMarkdownLine = (line: string): TextToken[] => {
     }
     
     const remaining = line.slice(i);
-    const fontStartMatch = remaining.match(/^<font color="([^"]+)">/i);
+    const fontStartMatch = remaining.match(/^<font color=["']([^"']+)["']>/i);
+    if (!fontStartMatch && i === 0 && remaining.startsWith('<font')) {
+      console.warn('[parseMarkdownLine] <font> không khớp regex, dạng thực tế:', JSON.stringify(remaining.slice(0, 60)));
+    }
     if (fontStartMatch) {
       if (currentText) {
         tokens.push({ text: currentText, bold, italic, underline, strikethrough, color: colorStack[colorStack.length - 1] });
@@ -650,24 +653,50 @@ export const wrapTextLines = (
       continue;
     }
 
-    const words = line.split(' ');
-    let currentLine = "";
+    // Tách theo khoảng trắng trong phần text THUẦN để tránh xé đôi thẻ markdown/HTML
+    // Thuật toán: 
+    //   1. Tách chuỗi markdown thành các "token" (thẻ tag hoặc text thuần)
+    //   2. Gom token thành từng dòng dựa trên độ rộng text thuần
+    const tokenParts = line.split(/(<font color=["'][^"']*["']>|<\/font>|<u>|<\/u>|\*\*|~~|\*)/);
+    // tokenParts: xen kẽ [text, tag, text, tag, ...]
     
-    for (let i = 0; i < words.length; i++) {
-      const word = words[i];
-      const testLine = currentLine ? currentLine + " " + word : word;
-      const cleanTestLine = stripMarkdownTags(testLine);
-      const testWidth = ctx.measureText(cleanTestLine).width;
+    let currentLine = "";
+    let currentClean = "";
+    
+    for (let ti = 0; ti < tokenParts.length; ti++) {
+      const part = tokenParts[ti];
+      if (!part) continue;
       
-      if (testWidth > maxWidth && i > 0) {
-        resultLines.push(currentLine);
-        currentLine = word;
+      // Kiểm tra nếu đây là một thẻ tag (không phải text thường)
+      const isTag = /^(<font color=["'][^"']*["']>|<\/font>|<u>|<\/u>|\*\*|~~|\*)$/.test(part);
+      
+      if (isTag) {
+        // Thẻ tag không chiếm độ rộng, cộng trực tiếp vào dòng hiện tại
+        currentLine += part;
       } else {
-        currentLine = testLine;
+        // Text thường: tách theo khoảng trắng
+        const words = part.split(' ');
+        for (let wi = 0; wi < words.length; wi++) {
+          const word = words[wi];
+          const spacer = (wi > 0 || currentClean) ? ' ' : '';
+          const testClean = currentClean + spacer + word;
+          
+          if (ctx.measureText(testClean).width > maxWidth && currentLine) {
+            // Dòng đầy → lưu dòng hiện tại và bắt đầu dòng mới
+            resultLines.push(currentLine.trim());
+            // Dòng mới bắt đầu bằng từ này (không cần spacer đầu dòng)
+            currentLine = word;
+            currentClean = word;
+          } else {
+            currentLine += spacer + word;
+            currentClean = testClean;
+          }
+        }
       }
     }
+    
     if (currentLine) {
-      resultLines.push(currentLine);
+      resultLines.push(currentLine.trim());
     }
   }
 
@@ -792,6 +821,33 @@ export const findBestAnchor = (
     // Nếu tìm thấy span (ưu tiên cao nhất), dừng tìm kiếm sớm
     if (bestAnchorInfo && bestAnchorInfo.priority === 0) {
       break;
+    }
+  }
+
+  // GIAI ĐOẠN DỰ PHÒNG CẤP ĐỘ 2 (Fallback Level 2): Lấy chính xác phần tử nằm dưới chuột nếu tất cả quét offset thất bại
+  if (!bestAnchorInfo) {
+    const el = document.elementFromPoint(clientX, clientY) as HTMLElement | null;
+    if (el) {
+      const isOverlayEl = el.closest('.' + styles.canvasContainer) || 
+                          el.closest('[data-text-editor-wrapper="true"]') || 
+                          el.closest('[class*="toolbar"]') || 
+                          el.closest('[class*="tooltip"]');
+      if (!isOverlayEl && el.tagName !== 'BODY' && el.tagName !== 'HTML') {
+        const elRect = el.getBoundingClientRect();
+        if (elRect.width > 0 && elRect.height > 0) {
+          const uniqueSelector = generateUniqueSelector(el);
+          const containerSelector = container ? generateUniqueSelector(container) : undefined;
+          let finalSelector = uniqueSelector;
+          if (containerSelector && uniqueSelector.startsWith(containerSelector)) {
+            finalSelector = uniqueSelector.replace(containerSelector + ' ', '');
+          }
+          bestAnchorInfo = {
+            selector: finalSelector,
+            rect: elRect,
+            priority: 999
+          };
+        }
+      }
     }
   }
 
@@ -1009,6 +1065,8 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
         const isInteractive = tool === 'hand';
         const pointerEvents = 'none';
 
+        let elementMarkup = null;
+
         if (el.type === 'pencil' || el.type === 'highlight' || el.type === 'eraser') {
           if (el.points.length === 0) return null;
           let d = '';
@@ -1021,9 +1079,8 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
             }
           }
           
-          return (
+          elementMarkup = (
             <path
-              key={el.id}
               d={d}
               stroke={strokeColor}
               strokeWidth={el.size}
@@ -1044,10 +1101,9 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
           );
         }
         
-        if (el.type === 'rectangle') {
-          return (
+        else if (el.type === 'rectangle') {
+          elementMarkup = (
             <rect
-              key={el.id}
               x={el.x}
               y={el.y}
               width={el.width}
@@ -1070,10 +1126,9 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
           );
         }
         
-        if (el.type === 'circle') {
-          return (
+        else if (el.type === 'circle') {
+          elementMarkup = (
             <circle
-              key={el.id}
               cx={el.x}
               cy={el.y}
               r={el.radius}
@@ -1093,10 +1148,9 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
           );
         }
 
-        if (el.type === 'ellipse') {
-          return (
+        else if (el.type === 'ellipse') {
+          elementMarkup = (
             <ellipse
-              key={el.id}
               cx={el.x}
               cy={el.y}
               rx={el.rx}
@@ -1117,12 +1171,13 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
           );
         }
 
-        if (el.type === 'text') {
+        else if (el.type === 'text') {
           if (el.id === editingTextId) return null;
           const lines = el.text ? wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily) : [];
-          return (
+          const paddingX = 6;
+          const paddingY = 4;
+          elementMarkup = (
             <g
-              key={el.id}
               pointerEvents={pointerEvents}
               cursor={isInteractive ? 'pointer' : 'default'}
               onClick={(e) => {
@@ -1135,20 +1190,29 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
               {lines.map((line, idx) => (
                 <text
                   key={idx}
-                  x={el.x}
-                  y={(el.y || 0) + idx * (el.size * 1.2)}
+                  x={(el.x || 0) + paddingX}
+                  y={(el.y || 0) + paddingY + idx * (el.size * 1.2) + el.size * 0.8}
                   fill={el.color}
                   fontSize={el.size}
                   fontFamily={el.fontFamily || "sans-serif"}
                   fontWeight="500"
-                  dominantBaseline="text-before-edge"
                   style={isSelected ? { filter: 'drop-shadow(0px 0px 4px #3B82F6)' } : undefined}
                 >
-                  {line.split('**').map((part, pIdx) => {
-                    const isBold = pIdx % 2 === 1;
+                  {parseMarkdownLine(line).map((tok, tIdx) => {
                     return (
-                      <tspan key={pIdx} fontWeight={isBold ? "bold" : "500"}>
-                        {part}
+                      <tspan
+                        key={tIdx}
+                        style={{
+                          fontWeight: tok.bold ? "bold" : "500",
+                          fontStyle: tok.italic ? "italic" : "normal",
+                          textDecoration: [
+                            tok.underline ? "underline" : "",
+                            tok.strikethrough ? "line-through" : ""
+                          ].filter(Boolean).join(" ") || "none"
+                        }}
+                        fill={tok.color || el.color}
+                      >
+                        {tok.text}
                       </tspan>
                     );
                   })}
@@ -1158,14 +1222,14 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
           );
         }
 
-        if (el.type === 'callout') {
+        else if (el.type === 'callout') {
           if (el.id === editingTextId) return null;
           const lines = el.text ? wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily) : [];
           
           let maxLineWidth = 0;
           lines.forEach(line => {
             const cleanLine = stripMarkdownTags(line);
-            const w = el.size * cleanLine.length * 0.6; // Ước lượng chiều rộng chữ trong SVG
+            const w = el.size * cleanLine.length * 0.48; // Ước lượng chiều rộng chữ trong SVG
             if (w > maxLineWidth) maxLineWidth = w;
           });
           const paddingX = 6;
@@ -1194,9 +1258,8 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
             headPath = `M ${el.arrowX} ${el.arrowY} L ${p1x} ${p1y} L ${p2x} ${p2y} Z`;
           }
           
-          return (
+          elementMarkup = (
             <g
-              key={el.id}
               pointerEvents={pointerEvents}
               cursor={isInteractive ? 'pointer' : 'default'}
               onClick={(e) => {
@@ -1239,18 +1302,27 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
                 <text
                   key={idx}
                   x={rectX + paddingX}
-                  y={rectY + paddingY + idx * (el.size * 1.2)}
+                  y={rectY + paddingY + idx * (el.size * 1.2) + el.size * 0.8}
                   fill={el.color}
                   fontSize={el.size}
                   fontFamily={el.fontFamily || "sans-serif"}
                   fontWeight="500"
-                  dominantBaseline="text-before-edge"
                 >
-                  {line.split('**').map((part, pIdx) => {
-                    const isBold = pIdx % 2 === 1;
+                  {parseMarkdownLine(line).map((tok, tIdx) => {
                     return (
-                      <tspan key={pIdx} fontWeight={isBold ? "bold" : "500"}>
-                        {part}
+                      <tspan
+                        key={tIdx}
+                        style={{
+                          fontWeight: tok.bold ? "bold" : "500",
+                          fontStyle: tok.italic ? "italic" : "normal",
+                          textDecoration: [
+                            tok.underline ? "underline" : "",
+                            tok.strikethrough ? "line-through" : ""
+                          ].filter(Boolean).join(" ") || "none"
+                        }}
+                        fill={tok.color || el.color}
+                      >
+                        {tok.text}
                       </tspan>
                     );
                   })}
@@ -1260,7 +1332,101 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
           );
         }
 
-        return null;
+        // Tạo khung chọn viền đứt nét + 4 chấm tròn phóng to co giãn nếu phần tử được chọn
+        let selectionBox = null;
+        if (isSelected) {
+          let bx1 = 0, by1 = 0, bx2 = 0, by2 = 0;
+          let showHandles = false;
+
+          if (el.type === 'rectangle' && el.x !== undefined && el.y !== undefined && el.width !== undefined && el.height !== undefined) {
+            bx1 = Math.min(el.x, el.x + el.width) - 4;
+            by1 = Math.min(el.y, el.y + el.height) - 4;
+            bx2 = Math.max(el.x, el.x + el.width) + 4;
+            by2 = Math.max(el.y, el.y + el.height) + 4;
+            showHandles = true;
+          } else if (el.type === 'circle' && el.x !== undefined && el.y !== undefined && el.radius !== undefined) {
+            bx1 = el.x - el.radius - 4;
+            by1 = el.y - el.radius - 4;
+            bx2 = el.x + el.radius + 4;
+            by2 = el.y + el.radius + 4;
+            showHandles = true;
+          } else if (el.type === 'ellipse' && el.x !== undefined && el.y !== undefined && el.rx !== undefined && el.ry !== undefined) {
+            bx1 = el.x - el.rx - 4;
+            by1 = el.y - el.ry - 4;
+            bx2 = el.x + el.rx + 4;
+            by2 = el.y + el.ry + 4;
+            showHandles = true;
+          } else if ((el.type === 'text' || el.type === 'callout') && el.x !== undefined && el.y !== undefined && el.text) {
+            const lines = wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily);
+            let maxLineWidth = 0;
+            lines.forEach(line => {
+              const cleanLine = stripMarkdownTags(line);
+              const w = el.size * cleanLine.length * 0.48;
+              if (w > maxLineWidth) maxLineWidth = w;
+            });
+            const paddingX = 6;
+            const paddingY = el.type === 'callout' ? 5 : 4;
+            bx1 = el.x;
+            by1 = el.y;
+            bx2 = el.x + maxLineWidth + paddingX * 2;
+            by2 = el.y + el.size * lines.length * 1.2 + paddingY * 2;
+            showHandles = true;
+          } else if (el.points.length > 0) {
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            el.points.forEach(pt => {
+              minX = Math.min(minX, pt.x);
+              maxX = Math.max(maxX, pt.x);
+              minY = Math.min(minY, pt.y);
+              maxY = Math.max(maxY, pt.y);
+            });
+            bx1 = minX - 4; by1 = minY - 4; bx2 = maxX + 4; by2 = maxY + 4;
+            showHandles = el.type === 'pencil' || el.type === 'highlight';
+          }
+
+          if (bx2 > bx1 || by2 > by1) {
+            const handles = showHandles ? [
+              { x: bx1, y: by1 }, // nw
+              { x: bx2, y: by1 }, // ne
+              { x: bx2, y: by2 }, // se
+              { x: bx1, y: by2 }, // sw
+            ] : [];
+
+            selectionBox = (
+              <g key={`select-${el.id}`} pointerEvents="none" style={{ opacity: 0.8 }}>
+                {/* Bounding box dashed line */}
+                <rect
+                  x={bx1}
+                  y={by1}
+                  width={bx2 - bx1}
+                  height={by2 - by1}
+                  stroke="#3B82F6"
+                  strokeWidth={1.2}
+                  strokeDasharray="4,4"
+                  fill="none"
+                />
+                {/* 4 corner circles */}
+                {handles.map((h, hIdx) => (
+                  <circle
+                    key={hIdx}
+                    cx={h.x}
+                    cy={h.y}
+                    r={4.5}
+                    fill="#ffffff"
+                    stroke="#3B82F6"
+                    strokeWidth={1.5}
+                  />
+                ))}
+              </g>
+            );
+          }
+        }
+
+        return (
+          <React.Fragment key={el.id}>
+            {elementMarkup}
+            {selectionBox}
+          </React.Fragment>
+        );
       })}
     </svg>
   );
@@ -2573,7 +2739,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
         ctx.globalCompositeOperation = 'source-over';
         ctx.globalAlpha = 1.0;
-        ctx.textBaseline = 'top';
+        // textBaseline 'top' được set ngay trước fillText để tránh bị save/restore reset
 
         if (el.x !== undefined && el.y !== undefined && el.text) {
           const lines = wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily);
@@ -2589,7 +2755,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
           const linesCount = lines.length;
           const paddingX = 6;
-          const paddingY = 3;
+          const paddingY = 5; // khớp với HTML editor (padding: "5px 6px")
           const rectX = el.x;
           const rectY = el.y;
           const rectW = maxLineWidth + paddingX * 2;
@@ -2620,10 +2786,14 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           // 3. Vẽ chữ
           lines.forEach((line, lineIndex) => {
             const startX = el.x! + paddingX;
-            const startY = el.y! + paddingY + lineIndex * (el.size * 1.2);
+            const lineHeight = el.size * 1.2;
+            // textBaseline='top': Y là đỉnh EM square, khớp với cách CSS render lineHeight
+            const startY = el.y! + paddingY + lineIndex * lineHeight;
             let currentX = startX;
 
+            ctx.textBaseline = 'alphabetic';
             const tokens = parseMarkdownLine(line);
+
             tokens.forEach(tok => {
               let tokenTextStyle = el.textStyle;
               if (tok.bold && tok.italic) {
@@ -2638,7 +2808,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               
               ctx.font = getElementFont(el.size, tokenTextStyle, el.fontFamily);
               ctx.fillStyle = tok.color || el.color;
-              ctx.fillText(tok.text, currentX, startY);
+              ctx.fillText(tok.text, currentX, startY + el.size * 0.82);
 
               const wordWidth = ctx.measureText(tok.text).width;
 
@@ -2647,7 +2817,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 ctx.strokeStyle = tok.color || el.color;
                 ctx.lineWidth = Math.max(1, el.size / 15);
                 ctx.beginPath();
-                const underlineY = startY + el.size * 1.05;
+                // underline dưới đáy chữ (baseline='top': size*0.9)
+                const underlineY = startY + el.size * 0.9;
                 ctx.moveTo(currentX, underlineY);
                 ctx.lineTo(currentX + wordWidth, underlineY);
                 ctx.stroke();
@@ -2659,7 +2830,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 ctx.strokeStyle = tok.color || el.color;
                 ctx.lineWidth = Math.max(1, el.size / 15);
                 ctx.beginPath();
-                const strikeY = startY + el.size * 0.55;
+                // strikethrough giữa chiều cao chữ (baseline='top': size*0.45)
+                const strikeY = startY + el.size * 0.45;
                 ctx.moveTo(currentX, strikeY);
                 ctx.lineTo(currentX + wordWidth, strikeY);
                 ctx.stroke();
@@ -2679,7 +2851,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
         ctx.globalCompositeOperation = 'source-over';
         ctx.globalAlpha = 1.0;
-        ctx.textBaseline = 'top';
+        // textBaseline 'top' được set ngay trước fillText để tránh bị save/restore reset
 
         if (el.x !== undefined && el.y !== undefined && el.text) {
           const lines = wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily);
@@ -2694,12 +2866,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           ctx.restore();
 
           const paddingX = 6;
-          const paddingY = 5;
+          const paddingY = 5; // khớp với HTML editor (padding: "5px 6px")
           const rectX = el.x;
           const rectY = el.y;
           const rectW = maxLineWidth + paddingX * 2;
-          const textBlockHeight = (lines.length - 1) * el.size * 1.2 + el.size;
-          const rectH = textBlockHeight + paddingY * 2;
+          const rectH = el.size * lines.length * 1.2 + paddingY * 2;
 
           // 1. Draw arrow pointing to anchor (behind the box)
           if (el.arrowX !== undefined && el.arrowY !== undefined) {
@@ -2757,9 +2928,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           // 4. Draw text lines
           lines.forEach((line, lineIndex) => {
             const startX = el.x! + paddingX;
-            const startY = el.y! + paddingY + lineIndex * (el.size * 1.2);
+            const lineHeight = el.size * 1.2;
+            // textBaseline='top': Y là đỉnh EM square, được set ngay trước fillText
+            const startY = el.y! + paddingY + lineIndex * lineHeight;
             let currentX = startX;
 
+            ctx.textBaseline = 'alphabetic';
             const tokens = parseMarkdownLine(line);
             tokens.forEach(tok => {
               let tokenTextStyle = el.textStyle;
@@ -2775,7 +2949,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               
               ctx.font = getElementFont(el.size, tokenTextStyle, el.fontFamily);
               ctx.fillStyle = tok.color || el.color;
-              ctx.fillText(tok.text, currentX, startY);
+              ctx.fillText(tok.text, currentX, startY + el.size * 0.82);
 
               const wordWidth = ctx.measureText(tok.text).width;
 
@@ -2784,7 +2958,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 ctx.strokeStyle = tok.color || el.color;
                 ctx.lineWidth = Math.max(1, el.size / 15);
                 ctx.beginPath();
-                const underlineY = startY + el.size * 1.05;
+                // underline dưới đáy chữ (baseline='top': size*0.9)
+                const underlineY = startY + el.size * 0.9;
                 ctx.moveTo(currentX, underlineY);
                 ctx.lineTo(currentX + wordWidth, underlineY);
                 ctx.stroke();
@@ -2796,7 +2971,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 ctx.strokeStyle = tok.color || el.color;
                 ctx.lineWidth = Math.max(1, el.size / 15);
                 ctx.beginPath();
-                const strikeY = startY + el.size * 0.55;
+                // strikethrough giữa chiều cao chữ (baseline='top': size*0.45)
+                const strikeY = startY + el.size * 0.45;
                 ctx.moveTo(currentX, strikeY);
                 ctx.lineTo(currentX + wordWidth, strikeY);
                 ctx.stroke();
@@ -2855,7 +3031,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
           const linesCount = lines.length;
           const paddingX = 6;
-          const paddingY = 3;
+          const paddingY = 4;
           bx1 = el.x;
           by1 = el.y;
           bx2 = el.x + maxLineWidth + paddingX * 2;
@@ -2878,7 +3054,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
         // Vẽ 4 nút kéo phóng to/thu nhỏ tại 4 góc bounding box (với hình học, text, bút chì, highlight)
         const canResize = el.type === 'rectangle' || el.type === 'circle' || el.type === 'ellipse' || el.type === 'text' || el.type === 'callout' || el.type === 'pencil' || el.type === 'highlight';
-        if (canResize && bx1 !== 0 || by1 !== 0 || bx2 !== 0 || by2 !== 0) {
+        if (canResize && (bx2 > bx1 || by2 > by1)) {
           const handles = [
             { x: bx1, y: by1 }, // nw
             { x: bx2, y: by1 }, // ne
@@ -3304,7 +3480,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           const lines = wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily);
           let maxLineWidth = 0;
           const tempCtx = canvas?.getContext('2d');
-          if (tempCtx) {
+          if (tempCtx && !originalEl.containerSelector) {
             tempCtx.save();
             lines.forEach(line => {
               const cleanLine = stripMarkdownTags(line);
@@ -3314,14 +3490,17 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             });
             tempCtx.restore();
           } else {
-            maxLineWidth = el.size * 0.6 * el.text.length; // Fallback
+            lines.forEach(line => {
+              const cleanLine = stripMarkdownTags(line);
+              const w = el.size * cleanLine.length * 0.48;
+              if (w > maxLineWidth) maxLineWidth = w;
+            });
           }
 
           const paddingX = 6;
-          const paddingY = 5;
+          const paddingY = el.type === 'callout' ? 5 : 4;
           const rectW = maxLineWidth + paddingX * 2;
-          const textBlockHeight = (lines.length - 1) * el.size * 1.2 + el.size;
-          const rectH = textBlockHeight + paddingY * 2;
+          const rectH = el.size * lines.length * 1.2 + paddingY * 2;
 
           // 2. Nhấp trúng đường chỉ của mũi tên Callout (Đoạn thẳng từ cạnh hộp chữ đến đầu mũi tên)
           if (el.type === 'callout' && el.arrowX !== undefined && el.arrowY !== undefined) {
@@ -3392,7 +3571,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       let maxLineWidth = 0;
       const canvas = canvasRef.current;
       const tempCtx = canvas?.getContext('2d');
-      if (tempCtx) {
+      if (tempCtx && !originalEl.containerSelector) {
         tempCtx.save();
         lines.forEach(line => {
           const cleanLine = stripMarkdownTags(line);
@@ -3402,10 +3581,14 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         });
         tempCtx.restore();
       } else {
-        maxLineWidth = el.size * 0.6 * el.text!.length;
+        lines.forEach(line => {
+          const cleanLine = stripMarkdownTags(line);
+          const w = el.size * cleanLine.length * 0.48;
+          if (w > maxLineWidth) maxLineWidth = w;
+        });
       }
       const paddingX = 6;
-      const paddingY = 3;
+      const paddingY = el.type === 'callout' ? 5 : 4;
       const width = maxLineWidth + paddingX * 2;
       const height = el.size * lines.length * 1.2 + paddingY * 2;
 
@@ -5184,13 +5367,14 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     saveToUndoStack(elements);
     let targetId = editingTextId;
+    console.log('[handleTextSubmit] Saving text (markdown):', JSON.stringify(textInputValRef.current));
 
     if (editingTextId) {
       setElements(prev => prev.map(el => {
         if (el.id === editingTextId) {
           return {
             ...el,
-            text: textInputValRef.current,
+            text: value,
           };
         }
         return el;
@@ -5281,7 +5465,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         y: y - dy,
         absoluteX: x,
         absoluteY: y,
-        text: textInputValRef.current,
+        text: value,
         arrowX: isCallout && calloutArrowPos ? calloutArrowPos.x - dx : undefined,
         arrowY: isCallout && calloutArrowPos ? calloutArrowPos.y - dy : undefined,
         absoluteArrowX: isCallout && calloutArrowPos ? calloutArrowPos.x : undefined,
