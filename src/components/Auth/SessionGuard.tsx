@@ -10,7 +10,7 @@ export default function SessionGuard() {
   useEffect(() => {
     if (status !== "authenticated") return;
 
-    // 1. Gửi Heartbeat định kỳ mỗi 45 giây
+    // 1. Gửi Heartbeat định kỳ mỗi 3 phút (180 giây) để tối ưu hóa CPU Vercel
     const heartbeatInterval = setInterval(async () => {
       try {
         const res = await fetch("/api/me/heartbeat", { method: "POST" });
@@ -21,7 +21,7 @@ export default function SessionGuard() {
       } catch (e) {
         console.error("Heartbeat network error");
       }
-    }, 45000);
+    }, 180000);
 
     // 2. Kiểm tra xem session có bị chiếm quyền không
     // NextAuth sẽ tự động gọi API /api/auth/session định kỳ. 

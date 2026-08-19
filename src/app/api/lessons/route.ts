@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { revalidateTag } from "next/cache";
 
 // [POST] Thêm một Bài học (Lesson) mới vào một Chương
 export async function POST(req: Request) {
@@ -17,6 +18,7 @@ export async function POST(req: Request) {
     });
 
     // Trả về Object bài học chứa ID thực từ Database
+    revalidateTag("syllabus", "max");
     return NextResponse.json(lesson);
   } catch (error: any) {
     console.error("API Lesson POST Error:", error);
@@ -46,6 +48,8 @@ export async function PUT(req: Request) {
 
     await prisma.$transaction(updates);
 
+    revalidateTag("syllabus", "max");
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
@@ -72,6 +76,9 @@ export async function DELETE(req: Request) {
         id: { in: ids }
       }
     });
+
+    revalidateTag("syllabus", "max");
+    revalidateTag("lesson", "max");
 
     return NextResponse.json({ success: true, message: "Đã xóa bài học thành công (Giữ nguyên file gốc)" });
   } catch (error: any) {

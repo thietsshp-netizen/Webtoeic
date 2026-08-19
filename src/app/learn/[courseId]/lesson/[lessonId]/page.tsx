@@ -1,9 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-export const revalidate = 0;
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
-import Link from "next/link"; // Cần thêm dòng này
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import CourseContentRenderer from "@/components/Course/CourseContentRenderer";
 import { PlayCircle, FileText, ChevronLeft, ChevronRight, Lock } from "lucide-react";
@@ -16,9 +14,39 @@ import ToeicPart5Loader from "@/components/Toeic/ToeicPart5Loader";
 import ToeicPart6Loader from "@/components/Toeic/Part6/ToeicPart6Loader";
 import ToeicPart7LoaderV2 from "@/components/Toeic/Part7/ToeicPart7Loader";
 import ToeicFullTestLoader from "@/components/Toeic/ToeicFullTestLoader";
-import { AdminEditProvider } from "@/components/Admin/AdminEditProvider";
 import YoutubeDictationPlayer from "@/components/Practice/YoutubeDictationPlayer";
 import IeltsReadingLoader from "@/components/Ielts/IeltsReadingLoader";
+import LogProgress from "@/components/Course/LogProgress";
+import { unstable_cache } from "next/cache";
+
+// Cache thông tin chi tiết của bài học tĩnh trong 24 giờ
+export const getCachedLesson = unstable_cache(
+  async (lessonId: string) => {
+    return prisma.lesson.findUnique({
+      where: { id: lessonId }
+    });
+  },
+  ["lesson-detail"],
+  { revalidate: 86400, tags: ["lesson"] }
+);
+
+// Cache syllabus (giáo trình) của khóa học trong 24 giờ để tránh query lại các section/lesson
+export const getCachedSyllabus = unstable_cache(
+  async (courseId: string) => {
+    return prisma.section.findMany({
+      where: { courseId },
+      orderBy: { order: 'asc' },
+      include: {
+        lessons: {
+          orderBy: { order: 'asc' },
+          select: { id: true }
+        }
+      }
+    });
+  },
+  ["course-syllabus"],
+  { revalidate: 86400, tags: ["syllabus"] }
+);
 
 export default async function LessonDetailPage({
   params,
@@ -31,11 +59,8 @@ export default async function LessonDetailPage({
   const { q } = await searchParams;
   const session = await getServerSession(authOptions) as any;
   
-  console.log("Rebuilding page.tsx to inject tour targets");
-  // Lấy dữ liệu bài học từ Prisma
-  const lesson = await prisma.lesson.findUnique({
-    where: { id: lessonId }
-  });
+  // Lấy dữ liệu bài học tĩnh từ Cache
+  const lesson = await getCachedLesson(lessonId);
 
   if (!lesson) return notFound();
 
@@ -57,7 +82,7 @@ export default async function LessonDetailPage({
     }
   }
 
-  // 1. KIỂM TRA QUYỀN TRUY CẬP
+  // 1. KIỂM TRA QUYỀN TRUY CẬP (ĐỘNG)
   let hasAccess = false;
   let isExpired = false;
 
@@ -94,42 +119,8 @@ export default async function LessonDetailPage({
     hasAccess = true;
   }
 
-  // 1.1 GHI NHẬN TIẾN ĐỘ BÀI HỌC (START/VIEW)
-  if (hasAccess && session?.user?.id) {
-    try {
-      await prisma.lessonProgress.upsert({
-        where: {
-          userId_lessonId: {
-            userId: session.user.id,
-            lessonId: lessonId,
-          },
-        },
-        update: {
-          // Chỉ cập nhật updatedAt để lưu vết lần học cuối
-          updatedAt: new Date(),
-        },
-        create: {
-          userId: session.user.id,
-          lessonId: lessonId,
-          isCompleted: false,
-        },
-      });
-    } catch (e) {
-      console.error("Lỗi khi ghi nhận tiến độ bài học:", e);
-    }
-  }
-
-  // 2. Fetch Syllabus to determine Next/Prev logic
-  const sections = await prisma.section.findMany({
-    where: { courseId },
-    orderBy: { order: 'asc' },
-    include: {
-      lessons: {
-        orderBy: { order: 'asc' },
-        select: { id: true }
-      }
-    }
-  });
+  // 2. Lấy Syllabus từ Cache để xác định liên kết Bài tiếp / Bài trước
+  const sections = await getCachedSyllabus(courseId);
   const allLessons = sections.flatMap(s => s.lessons);
   const currentIndex = allLessons.findIndex(l => l.id === lessonId);
   const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
@@ -137,6 +128,11 @@ export default async function LessonDetailPage({
 
   return (
     <div className="flex flex-col h-full bg-[#f8fafc]">
+      {/* 2.1. Gọi ghi nhận tiến độ bài học ngầm từ phía Client */}
+      {hasAccess && session?.user?.id && (
+        <LogProgress lessonId={lessonId} />
+      )}
+
       {/* HEADER BÀI HỌC (LUÔN HIỂN THỊ) */}
       <div className={`p-6 bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC", "IELTS_READING"].includes(lesson.contentType as string) ? "pr-24" : ""}`}>
         <div className="flex items-center gap-4">

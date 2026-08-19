@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { revalidateTag } from "next/cache";
 
 // [GET] Lấy chi tiết bài học
 export async function GET(
@@ -51,6 +52,9 @@ export async function PUT(
         vocabDayId,
       }
     });
+
+    revalidateTag("lesson", "max");
+    revalidateTag("syllabus", "max");
 
     return NextResponse.json(lesson);
   } catch (error: any) {
