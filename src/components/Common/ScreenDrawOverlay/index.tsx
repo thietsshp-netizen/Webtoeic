@@ -244,6 +244,79 @@ export const simplifyPath = (points: PointObj[], sqTolerance = 0.36): PointObj[]
   return simplified;
 };
 
+export const getCalloutConnectionPoint = (
+  rectX: number,
+  rectY: number,
+  rectW: number,
+  rectH: number,
+  arrowX: number,
+  arrowY: number
+): { x: number; y: number } => {
+  const xMin = rectX;
+  const xMax = rectX + rectW;
+  const yMin = rectY;
+  const yMax = rectY + rectH;
+
+  const hZone = arrowX < xMin ? -1 : arrowX > xMax ? 1 : 0;
+  const vZone = arrowY < yMin ? -1 : arrowY > yMax ? 1 : 0;
+
+  // 1. Box is top-right of arrow (arrow is bottom-left of box)
+  if (hZone === -1 && vZone === 1) {
+    return { x: xMin, y: yMax };
+  }
+  // 2. Box is bottom-left of arrow (arrow is top-right of box)
+  if (hZone === 1 && vZone === -1) {
+    return { x: xMax, y: yMin };
+  }
+  // 3. Box is top-left of arrow (arrow is bottom-right of box)
+  if (hZone === 1 && vZone === 1) {
+    return { x: xMax, y: yMax };
+  }
+  // 4. Box is bottom-right of arrow (arrow is top-left of box)
+  if (hZone === -1 && vZone === -1) {
+    return { x: xMin, y: yMin };
+  }
+  // 5. Box is straight above arrow (arrow is below box)
+  if (hZone === 0 && vZone === 1) {
+    return { x: rectX + rectW / 2, y: yMax };
+  }
+  // 6. Box is straight below arrow (arrow is above box)
+  if (hZone === 0 && vZone === -1) {
+    return { x: rectX + rectW / 2, y: yMin };
+  }
+  // 7. Box is straight right of arrow (arrow is left of box)
+  if (hZone === -1 && vZone === 0) {
+    return { x: xMin, y: rectY + rectH / 2 };
+  }
+  // 8. Box is straight left of arrow (arrow is right of box)
+  if (hZone === 1 && vZone === 0) {
+    return { x: xMax, y: rectY + rectH / 2 };
+  }
+
+  // Fallback
+  const candidates = [
+    { x: xMin, y: yMin },
+    { x: xMax, y: yMin },
+    { x: xMin, y: yMax },
+    { x: xMax, y: yMax },
+    { x: rectX + rectW / 2, y: yMin },
+    { x: rectX + rectW / 2, y: yMax },
+    { x: xMin, y: rectY + rectH / 2 },
+    { x: xMax, y: rectY + rectH / 2 }
+  ];
+
+  let bestPoint = candidates[0];
+  let minDistanceSq = Infinity;
+  for (const p of candidates) {
+    const dSq = (p.x - arrowX) ** 2 + (p.y - arrowY) ** 2;
+    if (dSq < minDistanceSq) {
+      minDistanceSq = dSq;
+      bestPoint = p;
+    }
+  }
+  return bestPoint;
+};
+
 export const checkIntersection = (ex: number, ey: number, el: DrawElement, eraserRadius: number): boolean => {
   const buffer = eraserRadius + 6; // Extra buffer to make it easy to hit
 
@@ -891,35 +964,23 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
             if (w > maxLineWidth) maxLineWidth = w;
           });
           const paddingX = 6;
-          const paddingY = 3;
+          const paddingY = 5;
           const rectX = el.x || 0;
           const rectY = el.y || 0;
           const rectW = maxLineWidth + paddingX * 2;
-          const rectH = el.size * lines.length * 1.2 + paddingY * 2;
+          const textBlockHeight = (lines.length - 1) * el.size * 1.2 + el.size;
+          const rectH = textBlockHeight + paddingY * 2;
           
           let arrowPath = '';
           let headPath = '';
           if (el.arrowX !== undefined && el.arrowY !== undefined) {
-            const boxCenterX = rectX + rectW / 2;
-            const boxCenterY = rectY + rectH / 2;
-            const dx = el.arrowX - boxCenterX;
-            const dy = el.arrowY - boxCenterY;
-            let startX = boxCenterX;
-            let startY = boxCenterY;
-
-            if (Math.abs(dx) > 0.01 || Math.abs(dy) > 0.01) {
-              const halfW = rectW / 2;
-              const halfH = rectH / 2;
-              const tX = halfW / Math.abs(dx);
-              const tY = halfH / Math.abs(dy);
-              const t = Math.min(tX, tY);
-              startX = boxCenterX + dx * t;
-              startY = boxCenterY + dy * t;
-            }
+            const conn = getCalloutConnectionPoint(rectX, rectY, rectW, rectH, el.arrowX, el.arrowY);
+            const startX = conn.x;
+            const startY = conn.y;
             
             arrowPath = `M ${startX} ${startY} L ${el.arrowX} ${el.arrowY}`;
             
-            const theta = Math.atan2(el.arrowY - boxCenterY, el.arrowX - boxCenterX);
+            const theta = Math.atan2(el.arrowY - startY, el.arrowX - startX);
             const headlen = 10;
             const p1x = el.arrowX - headlen * Math.cos(theta - Math.PI / 6);
             const p1y = el.arrowY - headlen * Math.sin(theta - Math.PI / 6);
@@ -2388,13 +2449,13 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           });
           ctx.restore();
 
-          const linesCount = lines.length;
           const paddingX = 6;
-          const paddingY = 3;
+          const paddingY = 5;
           const rectX = el.x;
           const rectY = el.y;
           const rectW = maxLineWidth + paddingX * 2;
-          const rectH = el.size * linesCount * 1.2 + paddingY * 2;
+          const textBlockHeight = (lines.length - 1) * el.size * 1.2 + el.size;
+          const rectH = textBlockHeight + paddingY * 2;
 
           // 1. Draw arrow pointing to anchor (behind the box)
           if (el.arrowX !== undefined && el.arrowY !== undefined) {
@@ -2405,25 +2466,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
 
-            const boxCenterX = rectX + rectW / 2;
-            const boxCenterY = rectY + rectH / 2;
-
-            // Tính giao điểm của đường thẳng từ tâm hộp đến đầu mũi tên với cạnh viền hộp
-            const dx = el.arrowX - boxCenterX;
-            const dy = el.arrowY - boxCenterY;
-            let startX = boxCenterX;
-            let startY = boxCenterY;
-
-            if (Math.abs(dx) > 0.01 || Math.abs(dy) > 0.01) {
-              const halfW = rectW / 2;
-              const halfH = rectH / 2;
-              // Kiểm tra giao với cạnh trái/phải hay trên/dưới
-              const tX = halfW / Math.abs(dx);
-              const tY = halfH / Math.abs(dy);
-              const t = Math.min(tX, tY);
-              startX = boxCenterX + dx * t;
-              startY = boxCenterY + dy * t;
-            }
+            const conn = getCalloutConnectionPoint(rectX, rectY, rectW, rectH, el.arrowX, el.arrowY);
+            const startX = conn.x;
+            const startY = conn.y;
 
             ctx.beginPath();
             ctx.moveTo(startX, startY);
@@ -2431,7 +2476,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.stroke();
 
             // Arrow head
-            const theta = Math.atan2(el.arrowY - boxCenterY, el.arrowX - boxCenterX);
+            const theta = Math.atan2(el.arrowY - startY, el.arrowX - startX);
             const headlen = 10;
             ctx.beginPath();
             ctx.moveTo(el.arrowX, el.arrowY);
@@ -2874,11 +2919,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       });
       ctx.restore();
 
-      const linesCount = lines.length;
       const paddingX = 6;
-      const paddingY = 3;
+      const paddingY = 5;
       const rectW = Math.max(80, maxLineWidth + paddingX * 2);
-      const rectH = Math.max(24, fontSize * linesCount * 1.2 + paddingY * 2);
+      const textBlockHeight = (lines.length - 1) * fontSize * 1.2 + fontSize;
+      const rectH = Math.max(24, textBlockHeight + paddingY * 2);
 
       const activeClone = stateRef.current.clonedTools.find(c => c.id === stateRef.current.activeCloneId);
       const calloutColor = activeClone ? activeClone.color : color;
@@ -2894,16 +2939,17 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
 
-      const boxCenterX = x + rectW / 2;
-      const boxCenterY = y + rectH / 2;
+      const conn = getCalloutConnectionPoint(x, y, rectW, rectH, calloutArrowPos.x, calloutArrowPos.y);
+      const startX = conn.x;
+      const startY = conn.y;
 
       ctx.beginPath();
-      ctx.moveTo(boxCenterX, boxCenterY);
+      ctx.moveTo(startX, startY);
       ctx.lineTo(calloutArrowPos.x, calloutArrowPos.y);
       ctx.stroke();
 
       // Đầu mũi tên
-      const theta = Math.atan2(calloutArrowPos.y - boxCenterY, calloutArrowPos.x - boxCenterX);
+      const theta = Math.atan2(calloutArrowPos.y - startY, calloutArrowPos.x - startX);
       const headlen = 10;
       ctx.beginPath();
       ctx.moveTo(calloutArrowPos.x, calloutArrowPos.y);
@@ -2997,17 +3043,19 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             maxLineWidth = el.size * 0.6 * el.text.length; // Fallback
           }
 
-          const width = maxLineWidth;
-          const height = el.size * lines.length * 1.3;
+          const paddingX = 6;
+          const paddingY = 5;
+          const rectW = maxLineWidth + paddingX * 2;
+          const textBlockHeight = (lines.length - 1) * el.size * 1.2 + el.size;
+          const rectH = textBlockHeight + paddingY * 2;
 
-          // 2. Nhấp trúng đường chỉ của mũi tên Callout (Đoạn thẳng từ tâm hộp chữ đến đầu mũi tên)
+          // 2. Nhấp trúng đường chỉ của mũi tên Callout (Đoạn thẳng từ cạnh hộp chữ đến đầu mũi tên)
           if (el.type === 'callout' && el.arrowX !== undefined && el.arrowY !== undefined) {
-            const boxCenterX = el.x + width / 2;
-            const boxCenterY = el.y + height / 2;
+            const conn = getCalloutConnectionPoint(el.x, el.y, rectW, rectH, el.arrowX, el.arrowY);
             const px = x;
             const py = y;
-            const x1 = boxCenterX;
-            const y1 = boxCenterY;
+            const x1 = conn.x;
+            const y1 = conn.y;
             const x2 = el.arrowX;
             const y2 = el.arrowY;
             
@@ -3027,7 +3075,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           }
 
           // 3. Nhấp trúng khung hộp chữ nháp (Dung sai 4px)
-          if (x >= el.x - 4 && x <= el.x + width + 4 && y >= el.y - 4 && y <= el.y + height + 4) {
+          const hitW = el.type === 'callout' ? rectW : maxLineWidth;
+          const hitH = el.type === 'callout' ? rectH : el.size * lines.length * 1.3;
+          if (x >= el.x - 4 && x <= el.x + hitW + 4 && y >= el.y - 4 && y <= el.y + hitH + 4) {
             return originalEl;
           }
         }
