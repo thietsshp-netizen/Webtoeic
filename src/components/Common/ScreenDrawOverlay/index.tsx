@@ -178,6 +178,119 @@ export const getElementFont = (size: number, textStyle?: string, fontFamily?: st
   return `${stylePart} ${size}px ${font}`;
 };
 
+export interface TextToken {
+  text: string;
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  strikethrough: boolean;
+  color?: string;
+}
+
+export const stripMarkdownTags = (line: string): string => {
+  return line
+    .replace(/\*\*/g, "")
+    .replace(/\*/g, "")
+    .replace(/<\/?u>/gi, "")
+    .replace(/~~/g, "")
+    .replace(/<font color="[^"]+">/gi, "")
+    .replace(/<\/font>/gi, "");
+};
+
+export const parseMarkdownLine = (line: string): TextToken[] => {
+  const tokens: TextToken[] = [];
+  let currentText = "";
+  
+  let bold = false;
+  let italic = false;
+  let underline = false;
+  let strikethrough = false;
+  const colorStack: string[] = [];
+  
+  let i = 0;
+  while (i < line.length) {
+    if (line.startsWith("**", i)) {
+      if (currentText) {
+        tokens.push({ text: currentText, bold, italic, underline, strikethrough, color: colorStack[colorStack.length - 1] });
+        currentText = "";
+      }
+      bold = !bold;
+      i += 2;
+      continue;
+    }
+    
+    if (line.startsWith("~~", i)) {
+      if (currentText) {
+        tokens.push({ text: currentText, bold, italic, underline, strikethrough, color: colorStack[colorStack.length - 1] });
+        currentText = "";
+      }
+      strikethrough = !strikethrough;
+      i += 2;
+      continue;
+    }
+    
+    const remaining = line.slice(i);
+    const fontStartMatch = remaining.match(/^<font color="([^"]+)">/i);
+    if (fontStartMatch) {
+      if (currentText) {
+        tokens.push({ text: currentText, bold, italic, underline, strikethrough, color: colorStack[colorStack.length - 1] });
+        currentText = "";
+      }
+      const matchedColor = fontStartMatch[1];
+      colorStack.push(matchedColor);
+      i += fontStartMatch[0].length;
+      continue;
+    }
+    if (remaining.toLowerCase().startsWith("</font>")) {
+      if (currentText) {
+        tokens.push({ text: currentText, bold, italic, underline, strikethrough, color: colorStack[colorStack.length - 1] });
+        currentText = "";
+      }
+      colorStack.pop();
+      i += 7;
+      continue;
+    }
+    
+    if (remaining.toLowerCase().startsWith("<u>")) {
+      if (currentText) {
+        tokens.push({ text: currentText, bold, italic, underline, strikethrough, color: colorStack[colorStack.length - 1] });
+        currentText = "";
+      }
+      underline = true;
+      i += 3;
+      continue;
+    }
+    if (remaining.toLowerCase().startsWith("</u>")) {
+      if (currentText) {
+        tokens.push({ text: currentText, bold, italic, underline, strikethrough, color: colorStack[colorStack.length - 1] });
+        currentText = "";
+      }
+      underline = false;
+      i += 4;
+      continue;
+    }
+    
+    if (line.startsWith("*", i)) {
+      if (currentText) {
+        tokens.push({ text: currentText, bold, italic, underline, strikethrough, color: colorStack[colorStack.length - 1] });
+        currentText = "";
+      }
+      italic = !italic;
+      i += 1;
+      continue;
+    }
+    
+    currentText += line[i];
+    i++;
+  }
+  
+  if (currentText) {
+    tokens.push({ text: currentText, bold, italic, underline, strikethrough, color: colorStack[colorStack.length - 1] });
+  }
+  
+  return tokens;
+};
+
 interface PointObj {
   x: number;
   y: number;
@@ -360,7 +473,7 @@ export const checkIntersection = (ex: number, ey: number, el: DrawElement, erase
     const linesCount = lines.length;
     let maxLineLen = 0;
     lines.forEach(l => {
-      const clean = l.replace(/\*\*/g, "");
+      const clean = stripMarkdownTags(l);
       if (clean.length > maxLineLen) maxLineLen = clean.length;
     });
     const estWidth = maxLineLen * el.size * 0.65 + 24;
@@ -528,6 +641,12 @@ export const findBestAnchor = (
     textarea.style.pointerEvents = 'none';
   }
 
+  const editorWrapper = document.querySelector('[data-text-editor-wrapper="true"]') as HTMLElement | null;
+  const originalWrapperEvents = editorWrapper ? editorWrapper.style.pointerEvents : '';
+  if (editorWrapper) {
+    editorWrapper.style.pointerEvents = 'none';
+  }
+
   // Quét các điểm xung quanh để tìm phần tử chữ cụ thể (như span) thay vì thẻ div bao ngoài khi người dùng vẽ lệch/vẽ gạch chân dưới chữ
   const offsets = [
     { x: 0, y: 0 },
@@ -555,35 +674,61 @@ export const findBestAnchor = (
     const targetSelectors = [
       'span',
       'p',
-      'li',
-      'tr',
-      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      '[class*="option"]',
+      'a',
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
       'div',
-      '[class*="question-item"]',
-      '[class*="paragraph-item"]',
-      '[class*="passage-box"]'
+      'li',
+      'td',
+      'th',
+      'button',
+      'input',
+      'textarea',
+      'select',
+      'img',
+      'svg'
     ];
 
+    let foundEl: HTMLElement | null = null;
+    let foundPriority = 999;
+
     for (let i = 0; i < targetSelectors.length; i++) {
-      const selector = targetSelectors[i];
-      const anchor = el.closest(selector) as HTMLElement | null;
-      if (anchor) {
-        if (anchor === container) continue; // Skip container itself
-        let uniqueSelector = generateUniqueSelector(anchor, container || undefined);
-        try {
-          // If queried relatively or globally, confirm matches
-          let found = container 
-            ? container.querySelector(':scope > ' + uniqueSelector) 
-            : document.querySelector(uniqueSelector);
-          if (found === anchor) {
-            const info = { selector: uniqueSelector, rect: anchor.getBoundingClientRect(), priority: i };
-            if (!bestAnchorInfo || info.priority < bestAnchorInfo.priority) {
-              bestAnchorInfo = info;
-            }
-            break;
-          }
-        } catch (e) { }
+      const target = el.closest(targetSelectors[i]) as HTMLElement | null;
+      if (target) {
+        // Skip elements inside canvas container, toolbar or tooltip to avoid self-anchoring!
+        if (target.closest('.' + styles.canvasContainer) || target.closest('[data-text-editor-wrapper="true"]') || target.closest('[class*="toolbar"]') || target.closest('[class*="tooltip"]')) {
+          continue;
+        }
+
+        if (i < foundPriority) {
+          foundPriority = i;
+          foundEl = target;
+        }
+      }
+    }
+
+    if (foundEl) {
+      const elRect = foundEl.getBoundingClientRect();
+      const area = elRect.width * elRect.height;
+      if (area > 0 && area < 1000000) {
+        const uniqueSelector = generateUniqueSelector(foundEl);
+        const containerSelector = container ? generateUniqueSelector(container) : undefined;
+        let finalSelector = uniqueSelector;
+        if (containerSelector && uniqueSelector.startsWith(containerSelector)) {
+          finalSelector = uniqueSelector.replace(containerSelector + ' ', '');
+        }
+
+        if (!bestAnchorInfo || foundPriority < bestAnchorInfo.priority) {
+          bestAnchorInfo = {
+            selector: finalSelector,
+            rect: elRect,
+            priority: foundPriority
+          };
+        }
       }
     }
 
@@ -596,6 +741,9 @@ export const findBestAnchor = (
   canvas.style.pointerEvents = originalPointerEvents;
   if (textarea) {
     textarea.style.pointerEvents = originalTextareaEvents;
+  }
+  if (editorWrapper) {
+    editorWrapper.style.pointerEvents = originalWrapperEvents;
   }
   return bestAnchorInfo;
 };
@@ -695,7 +843,7 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
         const isGlobal = el.anchorSelector.startsWith('body') || el.anchorSelector.startsWith('#');
         const anchor = isGlobal
           ? (document.querySelector(el.anchorSelector) as HTMLElement | null)
-          : (container.querySelector(':scope > ' + el.anchorSelector) as HTMLElement | null);
+          : (container.querySelector(':scope ' + el.anchorSelector) as HTMLElement | null);
         if (anchor && (isGlobal ? container.contains(anchor) : true)) {
           const anchorRect = anchor.getBoundingClientRect();
           const anchorLocalX = anchorRect.left - cRect.left + container.scrollLeft;
@@ -959,7 +1107,7 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
           
           let maxLineWidth = 0;
           lines.forEach(line => {
-            const cleanLine = line.replace(/\*\*/g, "");
+            const cleanLine = stripMarkdownTags(line);
             const w = el.size * cleanLine.length * 0.6; // Ước lượng chiều rộng chữ trong SVG
             if (w > maxLineWidth) maxLineWidth = w;
           });
@@ -1089,10 +1237,19 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       textarea.style.pointerEvents = 'none';
     }
 
+    const editorWrapper = document.querySelector('[data-text-editor-wrapper="true"]') as HTMLElement | null;
+    const originalWrapperEvents = editorWrapper ? editorWrapper.style.pointerEvents : '';
+    if (editorWrapper) {
+      editorWrapper.style.pointerEvents = 'none';
+    }
+
     const topElement = document.elementFromPoint(clientX, clientY) as HTMLElement | null;
     canvas.style.pointerEvents = textInput ? 'none' : 'auto';
     if (textarea) {
       textarea.style.pointerEvents = originalTextareaEvents;
+    }
+    if (editorWrapper) {
+      editorWrapper.style.pointerEvents = originalWrapperEvents;
     }
 
     if (!topElement) return null;
@@ -2366,7 +2523,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           let maxLineWidth = 0;
           ctx.save();
           lines.forEach(line => {
-            const cleanLine = line.replace(/\*\*/g, "");
+            const cleanLine = stripMarkdownTags(line);
             ctx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
             const w = ctx.measureText(cleanLine).width;
             if (w > maxLineWidth) maxLineWidth = w;
@@ -2403,26 +2560,56 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             ctx.restore();
           }
 
-          // 3. Vẽ chữ nháp
+          // 3. Vẽ chữ
           lines.forEach((line, lineIndex) => {
             const startX = el.x! + paddingX;
             const startY = el.y! + paddingY + lineIndex * (el.size * 1.2);
-
-            // Parse markdown in đậm **text**
-            const parts = line.split(/(\*\*[^*]+\*\*)/g);
             let currentX = startX;
 
-            parts.forEach((part) => {
-              if (part.startsWith('**') && part.endsWith('**')) {
-                const cleanText = part.slice(2, -2);
-                ctx.font = `bold ${el.size}px ${el.fontFamily || 'sans-serif'}`;
-                ctx.fillText(cleanText, currentX, startY);
-                currentX += ctx.measureText(cleanText).width;
-              } else if (part) {
-                ctx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
-                ctx.fillText(part, currentX, startY);
-                currentX += ctx.measureText(part).width;
+            const tokens = parseMarkdownLine(line);
+            tokens.forEach(tok => {
+              let tokenTextStyle = el.textStyle;
+              if (tok.bold && tok.italic) {
+                tokenTextStyle = "bold-italic";
+              } else if (tok.bold) {
+                tokenTextStyle = "bold";
+              } else if (tok.italic) {
+                tokenTextStyle = "italic";
+              } else {
+                tokenTextStyle = undefined;
               }
+              
+              ctx.font = getElementFont(el.size, tokenTextStyle, el.fontFamily);
+              ctx.fillStyle = tok.color || el.color;
+              ctx.fillText(tok.text, currentX, startY);
+
+              const wordWidth = ctx.measureText(tok.text).width;
+
+              if (tok.underline) {
+                ctx.save();
+                ctx.strokeStyle = tok.color || el.color;
+                ctx.lineWidth = Math.max(1, el.size / 15);
+                ctx.beginPath();
+                const underlineY = startY + el.size * 1.05;
+                ctx.moveTo(currentX, underlineY);
+                ctx.lineTo(currentX + wordWidth, underlineY);
+                ctx.stroke();
+                ctx.restore();
+              }
+
+              if (tok.strikethrough) {
+                ctx.save();
+                ctx.strokeStyle = tok.color || el.color;
+                ctx.lineWidth = Math.max(1, el.size / 15);
+                ctx.beginPath();
+                const strikeY = startY + el.size * 0.55;
+                ctx.moveTo(currentX, strikeY);
+                ctx.lineTo(currentX + wordWidth, strikeY);
+                ctx.stroke();
+                ctx.restore();
+              }
+
+              currentX += wordWidth;
             });
           });
         }
@@ -2442,7 +2629,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           let maxLineWidth = 0;
           ctx.save();
           lines.forEach(line => {
-            const cleanLine = line.replace(/\*\*/g, "");
+            const cleanLine = stripMarkdownTags(line);
             ctx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
             const w = ctx.measureText(cleanLine).width;
             if (w > maxLineWidth) maxLineWidth = w;
@@ -2511,25 +2698,55 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           }
 
           // 4. Draw text lines
-          ctx.fillStyle = el.color;
           lines.forEach((line, lineIndex) => {
             const startX = el.x! + paddingX;
             const startY = el.y! + paddingY + lineIndex * (el.size * 1.2);
-
-            const parts = line.split(/(\*\*[^*]+\*\*)/g);
             let currentX = startX;
 
-            parts.forEach((part) => {
-              if (part.startsWith('**') && part.endsWith('**')) {
-                const cleanText = part.slice(2, -2);
-                ctx.font = `bold ${el.size}px ${el.fontFamily || 'sans-serif'}`;
-                ctx.fillText(cleanText, currentX, startY);
-                currentX += ctx.measureText(cleanText).width;
-              } else if (part) {
-                ctx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
-                ctx.fillText(part, currentX, startY);
-                currentX += ctx.measureText(part).width;
+            const tokens = parseMarkdownLine(line);
+            tokens.forEach(tok => {
+              let tokenTextStyle = el.textStyle;
+              if (tok.bold && tok.italic) {
+                tokenTextStyle = "bold-italic";
+              } else if (tok.bold) {
+                tokenTextStyle = "bold";
+              } else if (tok.italic) {
+                tokenTextStyle = "italic";
+              } else {
+                tokenTextStyle = undefined;
               }
+              
+              ctx.font = getElementFont(el.size, tokenTextStyle, el.fontFamily);
+              ctx.fillStyle = tok.color || el.color;
+              ctx.fillText(tok.text, currentX, startY);
+
+              const wordWidth = ctx.measureText(tok.text).width;
+
+              if (tok.underline) {
+                ctx.save();
+                ctx.strokeStyle = tok.color || el.color;
+                ctx.lineWidth = Math.max(1, el.size / 15);
+                ctx.beginPath();
+                const underlineY = startY + el.size * 1.05;
+                ctx.moveTo(currentX, underlineY);
+                ctx.lineTo(currentX + wordWidth, underlineY);
+                ctx.stroke();
+                ctx.restore();
+              }
+
+              if (tok.strikethrough) {
+                ctx.save();
+                ctx.strokeStyle = tok.color || el.color;
+                ctx.lineWidth = Math.max(1, el.size / 15);
+                ctx.beginPath();
+                const strikeY = startY + el.size * 0.55;
+                ctx.moveTo(currentX, strikeY);
+                ctx.lineTo(currentX + wordWidth, strikeY);
+                ctx.stroke();
+                ctx.restore();
+              }
+
+              currentX += wordWidth;
             });
           });
         }
@@ -2572,7 +2789,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           ctx.save();
           lines.forEach(line => {
             // Loại bỏ dấu sao khi đo chiều rộng thực tế của chữ
-            const cleanLine = line.replace(/\*\*/g, "");
+            const cleanLine = stripMarkdownTags(line);
             ctx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
             const w = ctx.measureText(cleanLine).width;
             if (w > maxLineWidth) maxLineWidth = w;
@@ -2912,7 +3129,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       let maxLineWidth = 0;
       ctx.save();
       lines.forEach(line => {
-        const cleanLine = line.replace(/\*\*/g, "");
+        const cleanLine = stripMarkdownTags(line);
         ctx.font = getElementFont(fontSize);
         const w = ctx.measureText(cleanLine).width;
         if (w > maxLineWidth) maxLineWidth = w;
@@ -3033,7 +3250,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           if (tempCtx) {
             tempCtx.save();
             lines.forEach(line => {
-              const cleanLine = line.replace(/\*\*/g, "");
+              const cleanLine = stripMarkdownTags(line);
               tempCtx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
               const w = tempCtx.measureText(cleanLine).width;
               if (w > maxLineWidth) maxLineWidth = w;
@@ -3121,7 +3338,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       if (tempCtx) {
         tempCtx.save();
         lines.forEach(line => {
-          const cleanLine = line.replace(/\*\*/g, "");
+          const cleanLine = stripMarkdownTags(line);
           tempCtx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
           const w = tempCtx.measureText(cleanLine).width;
           if (w > maxLineWidth) maxLineWidth = w;
@@ -5390,6 +5607,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
       {textInput && (
         <MarkdownTextarea
+          key={editingTextId || `new-${textInput.x}-${textInput.y}`}
           value={activeTextVal}
           color={
             editingTextId
@@ -5439,6 +5657,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                   ? elements.find(el => el.id === editingTextId)?.textBgOpacity
                   : clonedTools.find(c => c.id === activeCloneId)?.textBgOpacity)
           }
+          colorSlots={colorSlots}
           style={{
             left: textInput.x,
             top: textInput.y,
