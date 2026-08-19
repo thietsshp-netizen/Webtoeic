@@ -1176,6 +1176,18 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
           const lines = el.text ? wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily) : [];
           const paddingX = 6;
           const paddingY = 4;
+          
+          let maxLineWidth = 0;
+          lines.forEach(line => {
+            const cleanLine = stripMarkdownTags(line);
+            const w = el.size * cleanLine.length * 0.48; // Ước lượng chiều rộng chữ trong SVG
+            if (w > maxLineWidth) maxLineWidth = w;
+          });
+          const rectX = el.x || 0;
+          const rectY = el.y || 0;
+          const rectW = maxLineWidth + paddingX * 2;
+          const rectH = el.size * lines.length * 1.2 + paddingY * 2;
+
           elementMarkup = (
             <g
               pointerEvents={pointerEvents}
@@ -1187,11 +1199,38 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
                 }
               }}
             >
+              {/* Vẽ màu nền nếu có cấu hình */}
+              {el.textBgColor && (
+                <rect 
+                  x={rectX}
+                  y={rectY}
+                  width={rectW}
+                  height={rectH}
+                  rx={4}
+                  ry={4}
+                  fill={el.textBgColor}
+                  fillOpacity={el.textBgOpacity !== undefined ? el.textBgOpacity : 1.0}
+                />
+              )}
+              {/* Vẽ viền nếu có cấu hình */}
+              {el.textHasBorder && (
+                <rect 
+                  x={rectX}
+                  y={rectY}
+                  width={rectW}
+                  height={rectH}
+                  rx={4}
+                  ry={4}
+                  fill="none"
+                  stroke={el.color}
+                  strokeWidth={el.textBorderWidth || 1}
+                />
+              )}
               {lines.map((line, idx) => (
                 <text
                   key={idx}
-                  x={(el.x || 0) + paddingX}
-                  y={(el.y || 0) + paddingY + idx * (el.size * 1.2) + el.size * 0.8}
+                  x={rectX + paddingX}
+                  y={rectY + paddingY + idx * (el.size * 1.2) + el.size * 0.8}
                   fill={el.color}
                   fontSize={el.size}
                   fontFamily={el.fontFamily || "sans-serif"}
