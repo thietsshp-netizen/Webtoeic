@@ -979,7 +979,19 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
         } catch (e) {
           console.warn("Render querySelector failed for selector:", el.anchorSelector, e);
         }
+        
+        let isMatch = false;
         if (anchor && (isGlobal ? container.contains(anchor) : true)) {
+          isMatch = true;
+          if (el.textHash) {
+            const currentHash = calculateTextHash(normalizeText(anchor.textContent || ""));
+            if (currentHash !== el.textHash) {
+              isMatch = false;
+            }
+          }
+        }
+
+        if (isMatch && anchor) {
           const anchorRect = anchor.getBoundingClientRect();
           const anchorLocalX = anchorRect.left - cRect.left + container.scrollLeft;
           const anchorLocalY = anchorRect.top - cRect.top + container.scrollTop;
@@ -1002,8 +1014,56 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
               arrowY: el.arrowY !== undefined ? anchorLocalY + el.arrowY : undefined
             };
           }
+        } else {
+          // Fallback: Vẽ ở toạ độ tuyệt đối bên trong container
+          if (el.type === 'pencil' || el.type === 'highlight' || el.type === 'eraser') {
+            const pointsToUse = el.absolutePoints ? el.absolutePoints : el.points;
+            return {
+              ...el,
+              points: pointsToUse.map(pt => ({
+                ...pt,
+                x: pt.x - cRect.left + container.scrollLeft,
+                y: pt.y - cRect.top + container.scrollTop
+              }))
+            };
+          } else {
+            const absX = el.absoluteX !== undefined ? el.absoluteX : el.x;
+            const absY = el.absoluteY !== undefined ? el.absoluteY : el.y;
+            return {
+              ...el,
+              x: absX !== undefined ? absX - cRect.left + container.scrollLeft : undefined,
+              y: absY !== undefined ? absY - cRect.top + container.scrollTop : undefined,
+              arrowX: el.absoluteArrowX !== undefined ? el.absoluteArrowX - cRect.left + container.scrollLeft : undefined,
+              arrowY: el.absoluteArrowY !== undefined ? el.absoluteArrowY - cRect.top + container.scrollTop : undefined
+            };
+          }
         }
       }
+      
+      if (el.containerSelector) {
+        const pointsToUse = el.absolutePoints ? el.absolutePoints : el.points;
+        if (el.type === 'pencil' || el.type === 'highlight' || el.type === 'eraser') {
+          return {
+            ...el,
+            points: pointsToUse.map(pt => ({
+              ...pt,
+              x: pt.x - cRect.left + container.scrollLeft,
+              y: pt.y - cRect.top + container.scrollTop
+            }))
+          };
+        } else {
+          const absX = el.absoluteX !== undefined ? el.absoluteX : el.x;
+          const absY = el.absoluteY !== undefined ? el.absoluteY : el.y;
+          return {
+            ...el,
+            x: absX !== undefined ? absX - cRect.left + container.scrollLeft : undefined,
+            y: absY !== undefined ? absY - cRect.top + container.scrollTop : undefined,
+            arrowX: el.absoluteArrowX !== undefined ? el.absoluteArrowX - cRect.left + container.scrollLeft : undefined,
+            arrowY: el.absoluteArrowY !== undefined ? el.absoluteArrowY - cRect.top + container.scrollTop : undefined
+          };
+        }
+      }
+
       return el;
     }).filter(Boolean);
   }, [elements, container, domUpdateKey]);
@@ -1720,14 +1780,24 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       } catch (e) {
         console.warn("Invalid selector lookup:", el.anchorSelector);
       }
-      if (!domEl) {
-        // Anchor không còn trong DOM → dùng tọa độ tuyệt đối thay vì bỏ qua
+
+      let isMatch = !!domEl;
+      if (domEl && el.textHash) {
+        const currentHash = calculateTextHash(normalizeText(domEl.textContent || ""));
+        if (currentHash !== el.textHash) {
+          isMatch = false;
+        }
+      }
+
+      if (!isMatch || !domEl) {
+        // Anchor không còn trong DOM hoặc lệch chữ → dùng tọa độ tuyệt đối thay vì bỏ qua
         return {
           ...el,
           x: el.absoluteX !== undefined ? el.absoluteX : el.x,
           y: el.absoluteY !== undefined ? el.absoluteY : el.y,
           arrowX: el.absoluteArrowX !== undefined ? el.absoluteArrowX : el.arrowX,
-          arrowY: el.absoluteArrowY !== undefined ? el.arrowY : el.arrowY
+          arrowY: el.absoluteArrowY !== undefined ? el.absoluteArrowY : el.arrowY,
+          points: el.absolutePoints ? el.absolutePoints : el.points
         };
       }
 
@@ -1761,7 +1831,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           x: el.absoluteX !== undefined ? el.absoluteX : el.x,
           y: el.absoluteY !== undefined ? el.absoluteY : el.y,
           arrowX: el.absoluteArrowX !== undefined ? el.absoluteArrowX : el.arrowX,
-          arrowY: el.absoluteArrowY !== undefined ? el.arrowY : el.arrowY
+          arrowY: el.absoluteArrowY !== undefined ? el.absoluteArrowY : el.arrowY,
+          points: el.absolutePoints ? el.absolutePoints : el.points
         };
       }
 
@@ -2495,7 +2566,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         if (target.closest && (
           target.closest('[data-text-editor-wrapper="true"]') ||
           target.closest('.' + styles.canvasContainer) ||
-          target.closest('[class*="toolbar"]')
+          target.closest('[class*="toolbar"]') ||
+          target.closest('.sub-svg-overlay') ||
+          target.closest('svg')
         )) {
           return false;
         }
@@ -3291,7 +3364,18 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             console.warn("Invalid selector lookup:", el.anchorSelector);
           }
           if (domEl) {
-            rectCache.set(cacheKey, domEl.getBoundingClientRect());
+            let isMatch = true;
+            if (el.textHash) {
+              const currentHash = calculateTextHash(normalizeText(domEl.textContent || ""));
+              if (currentHash !== el.textHash) {
+                isMatch = false;
+              }
+            }
+            if (isMatch) {
+              rectCache.set(cacheKey, domEl.getBoundingClientRect());
+            } else {
+              console.warn("Anchor text mismatch, skipping anchor:", el.anchorSelector);
+            }
           }
         }
       }
