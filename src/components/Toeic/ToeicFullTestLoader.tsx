@@ -144,15 +144,25 @@ export default async function ToeicFullTestLoader({
       const targetTestNumInt = parseInt(targetTestNum || "0");
 
       // 1. TỐI ƯU: Tìm kiếm "lỏng" ở Database để lấy về các ứng viên tiềm năng
-      // Lấy từ khóa chính (ví dụ: ETS, ECONOMY...) để database lọc nhanh
+      // Lấy từ khóa chính (ví dụ: ETS, ECONOMY...) và số năm (nếu có) để database lọc nhanh
       const mainKeyword = targetBook.match(/[A-Z]{3,}/i)?.[0] || targetBook.substring(0, 3);
+      const bookDigits = targetBook.match(/\d+/)?.[0] || "";
+
+      const bookFilter = (pathKey: string) => {
+        const conditions: any[] = [
+          { metadata: { path: [pathKey], string_contains: mainKeyword } }
+        ];
+        if (bookDigits) {
+          conditions.push({ metadata: { path: [pathKey], string_contains: bookDigits } });
+        }
+        return { AND: conditions };
+      };
 
       const allGroups = await prisma.toeicQuestionGroup.findMany({
         where: {
           OR: [
-            { metadata: { path: ['Book'], string_contains: mainKeyword } },
-            { metadata: { path: ['book'], string_contains: mainKeyword } },
-            { passageText: { contains: mainKeyword, mode: 'insensitive' } }
+            bookFilter('Book'),
+            bookFilter('book')
           ]
         },
         include: {
