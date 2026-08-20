@@ -2428,7 +2428,14 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             found = document.querySelector(el.anchorSelector);
           } catch (e) {}
           if (!found && el.textContent && el.textHash) {
-            const candidates = Array.from(document.querySelectorAll('span, p, li, h1, h2, h3, h4, h5, h6, tr, td, div'));
+            let containerEl: Element | null = null;
+            if (el.containerSelector) {
+              try {
+                containerEl = document.querySelector(el.containerSelector);
+              } catch (e) {}
+            }
+            const root = containerEl || document;
+            const candidates = Array.from(root.querySelectorAll('span, p, li, h1, h2, h3, h4, h5, h6, tr, td, div'));
             for (const cand of candidates) {
               const candText = cand.textContent || "";
               const normCandText = normalizeText(candText);
@@ -2464,8 +2471,22 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       }, 50);
     };
 
-    const observer = new MutationObserver(() => {
-      debouncedUpdate();
+    const observer = new MutationObserver((mutations) => {
+      // Bỏ qua các thay đổi DOM xảy ra bên trong khung soạn thảo văn bản, toolbar hoặc vùng vẽ để tránh nghẽn CPU khi gõ chữ
+      const hasValidMutation = mutations.some(m => {
+        const target = m.target as HTMLElement;
+        if (target.closest && (
+          target.closest('[data-text-editor-wrapper="true"]') ||
+          target.closest('.' + styles.canvasContainer) ||
+          target.closest('[class*="toolbar"]')
+        )) {
+          return false;
+        }
+        return true;
+      });
+      if (hasValidMutation) {
+        debouncedUpdate();
+      }
     });
 
     observer.observe(document.body, {
