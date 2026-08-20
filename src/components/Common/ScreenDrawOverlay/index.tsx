@@ -937,22 +937,6 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
 }) => {
   const [scrollPos, setScrollPos] = useState({ left: 0, top: 0 });
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
-  const [visibleElementIds, setVisibleElementIds] = useState<Set<string>>(new Set());
-
-  // Đồng bộ hóa tức thời các nét vẽ mới vào visibleElementIds để hiển thị ngay lập tức (trước khi Paint) mà không chờ IntersectionObserver bất đồng bộ
-  React.useLayoutEffect(() => {
-    setVisibleElementIds(prev => {
-      let changed = false;
-      const next = new Set(prev);
-      elements.forEach(el => {
-        if (!next.has(el.id)) {
-          next.add(el.id);
-          changed = true;
-        }
-      });
-      return changed ? next : prev;
-    });
-  }, [elements]);
 
   // 1. Cập nhật kích thước viewport và vị trí cuộn thực tế của container thay vì kích thước toàn trang
   useEffect(() => {
@@ -1091,63 +1075,6 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
   }, [elements, container, domUpdateKey]);
 
   // 3. Virtualization bằng IntersectionObserver để ẩn các nét ngoài tầm nhìn nhằm giải phóng VRAM
-  useEffect(() => {
-    // Trước tiên, dọn dẹp tất cả các thuộc tính data-element-ids cũ trong container
-    container.querySelectorAll('[data-element-ids]').forEach(node => {
-      node.removeAttribute('data-element-ids');
-    });
-
-    const observer = new IntersectionObserver((entries) => {
-      setVisibleElementIds(prev => {
-        const next = new Set(prev);
-        entries.forEach(entry => {
-          const idsStr = entry.target.getAttribute('data-element-ids');
-          if (idsStr) {
-            const ids = idsStr.split(',');
-            ids.forEach(id => {
-              if (entry.isIntersecting) {
-                next.add(id);
-              } else {
-                next.delete(id);
-              }
-            });
-          }
-        });
-        return next;
-      });
-    }, {
-      root: container,
-      rootMargin: '100px' // Đệm thêm 100px
-    });
-
-    elements.forEach(el => {
-      if (el.anchorSelector) {
-        const isGlobal = el.anchorSelector.startsWith('body') || el.anchorSelector.startsWith('#');
-        let anchor: HTMLElement | null = null;
-        try {
-          anchor = isGlobal
-            ? (document.querySelector(el.anchorSelector) as HTMLElement | null)
-            : (container.querySelector(el.anchorSelector.startsWith('>') ? ':scope ' + el.anchorSelector : ':scope > ' + el.anchorSelector) as HTMLElement | null);
-        } catch (e) {
-          console.warn("Observer querySelector failed for selector:", el.anchorSelector, e);
-        }
-        if (anchor && (isGlobal ? container.contains(anchor) : true)) {
-          const existingIds = anchor.getAttribute('data-element-ids') || '';
-          const idList = existingIds ? existingIds.split(',') : [];
-          if (!idList.includes(el.id)) {
-            idList.push(el.id);
-            anchor.setAttribute('data-element-ids', idList.join(','));
-          }
-          observer.observe(anchor);
-        }
-      }
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [elements, container]);
-
   return (
     <svg 
       className="sub-svg-overlay" 
@@ -1161,10 +1088,7 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
       {renderedElements.map(el => {
         if (!el) return null;
         
-        // Nếu nét vẽ có neo chữ và đang nằm ngoài viewport -> ẩn đi bằng cách không render
-        if (el.anchorSelector && !visibleElementIds.has(el.id)) {
-          return null;
-        }
+
 
         const isSelected = el.id === selectedId;
         const strokeColor = el.color;
@@ -2584,6 +2508,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     const observer = new MutationObserver((mutations) => {
       // Bỏ qua các thay đổi DOM xảy ra bên trong khung soạn thảo văn bản, toolbar hoặc vùng vẽ để tránh nghẽn CPU khi gõ chữ
       const hasValidMutation = mutations.some(m => {
+        if (m.type === 'attributes' && m.attributeName === 'data-element-ids') {
+          return false;
+        }
         const target = m.target as HTMLElement;
         if (target.closest && (
           target.closest('[data-text-editor-wrapper="true"]') ||
