@@ -2338,7 +2338,10 @@ export default function ToeicPart5Player({
   }
 
   return (
-    <div className="flex-1 flex flex-col font-sans bg-[#f8fafc] text-slate-900 overflow-hidden select-text relative">
+    <div
+      data-drawing-context={currentQ?.id ? `part5-${currentQ.id}` : undefined}
+      className="flex-1 flex flex-col font-sans bg-[#f8fafc] text-slate-900 overflow-hidden select-text relative"
+    >
       <div className="flex-1 flex overflow-hidden relative">
         <div id="part5-scroll-container" className="flex-1 flex flex-col min-h-0 overflow-y-auto px-4 md:pl-8 md:pr-16 scroll-smooth webtoeic-scroll-container">
           <div className="flex-1 flex flex-col w-full min-h-0 pb-10">

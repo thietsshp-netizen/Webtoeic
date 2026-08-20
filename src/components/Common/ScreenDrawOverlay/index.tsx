@@ -954,9 +954,14 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
     return elements.map(el => {
       if (el.anchorSelector) {
         const isGlobal = el.anchorSelector.startsWith('body') || el.anchorSelector.startsWith('#');
-        const anchor = isGlobal
-          ? (document.querySelector(el.anchorSelector) as HTMLElement | null)
-          : (container.querySelector(':scope ' + el.anchorSelector) as HTMLElement | null);
+        let anchor: HTMLElement | null = null;
+        try {
+          anchor = isGlobal
+            ? (document.querySelector(el.anchorSelector) as HTMLElement | null)
+            : (container.querySelector(el.anchorSelector.startsWith('>') ? ':scope ' + el.anchorSelector : ':scope > ' + el.anchorSelector) as HTMLElement | null);
+        } catch (e) {
+          console.warn("Render querySelector failed for selector:", el.anchorSelector, e);
+        }
         if (anchor && (isGlobal ? container.contains(anchor) : true)) {
           const anchorRect = anchor.getBoundingClientRect();
           const anchorLocalX = anchorRect.left - cRect.left + container.scrollLeft;
@@ -1019,9 +1024,14 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
     elements.forEach(el => {
       if (el.anchorSelector) {
         const isGlobal = el.anchorSelector.startsWith('body') || el.anchorSelector.startsWith('#');
-        const anchor = isGlobal
-          ? (document.querySelector(el.anchorSelector) as HTMLElement | null)
-          : (container.querySelector(':scope > ' + el.anchorSelector) as HTMLElement | null);
+        let anchor: HTMLElement | null = null;
+        try {
+          anchor = isGlobal
+            ? (document.querySelector(el.anchorSelector) as HTMLElement | null)
+            : (container.querySelector(el.anchorSelector.startsWith('>') ? ':scope ' + el.anchorSelector : ':scope > ' + el.anchorSelector) as HTMLElement | null);
+        } catch (e) {
+          console.warn("Observer querySelector failed for selector:", el.anchorSelector, e);
+        }
         if (anchor && (isGlobal ? container.contains(anchor) : true)) {
           const existingIds = anchor.getAttribute('data-element-ids') || '';
           const idList = existingIds ? existingIds.split(',') : [];
@@ -1577,6 +1587,80 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   // Khai báo state lưu nét vẽ vector và các refs vẽ nháp chuyên biệt
   const [elements, setElements] = useState<DrawElement[]>([]);
+  
+  // Dynamic drawing context partitioning
+  const [currentContext, setCurrentContext] = useState<string>("");
+  const ignoreNextSaveRef = useRef(false);
+  const prevContextRef = useRef<string>("");
+
+  // Detect context changes
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const detectContext = () => {
+      const el = document.querySelector('[data-drawing-context]');
+      const context = el ? el.getAttribute('data-drawing-context') : window.location.pathname;
+      return context || "global";
+    };
+
+    setCurrentContext(detectContext());
+
+    const interval = setInterval(() => {
+      const detected = detectContext();
+      if (detected !== currentContext) {
+        setCurrentContext(detected);
+      }
+    }, 300);
+
+    return () => clearInterval(interval);
+  }, [currentContext]);
+
+  // Context transition handling (save prev, load new)
+  useEffect(() => {
+    if (!currentContext) return;
+
+    // 1. Save elements of the previous context before switching
+    const prevContext = prevContextRef.current;
+    if (prevContext && prevContext !== currentContext) {
+      const key = `webtoeic_canvas_elements_${prevContext}`;
+      try {
+        localStorage.setItem(key, JSON.stringify(elements));
+      } catch (e) {
+        console.error("Failed to save elements for prev context", e);
+      }
+    }
+
+    // 2. Load elements of the new context
+    const newKey = `webtoeic_canvas_elements_${currentContext}`;
+    let loadedElements: DrawElement[] = [];
+    const stored = localStorage.getItem(newKey);
+    if (stored) {
+      try {
+        loadedElements = JSON.parse(stored);
+      } catch (e) {}
+    } else {
+      // Migration fallback: if no context-specific drawings exist yet,
+      // and the context is a pathname (e.g. not a part5- question),
+      // we can try loading from the legacy key to preserve user drawings.
+      if (!currentContext.startsWith('part5-')) {
+        const legacy = localStorage.getItem('webtoeic_canvas_elements');
+        if (legacy) {
+          try {
+            loadedElements = JSON.parse(legacy);
+          } catch (e) {}
+        }
+      }
+    }
+
+    // 3. Update state
+    ignoreNextSaveRef.current = true;
+    setElements(loadedElements);
+    setUndoStack(loadedElements.length > 0 ? [loadedElements] : []);
+    setRedoStack([]);
+
+    // Update ref
+    prevContextRef.current = currentContext;
+  }, [currentContext]);
+
   const [undoStack, setUndoStack] = useState<DrawElement[][]>([]);
   const [redoStack, setRedoStack] = useState<DrawElement[][]>([]);
 
@@ -1930,19 +2014,6 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         }
       } catch (e) { /* bỏ qua */ }
     }
-
-    const storedElements = localStorage.getItem('webtoeic_canvas_elements');
-    if (storedElements) {
-      try {
-        const parsed = JSON.parse(storedElements);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setUndoStack([parsed]);
-          setElements(parsed);
-        }
-      } catch (e) {
-        // bỏ qua
-      }
-    }
   }, []);
 
   // Đóng palette popup khi click ra ngoài
@@ -2004,6 +2075,12 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   // 2. Trì hoãn lưu xuống localStorage (Debounce 800ms) để tránh nghẽn CPU
   useEffect(() => {
+    if (ignoreNextSaveRef.current) {
+      ignoreNextSaveRef.current = false;
+      return;
+    }
+    if (!currentContext) return;
+
     const timer = setTimeout(() => {
       let tempElements = [...elements];
       let jsonStr = JSON.stringify(tempElements);
@@ -2038,9 +2115,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
       // 2. LƯU VÀ FALLBACK: Thử lưu, nếu vẫn báo lỗi đầy thì loại bỏ tiếp nét vẽ cũ nhất bất kỳ
       let success = false;
+      const key = `webtoeic_canvas_elements_${currentContext}`;
       while (!success && tempElements.length > 0) {
         try {
-          localStorage.setItem('webtoeic_canvas_elements', JSON.stringify(tempElements));
+          localStorage.setItem(key, JSON.stringify(tempElements));
           success = true;
         } catch (err) {
           console.warn("[DrawOverlay] LocalStorage đầy, tiến hành loại bỏ nét vẽ cũ nhất làm fallback...");
@@ -5545,7 +5623,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     setElements([]);
     setUndoStack([]);
     setRedoStack([]);
-    localStorage.removeItem('webtoeic_canvas_elements');
+    if (currentContext) {
+      localStorage.removeItem(`webtoeic_canvas_elements_${currentContext}`);
+    } else {
+      localStorage.removeItem('webtoeic_canvas_elements');
+    }
     setSelectedId(null);
     const canvas = canvasRef.current;
     const ctx = ctxRef.current;

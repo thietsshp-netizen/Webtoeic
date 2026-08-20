@@ -191,38 +191,19 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async jwt({ token, user, trigger, session: updatedSession }) {
+      // ========== LẦN ĐẦU ĐĂNG NHẬP (user object tồn tại) ==========
       if (user) {
         console.log("JWT Callback - Initial Sign In - User ID:", user.id, "Email:", user.email);
-        token.sub = user.id; // Ensure sub is set to DB ID
-        token.role = user.email === "thietsshp@gmail.com" ? "ADMIN" : ((user as any).role || "USER");
-        token.displayName = (user as any).displayName;
-        token.expiresAt = (user as any).accountExpiresAt;
-        token.createdAt = (user as any).createdAt;
-      }
+        token.sub = user.id;
 
-      if (token.sub) {
+        // Lấy thông tin đầy đủ từ DB một lần duy nhất khi đăng nhập
         try {
-          console.log("JWT Callback - Finding dbUser for sub:", token.sub);
           const dbUser = await prisma.user.findUnique({
-            where: { id: token.sub as string },
-            select: { id: true, email: true, role: true, accountExpiresAt: true, displayName: true, name: true, createdAt: true, activeSessionId: true } as any
+            where: { id: user.id as string },
+            select: { id: true, email: true, role: true, accountExpiresAt: true, displayName: true, name: true, createdAt: true } as any
           });
 
-          if (!dbUser) {
-            console.log("JWT Callback - dbUser not found for sub:", token.sub);
-            if (user) {
-              console.log("JWT Callback - Initial Sign In - Proceeding anyway");
-            } else {
-              return { ...token, error: "UserNotFound" } as any;
-            }
-          } else {
-            // KIỂM TRA ACTIVE SESSION (CHỐNG HỌC SONG SONG)
-            // Nếu sessionId trong token khác với activeSessionId trong DB -> Bị kick
-            if (token.sessionId && (dbUser as any).activeSessionId && token.sessionId !== (dbUser as any).activeSessionId) {
-              console.log("JWT Callback - Session conflict for User:", token.sub);
-              return { ...token, error: "SessionConflict" } as any;
-            }
-
+          if (dbUser) {
             const userObj = dbUser as any;
             token.email = userObj.email;
             token.role = userObj.role;
@@ -231,85 +212,78 @@ export const authOptions: NextAuthOptions = {
             token.displayName = userObj.displayName;
             token.name = userObj.name;
 
-            // Tính toán số ngày còn lại
             if (dbUser.accountExpiresAt) {
               const now = new Date();
               const expiresAt = new Date(dbUser.accountExpiresAt as any);
               const diffTime = expiresAt.getTime() - now.getTime();
-              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-              // Nếu đã hết hạn (-1) thì vẫn cho phép session hoạt động bình thường, sẽ chặn ở trang học tập
-
-              token.daysLeft = diffDays;
+              token.daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             } else {
               token.daysLeft = null;
             }
+          } else {
+            // Fallback nếu không tìm thấy trong DB
+            token.role = user.email === "thietsshp@gmail.com" ? "ADMIN" : ((user as any).role || "USER");
+            token.displayName = (user as any).displayName;
+            token.expiresAt = (user as any).accountExpiresAt;
+            token.createdAt = (user as any).createdAt;
           }
         } catch (e) {
-          console.error("Lỗi kiểm tra session:", e);
+          console.error("JWT Callback - Initial DB fetch error:", e);
+          token.role = user.email === "thietsshp@gmail.com" ? "ADMIN" : ((user as any).role || "USER");
+        }
+
+        // Tạo session ID mới và cập nhật activeSessionId (chỉ lần đăng nhập)
+        if (token.role !== "ADMIN") {
+          try {
+            const newSessionId = uuidv4();
+            token.sessionId = newSessionId;
+            await (prisma as any).user.update({
+              where: { id: user.id },
+              data: { activeSessionId: newSessionId }
+            });
+            console.log("JWT Callback - Registered new sessionId for user:", user.id);
+          } catch (e) {
+            console.error("JWT Callback - Session ID update error:", e);
+          }
         }
       }
 
-      // 4. KIỂM TRA & ĐĂNG KÝ THIẾT BỊ (Cho cả user mới và cũ)
-      if (user && (user as any).role !== "ADMIN") {
-        try {
-          const newSessionId = uuidv4();
-          token.sessionId = newSessionId;
-
-          console.log("JWT Callback - Updating activeSessionId for User:", user.id);
-          // Cập nhật vào DB
-          await (prisma as any).user.update({
-            where: { id: user.id },
-            data: { activeSessionId: newSessionId }
-          });
-
-          // Đăng ký thiết bị nếu chưa có
-          const cookieStore = await cookies();
-          const fingerprint = cookieStore.get("device_fingerprint")?.value;
-          const userAgent = (await headers()).get("user-agent") || "";
-
-          if (fingerprint) {
-            const isMobile = /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle/i.test(userAgent);
-            const deviceType = isMobile ? "MOBILE" : "PC";
-            const deviceModel = isMobile ? "Mobile Device" : "PC/Laptop";
-
-            // Kiểm tra xem thiết bị này đã đăng ký cho user này chưa
-            const existingDevice = await (prisma as any).userDevice.findUnique({
-              where: {
-                userId_deviceId: {
-                  userId: user.id,
-                  deviceId: fingerprint
-                }
-              }
+      // ========== CẬP NHẬT TOKEN KHI USER YÊU CẦU (trigger=update) ==========
+      if (trigger === "update") {
+        if (updatedSession?.name) {
+          token.displayName = updatedSession.name;
+        }
+        // Khi update được trigger, đồng bộ lại dữ liệu từ DB (ít xảy ra)
+        if (token.sub) {
+          try {
+            const dbUser = await prisma.user.findUnique({
+              where: { id: token.sub as string },
+              select: { email: true, role: true, accountExpiresAt: true, displayName: true, name: true, createdAt: true, activeSessionId: true } as any
             });
-
-            if (!existingDevice) {
-              // Kiểm tra slot
-              const devicesOfSameType = await (prisma as any).userDevice.findMany({
-                where: { userId: user.id, type: deviceType }
-              });
-
-              if (devicesOfSameType.length < 1) {
-                await (prisma as any).userDevice.create({
-                  data: {
-                    userId: user.id,
-                    deviceId: fingerprint,
-                    type: deviceType,
-                    model: deviceModel
-                  }
-                });
-                console.log("JWT Callback - Registered new device for user:", user.id);
+            if (dbUser) {
+              const userObj = dbUser as any;
+              token.email = userObj.email;
+              token.role = userObj.role;
+              token.expiresAt = userObj.accountExpiresAt;
+              token.createdAt = userObj.createdAt;
+              token.displayName = userObj.displayName || updatedSession?.name || token.displayName;
+              token.name = userObj.name;
+              if (dbUser.accountExpiresAt) {
+                const now = new Date();
+                const expiresAt = new Date(dbUser.accountExpiresAt as any);
+                token.daysLeft = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
               }
             }
+          } catch (e) {
+            console.error("JWT Callback - Update DB sync error:", e);
           }
-        } catch (e) {
-          console.error("JWT Callback - Initial Setup Error:", e);
         }
       }
 
-      if (trigger === "update" && updatedSession?.name) {
-        token.displayName = updatedSession.name;
-      }
+      // ========== CÁC LẦN GỌI SESSION TIẾP THEO ==========
+      // Không query DB nữa! Token JWT đã chứa đầy đủ thông tin.
+      // Chỉ kiểm tra session conflict nếu có sessionId (chống học song song)
+      // Việc kiểm tra này được thực hiện ở API level thay vì mỗi lần refresh token.
 
       return token;
     }
