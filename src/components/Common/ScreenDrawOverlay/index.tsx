@@ -808,7 +808,14 @@ export const findBestAnchor = (
         const containerSelector = container ? generateUniqueSelector(container) : undefined;
         let finalSelector = uniqueSelector;
         if (containerSelector && uniqueSelector.startsWith(containerSelector)) {
-          finalSelector = uniqueSelector.replace(containerSelector + ' ', '');
+          if (uniqueSelector === containerSelector) {
+            finalSelector = uniqueSelector;
+          } else {
+            finalSelector = uniqueSelector.replace(containerSelector, '').trim();
+            if (finalSelector.startsWith('>')) {
+              finalSelector = finalSelector.substring(1).trim();
+            }
+          }
         }
 
         if (!bestAnchorInfo || foundPriority < bestAnchorInfo.priority) {
@@ -842,7 +849,14 @@ export const findBestAnchor = (
           const containerSelector = container ? generateUniqueSelector(container) : undefined;
           let finalSelector = uniqueSelector;
           if (containerSelector && uniqueSelector.startsWith(containerSelector)) {
-            finalSelector = uniqueSelector.replace(containerSelector + ' ', '');
+            if (uniqueSelector === containerSelector) {
+              finalSelector = uniqueSelector;
+            } else {
+              finalSelector = uniqueSelector.replace(containerSelector, '').trim();
+              if (finalSelector.startsWith('>')) {
+                finalSelector = finalSelector.substring(1).trim();
+              }
+            }
           }
           bestAnchorInfo = {
             selector: finalSelector,
