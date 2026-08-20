@@ -161,6 +161,7 @@ export interface DrawElement {
   absoluteY?: number;
   absoluteArrowX?: number;
   absoluteArrowY?: number;
+  absolutePoints?: { x: number; y: number; pressure?: number }[];
   fontFamily?: string;
   textMaxWidth?: number;
 }
@@ -606,9 +607,11 @@ export const generateUniqueSelector = (el: HTMLElement, limitElement?: HTMLEleme
     const tagName = current.tagName.toLowerCase();
     const parentEl: HTMLElement | null = current.parentElement;
     if (parentEl) {
-      const siblings = Array.from(parentEl.children);
+      const currentTagName = current.tagName;
+      // Sử dụng nth-of-type thay vì nth-child để tránh bị lệch index bởi các tag khác (như svg portal)
+      const siblings = Array.from(parentEl.children).filter(child => child.tagName === currentTagName);
       const index = siblings.indexOf(current);
-      path.unshift(`${tagName}:nth-child(${index + 1})`);
+      path.unshift(`${tagName}:nth-of-type(${index + 1})`);
       current = parentEl;
     } else {
       path.unshift(tagName);
@@ -3307,7 +3310,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             x: el.absoluteX !== undefined ? el.absoluteX : el.x,
             y: el.absoluteY !== undefined ? el.absoluteY : el.y,
             arrowX: el.absoluteArrowX !== undefined ? el.absoluteArrowX : el.arrowX,
-            arrowY: el.absoluteArrowY !== undefined ? el.absoluteArrowY : el.arrowY
+            arrowY: el.absoluteArrowY !== undefined ? el.absoluteArrowY : el.arrowY,
+            points: el.absolutePoints ? el.absolutePoints : el.points
           };
         }
 
@@ -3335,7 +3339,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             x: el.absoluteX !== undefined ? el.absoluteX : el.x,
             y: el.absoluteY !== undefined ? el.absoluteY : el.y,
             arrowX: el.absoluteArrowX !== undefined ? el.absoluteArrowX : el.arrowX,
-            arrowY: el.absoluteArrowY !== undefined ? el.absoluteArrowY : el.arrowY
+            arrowY: el.absoluteArrowY !== undefined ? el.absoluteArrowY : el.arrowY,
+            points: el.absolutePoints ? el.absolutePoints : el.points
           };
         }
 
@@ -5223,6 +5228,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           textHash: textHash,
           textContent: textContent,
           points: [{ x: dotX - dx, y: dotY - dy, pressure }],
+          absolutePoints: [{ x: dotX, y: dotY, pressure }],
           color: color,
           size: tool === 'highlight' ? highlightSize : pencilSize,
           penStyle: tool === 'pencil' ? penStyle : undefined,
@@ -5260,6 +5266,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             y: shape.rect.y - dy,
             width: shape.rect.w,
             height: shape.rect.h,
+            absoluteX: shape.rect.x,
+            absoluteY: shape.rect.y
           };
         } else if (shape.type === 'circle' && shape.circle) {
           newElement = {
@@ -5272,6 +5280,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             x: shape.circle.cx - dx,
             y: shape.circle.cy - dy,
             radius: shape.circle.radius,
+            absoluteX: shape.circle.cx,
+            absoluteY: shape.circle.cy
           };
         } else if (shape.type === 'ellipse' && shape.ellipse) {
           newElement = {
@@ -5285,6 +5295,8 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             y: shape.ellipse.cy - dy,
             rx: shape.ellipse.rx,
             ry: shape.ellipse.ry,
+            absoluteX: shape.ellipse.cx,
+            absoluteY: shape.ellipse.cy
           };
         } else if (shape.type === 'line' && shape.line) {
           newElement = {
@@ -5294,6 +5306,10 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
             points: [
               { x: shape.line.start.x - dx, y: shape.line.start.y - dy },
               { x: shape.line.end.x - dx, y: shape.line.end.y - dy }
+            ],
+            absolutePoints: [
+              { x: shape.line.start.x, y: shape.line.start.y },
+              { x: shape.line.end.x, y: shape.line.end.y }
             ],
             color: color,
             size: tool === 'highlight' ? highlightSize : pencilSize,
@@ -5314,6 +5330,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
                 x: pt.x - dx,
                 y: pt.y - dy
               })),
+              absolutePoints: points.map(pt => ({ ...pt })),
               color: color,
               size: tool === 'eraser' ? eraserSize : tool === 'highlight' ? highlightSize : pencilSize,
               penStyle: tool === 'pencil' ? penStyle : undefined
@@ -5340,7 +5357,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               x: normX - dx,
               y: normY - dy,
               width: normW,
-              height: normH
+              height: normH,
+              absoluteX: normX,
+              absoluteY: normY
             };
           } else {
             const cx = startPoint.x + w / 2;
@@ -5355,7 +5374,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
               size: circleSize,
               x: cx - dx,
               y: cy - dy,
-              radius: radius
+              radius: radius,
+              absoluteX: cx,
+              absoluteY: cy
             };
           }
         }
