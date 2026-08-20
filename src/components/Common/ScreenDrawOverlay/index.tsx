@@ -892,6 +892,28 @@ export const calculateTextHash = (text: string): string => {
   return hash.toString();
 };
 
+let offscreenCanvas: HTMLCanvasElement | null = null;
+let offscreenCtx: CanvasRenderingContext2D | null = null;
+
+export const getSVGTextWidth = (text: string, size: number, style?: string, fontFamily?: string): number => {
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return size * text.length * 0.55;
+  }
+  if (!offscreenCanvas) {
+    try {
+      offscreenCanvas = document.createElement('canvas');
+      offscreenCtx = offscreenCanvas.getContext('2d');
+    } catch (e) {}
+  }
+  if (offscreenCtx) {
+    try {
+      offscreenCtx.font = getElementFont(size, style, fontFamily);
+      return offscreenCtx.measureText(text).width;
+    } catch (e) {}
+  }
+  return size * text.length * 0.55;
+};
+
 interface SubSVGOverlayProps {
   container: HTMLElement;
   elements: DrawElement[];
@@ -1267,7 +1289,7 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
           let maxLineWidth = 0;
           lines.forEach(line => {
             const cleanLine = stripMarkdownTags(line);
-            const w = el.size * cleanLine.length * 0.48; // Ước lượng chiều rộng chữ trong SVG
+            const w = getSVGTextWidth(cleanLine, el.size, el.textStyle, el.fontFamily);
             if (w > maxLineWidth) maxLineWidth = w;
           });
           const rectX = el.x || 0;
@@ -1355,7 +1377,7 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
           let maxLineWidth = 0;
           lines.forEach(line => {
             const cleanLine = stripMarkdownTags(line);
-            const w = el.size * cleanLine.length * 0.48; // Ước lượng chiều rộng chữ trong SVG
+            const w = getSVGTextWidth(cleanLine, el.size, el.textStyle, el.fontFamily);
             if (w > maxLineWidth) maxLineWidth = w;
           });
           const paddingX = 6;
@@ -1487,7 +1509,7 @@ const SubSVGOverlay: React.FC<SubSVGOverlayProps> = ({
             let maxLineWidth = 0;
             lines.forEach(line => {
               const cleanLine = stripMarkdownTags(line);
-              const w = el.size * cleanLine.length * 0.48;
+              const w = getSVGTextWidth(cleanLine, el.size, el.textStyle, el.fontFamily);
               if (w > maxLineWidth) maxLineWidth = w;
             });
             const paddingX = 6;
@@ -3720,23 +3742,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
           const lines = wrapTextLines(el.text, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily);
           let maxLineWidth = 0;
-          const tempCtx = canvas?.getContext('2d');
-          if (tempCtx && !originalEl.containerSelector) {
-            tempCtx.save();
-            lines.forEach(line => {
-              const cleanLine = stripMarkdownTags(line);
-              tempCtx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
-              const w = tempCtx.measureText(cleanLine).width;
-              if (w > maxLineWidth) maxLineWidth = w;
-            });
-            tempCtx.restore();
-          } else {
-            lines.forEach(line => {
-              const cleanLine = stripMarkdownTags(line);
-              const w = el.size * cleanLine.length * 0.48;
-              if (w > maxLineWidth) maxLineWidth = w;
-            });
-          }
+          lines.forEach(line => {
+            const cleanLine = stripMarkdownTags(line);
+            const w = getSVGTextWidth(cleanLine, el.size, el.textStyle, el.fontFamily);
+            if (w > maxLineWidth) maxLineWidth = w;
+          });
 
           const paddingX = 6;
           const paddingY = el.type === 'callout' ? 5 : 4;
@@ -3810,24 +3820,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
       const lines = wrapTextLines(el.text!, getMaxWrapWidth(), el.size, el.textStyle, el.fontFamily);
       let maxLineWidth = 0;
-      const canvas = canvasRef.current;
-      const tempCtx = canvas?.getContext('2d');
-      if (tempCtx && !originalEl.containerSelector) {
-        tempCtx.save();
-        lines.forEach(line => {
-          const cleanLine = stripMarkdownTags(line);
-          tempCtx.font = getElementFont(el.size, el.textStyle, el.fontFamily);
-          const w = tempCtx.measureText(cleanLine).width;
-          if (w > maxLineWidth) maxLineWidth = w;
-        });
-        tempCtx.restore();
-      } else {
-        lines.forEach(line => {
-          const cleanLine = stripMarkdownTags(line);
-          const w = el.size * cleanLine.length * 0.48;
-          if (w > maxLineWidth) maxLineWidth = w;
-        });
-      }
+      lines.forEach(line => {
+        const cleanLine = stripMarkdownTags(line);
+        const w = getSVGTextWidth(cleanLine, el.size, el.textStyle, el.fontFamily);
+        if (w > maxLineWidth) maxLineWidth = w;
+      });
       const paddingX = 6;
       const paddingY = el.type === 'callout' ? 5 : 4;
       const width = maxLineWidth + paddingX * 2;
