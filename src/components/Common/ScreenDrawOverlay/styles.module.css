@@ -795,6 +795,7 @@
 :global(.webtoeic-scroll-container) {
   position: relative !important;
   will-change: transform;
+  padding-bottom: 120px !important;
 }
 
 :global(.sub-svg-overlay) {

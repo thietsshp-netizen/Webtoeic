@@ -502,6 +502,39 @@ export default function ToeicPart5Player({
     const width = 450;
     const height = 580;
 
+    // Gather all items from expansion and vocabulary
+    const vocabList: { word: string, meaning: string }[] = [];
+    if (explainData?.expansion && Array.isArray(explainData.expansion)) {
+      explainData.expansion.forEach((item: any) => {
+        if (item.phrase && item.meaning) {
+          vocabList.push({ word: item.phrase, meaning: item.meaning });
+        }
+      });
+    }
+    const rawVocabs = meta?.vocabulary || explainData?.vocabulary || [];
+    if (Array.isArray(rawVocabs)) {
+      rawVocabs.forEach((item: any) => {
+        if (item.word && item.meaning) {
+          vocabList.push({ word: item.word, meaning: item.meaning });
+        }
+      });
+    }
+
+    let vocabHtml = "";
+    if (vocabList.length > 0) {
+      const itemsHtml = vocabList.map(v => `
+        <span style="display: inline-block; margin-right: 8px;">
+          <strong style="color: #78350f;">${escapeHtml(v.word)}</strong>: <span>${escapeHtml(v.meaning)}</span>
+        </span>
+      `).join('<span style="color: #cbd5e1; margin-right: 8px; font-weight: bold;">•</span>');
+
+      vocabHtml = `
+        <div class="vocab-extra-footer" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #cbd5e1; font-size: 12.5px; line-height: 1.6; color: #475569; display: flex; flex-wrap: wrap; align-items: center;">
+          ${itemsHtml}
+        </div>
+      `;
+    }
+
     const popupHtml = `
       <div class="title-container">
         <div>
@@ -565,6 +598,7 @@ export default function ToeicPart5Player({
             }).join('');
           })()}
         </div>
+        ${vocabHtml}
       </div>
     `;
 

@@ -697,14 +697,24 @@ export default function ToeicPart1Player({
         .replace(/'/g, "&#039;");
     };
 
+    let explanationObj = { vietText: "" };
+    try {
+      if (qData.explanation) {
+        explanationObj = typeof qData.explanation === 'string' ? JSON.parse(qData.explanation) : qData.explanation;
+      }
+    } catch (e) {}
+    const popupVieParts = parseOptionsFromText(explanationObj.vietText || "");
+
     const optionHtmls = ['A', 'B', 'C', 'D'].map(opt => {
       const text = engP.find(p => p.label === opt)?.text || (qData as any)[`option${opt}`] || "";
+      const viText = popupVieParts.find(p => p.label === opt)?.text || "";
       const isCorrect = correctAnswer === opt;
       const color = isCorrect ? '#dc2626' : '#1e293b';
       const fontWeight = isCorrect ? 'bold' : 'normal';
+      const viHtml = viText ? ` <span style="font-size: 13px; font-style: italic; color: #475569; font-weight: normal; margin-left: 6px;">(${escapeHtml(viText)})</span>` : '';
       return `
         <div style="margin-bottom: 8px; font-size: 14px; color: ${color}; font-weight: ${fontWeight};">
-          <strong>${opt}.</strong> ${escapeHtml(text)}
+          <strong>${opt}.</strong> ${escapeHtml(text)}${viHtml}
         </div>
       `;
     }).join('');
