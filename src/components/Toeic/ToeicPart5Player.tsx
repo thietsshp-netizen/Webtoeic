@@ -2575,6 +2575,9 @@ export default function ToeicPart5Player({
                 )}
               </div>
             </div>
+            {!(revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id]) && (
+              <div className="h-48 shrink-0" />
+            )}
             {(revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id]) && (
               <div className="mt-6 h-[700px] shrink-0 relative overflow-hidden bg-white rounded-3xl border border-blue-100 shadow-md flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="px-6 py-3 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between shrink-0">
