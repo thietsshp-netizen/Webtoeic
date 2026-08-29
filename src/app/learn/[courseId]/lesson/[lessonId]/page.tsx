@@ -134,13 +134,13 @@ export default async function LessonDetailPage({
       )}
 
       {/* HEADER BÀI HỌC (LUÔN HIỂN THỊ) */}
-      <div className={`p-6 bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC", "IELTS_READING"].includes(lesson.contentType as string) ? "pr-24" : ""}`}>
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
+      <div className={`p-3 md:p-6 bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC", "IELTS_READING"].includes(lesson.contentType as string) ? "pr-24" : ""}`}>
+        <div className="flex items-center gap-2 md:gap-4">
+          <div className="w-10 h-10 bg-blue-600 rounded-2xl items-center justify-center text-white shadow-lg shadow-blue-600/20 hidden sm:flex">
             {lesson.contentType === "VIDEO" ? <PlayCircle size={24} /> : <FileText size={24} />}
           </div>
           <div>
-            <h2 className="text-sm font-bold text-slate-800 tracking-tight flex items-center gap-2">
+            <h2 className="text-xs md:text-sm font-bold text-slate-800 tracking-tight flex items-center gap-2 max-w-[150px] xs:max-w-[200px] sm:max-w-none truncate sm:whitespace-normal">
               {lesson.title}
             </h2>
           </div>
@@ -149,30 +149,30 @@ export default async function LessonDetailPage({
           <div id="header-extra-portal" className="flex-1 flex justify-center"></div>
         </div>
 
-        <div id="tour-lesson-nav-target" className="flex gap-1.5">
+        <div id="tour-lesson-nav-target" className="flex gap-1 md:gap-1.5">
           {prevLesson ? (
             <Link
               href={`/learn/${courseId}/lesson/${prevLesson.id}`}
-              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] rounded-full transition-all flex items-center gap-1.5 whitespace-nowrap"
+              className="px-2 py-1 md:px-3 md:py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[9px] md:text-[10px] rounded-full transition-all flex items-center gap-1 md:gap-1.5 whitespace-nowrap"
             >
-              <ChevronLeft size={13} /> BÀI TRƯỚC
+              <ChevronLeft size={13} /> <span className="hidden xs:inline">BÀI TRƯỚC</span>
             </Link>
           ) : (
-            <button disabled className="px-3 py-1.5 bg-slate-50 text-slate-300 font-bold text-[10px] rounded-full flex items-center gap-1.5 whitespace-nowrap cursor-not-allowed">
-              <ChevronLeft size={13} /> BÀI TRƯỚC
+            <button disabled className="px-2 py-1 md:px-3 md:py-1.5 bg-slate-50 text-slate-300 font-bold text-[9px] md:text-[10px] rounded-full flex items-center gap-1 md:gap-1.5 whitespace-nowrap cursor-not-allowed">
+              <ChevronLeft size={13} /> <span className="hidden xs:inline">BÀI TRƯỚC</span>
             </button>
           )}
 
           {nextLesson ? (
             <Link
               href={`/learn/${courseId}/lesson/${nextLesson.id}`}
-              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] rounded-full transition-all flex items-center gap-1.5 whitespace-nowrap shadow-md shadow-blue-600/20"
+              className="px-2 py-1 md:px-3 md:py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[9px] md:text-[10px] rounded-full transition-all flex items-center gap-1 md:gap-1.5 whitespace-nowrap shadow-md shadow-blue-600/20"
             >
-              BÀI TIẾP <ChevronRight size={13} />
+              <span className="hidden xs:inline">BÀI TIẾP</span> <ChevronRight size={13} />
             </Link>
           ) : (
-            <button disabled className="px-3 py-1.5 bg-blue-300 text-white font-bold text-[10px] rounded-full flex items-center gap-1.5 whitespace-nowrap shadow-md shadow-blue-300/20 cursor-not-allowed">
-              BÀI TIẾP <ChevronRight size={13} />
+            <button disabled className="px-2 py-1 md:px-3 md:py-1.5 bg-blue-300 text-white font-bold text-[9px] md:text-[10px] rounded-full flex items-center gap-1 md:gap-1.5 whitespace-nowrap shadow-md shadow-blue-300/20 cursor-not-allowed">
+              <span className="hidden xs:inline">BÀI TIẾP</span> <ChevronRight size={13} />
             </button>
           )}
         </div>

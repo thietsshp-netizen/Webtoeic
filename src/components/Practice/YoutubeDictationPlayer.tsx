@@ -157,6 +157,67 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const [leftWidth, setLeftWidth] = useState<number>(60); // 60% left (video), 40% right (subtitles)
   const [isResizing, setIsResizing] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  
+  // Mobile / Tablet Optimization States
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [showMobileOptions, setShowMobileOptions] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Gesture support
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const lastTapRef = useRef<number>(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartX.current = touch.clientX;
+    touchStartY.current = touch.clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const touch = e.changedTouches[0];
+    const diffX = touch.clientX - touchStartX.current;
+    const diffY = touch.clientY - touchStartY.current;
+
+    // Detect horizontal swipe (min 50px diff, and mostly horizontal)
+    if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX < 0) {
+        // Swipe Left -> Next
+        if (currentIndex < subtitles.length - 1) {
+          playSubtitleRow(currentIndex + 1);
+        }
+      } else {
+        // Swipe Right -> Prev
+        if (currentIndex > 0) {
+          playSubtitleRow(currentIndex - 1);
+        }
+      }
+    }
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
+
+  const handleDoubleTap = (e: React.TouchEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('input') || target.closest('textarea')) return;
+
+    const now = Date.now();
+    if (now - lastTapRef.current < 300) {
+      playSubtitleRow(currentIndex);
+      e.preventDefault();
+    }
+    lastTapRef.current = now;
+  };
+
   const videoContainerRef = useRef<HTMLDivElement>(null);
 
   // State for dictation input
@@ -847,15 +908,18 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   return (
     <div ref={outerContainerRef} className="flex flex-col w-full bg-slate-50 pb-12">
       {/* TOP: Video Player (Centered, takes full-width with a max-width limit) */}
-      <div className="w-full flex justify-center bg-slate-900 shadow-inner p-4 shrink-0">
+      <div className="w-full flex justify-center bg-slate-900 shadow-inner p-2 md:p-4 shrink-0">
         <div 
           ref={videoContainerRef}
           tabIndex={-1}
           onMouseLeave={() => videoContainerRef.current?.focus()}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onTouchStartCapture={handleDoubleTap}
           className={`w-full bg-black relative flex items-center justify-center group/video transition-all outline-none ${
             isFullscreen 
               ? "max-w-none h-full rounded-none border-0 shadow-none" 
-              : "max-w-5xl aspect-video rounded-3xl border-4 border-slate-800 shadow-2xl"
+              : "max-w-5xl aspect-video rounded-2xl md:rounded-3xl border-2 md:border-4 border-slate-800 shadow-2xl"
           }`}
         >
           {isDirectVideo ? (
@@ -938,7 +1002,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               allowFullScreen
             />
           ) : (
-            <div className="flex items-center justify-center h-full text-slate-400 font-bold">
+            <div className="flex items-center justify-center h-full text-slate-400 font-bold text-xs md:text-sm">
               Chưa có video URL hợp lệ
             </div>
           )}
@@ -947,29 +1011,29 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           {videoUrl && (
             <button
               onClick={toggleFullscreen}
-              className="absolute top-4 right-4 z-30 p-2.5 rounded-xl bg-black/60 hover:bg-black/85 text-white/80 hover:text-white border border-white/10 hover:border-white/20 transition-all hover:scale-105 opacity-0 group-hover/video:opacity-100 focus:opacity-100 shadow-md backdrop-blur-sm pointer-events-auto"
+              className="absolute top-2 right-2 md:top-4 md:right-4 z-30 p-2 rounded-lg md:rounded-xl bg-black/60 hover:bg-black/85 text-white/80 hover:text-white border border-white/10 hover:border-white/20 transition-all hover:scale-105 opacity-0 group-hover/video:opacity-100 focus:opacity-100 shadow-md backdrop-blur-sm pointer-events-auto"
               title={isFullscreen ? "Thoát toàn màn hình" : "Xem toàn màn hình"}
             >
-              {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+              {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
             </button>
           )}
 
           {/* Subtitle Overlay đè lên video */}
           {showSubOnVideo && mode === "listen" && subtitles[currentIndex] && (
-            <div className="absolute bottom-10 left-0 right-0 pointer-events-none flex flex-col items-center justify-center px-4 text-center z-50 select-none">
-              <div className="bg-black/40 px-4 py-1.5 rounded-xl max-w-[85%] shadow-lg">
+            <div className="absolute bottom-2 sm:bottom-5 md:bottom-10 left-0 right-0 pointer-events-none flex flex-col items-center justify-center px-2 md:px-4 text-center z-50 select-none">
+              <div className="bg-black/50 px-2.5 py-1 md:px-4 md:py-1.5 rounded-lg md:rounded-xl max-w-[90%] md:max-w-[85%] shadow-lg">
                 <p 
                   style={{ 
-                    fontSize: `${isFullscreen ? fontSize * 1.5 : fontSize + 2}px`,
+                    fontSize: `${(isFullscreen ? fontSize * 1.4 : fontSize + 1) * (isMobile ? 0.7 : 1)}px`,
                     color: '#ef4444'
                   }} 
-                  className="font-extrabold leading-normal drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
+                  className="font-extrabold leading-normal drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,0.8)] md:drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
                 >
                   {subtitles[currentIndex].text}
                 </p>
                 {showIpa && subtitles[currentIndex].ipa && (
                   <p 
-                    style={{ fontSize: `${isFullscreen ? (fontSize - 1) * 1.5 : fontSize - 1}px` }} 
+                    style={{ fontSize: `${(isFullscreen ? (fontSize - 1) * 1.4 : fontSize - 2) * (isMobile ? 0.7 : 1)}px` }} 
                     className="text-indigo-300 font-mono font-semibold mt-0.5"
                   >
                     {subtitles[currentIndex].ipa}
@@ -977,8 +1041,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 )}
                 {subtitles[currentIndex].vietnamese && (
                   <p 
-                    style={{ fontSize: `${isFullscreen ? (fontSize - 1) * 1.5 : fontSize - 1}px` }} 
-                    className="text-slate-200 mt-1 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] font-medium"
+                    style={{ fontSize: `${(isFullscreen ? (fontSize - 1) * 1.4 : fontSize - 2) * (isMobile ? 0.7 : 1)}px` }} 
+                    className="text-slate-200 mt-0.5 md:mt-1 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] font-medium"
                   >
                     {subtitles[currentIndex].vietnamese}
                   </p>
@@ -990,177 +1054,199 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       </div>
 
       {/* BOTTOM: Workspace (Centered, matching video width) */}
-      <div className="w-full max-w-5xl mx-auto p-4 flex flex-col gap-4">
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[500px]">
+      <div className="w-full max-w-5xl mx-auto p-2 md:p-4 flex flex-col gap-4">
+        <div className="bg-white rounded-2xl md:rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[380px] md:h-[500px]">
           {/* Shared Header (Mode Switcher, Checkboxes, Font Controls, Tooltip) */}
-          <div className="p-3 bg-slate-50 border-b text-xs font-black text-slate-400 tracking-wider uppercase shrink-0 flex flex-wrap items-center justify-between gap-3 select-none">
-            <div className="flex items-center gap-1.5 normal-case">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Tốc độ:</span>
-              <div className="flex bg-slate-200 p-0.5 rounded-lg border border-slate-250">
-                {[0.5, 0.7, 1, 1.2].map((speed) => (
-                  <button
-                    key={speed}
-                    type="button"
-                    onClick={(e) => {
-                      handleSpeedChange(speed);
-                      e.currentTarget.blur();
-                    }}
-                    className={`px-2 py-0.5 rounded text-[10px] font-black transition-all ${
-                      playbackRate === speed
-                        ? "bg-white text-indigo-600 shadow-sm"
-                        : "text-slate-500 hover:text-slate-800"
-                    }`}
-                  >
-                    {speed}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3">
+          <div className="bg-slate-50 border-b text-xs font-black text-slate-400 tracking-wider uppercase shrink-0 flex flex-col md:flex-row md:items-center justify-between p-2 md:p-3 gap-2 select-none">
+            {/* Row 1: Mode & Speed (and Settings Toggle on mobile) */}
+            <div className="flex items-center justify-between md:justify-start gap-2.5 w-full md:w-auto">
               {/* Mode switch */}
-              <div className="flex bg-slate-200 p-0.5 rounded-lg border border-slate-250">
+              <div className="flex bg-slate-200 p-0.5 rounded-lg border border-slate-250 shrink-0">
                 <button
                   onClick={(e) => {
                     setMode("listen");
                     e.currentTarget.blur();
                   }}
-                  className={`px-2.5 py-1 rounded-md text-[10px] font-black transition-all flex items-center gap-1 ${
+                  className={`px-2 py-0.5 md:px-2.5 md:py-1 rounded text-[10px] font-black transition-all flex items-center gap-1 ${
                     mode === "listen" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-800"
                   }`}
                   title="🔊 Luyện Nghe & Đọc Dịch"
                 >
-                  <Volume2 size={12} />
-                  <span>Nghe & Dịch</span>
+                  <Volume2 size={11} />
+                  <span>Nghe</span>
                 </button>
                 <button
                   onClick={() => {
                     setMode("dictation");
                     setTimeout(() => dictationTextareaRef.current?.focus(), 100);
                   }}
-                  className={`px-2.5 py-1 rounded-md text-[10px] font-black transition-all flex items-center gap-1 ${
+                  className={`px-2 py-0.5 md:px-2.5 md:py-1 rounded text-[10px] font-black transition-all flex items-center gap-1 ${
                     mode === "dictation" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-800"
                   }`}
                   title="✏️ Nghe Chép Chính Tả"
                 >
-                  <Edit size={12} />
+                  <Edit size={11} />
                   <span>Chính tả</span>
                 </button>
               </div>
 
-              {/* Show options */}
-              <div className="flex items-center gap-2.5">
-                <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors normal-case">
-                  <input
-                    type="checkbox"
-                    checked={showIpa}
-                    onChange={(e) => {
-                      setShowIpa(e.target.checked);
-                      e.target.blur();
-                    }}
-                    className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
-                  />
-                  <span>IPA</span>
-                </label>
-                <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2.5 normal-case">
-                  <input
-                    type="checkbox"
-                    checked={showNotes}
-                    onChange={(e) => {
-                      setShowNotes(e.target.checked);
-                      e.target.blur();
-                    }}
-                    className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
-                  />
-                  <span>Giải nghĩa</span>
-                </label>
-                <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2.5 normal-case">
-                  <input
-                    type="checkbox"
-                    checked={showSubOnVideo}
-                    onChange={(e) => {
-                      setShowSubOnVideo(e.target.checked);
-                      e.target.blur();
-                    }}
-                    className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
-                  />
-                  <span>Sub trên video</span>
-                </label>
+              {/* Speed Switcher */}
+              <div className="flex items-center gap-1 normal-case shrink-0">
+                <span className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-wider hidden xs:inline">Tốc độ:</span>
+                <div className="flex bg-slate-200 p-0.5 rounded-lg border border-slate-250">
+                  {[0.5, 0.7, 1, 1.2].map((speed) => (
+                    <button
+                      key={speed}
+                      type="button"
+                      onClick={(e) => {
+                        handleSpeedChange(speed);
+                        e.currentTarget.blur();
+                      }}
+                      className={`px-1.5 py-0.5 md:px-2 rounded text-[9px] md:text-[10px] font-black transition-all ${
+                        playbackRate === speed
+                          ? "bg-white text-indigo-600 shadow-sm"
+                          : "text-slate-500 hover:text-slate-800"
+                      }`}
+                    >
+                      {speed}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* FontSize */}
-              <div className="flex items-center gap-1 border-l border-slate-200 pl-2.5">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    setFontSize(prev => Math.max(12, prev - 2));
-                    e.currentTarget.blur();
-                  }}
-                  className="w-5.5 h-5.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[9px] flex items-center justify-center transition-all active:scale-95"
-                  title="Giảm cỡ chữ"
-                >
-                  A-
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    setFontSize(prev => Math.min(24, prev + 2));
-                    e.currentTarget.blur();
-                  }}
-                  className="w-5.5 h-5.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[9px] flex items-center justify-center transition-all active:scale-95"
-                  title="Tăng cỡ chữ"
-                >
-                  A+
-                </button>
-              </div>
+              {/* Settings Toggle button on Mobile */}
+              <button
+                type="button"
+                onClick={() => setShowMobileOptions(!showMobileOptions)}
+                className={`md:hidden p-1 rounded-lg border transition-all ${
+                  showMobileOptions 
+                    ? "bg-indigo-50 border-indigo-200 text-indigo-605" 
+                    : "bg-white border-slate-200 text-slate-500"
+                }`}
+                title="Tùy chọn hiển thị"
+              >
+                <Settings size={14} />
+              </button>
+            </div>
 
-              {/* Timing shifter */}
-              {mode === "listen" && (
-                <div className="flex items-center gap-1 border-l border-slate-200 pl-2.5">
+            {/* Row 2: Checkboxes, Font Sizing, Timing Shift, Tooltip */}
+            <div className={`${showMobileOptions ? "flex" : "hidden"} md:flex items-center justify-between md:justify-end gap-2 md:gap-3 w-full md:w-auto border-t border-slate-200/60 md:border-t-0 pt-2 md:pt-0 overflow-x-auto scrollbar-none`}>
+              <div className="flex items-center gap-2 md:gap-3 shrink-0">
+                {/* Show options */}
+                <div className="flex items-center gap-2 md:gap-2.5">
+                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors normal-case text-[10px] md:text-xs">
+                    <input
+                      type="checkbox"
+                      checked={showIpa}
+                      onChange={(e) => {
+                        setShowIpa(e.target.checked);
+                        e.target.blur();
+                      }}
+                      className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3 md:w-3.5 md:h-3.5 h-3"
+                    />
+                    <span>IPA</span>
+                  </label>
+                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2 md:pl-2.5 normal-case text-[10px] md:text-xs">
+                    <input
+                      type="checkbox"
+                      checked={showNotes}
+                      onChange={(e) => {
+                        setShowNotes(e.target.checked);
+                        e.target.blur();
+                      }}
+                      className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3 md:w-3.5 md:h-3.5 h-3"
+                    />
+                    <span>Giải nghĩa</span>
+                  </label>
+                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2 md:pl-2.5 normal-case text-[10px] md:text-xs">
+                    <input
+                      type="checkbox"
+                      checked={showSubOnVideo}
+                      onChange={(e) => {
+                        setShowSubOnVideo(e.target.checked);
+                        e.target.blur();
+                      }}
+                      className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3 md:w-3.5 md:h-3.5 h-3"
+                    />
+                    <span className="hidden xs:inline">Sub trên video</span>
+                    <span className="xs:hidden">Sub video</span>
+                  </label>
+                </div>
+
+                {/* FontSize */}
+                <div className="flex items-center gap-1 border-l border-slate-200 pl-2 md:pl-2.5">
                   <button
                     type="button"
                     onClick={(e) => {
-                      shiftAllSubtitles(-0.25);
+                      setFontSize(prev => Math.max(12, prev - 2));
                       e.currentTarget.blur();
                     }}
-                    className="px-1.5 py-0.5 rounded bg-red-50 hover:bg-red-105 text-red-650 font-bold text-[9px] transition-all active:scale-95"
-                    title="Toàn bộ sub xuất hiện sớm hơn 0.25s"
+                    className="w-5 h-5 md:w-5.5 md:h-5.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[9px] flex items-center justify-center transition-all active:scale-95"
+                    title="Giảm cỡ chữ"
                   >
-                    -0.25s
+                    A-
                   </button>
                   <button
                     type="button"
                     onClick={(e) => {
-                      shiftAllSubtitles(0.25);
+                      setFontSize(prev => Math.min(24, prev + 2));
                       e.currentTarget.blur();
                     }}
-                    className="px-1.5 py-0.5 rounded bg-emerald-50 hover:bg-emerald-105 text-emerald-655 font-bold text-[9px] transition-all active:scale-95"
-                    title="Toàn bộ sub xuất hiện muộn hơn 0.25s"
+                    className="w-5 h-5 md:w-5.5 md:h-5.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[9px] flex items-center justify-center transition-all active:scale-95"
+                    title="Tăng cỡ chữ"
                   >
-                    +0.25s
+                    A+
                   </button>
                 </div>
-              )}
 
-              {/* Help Circle Tooltip */}
-              <div className="relative group border-l border-slate-200 pl-2.5">
-                <button 
-                  type="button" 
-                  className="flex items-center justify-center w-5.5 h-5.5 text-slate-400 hover:text-indigo-650 transition-colors bg-white rounded border border-slate-200 shadow-sm"
-                  title="Hướng dẫn phím tắt"
-                >
-                  <HelpCircle size={12} />
-                </button>
-                
-                <div className="absolute top-full right-0 mt-2 w-72 p-4 bg-slate-900 text-white text-xs rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none normal-case">
-                  <p className="font-bold mb-2 text-indigo-300">Mẹo học nhanh bằng phím tắt:</p>
-                  <ul className="list-disc pl-4 space-y-1.5 text-slate-350">
-                    <li>Nhấn phím <strong className="text-white">n</strong> để chuyển qua câu tiếp theo.</li>
-                    <li>Nhấn phím <strong className="text-white">v</strong> để quay lại câu trước đó.</li>
-                    <li>Nhấn phím <strong className="text-white">b</strong> để nghe lại câu hiện tại.</li>
-                    <li>Nhấn phím <strong className="text-white">~</strong> (nút nằm giữa Esc và Tab) để Tạm dừng/Phát video.</li>
-                    <li><em className="text-slate-400">Khi đang gõ chính tả:</em> nhấn giữ thêm phím <strong className="text-white">Alt</strong> (Alt + n, Alt + v, Alt + b, Alt + ~).</li>
-                  </ul>
+                {/* Timing shifter */}
+                {mode === "listen" && (
+                  <div className="flex items-center gap-1 border-l border-slate-200 pl-2 md:pl-2.5">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        shiftAllSubtitles(-0.25);
+                        e.currentTarget.blur();
+                      }}
+                      className="px-1 py-0.5 rounded bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[9px] transition-all active:scale-95"
+                      title="Toàn bộ sub xuất hiện sớm hơn 0.25s"
+                    >
+                      -0.25s
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        shiftAllSubtitles(0.25);
+                        e.currentTarget.blur();
+                      }}
+                      className="px-1 py-0.5 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-bold text-[9px] transition-all active:scale-95"
+                      title="Toàn bộ sub xuất hiện muộn hơn 0.25s"
+                    >
+                      +0.25s
+                    </button>
+                  </div>
+                )}
+
+                {/* Help Circle Tooltip */}
+                <div className="relative group border-l border-slate-200 pl-2 md:pl-2.5">
+                  <button 
+                    type="button" 
+                    className="flex items-center justify-center w-5 h-5 md:w-5.5 md:h-5.5 text-slate-400 hover:text-indigo-650 transition-colors bg-white rounded border border-slate-200 shadow-sm"
+                    title="Hướng dẫn phím tắt"
+                  >
+                    <HelpCircle size={11} />
+                  </button>
+                  
+                  <div className="absolute bottom-full right-0 mb-2 w-64 p-3 bg-slate-900 text-white text-[10px] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none normal-case">
+                    <p className="font-bold mb-2 text-indigo-300">Mẹo học nhanh bằng phím tắt:</p>
+                    <ul className="list-disc pl-4 space-y-1 text-slate-350">
+                      <li>Nhấn phím <strong className="text-white">n</strong> để sang câu tiếp.</li>
+                      <li>Nhấn phím <strong className="text-white">v</strong> để lùi lại câu trước.</li>
+                      <li>Nhấn phím <strong className="text-white">b</strong> để nghe lại câu hiện tại.</li>
+                      <li>Nhấn phím <strong className="text-white">~</strong> để Tạm dừng/Phát.</li>
+                      <li><em className="text-slate-400">Gõ chính tả:</em> Alt + (n, v, b, ~).</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1171,6 +1257,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             <div 
               ref={containerRef} 
               onClick={() => videoContainerRef.current?.focus()}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onTouchStartCapture={handleDoubleTap}
               className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin relative webtoeic-scroll-container"
             >
               {subtitles.map((sub, idx) => {
@@ -1336,10 +1425,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               })}
             </div>
           ) : (
-            <div className="flex-1 p-5 flex flex-col justify-between gap-4 min-h-0 overflow-y-auto">
+            <div className="flex-1 p-3 md:p-5 flex flex-col justify-between gap-3 md:gap-4 min-h-0 overflow-y-auto">
               {/* Target Sentence Display Layer & Typing Area */}
-              <div className="space-y-4 flex-1 flex flex-col justify-center">
-                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-3 relative overflow-hidden">
+              <div className="space-y-3 md:space-y-4 flex-1 flex flex-col justify-center">
+                <div className="bg-slate-50 p-4 md:p-6 rounded-xl md:rounded-2xl border border-slate-100 space-y-2 md:space-y-3 relative overflow-hidden">
                   <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex justify-between items-center">
                     <span>Câu thứ {currentIndex + 1} / {subtitles.length}</span>
                     <div className="flex items-center gap-3">
@@ -1348,24 +1437,24 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                           type="checkbox"
                           checked={showIpa}
                           onChange={(e) => setShowIpa(e.target.checked)}
-                          className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
+                          className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3 md:w-3.5 h-3 md:h-3.5"
                         />
                         <span>IPA</span>
                       </label>
-                      <label className="flex items-center gap-1 cursor-pointer select-none font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-3">
+                      <label className="flex items-center gap-1 cursor-pointer select-none font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2.5 md:pl-3">
                         <input
                           type="checkbox"
                           checked={showNotes}
                           onChange={(e) => setShowNotes(e.target.checked)}
-                          className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3.5 h-3.5"
+                          className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3 md:w-3.5 h-3 md:h-3.5"
                         />
-                        <span>Slang/Idiom</span>
+                        <span>Giải nghĩa</span>
                       </label>
-                      <div className="flex items-center gap-1 border-l border-slate-200 pl-3 normal-case">
+                      <div className="flex items-center gap-1 border-l border-slate-200 pl-2.5 md:pl-3 normal-case">
                         <button
                           type="button"
                           onClick={() => setFontSize(prev => Math.max(12, prev - 2))}
-                          className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[10px] flex items-center justify-center transition-all active:scale-95"
+                          className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[9px] md:text-[10px] flex items-center justify-center transition-all active:scale-95"
                           title="Giảm cỡ chữ"
                         >
                           A-
@@ -1373,7 +1462,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                         <button
                           type="button"
                           onClick={() => setFontSize(prev => Math.min(24, prev + 2))}
-                          className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[10px] flex items-center justify-center transition-all active:scale-95"
+                          className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-655 font-bold text-[9px] md:text-[10px] flex items-center justify-center transition-all active:scale-95"
                           title="Tăng cỡ chữ"
                         >
                           A+
@@ -1386,7 +1475,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   {subtitles[currentIndex]?.ipa && showIpa && (
                     <p 
                       style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
-                      className="font-mono text-indigo-650 font-semibold"
+                      className="font-mono text-indigo-650 font-semibold text-[11px] md:text-xs"
                     >
                       {subtitles[currentIndex]?.ipa}
                     </p>
@@ -1394,7 +1483,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   {subtitles[currentIndex]?.vietnamese && (
                     <p 
                       style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
-                      className="text-slate-605 leading-relaxed font-semibold italic"
+                      className="text-slate-605 leading-relaxed font-semibold italic text-[11px] md:text-xs"
                     >
                       {subtitles[currentIndex]?.vietnamese}
                     </p>
@@ -1403,11 +1492,16 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 </div>
 
                 {/* Dictation Match View */}
-                <div className="relative w-full min-h-[100px] bg-slate-50 p-5 rounded-2xl border border-slate-200 flex items-start">
+                <div 
+                  onTouchStart={handleTouchStart}
+                  onTouchEnd={handleTouchEnd}
+                  onTouchStartCapture={handleDoubleTap}
+                  className="relative w-full min-h-[80px] md:min-h-[100px] bg-slate-50 p-3 md:p-5 rounded-xl md:rounded-2xl border border-slate-200 flex items-start"
+                >
                   {/* Visual Matching Layer */}
                   <div 
-                    style={{ fontSize: `${fontSize + 2}px`, width: "calc(100% - 40px)" }}
-                    className="absolute inset-5 z-20 pointer-events-none break-words whitespace-pre-wrap select-text text-slate-300 font-mono font-bold leading-relaxed tracking-[0.02em] m-0 p-0 border-0"
+                    style={{ fontSize: `${(fontSize + 1) * (isMobile ? 0.85 : 1)}px`, width: "calc(100% - 40px)" }}
+                    className="absolute inset-3 md:inset-5 z-20 pointer-events-none break-words whitespace-pre-wrap select-text text-slate-300 font-mono font-bold leading-relaxed tracking-[0.02em] m-0 p-0 border-0"
                   >
                     {targetText.split("").map((char, i) => {
                       const typed = dictationInput[i];
@@ -1434,38 +1528,38 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                       const val = e.target.value;
                       if (val.length <= targetText.length) setDictationInput(val);
                     }}
-                    style={{ WebkitTextFillColor: "transparent", color: "transparent", caretColor: "#3b82f6", fontSize: `${fontSize + 2}px` }}
-                    className="w-full h-full bg-transparent outline-none resize-none absolute inset-5 z-10 m-0 p-0 border-0 font-mono font-bold leading-relaxed tracking-[0.02em] pointer-events-auto overflow-hidden"
+                    style={{ WebkitTextFillColor: "transparent", color: "transparent", caretColor: "#3b82f6", fontSize: `${(fontSize + 1) * (isMobile ? 0.85 : 1)}px` }}
+                    className="w-full h-full bg-transparent outline-none resize-none absolute inset-3 md:inset-5 z-10 m-0 p-0 border-0 font-mono font-bold leading-relaxed tracking-[0.02em] pointer-events-auto overflow-hidden"
                     spellCheck={false}
                     autoComplete="off"
                     autoCorrect="off"
                     autoCapitalize="off"
-                    placeholder={isCompleted ? "" : "Hãy nhấn vào đây và gõ những gì bạn nghe thấy..."}
+                    placeholder={isCompleted ? "" : "Hãy nhấn vào đây và gõ..."}
                   />
                   
                   {isCompleted && (
-                    <div className="absolute right-4 bottom-4 z-30 text-emerald-600 flex items-center gap-1.5 font-bold text-xs bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 shadow-sm animate-bounce">
-                      <CheckCircle className="w-4 h-4" /> Chính xác!
+                    <div className="absolute right-3 bottom-3 md:right-4 md:bottom-4 z-30 text-emerald-600 flex items-center gap-1 md:gap-1.5 font-bold text-[10px] md:text-xs bg-emerald-50 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full border border-emerald-200 shadow-sm animate-bounce">
+                      <CheckCircle className="w-3.5 h-3.5" /> Chính xác!
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Navigation buttons */}
-              <div className="flex gap-3 pt-4 border-t shrink-0">
+              <div className="flex gap-2 md:gap-3 pt-3 md:pt-4 border-t shrink-0">
                 <button
                   onClick={() => playSubtitleRow(currentIndex - 1)}
                   disabled={currentIndex === 0}
-                  className="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-xs"
+                  className="flex-1 py-2 px-3 md:py-3 md:px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl md:rounded-2xl transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 md:gap-2 text-[10px] md:text-xs"
                 >
-                  <ChevronLeft size={16} /> Quay Lại (Alt+v)
+                  <ChevronLeft size={14} /> <span className="hidden xs:inline">Quay Lại (Alt+v)</span><span className="xs:hidden">Quay Lại</span>
                 </button>
                 <button
                   onClick={() => playSubtitleRow(currentIndex + 1)}
                   disabled={currentIndex === subtitles.length - 1}
-                  className="flex-1 py-3 px-4 bg-indigo-600 hover:bg-indigo-755 text-white font-bold rounded-2xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-xs shadow-md shadow-indigo-100"
+                  className="flex-1 py-2 px-3 md:py-3 md:px-4 bg-indigo-600 hover:bg-indigo-755 text-white font-bold rounded-xl md:rounded-2xl transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 md:gap-2 text-[10px] md:text-xs shadow-md shadow-indigo-100"
                 >
-                  Tiếp Theo (Enter) <ChevronRight size={16} />
+                  <span className="hidden xs:inline">Tiếp Theo (Enter)</span><span className="xs:hidden">Tiếp Theo</span> <ChevronRight size={14} />
                 </button>
               </div>
             </div>
