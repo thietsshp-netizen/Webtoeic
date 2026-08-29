@@ -991,12 +991,13 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               }}
               onPause={() => setIsPlaying(false)}
               controls
+              playsInline
               preload="metadata"
             />
           ) : videoId ? (
             <iframe
               id="youtube-dictation-iframe"
-              src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&version=3&rel=0&controls=1&cc_load_policy=0&iv_load_policy=3&modestbranding=1`}
+              src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&version=3&rel=0&controls=1&cc_load_policy=0&iv_load_policy=3&modestbranding=1&playsinline=1`}
               className="w-full h-full border-none"
               allow="autoplay; encrypted-media"
               allowFullScreen
