@@ -926,7 +926,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             <video
               ref={videoRef}
               src={directVideoUrl}
-              className="w-full h-full object-contain bg-black"
+              className="w-full h-full object-contain bg-black cursor-pointer"
+              onClick={isMobile ? togglePlay : undefined}
               onError={(e) => {
                 const vid = e.currentTarget;
                 const errCode = vid.error?.code;
@@ -990,7 +991,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 }
               }}
               onPause={() => setIsPlaying(false)}
-              controls
+              controls={!isMobile}
               playsInline
               preload="metadata"
             />
