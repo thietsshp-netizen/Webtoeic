@@ -134,7 +134,11 @@ export default async function LessonDetailPage({
       )}
 
       {/* HEADER BÀI HỌC (LUÔN HIỂN THỊ) */}
-      <div className={`p-3 md:p-6 bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC", "IELTS_READING"].includes(lesson.contentType as string) ? "pr-24" : ""}`}>
+      <div className={`py-3 pl-3 md:py-6 md:pl-6 bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${
+        ["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC", "IELTS_READING"].includes(lesson.contentType as string)
+          ? "pr-16 md:pr-24"
+          : "pr-3 md:pr-6"
+      }`}>
         <div className="flex items-center gap-2 md:gap-4">
           <div className="w-10 h-10 bg-blue-600 rounded-2xl items-center justify-center text-white shadow-lg shadow-blue-600/20 hidden sm:flex">
             {lesson.contentType === "VIDEO" ? <PlayCircle size={24} /> : <FileText size={24} />}
