@@ -150,7 +150,7 @@ export default function LearnLayout({
     <AdminEditProvider>
       <div className="flex flex-col h-screen bg-white overflow-hidden">
         {/* Top Navbar Học tập */}
-        <header className="h-14 border-b flex items-center justify-between px-6 bg-slate-900 text-white flex-shrink-0 z-[999999999]">
+        <header className="h-14 border-b flex items-center justify-between px-6 bg-slate-900 text-white flex-shrink-0 relative z-[1000000005]" style={{ zIndex: 1000000005 }}>
           <div className="flex items-center gap-4">
             {/* Nút Quay lại Dashboard */}
             <Link
