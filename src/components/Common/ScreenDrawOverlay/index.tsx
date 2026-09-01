@@ -4818,21 +4818,21 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     if (tool === 'hand') {
       const dx = x - lastPoint.x;
       const dy = y - lastPoint.y;
-
       if (isGrabbingPageRef.current) {
         // Drag Page Grab Scroll logic: túm và kéo trang web mượt mà như PDF!
         // Ưu tiên cuộn phân vùng/khung cuộn cục bộ nằm ngay dưới con trỏ chuột
         const scrollTarget = scrollTargetRef.current;
-        if (scrollTarget && scrollTarget.scrollHeight > scrollTarget.clientHeight) {
-          scrollTarget.scrollBy({ left: -dx, top: -dy, behavior: 'auto' });
+        if (scrollTarget && (scrollTarget.scrollHeight > scrollTarget.clientHeight || scrollTarget.scrollWidth > scrollTarget.clientWidth)) {
+          scrollTarget.scrollTop -= dy;
+          scrollTarget.scrollLeft -= dx;
         } else {
           // Các giải pháp dự phòng toàn cục
           const mainScrollable = document.querySelector('main');
-          if (mainScrollable && mainScrollable.scrollHeight > mainScrollable.clientHeight) {
-            mainScrollable.scrollBy({ left: -dx, top: -dy, behavior: 'auto' });
+          if (mainScrollable && (mainScrollable.scrollHeight > mainScrollable.clientHeight || mainScrollable.scrollWidth > mainScrollable.clientWidth)) {
+            mainScrollable.scrollTop -= dy;
+            mainScrollable.scrollLeft -= dx;
           } else {
-            document.documentElement.scrollBy({ left: -dx, top: -dy, behavior: 'auto' });
-            document.body.scrollBy({ left: -dx, top: -dy, behavior: 'auto' });
+            window.scrollBy({ left: -dx, top: -dy, behavior: 'instant' as ScrollBehavior });
           }
         }
 

@@ -1353,7 +1353,7 @@ export default function ToeicPart7Player({
         </div>
         {/* COLUMN 2: QUESTIONS (Full width expansion) */}
         <div className="flex-1 min-h-0 relative flex flex-col min-w-[400px]">
-          <div id="part7-questions-container" ref={questionsScrollRef} className="flex-1 overflow-y-auto bg-white scrollbar-thin scroll-smooth select-text webtoeic-scroll-container">
+          <div id="part7-questions-container" ref={questionsScrollRef} className="flex-1 overflow-y-auto bg-white scrollbar-thin select-text webtoeic-scroll-container">
             <div className="p-10 space-y-6 pb-[35vh] w-full">
               {questions.map((q: any, qIdx: number) => {
                 const colors = ['yellow', 'cyan', 'emerald', 'magenta', 'orange'];
