@@ -13,8 +13,8 @@ import {
   ExpansionStructureItem,
   ExpansionPopupCallbacks,
   getFlattenedExpansionItems, 
-  generateMovieExpansionPopupHtml,
-  attachExpansionPopupHandlers
+  updateMovieExpansionPopupDom,
+  sanitizeExpansionJson
 } from "./MovieExpansionManager";
 
 interface YoutubeDictationPlayerProps {
@@ -260,6 +260,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const [expansionAddType, setExpansionAddType] = useState<'vocabulary' | 'structure' | null>(null);
   const [isSavingExpansion, setIsSavingExpansion] = useState<boolean>(false);
 
+  const [isExpansionJsonMode, setIsExpansionJsonMode] = useState<boolean>(false);
+
   const subtitlesRef = useRef<Subtitle[]>(subtitles);
   subtitlesRef.current = subtitles;
   const currentIndexRef = useRef<number>(currentIndex);
@@ -274,9 +276,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
   const updateExpansionPopup = async (
     subIdx: number,
-    targetItemIdx: number,
+    targetItemIdx: number = 0,
     isEdit: boolean = false,
-    addType: 'vocabulary' | 'structure' | null = null
+    addType: 'vocabulary' | 'structure' | null = null,
+    isJsonMode: boolean = false
   ) => {
     if (!hasExpansionAccess) return;
     const currentSubs = subtitlesRef.current.length > 0 ? subtitlesRef.current : subtitles;
@@ -292,22 +295,25 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       activeIdx = 0;
     }
     setSelectedExpansionIndex(activeIdx);
+    selectedExpansionIndexRef.current = activeIdx;
     setIsExpansionEditMode(isEdit);
+    setIsExpansionJsonMode(isJsonMode);
     setExpansionAddType(addType);
 
-    const popupHtml = generateMovieExpansionPopupHtml({
+    const popupParams = {
       subIndex: subIdx,
       totalSubtitles: currentSubs.length,
       sub,
       activeItemIndex: activeIdx,
       isEditMode: isEdit,
+      isJsonMode: isJsonMode,
       isSaving: isSavingExpansion,
       addType
-    });
+    };
 
     const callbacks: ExpansionPopupCallbacks = {
-      onSetEditMode: (editMode, type) => {
-        updateExpansionPopup(subIdx, activeIdx, editMode, type || null);
+      onSetEditMode: (editMode, type, jsonMode) => {
+        updateExpansionPopup(subIdx, activeIdx, editMode, type || null, jsonMode || false);
       },
       onDeleteItem: async (targetSubIdx, activeItemIdx) => {
         const latestSubs = subtitlesRef.current.length > 0 ? subtitlesRef.current : subtitles;
@@ -319,6 +325,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         if (!itemToDelete) return;
 
         const updatedExpansion: SubtitleExpansion = {
+          paraphrase: targetSub.expansion.paraphrase,
           vocabulary: [...(targetSub.expansion.vocabulary || [])],
           structures: [...(targetSub.expansion.structures || [])]
         };
@@ -329,23 +336,30 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           updatedExpansion.structures?.splice(itemToDelete.rawIndex, 1);
         }
 
-        const updatedSubtitles = [...latestSubs];
-        updatedSubtitles[targetSubIdx] = {
-          ...updatedSubtitles[targetSubIdx],
-          expansion: updatedExpansion
-        };
+        const updatedSubtitles = latestSubs.map((s, idx) => {
+          if (idx === targetSubIdx) {
+            return {
+              ...s,
+              expansion: updatedExpansion
+            };
+          }
+          return { ...s };
+        });
 
         setSubtitles(updatedSubtitles);
+        subtitlesRef.current = updatedSubtitles;
+
         try {
-          await fetch(`/api/lessons/${lessonId}`, {
+          const res = await fetch(`/api/lessons/${lessonId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ content: JSON.stringify(updatedSubtitles) })
           });
+          if (!res.ok) throw new Error(`HTTP error ${res.status}`);
           showToast("Đã xóa mục thành công!", "success");
           const remainingItems = getFlattenedExpansionItems(updatedSubtitles[targetSubIdx]);
           const nextActiveIdx = Math.max(0, Math.min(activeItemIdx, remainingItems.length - 1));
-          updateExpansionPopup(targetSubIdx, nextActiveIdx, false, null);
+          updateExpansionPopup(targetSubIdx, nextActiveIdx, false, null, false);
         } catch (err) {
           showToast("Lỗi khi xóa mục!", "error");
         }
@@ -361,6 +375,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         }
 
         const updatedExpansion: SubtitleExpansion = {
+          paraphrase: payload.paraphrase !== undefined ? payload.paraphrase : targetSub.expansion?.paraphrase,
           vocabulary: [...(targetSub.expansion?.vocabulary || [])],
           structures: [...(targetSub.expansion?.structures || [])]
         };
@@ -369,6 +384,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           const vocabData: ExpansionVocabItem = {
             word: payload.data.word || '',
             ipa: payload.data.ipa || '',
+            synonyms: payload.data.synonyms || '',
             meaning: payload.data.meaning || '',
             examples: payload.data.examples || []
           };
@@ -392,31 +408,80 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           }
         }
 
-        const updatedSubtitles = [...latestSubs];
-        updatedSubtitles[targetSubIdx] = {
-          ...updatedSubtitles[targetSubIdx],
-          expansion: updatedExpansion
-        };
+        const updatedSubtitles = latestSubs.map((s, idx) => {
+          if (idx === targetSubIdx) {
+            return {
+              ...s,
+              expansion: updatedExpansion
+            };
+          }
+          return { ...s };
+        });
 
         setSubtitles(updatedSubtitles);
+        subtitlesRef.current = updatedSubtitles;
+
         try {
-          await fetch(`/api/lessons/${lessonId}`, {
+          const res = await fetch(`/api/lessons/${lessonId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ content: JSON.stringify(updatedSubtitles) })
           });
+          if (!res.ok) throw new Error(`HTTP error ${res.status}`);
           showToast("Đã lưu kiến thức mở rộng thành công!", "success");
           const allItems = getFlattenedExpansionItems(updatedSubtitles[targetSubIdx]);
           const targetIdx = payload.rawIndex >= 0 ? activeIdx : Math.max(0, allItems.length - 1);
-          updateExpansionPopup(targetSubIdx, targetIdx, false, null);
+          updateExpansionPopup(targetSubIdx, targetIdx, false, null, false);
         } catch (err) {
           showToast("Lỗi khi lưu kiến thức mở rộng!", "error");
         } finally {
           setIsSavingExpansion(false);
         }
       },
+      onSaveFullExpansionJson: async (targetSubIdx, expansionData) => {
+        setIsSavingExpansion(true);
+        const latestSubs = subtitlesRef.current.length > 0 ? subtitlesRef.current : subtitles;
+        const targetSub = latestSubs[targetSubIdx];
+        if (!targetSub) {
+          setIsSavingExpansion(false);
+          return;
+        }
+
+        // Deep clone to ensure 100% integrity of all other items & other properties
+        const updatedSubtitles = latestSubs.map((s, idx) => {
+          if (idx === targetSubIdx) {
+            return {
+              ...s,
+              expansion: expansionData
+            };
+          }
+          return { ...s };
+        });
+
+        setSubtitles(updatedSubtitles);
+        subtitlesRef.current = updatedSubtitles;
+
+        try {
+          const res = await fetch(`/api/lessons/${lessonId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: JSON.stringify(updatedSubtitles) })
+          });
+          if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+          showToast("Đã lưu JSON từ Gemini thành công!", "success");
+          updateExpansionPopup(targetSubIdx, 0, false, null, false);
+        } catch (err) {
+          console.error("Lỗi khi lưu JSON:", err);
+          showToast("Lỗi khi lưu dữ liệu mở rộng!", "error");
+        } finally {
+          setIsSavingExpansion(false);
+        }
+      },
       onCycle: (key: string) => {
-        lastExpansionHotkeyTime.current = Date.now();
+        const now = Date.now();
+        if (now - lastExpansionHotkeyTime.current < 40) return;
+        lastExpansionHotkeyTime.current = now;
+
         const latestSubs = subtitlesRef.current.length > 0 ? subtitlesRef.current : subtitles;
         const currentSub = latestSubs[currentIndexRef.current];
         if (!currentSub) return;
@@ -427,7 +492,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           const nextIdx = isNext 
             ? (currentSelected + 1) % allItems.length 
             : (currentSelected - 1 + allItems.length) % allItems.length;
-          updateExpansionPopup(currentIndexRef.current, nextIdx, false, null);
+          updateExpansionPopup(currentIndexRef.current, nextIdx, false, null, false);
         }
       },
       onSeek: (key: string) => {
@@ -439,6 +504,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         } else if (key === 'b') {
           playSubtitleRowRef.current(curr);
         }
+      },
+      onSelectIndex: (targetIdx: number) => {
+        updateExpansionPopup(currentIndexRef.current, targetIdx, false, null, false);
       }
     };
 
@@ -463,8 +531,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           } catch (e) {}
         }
 
-        pipWindow.document.body.innerHTML = popupHtml;
-        attachExpansionPopupHandlers(pipWindow.document, pipWindow, subIdx, activeIdx, callbacks);
+        updateMovieExpansionPopupDom(pipWindow.document, pipWindow, popupParams, callbacks);
         return;
       } catch (e) {
         console.warn("Document PiP error or fallback:", e);
@@ -473,10 +540,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
     // 2. Fallback sang window.open tiêu chuẩn
     if (popupRef.current && !popupRef.current.closed) {
-      popupRef.current.document.open();
-      popupRef.current.document.write(popupHtml);
-      popupRef.current.document.close();
-      attachExpansionPopupHandlers(popupRef.current.document, popupRef.current, subIdx, activeIdx, callbacks);
+      updateMovieExpansionPopupDom(popupRef.current.document, popupRef.current, popupParams, callbacks);
       try { popupRef.current.focus(); } catch (e) {}
       return;
     }
@@ -492,10 +556,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
     if (popup) {
       popupRef.current = popup;
-      popup.document.open();
-      popup.document.write(popupHtml);
-      popup.document.close();
-      attachExpansionPopupHandlers(popup.document, popup, subIdx, activeIdx, callbacks);
+      updateMovieExpansionPopupDom(popup.document, popup, popupParams, callbacks);
       try { popup.focus(); } catch (e) {}
     } else {
       alert("Trình duyệt đã chặn cửa sổ Pop-up. Vui lòng nhấn vào biểu tượng ổ khóa/pop-up trên thanh địa chỉ trình duyệt và chọn 'Cho phép (Allow)' để mở cửa sổ từ vựng!");
@@ -518,7 +579,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   useEffect(() => {
     const isPopupActive = (popupRef.current && !popupRef.current.closed) || (pipWindowRef.current && !pipWindowRef.current.closed);
     if (isPopupActive && hasExpansionAccess) {
-      updateExpansionPopup(currentIndex, 0, false, null);
+      updateExpansionPopup(currentIndex, 0, false, null, false);
     }
   }, [currentIndex, hasExpansionAccess, subtitles]);
 
@@ -538,7 +599,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           const nextIdx = isNext 
             ? (selectedExpansionIndex + 1) % items.length 
             : (selectedExpansionIndex - 1 + items.length) % items.length;
-          updateExpansionPopup(currentIndex, nextIdx, false, null);
+          updateExpansionPopup(currentIndex, nextIdx, false, null, false);
         }
       }
 
@@ -554,9 +615,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         }
       }
 
-      // 3. Đổi chế độ Sửa / Thêm mới
+      // 3. Đổi chế độ Sửa / Thêm mới / Dán JSON
       else if (e.data.type === 'MOVIE_EXPANSION_SET_EDIT_MODE') {
-        updateExpansionPopup(currentIndex, selectedExpansionIndex, e.data.isEditMode, e.data.addType || null);
+        updateExpansionPopup(currentIndex, selectedExpansionIndex, e.data.isEditMode, e.data.addType || null, e.data.isJsonMode || false);
       }
 
       // 4. Xóa một mục từ vựng / cấu trúc
@@ -571,6 +632,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         if (!itemToDelete) return;
 
         const updatedExpansion: SubtitleExpansion = {
+          paraphrase: targetSub.expansion.paraphrase,
           vocabulary: [...(targetSub.expansion.vocabulary || [])],
           structures: [...(targetSub.expansion.structures || [])]
         };
@@ -581,29 +643,75 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           updatedExpansion.structures?.splice(itemToDelete.rawIndex, 1);
         }
 
-        const updatedSubtitles = [...subtitles];
-        updatedSubtitles[subIdx] = {
-          ...updatedSubtitles[subIdx],
-          expansion: updatedExpansion
-        };
+        const updatedSubtitles = subtitles.map((s, idx) => {
+          if (idx === subIdx) {
+            return {
+              ...s,
+              expansion: updatedExpansion
+            };
+          }
+          return { ...s };
+        });
 
         setSubtitles(updatedSubtitles);
+        subtitlesRef.current = updatedSubtitles;
+
         try {
-          await fetch(`/api/lessons/${lessonId}`, {
+          const res = await fetch(`/api/lessons/${lessonId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ content: JSON.stringify(updatedSubtitles) })
           });
+          if (!res.ok) throw new Error(`HTTP error ${res.status}`);
           showToast("Đã xóa mục thành công!", "success");
           const remainingItems = getFlattenedExpansionItems(updatedSubtitles[subIdx]);
           const nextActiveIdx = Math.max(0, Math.min(activeItemIdx, remainingItems.length - 1));
-          updateExpansionPopup(subIdx, nextActiveIdx, false, null);
+          updateExpansionPopup(subIdx, nextActiveIdx, false, null, false);
         } catch (err) {
           showToast("Lỗi khi xóa mục!", "error");
         }
       }
 
-      // 5. Lưu mục từ vựng / cấu trúc đang sửa hoặc thêm mới
+      // 5. Lưu JSON đầy đủ do Gemini sinh ra
+      else if (e.data.type === 'MOVIE_EXPANSION_SAVE_FULL_JSON') {
+        const subIdx = e.data.subIndex;
+        const payload = e.data.payload;
+        if (subIdx !== undefined && payload) {
+          try {
+            const sanitized = sanitizeExpansionJson(payload);
+            const targetSub = subtitles[subIdx];
+            if (!targetSub) return;
+
+            const updatedSubtitles = subtitles.map((s, idx) => {
+              if (idx === subIdx) {
+                return {
+                  ...s,
+                  expansion: sanitized
+                };
+              }
+              return { ...s };
+            });
+
+            setSubtitles(updatedSubtitles);
+            subtitlesRef.current = updatedSubtitles;
+
+            const res = await fetch(`/api/lessons/${lessonId}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ content: JSON.stringify(updatedSubtitles) })
+            });
+
+            if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+            showToast("Đã lưu JSON từ Gemini thành công!", "success");
+            updateExpansionPopup(subIdx, 0, false, null, false);
+          } catch (err: any) {
+            console.error("Lỗi khi lưu JSON:", err);
+            showToast("Lỗi khi lưu dữ liệu mở rộng: " + (err.message || ""), "error");
+          }
+        }
+      }
+
+      // 6. Lưu mục từ vựng / cấu trúc đang sửa thủ công
       else if (e.data.type === 'MOVIE_EXPANSION_SAVE_ITEM') {
         const subIdx = e.data.subIndex;
         const payload = e.data.payload;
@@ -613,6 +721,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         if (!targetSub) return;
 
         const updatedExpansion: SubtitleExpansion = {
+          paraphrase: payload.paraphrase !== undefined ? payload.paraphrase : targetSub.expansion?.paraphrase,
           vocabulary: [...(targetSub.expansion?.vocabulary || [])],
           structures: [...(targetSub.expansion?.structures || [])]
         };
@@ -621,6 +730,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           const vocabData: ExpansionVocabItem = {
             word: payload.data.word || '',
             ipa: payload.data.ipa || '',
+            synonyms: payload.data.synonyms || '',
             meaning: payload.data.meaning || '',
             examples: payload.data.examples || []
           };
@@ -644,23 +754,30 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           }
         }
 
-        const updatedSubtitles = [...subtitles];
-        updatedSubtitles[subIdx] = {
-          ...updatedSubtitles[subIdx],
-          expansion: updatedExpansion
-        };
+        const updatedSubtitles = subtitles.map((s, idx) => {
+          if (idx === subIdx) {
+            return {
+              ...s,
+              expansion: updatedExpansion
+            };
+          }
+          return { ...s };
+        });
 
         setSubtitles(updatedSubtitles);
+        subtitlesRef.current = updatedSubtitles;
+
         try {
-          await fetch(`/api/lessons/${lessonId}`, {
+          const res = await fetch(`/api/lessons/${lessonId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ content: JSON.stringify(updatedSubtitles) })
           });
+          if (!res.ok) throw new Error(`HTTP error ${res.status}`);
           showToast("Đã lưu kiến thức mở rộng thành công!", "success");
           const allItems = getFlattenedExpansionItems(updatedSubtitles[subIdx]);
           const targetIdx = payload.rawIndex >= 0 ? selectedExpansionIndex : allItems.length - 1;
-          updateExpansionPopup(subIdx, targetIdx, false, null);
+          updateExpansionPopup(subIdx, targetIdx, false, null, false);
         } catch (err) {
           showToast("Lỗi khi lưu kiến thức mở rộng!", "error");
         }
@@ -1162,18 +1279,21 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           e.key === ']' || e.key.toLowerCase() === 'ơ'
         )) {
           e.preventDefault();
-          lastExpansionHotkeyTime.current = Date.now();
+          const now = Date.now();
+          if (now - lastExpansionHotkeyTime.current < 40) return;
+          lastExpansionHotkeyTime.current = now;
+
           const currentSub = subtitles[currentIndex];
           if (currentSub) {
             const items = getFlattenedExpansionItems(currentSub);
             if (items.length > 0) {
               const isNext = e.key === '.' || e.key === ']' || e.key.toLowerCase() === 'ơ';
               const nextIdx = isNext 
-                ? (selectedExpansionIndex + 1) % items.length 
-                : (selectedExpansionIndex - 1 + items.length) % items.length;
-              updateExpansionPopup(currentIndex, nextIdx, false, null);
+                ? (selectedExpansionIndexRef.current + 1) % items.length 
+                : (selectedExpansionIndexRef.current - 1 + items.length) % items.length;
+              updateExpansionPopup(currentIndex, nextIdx, false, null, false);
             } else {
-              updateExpansionPopup(currentIndex, 0, false, null);
+              updateExpansionPopup(currentIndex, 0, false, null, false);
             }
           }
         }
