@@ -542,7 +542,6 @@ export default function ToeicPart5Player({
           <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Đám mây từ vựng - Câu ${currentQ.questionNo || ''}</div>
         </div>
         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
-          <div class="pagination-indicator">${activeIdx + 1} / ${matchedFamilies.length}</div>
           ${currentQ.correctAnswer ? `<div class="correct-answer-badge">ĐÁP ÁN: <span style="color: #10b981; font-weight: 900; font-size: 12px; margin-left: 2px;">${currentQ.correctAnswer}</span></div>` : ''}
         </div>
       </div>
@@ -600,6 +599,35 @@ export default function ToeicPart5Player({
         </div>
         ${vocabHtml}
       </div>
+
+      ${matchedFamilies.length > 0 ? `
+        <div class="footer-bar">
+          <div class="footer-items-list">
+            ${matchedFamilies.map((item, idx) => {
+              const isCurrent = idx === activeIdx;
+              const isRoot = item.type === 'root';
+              const label = item.matchedWord || item.key;
+              return `
+                <button 
+                  type="button" 
+                  class="footer-pill ${isRoot ? 'pill-structure' : 'pill-vocab'} ${isCurrent ? 'pill-active' : ''}" 
+                  onclick="if (window.selectCloudIndex) { window.selectCloudIndex(${idx}); } else if (window.opener) { window.opener.postMessage({ type: 'SELECT_CLOUD_INDEX', index: ${idx} }, '*'); }"
+                  title="${escapeHtml(item.key)}"
+                >
+                  <span class="pill-dot">${isRoot ? '▲' : '●'}</span>
+                  <span class="pill-text">${escapeHtml(label)}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+          ${matchedFamilies.length > 1 ? `
+            <div class="footer-nav-btns">
+              <button type="button" class="btn-footer-nav" title="Mục trước (,)" onclick="if (window.cycleCloud) { window.cycleCloud(','); } else if (window.opener) { window.opener.postMessage({ type: 'CYCLE_CLOUD', key: ',' }, '*'); }">◄</button>
+              <button type="button" class="btn-footer-nav" title="Mục sau (.)" onclick="if (window.cycleCloud) { window.cycleCloud('.'); } else if (window.opener) { window.opener.postMessage({ type: 'CYCLE_CLOUD', key: '.' }, '*'); }">►</button>
+            </div>
+          ` : ''}
+        </div>
+      ` : ''}
     `;
 
     // 1. Dùng Document Picture-in-Picture nếu được hỗ trợ để luôn nổi trên cùng
@@ -836,6 +864,113 @@ export default function ToeicPart5Player({
               color: #d97706;
               font-weight: bold;
             }
+            .footer-bar {
+              background: #ffffff;
+              border-top: 1px solid #e2e8f0;
+              padding: 6px 10px;
+              flex-shrink: 0;
+              box-shadow: 0 -2px 5px rgba(0,0,0,0.03);
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: 8px;
+              max-height: 64px;
+              margin: 10px -16px -16px -16px;
+            }
+            .footer-items-list {
+              display: flex;
+              align-items: center;
+              flex-wrap: wrap;
+              gap: 5px;
+              flex: 1;
+              overflow-y: auto;
+              max-height: 52px;
+              padding: 2px 0;
+            }
+            .footer-nav-btns {
+              display: flex;
+              align-items: center;
+              gap: 3px;
+              flex-shrink: 0;
+            }
+            .btn-footer-nav {
+              background: #f1f5f9;
+              border: 1px solid #cbd5e1;
+              color: #334155;
+              font-size: 11px;
+              font-weight: 700;
+              width: 24px;
+              height: 24px;
+              border-radius: 6px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: all 0.15s ease;
+            }
+            .btn-footer-nav:hover {
+              background: #e2e8f0;
+              color: #0f172a;
+              border-color: #94a3b8;
+            }
+            .footer-pill {
+              cursor: pointer;
+              font-size: 11.5px;
+              font-weight: 700;
+              padding: 3px 8px;
+              border-radius: 6px;
+              display: inline-flex;
+              align-items: center;
+              gap: 4px;
+              max-width: 150px;
+              transition: all 0.15s ease;
+              user-select: none;
+              line-height: 1.2;
+            }
+            .pill-dot {
+              font-size: 8px;
+              flex-shrink: 0;
+            }
+            .pill-text {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+            /* Từ vựng: màu đen */
+            .pill-vocab {
+              background: #ffffff;
+              border: 1px solid #cbd5e1;
+              color: #0f172a;
+            }
+            .pill-vocab:hover {
+              background: #f1f5f9;
+              border-color: #94a3b8;
+            }
+            .pill-vocab.pill-active {
+              background: #0f172a;
+              border-color: #0f172a;
+              color: #ffffff;
+              box-shadow: 0 1px 4px rgba(15, 23, 42, 0.3);
+            }
+            /* Gốc từ / Cấu trúc: màu vàng */
+            .pill-structure {
+              background: #fef3c7;
+              border: 1px solid #fde68a;
+              color: #92400e;
+            }
+            .pill-structure:hover {
+              background: #fde68a;
+              border-color: #f59e0b;
+            }
+            .pill-structure.pill-active {
+              background: #d97706;
+              border-color: #b45309;
+              color: #ffffff;
+              box-shadow: 0 1px 4px rgba(217, 119, 6, 0.35);
+            }
+            .pill-structure.pill-active .pill-dot {
+              color: #fef3c7;
+            }
           `;
           pipWindow.document.head.appendChild(style);
 
@@ -852,6 +987,14 @@ export default function ToeicPart5Player({
             }
           });
         }
+
+        (pipWindow as any).selectCloudIndex = (idx: number) => {
+          lastVocabHotkeyTime.current = Date.now();
+          updateCloudPopup(index, idx);
+        };
+        (pipWindow as any).cycleCloud = (key: string) => {
+          window.postMessage({ type: 'CYCLE_CLOUD', key }, '*');
+        };
 
         pipWindow.document.body.innerHTML = popupHtml;
         try {
@@ -1100,11 +1243,128 @@ export default function ToeicPart5Player({
                 color: #d97706;
                 font-weight: bold;
               }
+              .footer-bar {
+                background: #ffffff;
+                border-top: 1px solid #e2e8f0;
+                padding: 6px 10px;
+                flex-shrink: 0;
+                box-shadow: 0 -2px 5px rgba(0,0,0,0.03);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+                max-height: 64px;
+                margin: 10px -16px -16px -16px;
+              }
+              .footer-items-list {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 5px;
+                flex: 1;
+                overflow-y: auto;
+                max-height: 52px;
+                padding: 2px 0;
+              }
+              .footer-nav-btns {
+                display: flex;
+                align-items: center;
+                gap: 3px;
+                flex-shrink: 0;
+              }
+              .btn-footer-nav {
+                background: #f1f5f9;
+                border: 1px solid #cbd5e1;
+                color: #334155;
+                font-size: 11px;
+                font-weight: 700;
+                width: 24px;
+                height: 24px;
+                border-radius: 6px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.15s ease;
+              }
+              .btn-footer-nav:hover {
+                background: #e2e8f0;
+                color: #0f172a;
+                border-color: #94a3b8;
+              }
+              .footer-pill {
+                cursor: pointer;
+                font-size: 11.5px;
+                font-weight: 700;
+                padding: 3px 8px;
+                border-radius: 6px;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                max-width: 150px;
+                transition: all 0.15s ease;
+                user-select: none;
+                line-height: 1.2;
+              }
+              .pill-dot {
+                font-size: 8px;
+                flex-shrink: 0;
+              }
+              .pill-text {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              }
+              /* Từ vựng: màu đen */
+              .pill-vocab {
+                background: #ffffff;
+                border: 1px solid #cbd5e1;
+                color: #0f172a;
+              }
+              .pill-vocab:hover {
+                background: #f1f5f9;
+                border-color: #94a3b8;
+              }
+              .pill-vocab.pill-active {
+                background: #0f172a;
+                border-color: #0f172a;
+                color: #ffffff;
+                box-shadow: 0 1px 4px rgba(15, 23, 42, 0.3);
+              }
+              /* Gốc từ / Cấu trúc: màu vàng */
+              .pill-structure {
+                background: #fef3c7;
+                border: 1px solid #fde68a;
+                color: #92400e;
+              }
+              .pill-structure:hover {
+                background: #fde68a;
+                border-color: #f59e0b;
+              }
+              .pill-structure.pill-active {
+                background: #d97706;
+                border-color: #b45309;
+                color: #ffffff;
+                box-shadow: 0 1px 4px rgba(217, 119, 6, 0.35);
+              }
+              .pill-structure.pill-active .pill-dot {
+                color: #fef3c7;
+              }
             </style>
           </head>
           <body>
             ${popupHtml}
-             <script>
+            <script>
+              window.cycleCloud = function(key) {
+                if (window.opener) {
+                  window.opener.postMessage({ type: 'CYCLE_CLOUD', key: key }, '*');
+                }
+              };
+              window.selectCloudIndex = function(idx) {
+                if (window.opener) {
+                  window.opener.postMessage({ type: 'SELECT_CLOUD_INDEX', index: idx }, '*');
+                }
+              };
               document.addEventListener('keydown', (e) => {
                 const isTargetKey = 
                   e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
@@ -1151,6 +1411,13 @@ export default function ToeicPart5Player({
   // Nhận thông điệp chuyển câu/đám mây từ cửa sổ popup khi nó đang được focus
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
+      if (e.data && e.data.type === 'SELECT_CLOUD_INDEX') {
+        lastVocabHotkeyTime.current = Date.now();
+        const targetIdx = e.data.index;
+        if (typeof targetIdx === 'number') {
+          updateCloudPopup(currentIndex, targetIdx);
+        }
+      }
       if (e.data && e.data.type === 'CYCLE_CLOUD') {
         lastVocabHotkeyTime.current = Date.now();
         console.log("[DEBUG MESSAGE] CYCLE_CLOUD key:", e.data.key, "updated lastVocabHotkeyTime to:", lastVocabHotkeyTime.current);
