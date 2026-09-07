@@ -4,16 +4,18 @@ import React, { useState, useEffect, useRef } from "react";
 import { Play, Pause, RotateCcw, Volume2, Settings, Edit, Check, X, CheckCircle, ChevronLeft, ChevronRight, HelpCircle, Maximize2, Minimize2 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
+import { useSession } from "next-auth/react";
 import { showToast } from "@/components/UI/Toast";
-
-interface Subtitle {
-  start: number;
-  end: number;
-  text: string;
-  ipa?: string;
-  vietnamese?: string;
-  slang_and_idiom?: string;
-}
+import { 
+  Subtitle, 
+  SubtitleExpansion, 
+  ExpansionVocabItem, 
+  ExpansionStructureItem,
+  ExpansionPopupCallbacks,
+  getFlattenedExpansionItems, 
+  generateMovieExpansionPopupHtml,
+  attachExpansionPopupHandlers
+} from "./MovieExpansionManager";
 
 interface YoutubeDictationPlayerProps {
   lessonId: string;
@@ -142,7 +144,11 @@ const renderFormattedNote = (noteText: string, fontSize: number) => {
 };
 
 export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, courseId }: YoutubeDictationPlayerProps) {
-  const { isAdminMode } = useAdminEdit();
+  const { data: session } = useSession();
+  const { isAdminMode, canEdit } = useAdminEdit();
+  const isTeacherOrAdmin = Boolean(session?.user && ((session.user as any).role === "ADMIN" || (session.user as any).role === "TEACHER"));
+  const hasExpansionAccess = Boolean(isAdminMode || canEdit || isTeacherOrAdmin);
+
   const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [currentTime, setCurrentTime] = useState<number>(0);
@@ -247,6 +253,423 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const isSavingEditRef = useRef<boolean>(false);
   isSavingEditRef.current = isSavingEdit;
   const saveLiveEditRef = useRef<((idx: number) => Promise<void>) | null>(null);
+
+  // States & Refs for Movie Expansion Popup
+  const [selectedExpansionIndex, setSelectedExpansionIndex] = useState<number>(0);
+  const [isExpansionEditMode, setIsExpansionEditMode] = useState<boolean>(false);
+  const [expansionAddType, setExpansionAddType] = useState<'vocabulary' | 'structure' | null>(null);
+  const [isSavingExpansion, setIsSavingExpansion] = useState<boolean>(false);
+
+  const subtitlesRef = useRef<Subtitle[]>(subtitles);
+  subtitlesRef.current = subtitles;
+  const currentIndexRef = useRef<number>(currentIndex);
+  currentIndexRef.current = currentIndex;
+  const selectedExpansionIndexRef = useRef<number>(selectedExpansionIndex);
+  selectedExpansionIndexRef.current = selectedExpansionIndex;
+  const playSubtitleRowRef = useRef<(index: number) => void>(() => {});
+
+  const popupRef = useRef<Window | null>(null);
+  const pipWindowRef = useRef<any>(null);
+  const lastExpansionHotkeyTime = useRef<number>(0);
+
+  const updateExpansionPopup = async (
+    subIdx: number,
+    targetItemIdx: number,
+    isEdit: boolean = false,
+    addType: 'vocabulary' | 'structure' | null = null
+  ) => {
+    if (!hasExpansionAccess) return;
+    const currentSubs = subtitlesRef.current.length > 0 ? subtitlesRef.current : subtitles;
+    const sub = currentSubs[subIdx];
+    if (!sub) return;
+
+    const items = getFlattenedExpansionItems(sub);
+    let activeIdx = targetItemIdx;
+    if (items.length > 0) {
+      if (activeIdx < 0) activeIdx = items.length - 1;
+      if (activeIdx >= items.length) activeIdx = 0;
+    } else {
+      activeIdx = 0;
+    }
+    setSelectedExpansionIndex(activeIdx);
+    setIsExpansionEditMode(isEdit);
+    setExpansionAddType(addType);
+
+    const popupHtml = generateMovieExpansionPopupHtml({
+      subIndex: subIdx,
+      totalSubtitles: currentSubs.length,
+      sub,
+      activeItemIndex: activeIdx,
+      isEditMode: isEdit,
+      isSaving: isSavingExpansion,
+      addType
+    });
+
+    const callbacks: ExpansionPopupCallbacks = {
+      onSetEditMode: (editMode, type) => {
+        updateExpansionPopup(subIdx, activeIdx, editMode, type || null);
+      },
+      onDeleteItem: async (targetSubIdx, activeItemIdx) => {
+        const latestSubs = subtitlesRef.current.length > 0 ? subtitlesRef.current : subtitles;
+        const targetSub = latestSubs[targetSubIdx];
+        if (!targetSub || !targetSub.expansion) return;
+
+        const currentItems = getFlattenedExpansionItems(targetSub);
+        const itemToDelete = currentItems[activeItemIdx];
+        if (!itemToDelete) return;
+
+        const updatedExpansion: SubtitleExpansion = {
+          vocabulary: [...(targetSub.expansion.vocabulary || [])],
+          structures: [...(targetSub.expansion.structures || [])]
+        };
+
+        if (itemToDelete.type === 'vocabulary') {
+          updatedExpansion.vocabulary?.splice(itemToDelete.rawIndex, 1);
+        } else {
+          updatedExpansion.structures?.splice(itemToDelete.rawIndex, 1);
+        }
+
+        const updatedSubtitles = [...latestSubs];
+        updatedSubtitles[targetSubIdx] = {
+          ...updatedSubtitles[targetSubIdx],
+          expansion: updatedExpansion
+        };
+
+        setSubtitles(updatedSubtitles);
+        try {
+          await fetch(`/api/lessons/${lessonId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: JSON.stringify(updatedSubtitles) })
+          });
+          showToast("Đã xóa mục thành công!", "success");
+          const remainingItems = getFlattenedExpansionItems(updatedSubtitles[targetSubIdx]);
+          const nextActiveIdx = Math.max(0, Math.min(activeItemIdx, remainingItems.length - 1));
+          updateExpansionPopup(targetSubIdx, nextActiveIdx, false, null);
+        } catch (err) {
+          showToast("Lỗi khi xóa mục!", "error");
+        }
+      },
+      onSaveItem: async (targetSubIdx, payload) => {
+        if (!payload || !payload.data) return;
+        setIsSavingExpansion(true);
+        const latestSubs = subtitlesRef.current.length > 0 ? subtitlesRef.current : subtitles;
+        const targetSub = latestSubs[targetSubIdx];
+        if (!targetSub) {
+          setIsSavingExpansion(false);
+          return;
+        }
+
+        const updatedExpansion: SubtitleExpansion = {
+          vocabulary: [...(targetSub.expansion?.vocabulary || [])],
+          structures: [...(targetSub.expansion?.structures || [])]
+        };
+
+        if (payload.type === 'vocabulary') {
+          const vocabData: ExpansionVocabItem = {
+            word: payload.data.word || '',
+            ipa: payload.data.ipa || '',
+            meaning: payload.data.meaning || '',
+            examples: payload.data.examples || []
+          };
+          if (payload.rawIndex >= 0 && updatedExpansion.vocabulary && updatedExpansion.vocabulary[payload.rawIndex]) {
+            updatedExpansion.vocabulary[payload.rawIndex] = vocabData;
+          } else {
+            if (!updatedExpansion.vocabulary) updatedExpansion.vocabulary = [];
+            updatedExpansion.vocabulary.push(vocabData);
+          }
+        } else {
+          const structData: ExpansionStructureItem = {
+            pattern: payload.data.pattern || '',
+            meaning: payload.data.meaning || '',
+            examples: payload.data.examples || []
+          };
+          if (payload.rawIndex >= 0 && updatedExpansion.structures && updatedExpansion.structures[payload.rawIndex]) {
+            updatedExpansion.structures[payload.rawIndex] = structData;
+          } else {
+            if (!updatedExpansion.structures) updatedExpansion.structures = [];
+            updatedExpansion.structures.push(structData);
+          }
+        }
+
+        const updatedSubtitles = [...latestSubs];
+        updatedSubtitles[targetSubIdx] = {
+          ...updatedSubtitles[targetSubIdx],
+          expansion: updatedExpansion
+        };
+
+        setSubtitles(updatedSubtitles);
+        try {
+          await fetch(`/api/lessons/${lessonId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: JSON.stringify(updatedSubtitles) })
+          });
+          showToast("Đã lưu kiến thức mở rộng thành công!", "success");
+          const allItems = getFlattenedExpansionItems(updatedSubtitles[targetSubIdx]);
+          const targetIdx = payload.rawIndex >= 0 ? activeIdx : Math.max(0, allItems.length - 1);
+          updateExpansionPopup(targetSubIdx, targetIdx, false, null);
+        } catch (err) {
+          showToast("Lỗi khi lưu kiến thức mở rộng!", "error");
+        } finally {
+          setIsSavingExpansion(false);
+        }
+      },
+      onCycle: (key: string) => {
+        lastExpansionHotkeyTime.current = Date.now();
+        const latestSubs = subtitlesRef.current.length > 0 ? subtitlesRef.current : subtitles;
+        const currentSub = latestSubs[currentIndexRef.current];
+        if (!currentSub) return;
+        const allItems = getFlattenedExpansionItems(currentSub);
+        if (allItems.length > 0) {
+          const isNext = key === '.' || key === ']' || key.toLowerCase() === 'ơ';
+          const currentSelected = selectedExpansionIndexRef.current;
+          const nextIdx = isNext 
+            ? (currentSelected + 1) % allItems.length 
+            : (currentSelected - 1 + allItems.length) % allItems.length;
+          updateExpansionPopup(currentIndexRef.current, nextIdx, false, null);
+        }
+      },
+      onSeek: (key: string) => {
+        const curr = currentIndexRef.current;
+        if (key === 'v') {
+          playSubtitleRowRef.current(curr - 1);
+        } else if (key === 'n') {
+          playSubtitleRowRef.current(curr + 1);
+        } else if (key === 'b') {
+          playSubtitleRowRef.current(curr);
+        }
+      }
+    };
+
+    const width = 460;
+    const height = 600;
+
+    // 1. Dùng Document Picture-in-Picture (PiP) nếu được hỗ trợ để luôn nổi trên cùng
+    const hasPiP = typeof window !== 'undefined' && 'documentPictureInPicture' in window;
+    if (hasPiP) {
+      try {
+        let pipWindow = pipWindowRef.current;
+        const isClosed = !pipWindow || pipWindow.closed;
+        if (isClosed) {
+          // @ts-ignore
+          pipWindow = await window.documentPictureInPicture.requestWindow({ width, height });
+          pipWindowRef.current = pipWindow;
+
+          try {
+            const leftPos = window.screenLeft || window.screenX || 0;
+            const topPos = (window.screenTop || window.screenY || 0) + (window.outerHeight || window.innerHeight || 800) - height;
+            pipWindow.moveTo(leftPos, topPos);
+          } catch (e) {}
+        }
+
+        pipWindow.document.body.innerHTML = popupHtml;
+        attachExpansionPopupHandlers(pipWindow.document, pipWindow, subIdx, activeIdx, callbacks);
+        return;
+      } catch (e) {
+        console.warn("Document PiP error or fallback:", e);
+      }
+    }
+
+    // 2. Fallback sang window.open tiêu chuẩn
+    if (popupRef.current && !popupRef.current.closed) {
+      popupRef.current.document.open();
+      popupRef.current.document.write(popupHtml);
+      popupRef.current.document.close();
+      attachExpansionPopupHandlers(popupRef.current.document, popupRef.current, subIdx, activeIdx, callbacks);
+      try { popupRef.current.focus(); } catch (e) {}
+      return;
+    }
+
+    const left = window.screenLeft || window.screenX || 0;
+    const top = (window.screenTop || window.screenY || 0) + (window.outerHeight || window.innerHeight || 800) - height;
+
+    const popup = window.open(
+      'about:blank',
+      'MovieVocabExpansion',
+      `width=${width},height=${height},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes`
+    );
+
+    if (popup) {
+      popupRef.current = popup;
+      popup.document.open();
+      popup.document.write(popupHtml);
+      popup.document.close();
+      attachExpansionPopupHandlers(popup.document, popup, subIdx, activeIdx, callbacks);
+      try { popup.focus(); } catch (e) {}
+    } else {
+      alert("Trình duyệt đã chặn cửa sổ Pop-up. Vui lòng nhấn vào biểu tượng ổ khóa/pop-up trên thanh địa chỉ trình duyệt và chọn 'Cho phép (Allow)' để mở cửa sổ từ vựng!");
+    }
+  };
+
+  // Tự động đóng popup khi unmount
+  useEffect(() => {
+    return () => {
+      if (popupRef.current && !popupRef.current.closed) {
+        popupRef.current.close();
+      }
+      if (pipWindowRef.current && !pipWindowRef.current.closed) {
+        pipWindowRef.current.close();
+      }
+    };
+  }, []);
+
+  // Tự động cập nhật nội dung popup khi chuyển câu thoại hoặc dữ liệu phụ đề thay đổi (nếu popup đang mở)
+  useEffect(() => {
+    const isPopupActive = (popupRef.current && !popupRef.current.closed) || (pipWindowRef.current && !pipWindowRef.current.closed);
+    if (isPopupActive && hasExpansionAccess) {
+      updateExpansionPopup(currentIndex, 0, false, null);
+    }
+  }, [currentIndex, hasExpansionAccess, subtitles]);
+
+  // Lắng nghe sự kiện gửi từ cửa sổ Popup
+  useEffect(() => {
+    const handleMessage = async (e: MessageEvent) => {
+      if (!e.data || typeof e.data !== 'object') return;
+
+      // 1. Chuyển đổi giữa các item từ vựng / cấu trúc trong câu hiện tại bằng phím , .
+      if (e.data.type === 'MOVIE_CYCLE_EXPANSION') {
+        lastExpansionHotkeyTime.current = Date.now();
+        const currentSub = subtitles[currentIndex];
+        if (!currentSub) return;
+        const items = getFlattenedExpansionItems(currentSub);
+        if (items.length > 0) {
+          const isNext = e.data.key === '.' || e.data.key === ']' || e.data.key?.toLowerCase() === 'ơ';
+          const nextIdx = isNext 
+            ? (selectedExpansionIndex + 1) % items.length 
+            : (selectedExpansionIndex - 1 + items.length) % items.length;
+          updateExpansionPopup(currentIndex, nextIdx, false, null);
+        }
+      }
+
+      // 2. Chuyển câu phụ đề hoặc nghe lại (V, N, B)
+      else if (e.data.type === 'MOVIE_SEEK_SUBTITLE') {
+        const key = e.data.key;
+        if (key === 'v') {
+          playSubtitleRow(currentIndex - 1);
+        } else if (key === 'n') {
+          playSubtitleRow(currentIndex + 1);
+        } else if (key === 'b') {
+          playSubtitleRow(currentIndex);
+        }
+      }
+
+      // 3. Đổi chế độ Sửa / Thêm mới
+      else if (e.data.type === 'MOVIE_EXPANSION_SET_EDIT_MODE') {
+        updateExpansionPopup(currentIndex, selectedExpansionIndex, e.data.isEditMode, e.data.addType || null);
+      }
+
+      // 4. Xóa một mục từ vựng / cấu trúc
+      else if (e.data.type === 'MOVIE_EXPANSION_DELETE_ITEM') {
+        const subIdx = e.data.subIndex;
+        const activeItemIdx = e.data.activeItemIndex;
+        const targetSub = subtitles[subIdx];
+        if (!targetSub || !targetSub.expansion) return;
+
+        const items = getFlattenedExpansionItems(targetSub);
+        const itemToDelete = items[activeItemIdx];
+        if (!itemToDelete) return;
+
+        const updatedExpansion: SubtitleExpansion = {
+          vocabulary: [...(targetSub.expansion.vocabulary || [])],
+          structures: [...(targetSub.expansion.structures || [])]
+        };
+
+        if (itemToDelete.type === 'vocabulary') {
+          updatedExpansion.vocabulary?.splice(itemToDelete.rawIndex, 1);
+        } else {
+          updatedExpansion.structures?.splice(itemToDelete.rawIndex, 1);
+        }
+
+        const updatedSubtitles = [...subtitles];
+        updatedSubtitles[subIdx] = {
+          ...updatedSubtitles[subIdx],
+          expansion: updatedExpansion
+        };
+
+        setSubtitles(updatedSubtitles);
+        try {
+          await fetch(`/api/lessons/${lessonId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: JSON.stringify(updatedSubtitles) })
+          });
+          showToast("Đã xóa mục thành công!", "success");
+          const remainingItems = getFlattenedExpansionItems(updatedSubtitles[subIdx]);
+          const nextActiveIdx = Math.max(0, Math.min(activeItemIdx, remainingItems.length - 1));
+          updateExpansionPopup(subIdx, nextActiveIdx, false, null);
+        } catch (err) {
+          showToast("Lỗi khi xóa mục!", "error");
+        }
+      }
+
+      // 5. Lưu mục từ vựng / cấu trúc đang sửa hoặc thêm mới
+      else if (e.data.type === 'MOVIE_EXPANSION_SAVE_ITEM') {
+        const subIdx = e.data.subIndex;
+        const payload = e.data.payload;
+        if (!payload || !payload.data) return;
+
+        const targetSub = subtitles[subIdx];
+        if (!targetSub) return;
+
+        const updatedExpansion: SubtitleExpansion = {
+          vocabulary: [...(targetSub.expansion?.vocabulary || [])],
+          structures: [...(targetSub.expansion?.structures || [])]
+        };
+
+        if (payload.type === 'vocabulary') {
+          const vocabData: ExpansionVocabItem = {
+            word: payload.data.word || '',
+            ipa: payload.data.ipa || '',
+            meaning: payload.data.meaning || '',
+            examples: payload.data.examples || []
+          };
+          if (payload.rawIndex >= 0 && updatedExpansion.vocabulary && updatedExpansion.vocabulary[payload.rawIndex]) {
+            updatedExpansion.vocabulary[payload.rawIndex] = vocabData;
+          } else {
+            if (!updatedExpansion.vocabulary) updatedExpansion.vocabulary = [];
+            updatedExpansion.vocabulary.push(vocabData);
+          }
+        } else {
+          const structData: ExpansionStructureItem = {
+            pattern: payload.data.pattern || '',
+            meaning: payload.data.meaning || '',
+            examples: payload.data.examples || []
+          };
+          if (payload.rawIndex >= 0 && updatedExpansion.structures && updatedExpansion.structures[payload.rawIndex]) {
+            updatedExpansion.structures[payload.rawIndex] = structData;
+          } else {
+            if (!updatedExpansion.structures) updatedExpansion.structures = [];
+            updatedExpansion.structures.push(structData);
+          }
+        }
+
+        const updatedSubtitles = [...subtitles];
+        updatedSubtitles[subIdx] = {
+          ...updatedSubtitles[subIdx],
+          expansion: updatedExpansion
+        };
+
+        setSubtitles(updatedSubtitles);
+        try {
+          await fetch(`/api/lessons/${lessonId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: JSON.stringify(updatedSubtitles) })
+          });
+          showToast("Đã lưu kiến thức mở rộng thành công!", "success");
+          const allItems = getFlattenedExpansionItems(updatedSubtitles[subIdx]);
+          const targetIdx = payload.rawIndex >= 0 ? selectedExpansionIndex : allItems.length - 1;
+          updateExpansionPopup(subIdx, targetIdx, false, null);
+        } catch (err) {
+          showToast("Lỗi khi lưu kiến thức mở rộng!", "error");
+        }
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [currentIndex, selectedExpansionIndex, subtitles, isAdminMode, lessonId]);
 
   // --- Detect video type ---
   const isDirectVideo = !!(videoUrl && !videoUrl.includes("youtube.com") && !videoUrl.includes("youtu.be"));
@@ -640,6 +1063,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       }, 50);
     }
   };
+  playSubtitleRowRef.current = playSubtitleRow;
 
   // Play/Pause video (both modes)
   const togglePlay = () => {
@@ -732,6 +1156,26 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         } else if (e.code === "Backquote") {
           e.preventDefault();
           togglePlay();
+        } else if (hasExpansionAccess && (
+          e.key === ',' || e.key === '.' ||
+          e.key === '[' || e.key.toLowerCase() === 'ư' ||
+          e.key === ']' || e.key.toLowerCase() === 'ơ'
+        )) {
+          e.preventDefault();
+          lastExpansionHotkeyTime.current = Date.now();
+          const currentSub = subtitles[currentIndex];
+          if (currentSub) {
+            const items = getFlattenedExpansionItems(currentSub);
+            if (items.length > 0) {
+              const isNext = e.key === '.' || e.key === ']' || e.key.toLowerCase() === 'ơ';
+              const nextIdx = isNext 
+                ? (selectedExpansionIndex + 1) % items.length 
+                : (selectedExpansionIndex - 1 + items.length) % items.length;
+              updateExpansionPopup(currentIndex, nextIdx, false, null);
+            } else {
+              updateExpansionPopup(currentIndex, 0, false, null);
+            }
+          }
         }
       } 
       // Shortcuts when user is typing in the box (e.g. dictation mode)
@@ -759,7 +1203,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentIndex, subtitles, isPlaying, mode]);
+  }, [currentIndex, subtitles, isPlaying, mode, hasExpansionAccess, selectedExpansionIndex]);
 
   // Live Inline Editing Handlers
   const startEdit = (idx: number, sub: Subtitle) => {
@@ -807,6 +1251,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         slang_and_idiom: editFields.slang_and_idiom,
         start: parseTimeToSeconds(editFields.start),
         end: parseTimeToSeconds(editFields.end),
+        expansion: subtitles[idx]?.expansion,
       };
 
       const res = await fetch(`/api/lessons/${lessonId}`, {
@@ -1229,6 +1674,20 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   </div>
                 )}
 
+                {/* Vocabulary / Structure Expansion Popup Button (Admin / Teacher) */}
+                {hasExpansionAccess && (
+                  <button
+                    type="button"
+                    onClick={() => updateExpansionPopup(currentIndex, selectedExpansionIndex)}
+                    className="flex items-center gap-1 font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2 md:px-2.5 py-1 rounded-lg text-[10px] md:text-xs transition-all active:scale-95 border-l ml-1 cursor-pointer shadow-xs"
+                    title="Mở cửa sổ Từ vựng & Cấu trúc mở rộng (Phím tắt: dấu phẩy , hoặc chấm .)"
+                  >
+                    <span>📚</span>
+                    <span className="hidden sm:inline">Từ vựng/Cấu trúc ( , . )</span>
+                    <span className="sm:hidden">Mở rộng</span>
+                  </button>
+                )}
+
                 {/* Help Circle Tooltip */}
                 <div className="relative group border-l border-slate-200 pl-2 md:pl-2.5">
                   <button 
@@ -1239,13 +1698,14 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     <HelpCircle size={11} />
                   </button>
                   
-                  <div className="absolute bottom-full right-0 mb-2 w-64 p-3 bg-slate-900 text-white text-[10px] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none normal-case">
+                  <div className="absolute bottom-full right-0 mb-2 w-72 p-3 bg-slate-900 text-white text-[10px] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none normal-case">
                     <p className="font-bold mb-2 text-indigo-300">Mẹo học nhanh bằng phím tắt:</p>
                     <ul className="list-disc pl-4 space-y-1 text-slate-350">
                       <li>Nhấn phím <strong className="text-white">n</strong> để sang câu tiếp.</li>
                       <li>Nhấn phím <strong className="text-white">v</strong> để lùi lại câu trước.</li>
                       <li>Nhấn phím <strong className="text-white">b</strong> để nghe lại câu hiện tại.</li>
                       <li>Nhấn phím <strong className="text-white">~</strong> để Tạm dừng/Phát.</li>
+                      <li>Nhấn phím <strong className="text-amber-300">,</strong> hoặc <strong className="text-amber-300">.</strong> để mở/duyệt Từ vựng & Cấu trúc.</li>
                       <li><em className="text-slate-400">Gõ chính tả:</em> Alt + (n, v, b, ~).</li>
                     </ul>
                   </div>
@@ -1384,18 +1844,34 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                         {/* Time tag */}
                         <div className="flex justify-between items-center text-[9px] font-mono font-bold text-slate-400">
                           <span>{formatTimeDetailed(sub.start)} - {formatTimeDetailed(sub.end)}</span>
-                          {isAdminMode && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                startEdit(idx, sub);
-                              }}
-                              className="text-slate-400 hover:text-indigo-650 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-slate-100"
-                              title="Sửa nhanh phụ đề dòng này"
-                            >
-                              <Edit size={12} />
-                            </button>
-                          )}
+                          <div className="flex items-center gap-1.5">
+                            {hasExpansionAccess && sub.expansion && ((sub.expansion.vocabulary?.length || 0) + (sub.expansion.structures?.length || 0) > 0) && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  updateExpansionPopup(idx, 0);
+                                }}
+                                className="text-[9px] font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-0.5"
+                                title="Xem từ vựng & cấu trúc mở rộng của câu này"
+                              >
+                                <span>📚</span>
+                                <span>{(sub.expansion.vocabulary?.length || 0) + (sub.expansion.structures?.length || 0)}</span>
+                              </button>
+                            )}
+                            {isAdminMode && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  startEdit(idx, sub);
+                                }}
+                                className="text-slate-400 hover:text-indigo-650 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-slate-100"
+                                title="Sửa nhanh phụ đề dòng này"
+                              >
+                                <Edit size={12} />
+                              </button>
+                            )}
+                          </div>
                         </div>
                         <p 
                           style={{ fontSize: `${fontSize}px` }}

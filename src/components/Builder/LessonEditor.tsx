@@ -35,56 +35,108 @@ const formatMMSS = (secs: number): string => {
   return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 };
 
-// Smart JSON sanitizer to clean up double quotes, newlines, and markdown blocks from pasted AI results
-const sanitizeJSONString = (str: string): string => {
-  if (!str) return "[]";
-  let cleaned = str.trim();
-  
+// Smart JSON parser & repairer to clean up double quotes, newlines, trailing commas, truncated ends, and markdown blocks from pasted AI results
+const parseAndRepairJSON = (raw: string): { data: any[] | null; error: string | null; cleanedStr: string } => {
+  if (!raw || !raw.trim()) {
+    return { data: [], error: null, cleanedStr: "[]" };
+  }
+
+  let str = raw.trim();
   // 1. Strip markdown code block wrappers
-  cleaned = cleaned.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
-  
-  // 2. Fix literal newlines inside string values:
-  // We split the content into lines. If a line does not look like the start of a new JSON structure or property,
-  // we merge it with the previous line and insert \n.
+  str = str.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+
+  // 2. Direct JSON.parse test
+  try {
+    const parsed = JSON.parse(str);
+    if (Array.isArray(parsed)) {
+      return { data: parsed, error: null, cleanedStr: str };
+    }
+  } catch (e) {
+    // Continue with repair
+  }
+
+  // 3. Auto-fix common AI syntax errors:
+  // - Missing comma between objects in array: }\n{ -> },\n{
+  // - Double quote comma typos: ","," -> ","
+  // - Trailing commas: [..., ], {..., }
+  let cleaned = str
+    .replace(/",",\s*"/g, '", "')
+    .replace(/",",/g, '",')
+    .replace(/\}\s*(\r?\n\s*)\{/g, '},$1{')
+    .replace(/,\s*([\]\}])/g, "$1");
+
+  try {
+    const parsed = JSON.parse(cleaned);
+    if (Array.isArray(parsed)) {
+      return { data: parsed, error: null, cleanedStr: cleaned };
+    }
+  } catch (e) {
+    // Continue with repair
+  }
+
+  // 4. Handle truncated JSON (when AI hits token limit during generation)
+  if (!cleaned.trim().endsWith("]")) {
+    const lines = cleaned.split(/\r?\n/);
+    for (let li = lines.length - 1; li >= 0; li--) {
+      const lineTrim = lines[li].trim();
+      if (/^\}\s*,?$/.test(lineTrim)) {
+        const candidate = lines.slice(0, li + 1).join("\n").replace(/,\s*$/, "") + "\n]";
+        try {
+          const parsed = JSON.parse(candidate);
+          if (Array.isArray(parsed)) {
+            return { data: parsed, error: null, cleanedStr: candidate };
+          }
+        } catch (err) { }
+      }
+    }
+  }
+
+  // 5. Line-by-line normalization for broken newlines
   const lines = cleaned.split(/\r?\n/);
   const mergedLines: string[] = [];
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
-    // If this line does not start with { or } or [ or ] or a double-quoted property name like "start":, "end":, "text":, "ipa":, "vietnamese":, "slang_and_idiom":,
-    // and the previous line didn't end with a comma, or if it's clearly a continuation:
-    const isJsonToken = /^[\[\{\}\]\,]$/.test(line) || 
-                        /^\s*\"(start|end|text|ipa|vietnamese|slang_and_idiom)\"\s*\:/.test(line) ||
-                        /^\s*\}\s*\,?\s*$/.test(line) ||
-                        /^\s*\{\s*$/.test(line) ||
-                        /^\s*\{\s*\"(start|end|text|ipa|vietnamese|slang_and_idiom)\"\s*\:/.test(line) ||
-                        /^\s*\{\s*\"/.test(line);
-                        
-    if (i > 0 && !isJsonToken) {
-      // Merge with previous line by appending escaped \n
-      mergedLines[mergedLines.length - 1] += "\\n" + lines[i];
+    const isJsonToken =
+      /^(\[|\{|\}|\]|\],|\},|\}\]|\}\],|\,)$/.test(line) ||
+      /^\s*\"[a-zA-Z0-9_\-]+\"\s*\:/.test(line) ||
+      /^\s*\}\s*\,?\s*$/.test(line) ||
+      /^\s*\]\s*\,?\s*$/.test(line) ||
+      /^\s*\{\s*$/.test(line) ||
+      /^\s*\[\s*$/.test(line) ||
+      /^\s*\{\s*\"[a-zA-Z0-9_\-]+\"\s*\:/.test(line);
+
+    if (i > 0 && !isJsonToken && mergedLines.length > 0) {
+      mergedLines[mergedLines.length - 1] += " " + lines[i].trim();
     } else {
       mergedLines.push(lines[i]);
     }
   }
-  cleaned = mergedLines.join("\n");
-  
-  // 3. Process each object block individually to prevent regex run-away
-  cleaned = cleaned.replace(/\{[^{}]*\}/g, (objectBlock) => {
-    // Fix typos like: "slang_and_idiom":"" Mo" -> "slang_and_idiom":"" (using non-comma non-brace class to avoid running over next fields)
-    let sanitizedBlock = objectBlock.replace(/"(text|ipa|vietnamese|slang_and_idiom)"\s*:\s*""\s*[^",\}]*"/g, '"$1": ""');
+  let step = mergedLines.join("\n").replace(/,\s*([\]\}])/g, "$1");
 
-    // Escape unescaped double quotes inside string values within this block
-    const stringFieldsRegex = /"/g; // Wait, we will use the stringFieldsRegex inside
-    const stringRegex = /"(text|ipa|vietnamese|slang_and_idiom)"\s*:\s*"(.*?)"\s*(?=,\s*"(start|end|text|ipa|vietnamese|slang_and_idiom)"|\s*\})/g;
-    sanitizedBlock = sanitizedBlock.replace(stringRegex, (match, propName, propValue) => {
-      const escapedValue = propValue.replace(/(?<!\\)\"/g, '\\"');
-      return `"${propName}": "${escapedValue}"`;
-    });
-    
-    return sanitizedBlock;
-  });
-  
-  return cleaned;
+  try {
+    const parsed = JSON.parse(step);
+    if (Array.isArray(parsed)) {
+      return { data: parsed, error: null, cleanedStr: step };
+    }
+  } catch (e: any) {
+    let errDetail = e.message || "Lỗi cú pháp JSON";
+    const posMatch = errDetail.match(/position (\d+)/i);
+    if (posMatch) {
+      const pos = parseInt(posMatch[1], 10);
+      const before = str.slice(0, pos);
+      const lineNum = before.split("\n").length;
+      const colNum = pos - before.lastIndexOf("\n");
+      const snippet = str.slice(Math.max(0, pos - 25), Math.min(str.length, pos + 25));
+      errDetail = `Dòng ${lineNum}, Cột ${colNum}: "...${snippet.trim()}..." (${e.message})`;
+    }
+    return { data: null, error: errDetail, cleanedStr: str };
+  }
+
+  return { data: null, error: "Định dạng JSON không hợp lệ", cleanedStr: str };
+};
+
+const sanitizeJSONString = (str: string): string => {
+  return parseAndRepairJSON(str).cleanedStr;
 };
 
 // Check if a URL is a YouTube URL
@@ -95,8 +147,8 @@ const isYouTubeUrl = (url: string): boolean => {
 
 // Parse subtitle file content (.ass, .srt, .vtt) and extract timecodes + text
 // Returns { start, end, text, vietnamese? } - vietnamese is extracted from bilingual files (e.g. ASS with dual languages)
-const parseSubtitleFile = (rawContent: string): Array<{start: number, end: number, text: string, vietnamese?: string}> => {
-  const result: Array<{start: number, end: number, text: string, vietnamese?: string}> = [];
+const parseSubtitleFile = (rawContent: string): Array<{ start: number, end: number, text: string, vietnamese?: string }> => {
+  const result: Array<{ start: number, end: number, text: string, vietnamese?: string }> = [];
   const content = rawContent.trim();
 
   const timeToSeconds = (t: string): number => {
@@ -212,12 +264,12 @@ function TimeInput({ value, onChange }: TimeInputProps) {
   const handleSecsBlur = () => {
     let s = parseInt(secs, 10) || 0;
     let m = parseInt(mins, 10) || 0;
-    
+
     if (s >= 60) {
       m += Math.floor(s / 60);
       s = s % 60;
     }
-    
+
     setMins(String(m));
     setSecs(String(s).padStart(2, '0'));
     onChange(m * 60 + s);
@@ -297,30 +349,54 @@ YOUR TASKS:
 3. For each final merged sentence object:
    - Add "ipa" (phonetic transcription in US English).
    - Add "vietnamese" (natural and friendly Vietnamese translation).
-   - Add "slang_and_idiom" (If the sentence contains any idioms, slangs, phrasal verbs, or US cultural names/references, explain them briefly in Vietnamese. Start the note with a * symbol. Example: "* 'spill the beans': tiết lộ bí mật". If there are none, return null or empty string "").
+   - Add "slang_and_idiom" (If the sentence contains any idioms, slangs, phrasal verbs, or US cultural names/references, explain them briefly in Vietnamese. Start the note with a * symbol. Example: "* 'spill the beans': tiết lộ bí mật". If there are none, return empty string "").
+   - Add "expansion": Extract high-yield vocabulary ("vocabulary") and conversational grammar structures ("structures") if present:
+     * "vocabulary": Array of { "word": "word/phrase", "ipa": "/ipa/", "meaning": "vietnamese", "examples": [ { "en": "Example sentence", "ipa": "/sentence ipa/", "vi": "Nghĩa câu" } ] }
+     * "structures": Array of { "pattern": "Formula pattern", "meaning": "Explanation", "examples": [ { "en": "Example sentence", "ipa": "/sentence ipa/", "vi": "Nghĩa câu" } ] }
+     * For trivial/short exclamation lines (e.g. "What?", "All right."), set "expansion": { "vocabulary": [], "structures": [] }.
 4. Return ONLY a valid JSON array of the processed objects. Do not write any markdown formatting (do not wrap in \`\`\`json blocks) or explanations.
 
-Example of merging:
-Raw:
-[
-  {"start": 36.88, "end": 41.36, "text": "Hey. Hey. Ho ho. Hello. See a guy who"},
-  {"start": 40.0, "end": 42.0, "text": "doesn't want to know standing right"},
-  {"start": 41.36, "end": 46.0, "text": "here."}
-]
-Merged result:
-[
-  {
-    "start": 36.88,
-    "end": 46.0,
-    "text": "Hey. Hey. Ho ho. Hello. See a guy who doesn't want to know standing right here.",
-    "ipa": "/heɪ. heɪ. hoʊ hoʊ. həˈloʊ. si ə ɡaɪ hu ˈdʌznt wɑnt tu noʊ ˈstændɪŋ raɪt hɪr./",
-    "vietnamese": "Này, này. Hô hô. Xin chào. Có một anh chàng không muốn biết giới tính con mình đang đứng ngay đây này.",
-    "slang_and_idiom": "* 'standing right here': Đang đứng ngay tại đây (cách nhấn mạnh vị trí hiện tại)."
+Example of processed object:
+{
+  "start": 36.88,
+  "end": 46.0,
+  "text": "Hey. Hey. Ho ho. Hello. See a guy who doesn't want to know standing right here.",
+  "ipa": "/heɪ. heɪ. hoʊ hoʊ. həˈloʊ. si ə ɡaɪ hu ˈdʌznt wɑnt tu noʊ ˈstændɪŋ raɪt hɪr./",
+  "vietnamese": "Này, này. Hô hô. Xin chào. Có một anh chàng không muốn biết giới tính con mình đang đứng ngay đây này.",
+  "slang_and_idiom": "* 'standing right here': Đang đứng ngay tại đây (cách nhấn mạnh vị trí hiện tại).",
+  "expansion": {
+    "vocabulary": [
+      {
+        "word": "stand right here",
+        "ipa": "/stænd raɪt hɪr/",
+        "meaning": "đứng ngay tại đây (nhấn mạnh sự hiện diện)",
+        "examples": [
+          {
+            "en": "I was standing right here the whole time.",
+            "ipa": "/aɪ wʌz ˈstændɪŋ raɪt hɪr ðə hoʊl taɪm/",
+            "vi": "Tớ đã đứng ngay tại đây suốt từ nãy đến giờ."
+          }
+        ]
+      }
+    ],
+    "structures": [
+      {
+        "pattern": "see + someone + V-ing",
+        "meaning": "thấy ai đó đang thực hiện hành động gì",
+        "examples": [
+          {
+            "en": "Did you see him standing outside?",
+            "ipa": "/dɪd ju si hɪm ˈstændɪŋ ˈaʊtˌsaɪd/",
+            "vi": "Cậu có thấy anh ấy đứng bên ngoài không?"
+          }
+        ]
+      }
+    ]
   }
-]
+}
 
 Subtitles to process:
-${JSON.stringify(data.subtitles, null, 2)}`;
+` + JSON.stringify(data.subtitles, null, 2);
         setGeneratedPrompt(promptTemplate);
         alert("Tải phụ đề thô thành công! Vui lòng copy prompt bên dưới dán vào Gemini để nhờ dịch.");
       } else {
@@ -355,11 +431,15 @@ YOUR TASKS:
 3. For each final merged sentence object:
    - Add "ipa" (phonetic transcription in US English).
    - Add "vietnamese" (natural and friendly Vietnamese translation).
-   - Add "slang_and_idiom" (If the sentence contains any idioms, slangs, phrasal verbs, or US cultural names/references, explain them briefly in Vietnamese. Start the note with a * symbol. Example: "* 'spill the beans': tiết lộ bí mật". If there are none, return null or empty string "").
+   - Add "slang_and_idiom" (If the sentence contains any idioms, slangs, phrasal verbs, or US cultural names/references, explain them briefly in Vietnamese. Start the note with a * symbol. Example: "* 'spill the beans': tiết lộ bí mật". If there are none, return empty string "").
+   - Add "expansion": Extract high-yield vocabulary ("vocabulary") and conversational structures ("structures") if present:
+     * "vocabulary": Array of { "word": "word/phrase", "ipa": "/ipa/", "meaning": "vietnamese", "examples": [ { "en": "Example sentence", "ipa": "/sentence ipa/", "vi": "Nghĩa câu" } ] }
+     * "structures": Array of { "pattern": "Formula pattern", "meaning": "Explanation", "examples": [ { "en": "Example sentence", "ipa": "/sentence ipa/", "vi": "Nghĩa câu" } ] }
+     * For trivial/short exclamation lines (e.g. "What?", "All right."), set "expansion": { "vocabulary": [], "structures": [] }.
 4. Return ONLY a valid JSON array of the processed objects. Do not write any markdown formatting (do not wrap in \`\`\`json blocks) or explanations.
 
 Subtitles to process:
-${JSON.stringify(parsed, null, 2)}`;
+` + JSON.stringify(parsed, null, 2);
     setGeneratedPrompt(promptTemplate);
     alert(`Đã phân tích thành công ${parsed.length} dòng phụ đề! Hãy copy Prompt bên dưới và dán vào Gemini.`);
   };
@@ -440,14 +520,14 @@ ${JSON.stringify(parsed, null, 2)}`;
   // Tự động nạp dữ liệu Preview khi chọn/thay đổi bộ đề TOEIC
   useEffect(() => {
     let isMounted = true;
-    
+
     async function fetchPreview() {
       const testId = lesson?.toeicTestId;
       if (!testId) {
         setPreviewData(null);
         return;
       }
-      
+
       setLoadingPreview(true);
       try {
         const res = await fetch(`/api/admin/toeic-tests/${testId}`);
@@ -526,7 +606,7 @@ ${JSON.stringify(parsed, null, 2)}`;
   // Cập nhật lesson state khi draft thay đổi (từ sidebar chẳng hạn)
   useEffect(() => {
     if (draftData && lesson) {
-       setLesson((prev: any) => ({ ...prev, ...draftData }));
+      setLesson((prev: any) => ({ ...prev, ...draftData }));
     }
   }, [draftData]);
 
@@ -600,7 +680,7 @@ ${JSON.stringify(parsed, null, 2)}`;
         setSaving(true);
         try {
           await onSaveAll();
-        } catch (err) {}
+        } catch (err) { }
         finally {
           setSaving(false);
         }
@@ -623,14 +703,13 @@ ${JSON.stringify(parsed, null, 2)}`;
     try {
       let finalContent = lesson.content;
       if (lesson.contentType === "YOUTUBE_DICTATION" && lesson.content) {
-        try {
-          finalContent = sanitizeJSONString(lesson.content);
-          JSON.parse(finalContent); // Verify it is now perfectly valid JSON
-        } catch (e) {
-          alert("Lỗi: Dữ liệu phụ đề có cấu trúc JSON không hợp lệ sau khi tự động dọn dẹp. Vui lòng kiểm tra lại ngoặc kép hoặc dấu phẩy!");
+        const { data, error, cleanedStr } = parseAndRepairJSON(lesson.content);
+        if (!data || !Array.isArray(data)) {
+          alert(`Lỗi: Dữ liệu phụ đề có cấu trúc JSON không hợp lệ.\n\nChi tiết: ${error || "Vui lòng kiểm tra lại ngoặc kép hoặc dấu phẩy!"}`);
           setSaving(false);
           return;
         }
+        finalContent = cleanedStr;
       }
 
       const payload = {
@@ -663,12 +742,12 @@ ${JSON.stringify(parsed, null, 2)}`;
 
   const fallbackLength = (() => {
     if (!lesson) return 50;
-    const isFullTest = lesson.toeicTestId?.startsWith('full-test-') || 
-                       (lesson.contentType === "TOEIC_TEST" && lesson.toeicTestId?.startsWith('full-test-')) ||
-                       lesson.title?.toLowerCase().includes("full test") ||
-                       lesson.title?.toLowerCase().includes("đề thi");
+    const isFullTest = lesson.toeicTestId?.startsWith('full-test-') ||
+      (lesson.contentType === "TOEIC_TEST" && lesson.toeicTestId?.startsWith('full-test-')) ||
+      lesson.title?.toLowerCase().includes("full test") ||
+      lesson.title?.toLowerCase().includes("đề thi");
     if (isFullTest) return 200;
-    
+
     // Đối với tất cả bài tập phân dạng, bài học dynamic hoặc riêng lẻ khác, hỗ trợ tối đa 350 câu hỏi
     return 350;
   })();
@@ -716,7 +795,7 @@ ${JSON.stringify(parsed, null, 2)}`;
         {/* CẤU HÌNH LOẠI BÀI HỌC */}
         <div className="space-y-4">
           <label className="text-[11px] font-black text-slate-400 uppercase ml-2 tracking-widest">Loại bài học</label>
-          <select 
+          <select
             value={lesson.contentType || "TEXT"}
             onChange={(e) => {
               const newType = e.target.value;
@@ -866,15 +945,25 @@ ${JSON.stringify(parsed, null, 2)}`;
 
               {/* Preview parsed JSON */}
               {(() => {
-                try {
-                  const sanitized = sanitizeJSONString(lesson.content || "[]");
-                  const parsed = JSON.parse(sanitized);
-                  if (!Array.isArray(parsed)) throw new Error();
+                if (!lesson.content || !lesson.content.trim()) return null;
+                const { data, error, cleanedStr } = parseAndRepairJSON(lesson.content);
+                if (data && Array.isArray(data)) {
                   return (
                     <div className="mt-4 p-5 bg-white rounded-2xl border border-slate-200 space-y-3">
-                      <p className="text-xs font-bold text-slate-700">Xem trước danh sách phụ đề ({parsed.length} câu):</p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs font-bold text-slate-700">Xem trước danh sách phụ đề ({data.length} câu):</p>
+                        {cleanedStr !== lesson.content && (
+                          <button
+                            type="button"
+                            onClick={() => updateDraft({ content: cleanedStr })}
+                            className="px-3 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-[11px] font-bold transition-all"
+                          >
+                            ✨ Tự động chuẩn hóa cú pháp
+                          </button>
+                        )}
+                      </div>
                       <div className="max-h-[300px] overflow-y-auto space-y-3 divide-y divide-slate-100 text-xs pr-2">
-                        {parsed.map((item: any, idx: number) => (
+                        {data.map((item: any, idx: number) => (
                           <div key={idx} className={`${idx > 0 ? "pt-3" : ""} flex flex-col gap-1`}>
                             <div className="flex justify-between font-mono text-[10px] text-slate-400">
                               <span className="font-bold">Dòng {idx + 1}</span>
@@ -883,46 +972,54 @@ ${JSON.stringify(parsed, null, 2)}`;
                             <p className="font-bold text-slate-800">{item.text}</p>
                             {item.ipa && <p className="text-indigo-600 font-mono font-bold">{item.ipa}</p>}
                             {item.vietnamese && <p className="text-slate-500">{item.vietnamese}</p>}
+                            {item.expansion && (
+                              <div className="flex items-center gap-1.5 mt-0.5">
+                                <span className="text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md">
+                                  📚 Mở rộng: {item.expansion.vocabulary?.length || 0} từ vựng, {item.expansion.structures?.length || 0} cấu trúc
+                                </span>
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
                     </div>
                   );
-                } catch (e) {
-                  if (lesson.content) {
-                    return (
-                      <p className="text-xs text-red-500 font-semibold italic mt-2">
-                        ⚠️ Định dạng JSON không hợp lệ. Vui lòng kiểm tra lại cú pháp (ngoặc kép, dấu phẩy).
-                      </p>
-                    );
-                  }
-                  return null;
                 }
+                return (
+                  <div className="mt-3 p-4 bg-red-50/80 border border-red-200 rounded-2xl text-xs space-y-1">
+                    <p className="font-bold text-red-600 flex items-center gap-1.5">
+                      <span>⚠️ Định dạng JSON không hợp lệ</span>
+                    </p>
+                    <p className="font-mono text-[11px] text-red-500 leading-relaxed break-all">
+                      {error || "Vui lòng kiểm tra lại cú pháp (ngoặc kép, dấu phẩy, đóng mở ngoặc)."}
+                    </p>
+                  </div>
+                );
               })()}
             </div>
           </div>
         ) : lesson.contentType === "DYNAMIC_PART" ? (
           <div className="space-y-4 p-8 bg-blue-50/50 rounded-3xl border border-blue-100">
-             <label className="text-[11px] font-black text-blue-500 uppercase ml-2 tracking-widest">Cấu hình Luyện tập theo Part</label>
-             <SmartPartSelector 
-                key={lessonId}
-                initialData={(() => {
-                  try {
-                    const content = lesson.content;
-                    if (!content || typeof content !== 'string') return {};
-                    if (content.startsWith('{') || content.startsWith('[')) {
-                      return JSON.parse(content);
-                    }
-                    return {};
-                  } catch (e) {
-                    return {};
+            <label className="text-[11px] font-black text-blue-500 uppercase ml-2 tracking-widest">Cấu hình Luyện tập theo Part</label>
+            <SmartPartSelector
+              key={lessonId}
+              initialData={(() => {
+                try {
+                  const content = lesson.content;
+                  if (!content || typeof content !== 'string') return {};
+                  if (content.startsWith('{') || content.startsWith('[')) {
+                    return JSON.parse(content);
                   }
-                })()}
-                onSelect={(data) => updateDraft({ content: JSON.stringify(data) })}
-             />
-             <p className="text-xs text-blue-600 font-medium ml-2 mt-2 italic">
-               * Học viên sẽ được luyện tập với các câu hỏi được lọc thông minh từ ngân hàng dữ liệu.
-             </p>
+                  return {};
+                } catch (e) {
+                  return {};
+                }
+              })()}
+              onSelect={(data) => updateDraft({ content: JSON.stringify(data) })}
+            />
+            <p className="text-xs text-blue-600 font-medium ml-2 mt-2 italic">
+              * Học viên sẽ được luyện tập với các câu hỏi được lọc thông minh từ ngân hàng dữ liệu.
+            </p>
           </div>
         ) : lesson.contentType === "VOCAB_GAME" ? (
           <div className="space-y-4 p-8 bg-amber-50/50 rounded-3xl border border-amber-100">
@@ -942,126 +1039,126 @@ ${JSON.stringify(parsed, null, 2)}`;
             </p>
           </div>
         ) : lesson.contentType === "TOEIC_TEST" ? (
-           <div className="space-y-4 p-8 bg-blue-50/50 rounded-3xl border border-blue-100">
-             <label className="text-[11px] font-black text-blue-500 uppercase ml-2 tracking-widest">Chọn bộ đề TOEIC</label>
-             <SmartToeicSelector 
-               tests={toeicTests}
-               selectedId={lesson.toeicTestId || ""}
-               onSelect={(id) => updateDraft({ toeicTestId: id })}
-             />
-             <p className="text-xs text-blue-600 font-medium ml-2 mt-2">Học viên sẽ được sử dụng trình Player tương tác cao khi chọn loại bài này.</p>
+          <div className="space-y-4 p-8 bg-blue-50/50 rounded-3xl border border-blue-100">
+            <label className="text-[11px] font-black text-blue-500 uppercase ml-2 tracking-widest">Chọn bộ đề TOEIC</label>
+            <SmartToeicSelector
+              tests={toeicTests}
+              selectedId={lesson.toeicTestId || ""}
+              onSelect={(id) => updateDraft({ toeicTestId: id })}
+            />
+            <p className="text-xs text-blue-600 font-medium ml-2 mt-2">Học viên sẽ được sử dụng trình Player tương tác cao khi chọn loại bài này.</p>
 
-             {/* KHU VỰC XEM TRƯỚC TỰ ĐỘNG */}
-             <div className="mt-10 pt-10 border-t border-blue-100/50">
-                <div className="flex items-center gap-2 mb-6">
-                    <div className="w-2 h-6 bg-blue-600 rounded-full"></div>
-                    <label className="text-[12px] font-black text-blue-900 uppercase tracking-widest">Bản xem trước học viên (Dữ liệu thực tế)</label>
+            {/* KHU VỰC XEM TRƯỚC TỰ ĐỘNG */}
+            <div className="mt-10 pt-10 border-t border-blue-100/50">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-2 h-6 bg-blue-600 rounded-full"></div>
+                <label className="text-[12px] font-black text-blue-900 uppercase tracking-widest">Bản xem trước học viên (Dữ liệu thực tế)</label>
+              </div>
+
+              {loadingPreview ? (
+                <div className="p-20 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200 text-center text-slate-400 italic">
+                  Đang nạp bản xem trước dữ liệu bài tập...
                 </div>
-
-                {loadingPreview ? (
-                   <div className="p-20 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200 text-center text-slate-400 italic">
-                      Đang nạp bản xem trước dữ liệu bài tập...
-                   </div>
-                ) : previewData ? (
-                   <div className="rounded-[2.5rem] border border-blue-100 shadow-2xl shadow-blue-50 overflow-hidden bg-white min-h-[400px] max-h-[650px] overflow-y-auto scrollbar-thin">
-                      <div className="bg-blue-600 p-3 text-center text-[10px] font-black text-white uppercase tracking-[0.2em]">
-                        Chế độ xem trước: Admin Preview Mode {lesson.toeicTestId?.startsWith('full-test-') ? '(Full 7 Parts)' : ''}
-                      </div>
-                      <div className="p-0">
-                        {/* Render Player Client with actual data */}
-                        {lesson.toeicTestId?.startsWith('full-test-') ? (
-                          <div className="p-8 bg-slate-50">
-                             <div className="flex items-center justify-between mb-6">
-                                <div>
-                                  <p className="text-sm font-black text-slate-800">CẤU TRÚC BỘ ĐỀ THỰC TẾ</p>
-                                  <p className="text-[10px] text-slate-400 font-bold uppercase">Dữ liệu được nạp trực tiếp từ Database</p>
-                                </div>
-                                <div className="px-4 py-2 bg-blue-600 text-white rounded-2xl font-black text-sm shadow-lg shadow-blue-200">
-                                  TỔNG: {
-                                    previewData.parts?.reduce((acc: number, p: any) => 
-                                      acc + p.groups.reduce((sum: number, g: any) => sum + (g.questions?.length || 0), 0), 0
-                                    ) || 0
-                                  } CÂU
-                                </div>
-                             </div>
-
-                             <div className="grid grid-cols-1 gap-4">
-                                {[1, 2, 3, 4, 5, 6, 7].map(pNum => {
-                                  const part = previewData.parts?.find((p: any) => p.partNumber === pNum);
-                                  const qCount = part?.groups?.reduce((sum: number, g: any) => sum + (g.questions?.length || 0), 0) || 0;
-                                  
-                                  return (
-                                    <div key={pNum} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                                      <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                          <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-[10px] font-black">P{pNum}</span>
-                                          <span className="text-xs font-black text-slate-700">PART {pNum}</span>
-                                        </div>
-                                        <span className={`text-[10px] font-black px-2 py-1 rounded-md ${qCount === 0 ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'}`}>
-                                          {qCount} CÂU HỎI
-                                        </span>
-                                      </div>
-                                      <div className="p-4">
-                                        {part?.groups?.length > 0 ? (
-                                          <div className="space-y-2">
-                                            {part.groups.map((g: any, idx: number) => {
-                                              const nos = (g.questions || []).map((q: any) => q.questionNo);
-                                              const range = nos.length > 0 ? `${Math.min(...nos)}-${Math.max(...nos)}` : "N/A";
-                                              return (
-                                                <div key={g.id} className="flex items-center justify-between text-[10px] p-2 hover:bg-slate-50 rounded-lg border border-transparent hover:border-slate-100 transition-all">
-                                                  <div className="flex items-center gap-3">
-                                                    <span className="text-slate-400 font-mono w-4 italic">{idx + 1}.</span>
-                                                    <span className="font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">Câu {range}</span>
-                                                    {(() => {
-                                                      const gMeta = g.metadata as any || {};
-                                                      const bookName = gMeta.Book || gMeta.book || "";
-                                                      const testName = gMeta.Test || gMeta.test || "";
-                                                      if (!bookName && !testName) return null;
-                                                      return (
-                                                        <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-tight shrink-0 select-none">
-                                                          {bookName} {testName ? `Test ${testName}` : ""}
-                                                        </span>
-                                                      );
-                                                    })()}
-                                                    <span className="text-slate-500 truncate max-w-[200px]">{g.passageText?.substring(0, 50) || "(Không có nội dung)"}...</span>
-                                                  </div>
-                                                  <span className="text-slate-300 font-mono text-[9px]">{g.id}</span>
-                                                </div>
-                                              );
-                                            })}
-                                          </div>
-                                        ) : (
-                                          <p className="text-[10px] text-red-400 italic text-center py-2">Chưa có dữ liệu cho Part này.</p>
-                                        )}
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                             </div>
+              ) : previewData ? (
+                <div className="rounded-[2.5rem] border border-blue-100 shadow-2xl shadow-blue-50 overflow-hidden bg-white min-h-[400px] max-h-[650px] overflow-y-auto scrollbar-thin">
+                  <div className="bg-blue-600 p-3 text-center text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                    Chế độ xem trước: Admin Preview Mode {lesson.toeicTestId?.startsWith('full-test-') ? '(Full 7 Parts)' : ''}
+                  </div>
+                  <div className="p-0">
+                    {/* Render Player Client with actual data */}
+                    {lesson.toeicTestId?.startsWith('full-test-') ? (
+                      <div className="p-8 bg-slate-50">
+                        <div className="flex items-center justify-between mb-6">
+                          <div>
+                            <p className="text-sm font-black text-slate-800">CẤU TRÚC BỘ ĐỀ THỰC TẾ</p>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase">Dữ liệu được nạp trực tiếp từ Database</p>
                           </div>
-                        ) : (
-                          <ToeicPlayerClient 
-                            targetPart={previewData.parts?.[0]?.partNumber || 1}
-                            data={previewData.parts?.[0]?.groups || []}
-                            lessonId={lessonId}
-                            initialProgress={{}} // Admin xem trước không cần tiến độ
-                            isReviewMode={true} // Bật chế độ review để hiện luôn đáp án/giải thích nếu muốn
-                          />
-                        )}
+                          <div className="px-4 py-2 bg-blue-600 text-white rounded-2xl font-black text-sm shadow-lg shadow-blue-200">
+                            TỔNG: {
+                              previewData.parts?.reduce((acc: number, p: any) =>
+                                acc + p.groups.reduce((sum: number, g: any) => sum + (g.questions?.length || 0), 0), 0
+                              ) || 0
+                            } CÂU
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4">
+                          {[1, 2, 3, 4, 5, 6, 7].map(pNum => {
+                            const part = previewData.parts?.find((p: any) => p.partNumber === pNum);
+                            const qCount = part?.groups?.reduce((sum: number, g: any) => sum + (g.questions?.length || 0), 0) || 0;
+
+                            return (
+                              <div key={pNum} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                                <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-[10px] font-black">P{pNum}</span>
+                                    <span className="text-xs font-black text-slate-700">PART {pNum}</span>
+                                  </div>
+                                  <span className={`text-[10px] font-black px-2 py-1 rounded-md ${qCount === 0 ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'}`}>
+                                    {qCount} CÂU HỎI
+                                  </span>
+                                </div>
+                                <div className="p-4">
+                                  {part?.groups?.length > 0 ? (
+                                    <div className="space-y-2">
+                                      {part.groups.map((g: any, idx: number) => {
+                                        const nos = (g.questions || []).map((q: any) => q.questionNo);
+                                        const range = nos.length > 0 ? `${Math.min(...nos)}-${Math.max(...nos)}` : "N/A";
+                                        return (
+                                          <div key={g.id} className="flex items-center justify-between text-[10px] p-2 hover:bg-slate-50 rounded-lg border border-transparent hover:border-slate-100 transition-all">
+                                            <div className="flex items-center gap-3">
+                                              <span className="text-slate-400 font-mono w-4 italic">{idx + 1}.</span>
+                                              <span className="font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">Câu {range}</span>
+                                              {(() => {
+                                                const gMeta = g.metadata as any || {};
+                                                const bookName = gMeta.Book || gMeta.book || "";
+                                                const testName = gMeta.Test || gMeta.test || "";
+                                                if (!bookName && !testName) return null;
+                                                return (
+                                                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-tight shrink-0 select-none">
+                                                    {bookName} {testName ? `Test ${testName}` : ""}
+                                                  </span>
+                                                );
+                                              })()}
+                                              <span className="text-slate-500 truncate max-w-[200px]">{g.passageText?.substring(0, 50) || "(Không có nội dung)"}...</span>
+                                            </div>
+                                            <span className="text-slate-300 font-mono text-[9px]">{g.id}</span>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  ) : (
+                                    <p className="text-[10px] text-red-400 italic text-center py-2">Chưa có dữ liệu cho Part này.</p>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
-                   </div>
-                ) : (
-                   <div className="p-20 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200 text-center text-slate-400">
-                      <p className="font-bold text-slate-500 mb-1">Chưa có dữ liệu xem trước.</p>
-                      <p className="text-xs italic">Vui lòng chọn một bộ đề TOEIC ở trên để kiểm tra nội dung.</p>
-                   </div>
-                )}
-             </div>
-           </div>
+                    ) : (
+                      <ToeicPlayerClient
+                        targetPart={previewData.parts?.[0]?.partNumber || 1}
+                        data={previewData.parts?.[0]?.groups || []}
+                        lessonId={lessonId}
+                        initialProgress={{}} // Admin xem trước không cần tiến độ
+                        isReviewMode={true} // Bật chế độ review để hiện luôn đáp án/giải thích nếu muốn
+                      />
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="p-20 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200 text-center text-slate-400">
+                  <p className="font-bold text-slate-500 mb-1">Chưa có dữ liệu xem trước.</p>
+                  <p className="text-xs italic">Vui lòng chọn một bộ đề TOEIC ở trên để kiểm tra nội dung.</p>
+                </div>
+              )}
+            </div>
+          </div>
         ) : lesson.contentType === "IELTS_READING" ? (
           <div className="space-y-6 p-8 bg-orange-50/50 rounded-3xl border border-orange-100 shadow-sm">
             <label className="text-[11px] font-black text-orange-600 uppercase ml-2 tracking-widest">Cấu hình IELTS Reading Test (Bộ 3 Passage)</label>
-            
+
             <div className="space-y-6">
               <div>
                 <label className="text-xs font-bold text-slate-600 ml-1 font-sans">JSON Passage 1 (Cột D dòng tương ứng với Passage 1)</label>
@@ -1165,7 +1262,7 @@ ${JSON.stringify(parsed, null, 2)}`;
 
                       const gopContent = JSON.stringify(arr, null, 2);
                       const updates: any = { content: gopContent };
-                      
+
                       updateDraft(updates);
                       alert(`✅ Đã gộp và cập nhật nội dung bài đọc cho ${arr.length} Passage thành công! Hãy bấm "Lưu thay đổi" ở sơ đồ cây bên trái để lưu vào hệ thống.`);
                     } catch (e: any) {
@@ -1304,8 +1401,8 @@ ${JSON.stringify(parsed, null, 2)}`;
           const videosListRaw: any[] = Array.isArray(rawExplanation)
             ? rawExplanation
             : rawExplanation?.videoUrl
-            ? [rawExplanation]
-            : [];
+              ? [rawExplanation]
+              : [];
 
           // Luôn đảm bảo có ít nhất 1 video
           const videosList = videosListRaw.length > 0
@@ -1377,11 +1474,10 @@ ${JSON.stringify(parsed, null, 2)}`;
                       <button
                         type="button"
                         onClick={() => setActiveVideoIndex(idx)}
-                        className={`px-4 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-2 ${
-                          isActive
+                        className={`px-4 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-2 ${isActive
                             ? "bg-blue-600 text-white shadow-md shadow-blue-100"
                             : "text-slate-600 hover:text-blue-600"
-                        }`}
+                          }`}
                       >
                         🎥 {vid.title || `Video ${idx + 1}`}
                       </button>
@@ -1398,7 +1494,7 @@ ${JSON.stringify(parsed, null, 2)}`;
                     </div>
                   );
                 })}
-                
+
                 <button
                   type="button"
                   onClick={handleAddVideo}
@@ -1433,7 +1529,7 @@ ${JSON.stringify(parsed, null, 2)}`;
                         let type = "direct";
                         if (url.includes("youtube.com") || url.includes("youtu.be")) type = "youtube";
                         else if (url.includes("drive.google.com")) type = "google-drive";
-                        
+
                         updateActiveVideo({
                           videoUrl: url,
                           videoType: type
@@ -1463,7 +1559,7 @@ ${JSON.stringify(parsed, null, 2)}`;
                             } else if (url.includes("youtu.be/")) {
                               videoId = url.split("youtu.be/")[1]?.split("?")[0];
                             }
-                          } catch (e) {}
+                          } catch (e) { }
 
                           if (videoId) {
                             return (
@@ -1485,7 +1581,7 @@ ${JSON.stringify(parsed, null, 2)}`;
                             } else if (url.includes("id=")) {
                               fileId = url.split("id=")[1]?.split("&")[0];
                             }
-                          } catch (e) {}
+                          } catch (e) { }
 
                           if (fileId) {
                             return (
@@ -1585,9 +1681,9 @@ ${JSON.stringify(parsed, null, 2)}`;
                                   onChange={(e) => {
                                     const val = e.target.value;
                                     const newStamps = [...timestamps];
-                                    newStamps[idx] = { 
-                                      ...stamp, 
-                                      targetIndex: val === "" ? null : parseInt(val, 10) 
+                                    newStamps[idx] = {
+                                      ...stamp,
+                                      targetIndex: val === "" ? null : parseInt(val, 10)
                                     };
                                     updateActiveVideo({ newStamps });
                                     updateActiveVideo({ timestamps: newStamps });

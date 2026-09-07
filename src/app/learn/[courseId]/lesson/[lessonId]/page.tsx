@@ -58,9 +58,12 @@ export default async function LessonDetailPage({
   const { courseId, lessonId } = await params;
   const { q } = await searchParams;
   const session = await getServerSession(authOptions) as any;
+  const isTeacherOrAdmin = Boolean(session?.user && ((session.user as any).role === "ADMIN" || (session.user as any).role === "TEACHER"));
   
-  // Lấy dữ liệu bài học tĩnh từ Cache
-  const lesson = await getCachedLesson(lessonId);
+  // Luôn lấy dữ liệu mới nhất trực tiếp từ DB nếu là Admin/Teacher hoặc trong môi trường dev
+  const lesson = (isTeacherOrAdmin || process.env.NODE_ENV === "development")
+    ? await prisma.lesson.findUnique({ where: { id: lessonId } })
+    : await getCachedLesson(lessonId);
 
   if (!lesson) return notFound();
 

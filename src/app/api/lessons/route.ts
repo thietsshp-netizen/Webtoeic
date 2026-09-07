@@ -77,8 +77,10 @@ export async function DELETE(req: Request) {
       }
     });
 
-    revalidateTag("syllabus", "max");
-    revalidateTag("lesson", "max");
+    try {
+      revalidateTag("syllabus", "max");
+      revalidateTag("lesson", "max");
+    } catch (e) {}
 
     return NextResponse.json({ success: true, message: "Đã xóa bài học thành công (Giữ nguyên file gốc)" });
   } catch (error: any) {

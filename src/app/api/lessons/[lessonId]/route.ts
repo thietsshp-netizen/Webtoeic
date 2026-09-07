@@ -53,8 +53,10 @@ export async function PUT(
       }
     });
 
-    revalidateTag("lesson", "max");
-    revalidateTag("syllabus", "max");
+    try {
+      revalidateTag("lesson", "max");
+      revalidateTag("syllabus", "max");
+    } catch (e) {}
 
     return NextResponse.json(lesson);
   } catch (error: any) {
