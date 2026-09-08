@@ -270,6 +270,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const selectedExpansionIndexRef = useRef<number>(selectedExpansionIndex);
   selectedExpansionIndexRef.current = selectedExpansionIndex;
   const playSubtitleRowRef = useRef<(index: number) => void>(() => {});
+  const togglePlayRef = useRef<() => void>(() => {});
 
   const popupRef = useRef<Window | null>(null);
   const pipWindowRef = useRef<any>(null);
@@ -507,6 +508,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           playSubtitleRowRef.current(curr + 1);
         } else if (key === 'b') {
           playSubtitleRowRef.current(curr);
+        } else if (key === '`' || key === 'Backquote') {
+          togglePlayRef.current();
         }
       },
       onSelectIndex: (targetIdx: number) => {
@@ -1212,6 +1215,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       }
     }
   };
+  togglePlayRef.current = togglePlay;
 
   // Change Playback Speed (both modes)
   const handleSpeedChange = (speed: number) => {

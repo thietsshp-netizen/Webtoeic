@@ -1048,25 +1048,38 @@ export const generateMovieExpansionPopupStyles = () => `
     color: #fef3c7;
   }
   .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
     text-align: center;
-    padding: 30px 16px;
-    color: #64748b;
   }
-  .empty-icon {
-    font-size: 32px;
-    margin-bottom: 10px;
+  .empty-sentence-box {
+    background: #fef2f2;
+    border: 1px solid #fee2e2;
+    border-radius: 14px;
+    padding: 20px 24px;
+    width: 100%;
+    max-width: 680px;
+    margin-bottom: 22px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   }
-  .empty-text {
-    font-size: 15px;
-    font-weight: 700;
-    color: #334155;
-    margin-bottom: 6px;
-  }
-  .empty-sub {
-    font-size: 13px;
-    color: #64748b;
-    margin-bottom: 18px;
+  .empty-sub-en {
+    font-size: 19px;
+    font-weight: 800;
+    color: #dc2626;
     line-height: 1.5;
+    word-break: break-word;
+  }
+  .empty-sub-vi {
+    font-size: 15px;
+    font-weight: 500;
+    color: #64748b;
+    margin-top: 8px;
+    line-height: 1.5;
+    font-style: italic;
+    word-break: break-word;
   }
   .empty-actions {
     display: flex;
@@ -1438,11 +1451,9 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
       if (!currentItem || totalItems === 0) {
         return `
           <div class="empty-state">
-            <div class="empty-icon">💡</div>
-            <div class="empty-text">Chưa có kiến thức mở rộng cho câu này</div>
-            <div class="empty-sub">
-              "${escapeHtml(sub.text || '')}"<br>
-              <em style="color: #94a3b8; font-size: 12px;">${escapeHtml(sub.vietnamese || '')}</em>
+            <div class="empty-sentence-box">
+              <div class="empty-sub-en">"${escapeHtml(sub.text || '')}"</div>
+              ${sub.vietnamese ? `<div class="empty-sub-vi">${escapeHtml(sub.vietnamese)}</div>` : ''}
             </div>
             <div class="empty-actions">
               <button type="button" class="btn btn-ai" id="btnEmptySendGemini" onclick="window.handleSendGemini && window.handleSendGemini()">⚡ Gửi Gemini</button>
@@ -1472,7 +1483,7 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
 
         <div class="card">
           <div class="card-header-actions">
-            <button class="btn btn-icon btn-edit" title="Sửa (E)" onclick="window.enterEditMode && window.enterEditMode()">✏️</button>
+            <button class="btn btn-icon btn-edit" title="Chỉnh sửa" onclick="window.enterEditMode && window.enterEditMode()">✏️</button>
             <button class="btn btn-icon btn-delete" title="Xóa" onclick="window.handleDeleteItem && window.handleDeleteItem()">🗑️</button>
           </div>
 
@@ -1564,10 +1575,10 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
     <div style="font-weight: 800; margin-bottom: 6px; color: #f8fafc; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;">
       ⌨️ PHÍM TẮT TIỆN ÍCH
     </div>
+    <div><span class="help-key">\`</span> Dừng / Phát video</div>
     <div><span class="help-key">,</span> / <span class="help-key">.</span> Đổi Từ vựng ↔ Cấu trúc</div>
     <div><span class="help-key">V</span> / <span class="help-key">N</span> Lùi / Tiến câu phụ đề</div>
     <div><span class="help-key">B</span> Nghe lại câu phụ đề</div>
-    <div><span class="help-key">E</span> Chuyển chế độ Sửa / Xem</div>
     <div><span class="help-key">Ctrl+S</span> Lưu dữ liệu đang sửa</div>
   </div>
 `;
@@ -1656,28 +1667,20 @@ export const updateMovieExpansionPopupDom = (
         const isTyping = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA');
         if (isTyping) return;
 
-        // E key -> Edit toggle
-        if (e.key.toLowerCase() === 'e') {
-          e.preventDefault();
-          const isFormOpen = targetDoc.getElementById('editForm') !== null || targetDoc.getElementById('jsonForm') !== null;
-          if (isFormOpen) {
-            if (typeof targetWin.cancelEditMode === 'function') targetWin.cancelEditMode();
-          } else {
-            if (typeof targetWin.enterEditMode === 'function') targetWin.enterEditMode();
-          }
-          return;
-        }
-
         // Navigation hotkeys
         if (e.key === ',' || e.key === '.' || e.key === '[' || e.key === ']' || e.key.toLowerCase() === 'ư' || e.key.toLowerCase() === 'ơ') {
           e.preventDefault();
           if (typeof targetWin.sendCycleMessage === 'function') {
             targetWin.sendCycleMessage(e.key);
           }
-        } else if (e.code === 'KeyV' || e.code === 'KeyN' || e.code === 'KeyB' || e.key === 'Enter') {
+        } else if (e.code === 'KeyV' || e.code === 'KeyN' || e.code === 'KeyB' || e.key === 'Enter' || e.code === 'Backquote' || e.key === '`') {
           e.preventDefault();
           if (typeof targetWin.sendSeekMessage === 'function') {
-            targetWin.sendSeekMessage(e.key === 'Enter' ? 'n' : e.key.toLowerCase());
+            if (e.code === 'Backquote' || e.key === '`') {
+              targetWin.sendSeekMessage('`');
+            } else {
+              targetWin.sendSeekMessage(e.key === 'Enter' ? 'n' : e.key.toLowerCase());
+            }
           }
         }
       });
