@@ -159,6 +159,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const [showIpa, setShowIpa] = useState<boolean>(false);
   const [showNotes, setShowNotes] = useState<boolean>(true);
   const [showSubOnVideo, setShowSubOnVideo] = useState<boolean>(true);
+  const [hideVietsub, setHideVietsub] = useState<boolean>(false);
   const [fontSize, setFontSize] = useState<number>(18);
   const [leftWidth, setLeftWidth] = useState<number>(60); // 60% left (video), 40% right (subtitles)
   const [isResizing, setIsResizing] = useState<boolean>(false);
@@ -1614,7 +1615,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     {subtitles[currentIndex].ipa}
                   </p>
                 )}
-                {subtitles[currentIndex].vietnamese && (
+                {subtitles[currentIndex].vietnamese && !hideVietsub && (
                   <p 
                     style={{ fontSize: `${(isFullscreen ? (fontSize - 1) * 1.4 : fontSize - 2) * (isMobile ? 0.7 : 1)}px` }} 
                     className="text-slate-200 mt-0.5 md:mt-1 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] font-medium"
@@ -1709,7 +1710,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               <div className="flex items-center gap-2 md:gap-3 shrink-0">
                 {/* Show options */}
                 <div className="flex items-center gap-2 md:gap-2.5">
-                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors normal-case text-[10px] md:text-xs">
+                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors normal-case text-[10px] md:text-xs" title="Bật/tắt hiển thị phiên âm IPA">
                     <input
                       type="checkbox"
                       checked={showIpa}
@@ -1721,7 +1722,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     />
                     <span>IPA</span>
                   </label>
-                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2 md:pl-2.5 normal-case text-[10px] md:text-xs">
+                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2 md:pl-2.5 normal-case text-[10px] md:text-xs" title="Bật/tắt hiển thị giải nghĩa slang/idiom">
                     <input
                       type="checkbox"
                       checked={showNotes}
@@ -1731,9 +1732,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                       }}
                       className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3 md:w-3.5 md:h-3.5 h-3"
                     />
-                    <span>Giải nghĩa</span>
+                    <span>slang/idiom</span>
                   </label>
-                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2 md:pl-2.5 normal-case text-[10px] md:text-xs">
+                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2 md:pl-2.5 normal-case text-[10px] md:text-xs" title="Bật/tắt phụ đề trên khung video">
                     <input
                       type="checkbox"
                       checked={showSubOnVideo}
@@ -1743,8 +1744,19 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                       }}
                       className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3 md:w-3.5 md:h-3.5 h-3"
                     />
-                    <span className="hidden xs:inline">Sub trên video</span>
-                    <span className="xs:hidden">Sub video</span>
+                    <span>Sub</span>
+                  </label>
+                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2 md:pl-2.5 normal-case text-[10px] md:text-xs" title="Tích chọn để ẩn phụ đề Tiếng Việt">
+                    <input
+                      type="checkbox"
+                      checked={hideVietsub}
+                      onChange={(e) => {
+                        setHideVietsub(e.target.checked);
+                        e.target.blur();
+                      }}
+                      className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3 md:w-3.5 md:h-3.5 h-3"
+                    />
+                    <span>Vietsub</span>
                   </label>
                 </div>
 
@@ -1807,12 +1819,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   <button
                     type="button"
                     onClick={() => updateExpansionPopup(currentIndex, selectedExpansionIndex)}
-                    className="flex items-center gap-1 font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2 md:px-2.5 py-1 rounded-lg text-[10px] md:text-xs transition-all active:scale-95 border-l ml-1 cursor-pointer shadow-xs"
-                    title="Mở cửa sổ Từ vựng & Cấu trúc mở rộng (Phím tắt: dấu phẩy , hoặc chấm .)"
+                    className="w-6 h-6 md:w-7 md:h-7 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 flex items-center justify-center font-bold text-xs md:text-sm transition-all active:scale-95 shadow-xs ml-1 shrink-0"
+                    title="Từ vựng/Cấu trúc ( , . )"
                   >
                     <span>📚</span>
-                    <span className="hidden sm:inline">Từ vựng/Cấu trúc ( , . )</span>
-                    <span className="sm:hidden">Mở rộng</span>
                   </button>
                 )}
 
@@ -2015,7 +2025,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                             {sub.ipa}
                           </p>
                         )}
-                        {sub.vietnamese && (
+                        {sub.vietnamese && !hideVietsub && (
                           <p 
                             style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
                             className={`font-medium leading-snug ${isActive ? "text-red-500/90 font-semibold" : "text-slate-500"}`}
@@ -2054,7 +2064,16 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                           onChange={(e) => setShowNotes(e.target.checked)}
                           className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3 md:w-3.5 h-3 md:h-3.5"
                         />
-                        <span>Giải nghĩa</span>
+                        <span>slang/idiom</span>
+                      </label>
+                      <label className="flex items-center gap-1 cursor-pointer select-none font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2.5 md:pl-3" title="Tích chọn để ẩn phụ đề Tiếng Việt">
+                        <input
+                          type="checkbox"
+                          checked={hideVietsub}
+                          onChange={(e) => setHideVietsub(e.target.checked)}
+                          className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3 md:w-3.5 h-3 md:h-3.5"
+                        />
+                        <span>Vietsub</span>
                       </label>
                       <div className="flex items-center gap-1 border-l border-slate-200 pl-2.5 md:pl-3 normal-case">
                         <button
@@ -2086,7 +2105,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                       {subtitles[currentIndex]?.ipa}
                     </p>
                   )}
-                  {subtitles[currentIndex]?.vietnamese && (
+                  {subtitles[currentIndex]?.vietnamese && !hideVietsub && (
                     <p 
                       style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}
                       className="text-slate-605 leading-relaxed font-semibold italic text-[11px] md:text-xs"
