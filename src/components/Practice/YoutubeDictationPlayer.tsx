@@ -384,7 +384,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           const vocabData: ExpansionVocabItem = {
             word: payload.data.word || '',
             ipa: payload.data.ipa || '',
+            part_of_speech: payload.data.part_of_speech || '',
+            register: payload.data.register || '',
             synonyms: payload.data.synonyms || '',
+            antonyms: payload.data.antonyms || '',
             meaning: payload.data.meaning || '',
             examples: payload.data.examples || []
           };
@@ -1385,8 +1388,13 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       if (!res.ok) throw new Error("Cập nhật thất bại");
 
       setSubtitles(updatedSubtitles);
+      subtitlesRef.current = updatedSubtitles;
+      if (popupRef.current && !popupRef.current.closed) {
+        updateExpansionPopup(idx, selectedExpansionIndexRef.current, false, null, false);
+      }
       setEditingIndex(null);
       showToast("Đã cập nhật phụ đề thành công!", "success");
+
     } catch (e) {
       showToast("Lỗi khi cập nhật phụ đề!", "error");
     } finally {

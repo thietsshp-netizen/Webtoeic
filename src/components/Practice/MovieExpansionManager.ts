@@ -7,8 +7,11 @@ export interface ExampleItem {
 export interface ExpansionVocabItem {
   word: string;
   ipa?: string;
+  part_of_speech?: string;
+  register?: string;
   meaning: string;
   synonyms?: string;
+  antonyms?: string;
   examples: ExampleItem[];
 }
 
@@ -40,11 +43,15 @@ export interface FlattenedExpansionItem {
   word?: string;
   pattern?: string;
   ipa?: string;
+  part_of_speech?: string;
+  register?: string;
   meaning: string;
   synonyms?: string;
+  antonyms?: string;
   paraphrase?: string;
   examples: ExampleItem[];
 }
+
 
 export interface ExpansionPopupParams {
   subIndex: number;
@@ -73,21 +80,39 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
   const paraphrase = sub.expansion.paraphrase || '';
 
   if (Array.isArray(sub.expansion.vocabulary)) {
-    sub.expansion.vocabulary.forEach((v, idx) => {
-      if (v && (v.word || v.meaning)) {
+    sub.expansion.vocabulary.forEach((v: any, idx) => {
+      if (v && (v.word || v.meaning || v.meaning_vi)) {
+        let synVal = '';
+        if (Array.isArray(v.synonyms)) {
+          synVal = v.synonyms.map((s: any) => String(s).trim()).filter(Boolean).join(', ');
+        } else if (v.synonyms) {
+          synVal = String(v.synonyms).trim();
+        }
+
+        let antVal = '';
+        if (Array.isArray(v.antonyms)) {
+          antVal = v.antonyms.map((s: any) => String(s).trim()).filter(Boolean).join(', ');
+        } else if (v.antonyms) {
+          antVal = String(v.antonyms).trim();
+        }
+
         items.push({
           type: 'vocabulary',
           rawIndex: idx,
-          word: v.word || '',
-          ipa: v.ipa || '',
-          meaning: v.meaning || '',
-          synonyms: v.synonyms || '',
+          word: String(v.word || '').trim(),
+          ipa: String(v.ipa || v.ipa_us || v.ipa_uk || '').trim(),
+          part_of_speech: String(v.part_of_speech || v.pos || '').trim(),
+          register: String(v.register || '').trim(),
+          meaning: String(v.meaning || v.meaning_vi || '').trim(),
+          synonyms: synVal,
+          antonyms: antVal,
           paraphrase,
           examples: Array.isArray(v.examples) ? v.examples : [],
         });
       }
     });
   }
+
 
   if (Array.isArray(sub.expansion.structures)) {
     sub.expansion.structures.forEach((s, idx) => {
@@ -110,48 +135,176 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
 export const generateGeminiPromptForSub = (sub: Subtitle): string => {
   const subText = (sub.text || '').trim();
   const subVi = (sub.vietnamese || '').trim();
-  return `Bạn là chuyên gia giảng dạy tiếng Anh giao tiếp qua phim ảnh.
-Hãy phân tích câu thoại sau đây và trả về DUY NHẤT một mã JSON chuẩn (không kèm lời dẫn, không bọc markdown \`\`\`json) theo đúng cấu trúc sau:
+  return `# VAI TRÒ
+Bạn là chuyên gia ngôn ngữ Anh-Mỹ (American English) và giảng dạy tiếng Anh giao tiếp cho người Việt, có chuyên môn sâu về:
+* Natural spoken English
+* Conversational English
+* Collocations, phrasal verbs, idioms
+* Ngữ dụng học (pragmatics)
+* Ngữ điệu và sắc thái giao tiếp
+* Từ vựng theo ngữ cảnh
+* Cách diễn đạt mà người bản xứ Mỹ thực sự sử dụng trong đời sống hằng ngày
+
+Mục tiêu của bạn không phải là biến câu tiếng Anh thành câu "cao cấp" một cách máy móc, mà là giúp người học nói và hiểu tiếng Anh tự nhiên hơn như người bản xứ.
+
+---
+
+# NHIỆM VỤ
+Phân tích nội dung câu thoại được cung cấp và trả về DUY NHẤT một JSON hợp lệ, không có bất kỳ văn bản nào bên ngoài JSON.
+
+JSON phải có cấu trúc:
+{
+  "paraphrase": "...",
+  "vocabulary": [],
+  "structures": []
+}
+
+---
+
+# 1. PARAPHRASE
+
+## Mục tiêu
+Viết lại toàn bộ câu/đoạn hội thoại bằng một cách diễn đạt khác nhưng:
+* Giữ nguyên ý nghĩa cốt lõi.
+* Giữ nguyên thông tin.
+* Giữ nguyên người/vật được nhắc đến.
+* Giữ nguyên mức độ chắc chắn, cảm xúc, thái độ và sắc thái giao tiếp nếu có.
+* Không tự ý thêm thông tin hoặc suy diễn ý nghĩa không có trong bản gốc.
+* Phải nghe như một người Mỹ bản xứ thực sự có thể nói trong hội thoại đời thường.
+
+## QUAN TRỌNG: PARAPHRASE KHÔNG PHẢI LÀ THAY TỪ ĐỒNG NGHĨA
+Không hiểu paraphrase đơn giản là: từ A → từ đồng nghĩa B.
+Paraphrase là DIỄN ĐẠT LẠI CÙNG MỘT Ý BẰNG MỘT CÁCH KHÁC (Natural Re-expression).
+Bạn có thể thay đổi: từ vựng, collocation, phrasal verb, idiom, cấu trúc câu, trật tự từ, cách tổ chức thông tin, cách chia hoặc gộp ý, chủ động ↔ bị động khi phù hợp, từ/cụm từ ↔ cấu trúc khác, cấu trúc dài ↔ cách nói ngắn gọn, tự nhiên hơn.
+Không cần duy trì cấu trúc câu gốc nếu một cấu trúc khác tự nhiên hơn.
+
+Ví dụ:
+Original: "I don't really have a choice."
+Không nên paraphrase kiểu: "I do not truly have an option." (Đây chỉ là thay từ bằng từ đồng nghĩa và nghe không tự nhiên trong hội thoại).
+Có thể paraphrase thành: "I <mark>don't really have much of a choice</mark>." hoặc "I <mark>pretty much have to</mark>."
+Mục tiêu là NATURAL RE-EXPRESSION, không phải THESAURUS SUBSTITUTION.
+
+---
+
+# 2. NGUYÊN TẮC TỰ NHIÊN
+Hãy ưu tiên: Naturalness > Lexical difference.
+Một paraphrase tốt không nhất thiết phải thay đổi thật nhiều từ.
+Nếu câu gốc đã rất tự nhiên, chỉ thay đổi một phần nhỏ nếu đó là cách diễn đạt tốt hơn.
+Không được cố tình làm câu dài hơn, khó hơn, trang trọng hơn, "advanced" hơn chỉ để tạo cảm giác khác biệt.
+Không sử dụng kiểu paraphrase máy móc: thay từng từ bằng synonym, dùng từ hiếm, biến spoken English thành academic English.
+
+Naturalness Test:
+Trước khi tạo paraphrase, hãy tự kiểm tra: "Would a native American English speaker actually say this naturally in a real conversation?"
+
+---
+
+# 3. <mark> TRONG PARAPHRASE
+Bắt buộc sử dụng: <mark>...</mark> để đánh dấu những phần được diễn đạt lại hoặc thay đổi đáng kể so với bản gốc.
+Không cần đối chiếu từng từ một. Có thể đánh dấu: một từ, một cụm từ, một collocation, một phrasal verb, một idiom, một mệnh đề, hoặc một đoạn lớn nếu toàn bộ cấu trúc được viết lại.
+
+Ví dụ:
+Original: "I have to go." → Paraphrase: "I <mark>need to leave</mark>."
+Original: "She doesn't want to talk about it." → Paraphrase: "She <mark>isn't really up for talking about it</mark>."
+Original: "I don't think he will come." → Paraphrase: "<mark>I doubt he's going to show up.</mark>"
+
+Những phần được giữ nguyên một cách tự nhiên thì không cần <mark>.
+
+---
+
+# 4. CHỌN MỘT PARAPHRASE TỐT NHẤT
+Hãy chọn MỘT paraphrase tốt nhất dựa trên:
+1. Tự nhiên nhất.
+2. Đúng ngữ cảnh nhất.
+3. Giữ nghĩa chính xác nhất.
+4. Giữ được sắc thái giao tiếp.
+5. Có giá trị học tập cao.
+6. Phù hợp với American English.
+7. Không nghe gượng hoặc quá kiểu cách.
+
+---
+
+# 5. PHÂN BIỆT PARAPHRASE VÀ CORRECTION
+Không tự ý "sửa" câu gốc nếu câu gốc đã đúng ngữ pháp, tự nhiên và phù hợp ngữ cảnh.
+Paraphrase là diễn đạt lại, không phải sửa lỗi.
+
+---
+
+# 6. VOCABULARY & QUY ĐỊNH
+Chỉ chọn những từ/cụm từ đáng học và có giá trị thực tế (collocations, phrasal verbs, idioms, conversational expressions, expressions đáng ghi nhớ...). Bỏ qua từ quá cơ bản.
+
+Mỗi mục trong vocabulary phải có đầy đủ:
+* "word": Ghi từ hoặc giữ nguyên cả cụm expression/collocation/phrasal verb/idiom (ví dụ: get along with, be up for, have a choice, on the bright side).
+* "ipa": Ghi IPA theo General American English (AmE) trong dấu gạch chéo /.../ (ví dụ: /tʃɔɪs/).
+* "part_of_speech": Chỉ sử dụng một trong các giá trị: "idiom", "phrasal verb", "phrase", "verb", "noun", "adjective", "adverb", "collocation".
+* "register": Chỉ sử dụng một trong các giá trị: "casual", "neutral", "informal", "slang", "idiomatic", "formal".
+* "meaning": Giải thích nghĩa trong chính ngữ cảnh đang xét bằng tiếng Việt ngắn gọn, sát nghĩa.
+* "synonyms": Các cách diễn đạt thay thế tự nhiên và phù hợp ngữ cảnh. Nếu không có synonym tự nhiên, để "".
+* "antonyms": Từ/cụm đối lập tự nhiên nếu thực sự có giá trị. Nếu không có, để "".
+* "examples": 1–2 ví dụ ngắn gọn, tự nhiên có dịch nghĩa tiếng Việt.
+
+---
+
+# 7. STRUCTURES & QUY ĐỊNH
+Chọn cấu trúc giao tiếp thực sự hữu ích (conversational patterns, sentence frames, useful chunks, idiomatic structures...). Không liệt kê ngữ pháp cơ bản SGK (S + V + O, there is/are...).
+* "pattern": Ghi pattern tổng quát (ví dụ: have much of a choice, I don't have much of a + noun).
+* "meaning": Giải thích nghĩa và cách dùng bằng tiếng Việt.
+* "examples": 1–2 ví dụ minh họa áp dụng vào ngữ cảnh khác.
+
+---
+
+# 8. KHÔNG TRÙNG LẶP & KHÔNG SUY DIỄN QUÁ MỨC
+* Không đưa cùng một nội dung vào cả vocabulary và structures.
+* Giữ nguyên mức độ thân mật, cảm xúc, thái độ, mức độ chắc chắn, thời gian, chủ thể.
+* Nếu không có context đặc biệt, chọn cách hiểu an toàn nhất về mặt ngữ nghĩa.
+
+---
+
+# 9. QUY TẮC JSON & SCHEMA BẮT BUỘC
+Chỉ trả về JSON hợp lệ, KHÔNG bọc Markdown/code fence, KHÔNG giải thích ngoài JSON.
+Schema:
 
 {
-  "paraphrase": "Câu viết lại câu thoại trên bằng tiếng Anh cực kỳ đơn giản, tự nhiên, dễ hiểu",
+  "paraphrase": "Paraphrased dialogue with <mark>...</mark> around changed/re-expressed parts.",
   "vocabulary": [
     {
-      "word": "Từ vựng / Cụm từ hay / Slang / Idiom (hoặc để trống mảng nếu không có)",
-      "meaning": "Nghĩa tiếng Việt ngắn gọn, sát nghĩa ngữ cảnh (nếu từ này có nhiều nghĩa thông dụng trong giao tiếp đời sống thì ghi: 1. Nghĩa A; 2. Nghĩa B)",
-      "synonyms": "Từ/cụm đồng nghĩa nếu có (tùy chọn)",
+      "word": "...",
+      "ipa": "/.../",
+      "part_of_speech": "idiom | phrasal verb | phrase | verb | noun | adjective | adverb | collocation",
+      "register": "casual | neutral | informal | slang | idiomatic | formal",
+      "meaning": "...",
+      "synonyms": "...",
+      "antonyms": "...",
       "examples": [
         {
-          "en": "Ví dụ tiếng Anh ngắn gọn, tự nhiên trong đời sống",
-          "vi": "Dịch nghĩa tiếng Việt câu ví dụ"
+          "en": "...",
+          "vi": "..."
         }
       ]
     }
   ],
   "structures": [
     {
-      "pattern": "Công thức / Cấu trúc giao tiếp hay dùng (hoặc để trống mảng nếu không có)",
-      "meaning": "Ý nghĩa và ngữ cảnh sử dụng trong giao tiếp",
+      "pattern": "...",
+      "meaning": "...",
       "examples": [
         {
-          "en": "Ví dụ tiếng Anh đơn giản, thực tế",
-          "vi": "Dịch nghĩa tiếng Việt câu ví dụ"
+          "en": "...",
+          "vi": "..."
         }
       ]
     }
   ]
 }
 
-Nguyên tắc chọn lọc chuyên sâu cho người học giao tiếp:
-1. CHẤT LƯỢNG HƠN SỐ LƯỢNG: Bỏ qua các từ/thán từ quá hiển nhiên mà ai cũng biết (như wow, oh, yes, no, okay, hi, hello, please...). Chỉ chọn lọc những từ vựng, cụm từ (collocations/phrasal verbs), thành ngữ (idioms) hoặc cách diễn đạt tự nhiên của người bản xứ.
-2. TRÁNH TRÙNG LẶP: Không phân tích cùng một cụm từ ở cả mục vocabulary lẫn structures (nếu là cụm cố định hãy ưu tiên đưa vào vocabulary; chỉ đưa vào structures nếu nó là công thức ngữ pháp mở rộng rõ rệt).
-3. ĐA NGHĨA & VÍ DỤ: Nếu từ/cụm từ có nhiều nghĩa phổ biến ngoài đời, hãy nêu rõ và cho mỗi nghĩa 1 câu ví dụ tương ứng thật ngắn gọn, dễ nhớ (KHÔNG gượng ép tạo thêm nghĩa thứ 2 nếu từ chỉ có 1 nghĩa chính).
-4. ĐẦU RA: Chỉ trả về DUY NHẤT mã JSON hợp lệ, không kèm bất kỳ văn bản giải thích nào ngoài JSON.
+---
 
-Câu thoại cần phân tích:
+# CÂU THOẠI CẦN PHÂN TÍCH:
 "${subText}"
-${subVi ? `(Dịch nghĩa: "${subVi}")` : ''}`;
+${subVi ? `(Bản dịch phụ đề gốc: "${subVi}")` : ''}`;
 };
+
+
+
 
 export const sanitizeExpansionJson = (rawInput: any): SubtitleExpansion => {
   let parsed: any = rawInput;
@@ -192,13 +345,33 @@ export const sanitizeExpansionJson = (rawInput: any): SubtitleExpansion => {
             }
           });
         }
+        const meaningText = String(item.meaning || item.meaning_vi || '').trim();
+        let synText = '';
+        if (Array.isArray(item.synonyms)) {
+          synText = item.synonyms.map((s: any) => String(s).trim()).filter(Boolean).join(', ');
+        } else if (item.synonyms) {
+          synText = String(item.synonyms).trim();
+        }
+
+        let antText = '';
+        if (Array.isArray(item.antonyms)) {
+          antText = item.antonyms.map((s: any) => String(s).trim()).filter(Boolean).join(', ');
+        } else if (item.antonyms) {
+          antText = String(item.antonyms).trim();
+        }
+
         vocabList.push({
           word: String(item.word || '').trim(),
-          meaning: String(item.meaning || '').trim(),
-          ...(item.synonyms ? { synonyms: String(item.synonyms).trim() } : {}),
+          meaning: meaningText,
           ...(item.ipa ? { ipa: String(item.ipa).trim() } : {}),
+          ...(item.part_of_speech || item.pos ? { part_of_speech: String(item.part_of_speech || item.pos).trim() } : {}),
+          ...(item.register ? { register: String(item.register).trim() } : {}),
+          ...(synText ? { synonyms: synText } : {}),
+          ...(antText ? { antonyms: antText } : {}),
           examples
         });
+
+
       }
     });
     if (vocabList.length > 0) {
@@ -210,7 +383,9 @@ export const sanitizeExpansionJson = (rawInput: any): SubtitleExpansion => {
   if (Array.isArray(parsed.structures)) {
     const structList: ExpansionStructureItem[] = [];
     parsed.structures.forEach((item: any) => {
-      if (item && (item.pattern || item.meaning)) {
+      const patternText = String(item.pattern || item.structure || '').trim();
+      const meaningText = String(item.meaning || item.meaning_vi || item.explanation || item.explanation_vi || '').trim();
+      if (patternText || meaningText) {
         const examples: ExampleItem[] = [];
         if (Array.isArray(item.examples)) {
           item.examples.forEach((ex: any) => {
@@ -224,12 +399,13 @@ export const sanitizeExpansionJson = (rawInput: any): SubtitleExpansion => {
           });
         }
         structList.push({
-          pattern: String(item.pattern || '').trim(),
-          meaning: String(item.meaning || '').trim(),
+          pattern: patternText,
+          meaning: meaningText,
           examples
         });
       }
     });
+
     if (structList.length > 0) {
       result.structures = structList;
     }
@@ -246,6 +422,116 @@ const escapeHtml = (unsafe: string) => {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 };
+
+export const renderSentenceDiffPair = (
+  origStr: string,
+  paraStr: string
+): { origHtml: string; paraHtml: string } => {
+  if (!origStr) return { origHtml: '', paraHtml: escapeHtml(paraStr || '') };
+  if (!paraStr) return { origHtml: escapeHtml(origStr), paraHtml: '' };
+
+  const hasMarkTags = paraStr.includes('<mark>') || paraStr.includes('</mark>');
+  const cleanPara = paraStr.replace(/<\/?mark>/g, '');
+
+  const tokenize = (s: string) => s.split(/(\s+|[.,!?;:"'()])/).filter(Boolean);
+  const origTokens = tokenize(origStr);
+  const paraTokens = tokenize(cleanPara);
+
+  const norm = (t: string) => t.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+  const origWords = origTokens.map(norm);
+  const paraWords = paraTokens.map(norm);
+
+  const n = origWords.length;
+  const m = paraWords.length;
+
+  const dp: number[][] = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < m; j++) {
+      if (origWords[i] && paraWords[j] && origWords[i] === paraWords[j]) {
+        dp[i + 1][j + 1] = dp[i][j] + 1;
+      } else {
+        dp[i + 1][j + 1] = Math.max(dp[i + 1][j], dp[i][j + 1]);
+      }
+    }
+  }
+
+  const matchedInOrig = new Set<number>();
+  const matchedInPara = new Set<number>();
+  let i = n, j = m;
+  while (i > 0 && j > 0) {
+    if (origWords[i - 1] && paraWords[j - 1] && origWords[i - 1] === paraWords[j - 1]) {
+      matchedInOrig.add(i - 1);
+      matchedInPara.add(j - 1);
+      i--;
+      j--;
+    } else if (dp[i - 1][j] >= dp[i][j - 1]) {
+      i--;
+    } else {
+      j--;
+    }
+  }
+
+  function buildDiffHtml(tokens: string[], matchedSet: Set<number>, tagClass: string, titleText: string): string {
+    const isHighlighted: boolean[] = new Array(tokens.length).fill(false);
+    for (let idx = 0; idx < tokens.length; idx++) {
+      const isWord = /[a-zA-Z0-9]/.test(tokens[idx]);
+      if (isWord && !matchedSet.has(idx)) {
+        isHighlighted[idx] = true;
+      }
+    }
+    for (let idx = 1; idx < tokens.length - 1; idx++) {
+      if (!isHighlighted[idx] && isHighlighted[idx - 1] && isHighlighted[idx + 1] && /^\s+$/.test(tokens[idx])) {
+        isHighlighted[idx] = true;
+      }
+    }
+    let html = '';
+    let inSpan = false;
+    for (let idx = 0; idx < tokens.length; idx++) {
+      const token = tokens[idx];
+      if (isHighlighted[idx]) {
+        if (!inSpan) {
+          html += `<span class="${tagClass}" title="${titleText}">`;
+          inSpan = true;
+        }
+        html += escapeHtml(token);
+      } else {
+        if (inSpan) {
+          html += '</span>';
+          inSpan = false;
+        }
+        html += escapeHtml(token);
+      }
+    }
+    if (inSpan) html += '</span>';
+    return html;
+  }
+
+  const origHtml = buildDiffHtml(origTokens, matchedInOrig, 'orig-diff', 'Cụm từ gốc đã được diễn giải');
+
+  let paraHtml = '';
+  if (hasMarkTags) {
+    const parts = paraStr.split(/(<\/?mark>)/g);
+    paraHtml = parts.map(part => {
+      if (part === '<mark>') return '<span class="ph-diff" title="Cụm diễn giải thay thế">';
+      if (part === '</mark>') return '</span>';
+      return escapeHtml(part);
+    }).join('');
+  } else {
+    paraHtml = buildDiffHtml(paraTokens, matchedInPara, 'ph-diff', 'Cụm diễn giải thay thế');
+  }
+
+  return { origHtml, paraHtml };
+};
+
+export const renderDiffHighlight = (origStr: string, paraStr: string): string => {
+  return renderSentenceDiffPair(origStr, paraStr).paraHtml;
+};
+
+export const renderParaphraseHtml = (origStr: string, paraStr: string): string => {
+  return renderSentenceDiffPair(origStr, paraStr).paraHtml;
+};
+
+
 
 export const generateMovieExpansionPopupStyles = () => `
   * {
@@ -333,6 +619,16 @@ export const generateMovieExpansionPopupStyles = () => `
     background: #4338ca;
     color: #ffffff;
   }
+  .btn-header-ai {
+    background: #4f46e5;
+    color: #ffffff;
+    border-color: #4f46e5;
+  }
+  .btn-header-ai:hover {
+    background: #4338ca;
+    color: #ffffff;
+    border-color: #4338ca;
+  }
   .scroll-content {
     flex: 1;
     overflow-y: auto;
@@ -353,15 +649,22 @@ export const generateMovieExpansionPopupStyles = () => `
     color: #dc2626;
     line-height: 1.45;
   }
+  .original-sub-vi {
+    font-size: 12.5px;
+    font-style: italic;
+    color: #64748b;
+    margin-top: 3px;
+    line-height: 1.4;
+  }
   .paraphrase-row {
-    margin-top: 6px;
-    padding-top: 6px;
+    margin-top: 8px;
+    padding-top: 8px;
     border-top: 1px dashed #fecaca;
     display: flex;
     align-items: baseline;
-    gap: 6px;
+    gap: 8px;
     font-size: 13.5px;
-    line-height: 1.4;
+    line-height: 1.45;
   }
   .paraphrase-badge {
     font-size: 10.5px;
@@ -379,7 +682,42 @@ export const generateMovieExpansionPopupStyles = () => `
     font-weight: 700;
     color: #166534;
   }
+  .orig-diff {
+    color: #991b1b;
+    background: #ffedd5;
+    border: 1px solid #fed7aa;
+    padding: 0 4px;
+    border-radius: 4px;
+    font-weight: 800;
+    text-decoration: underline wavy #ea580c;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    display: inline-block;
+    transition: all 0.15s ease;
+  }
+  .orig-diff:hover {
+    background: #fed7aa;
+    transform: translateY(-1px);
+  }
+  .ph-diff {
+    color: #e11d48;
+    background: #ffe4e6;
+    border: 1px solid #fecdd3;
+    padding: 0 4px;
+    border-radius: 4px;
+    font-weight: 800;
+    text-decoration: underline solid #fb7185;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+    display: inline-block;
+    transition: all 0.15s ease;
+  }
+  .ph-diff:hover {
+    background: #fecdd3;
+    transform: translateY(-1px);
+  }
   .card {
+
     background: #ffffff;
     border-radius: 12px;
     border: 1px solid #e2e8f0;
@@ -424,17 +762,55 @@ export const generateMovieExpansionPopupStyles = () => `
   }
   .main-word-row {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 8px 12px;
+    gap: 6px 10px;
     padding-right: 76px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
   .main-word-text {
     font-size: 20px;
     font-weight: 800;
     color: #0f172a;
     line-height: 1.3;
+  }
+  .word-ipa {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #6366f1;
+    background: #eef2ff;
+    padding: 2px 7px;
+    border-radius: 5px;
+    border: 1px solid #e0e7ff;
+  }
+  .badge-pos {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0369a1;
+    background: #e0f2fe;
+    border: 1px solid #bae6fd;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: lowercase;
+  }
+  .badge-register {
+    font-size: 11px;
+    font-weight: 700;
+    color: #7c3aed;
+    background: #f3e8ff;
+    border: 1px solid #e9d5ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: lowercase;
+  }
+  .meaning-block {
+    font-size: 15px;
+    font-weight: 600;
+    color: #334155;
+    line-height: 1.5;
+    margin-top: 4px;
+    margin-bottom: 6px;
   }
   .pattern-badge {
     font-size: 16px;
@@ -446,14 +822,14 @@ export const generateMovieExpansionPopupStyles = () => `
     border-radius: 6px;
     line-height: 1.3;
   }
-  .meaning-inline {
-    font-size: 14.5px;
-    font-weight: 600;
-    color: #334155;
-    line-height: 1.4;
+  .syn-ant-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+    margin-bottom: 6px;
   }
   .synonyms-box {
-    margin-top: 6px;
     font-size: 12.5px;
     color: #6d28d9;
     background: #f5f3ff;
@@ -471,6 +847,25 @@ export const generateMovieExpansionPopupStyles = () => `
   .synonyms-text {
     font-weight: 600;
   }
+  .antonyms-box {
+    font-size: 12.5px;
+    color: #be123c;
+    background: #fff1f2;
+    border: 1px solid #ffe4e6;
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+  }
+  .antonyms-label {
+    font-weight: 800;
+    font-size: 11px;
+  }
+  .antonyms-text {
+    font-weight: 600;
+  }
+
   .example-list {
     display: flex;
     flex-direction: column;
@@ -551,6 +946,21 @@ export const generateMovieExpansionPopupStyles = () => `
   .btn-primary:hover {
     background: #4338ca;
   }
+  .btn-ai {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.25);
+  }
+  .btn-ai:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.35);
+  }
+  .btn:disabled, .btn-header:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
   .btn-cancel {
     background: #e2e8f0;
     color: #475569;
@@ -559,7 +969,7 @@ export const generateMovieExpansionPopupStyles = () => `
   .footer-bar {
     background: #ffffff;
     border-top: 1px solid #e2e8f0;
-    padding: 6px 12px;
+    padding: 6px 48px 6px 12px;
     flex-shrink: 0;
     box-shadow: 0 -2px 5px rgba(0,0,0,0.03);
     display: flex;
@@ -569,6 +979,7 @@ export const generateMovieExpansionPopupStyles = () => `
     max-height: 72px;
     z-index: 10;
   }
+
   .footer-items-list {
     display: flex;
     align-items: center;
@@ -893,6 +1304,7 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
         <span class="badge-q">CÂU ${subIndex + 1} / ${totalSubtitles}</span>
       </div>
       <div style="display: flex; align-items: center; gap: 5px;">
+        <button type="button" class="btn-header btn-header-ai" id="btnSendGemini" onclick="window.handleSendGemini && window.handleSendGemini()" title="Gửi trực tiếp câu này sang Gemini AI để tự động tạo và lưu kiến thức mở rộng">⚡ Gửi Gemini</button>
         <button type="button" class="btn-header" id="btnCopyPrompt" onclick="window.handleCopyPrompt && window.handleCopyPrompt()" title="Sao chép prompt câu này để gửi Gemini">📋 Copy Prompt</button>
         <button type="button" class="btn-header ${isJsonMode ? 'btn-header-active' : ''}" onclick="window.toggleJsonMode && window.toggleJsonMode()" title="Dán mã JSON trả về từ Gemini">📥 Dán JSON</button>
       </div>
@@ -943,7 +1355,10 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
         const wordVal = isVocab ? (currentItem?.word || '') : '';
         const patternVal = !isVocab ? (currentItem?.pattern || '') : '';
         const ipaVal = currentItem?.ipa || '';
+        const posVal = currentItem?.part_of_speech || '';
+        const registerVal = currentItem?.register || '';
         const synonymsVal = currentItem?.synonyms || '';
+        const antonymsVal = currentItem?.antonyms || '';
         const meaningVal = currentItem?.meaning || '';
         const examplesList = currentItem?.examples && currentItem.examples.length > 0
           ? currentItem.examples
@@ -975,13 +1390,29 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
                   <label class="form-label">Từ vựng / Cụm từ</label>
                   <input type="text" id="fieldWord" class="form-input" required value="${escapeHtml(wordVal)}" placeholder="Ví dụ: two-person job">
                 </div>
-                <div class="form-group">
-                  <label class="form-label">Từ / Cụm đồng nghĩa (Synonyms - tùy chọn)</label>
-                  <input type="text" id="fieldSynonyms" class="form-input" value="${escapeHtml(synonymsVal)}" placeholder="Ví dụ: team effort, two-man job">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                  <div class="form-group">
+                    <label class="form-label">Phiên âm IPA</label>
+                    <input type="text" id="fieldIpa" class="form-input" value="${escapeHtml(ipaVal)}" placeholder="Ví dụ: /poʊtʃ/">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Loại từ (Part of Speech)</label>
+                    <input type="text" id="fieldPos" class="form-input" value="${escapeHtml(posVal)}" placeholder="Ví dụ: idiom, phrase">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Sắc thái (Register)</label>
+                    <input type="text" id="fieldRegister" class="form-input" value="${escapeHtml(registerVal)}" placeholder="Ví dụ: casual, informal">
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label class="form-label">Phiên âm IPA chuẩn US (tùy chọn)</label>
-                  <input type="text" id="fieldIpa" class="form-input" value="${escapeHtml(ipaVal)}" placeholder="Ví dụ: /poʊtʃ/">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                  <div class="form-group">
+                    <label class="form-label">Từ/cụm đồng nghĩa (Synonyms)</label>
+                    <input type="text" id="fieldSynonyms" class="form-input" value="${escapeHtml(synonymsVal)}" placeholder="Ví dụ: stay positive, count blessings">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Từ/cụm trái nghĩa (Antonyms)</label>
+                    <input type="text" id="fieldAntonyms" class="form-input" value="${escapeHtml(antonymsVal)}" placeholder="Ví dụ: look on the dark side">
+                  </div>
                 </div>
               ` : `
                 <div class="form-group">
@@ -989,6 +1420,7 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
                   <input type="text" id="fieldPattern" class="form-input" required value="${escapeHtml(patternVal)}" placeholder="Ví dụ: sounds like + Noun / Clause">
                 </div>
               `}
+
 
               <div class="form-group">
                 <label class="form-label">Giải thích nghĩa tiếng Việt</label>
@@ -1040,6 +1472,7 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
               <em style="color: #94a3b8; font-size: 12px;">${escapeHtml(sub.vietnamese || '')}</em>
             </div>
             <div class="empty-actions">
+              <button type="button" class="btn btn-ai" id="btnEmptySendGemini" onclick="window.handleSendGemini && window.handleSendGemini()">⚡ Gửi Gemini</button>
               <button type="button" class="btn btn-primary" onclick="window.handleCopyPrompt && window.handleCopyPrompt()">📋 Copy Prompt Gemini</button>
               <button type="button" class="btn btn-edit" onclick="window.toggleJsonMode && window.toggleJsonMode()">📥 Dán JSON từ Gemini</button>
               <button type="button" class="btn btn-edit" onclick="window.triggerAddNew && window.triggerAddNew('vocabulary')">+ Thêm thủ công</button>
@@ -1050,16 +1483,19 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
 
       // 4. VIEW MODE CARD
       const isVocab = currentItem.type === 'vocabulary';
+      const { origHtml, paraHtml } = renderSentenceDiffPair(sub.text || '', paraphraseText);
       return `
         <div class="header-sentences-box">
-          <div class="original-sub-text">"${escapeHtml(sub.text || '')}"</div>
+          <div class="original-sub-text">"${origHtml}"</div>
+          ${sub.vietnamese ? `<div class="original-sub-vi">${escapeHtml(sub.vietnamese)}</div>` : ''}
           ${paraphraseText ? `
             <div class="paraphrase-row">
-              <span class="paraphrase-badge">💡 Diễn giải:</span>
-              <span class="paraphrase-val">"${escapeHtml(paraphraseText)}"</span>
+              <span class="paraphrase-badge">💡 Paraphrase:</span>
+              <span class="paraphrase-val">"${paraHtml}"</span>
             </div>
           ` : ''}
         </div>
+
 
         <div class="card">
           <div class="card-header-actions">
@@ -1070,27 +1506,39 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
           ${isVocab ? `
             <div class="main-word-row">
               <span class="main-word-text">${escapeHtml(currentItem.word || '')}</span>
-              ${currentItem.meaning ? `
-                <span class="meaning-inline">${escapeHtml(currentItem.meaning)}</span>
-              ` : ''}
+              ${currentItem.ipa ? `<span class="word-ipa">${escapeHtml(currentItem.ipa)}</span>` : ''}
+              ${currentItem.part_of_speech ? `<span class="badge-pos">${escapeHtml(currentItem.part_of_speech)}</span>` : ''}
+              ${currentItem.register ? `<span class="badge-register">${escapeHtml(currentItem.register)}</span>` : ''}
             </div>
 
-            ${currentItem.synonyms ? `
-              <div style="margin-top: 4px; margin-bottom: 6px;">
+            ${currentItem.meaning ? `
+              <div class="meaning-block">${escapeHtml(currentItem.meaning)}</div>
+            ` : ''}
+
+            <div class="syn-ant-row">
+              ${currentItem.synonyms ? `
                 <div class="synonyms-box">
                   <span class="synonyms-label">🔗 Đồng nghĩa:</span>
                   <span class="synonyms-text">${escapeHtml(currentItem.synonyms)}</span>
                 </div>
-              </div>
-            ` : ''}
+              ` : ''}
+              ${currentItem.antonyms ? `
+                <div class="antonyms-box">
+                  <span class="antonyms-label">⚡ Trái nghĩa:</span>
+                  <span class="antonyms-text">${escapeHtml(currentItem.antonyms)}</span>
+                </div>
+              ` : ''}
+            </div>
           ` : `
             <div class="main-word-row">
               <span class="pattern-badge">${escapeHtml(currentItem.pattern || '')}</span>
-              ${currentItem.meaning ? `
-                <span class="meaning-inline">${escapeHtml(currentItem.meaning)}</span>
-              ` : ''}
             </div>
+
+            ${currentItem.meaning ? `
+              <div class="meaning-block">${escapeHtml(currentItem.meaning)}</div>
+            ` : ''}
           `}
+
 
           ${currentItem.examples && currentItem.examples.length > 0 ? `
             <div class="example-list">
@@ -1184,7 +1632,7 @@ export const updateMovieExpansionPopupDom = (
 ) => {
   if (!targetDoc || !targetWin) return;
 
-  const { subIndex, totalSubtitles, activeItemIndex } = params;
+  const { sub, subIndex, totalSubtitles, activeItemIndex } = params;
 
   // 1. Update Title
   targetDoc.title = `Kiến thức mở rộng - Câu ${subIndex + 1}/${totalSubtitles}`;
@@ -1296,6 +1744,61 @@ export const updateMovieExpansionPopupDom = (
     }
   };
 
+  targetWin.handleSendGemini = async () => {
+    const subText = (sub.text || '').trim();
+    const subVi = (sub.vietnamese || '').trim();
+
+    if (!subText) {
+      if (typeof targetWin.alert === 'function') {
+        targetWin.alert('Không có nội dung câu thoại để gửi Gemini!');
+      }
+      return;
+    }
+
+    const btnHeader = targetDoc.getElementById('btnSendGemini') as HTMLButtonElement | null;
+    const btnEmpty = targetDoc.getElementById('btnEmptySendGemini') as HTMLButtonElement | null;
+
+    const setButtonsLoading = (loading: boolean) => {
+      if (btnHeader) {
+        btnHeader.disabled = loading;
+        btnHeader.innerHTML = loading ? '⏳ Đang phân tích...' : '⚡ Gửi Gemini';
+      }
+      if (btnEmpty) {
+        btnEmpty.disabled = loading;
+        btnEmpty.innerHTML = loading ? '⏳ Đang phân tích...' : '⚡ Gửi Gemini';
+      }
+    };
+
+    setButtonsLoading(true);
+
+
+    try {
+      const res = await fetch('/api/admin/expansion/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: subText, vietnamese: subVi })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Có lỗi xảy ra khi gọi Gemini API');
+      }
+
+      const sanitized = sanitizeExpansionJson(data.data);
+      callbacks.onSaveFullExpansionJson(subIndex, sanitized);
+    } catch (err: any) {
+      console.error('Lỗi khi gửi Gemini:', err);
+      const errMsg = err?.message || 'Có lỗi xảy ra khi phân tích bằng Gemini.';
+      if (typeof targetWin.alert === 'function') {
+        targetWin.alert(`❌ ${errMsg}`);
+      } else if (typeof window !== 'undefined' && typeof window.alert === 'function') {
+        window.alert(`❌ ${errMsg}`);
+      }
+      setButtonsLoading(false);
+    }
+  };
+
   targetWin.handleCopyPrompt = () => {
     const promptEl = targetDoc.getElementById('geminiPromptText') as HTMLTextAreaElement | null;
     const textToCopy = promptEl ? promptEl.value : '';
@@ -1394,12 +1897,24 @@ export const updateMovieExpansionPopupDom = (
     if (formItemType === 'vocabulary') {
       const wordVal = (targetDoc.getElementById('fieldWord') as HTMLInputElement)?.value?.trim() || '';
       const ipaVal = (targetDoc.getElementById('fieldIpa') as HTMLInputElement)?.value?.trim() || '';
+      const posVal = (targetDoc.getElementById('fieldPos') as HTMLInputElement)?.value?.trim() || '';
+      const registerVal = (targetDoc.getElementById('fieldRegister') as HTMLInputElement)?.value?.trim() || '';
       const synonymsVal = (targetDoc.getElementById('fieldSynonyms') as HTMLInputElement)?.value?.trim() || '';
+      const antonymsVal = (targetDoc.getElementById('fieldAntonyms') as HTMLInputElement)?.value?.trim() || '';
       updatedPayload = {
         type: 'vocabulary',
         rawIndex: formRawIndex,
         paraphrase: paraphraseVal,
-        data: { word: wordVal, ipa: ipaVal, synonyms: synonymsVal, meaning: meaningVal, examples }
+        data: {
+          word: wordVal,
+          ipa: ipaVal,
+          part_of_speech: posVal,
+          register: registerVal,
+          synonyms: synonymsVal,
+          antonyms: antonymsVal,
+          meaning: meaningVal,
+          examples
+        }
       };
     } else {
       const patternVal = (targetDoc.getElementById('fieldPattern') as HTMLInputElement)?.value?.trim() || '';
@@ -1410,6 +1925,7 @@ export const updateMovieExpansionPopupDom = (
         data: { pattern: patternVal, meaning: meaningVal, examples }
       };
     }
+
 
     callbacks.onSaveItem(subIndex, updatedPayload);
   };
