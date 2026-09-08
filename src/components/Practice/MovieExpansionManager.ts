@@ -136,160 +136,193 @@ export const generateGeminiPromptForSub = (sub: Subtitle): string => {
   const subText = (sub.text || '').trim();
   const subVi = (sub.vietnamese || '').trim();
   return `# VAI TRÒ
-Bạn là chuyên gia ngôn ngữ Anh-Mỹ (American English) và giảng dạy tiếng Anh giao tiếp cho người Việt, có chuyên môn sâu về:
-* Natural spoken English
-* Conversational English
-* Collocations, phrasal verbs, idioms
-* Ngữ dụng học (pragmatics)
-* Ngữ điệu và sắc thái giao tiếp
-* Từ vựng theo ngữ cảnh
-* Cách diễn đạt mà người bản xứ Mỹ thực sự sử dụng trong đời sống hằng ngày
+Bạn là chuyên gia ngôn ngữ Anh-Mỹ (American English) và giảng dạy tiếng Anh giao tiếp thực tế cho người Việt, chuyên sâu về:
+* Spoken English
+* Pragmatics
+* Collocations
+* Phrasal Verbs
+* Idioms
+* Conversational Patterns
+* Natural American English
 
-Mục tiêu của bạn không phải là biến câu tiếng Anh thành câu "cao cấp" một cách máy móc, mà là giúp người học nói và hiểu tiếng Anh tự nhiên hơn như người bản xứ.
+Mục tiêu là giúp người học nói và hiểu tiếng Anh tự nhiên như người Mỹ trong đời sống thực tế, đặc biệt là ngôn ngữ hội thoại trong phim, TV series và giao tiếp hằng ngày.
+
+Bạn phải ưu tiên:
+Naturalness > Literalness > Lexical sophistication
+Không được biến một câu giao tiếp tự nhiên thành văn viết học thuật hoặc cố tình dùng từ "cao cấp" một cách máy móc.
 
 ---
 
 # NHIỆM VỤ
-Phân tích nội dung câu thoại được cung cấp và trả về DUY NHẤT một JSON hợp lệ, không có bất kỳ văn bản nào bên ngoài JSON.
-
-JSON phải có cấu trúc:
-{
-  "paraphrase": "...",
-  "vocabulary": [],
-  "structures": []
-}
+Phân tích câu thoại được cung cấp và trả về DUY NHẤT một JSON hợp lệ theo đúng schema ở cuối prompt.
+Không viết lời dẫn.
+Không giải thích ngoài JSON.
+Không bọc JSON trong Markdown code fence.
+Không thêm bất kỳ field nào ngoài schema.
 
 ---
 
-# 1. PARAPHRASE
+# NGUYÊN TẮC 1 — PARAPHRASE
 
-## Mục tiêu
-Viết lại toàn bộ câu/đoạn hội thoại bằng một cách diễn đạt khác nhưng:
-* Giữ nguyên ý nghĩa cốt lõi.
-* Giữ nguyên thông tin.
-* Giữ nguyên người/vật được nhắc đến.
-* Giữ nguyên mức độ chắc chắn, cảm xúc, thái độ và sắc thái giao tiếp nếu có.
-* Không tự ý thêm thông tin hoặc suy diễn ý nghĩa không có trong bản gốc.
-* Phải nghe như một người Mỹ bản xứ thực sự có thể nói trong hội thoại đời thường.
+## 1.1. Mục tiêu
+paraphrase là một Natural Re-expression:
+> Diễn đạt lại cùng một ý bằng một cách nói tự nhiên khác mà người Mỹ thực sự có thể sử dụng trong giao tiếp đời thường.
 
-## QUAN TRỌNG: PARAPHRASE KHÔNG PHẢI LÀ THAY TỪ ĐỒNG NGHĨA
-Không hiểu paraphrase đơn giản là: từ A → từ đồng nghĩa B.
-Paraphrase là DIỄN ĐẠT LẠI CÙNG MỘT Ý BẰNG MỘT CÁCH KHÁC (Natural Re-expression).
-Bạn có thể thay đổi: từ vựng, collocation, phrasal verb, idiom, cấu trúc câu, trật tự từ, cách tổ chức thông tin, cách chia hoặc gộp ý, chủ động ↔ bị động khi phù hợp, từ/cụm từ ↔ cấu trúc khác, cấu trúc dài ↔ cách nói ngắn gọn, tự nhiên hơn.
-Không cần duy trì cấu trúc câu gốc nếu một cấu trúc khác tự nhiên hơn.
+Paraphrase không phải là:
+* dịch ngược từ tiếng Việt;
+* thay từng từ bằng synonym;
+* sửa ngữ pháp một cách máy móc;
+* làm câu trở nên "cao cấp" hơn;
+* cố tình thay đổi càng nhiều từ càng tốt.
 
+### Ví dụ:
+Gốc: I have to go.
+Paraphrase tự nhiên: I <mark>need to take off</mark>.
+(Không biến thành "I must depart" vì không tự nhiên trong giao tiếp đời thường).
+
+---
+
+## 1.2. Không dùng Thesaurus Substitution
+Không được thực hiện kiểu: happy → glad, big → large, start → commence, go → depart chỉ để tạo cảm giác paraphrase.
+Được phép thay đổi: từ, cụm từ, collocation, phrasal verb, idiom, cấu trúc câu, trật tự từ, cách chia/gộp ý, chủ động ↔ bị động, câu dài ↔ câu ngắn, lexical chunk, conversational pattern miễn là ý nghĩa và sắc thái giao tiếp vẫn được bảo toàn.
+
+---
+
+## 1.3. Những gì phải được giữ nguyên
+Paraphrase phải giữ nguyên: ý nghĩa cốt lõi, người/vật được nói đến, thông tin quan trọng, mức độ chắc chắn, mức độ phủ định, cảm xúc, thái độ, mức độ lịch sự, sắc thái giao tiếp.
+Không được tự ý thêm thông tin hoặc sắc thái mà câu gốc không hỗ trợ.
+
+---
+
+## 1.4. Naturalness Test
+Trước khi tạo paraphrase, hãy tự kiểm tra:
+1. Câu mới có giữ nguyên ý không?
+2. Có giữ nguyên mức độ chắc chắn, cảm xúc và thái độ không?
+3. Người Mỹ có thực sự nói câu này trong hội thoại đời thường không?
+4. Câu mới có nghe tự nhiên hơn hoặc cung cấp một cách diễn đạt hữu ích khác không?
+5. Có phải chỉ đơn giản thay synonym không?
+Nguyên tắc: Naturalness > Degree of lexical change.
+
+---
+
+## 1.5. Khi câu gốc đã rất tự nhiên
+Nếu câu gốc đã là một cách nói rất tự nhiên của người Mỹ, vẫn có thể tạo một paraphrase tương đương nếu tồn tại một cách diễn đạt khác thực sự hữu ích. Không được cố tình làm câu kém tự nhiên chỉ để tạo sự khác biệt.
+
+---
+
+# NGUYÊN TẮC 2 — THẺ <mark>
+Trong paraphrase, bắt buộc dùng <mark>...</mark> để đánh dấu phần được viết lại hoặc thay đổi so với câu gốc.
 Ví dụ:
-Original: "I don't really have a choice."
-Không nên paraphrase kiểu: "I do not truly have an option." (Đây chỉ là thay từ bằng từ đồng nghĩa và nghe không tự nhiên trong hội thoại).
-Có thể paraphrase thành: "I <mark>don't really have much of a choice</mark>." hoặc "I <mark>pretty much have to</mark>."
-Mục tiêu là NATURAL RE-EXPRESSION, không phải THESAURUS SUBSTITUTION.
+* Gốc: "I don't really have a choice." → Paraphrase: "I <mark>pretty much have to</mark>."
+* Gốc: "What are you doing here?" → Paraphrase: "<mark>What brings you here?</mark>"
+* Gốc: "I don't know what happened." → Paraphrase: "<mark>I have no idea what happened.</mark>"
 
 ---
 
-# 2. NGUYÊN TẮC TỰ NHIÊN
-Hãy ưu tiên: Naturalness > Lexical difference.
-Một paraphrase tốt không nhất thiết phải thay đổi thật nhiều từ.
-Nếu câu gốc đã rất tự nhiên, chỉ thay đổi một phần nhỏ nếu đó là cách diễn đạt tốt hơn.
-Không được cố tình làm câu dài hơn, khó hơn, trang trọng hơn, "advanced" hơn chỉ để tạo cảm giác khác biệt.
-Không sử dụng kiểu paraphrase máy móc: thay từng từ bằng synonym, dùng từ hiếm, biến spoken English thành academic English.
+# NGUYÊN TẮC 3 — VOCABULARY
 
-Naturalness Test:
-Trước khi tạo paraphrase, hãy tự kiểm tra: "Would a native American English speaker actually say this naturally in a real conversation?"
+## 3.1. Nguồn trích xuất
+vocabulary có thể lấy từ:
+1. CÂU GỐC (Nguồn chính)
+2. PHẦN PARAPHRASE (Nguồn bổ sung)
+Không được đưa một từ/cụm vào vocabulary chỉ vì nó xuất hiện trong paraphrase. Chỉ thêm nếu có giá trị học tập cao (phrasal verb, collocation, idiom, conversational phrase, useful lexical chunk...).
 
----
+## 3.2. Reusability Test
+Chỉ đưa một vocabulary item vào JSON nếu người học có thể tái sử dụng nó để tạo ra nhiều câu tự nhiên trong những tình huống giao tiếp khác.
 
-# 3. <mark> TRONG PARAPHRASE
-Bắt buộc sử dụng: <mark>...</mark> để đánh dấu những phần được diễn đạt lại hoặc thay đổi đáng kể so với bản gốc.
-Không cần đối chiếu từng từ một. Có thể đánh dấu: một từ, một cụm từ, một collocation, một phrasal verb, một idiom, một mệnh đề, hoặc một đoạn lớn nếu toàn bộ cấu trúc được viết lại.
+## 3.3. Chất lượng hơn số lượng
+Không cố tạo nhiều vocabulary. Có thể trả về "vocabulary": [] nếu câu không có expression nào thực sự đáng học. Tuyệt đối không gượng ép đưa những từ quá cơ bản (I, you, he, she, the, a, go, come, have, do, be...).
 
-Ví dụ:
-Original: "I have to go." → Paraphrase: "I <mark>need to leave</mark>."
-Original: "She doesn't want to talk about it." → Paraphrase: "She <mark>isn't really up for talking about it</mark>."
-Original: "I don't think he will come." → Paraphrase: "<mark>I doubt he's going to show up.</mark>"
+## 3.4. Tránh trùng lặp
+Nếu là fixed expression, idiom, phrasal verb, collocation → ưu tiên đưa vào vocabulary. Không đưa cùng một expression vào cả vocabulary và structures.
 
-Những phần được giữ nguyên một cách tự nhiên thì không cần <mark>.
+* LÀM NỔI BẬT TỪ VỰNG TRONG VÍ DỤ: Trong các câu ví dụ (en) của vocabulary, dùng thẻ <mark>...</mark> bao quanh từ/cụm từ mục tiêu (Ví dụ: "What I just told you is the <mark>absolute truth</mark>.").
 
 ---
 
-# 4. CHỌN MỘT PARAPHRASE TỐT NHẤT
-Hãy chọn MỘT paraphrase tốt nhất dựa trên:
-1. Tự nhiên nhất.
-2. Đúng ngữ cảnh nhất.
-3. Giữ nghĩa chính xác nhất.
-4. Giữ được sắc thái giao tiếp.
-5. Có giá trị học tập cao.
-6. Phù hợp với American English.
-7. Không nghe gượng hoặc quá kiểu cách.
+# NGUYÊN TẮC 4 — SYNONYMS & ANTONYMS
+* synonyms: Chỉ đưa từ/cụm có thể thay thế tự nhiên trong chính ngữ cảnh đang xét. Nếu không có synonym tự nhiên phù hợp, để "".
+* antonyms: Chỉ cung cấp nếu có từ/cụm đối lập tự nhiên và hữu ích trong giao tiếp (không tự chế bằng cách thêm un-, dis-, non-, not-). Nếu không có, để "".
 
 ---
 
-# 5. PHÂN BIỆT PARAPHRASE VÀ CORRECTION
-Không tự ý "sửa" câu gốc nếu câu gốc đã đúng ngữ pháp, tự nhiên và phù hợp ngữ cảnh.
-Paraphrase là diễn đạt lại, không phải sửa lỗi.
+# NGUYÊN TẮC 5 — IPA, PART OF SPEECH, REGISTER
+* ipa: General American English (GA) trong dấu gạch chéo /.../.
+* part_of_speech: Chỉ dùng đúng 1 trong các giá trị: idiom | phrasal verb | phrase | verb | noun | adjective | adverb | collocation.
+* register: Chỉ dùng đúng 1 trong các giá trị: casual | neutral | informal | slang | idiomatic | formal.
 
 ---
 
-# 6. VOCABULARY & QUY ĐỊNH
-Chỉ chọn những từ/cụm từ đáng học và có giá trị thực tế (collocations, phrasal verbs, idioms, conversational expressions, expressions đáng ghi nhớ...). Bỏ qua từ quá cơ bản.
-
-Mỗi mục trong vocabulary phải có đầy đủ:
-* "word": Ghi từ hoặc giữ nguyên cả cụm expression/collocation/phrasal verb/idiom (ví dụ: get along with, be up for, have a choice, on the bright side).
-* "ipa": Ghi IPA theo General American English (AmE) trong dấu gạch chéo /.../ (ví dụ: /tʃɔɪs/).
-* "part_of_speech": Chỉ sử dụng một trong các giá trị: "idiom", "phrasal verb", "phrase", "verb", "noun", "adjective", "adverb", "collocation".
-* "register": Chỉ sử dụng một trong các giá trị: "casual", "neutral", "informal", "slang", "idiomatic", "formal".
-* "meaning": Giải thích nghĩa trong chính ngữ cảnh đang xét bằng tiếng Việt ngắn gọn, sát nghĩa.
-* "synonyms": Các cách diễn đạt thay thế tự nhiên và phù hợp ngữ cảnh. Nếu không có synonym tự nhiên, để "".
-* "antonyms": Từ/cụm đối lập tự nhiên nếu thực sự có giá trị. Nếu không có, để "".
-* "examples": 1–2 ví dụ ngắn gọn, tự nhiên có dịch nghĩa tiếng Việt.
+# NGUYÊN TẮC 6 — STRUCTURES
+* Nguồn bắt buộc: CHỈ được trích xuất từ CÂU GỐC. Tuyệt đối không lấy structure từ paraphrase.
+* Reusable Conversational Frame: Phải là một sentence pattern / frame có thể thay thế thành phần để tạo nhiều câu mới (Ví dụ: "What a + (adj) + noun + to + V...", "I don't know + wh-clause").
+* Không lấy grammar cơ bản SGK: Không lấy S + V + O, thì hiện tại đơn, mạo từ...
+* LÀM NỔI BẬT CẤU TRÚC TRONG CÂU VÍ DỤ: Trong các câu ví dụ tiếng Anh (en) của structures, BẮT BUỘC dùng thẻ <mark>...</mark> bao quanh phần cấu trúc / khung câu được áp dụng, giúp người học nhìn vào là nhận diện được ngay cấu trúc đang dùng.
+  Ví dụ:
+  - Pattern: "What a + (adj) + noun + to + V..."
+  - Example 1: "<mark>What a terrible time to lose</mark> your phone!"
+  - Example 2: "<mark>What a strange thing to say</mark> in public."
+* Nếu không có structure nào thực sự đáng học, trả về: "structures": [].
 
 ---
 
-# 7. STRUCTURES & QUY ĐỊNH
-Chọn cấu trúc giao tiếp thực sự hữu ích (conversational patterns, sentence frames, useful chunks, idiomatic structures...). Không liệt kê ngữ pháp cơ bản SGK (S + V + O, there is/are...).
-* "pattern": Ghi pattern tổng quát (ví dụ: have much of a choice, I don't have much of a + noun).
-* "meaning": Giải thích nghĩa và cách dùng bằng tiếng Việt.
-* "examples": 1–2 ví dụ minh họa áp dụng vào ngữ cảnh khác.
+# NGUYÊN TẮC 7 — PHÂN BIỆT VOCABULARY VÀ STRUCTURES
+* Vocabulary (WHAT TO SAY): Từ, cụm từ, expression học như một đơn vị (Ví dụ: figure out, hang out, give me a break, be into something).
+* Structures (HOW TO BUILD THE SENTENCE): Sentence frame có thể thay thế thành phần để tạo nhiều câu mới (Ví dụ: I don't know + wh-clause, The thing is + clause, What I mean is + clause).
 
 ---
 
-# 8. KHÔNG TRÙNG LẶP & KHÔNG SUY DIỄN QUÁ MỨC
-* Không đưa cùng một nội dung vào cả vocabulary và structures.
-* Giữ nguyên mức độ thân mật, cảm xúc, thái độ, mức độ chắc chắn, thời gian, chủ thể.
-* Nếu không có context đặc biệt, chọn cách hiểu an toàn nhất về mặt ngữ nghĩa.
+# NGUYÊN TẮC 8 — KHÔNG ÉP TẠO NỘI DUNG
+Nếu câu không có từ vựng hoặc cấu trúc nào thực sự đáng học, trả về "vocabulary": [], "structures": []. Không có gì đáng học vẫn là một kết quả hoàn toàn hợp lệ.
 
 ---
 
-# 9. QUY TẮC JSON & SCHEMA BẮT BUỘC
-Chỉ trả về JSON hợp lệ, KHÔNG bọc Markdown/code fence, KHÔNG giải thích ngoài JSON.
-Schema:
+# NGUYÊN TẮC 9 — BẢN DỊCH TIẾNG VIỆT
+Bản dịch tiếng Việt chỉ dùng để hiểu ngữ cảnh, không dịch word-by-word. Tiếng Anh gốc luôn là nguồn chính.
 
+---
+
+# NGUYÊN TẮC 10 — QUY TRÌNH SUY LUẬN NỘI BỘ
+Trước khi trả JSON, hãy tự kiểm tra nội bộ:
+1. Hiểu đúng ngữ cảnh và nghĩa câu gốc.
+2. Tạo paraphrase tự nhiên nhất (Natural Re-expression).
+3. Bọc thẻ <mark>...</mark> quanh phần thay đổi.
+4. Lọc vocabulary (từ câu gốc hoặc paraphrase) đạt chuẩn Reusability Test.
+5. Lọc structures CHỈ TỪ CÂU GỐC (phải là sentence pattern tái sử dụng được).
+6. Bọc thẻ <mark>...</mark> quanh cấu trúc trong câu ví dụ (en).
+7. Loại bỏ nội dung cơ bản/gượng ép, trả về [] nếu không có gì đáng học.
+8. Đảm bảo JSON hợp lệ, đúng schema tuyệt đối.
+
+---
+
+# SCHEMA JSON BẮT BUỘC
 {
-  "paraphrase": "Paraphrased dialogue with <mark>...</mark> around changed/re-expressed parts.",
+  "paraphrase": "Câu diễn đạt lại tự nhiên có chứa <mark>...</mark> ở phần thay đổi",
   "vocabulary": [
     {
-      "word": "...",
+      "word": "Từ / cụm từ / phrasal verb / idiom",
       "ipa": "/.../",
       "part_of_speech": "idiom | phrasal verb | phrase | verb | noun | adjective | adverb | collocation",
       "register": "casual | neutral | informal | slang | idiomatic | formal",
-      "meaning": "...",
-      "synonyms": "...",
-      "antonyms": "...",
+      "meaning": "Nghĩa tiếng Việt ngắn gọn, sát ngữ cảnh",
+      "synonyms": "Từ/cụm đồng nghĩa tự nhiên trong ngữ cảnh hoặc \"\"",
+      "antonyms": "Từ/cụm trái nghĩa tự nhiên nếu có hoặc \"\"",
       "examples": [
         {
-          "en": "...",
-          "vi": "..."
+          "en": "Ví dụ tiếng Anh có dùng <mark>...</mark> bọc từ/cụm từ mục tiêu",
+          "vi": "Dịch nghĩa tiếng Việt"
         }
       ]
     }
   ],
   "structures": [
     {
-      "pattern": "...",
-      "meaning": "...",
+      "pattern": "Cấu trúc hoặc sentence frame giao tiếp CHỈ lấy từ câu gốc",
+      "meaning": "Ý nghĩa và cách dùng thực tế trong câu gốc",
       "examples": [
         {
-          "en": "...",
-          "vi": "..."
+          "en": "Ví dụ tiếng Anh BẮT BUỘC dùng <mark>...</mark> bọc quanh cấu trúc áp dụng",
+          "vi": "Dịch nghĩa tiếng Việt"
         }
       ]
     }
@@ -298,9 +331,9 @@ Schema:
 
 ---
 
-# CÂU THOẠI CẦN PHÂN TÍCH:
-"${subText}"
-${subVi ? `(Bản dịch phụ đề gốc: "${subVi}")` : ''}`;
+# DỮ LIỆU ĐẦU VÀO
+Câu thoại: "${subText}"
+${subVi ? `Bản dịch tham khảo: "${subVi}"` : ''}`;
 };
 
 
@@ -423,112 +456,43 @@ const escapeHtml = (unsafe: string) => {
     .replace(/'/g, '&#039;');
 };
 
+export const renderMarkupText = (text: string): string => {
+  if (!text) return '';
+  // Chuyển đổi cả **bold** thành <mark> nếu có markdown bold
+  let processed = text.replace(/\*\*(.*?)\*\*/g, '<mark>$1</mark>');
+  if (!processed.includes('<mark>') && !processed.includes('</mark>')) {
+    return escapeHtml(processed);
+  }
+  const parts = processed.split(/(<\/?mark>)/g);
+  return parts.map(part => {
+    if (part === '<mark>') return '<mark class="ex-mark">';
+    if (part === '</mark>') return '</mark>';
+    return escapeHtml(part);
+  }).join('');
+};
+
+export const renderParaphraseHtml = (paraStr: string): string => {
+  if (!paraStr) return '';
+  const parts = paraStr.split(/(<\/?mark>)/g);
+  return parts.map(part => {
+    if (part === '<mark>') return '<span class="ph-diff" title="Cụm diễn giải thay thế">';
+    if (part === '</mark>') return '</span>';
+    return escapeHtml(part);
+  }).join('');
+};
+
 export const renderSentenceDiffPair = (
   origStr: string,
   paraStr: string
 ): { origHtml: string; paraHtml: string } => {
-  if (!origStr) return { origHtml: '', paraHtml: escapeHtml(paraStr || '') };
-  if (!paraStr) return { origHtml: escapeHtml(origStr), paraHtml: '' };
-
-  const hasMarkTags = paraStr.includes('<mark>') || paraStr.includes('</mark>');
-  const cleanPara = paraStr.replace(/<\/?mark>/g, '');
-
-  const tokenize = (s: string) => s.split(/(\s+|[.,!?;:"'()])/).filter(Boolean);
-  const origTokens = tokenize(origStr);
-  const paraTokens = tokenize(cleanPara);
-
-  const norm = (t: string) => t.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-  const origWords = origTokens.map(norm);
-  const paraWords = paraTokens.map(norm);
-
-  const n = origWords.length;
-  const m = paraWords.length;
-
-  const dp: number[][] = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < m; j++) {
-      if (origWords[i] && paraWords[j] && origWords[i] === paraWords[j]) {
-        dp[i + 1][j + 1] = dp[i][j] + 1;
-      } else {
-        dp[i + 1][j + 1] = Math.max(dp[i + 1][j], dp[i][j + 1]);
-      }
-    }
-  }
-
-  const matchedInOrig = new Set<number>();
-  const matchedInPara = new Set<number>();
-  let i = n, j = m;
-  while (i > 0 && j > 0) {
-    if (origWords[i - 1] && paraWords[j - 1] && origWords[i - 1] === paraWords[j - 1]) {
-      matchedInOrig.add(i - 1);
-      matchedInPara.add(j - 1);
-      i--;
-      j--;
-    } else if (dp[i - 1][j] >= dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-
-  function buildDiffHtml(tokens: string[], matchedSet: Set<number>, tagClass: string, titleText: string): string {
-    const isHighlighted: boolean[] = new Array(tokens.length).fill(false);
-    for (let idx = 0; idx < tokens.length; idx++) {
-      const isWord = /[a-zA-Z0-9]/.test(tokens[idx]);
-      if (isWord && !matchedSet.has(idx)) {
-        isHighlighted[idx] = true;
-      }
-    }
-    for (let idx = 1; idx < tokens.length - 1; idx++) {
-      if (!isHighlighted[idx] && isHighlighted[idx - 1] && isHighlighted[idx + 1] && /^\s+$/.test(tokens[idx])) {
-        isHighlighted[idx] = true;
-      }
-    }
-    let html = '';
-    let inSpan = false;
-    for (let idx = 0; idx < tokens.length; idx++) {
-      const token = tokens[idx];
-      if (isHighlighted[idx]) {
-        if (!inSpan) {
-          html += `<span class="${tagClass}" title="${titleText}">`;
-          inSpan = true;
-        }
-        html += escapeHtml(token);
-      } else {
-        if (inSpan) {
-          html += '</span>';
-          inSpan = false;
-        }
-        html += escapeHtml(token);
-      }
-    }
-    if (inSpan) html += '</span>';
-    return html;
-  }
-
-  const origHtml = buildDiffHtml(origTokens, matchedInOrig, 'orig-diff', 'Cụm từ gốc đã được diễn giải');
-
-  let paraHtml = '';
-  if (hasMarkTags) {
-    const parts = paraStr.split(/(<\/?mark>)/g);
-    paraHtml = parts.map(part => {
-      if (part === '<mark>') return '<span class="ph-diff" title="Cụm diễn giải thay thế">';
-      if (part === '</mark>') return '</span>';
-      return escapeHtml(part);
-    }).join('');
-  } else {
-    paraHtml = buildDiffHtml(paraTokens, matchedInPara, 'ph-diff', 'Cụm diễn giải thay thế');
-  }
-
-  return { origHtml, paraHtml };
+  return {
+    origHtml: escapeHtml(origStr || ''),
+    paraHtml: renderParaphraseHtml(paraStr || '')
+  };
 };
 
 export const renderDiffHighlight = (origStr: string, paraStr: string): string => {
-  return renderSentenceDiffPair(origStr, paraStr).paraHtml;
-};
-
-export const renderParaphraseHtml = (origStr: string, paraStr: string): string => {
-  return renderSentenceDiffPair(origStr, paraStr).paraHtml;
+  return renderParaphraseHtml(paraStr || '');
 };
 
 
@@ -884,6 +848,15 @@ export const generateMovieExpansionPopupStyles = () => `
     color: #0f172a;
     font-size: 15px;
     line-height: 1.45;
+  }
+  .ex-mark, mark.ex-mark {
+    background: #fef08a;
+    color: #854d0e;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 4px;
+    border-bottom: 2px solid #eab308;
+    display: inline;
   }
   .ex-vi {
     font-size: 14px;
@@ -1544,7 +1517,7 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
             <div class="example-list">
               ${currentItem.examples.map((ex, exIdx) => `
                 <div class="example-item">
-                  <div class="ex-en">${exIdx + 1}. ${escapeHtml(ex.en || '')}</div>
+                  <div class="ex-en">${exIdx + 1}. ${renderMarkupText(ex.en || '')}</div>
                   <div class="ex-vi">${escapeHtml(ex.vi || '')}</div>
                 </div>
               `).join('')}
