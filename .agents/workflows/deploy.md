@@ -33,6 +33,9 @@ GMAIL_USER="thietsshp@toeicthiet.com"
 GMAIL_APP_PASSWORD="gwxn pdhp xnqv jura"
 ADMIN_EMAIL="thietsshp@toeicthiet.com"
 
+# Google Gemini API Key
+GEMINI_API_KEY="..."
+
 # Prisma
 PRISMA_CLIENT_ENGINE_TYPE="binary"
 ```
