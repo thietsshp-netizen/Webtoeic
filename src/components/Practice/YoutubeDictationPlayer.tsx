@@ -12,10 +12,60 @@ import {
   ExpansionVocabItem, 
   ExpansionStructureItem,
   ExpansionPopupCallbacks,
+  FlattenedExpansionItem,
   getFlattenedExpansionItems, 
+  isItemFromOriginal,
   updateMovieExpansionPopupDom,
   sanitizeExpansionJson
 } from "./MovieExpansionManager";
+
+// Mechanical typewriter click sound synthesizer using Web Audio API
+const playTypewriterClickSound = (audioCtxRef: React.MutableRefObject<AudioContext | null>) => {
+  try {
+    if (typeof window === "undefined") return;
+    const AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtxClass) return;
+    if (!audioCtxRef.current || audioCtxRef.current.state === "closed") {
+      audioCtxRef.current = new AudioCtxClass();
+    }
+    const ctx = audioCtxRef.current;
+    if (ctx.state === "suspended") {
+      ctx.resume().catch(() => {});
+    }
+
+    const now = ctx.currentTime;
+
+    // 1. High crisp click transient
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const randomFreq = 2200 + Math.random() * 800;
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(randomFreq, now);
+    osc.frequency.exponentialRampToValueAtTime(120, now + 0.016);
+
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.016);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.018);
+
+    // 2. Mechanical key bottom-out thud
+    const thud = ctx.createOscillator();
+    const thudGain = ctx.createGain();
+    thud.type = "sine";
+    thud.frequency.setValueAtTime(180 + Math.random() * 50, now);
+    thud.frequency.exponentialRampToValueAtTime(40, now + 0.014);
+    thudGain.gain.setValueAtTime(0.05, now);
+    thudGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.014);
+
+    thud.connect(thudGain);
+    thudGain.connect(ctx.destination);
+    thud.start(now);
+    thud.stop(now + 0.016);
+  } catch (e) {}
+};
 
 interface YoutubeDictationPlayerProps {
   lessonId: string;
@@ -68,65 +118,42 @@ const renderFormattedNote = (noteText: string, fontSize: number) => {
           }
           
           return (
-            <span key={pIdx} className="inline mr-3.5">
-              <span className="font-extrabold text-slate-400 mr-1 select-none">
-                {pIdx + 1}.
-              </span>
-              <span className="font-extrabold text-purple-600 mr-1">
+            <span key={pIdx} className="inline-flex items-center flex-wrap mr-2.5 mb-0.5">
+              <span className="font-extrabold text-indigo-700 bg-indigo-50 border border-indigo-200 px-1.5 py-0.2 rounded text-[11px] mr-1">
                 {phrase}
               </span>
-              <span className="text-slate-400 font-medium text-[11px] italic">
-                ({category.toLowerCase()})
+              <span className="text-[9px] uppercase font-bold text-slate-400 bg-slate-100 px-1 rounded mr-1">
+                {category}
               </span>
-              <span className="text-slate-400 font-bold mr-1.5">:</span>
-              <span className="text-amber-700 font-medium">
+              <span className="text-slate-700 font-medium">
                 {cleanRest}
               </span>
             </span>
           );
         }
 
-        // Case 2: 'Phrase': meaning
-        // Example: "'check out': xem thử"
-        const quotedRegex = /^['"](.*?)['"](?=\s*(?::|\(|\s+nghĩa\s+là|\s+là|$))\s*:\s*(.*)$/;
-        const quotedMatch = part.match(quotedRegex);
-        if (quotedMatch) {
-          const phrase = quotedMatch[1].trim();
-          const meaning = quotedMatch[2].trim();
-          
+        // Case 2: Standard Term: Definition or Term (Category): Definition
+        const splitIdx = part.indexOf(":");
+        if (splitIdx === -1) {
           return (
-            <span key={pIdx} className="inline mr-3.5">
-              <span className="font-extrabold text-slate-400 mr-1 select-none">
-                {pIdx + 1}.
-              </span>
-              <span className="font-extrabold text-purple-600">
-                {phrase}
-              </span>
-              <span className="text-slate-400 font-bold mr-1.5">:</span>
-              <span className="text-amber-700 font-medium">
-                {meaning}
-              </span>
-            </span>
-          );
-        }
-
-        // Case 3: Standard term: definition fallback
-        const colonIndex = part.indexOf(":");
-        if (colonIndex === -1) {
-          return (
-            <span key={pIdx} className="text-amber-700 font-medium mr-2">
+            <span key={pIdx} className="mr-2 inline-block">
               {part}
             </span>
           );
         }
 
-        const term = part.substring(0, colonIndex).trim();
-        const definition = part.substring(colonIndex + 1).trim();
-        const cleanTerm = term.replace(/^['"]|['"]$/g, "");
+        const rawTerm = part.substring(0, splitIdx).trim();
+        const definition = part.substring(splitIdx + 1).trim();
+        
+        // Remove surrounding single/double quotes if present
+        let cleanTerm = rawTerm;
+        if ((cleanTerm.startsWith("'") && cleanTerm.endsWith("'")) || (cleanTerm.startsWith('"') && cleanTerm.endsWith('"'))) {
+          cleanTerm = cleanTerm.substring(1, cleanTerm.length - 1);
+        }
 
         return (
-          <span key={pIdx} className="inline mr-3.5">
-            <span className="font-extrabold text-slate-400 mr-1 select-none">
+          <span key={pIdx} className="inline-block mr-3">
+            <span className="font-bold text-slate-400 text-[10px] mr-1">
               {pIdx + 1}.
             </span>
             <span className="font-extrabold text-purple-600">
@@ -140,6 +167,295 @@ const renderFormattedNote = (noteText: string, fontSize: number) => {
         );
       })}
     </p>
+  );
+};
+
+const renderAutoStudyOverlayContent = (
+  items: FlattenedExpansionItem[],
+  revealedChars: number,
+  isTyping: boolean,
+  loopsLeft: number,
+  totalLoops: number,
+  phase: "idle" | "typing" | "replaying",
+  opacity: number = 85,
+  isPaused: boolean = false
+) => {
+  const vocabItems = items.filter(it => it.type === "vocabulary");
+  const structItems = items.filter(it => it.type === "structure");
+  const hasBoth = vocabItems.length > 0 && structItems.length > 0;
+
+  const userOpacity = typeof opacity === "number" ? opacity : 85;
+  const bgAlpha = Math.min(1, Math.max(0, userOpacity / 100));
+  
+  // Tắt hoàn toàn blur khi opacity <= 30% để nhìn xuyên thấu video 100% không bị mờ nhòe
+  const blurPx = userOpacity <= 30 ? 0 : userOpacity <= 60 ? 2 : 4;
+
+  const cardBgStyle: React.CSSProperties = {
+    backgroundColor: userOpacity <= 5 ? 'transparent' : `rgba(10, 28, 52, ${bgAlpha * 0.85})`,
+    backdropFilter: blurPx > 0 ? `blur(${blurPx}px)` : 'none',
+    WebkitBackdropFilter: blurPx > 0 ? `blur(${blurPx}px)` : 'none',
+    boxShadow: userOpacity <= 30 ? '0 2px 8px rgba(0,0,0,0.25)' : `0 8px 24px rgba(0,0,0,${bgAlpha * 0.5})`,
+    borderColor: `rgba(255, 255, 255, ${Math.min(0.9, Math.max(0.2, bgAlpha * 0.7 + 0.2))})`,
+  };
+
+  const getItemText = (it: FlattenedExpansionItem) => {
+    const isVocab = it.type === "vocabulary";
+    const w = (isVocab ? it.word : it.pattern) || "";
+    const ipa = it.ipa ? ` /${it.ipa}/` : "";
+    const m = it.meaning || "";
+    const syn = it.synonyms ? ` Đồng nghĩa: ${it.synonyms}` : (it.antonyms ? ` Trái nghĩa: ${it.antonyms}` : "");
+    
+    const primaryEx = it.examples && it.examples.length > 0 ? it.examples[0] : null;
+    const rawExEn = primaryEx?.en ? primaryEx.en.replace(/<[^>]*>/g, '').trim() : "";
+    const rawExVi = primaryEx?.vi ? primaryEx.vi.trim() : "";
+    const exEn = rawExEn ? ` ${rawExEn}` : "";
+    const exVi = rawExVi ? ` (${rawExVi})` : "";
+    return w + ipa + m + syn + exEn + exVi;
+  };
+
+  const vocabTextLength = vocabItems.map(getItemText).join("").length;
+  const vocabRevealed = Math.min(revealedChars, vocabTextLength);
+  const structRevealed = Math.max(0, revealedChars - vocabTextLength);
+  const isStructStarted = phase === "replaying" || structRevealed > 0 || vocabItems.length === 0;
+
+  const renderSectionItems = (sectionItems: FlattenedExpansionItem[], sectionRevealedChars: number, sectionIsTyping: boolean) => {
+    let charOffset = 0;
+    return sectionItems.map((item, itIdx) => {
+      const isVocab = item.type === "vocabulary";
+      const titleText = (isVocab ? item.word : item.pattern) || "";
+      const ipaText = item.ipa ? ` /${item.ipa}/` : "";
+      const meaningText = item.meaning || "";
+      const synText = item.synonyms ? ` Đồng nghĩa: ${item.synonyms}` : (item.antonyms ? ` Trái nghĩa: ${item.antonyms}` : "");
+
+      const primaryEx = item.examples && item.examples.length > 0 ? item.examples[0] : null;
+      const rawExEn = primaryEx?.en ? primaryEx.en.replace(/<[^>]*>/g, '').trim() : "";
+      const rawExVi = primaryEx?.vi ? primaryEx.vi.trim() : "";
+      const exEnText = rawExEn ? ` ${rawExEn}` : "";
+      const exViText = rawExVi ? ` (${rawExVi})` : "";
+
+      // Title slice
+      const titleStart = charOffset;
+      const titleEnd = titleStart + titleText.length;
+      const visibleTitle = titleText.slice(0, Math.max(0, sectionRevealedChars - titleStart));
+      const isTypingTitle = sectionIsTyping && sectionRevealedChars >= titleStart && sectionRevealedChars < titleEnd;
+      charOffset = titleEnd;
+
+      // IPA slice
+      const ipaStart = charOffset;
+      const ipaEnd = ipaStart + ipaText.length;
+      const visibleIpa = ipaText.slice(0, Math.max(0, sectionRevealedChars - ipaStart));
+      const isTypingIpa = sectionIsTyping && sectionRevealedChars >= ipaStart && sectionRevealedChars < ipaEnd;
+      charOffset = ipaEnd;
+
+      const showBadges = !sectionIsTyping || sectionRevealedChars >= ipaEnd;
+
+      // Meaning slice
+      const meaningStart = charOffset;
+      const meaningEnd = meaningStart + meaningText.length;
+      const visibleMeaning = meaningText.slice(0, Math.max(0, sectionRevealedChars - meaningStart));
+      const isTypingMeaning = sectionIsTyping && sectionRevealedChars >= meaningStart && sectionRevealedChars < meaningEnd;
+      charOffset = meaningEnd;
+
+      // Synonyms slice
+      const synStart = charOffset;
+      const synEnd = synStart + synText.length;
+      const visibleSyn = synText.slice(0, Math.max(0, sectionRevealedChars - synStart));
+      const isTypingSyn = sectionIsTyping && sectionRevealedChars >= synStart && sectionRevealedChars < synEnd;
+      charOffset = synEnd;
+
+      // Example EN slice
+      const exEnStart = charOffset;
+      const exEnEnd = exEnStart + exEnText.length;
+      const visibleExEn = exEnText.slice(0, Math.max(0, sectionRevealedChars - exEnStart));
+      const isTypingExEn = sectionIsTyping && sectionRevealedChars >= exEnStart && sectionRevealedChars < exEnEnd;
+      charOffset = exEnEnd;
+
+      // Example VI slice
+      const exViStart = charOffset;
+      const exViEnd = exViStart + exViText.length;
+      const visibleExVi = exViText.slice(0, Math.max(0, sectionRevealedChars - exViStart));
+      const isTypingExVi = sectionIsTyping && sectionRevealedChars >= exViStart && sectionRevealedChars < exViEnd;
+      charOffset = exViEnd;
+
+      if (visibleTitle.length === 0 && !isTypingTitle && sectionIsTyping) {
+        return null;
+      }
+
+      return (
+        <div key={itIdx} className={`space-y-1 ${itIdx > 0 ? "pt-2 border-t border-white/10" : ""}`}>
+          {/* Row 1: Word/Pattern (Red, bold) + IPA (soft purple) + Badges */}
+          <div className="flex flex-wrap items-baseline gap-1.5 md:gap-2">
+            <span className="text-base sm:text-lg md:text-xl font-extrabold text-red-400 tracking-wide drop-shadow-md">
+              {visibleTitle}
+              {isTypingTitle && <span className="inline-block w-1.5 h-4 bg-red-400 ml-0.5 animate-pulse align-middle" />}
+            </span>
+
+            {visibleIpa && (
+              <span className="text-xs sm:text-sm font-mono font-medium text-violet-300 drop-shadow-xs">
+                {visibleIpa}
+                {isTypingIpa && <span className="inline-block w-1.5 h-3.5 bg-violet-300 ml-0.5 animate-pulse align-middle" />}
+              </span>
+            )}
+
+            {showBadges && (
+              <div className="inline-flex items-center gap-1 ml-0.5">
+                {item.part_of_speech && (
+                  <span className="px-1.5 py-0.2 rounded-md bg-emerald-950/70 border border-emerald-400/40 text-emerald-300 font-bold text-[9px] md:text-[10px] uppercase tracking-wider">
+                    {item.part_of_speech}
+                  </span>
+                )}
+                {item.register && (
+                  <span className="px-1.5 py-0.2 rounded-md bg-purple-950/70 border border-purple-400/40 text-purple-300 font-bold text-[9px] md:text-[10px] tracking-wider">
+                    {item.register}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Row 2: Vietnamese Meaning (White) */}
+          {(visibleMeaning || isTypingMeaning) && (
+            <div className="text-xs sm:text-sm md:text-base font-semibold text-white leading-relaxed drop-shadow-sm flex items-start gap-1.5">
+              <span className="text-emerald-400 shrink-0 select-none">👉</span>
+              <span>
+                {visibleMeaning}
+                {isTypingMeaning && <span className="inline-block w-1.5 h-3.5 bg-white ml-0.5 animate-pulse align-middle" />}
+              </span>
+            </div>
+          )}
+
+          {/* Row 3: Synonyms / Antonyms (Soft yellow) */}
+          {(visibleSyn || isTypingSyn) && (
+            <div className="text-[11px] sm:text-xs font-medium text-amber-200/90 leading-snug pl-5">
+              <span className="inline-flex items-center gap-1">
+                <span>🔗</span>
+                <span>{visibleSyn}</span>
+                {isTypingSyn && <span className="inline-block w-1 h-3 bg-amber-300 ml-0.5 animate-pulse align-middle" />}
+              </span>
+            </div>
+          )}
+
+          {/* Row 4: Example Sentence with Vietnamese Translation */}
+          {(visibleExEn || isTypingExEn || visibleExVi || isTypingExVi) && (
+            <div className="text-[11px] sm:text-xs leading-snug pl-5 pt-1 border-t border-white/5 space-y-0.5">
+              {(visibleExEn || isTypingExEn) && (
+                <div className="flex items-start gap-1 font-mono text-cyan-200">
+                  <span className="text-cyan-400 shrink-0 select-none">💬</span>
+                  <span className="italic">
+                    {visibleExEn}
+                    {isTypingExEn && <span className="inline-block w-1 h-3 bg-cyan-300 ml-0.5 animate-pulse align-middle" />}
+                  </span>
+                </div>
+              )}
+              {(visibleExVi || isTypingExVi) && (
+                <div className="text-slate-300/90 pl-5 text-[10px] sm:text-[11px]">
+                  <span>
+                    {visibleExVi}
+                    {isTypingExVi && <span className="inline-block w-1 h-3 bg-slate-300 ml-0.5 animate-pulse align-middle" />}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    });
+  };
+
+  const renderHeaderBar = (title: string, icon: string, sectionIsTyping: boolean) => (
+    <div className="flex items-center justify-between border-b border-white/15 pb-1 mb-2">
+      <div className="flex items-center gap-1.5">
+        <span className="text-xs md:text-sm">{icon}</span>
+        <span className="text-[10px] md:text-[11px] font-extrabold uppercase tracking-wider text-emerald-300">
+          {title}
+        </span>
+      </div>
+      {phase === "replaying" ? (
+        <span className="text-[10px] md:text-[11px] font-bold text-amber-300 bg-amber-950/70 px-2 py-0.5 rounded-full border border-amber-400/40 flex items-center gap-1 animate-pulse shadow-sm">
+          <span>🔁</span> Phát lại: Lần {totalLoops - loopsLeft + 1}/{totalLoops}
+        </span>
+      ) : isPaused ? (
+        <span className="text-[9px] md:text-[10px] font-bold text-amber-300 bg-amber-900/60 px-2 py-0.5 rounded-full border border-amber-400/40 flex items-center gap-1 shadow-sm">
+          <span>⏸️</span> Đang tạm dừng
+        </span>
+      ) : sectionIsTyping ? (
+        <span className="text-[9px] md:text-[10px] font-semibold text-slate-300 flex items-center gap-1">
+          <span>⚡</span> Đang gõ chữ...
+        </span>
+      ) : (
+        <span className="text-[9px] md:text-[10px] font-semibold text-emerald-300 flex items-center gap-1">
+          <span>✓</span> Đã xong
+        </span>
+      )}
+    </div>
+  );
+
+  // 1. CẢ TỪ VỰNG & CẤU TRÚC: Gõ lần lượt (Từ vựng trước, Cấu trúc sau)
+  if (hasBoth) {
+    const isVocabTyping = isTyping && revealedChars < vocabTextLength;
+    const isStructTyping = isTyping && revealedChars >= vocabTextLength;
+
+    // Khi Cấu trúc chưa bắt đầu gõ -> Chỉ hiển thị duy nhất 1 khung Từ Vựng ở giữa
+    if (!isStructStarted) {
+      return (
+        <div className="w-full max-w-2xl pointer-events-auto transition-all duration-300 animate-in fade-in zoom-in-95">
+          <div 
+            className="border-2 rounded-xl md:rounded-2xl p-3 md:p-4 transition-all flex flex-col justify-start"
+            style={cardBgStyle}
+          >
+            {renderHeaderBar("TỪ VỰNG (VOCABULARY)", "💎", isVocabTyping)}
+            <div className="space-y-2.5">
+              {renderSectionItems(vocabItems, vocabRevealed, isVocabTyping)}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Khi Cấu trúc bắt đầu gõ (hoặc khi phát lại) -> Mở rộng thành 2 cột
+    return (
+      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-3.5 pointer-events-auto transition-all duration-300">
+        {/* Cột Trái: Từ Vựng (đã gõ xong) */}
+        <div 
+          className="border-2 rounded-xl md:rounded-2xl p-3 md:p-3.5 transition-all flex flex-col justify-start"
+          style={cardBgStyle}
+        >
+          {renderHeaderBar("TỪ VỰNG (VOCABULARY)", "💎", isVocabTyping)}
+          <div className="space-y-2.5">
+            {renderSectionItems(vocabItems, vocabRevealed, isVocabTyping)}
+          </div>
+        </div>
+
+        {/* Cột Phải: Cấu Trúc (Xuất hiện khi tới lượt gõ) */}
+        <div 
+          className="border-2 rounded-xl md:rounded-2xl p-3 md:p-3.5 transition-all flex flex-col justify-start animate-in fade-in slide-in-from-right-4 duration-300"
+          style={cardBgStyle}
+        >
+          {renderHeaderBar("CẤU TRÚC (STRUCTURES)", "📐", isStructTyping)}
+          <div className="space-y-2.5">
+            {renderSectionItems(structItems, structRevealed, isStructTyping)}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. CHỈ CÓ TỪ VỰNG HOẶC CHỈ CÓ CẤU TRÚC: 1 Khung ở giữa
+  const isOnlyVocab = vocabItems.length > 0;
+  const title = isOnlyVocab ? "TỪ VỰNG (VOCABULARY)" : "CẤU TRÚC (STRUCTURES)";
+  const icon = isOnlyVocab ? "💎" : "📐";
+  const targetItems = isOnlyVocab ? vocabItems : structItems;
+
+  return (
+    <div 
+      className="w-full max-w-2xl border-2 rounded-xl md:rounded-2xl p-3 md:p-4 transition-all pointer-events-auto"
+      style={cardBgStyle}
+    >
+      {renderHeaderBar(title, icon, isTyping)}
+      <div className="space-y-3">
+        {renderSectionItems(targetItems, revealedChars, isTyping)}
+      </div>
+    </div>
   );
 };
 
@@ -263,6 +579,293 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const [isSavingExpansion, setIsSavingExpansion] = useState<boolean>(false);
 
   const [isExpansionJsonMode, setIsExpansionJsonMode] = useState<boolean>(false);
+
+  // Auto-Study Vocab Mode States
+  const [isAutoStudyMode, setIsAutoStudyMode] = useState<boolean>(false);
+  const [autoStudySound, setAutoStudySound] = useState<boolean>(true);
+  const [autoStudyLoops, setAutoStudyLoops] = useState<number>(2);
+  const [autoStudySpeed, setAutoStudySpeed] = useState<number>(40);
+  const [autoStudyOpacity, setAutoStudyOpacity] = useState<number>(85);
+
+  useEffect(() => {
+    try {
+      const mode = localStorage.getItem("webtoeic_auto_study_mode");
+      if (mode !== null) setIsAutoStudyMode(mode === "true");
+
+      const sound = localStorage.getItem("webtoeic_auto_study_sound");
+      if (sound !== null) setAutoStudySound(sound !== "false");
+
+      const loops = localStorage.getItem("webtoeic_auto_study_loops");
+      if (loops !== null) {
+        const val = parseInt(loops, 10);
+        if (!isNaN(val) && val >= 1) setAutoStudyLoops(val);
+      }
+
+      const speed = localStorage.getItem("webtoeic_auto_study_speed");
+      if (speed !== null) {
+        const val = parseInt(speed, 10);
+        if (!isNaN(val) && val >= 10) setAutoStudySpeed(val);
+      }
+
+      const opacity = localStorage.getItem("webtoeic_auto_study_opacity");
+      if (opacity !== null) {
+        const val = parseInt(opacity, 10);
+        if (!isNaN(val) && val >= 20 && val <= 100) setAutoStudyOpacity(val);
+      }
+    } catch (e) {}
+  }, []);
+  const [showAutoStudySettings, setShowAutoStudySettings] = useState<boolean>(false);
+  const [autoStudyPhase, setAutoStudyPhase] = useState<"idle" | "typing" | "replaying">("idle");
+  const [autoStudyItems, setAutoStudyItems] = useState<FlattenedExpansionItem[]>([]);
+  const [autoStudyTypedChars, setAutoStudyTypedChars] = useState<number>(0);
+  const [autoStudyLoopRemaining, setAutoStudyLoopRemaining] = useState<number>(2);
+
+  const [isAutoStudyPaused, setIsAutoStudyPaused] = useState<boolean>(false);
+  const isAutoStudyPausedRef = useRef<boolean>(false);
+  isAutoStudyPausedRef.current = isAutoStudyPaused;
+
+  const isProgrammaticPauseRef = useRef<boolean>(false);
+  const autoStudyFullStreamTextRef = useRef<string>("");
+  const autoStudyCharCountRef = useRef<number>(0);
+  const autoStudyTargetIdxRef = useRef<number>(-1);
+
+  const hasTriggeredAutoStudyRef = useRef<number>(-1);
+  const autoStudyTimerRef = useRef<any>(null);
+  const autoStudyTimeoutRef = useRef<any>(null);
+  const autoStudyLoopRemainingRef = useRef<number>(2);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  const isAutoStudyModeRef = useRef<boolean>(isAutoStudyMode);
+  isAutoStudyModeRef.current = isAutoStudyMode;
+  const autoStudyPhaseRef = useRef<"idle" | "typing" | "replaying">(autoStudyPhase);
+  autoStudyPhaseRef.current = autoStudyPhase;
+  const autoStudySoundRef = useRef<boolean>(autoStudySound);
+  autoStudySoundRef.current = autoStudySound;
+  const autoStudyLoopsRef = useRef<number>(autoStudyLoops);
+  autoStudyLoopsRef.current = autoStudyLoops;
+  const autoStudySpeedRef = useRef<number>(autoStudySpeed);
+  autoStudySpeedRef.current = autoStudySpeed;
+
+  const stopAutoStudy = () => {
+    if (autoStudyTimerRef.current) {
+      clearInterval(autoStudyTimerRef.current);
+      autoStudyTimerRef.current = null;
+    }
+    if (autoStudyTimeoutRef.current) {
+      clearTimeout(autoStudyTimeoutRef.current);
+      autoStudyTimeoutRef.current = null;
+    }
+    setIsAutoStudyPaused(false);
+    isAutoStudyPausedRef.current = false;
+    setAutoStudyPhase("idle");
+    autoStudyPhaseRef.current = "idle";
+    setAutoStudyItems([]);
+    setAutoStudyTypedChars(0);
+    autoStudyCharCountRef.current = 0;
+  };
+
+  const pauseAutoStudyTyping = () => {
+    if (autoStudyTimerRef.current) {
+      clearInterval(autoStudyTimerRef.current);
+      autoStudyTimerRef.current = null;
+    }
+    if (autoStudyTimeoutRef.current) {
+      clearTimeout(autoStudyTimeoutRef.current);
+      autoStudyTimeoutRef.current = null;
+    }
+    setIsAutoStudyPaused(true);
+    isAutoStudyPausedRef.current = true;
+  };
+
+  const runAutoStudyTypingLoop = (startChar: number, totalLen: number, targetIdx: number) => {
+    if (autoStudyTimerRef.current) clearInterval(autoStudyTimerRef.current);
+
+    let charCount = startChar;
+    const speed = autoStudySpeedRef.current || 40;
+    const fullStreamText = autoStudyFullStreamTextRef.current;
+
+    autoStudyTimerRef.current = setInterval(() => {
+      if (isAutoStudyPausedRef.current) {
+        return;
+      }
+
+      charCount += 1;
+      autoStudyCharCountRef.current = charCount;
+      setAutoStudyTypedChars(charCount);
+
+      if (autoStudySoundRef.current && charCount <= totalLen) {
+        const currentChar = fullStreamText[charCount - 1];
+        if (currentChar && currentChar !== " ") {
+          playTypewriterClickSound(audioCtxRef);
+        }
+      }
+
+      if (charCount >= totalLen) {
+        if (autoStudyTimerRef.current) {
+          clearInterval(autoStudyTimerRef.current);
+          autoStudyTimerRef.current = null;
+        }
+
+        // Wait 1.2s for reading then start replay loops
+        autoStudyTimeoutRef.current = setTimeout(() => {
+          if (isAutoStudyPausedRef.current) {
+            return;
+          }
+
+          const currentSub = subtitlesRef.current.length > 0 ? subtitlesRef.current[targetIdx] : subtitles[targetIdx];
+          if (!currentSub) {
+            stopAutoStudy();
+            return;
+          }
+
+          const totalLoops = autoStudyLoopsRef.current || 2;
+          autoStudyLoopRemainingRef.current = totalLoops;
+          setAutoStudyLoopRemaining(totalLoops);
+          setAutoStudyPhase("replaying");
+          autoStudyPhaseRef.current = "replaying";
+
+          lastSeekTimeRef.current = Date.now();
+          if (isDirectVideo) {
+            if (videoRef.current) {
+              videoRef.current.currentTime = currentSub.start;
+              videoRef.current.play().catch(() => {});
+              setIsPlaying(true);
+            }
+          } else {
+            if (playerRef.current && typeof playerRef.current.seekTo === "function") {
+              playerRef.current.seekTo(currentSub.start, true);
+              playerRef.current.playVideo();
+              setIsPlaying(true);
+            }
+          }
+        }, 1200);
+      }
+    }, speed);
+  };
+
+  const resumeAutoStudyTyping = () => {
+    setIsAutoStudyPaused(false);
+    isAutoStudyPausedRef.current = false;
+    const fullText = autoStudyFullStreamTextRef.current;
+    const currentChars = autoStudyCharCountRef.current;
+    const targetIdx = autoStudyTargetIdxRef.current;
+
+    if (currentChars < fullText.length) {
+      runAutoStudyTypingLoop(currentChars, fullText.length, targetIdx);
+    } else {
+      const currentSub = subtitlesRef.current.length > 0 ? subtitlesRef.current[targetIdx] : subtitles[targetIdx];
+      if (!currentSub) {
+        stopAutoStudy();
+        return;
+      }
+      const totalLoops = autoStudyLoopsRef.current || 2;
+      autoStudyLoopRemainingRef.current = totalLoops;
+      setAutoStudyLoopRemaining(totalLoops);
+      setAutoStudyPhase("replaying");
+      autoStudyPhaseRef.current = "replaying";
+
+      lastSeekTimeRef.current = Date.now();
+      if (isDirectVideo) {
+        if (videoRef.current) {
+          videoRef.current.currentTime = currentSub.start;
+          videoRef.current.play().catch(() => {});
+          setIsPlaying(true);
+        }
+      } else {
+        if (playerRef.current && typeof playerRef.current.seekTo === "function") {
+          playerRef.current.seekTo(currentSub.start, true);
+          playerRef.current.playVideo();
+          setIsPlaying(true);
+        }
+      }
+    }
+  };
+
+  const startAutoStudySequence = (targetIdx: number, items: FlattenedExpansionItem[]) => {
+    if (autoStudyTimerRef.current) clearInterval(autoStudyTimerRef.current);
+    if (autoStudyTimeoutRef.current) clearTimeout(autoStudyTimeoutRef.current);
+
+    autoStudyTargetIdxRef.current = targetIdx;
+    setIsAutoStudyPaused(false);
+    isAutoStudyPausedRef.current = false;
+
+    // Pause video programmatically
+    isProgrammaticPauseRef.current = true;
+    if (isDirectVideo) {
+      if (videoRef.current) {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    } else {
+      if (playerRef.current && typeof playerRef.current.pauseVideo === "function") {
+        playerRef.current.pauseVideo();
+        setIsPlaying(false);
+      }
+    }
+    setTimeout(() => {
+      isProgrammaticPauseRef.current = false;
+    }, 300);
+
+    const vocabItems = items.filter(it => it.type === "vocabulary");
+    const structItems = items.filter(it => it.type === "structure");
+    const hasBoth = vocabItems.length > 0 && structItems.length > 0;
+
+    const getItemText = (it: FlattenedExpansionItem) => {
+      const isVocab = it.type === "vocabulary";
+      const w = (isVocab ? it.word : it.pattern) || "";
+      const ipa = it.ipa ? ` /${it.ipa}/` : "";
+      const m = it.meaning || "";
+      const syn = it.synonyms ? ` Đồng nghĩa: ${it.synonyms}` : (it.antonyms ? ` Trái nghĩa: ${it.antonyms}` : "");
+      
+      const primaryEx = it.examples && it.examples.length > 0 ? it.examples[0] : null;
+      const rawExEn = primaryEx?.en ? primaryEx.en.replace(/<[^>]*>/g, '').trim() : "";
+      const rawExVi = primaryEx?.vi ? primaryEx.vi.trim() : "";
+      const exEn = rawExEn ? ` ${rawExEn}` : "";
+      const exVi = rawExVi ? ` (${rawExVi})` : "";
+      return w + ipa + m + syn + exEn + exVi;
+    };
+
+    const vocabText = vocabItems.map(getItemText).join("");
+    const structText = structItems.map(getItemText).join("");
+
+    // Gõ tuần tự: Từ vựng gõ trước, Cấu trúc gõ sau
+    const fullStreamText = vocabText + structText;
+
+    autoStudyFullStreamTextRef.current = fullStreamText;
+    const totalLen = fullStreamText.length;
+
+    setAutoStudyPhase("typing");
+    autoStudyPhaseRef.current = "typing";
+    setAutoStudyItems(items);
+    setAutoStudyTypedChars(0);
+    autoStudyCharCountRef.current = 0;
+
+    runAutoStudyTypingLoop(0, totalLen, targetIdx);
+  };
+
+  // Close Auto-Study dropdown on click outside
+  useEffect(() => {
+    if (!showAutoStudySettings) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest(".auto-study-dropdown-container")) {
+        setShowAutoStudySettings(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showAutoStudySettings]);
+
+  // Clean up auto study timers on unmount
+  useEffect(() => {
+    return () => {
+      if (autoStudyTimerRef.current) clearInterval(autoStudyTimerRef.current);
+      if (autoStudyTimeoutRef.current) clearTimeout(autoStudyTimeoutRef.current);
+      if (audioCtxRef.current && audioCtxRef.current.state !== "closed") {
+        audioCtxRef.current.close().catch(() => {});
+      }
+    };
+  }, []);
 
   const subtitlesRef = useRef<Subtitle[]>(subtitles);
   subtitlesRef.current = subtitles;
@@ -954,6 +1557,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               onStateChange: (event: any) => {
                 if (event.data === window.YT.PlayerState.PLAYING) {
                   setIsPlaying(true);
+                  if (autoStudyPhaseRef.current === "typing" && isAutoStudyPausedRef.current) {
+                    resumeAutoStudyTyping();
+                  }
                   try {
                     if (playerRef.current && typeof playerRef.current.unloadModule === "function") {
                       playerRef.current.unloadModule("captions");
@@ -962,6 +1568,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   } catch (e) {}
                 } else if (event.data === window.YT.PlayerState.PAUSED) {
                   setIsPlaying(false);
+                  if (autoStudyPhaseRef.current === "typing" && !isProgrammaticPauseRef.current && !isAutoStudyPausedRef.current) {
+                    pauseAutoStudyTyping();
+                  }
                 }
               },
             },
@@ -1091,6 +1700,43 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             }
           }
 
+          // Auto-Study Vocab check (Pause & Start Typewriter - strictly original sentence items)
+          if (isAutoStudyModeRef.current && mode === "listen" && autoStudyPhaseRef.current === "idle" && subtitles.length > 0) {
+            const currentSub = subtitles[currentIndex];
+            if (currentSub && currentSub.expansion) {
+              const allItems = getFlattenedExpansionItems(currentSub);
+              const originalExpItems = allItems.filter(it => isItemFromOriginal(it, currentSub.text));
+              if (originalExpItems.length > 0 && time >= (currentSub.end + 0.2) && hasTriggeredAutoStudyRef.current !== currentIndex) {
+                hasTriggeredAutoStudyRef.current = currentIndex;
+                startAutoStudySequence(currentIndex, originalExpItems);
+                return;
+              }
+            }
+          }
+
+          // Auto-Study Replaying Loops Handling
+          if (autoStudyPhaseRef.current === "replaying" && subtitles.length > 0) {
+            const currentSub = subtitles[currentIndex];
+            if (currentSub && time >= (currentSub.end + 0.2)) {
+              if (autoStudyLoopRemainingRef.current > 1) {
+                autoStudyLoopRemainingRef.current -= 1;
+                setAutoStudyLoopRemaining(autoStudyLoopRemainingRef.current);
+                lastSeekTimeRef.current = Date.now();
+                if (playerRef.current && typeof playerRef.current.seekTo === "function") {
+                  playerRef.current.seekTo(currentSub.start, true);
+                  playerRef.current.playVideo();
+                  setIsPlaying(true);
+                }
+              } else {
+                stopAutoStudy();
+                if (currentIndex < subtitles.length - 1) {
+                  playSubtitleRow(currentIndex + 1);
+                }
+              }
+              return;
+            }
+          }
+
           // Auto-looping in dictation mode OR when isLoopingCurrentSub is active
           if ((isLoopingCurrentSub || mode === "dictation") && subtitles.length > 0) {
             const currentSub = subtitles[currentIndex];
@@ -1101,8 +1747,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             }
           }
 
-          // Find and update active subtitle based on time (only in listening mode when NOT looping to prevent snapping)
-          if (mode === "listen" && !isLoopingCurrentSub && subtitles.length > 0) {
+          // Find and update active subtitle based on time (only in listening mode when NOT looping and NOT in auto-study)
+          if (mode === "listen" && !isLoopingCurrentSub && autoStudyPhaseRef.current === "idle" && subtitles.length > 0) {
             // Scan backwards to find the latest matching subtitle (prioritizes newer segments when times overlap)
             let foundIndex = -1;
             for (let i = subtitles.length - 1; i >= 0; i--) {
@@ -1121,7 +1767,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     }, 250);
 
     return () => clearInterval(interval);
-  }, [subtitles, currentIndex, mode, isLoopingCurrentSub]);
+  }, [subtitles, currentIndex, mode, isLoopingCurrentSub, isDirectVideo]);
 
   // Scroll active subtitle row steadily inside container
   useEffect(() => {
@@ -1179,6 +1825,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   // Handle seeking & playing a specific subtitle row
   const playSubtitleRow = (index: number) => {
     if (index < 0 || index >= subtitles.length) return;
+    if (autoStudyPhaseRef.current !== "idle" || index !== currentIndexRef.current) {
+      stopAutoStudy();
+      hasTriggeredAutoStudyRef.current = -1;
+    }
     lastSeekTimeRef.current = Date.now();
     setCurrentIndex(index);
     const sub = subtitles[index];
@@ -1206,6 +1856,15 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
   // Play/Pause video (both modes)
   const togglePlay = () => {
+    if (autoStudyPhaseRef.current === "typing") {
+      if (isAutoStudyPausedRef.current) {
+        resumeAutoStudyTyping();
+      } else {
+        pauseAutoStudyTyping();
+      }
+      return;
+    }
+
     if (isDirectVideo) {
       if (!videoRef.current) return;
       if (isPlaying) {
@@ -1555,6 +2214,43 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   tracks[i].mode = "disabled";
                 }
 
+                // Auto-Study Vocab check (Pause & Start Typewriter - strictly original sentence items)
+                if (isAutoStudyModeRef.current && mode === "listen" && autoStudyPhaseRef.current === "idle" && subtitles.length > 0) {
+                  const currentSub = subtitles[currentIndex];
+                  if (currentSub && currentSub.expansion) {
+                    const allItems = getFlattenedExpansionItems(currentSub);
+                    const originalExpItems = allItems.filter(it => isItemFromOriginal(it, currentSub.text));
+                    if (originalExpItems.length > 0 && time >= (currentSub.end + 0.2) && hasTriggeredAutoStudyRef.current !== currentIndex) {
+                      hasTriggeredAutoStudyRef.current = currentIndex;
+                      startAutoStudySequence(currentIndex, originalExpItems);
+                      return;
+                    }
+                  }
+                }
+
+                // Auto-Study Replaying Loops Handling
+                if (autoStudyPhaseRef.current === "replaying" && subtitles.length > 0) {
+                  const currentSub = subtitles[currentIndex];
+                  if (currentSub && time >= (currentSub.end + 0.2)) {
+                    if (autoStudyLoopRemainingRef.current > 1) {
+                      autoStudyLoopRemainingRef.current -= 1;
+                      setAutoStudyLoopRemaining(autoStudyLoopRemainingRef.current);
+                      lastSeekTimeRef.current = Date.now();
+                      if (videoRef.current) {
+                        videoRef.current.currentTime = currentSub.start;
+                        videoRef.current.play().catch(() => {});
+                        setIsPlaying(true);
+                      }
+                    } else {
+                      stopAutoStudy();
+                      if (currentIndex < subtitles.length - 1) {
+                        playSubtitleRow(currentIndex + 1);
+                      }
+                    }
+                    return;
+                  }
+                }
+
                 // Auto-looping in dictation mode OR when isLoopingCurrentSub is active
                 if ((isLoopingCurrentSub || mode === "dictation") && subtitles.length > 0) {
                   const currentSub = subtitles[currentIndex];
@@ -1565,8 +2261,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   }
                 }
 
-                // Find and update active subtitle based on time (only in listen mode when NOT looping)
-                if (mode === "listen" && !isLoopingCurrentSub && subtitles.length > 0) {
+                // Find and update active subtitle based on time (only in listen mode when NOT looping and NOT in auto-study)
+                if (mode === "listen" && !isLoopingCurrentSub && autoStudyPhaseRef.current === "idle" && subtitles.length > 0) {
                   let foundIndex = -1;
                   for (let i = subtitles.length - 1; i >= 0; i--) {
                     const sub = subtitles[i];
@@ -1585,6 +2281,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               }}
               onPlay={() => {
                 setIsPlaying(true);
+                if (autoStudyPhaseRef.current === "typing" && isAutoStudyPausedRef.current) {
+                  resumeAutoStudyTyping();
+                }
                 // Disable native text tracks on play
                 if (videoRef.current) {
                   const tracks = videoRef.current.textTracks;
@@ -1593,7 +2292,12 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   }
                 }
               }}
-              onPause={() => setIsPlaying(false)}
+              onPause={() => {
+                setIsPlaying(false);
+                if (autoStudyPhaseRef.current === "typing" && !isProgrammaticPauseRef.current && !isAutoStudyPausedRef.current) {
+                  pauseAutoStudyTyping();
+                }
+              }}
               controls={!isMobile}
               playsInline
               preload="metadata"
@@ -1621,6 +2325,22 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             >
               {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
             </button>
+          )}
+
+          {/* Auto-Study Vocab Top Overlay */}
+          {isAutoStudyMode && autoStudyPhase !== "idle" && autoStudyItems.length > 0 && (
+            <div className="absolute top-2 sm:top-3 md:top-4 left-0 right-0 z-50 pointer-events-none flex justify-center px-2 sm:px-4">
+              {renderAutoStudyOverlayContent(
+                autoStudyItems,
+                autoStudyPhase === 'replaying' ? 999999 : autoStudyTypedChars,
+                autoStudyPhase === 'typing',
+                autoStudyLoopRemaining,
+                autoStudyLoops,
+                autoStudyPhase,
+                autoStudyOpacity,
+                isAutoStudyPaused
+              )}
+            </div>
           )}
 
           {/* Subtitle Overlay đè lên video */}
@@ -1660,11 +2380,11 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
       {/* BOTTOM: Workspace (Centered, matching video width) */}
       <div className="w-full max-w-5xl mx-auto p-2 md:p-4 flex flex-col gap-4">
-        <div className="bg-white rounded-2xl md:rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[380px] md:h-[500px]">
+        <div className="bg-white rounded-2xl md:rounded-3xl border border-slate-200 shadow-sm flex flex-col h-[380px] md:h-[500px] relative">
           {/* Shared Header (Mode Switcher, Checkboxes, Font Controls, Tooltip) */}
-          <div className="bg-slate-50 border-b text-xs font-black text-slate-400 tracking-wider uppercase shrink-0 flex flex-col md:flex-row md:items-center justify-between p-2 md:p-3 gap-2 select-none">
+          <div className="bg-slate-50 border-b text-xs font-black text-slate-400 tracking-wider uppercase shrink-0 rounded-t-2xl md:rounded-t-3xl flex flex-wrap md:flex-nowrap items-center justify-between p-2 md:p-2.5 gap-2 select-none z-30">
             {/* Row 1: Mode & Speed (and Settings Toggle on mobile) */}
-            <div className="flex items-center justify-between md:justify-start gap-2.5 w-full md:w-auto">
+            <div className="flex items-center justify-between md:justify-start gap-2 shrink-0">
               {/* Mode switch */}
               <div className="flex bg-slate-200 p-0.5 rounded-lg border border-slate-250 shrink-0">
                 <button
@@ -1697,7 +2417,6 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
               {/* Speed Switcher */}
               <div className="flex items-center gap-1 normal-case shrink-0">
-                <span className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-wider hidden xs:inline">Tốc độ:</span>
                 <div className="flex bg-slate-200 p-0.5 rounded-lg border border-slate-250">
                   {[0.5, 0.7, 1, 1.2].map((speed) => (
                     <button
@@ -1735,11 +2454,11 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             </div>
 
             {/* Row 2: Checkboxes, Font Sizing, Timing Shift, Tooltip */}
-            <div className={`${showMobileOptions ? "flex" : "hidden"} md:flex items-center justify-between md:justify-end gap-2 md:gap-3 w-full md:w-auto border-t border-slate-200/60 md:border-t-0 pt-2 md:pt-0 overflow-x-auto scrollbar-none`}>
-              <div className="flex items-center gap-2 md:gap-3 shrink-0">
+            <div className={`${showMobileOptions ? "flex" : "hidden"} md:flex items-center justify-between md:justify-end gap-1.5 md:gap-2.5 w-full md:w-auto border-t border-slate-200/60 md:border-t-0 pt-2 md:pt-0 shrink-0`}>
+              <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
                 {/* Show options */}
-                <div className="flex items-center gap-2 md:gap-2.5">
-                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors normal-case text-[10px] md:text-xs" title="Bật/tắt hiển thị phiên âm IPA">
+                <div className="flex items-center gap-1.5 md:gap-2">
+                  <label className="flex items-center gap-0.5 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors normal-case text-[10px] md:text-xs" title="Bật/tắt hiển thị phiên âm IPA">
                     <input
                       type="checkbox"
                       checked={showIpa}
@@ -1751,7 +2470,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     />
                     <span>IPA</span>
                   </label>
-                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2 md:pl-2.5 normal-case text-[10px] md:text-xs" title="Bật/tắt hiển thị giải nghĩa slang/idiom">
+                  <label className="flex items-center gap-0.5 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-1.5 md:pl-2 normal-case text-[10px] md:text-xs" title="Bật/tắt hiển thị giải nghĩa slang/idiom">
                     <input
                       type="checkbox"
                       checked={showNotes}
@@ -1761,9 +2480,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                       }}
                       className="rounded text-indigo-600 border-slate-350 focus:ring-indigo-500 cursor-pointer w-3 md:w-3.5 md:h-3.5 h-3"
                     />
-                    <span>slang/idiom</span>
+                    <span>Note</span>
                   </label>
-                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2 md:pl-2.5 normal-case text-[10px] md:text-xs" title="Bật/tắt phụ đề trên khung video">
+                  <label className="flex items-center gap-0.5 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-1.5 md:pl-2 normal-case text-[10px] md:text-xs" title="Bật/tắt phụ đề trên khung video">
                     <input
                       type="checkbox"
                       checked={showSubOnVideo}
@@ -1775,7 +2494,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     />
                     <span>Sub</span>
                   </label>
-                  <label className="flex items-center gap-1 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-2 md:pl-2.5 normal-case text-[10px] md:text-xs" title="Tích chọn để ẩn phụ đề Tiếng Việt">
+                  <label className="flex items-center gap-0.5 cursor-pointer font-bold text-slate-500 hover:text-indigo-600 transition-colors border-l border-slate-200 pl-1.5 md:pl-2 normal-case text-[10px] md:text-xs" title="Tích chọn để ẩn phụ đề Tiếng Việt">
                     <input
                       type="checkbox"
                       checked={hideVietsub}
@@ -1790,7 +2509,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 </div>
 
                 {/* FontSize */}
-                <div className="flex items-center gap-1 border-l border-slate-200 pl-2 md:pl-2.5">
+                <div className="flex items-center gap-0.5 border-l border-slate-200 pl-1.5 md:pl-2">
                   <button
                     type="button"
                     onClick={(e) => {
@@ -1817,7 +2536,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
                 {/* Timing shifter */}
                 {mode === "listen" && (
-                  <div className="flex items-center gap-1 border-l border-slate-200 pl-2 md:pl-2.5">
+                  <div className="flex items-center gap-0.5 border-l border-slate-200 pl-1.5 md:pl-2">
                     <button
                       type="button"
                       onClick={(e) => {
@@ -1860,6 +2579,202 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   <span>🔁</span>
                 </button>
 
+                {/* Auto-Study Vocab Mode Toggle & Dropdown */}
+                <div className="relative auto-study-dropdown-container">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowAutoStudySettings(prev => !prev);
+                    }}
+                    className={`h-6 md:h-7 px-1.5 md:px-2 rounded-lg flex items-center gap-1 font-bold text-[10px] md:text-xs transition-all active:scale-95 shadow-xs shrink-0 border ${
+                      isAutoStudyMode 
+                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm ring-2 ring-emerald-200' 
+                        : 'bg-white hover:bg-slate-100 text-slate-600 border-slate-200'
+                    }`}
+                    title="Chế độ Tự học từ vựng (Nhấp để mở menu cài đặt)"
+                  >
+                    <span>🧠</span>
+                    <span className="hidden sm:inline font-bold">
+                      Tự học
+                    </span>
+                    <span className={`w-1.5 h-1.5 rounded-full ${isAutoStudyMode ? 'bg-emerald-200 animate-pulse' : 'bg-slate-300'}`} />
+                    <span className="text-[8px] opacity-70">▼</span>
+                  </button>
+
+                  {showAutoStudySettings && (
+                    <div 
+                      className="absolute top-full right-0 mt-2 w-72 p-3.5 bg-white text-slate-800 text-xs rounded-2xl shadow-2xl border border-slate-200 z-[100] normal-case animate-in fade-in slide-in-from-top-2 duration-150"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-2.5">
+                        <div className="flex items-center gap-1.5 font-bold text-slate-800">
+                          <span>🧠</span>
+                          <span>Chế độ Tự học từ vựng</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowAutoStudySettings(false)}
+                          className="text-slate-400 hover:text-slate-600 font-bold p-0.5"
+                        >
+                          ✕
+                        </button>
+                      </div>
+
+                      {/* Toggle Mode */}
+                      <div className="flex items-center justify-between py-1.5 border-b border-slate-100">
+                        <div>
+                          <div className="font-bold text-slate-700">Tự động dừng & học từ</div>
+                          <div className="text-[10px] text-slate-500">Dừng ở cuối sub có từ vựng</div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const nextVal = !isAutoStudyMode;
+                            setIsAutoStudyMode(nextVal);
+                            localStorage.setItem("webtoeic_auto_study_mode", String(nextVal));
+                            if (!nextVal) stopAutoStudy();
+                          }}
+                          className={`w-10 h-5.5 rounded-full transition-colors relative p-0.5 flex items-center ${
+                            isAutoStudyMode ? 'bg-emerald-600' : 'bg-slate-300'
+                          }`}
+                        >
+                          <div 
+                            className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform ${
+                              isAutoStudyMode ? 'translate-x-4.5' : 'translate-x-0'
+                            }`}
+                          />
+                        </button>
+                      </div>
+
+                      {/* Toggle Key Sound */}
+                      <div className="flex items-center justify-between py-1.5 border-b border-slate-100">
+                        <div>
+                          <div className="font-bold text-slate-700">Âm thanh gõ phím</div>
+                          <div className="text-[10px] text-slate-500">Tiếng phím cơ khi gõ chữ</div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const nextVal = !autoStudySound;
+                            setAutoStudySound(nextVal);
+                            localStorage.setItem("webtoeic_auto_study_sound", String(nextVal));
+                          }}
+                          className={`w-10 h-5.5 rounded-full transition-colors relative p-0.5 flex items-center ${
+                            autoStudySound ? 'bg-indigo-600' : 'bg-slate-300'
+                          }`}
+                        >
+                          <div 
+                            className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform ${
+                              autoStudySound ? 'translate-x-4.5' : 'translate-x-0'
+                            }`}
+                          />
+                        </button>
+                      </div>
+
+                      {/* Replay Loops */}
+                      <div className="py-2 border-b border-slate-100">
+                        <div className="font-bold text-slate-700 mb-1.5 flex justify-between items-center">
+                          <span>Số lần phát lại (Replay)</span>
+                          <span className="text-indigo-600 font-extrabold">{autoStudyLoops} lần</span>
+                        </div>
+                        <div className="grid grid-cols-4 gap-1">
+                          {[1, 2, 3, 5].map((count) => (
+                            <button
+                              key={count}
+                              type="button"
+                              onClick={() => {
+                                setAutoStudyLoops(count);
+                                localStorage.setItem("webtoeic_auto_study_loops", String(count));
+                              }}
+                              className={`py-1 rounded-lg font-bold text-[11px] border transition-all ${
+                                autoStudyLoops === count
+                                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                                  : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'
+                              }`}
+                            >
+                              {count} lần
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Typing Speed */}
+                      <div className="py-2 border-b border-slate-100">
+                        <div className="font-bold text-slate-700 mb-1.5 flex justify-between items-center">
+                          <span>Tốc độ gõ chữ</span>
+                          <span className="text-slate-500 font-medium">
+                            {autoStudySpeed <= 20 ? 'Nhanh' : autoStudySpeed <= 35 ? 'Vừa' : 'Chậm'}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-1">
+                          {[
+                            { label: 'Nhanh', ms: 20 },
+                            { label: 'Vừa', ms: 35 },
+                            { label: 'Chậm', ms: 50 },
+                          ].map((item) => (
+                            <button
+                              key={item.ms}
+                              type="button"
+                              onClick={() => {
+                                setAutoStudySpeed(item.ms);
+                                localStorage.setItem("webtoeic_auto_study_speed", String(item.ms));
+                              }}
+                              className={`py-1 rounded-lg font-bold text-[11px] border transition-all ${
+                                autoStudySpeed === item.ms
+                                  ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                                  : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'
+                              }`}
+                            >
+                              {item.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Opacity Control */}
+                      <div className="pt-2">
+                        <div className="font-bold text-slate-700 mb-1.5 flex justify-between items-center">
+                          <span>Độ đục khung chữ</span>
+                          <span className="text-indigo-600 font-extrabold">{autoStudyOpacity}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="10"
+                          max="100"
+                          step="5"
+                          value={autoStudyOpacity}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value, 10);
+                            setAutoStudyOpacity(val);
+                            localStorage.setItem("webtoeic_auto_study_opacity", String(val));
+                          }}
+                          className="w-full accent-indigo-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer"
+                        />
+                        <div className="grid grid-cols-4 gap-1 mt-1.5">
+                          {[20, 40, 70, 100].map((percent) => (
+                            <button
+                              key={percent}
+                              type="button"
+                              onClick={() => {
+                                setAutoStudyOpacity(percent);
+                                localStorage.setItem("webtoeic_auto_study_opacity", String(percent));
+                              }}
+                              className={`py-0.5 rounded font-bold text-[10px] border transition-all ${
+                                autoStudyOpacity === percent
+                                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                                  : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'
+                              }`}
+                            >
+                              {percent}%
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 {/* Vocabulary / Structure Expansion Popup Button (Admin / Teacher) */}
                 {hasExpansionAccess && (
                   <button
@@ -1873,7 +2788,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 )}
 
                 {/* Help Circle Tooltip */}
-                <div className="relative group border-l border-slate-200 pl-2 md:pl-2.5">
+                <div className="relative group border-l border-slate-200 pl-1.5 md:pl-2">
                   <button 
                     type="button" 
                     className="flex items-center justify-center w-5 h-5 md:w-5.5 md:h-5.5 text-slate-400 hover:text-indigo-650 transition-colors bg-white rounded border border-slate-200 shadow-sm"
@@ -1882,7 +2797,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     <HelpCircle size={11} />
                   </button>
                   
-                  <div className="absolute bottom-full right-0 mb-2 w-72 p-3 bg-slate-900 text-white text-[10px] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none normal-case">
+                  <div className="absolute top-full right-0 mt-2 w-72 p-3 bg-slate-900 text-white text-[10px] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[100] pointer-events-none normal-case">
                     <p className="font-bold mb-2 text-indigo-300">Mẹo học nhanh bằng phím tắt:</p>
                     <ul className="list-disc pl-4 space-y-1 text-slate-350">
                       <li>Nhấn phím <strong className="text-white">n</strong> để sang câu tiếp.</li>

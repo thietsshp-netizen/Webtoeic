@@ -19,6 +19,7 @@ export interface SemanticFieldItem {
 
 export interface ExpansionVocabItem {
   word: string;
+  source?: 'original' | 'paraphrase' | string;
   ipa?: string;
   part_of_speech?: string;
   register?: string;
@@ -31,6 +32,7 @@ export interface ExpansionVocabItem {
 
 export interface ExpansionStructureItem {
   pattern: string;
+  source?: 'original' | 'paraphrase' | string;
   meaning: string;
   examples: ExampleItem[];
 }
@@ -55,6 +57,7 @@ export interface Subtitle {
 export interface FlattenedExpansionItem {
   type: 'vocabulary' | 'structure';
   rawIndex: number;
+  source?: 'original' | 'paraphrase' | string;
   word?: string;
   pattern?: string;
   ipa?: string;
@@ -89,6 +92,47 @@ export interface ExpansionPopupCallbacks {
   onSeek: (key: string) => void;
   onSelectIndex?: (index: number) => void;
 }
+
+const normalizeExamplesList = (rawExamples: any, singleEn?: any, singleVi?: any): ExampleItem[] => {
+  const result: ExampleItem[] = [];
+  if (Array.isArray(rawExamples)) {
+    rawExamples.forEach((ex: any) => {
+      if (typeof ex === 'string' && ex.trim()) {
+        result.push({ en: ex.trim(), vi: '' });
+      } else if (ex && typeof ex === 'object') {
+        const en = String(ex.en || ex.sentence || ex.example || ex.example_en || '').trim();
+        const vi = String(ex.vi || ex.translation || ex.meaning || ex.example_vi || ex.example_translation || '').trim();
+        const ipa = String(ex.ipa || '').trim();
+        if (en || vi) {
+          result.push({ en, vi, ipa: ipa || undefined });
+        }
+      }
+    });
+  }
+  if (result.length === 0 && (singleEn || singleVi)) {
+    const en = String(singleEn || '').trim();
+    const vi = String(singleVi || '').trim();
+    if (en || vi) {
+      result.push({ en, vi });
+    }
+  }
+  return result;
+};
+
+export const isItemFromOriginal = (item: FlattenedExpansionItem, subText?: string): boolean => {
+  if (item.source === 'paraphrase') return false;
+  if (item.source === 'original') return true;
+  // Fallback for legacy items without explicit source tag:
+  if (!subText) return true;
+  const cleanSub = subText.toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
+  const target = (item.type === 'vocabulary' ? item.word : item.pattern) || '';
+  const cleanTarget = target.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').trim();
+  if (!cleanTarget) return true;
+  if (cleanSub.includes(cleanTarget)) return true;
+  const words = cleanTarget.split(/\s+/).filter(w => w.length > 2);
+  if (words.length > 0 && words.some(w => cleanSub.includes(w))) return true;
+  return true;
+};
 
 export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionItem[] => {
   if (!sub || !sub.expansion) return [];
@@ -128,9 +172,14 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
           });
         }
 
+        const examples = normalizeExamplesList(v.examples, v.example || v.example_en, v.example_vi || v.example_translation);
+        const rawSource = String(v.source || '').toLowerCase().trim();
+        const source = rawSource === 'paraphrase' ? 'paraphrase' : (rawSource === 'original' ? 'original' : undefined);
+
         items.push({
           type: 'vocabulary',
           rawIndex: idx,
+          source,
           word: String(v.word || '').trim(),
           ipa: String(v.ipa || v.ipa_us || v.ipa_uk || '').trim(),
           part_of_speech: String(v.part_of_speech || v.pos || '').trim(),
@@ -140,7 +189,7 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
           antonyms: antVal,
           paraphrase,
           paraphrases,
-          examples: Array.isArray(v.examples) ? v.examples : [],
+          examples,
           semantic_field_expansion: semanticFields.length > 0 ? semanticFields : undefined
         });
       }
@@ -148,16 +197,21 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
   }
 
   if (Array.isArray(sub.expansion.structures)) {
-    sub.expansion.structures.forEach((s, idx) => {
+    sub.expansion.structures.forEach((s: any, idx) => {
       if (s && (s.pattern || s.meaning)) {
+        const examples = normalizeExamplesList(s.examples, s.example || s.example_en, s.example_vi || s.example_translation);
+        const rawSource = String(s.source || '').toLowerCase().trim();
+        const source = rawSource === 'paraphrase' ? 'paraphrase' : (rawSource === 'original' ? 'original' : undefined);
+
         items.push({
           type: 'structure',
           rawIndex: idx,
+          source,
           pattern: s.pattern || '',
           meaning: s.meaning || '',
           paraphrase,
           paraphrases,
-          examples: Array.isArray(s.examples) ? s.examples : [],
+          examples,
         });
       }
     });
@@ -200,26 +254,35 @@ Cung cấp từ 2 đến 3 cách diễn đạt lại (Natural Re-expressions) kh
 * Structural Shift: Thay đổi cấu trúc câu (chuyển đổi chủ ngữ, dùng mệnh đề danh ngữ, đảo trật tự ý, v.v.) nhưng giữ nguyên ngữ nghĩa.
 * Conversational Idiomatic Chunk: Sử dụng idiom, tiếng lóng nhẹ (mild slang), hoặc câu cửa miệng phổ biến trong đời sống.
 
-## 1.2. Yêu cầu cho từng câu paraphrase:
+## 1.2. Yêu cầu BẮT BUỘC cho từng câu paraphrase:
 * Đảm bảo Naturalness Test: Giữ nguyên sắc thái, cảm xúc, mức độ trang trọng (register) của ngữ cảnh phim.
-* Sử dụng thẻ <mark>...</mark> để đánh dấu chính xác phần từ ngữ/cấu trúc được thay đổi hoặc viết lại so với câu gốc.
+* QUY TẮC ĐÁNH DẤU BẮT BUỘC: Mỗi câu paraphrase trong trường "text" BẮT BUỘC PHẢI DÙNG thẻ <mark>...</mark> để bọc quanh chính xác phần từ ngữ/cụm từ/cấu trúc được thay đổi, biến đổi hoặc viết lại so với câu gốc!
+  - TUYỆT ĐỐI KHÔNG được trả về câu paraphrase dạng văn bản thô không có thẻ <mark>...</mark>.
+  - Ví dụ đúng: "Every time this guy simply says hi, it <mark>drives me up the wall</mark>."
+  - Ví dụ đúng: "Just hearing this guy greet me <mark>makes me want to disappear</mark>."
+  - Ví dụ đúng: "The dude barely says a word and <mark>I'm already losing my mind</mark>."
+  - Ví dụ sai (KHÔNG ĐƯỢC): "Every time this guy simply says hi, it drives me up the wall." (SAI vì thiếu thẻ <mark>...</mark>)
 
 ---
 
 # NGUYÊN TẮC 2 — TỪ VỰNG TRỌNG TÂM & MỞ RỘNG TRƯỜNG NGHĨA (vocabulary)
 
 ## 2.1. Tiêu chí chọn từ vựng mục tiêu (word):
-* Nguồn: Ưu tiên từ CÂU GỐC, sau đó đến các CÂU PARAPHRASE có giá trị học tập cao.
+* Nguồn trích xuất:
+  - Ưu tiên 1 (Chính): Trích xuất từ vựng / cụm từ / phrasal verb / idiom xuất hiện trực tiếp trong CÂU GỐC (BẮT BUỘC ghi "source": "original").
+  - Ưu tiên 2 (Mở rộng): Trích xuất thêm các từ vựng / cụm từ hay, hữu ích xuất hiện trong CÂU PARAPHRASE để giải thích thêm cho người học (BẮT BUỘC ghi "source": "paraphrase").
 * Reusability Test: Chỉ chọn từ/cụm từ/idiom có tính ứng dụng cao, giúp người học tái sử dụng để diễn đạt trong nhiều ngữ cảnh đời thường khác nhau.
 * Không chọn từ quá sơ cấp/hiển nhiên (I, you, go, have, do, be...). Nếu câu không có từ nào đáng chú ý, trả về "vocabulary": [].
 
 ## 2.2. Thông tin từ vựng:
+* word: Từ / cụm từ / idiom mục tiêu.
+* source: BẮT BUỘC ghi đúng 1 trong: "original" (nếu từ câu gốc) | "paraphrase" (nếu từ câu paraphrase).
 * ipa: Phiên âm General American (GA) đặt trong /.../.
 * part_of_speech: Chỉ chọn 1 trong: idiom | phrasal verb | phrase | verb | noun | adjective | adverb | collocation.
 * register: Chỉ chọn 1 trong: casual | neutral | informal | slang | idiomatic | formal.
 * meaning: Giải nghĩa tiếng Việt ngắn gọn, sát đúng ngữ cảnh câu.
 * synonyms / antonyms: Cung cấp từ/cụm tương đương tự nhiên hoặc để "" nếu không có.
-* examples: Tối thiểu 1-2 ví dụ thực tế. BẮT BUỘC dùng thẻ <mark>...</mark> bao quanh từ/cụm từ mục tiêu trong câu tiếng Anh (en).
+* examples: BẮT BUỘC cung cấp tối thiểu 1 ví dụ thực tế minh họa cách dùng trong giao tiếp đời thường. Câu tiếng Anh (en) BẮT BUỘC dùng thẻ <mark>...</mark> bao quanh từ/cụm từ mục tiêu và BẮT BUỘC có dịch nghĩa tiếng Việt (vi).
 
 ## 2.3. Mở rộng trường nghĩa (semantic_field_expansion):
 * Với mỗi mục từ vựng, cung cấp từ 2 đến 3 cách nói/từ vựng liên quan trong cùng trường nghĩa/chủ đề để làm giàu vốn diễn đạt cho người học.
@@ -230,10 +293,13 @@ Cung cấp từ 2 đến 3 cách diễn đạt lại (Natural Re-expressions) kh
 ---
 
 # NGUYÊN TẮC 3 — CẤU TRÚC KHUNG CÂU GIAO TIẾP (structures)
-* Nguồn: CHỈ trích xuất cấu trúc từ CÂU GỐC.
+* Nguồn trích xuất:
+  - Trích xuất cấu trúc xuất hiện trực tiếp trong CÂU GỐC (BẮT BUỘC ghi "source": "original").
+  - Nếu câu paraphrase có cấu trúc câu đặc sắc có thể trích xuất thêm (BẮT BUỘC ghi "source": "paraphrase").
+* source: BẮT BUỘC ghi đúng 1 trong: "original" | "paraphrase".
 * Conversational Frame: Phải là mẫu câu / sentence pattern có thể lắp ghép thành phần khác để tạo câu mới (Ví dụ: "It's not like + clause", "What if we + V...", "There's no point in + V-ing").
-* Không lấy ngữ pháp ngữ văn cơ bản (S + V + O, thì thì hiện tại...). Nếu không có cấu trúc nào đặc sắc, trả về "structures": [].
-* Ví dụ: BẮT BUỘC dùng thẻ <mark>...</mark> bọc quanh phần cấu trúc áp dụng trong câu ví dụ (en).
+* Không lấy ngữ pháp ngữ văn cơ bản (S + V + O, thì hiện tại...). Nếu không có cấu trúc nào đặc sắc, trả về "structures": [].
+* examples: BẮT BUỘC cung cấp tối thiểu 1 ví dụ thực tế minh họa cách dùng khung câu. BẮT BUỘC dùng thẻ <mark>...</mark> bọc quanh phần cấu trúc áp dụng trong câu ví dụ (en) và BẮT BUỘC có dịch nghĩa tiếng Việt (vi).
 
 ---
 
@@ -242,12 +308,13 @@ Cung cấp từ 2 đến 3 cách diễn đạt lại (Natural Re-expressions) kh
   "paraphrases": [
     {
       "method": "Tên phương pháp (VD: Lexical / Phrasal Re-expression | Structural Shift | Conversational Idiom...)",
-      "text": "Câu diễn đạt lại tự nhiên có chứa <mark>...</mark> ở phần thay đổi"
+      "text": "Câu diễn đạt lại BẮT BUỘC có thẻ <mark>cụm từ thay đổi</mark> (Ví dụ: It <mark>drives me up the wall</mark>.)"
     }
   ],
   "vocabulary": [
     {
       "word": "Từ / cụm từ / idiom mục tiêu",
+      "source": "original | paraphrase",
       "ipa": "/.../",
       "part_of_speech": "idiom | phrasal verb | phrase | verb | noun | adjective | adverb | collocation",
       "register": "casual | neutral | informal | slang | idiomatic | formal",
@@ -273,7 +340,8 @@ Cung cấp từ 2 đến 3 cách diễn đạt lại (Natural Re-expressions) kh
   ],
   "structures": [
     {
-      "pattern": "Sentence frame/pattern giao tiếp chỉ lấy từ câu gốc",
+      "pattern": "Sentence frame/pattern giao tiếp",
+      "source": "original | paraphrase",
       "meaning": "Cách sử dụng thực tế trong câu",
       "examples": [
         {
@@ -376,8 +444,12 @@ export const sanitizeExpansionJson = (rawInput: any): SubtitleExpansion => {
           });
         }
 
+        const rawSource = String(item.source || '').toLowerCase().trim();
+        const sourceVal = rawSource === 'paraphrase' ? 'paraphrase' : (rawSource === 'original' ? 'original' : undefined);
+
         vocabList.push({
           word: String(item.word || '').trim(),
+          ...(sourceVal ? { source: sourceVal } : {}),
           meaning: meaningText,
           ...(item.ipa ? { ipa: String(item.ipa).trim() } : {}),
           ...(item.part_of_speech || item.pos ? { part_of_speech: String(item.part_of_speech || item.pos).trim() } : {}),
@@ -413,8 +485,12 @@ export const sanitizeExpansionJson = (rawInput: any): SubtitleExpansion => {
             }
           });
         }
+        const rawSource = String(item.source || '').toLowerCase().trim();
+        const sourceVal = rawSource === 'paraphrase' ? 'paraphrase' : (rawSource === 'original' ? 'original' : undefined);
+
         structList.push({
           pattern: patternText,
+          ...(sourceVal ? { source: sourceVal } : {}),
           meaning: meaningText,
           examples
         });
@@ -455,7 +531,10 @@ export const renderMarkupText = (text: string): string => {
 
 export const renderParaphraseHtml = (paraStr: string): string => {
   if (!paraStr) return '';
-  const parts = paraStr.split(/(<\/?mark>)/g);
+  const normalized = paraStr
+    .replace(/<(\/)?(b|strong)>/gi, '<$1mark>')
+    .replace(/\*\*(.*?)\*\*/g, '<mark>$1</mark>');
+  const parts = normalized.split(/(<\/?mark>)/g);
   return parts.map(part => {
     if (part === '<mark>') return '<span class="ph-diff" title="Cụm diễn giải thay thế">';
     if (part === '</mark>') return '</span>';
