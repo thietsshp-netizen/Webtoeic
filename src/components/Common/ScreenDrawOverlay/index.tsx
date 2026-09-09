@@ -1639,6 +1639,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   // Context transition handling (save prev, load new)
   useEffect(() => {
+    if (!isActive) return;
     if (!currentContext) return;
 
     // 1. Save elements of the previous context before switching
@@ -1682,7 +1683,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     // Update ref
     prevContextRef.current = currentContext;
-  }, [currentContext]);
+  }, [currentContext, isActive]);
 
   const [undoStack, setUndoStack] = useState<DrawElement[][]>([]);
   const [redoStack, setRedoStack] = useState<DrawElement[][]>([]);
@@ -1957,7 +1958,36 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
   const [newCloneTextBgOpacity, setNewCloneTextBgOpacity] = useState<number>(30);
   const [editingCloneId, setEditingCloneId] = useState<string | null>(null);
 
+  // Tự động dọn dẹp và xoá sạch toàn bộ nét vẽ, bộ nhớ đệm và localStorage khi tắt bảng vẽ
+  useEffect(() => {
+    if (!isActive) {
+      setElements([]);
+      setUndoStack([]);
+      setRedoStack([]);
+      setSelectedId(null);
+      setEditingTextId(null);
+      setTextInput(null);
+      setActiveTextVal("");
 
+      const canvas = canvasRef.current;
+      const ctx = ctxRef.current;
+      if (canvas && ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      try {
+        if (typeof window !== 'undefined') {
+          Object.keys(localStorage).forEach(k => {
+            if (k.startsWith('webtoeic_canvas_elements')) {
+              localStorage.removeItem(k);
+            }
+          });
+        }
+      } catch (e) {
+        console.error("Failed to clear canvas elements from localStorage", e);
+      }
+    }
+  }, [isActive]);
 
   // Đặt vị trí mặc định thông minh khi thay đổi trang học tập hoặc trang ngoài
   useEffect(() => {
@@ -2109,6 +2139,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   // 2. Trì hoãn lưu xuống localStorage (Debounce 800ms) để tránh nghẽn CPU
   useEffect(() => {
+    if (!isActive) return;
     if (ignoreNextSaveRef.current) {
       ignoreNextSaveRef.current = false;
       return;
@@ -2166,7 +2197,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       }
     }, 800);
     return () => clearTimeout(timer);
-  }, [elements]);
+  }, [elements, isActive]);
 
   useEffect(() => {
     try {
@@ -2543,9 +2574,6 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   useEffect(() => {
     if (!isActive) {
-      // Khi bảng vẽ tắt nhưng canvas read-only đang hiển thị (có callout/elements),
-      // cần khởi tạo context để drawAllElements() có thể vẽ lên canvas
-      setTimeout(() => initCanvas(), 50);
       return;
     }
 

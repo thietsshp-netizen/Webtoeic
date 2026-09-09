@@ -477,6 +477,21 @@ export const renderDiffHighlight = (origStr: string, paraStr: string): string =>
   return renderParaphraseHtml(paraStr || '');
 };
 
+export const getShortMethodLabel = (method?: string, index?: number): string => {
+  if (!method || !method.trim()) {
+    return index !== undefined ? `Cách ${index + 1}` : 'Paraphrase';
+  }
+  const m = method.trim();
+  const lower = m.toLowerCase();
+  if (lower.includes('idiom') || lower.includes('chunk') || lower.includes('slang') || lower.includes('conversational')) return 'Idiomatic';
+  if (lower.includes('lexic') || lower.includes('synonym') || lower.includes('re-expression')) return 'Lexical';
+  if (lower.includes('structur') || lower.includes('shift') || lower.includes('clause') || lower.includes('grammar')) return 'Structural';
+  if (lower.includes('collocat')) return 'Collocation';
+  if (lower.includes('phrasal') || lower.includes('phrase')) return 'Phrasal';
+  if (m.length <= 14) return m;
+  return m.split('/')[0].split('-')[0].trim();
+};
+
 
 
 export const generateMovieExpansionPopupStyles = () => `
@@ -606,31 +621,39 @@ export const generateMovieExpansionPopupStyles = () => `
   }
   .paraphrase-table {
     margin-top: 10px;
-    padding-top: 10px;
+    padding-top: 8px;
     border-top: 1px dashed #fecaca;
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    gap: 8px 12px;
-    align-items: baseline;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+  }
+  .paraphrase-line {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #1e293b;
+    display: block;
   }
   .paraphrase-badge {
     font-size: 10px;
     font-weight: 800;
-    color: #15803d;
-    background: #dcfce7;
-    border: 1px solid #bbf7d0;
-    padding: 2px 7px;
+    color: #047857;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    padding: 1px 6px;
     border-radius: 4px;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
     white-space: nowrap;
     display: inline-block;
+    vertical-align: 1px;
+    margin-right: 6px;
   }
   .paraphrase-val {
     font-size: 13.5px;
     font-weight: 600;
     color: #1e293b;
-    line-height: 1.5;
+    display: inline;
   }
   .orig-diff {
     color: #ea580c;
@@ -811,13 +834,13 @@ export const generateMovieExpansionPopupStyles = () => `
     font-size: 15px;
     line-height: 1.45;
   }
-  .ex-mark, mark.ex-mark {
-    background: #fef08a;
-    color: #854d0e;
+  .ex-mark, mark.ex-mark, mark {
+    background: transparent;
+    color: #e11d48;
     font-weight: 800;
-    padding: 1px 5px;
-    border-radius: 4px;
-    border-bottom: 2px solid #eab308;
+    padding: 0;
+    border: none;
+    border-radius: 0;
     display: inline;
   }
   .ex-vi {
@@ -1536,11 +1559,13 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
           ${paraphraseList.length > 0 ? `
             <div class="paraphrase-table">
               ${paraphraseList.map((pItem, pIdx) => {
-                const pMethod = pItem.method || (paraphraseList.length > 1 ? `Cách ${pIdx + 1}` : 'Paraphrase');
+                const pMethod = getShortMethodLabel(pItem.method, pIdx);
                 const pHtml = renderParaphraseHtml(pItem.text || '');
                 return `
-                  <div><span class="paraphrase-badge">${escapeHtml(pMethod)}</span></div>
-                  <div class="paraphrase-val">"${pHtml}"</div>
+                  <div class="paraphrase-line">
+                    <span class="paraphrase-badge">${escapeHtml(pMethod)}</span>
+                    <span class="paraphrase-val">"${pHtml}"</span>
+                  </div>
                 `;
               }).join('')}
             </div>
