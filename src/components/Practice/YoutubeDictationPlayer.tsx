@@ -164,6 +164,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const [leftWidth, setLeftWidth] = useState<number>(60); // 60% left (video), 40% right (subtitles)
   const [isResizing, setIsResizing] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [isLoopingCurrentSub, setIsLoopingCurrentSub] = useState<boolean>(false);
   
   // Mobile / Tablet Optimization States
   const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -1088,17 +1089,18 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             }
           }
 
-          // Auto-looping in dictation mode
-          if (mode === "dictation" && subtitles.length > 0) {
+          // Auto-looping in dictation mode OR when isLoopingCurrentSub is active
+          if ((isLoopingCurrentSub || mode === "dictation") && subtitles.length > 0) {
             const currentSub = subtitles[currentIndex];
-            if (currentSub && time >= currentSub.end) {
+            const loopEndThreshold = (currentSub?.end || 0) + 0.15;
+            if (currentSub && time >= loopEndThreshold) {
               lastSeekTimeRef.current = Date.now();
               playerRef.current.seekTo(currentSub.start, true);
             }
           }
 
-          // Find and update active subtitle based on time (only in listening mode to prevent snapping during dictation typing)
-          if (mode === "listen" && subtitles.length > 0) {
+          // Find and update active subtitle based on time (only in listening mode when NOT looping to prevent snapping)
+          if (mode === "listen" && !isLoopingCurrentSub && subtitles.length > 0) {
             // Scan backwards to find the latest matching subtitle (prioritizes newer segments when times overlap)
             let foundIndex = -1;
             for (let i = subtitles.length - 1; i >= 0; i--) {
@@ -1117,7 +1119,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     }, 250);
 
     return () => clearInterval(interval);
-  }, [subtitles, currentIndex, mode]);
+  }, [subtitles, currentIndex, mode, isLoopingCurrentSub]);
 
   // Scroll active subtitle row steadily inside container
   useEffect(() => {
@@ -1291,6 +1293,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           } else if (e.code === "KeyB") {
             e.preventDefault();
             playSubtitleRow(currentIndex);
+          } else if (e.code === "KeyL" || e.key.toLowerCase() === "l") {
+            e.preventDefault();
+            setIsLoopingCurrentSub(prev => !prev);
           } else if (e.code === "Backquote") {
             e.preventDefault();
             togglePlay();
@@ -1338,6 +1343,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           } else if (e.code === "KeyB") {
             e.preventDefault();
             playSubtitleRow(currentIndex);
+          } else if (e.code === "KeyL" || e.key.toLowerCase() === "l") {
+            e.preventDefault();
+            setIsLoopingCurrentSub(prev => !prev);
           }
         }
       }
@@ -1345,7 +1353,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentIndex, subtitles, isPlaying, mode, hasExpansionAccess, selectedExpansionIndex]);
+  }, [currentIndex, subtitles, isPlaying, mode, hasExpansionAccess, selectedExpansionIndex, isLoopingCurrentSub]);
 
   // Live Inline Editing Handlers
   const startEdit = (idx: number, sub: Subtitle) => {
@@ -1545,17 +1553,18 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   tracks[i].mode = "disabled";
                 }
 
-                // Auto-looping in dictation mode
-                if (mode === "dictation" && subtitles.length > 0) {
+                // Auto-looping in dictation mode OR when isLoopingCurrentSub is active
+                if ((isLoopingCurrentSub || mode === "dictation") && subtitles.length > 0) {
                   const currentSub = subtitles[currentIndex];
-                  if (currentSub && time >= currentSub.end) {
+                  const loopEndThreshold = (currentSub?.end || 0) + 0.15;
+                  if (currentSub && time >= loopEndThreshold) {
                     videoRef.current.currentTime = currentSub.start;
                     videoRef.current.play().catch(() => {});
                   }
                 }
 
-                // Find and update active subtitle based on time (only in listen mode)
-                if (mode === "listen" && subtitles.length > 0) {
+                // Find and update active subtitle based on time (only in listen mode when NOT looping)
+                if (mode === "listen" && !isLoopingCurrentSub && subtitles.length > 0) {
                   let foundIndex = -1;
                   for (let i = subtitles.length - 1; i >= 0; i--) {
                     const sub = subtitles[i];
@@ -1832,6 +1841,23 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   </div>
                 )}
 
+                {/* Loop Button */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    setIsLoopingCurrentSub(prev => !prev);
+                    e.currentTarget.blur();
+                  }}
+                  className={`w-6 h-6 md:w-7 md:h-7 rounded-lg flex items-center justify-center font-bold text-xs md:text-sm transition-all active:scale-95 shadow-xs shrink-0 border ${
+                    isLoopingCurrentSub 
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm animate-pulse ring-2 ring-indigo-200' 
+                      : 'bg-white hover:bg-slate-100 text-slate-600 border-slate-200'
+                  }`}
+                  title="Lặp vô hạn câu (Phím tắt: L)"
+                >
+                  <span>🔁</span>
+                </button>
+
                 {/* Vocabulary / Structure Expansion Popup Button (Admin / Teacher) */}
                 {hasExpansionAccess && (
                   <button
@@ -1860,9 +1886,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                       <li>Nhấn phím <strong className="text-white">n</strong> để sang câu tiếp.</li>
                       <li>Nhấn phím <strong className="text-white">v</strong> để lùi lại câu trước.</li>
                       <li>Nhấn phím <strong className="text-white">b</strong> để nghe lại câu hiện tại.</li>
+                      <li>Nhấn phím <strong className="text-indigo-300">l</strong> để Lặp vô hạn / Hủy lặp câu hiện tại.</li>
                       <li>Nhấn phím <strong className="text-white">~</strong> để Tạm dừng/Phát.</li>
                       <li>Nhấn phím <strong className="text-amber-300">,</strong> hoặc <strong className="text-amber-300">.</strong> để mở/duyệt Từ vựng & Cấu trúc.</li>
-                      <li><em className="text-slate-400">Gõ chính tả:</em> Alt + (n, v, b, ~).</li>
+                      <li><em className="text-slate-400">Gõ chính tả:</em> Alt + (n, v, b, l, ~).</li>
                     </ul>
                   </div>
                 </div>
@@ -1891,7 +1918,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     onClick={() => !isEditing && playSubtitleRow(idx)}
                     className={`p-2.5 px-3.5 rounded-2xl border transition-all cursor-pointer group ${
                       isActive
-                        ? "bg-red-50/80 border-red-200 shadow-md ring-1 ring-red-300"
+                        ? isLoopingCurrentSub
+                          ? "bg-indigo-50/90 border-indigo-300 shadow-md ring-2 ring-indigo-400"
+                          : "bg-red-50/80 border-red-200 shadow-md ring-1 ring-red-300"
                         : "border-slate-100 hover:border-slate-200 hover:bg-slate-50"
                     }`}
                   >
@@ -1999,7 +2028,14 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                       <div className="space-y-0.5 relative">
                         {/* Time tag */}
                         <div className="flex justify-between items-center text-[9px] font-mono font-bold text-slate-400">
-                          <span>{formatTimeDetailed(sub.start)} - {formatTimeDetailed(sub.end)}</span>
+                          <div className="flex items-center gap-1.5">
+                            <span>{formatTimeDetailed(sub.start)} - {formatTimeDetailed(sub.end)}</span>
+                            {isActive && isLoopingCurrentSub && (
+                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-indigo-600 text-white font-sans text-[8px] font-black uppercase tracking-wider animate-pulse shadow-sm">
+                                <span>🔁 LẶP CÂU</span>
+                              </span>
+                            )}
+                          </div>
                           <div className="flex items-center gap-1.5">
                             {hasExpansionAccess && sub.expansion && ((sub.expansion.vocabulary?.length || 0) + (sub.expansion.structures?.length || 0) > 0) && (
                               <button
