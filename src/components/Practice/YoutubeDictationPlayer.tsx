@@ -513,6 +513,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           playSubtitleRowRef.current(curr + 1);
         } else if (key === 'b') {
           playSubtitleRowRef.current(curr);
+        } else if (key === 'l') {
+          setIsLoopingCurrentSub(prev => !prev);
         } else if (key === '`' || key === 'Backquote') {
           togglePlayRef.current();
         }

@@ -1701,6 +1701,7 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
     <div><span class="help-key">,</span> / <span class="help-key">.</span> Đổi Từ vựng ↔ Cấu trúc</div>
     <div><span class="help-key">V</span> / <span class="help-key">N</span> Lùi / Tiến câu phụ đề</div>
     <div><span class="help-key">B</span> Nghe lại câu phụ đề</div>
+    <div><span class="help-key">L</span> Bật / Tắt lặp vô hạn câu</div>
     <div><span class="help-key">Ctrl+S</span> Lưu dữ liệu đang sửa</div>
   </div>
 `;
@@ -1798,11 +1799,13 @@ export const updateMovieExpansionPopupDom = (
           if (typeof targetWin.sendCycleMessage === 'function') {
             targetWin.sendCycleMessage(e.key);
           }
-        } else if (e.code === 'KeyV' || e.code === 'KeyN' || e.code === 'KeyB' || e.key === 'Enter' || e.code === 'Backquote' || e.key === '`') {
+        } else if (e.code === 'KeyV' || e.code === 'KeyN' || e.code === 'KeyB' || e.code === 'KeyL' || e.key.toLowerCase() === 'l' || e.key === 'Enter' || e.code === 'Backquote' || e.key === '`') {
           e.preventDefault();
           if (typeof targetWin.sendSeekMessage === 'function') {
             if (e.code === 'Backquote' || e.key === '`') {
               targetWin.sendSeekMessage('`');
+            } else if (e.code === 'KeyL' || e.key.toLowerCase() === 'l') {
+              targetWin.sendSeekMessage('l');
             } else {
               targetWin.sendSeekMessage(e.key === 'Enter' ? 'n' : e.key.toLowerCase());
             }
