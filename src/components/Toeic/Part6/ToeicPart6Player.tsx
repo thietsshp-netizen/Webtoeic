@@ -492,7 +492,403 @@ export default function ToeicPart6Player({
 
   const [vSplitWidth, setVSplitWidth] = useState(55);
   const [isResizingV, setIsResizingV] = useState(false);
-  const { isAdminMode } = useAdminEdit();
+  const { isAdminMode, canEdit } = useAdminEdit();
+
+  const pipWindowRef = useRef<any>(null);
+  const popupRef = useRef<Window | null>(null);
+  const lastVocabHotkeyTime = useRef<number>(0);
+  const latestHandleKeyDownRef = useRef<(e: any) => void>(() => {});
+
+  const updatePart6Popup = async (index: number) => {
+    if (!isAdminMode && !canEdit) return;
+    const group = data[index];
+    if (!group) return;
+
+    const groupQuestions = group.questions || [];
+    if (groupQuestions.length === 0) return;
+
+    const escapeHtml = (unsafe: string) => {
+      return (unsafe || '')
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    };
+
+    const formatExplanationToHtml = (text: string) => {
+      if (!text) return '';
+      const regex = /(s\d+)|(\(.*?\))|(".*?")|('.*?')|(\*\*.*?\*\*)/g;
+      const parts = text.split(regex);
+      return parts.map((part) => {
+        if (!part) return '';
+        if (/^s\d+$/.test(part)) {
+          return `<span style="display: inline-flex; align-items: center; justify-content: center; padding: 1px 5px; border-radius: 4px; background: #e0e7ff; color: #4338ca; font-weight: bold; font-size: 11px; margin: 0 2px;">${part}</span>`;
+        }
+        const isBracket = /^\(.*\)$/.test(part);
+        const isDoubleQuote = /^".*"$/.test(part);
+        const isSingleQuote = /^'.*'$/.test(part);
+        const isMarkdownBold = /^\*\*.*\*\*$/.test(part);
+        if (isBracket || isDoubleQuote || isSingleQuote || isMarkdownBold) {
+          let cleanText = part;
+          if (isMarkdownBold) cleanText = part.replace(/\*\*/g, '');
+          return `<strong style="color: #4f46e5; font-weight: 800;">${escapeHtml(cleanText)}</strong>`;
+        }
+        return escapeHtml(part).replace(/\n/g, '<br />');
+      }).join('');
+    };
+
+    const questionsHtml = groupQuestions.map((q: any) => {
+      const qNo = q.questionNo || '';
+      const qText = q.questionText || '';
+      const correctOpt = (q.correctAnswer || '').toUpperCase();
+      const meta = q.metadata as any;
+      let whyCorrect = "";
+      let parsedExpl: any = {};
+      try { parsedExpl = JSON.parse(q.explanation || "{}"); } catch {}
+
+      if (meta?.explanation_vn) {
+        const ev = meta.explanation_vn;
+        whyCorrect = ev.why_correct || ev.why || "";
+      }
+      if (!whyCorrect) {
+        whyCorrect = parsedExpl?.why_correct || parsedExpl?.why || (typeof q.explanation === 'string' && !q.explanation.startsWith('{') ? q.explanation : "");
+      }
+
+      const optionsHtml = ['A', 'B', 'C', 'D'].map(opt => {
+        const optText = q[`option${opt}`] || "";
+        if (!optText) return '';
+        const isCorrect = correctOpt === opt;
+        const optVn = (q.metadata as any)?.options_vn?.[opt] || (q.metadata as any)?.explanation_vn?.options_vn?.[opt] || "";
+        const viSpan = optVn ? ` <span style="color: #64748b; font-style: italic; font-size: 12.5px;">(${escapeHtml(optVn)})</span>` : '';
+        return `
+          <div style="font-size: 13px; line-height: 1.45; padding: 5px 8px; border-radius: 6px; margin-bottom: 3px; ${isCorrect ? 'background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; font-weight: bold;' : 'color: #334155;'}">
+            <strong style="display: inline-block; width: 18px; color: ${isCorrect ? '#059669' : '#64748b'};">${opt}.</strong> ${escapeHtml(optText)}${viSpan}
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="question-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px;">
+            <div style="font-weight: 800; font-size: 14px; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+              <span style="background: #4f46e5; color: #ffffff; font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 6px;">Câu ${qNo}</span>
+              ${qText ? `<span style="font-weight: 600;">${escapeHtml(qText)}</span>` : ''}
+            </div>
+            <div style="font-size: 12px; font-weight: 800; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 2px 8px; border-radius: 6px;">
+              Đáp án: <strong>${correctOpt}</strong>
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 10px;">
+            ${optionsHtml}
+          </div>
+
+          ${whyCorrect ? `
+            <div style="background: #f8fafc; border-left: 3px solid #6366f1; border-radius: 4px; padding: 8px 10px; font-size: 12.5px; line-height: 1.5; color: #334155;">
+              <div style="color: #4338ca; font-weight: 800; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">
+                💡 Vì sao đúng:
+              </div>
+              <div style="line-height: 1.55;">
+                ${formatExplanationToHtml(whyCorrect)}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }).join('');
+
+    const minQ = groupQuestions[0]?.questionNo || '';
+    const maxQ = groupQuestions[groupQuestions.length - 1]?.questionNo || '';
+    const answerKeyText = groupQuestions.map((q: any) => `${q.questionNo}_${(q.correctAnswer || '').toUpperCase()}`).join(', ');
+
+    const width = 500;
+    const height = 620;
+
+    const popupHtml = `
+      <div class="title-container">
+        <div>
+          <div class="title">Đáp án & Giải thích Part 6</div>
+          <div style="font-size: 11.5px; color: #64748b; margin-top: 3px;">Nhóm câu hỏi: ${minQ} - ${maxQ} (Đoạn ${index + 1} / ${data.length})</div>
+        </div>
+        <div class="pagination-badge">${index + 1} / ${data.length}</div>
+      </div>
+      <div class="middle-scroll-container">
+        ${questionsHtml}
+      </div>
+      <div class="footer-bar">
+        <span>Đáp án nhanh:</span>
+        <span class="answer-key-pill">${answerKeyText}</span>
+      </div>
+    `;
+
+    const hasPiP = typeof window !== 'undefined' && 'documentPictureInPicture' in window;
+    
+    if (hasPiP) {
+      try {
+        let pipWindow = pipWindowRef.current;
+        const isClosed = !pipWindow || pipWindow.closed;
+        
+        if (isClosed) {
+          // @ts-ignore
+          pipWindow = await window.documentPictureInPicture.requestWindow({ width, height });
+          pipWindowRef.current = pipWindow;
+
+          pipWindow.addEventListener('pagehide', () => {
+            pipWindowRef.current = null;
+          });
+
+          const style = pipWindow.document.createElement('style');
+          style.textContent = `
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+              padding: 14px;
+              margin: 0;
+              background-color: #f8fafc;
+              color: #1e293b;
+              height: calc(100vh - 28px);
+              display: flex;
+              flex-direction: column;
+              box-sizing: border-box;
+            }
+            .middle-scroll-container {
+              flex: 1;
+              overflow-y: auto;
+              min-height: 0;
+              margin-bottom: 10px;
+              padding-right: 2px;
+            }
+            .title-container {
+              position: sticky;
+              top: 0;
+              background-color: #f8fafc;
+              padding-bottom: 10px;
+              border-bottom: 2px solid #e2e8f0;
+              margin-bottom: 12px;
+              z-index: 10;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            }
+            .title {
+              font-size: 15.5px;
+              font-weight: 800;
+              color: #0f172a;
+              margin: 0;
+            }
+            .pagination-badge {
+              font-size: 11px;
+              font-weight: 700;
+              background-color: #e2e8f0;
+              color: #475569;
+              padding: 2px 7px;
+              border-radius: 6px;
+            }
+            .footer-bar {
+              background: #ffffff;
+              border: 1px solid #e2e8f0;
+              border-radius: 8px;
+              padding: 6px 12px;
+              margin-top: auto;
+              box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              font-weight: 700;
+              font-size: 12.5px;
+              color: #475569;
+              flex-shrink: 0;
+            }
+            .answer-key-pill {
+              color: #dc2626;
+              font-size: 13.5px;
+              font-weight: 900;
+              background-color: #fef2f2;
+              padding: 2px 10px;
+              border-radius: 6px;
+              border: 1px dashed #fca5a5;
+            }
+          `;
+          pipWindow.document.head.appendChild(style);
+
+          const mainWindow = window;
+          pipWindow.document.addEventListener('keydown', (e: KeyboardEvent) => {
+            const keyLower = e.key ? e.key.toLowerCase() : '';
+            const isTargetKey = 
+              e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+              e.key === ',' || e.key === '.' ||
+              e.key === '[' || keyLower === 'ư' || 
+              e.key === ']' || keyLower === 'ơ' ||
+              ((e.ctrlKey || e.metaKey) && keyLower === 's');
+            if (isTargetKey) {
+              e.preventDefault();
+              mainWindow.postMessage({
+                type: 'TOEIC_HOTKEY',
+                key: e.key,
+                code: e.code,
+                ctrlKey: e.ctrlKey,
+                shiftKey: e.shiftKey,
+                metaKey: e.metaKey,
+                altKey: e.altKey
+              }, '*');
+            }
+          });
+        }
+
+        pipWindow.document.body.innerHTML = popupHtml;
+        try {
+          window.focus();
+        } catch (e) {}
+        return;
+      } catch (err) {
+        console.error("PiP error, falling back to popup:", err);
+      }
+    }
+
+    let popup = popupRef.current;
+    if (!popup || popup.closed) {
+      popup = window.open("", "part6_popup", `width=${width},height=${height}`);
+      popupRef.current = popup;
+    }
+
+    if (popup) {
+      popup.document.open();
+      popup.document.write(`
+        <html>
+          <head>
+            <title>Đáp án & Giải thích Part 6</title>
+            <style>
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                padding: 14px;
+                margin: 0;
+                background-color: #f8fafc;
+                color: #1e293b;
+                height: calc(100vh - 28px);
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+              }
+              .middle-scroll-container {
+                flex: 1;
+                overflow-y: auto;
+                min-height: 0;
+                margin-bottom: 10px;
+                padding-right: 2px;
+              }
+              .title-container {
+                position: sticky;
+                top: 0;
+                background-color: #f8fafc;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #e2e8f0;
+                margin-bottom: 12px;
+                z-index: 10;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              }
+              .title {
+                font-size: 15.5px;
+                font-weight: 800;
+                color: #0f172a;
+                margin: 0;
+              }
+              .pagination-badge {
+                font-size: 11px;
+                font-weight: 700;
+                background-color: #e2e8f0;
+                color: #475569;
+                padding: 2px 7px;
+                border-radius: 6px;
+              }
+              .footer-bar {
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                padding: 6px 12px;
+                margin-top: auto;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                font-weight: 700;
+                font-size: 12.5px;
+                color: #475569;
+                flex-shrink: 0;
+              }
+              .answer-key-pill {
+                color: #dc2626;
+                font-size: 13.5px;
+                font-weight: 900;
+                background-color: #fef2f2;
+                padding: 2px 10px;
+                border-radius: 6px;
+                border: 1px dashed #fca5a5;
+              }
+            </style>
+          </head>
+          <body>
+            ${popupHtml}
+            <script>
+              document.addEventListener('keydown', (e) => {
+                const keyLower = e.key ? e.key.toLowerCase() : '';
+                const isTargetKey = 
+                  e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+                  e.key === ',' || e.key === '.' ||
+                  e.key === '[' || keyLower === 'ư' || 
+                  e.key === ']' || keyLower === 'ơ' ||
+                  ((e.ctrlKey || e.metaKey) && keyLower === 's');
+                if (isTargetKey) {
+                  e.preventDefault();
+                  if (window.opener) {
+                    window.opener.postMessage({
+                      type: 'TOEIC_HOTKEY',
+                      key: e.key,
+                      code: e.code,
+                      ctrlKey: e.ctrlKey,
+                      shiftKey: e.shiftKey,
+                      metaKey: e.metaKey,
+                      altKey: e.altKey
+                    }, '*');
+                  }
+                }
+              });
+            </script>
+          </body>
+        </html>
+      `);
+      popup.document.close();
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (popupRef.current && !popupRef.current.closed) {
+        popupRef.current.close();
+      }
+      if (pipWindowRef.current && !pipWindowRef.current.closed) {
+        pipWindowRef.current.close();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data && e.data.type === 'TOEIC_HOTKEY') {
+        latestHandleKeyDownRef.current?.(e.data);
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  useEffect(() => {
+    const isPopupActive = (popupRef.current && !popupRef.current.closed) || (pipWindowRef.current && !pipWindowRef.current.closed);
+    if (isPopupActive) {
+      updatePart6Popup(currentIndex);
+    }
+  }, [currentIndex, data]);
 
   useEffect(() => {
     if (passageScrollRef.current) passageScrollRef.current.scrollTop = 0;
@@ -546,44 +942,71 @@ export default function ToeicPart6Player({
   }, [isReviewMode, isSubmittedInternal, showCompletion]);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: any) => {
       // Bỏ qua phím tắt nếu đang gõ trong input/textarea/contentEditable
       const target = e.target as HTMLElement;
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+      const activeEl = typeof document !== 'undefined' ? (document.activeElement as HTMLElement | null) : null;
+      const isInput = (
+        (activeEl && (
+          activeEl.tagName === 'INPUT' ||
+          activeEl.tagName === 'TEXTAREA' ||
+          activeEl.isContentEditable ||
+          (typeof activeEl.closest === 'function' && activeEl.closest('[contenteditable]') !== null)
+        )) ||
+        (target && (
+          target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable ||
+          (typeof target.closest === 'function' && target.closest('[contenteditable]') !== null)
+        ))
+      );
+      if (isInput) return;
 
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
+      const key = e.key;
+      const keyLower = typeof key === 'string' ? key.toLowerCase() : '';
+
+      if (key === 'ArrowLeft') {
+        e.preventDefault?.();
         if (currentIndex === 0) {
           if (isFullTest && onPrevPart) onPrevPart();
         } else {
           setCurrentIndex(prev => prev - 1);
         }
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
+      } else if (key === 'ArrowRight') {
+        e.preventDefault?.();
         if (currentIndex === data.length - 1) {
           if (isFullTest && onNextPart) onNextPart();
         } else {
           setCurrentIndex(prev => prev + 1);
         }
+      } else if ((isAdminMode || canEdit) && (
+        key === ',' || key === '.' ||
+        key === '[' || keyLower === 'ư' || 
+        key === ']' || keyLower === 'ơ'
+      )) {
+        lastVocabHotkeyTime.current = Date.now();
+        e.preventDefault?.();
+        updatePart6Popup(currentIndex);
       }
 
       // CTRL/CMD + SHIFT + S: Toggle Solution
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 's') {
-        e.preventDefault();
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && keyLower === 's') {
+        e.preventDefault?.();
         setShowExplainGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }));
         return;
       }
 
       // CTRL/CMD + S: Toggle Options Translation
-      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 's') {
-        e.preventDefault();
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && keyLower === 's') {
+        e.preventDefault?.();
         setShowOptionsTranslationGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }));
         return;
       }
     };
+    latestHandleKeyDownRef.current = handleKeyDown;
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, data.length, isFullTest, onPrevPart, onNextPart]);
+  }, [currentIndex, data.length, isFullTest, onPrevPart, onNextPart, isAdminMode, canEdit, currentGroup.id]);
 
   // RESIZE LOGIC
   useEffect(() => {
@@ -905,14 +1328,25 @@ export default function ToeicPart6Player({
       <div className="flex-none p-3 px-4 z-[60] bg-[#f8fafc]">
         <div className="max-w-[1600px] mx-auto bg-white rounded-2xl shadow-lg border border-slate-100 p-2 px-4 flex items-center justify-between gap-4">
           <div className="text-sm font-bold text-slate-700">Part 6: Text Completion</div>
-          <button
-            id="reveal-btn"
-            onClick={() => setShowExplainGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }))}
-            title="Ẩn/Hiện lời giải (Phím tắt: ctrl/cmd + shift + s)"
-            className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${isCurrentRevealed ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-white text-slate-600 border-slate-200'}`}
-          >
-            {isCurrentRevealed ? "ẨN LỜI GIẢI" : "HIỆN LỜI GIẢI"}
-          </button>
+          <div className="flex items-center gap-2">
+            {(isAdminMode || canEdit) && (
+              <button
+                onClick={() => updatePart6Popup(currentIndex)}
+                title="Mở popup đáp án & giải thích (Phím tắt: , hoặc .)"
+                className="px-3 py-1.5 rounded-lg text-[10px] font-bold border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-all flex items-center gap-1"
+              >
+                <span>👁️ POPUP ĐÁP ÁN</span>
+              </button>
+            )}
+            <button
+              id="reveal-btn"
+              onClick={() => setShowExplainGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }))}
+              title="Ẩn/Hiện lời giải (Phím tắt: ctrl/cmd + shift + s)"
+              className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${isCurrentRevealed ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-white text-slate-600 border-slate-200'}`}
+            >
+              {isCurrentRevealed ? "ẨN LỜI GIẢI" : "HIỆN LỜI GIẢI"}
+            </button>
+          </div>
         </div>
       </div>
 

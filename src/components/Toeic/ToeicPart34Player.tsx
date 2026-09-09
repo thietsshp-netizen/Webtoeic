@@ -567,6 +567,7 @@ export default function ToeicPart34Player({
   const pipWindowRef = useRef<any>(null);
   const popupRef = useRef<Window | null>(null);
   const lastVocabHotkeyTime = useRef<number>(0);
+  const latestHandleKeyDownRef = useRef<(e: any) => void>(() => {});
 
   const updateTranscriptPopup = async (index: number) => {
     if (!isAdminMode && !canEdit) return;
@@ -722,6 +723,30 @@ export default function ToeicPart34Player({
             }
           `;
           pipWindow.document.head.appendChild(style);
+
+          const mainWindow = window;
+          pipWindow.document.addEventListener('keydown', (e: KeyboardEvent) => {
+            const keyLower = e.key ? e.key.toLowerCase() : '';
+            const isTargetKey = 
+              e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+              ['1', '2', '3', '`', ';'].includes(e.key) ||
+              e.key === ',' || e.key === '.' ||
+              e.key === '[' || keyLower === 'ư' || 
+              e.key === ']' || keyLower === 'ơ' ||
+              ((e.ctrlKey || e.metaKey) && keyLower === 's');
+            if (isTargetKey) {
+              e.preventDefault();
+              mainWindow.postMessage({
+                type: 'TOEIC_HOTKEY',
+                key: e.key,
+                code: e.code,
+                ctrlKey: e.ctrlKey,
+                shiftKey: e.shiftKey,
+                metaKey: e.metaKey,
+                altKey: e.altKey
+              }, '*');
+            }
+          });
         }
 
         pipWindow.document.body.innerHTML = popupHtml;
@@ -776,6 +801,32 @@ export default function ToeicPart34Player({
           </head>
           <body>
             ${popupHtml}
+            <script>
+              document.addEventListener('keydown', (e) => {
+                const keyLower = e.key ? e.key.toLowerCase() : '';
+                const isTargetKey = 
+                  e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+                  ['1', '2', '3', ';'].includes(e.key) || e.code === 'Backquote' || e.key === String.fromCharCode(96) ||
+                  e.key === ',' || e.key === '.' ||
+                  e.key === '[' || keyLower === 'ư' || 
+                  e.key === ']' || keyLower === 'ơ' ||
+                  ((e.ctrlKey || e.metaKey) && keyLower === 's');
+                if (isTargetKey) {
+                  e.preventDefault();
+                  if (window.opener) {
+                    window.opener.postMessage({
+                      type: 'TOEIC_HOTKEY',
+                      key: e.key,
+                      code: e.code,
+                      ctrlKey: e.ctrlKey,
+                      shiftKey: e.shiftKey,
+                      metaKey: e.metaKey,
+                      altKey: e.altKey
+                    }, '*');
+                  }
+                }
+              });
+            </script>
           </body>
         </html>
       `);
@@ -792,6 +843,16 @@ export default function ToeicPart34Player({
         pipWindowRef.current.close();
       }
     };
+  }, []);
+
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data && e.data.type === 'TOEIC_HOTKEY') {
+        latestHandleKeyDownRef.current?.(e.data);
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
   }, []);
 
   useEffect(() => {
@@ -1389,15 +1450,15 @@ export default function ToeicPart34Player({
 
   // --- KEYBOARD SHORTCUTS ---
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: any) => {
       const target = e.target as HTMLElement;
-      const activeEl = document.activeElement as HTMLElement | null;
+      const activeEl = typeof document !== 'undefined' ? (document.activeElement as HTMLElement | null) : null;
       const isInput = (
         (activeEl && (
           activeEl.tagName === 'INPUT' ||
           activeEl.tagName === 'TEXTAREA' ||
           activeEl.isContentEditable ||
-          activeEl.closest('[contenteditable]') !== null
+          (typeof activeEl.closest === 'function' && activeEl.closest('[contenteditable]') !== null)
         )) ||
         (target && (
           target.tagName === 'INPUT' ||
@@ -1422,15 +1483,18 @@ export default function ToeicPart34Player({
         return;
       }
 
-      if (['1', '2', '3'].includes(e.key)) {
-        e.preventDefault();
-        playEvidence(parseInt(e.key) - 1);
+      const key = e.key;
+      const keyLower = typeof key === 'string' ? key.toLowerCase() : '';
+
+      if (['1', '2', '3'].includes(key)) {
+        e.preventDefault?.();
+        playEvidence(parseInt(key) - 1);
         return;
       }
 
       // CTRL/CMD + SHIFT + S: Toggle Reveal Mode
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 's') {
-        e.preventDefault();
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && keyLower === 's') {
+        e.preventDefault?.();
         setRevealMode(prev => {
           const next = !prev;
           if (next) {
@@ -1442,8 +1506,8 @@ export default function ToeicPart34Player({
       }
 
       // CTRL/CMD + S: Toggle Reveal Partial Mode (Bản dịch câu hỏi/đáp án + Transcript Anh)
-      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 's') {
-        e.preventDefault();
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && keyLower === 's') {
+        e.preventDefault?.();
         setRevealPartialMode(prev => {
           const next = !prev;
           if (next) {
@@ -1454,8 +1518,8 @@ export default function ToeicPart34Player({
         return;
       }
 
-      if (e.key === '`') {
-        e.preventDefault();
+      if (key === '`') {
+        e.preventDefault?.();
         if (!wavesurfer.current) return;
         const ws = wavesurfer.current;
         const regions = regionsPlugin.current?.getRegions();
@@ -1464,13 +1528,13 @@ export default function ToeicPart34Player({
           const r = regions[0];
           if (ws.isPlaying()) ws.pause(); else ws.play(r.start);
         } else { ws.playPause(); }
-      } else if (e.key === ';') {
-        e.preventDefault();
+      } else if (key === ';') {
+        e.preventDefault?.();
         if (!wavesurfer.current) return;
         const ws = wavesurfer.current;
         ws.setTime(Math.max(0, ws.getCurrentTime() - 5));
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
+      } else if (key === 'ArrowLeft') {
+        e.preventDefault?.();
         const timeSinceVocab = Date.now() - lastVocabHotkeyTime.current;
         if (timeSinceVocab < 1200) return;
         if (currentIndex === 0) {
@@ -1478,8 +1542,8 @@ export default function ToeicPart34Player({
         } else {
           setCurrentIndex(prev => prev - 1);
         }
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
+      } else if (key === 'ArrowRight') {
+        e.preventDefault?.();
         const timeSinceVocab = Date.now() - lastVocabHotkeyTime.current;
         if (timeSinceVocab < 1200) return;
         if (currentIndex === data.length - 1) {
@@ -1488,15 +1552,16 @@ export default function ToeicPart34Player({
           setCurrentIndex(prev => prev + 1);
         }
       } else if ((isAdminMode || canEdit) && (
-        e.key === ',' || e.key === '.' ||
-        e.key === '[' || e.key.toLowerCase() === 'ư' || 
-        e.key === ']' || e.key.toLowerCase() === 'ơ'
+        key === ',' || key === '.' ||
+        key === '[' || keyLower === 'ư' || 
+        key === ']' || keyLower === 'ơ'
       )) {
         lastVocabHotkeyTime.current = Date.now();
-        e.preventDefault();
+        e.preventDefault?.();
         updateTranscriptPopup(currentIndex);
       }
     };
+    latestHandleKeyDownRef.current = handleKeyDown;
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentIndex, data.length, isFullTest, onPrevPart, onNextPart, isAdminMode, canEdit, parsedTranscript, questions, targetPart]);

@@ -462,6 +462,7 @@ export default function ToeicPart2Player({
   const pipWindowRef = useRef<any>(null);
   const popupRef = useRef<Window | null>(null);
   const lastVocabHotkeyTime = useRef<number>(0);
+  const latestHandleKeyDownRef = useRef<(e: any) => void>(() => {});
   const [revealEnglishMode, setRevealEnglishMode] = useState(false);
 
   useEffect(() => {
@@ -699,50 +700,99 @@ export default function ToeicPart2Player({
       const color = isCorrect ? '#dc2626' : '#1e293b';
       const fontWeight = isCorrect ? 'bold' : 'normal';
       const viSpan = viText ? ` <span style="color: #94a3b8; font-weight: normal; font-size: 13px;">(${escapeHtml(viText)})</span>` : '';
+      
+      const incorrectRationale = !isCorrect ? richData?.explanation?.incorrect?.find((i: any) => i.label === opt) : null;
+      let suggestedHtml = '';
+      if (incorrectRationale?.suggested_question) {
+        const contextIntro = incorrectRationale.context_intro || "Câu này sẽ ĐÚNG nếu câu hỏi là:";
+        const sugEn = typeof incorrectRationale.suggested_question === 'object' ? incorrectRationale.suggested_question.en : incorrectRationale.suggested_question;
+        const sugVi = typeof incorrectRationale.suggested_question === 'object' ? incorrectRationale.suggested_question.vi : '';
+        suggestedHtml = `
+          <div style="margin-top: 5px; margin-left: 18px; margin-bottom: 8px; padding: 6px 10px; background-color: #fef2f2; border-left: 3px solid #ef4444; border-radius: 6px; font-size: 12px; line-height: 1.45;">
+            <div style="color: #b91c1c; font-weight: 700; font-size: 10.5px; margin-bottom: 2px;">${escapeHtml(contextIntro)}</div>
+            <div style="color: #0f172a; font-weight: bold;">• ${escapeHtml(sugEn || '')}</div>
+            ${sugVi ? `<div style="color: #7f1d1d; opacity: 0.8; font-style: italic; margin-top: 2px;">→ ${escapeHtml(sugVi)}</div>` : ''}
+          </div>
+        `;
+      }
+
       return `
-        <div style="margin-bottom: 8px; font-size: 14px; color: ${color}; font-weight: ${fontWeight};">
-          <strong>${opt}.</strong> ${escapeHtml(text)}${viSpan}
+        <div style="margin-bottom: 8px;">
+          <div style="font-size: 14px; color: ${color}; font-weight: ${fontWeight};">
+            <strong>${opt}.</strong> ${escapeHtml(text)}${viSpan}
+          </div>
+          ${suggestedHtml}
         </div>
       `;
     }).join('');
  
-    const width = 420;
-    const height = 580;
+    const width = 440;
+    const height = 600;
  
     const popupHtml = `
-      <div class="options-container" style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-        <div style="font-weight: 800; font-size: 15px; margin-bottom: 10px; color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">Đáp án Câu ${qData.questionNo || ''}</div>
-        <div style="font-weight: bold; font-size: 14px; color: #0f172a; margin-bottom: 10px; line-height: 1.5;">
-          ${escapeHtml(questionText)}${questionViSpan}
+      <div class="middle-scroll-container">
+        <div class="options-container" style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+          <div style="font-weight: 800; font-size: 15px; margin-bottom: 10px; color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">Đáp án Câu ${qData.questionNo || ''}</div>
+          <div style="font-weight: bold; font-size: 14px; color: #0f172a; margin-bottom: 10px; line-height: 1.5;">
+            ${escapeHtml(questionText)}${questionViSpan}
+          </div>
+          ${optionHtmls}
         </div>
-        ${optionHtmls}
-      </div>
-      
-      ${fam ? `
-      <div class="title-container">
-        <div>
-          <div class="title">Từ khóa: "${escapeHtml(fam.matchedWord || fam.key)}"</div>
-          <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Đám mây từ vựng - Câu ${qData.questionNo || ''}</div>
+        
+        ${fam ? `
+        <div class="title-container">
+          <div>
+            <div class="title">Từ khóa: "${escapeHtml(fam.matchedWord || fam.key)}"</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Đám mây từ vựng - Câu ${qData.questionNo || ''}</div>
+          </div>
         </div>
-        <div class="pagination-indicator">${paginationText}</div>
-      </div>
-      
-      <div class="family-item">
-        <div class="family-header">
-          <span class="family-key">${escapeHtml(fam.key)}</span>
-          <span class="family-badge ${fam.type === 'root' ? 'badge-root' : 'badge-word'}">
-            ${fam.type === 'root' ? 'Gốc từ' : 'Từ vựng'}
-          </span>
+        
+        <div class="family-item">
+          <div class="family-header">
+            <span class="family-key">${escapeHtml(fam.key)}</span>
+            <span class="family-badge ${fam.type === 'root' ? 'badge-root' : 'badge-word'}">
+              ${fam.type === 'root' ? 'Gốc từ' : 'Từ vựng'}
+            </span>
+          </div>
+          <div>
+            ${formatValueToHtml(fam.originalValue, fam.key, fam.type)}
+          </div>
         </div>
-        <div>
-          ${formatValueToHtml(fam.originalValue, fam.key, fam.type)}
+        ` : `
+        <div style="text-align: center; color: #64748b; font-size: 13px; padding: 20px;">
+          Không tìm thấy từ vựng khớp trong câu này.
         </div>
+        `}
       </div>
-      ` : `
-      <div style="text-align: center; color: #64748b; font-size: 13px; padding: 20px;">
-        Không tìm thấy từ vựng khớp trong câu này.
-      </div>
-      `}
+
+      ${matchedFamilies.length > 0 ? `
+        <div class="footer-bar">
+          <div class="footer-items-list">
+            ${matchedFamilies.map((item, idx) => {
+              const isCurrent = idx === activeIdx;
+              const isRoot = item.type === 'root';
+              const label = item.matchedWord || item.key;
+              return `
+                <button 
+                  type="button" 
+                  class="footer-pill ${isRoot ? 'pill-structure' : 'pill-vocab'} ${isCurrent ? 'pill-active' : ''}" 
+                  onclick="if (window.selectCloudIndex) { window.selectCloudIndex(${idx}); } else if (window.opener) { window.opener.postMessage({ type: 'SELECT_CLOUD_INDEX', index: ${idx} }, '*'); }"
+                  title="${escapeHtml(item.key)}"
+                >
+                  <span class="pill-dot">${isRoot ? '▲' : '●'}</span>
+                  <span class="pill-text">${escapeHtml(label)}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+          ${matchedFamilies.length > 1 ? `
+            <div class="footer-nav-btns">
+              <button type="button" class="btn-footer-nav" title="Mục trước (,)" onclick="if (window.cycleCloud) { window.cycleCloud(','); } else if (window.opener) { window.opener.postMessage({ type: 'CYCLE_CLOUD', key: ',' }, '*'); }">◄</button>
+              <button type="button" class="btn-footer-nav" title="Mục sau (.)" onclick="if (window.cycleCloud) { window.cycleCloud('.'); } else if (window.opener) { window.opener.postMessage({ type: 'CYCLE_CLOUD', key: '.' }, '*'); }">►</button>
+            </div>
+          ` : ''}
+        </div>
+      ` : ''}
     `;
 
     const hasPiP = typeof window !== 'undefined' && 'documentPictureInPicture' in window;
@@ -771,6 +821,16 @@ export default function ToeicPart2Player({
               margin: 0;
               background-color: #f8fafc;
               color: #1e293b;
+              height: calc(100vh - 32px);
+              display: flex;
+              flex-direction: column;
+              box-sizing: border-box;
+            }
+            .middle-scroll-container {
+              flex: 1;
+              overflow-y: auto;
+              min-height: 0;
+              margin-bottom: 10px;
             }
             .title-container {
               position: sticky;
@@ -870,22 +930,147 @@ export default function ToeicPart2Player({
               color: #d97706;
               font-weight: bold;
             }
+            .footer-bar {
+              background: #ffffff;
+              border: 1px solid #e2e8f0;
+              border-radius: 8px;
+              padding: 6px 10px;
+              margin-top: auto;
+              box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: 8px;
+              flex-shrink: 0;
+            }
+            .footer-items-list {
+              display: flex;
+              align-items: center;
+              flex-wrap: wrap;
+              gap: 5px;
+              flex: 1;
+              overflow-y: auto;
+              max-height: 52px;
+              padding: 2px 0;
+            }
+            .footer-nav-btns {
+              display: flex;
+              align-items: center;
+              gap: 3px;
+              flex-shrink: 0;
+            }
+            .btn-footer-nav {
+              background: #f1f5f9;
+              border: 1px solid #cbd5e1;
+              color: #334155;
+              font-size: 11px;
+              font-weight: 700;
+              width: 24px;
+              height: 24px;
+              border-radius: 6px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: all 0.15s ease;
+            }
+            .btn-footer-nav:hover {
+              background: #e2e8f0;
+              color: #0f172a;
+              border-color: #94a3b8;
+            }
+            .footer-pill {
+              cursor: pointer;
+              font-size: 11.5px;
+              font-weight: 700;
+              padding: 3px 8px;
+              border-radius: 6px;
+              display: inline-flex;
+              align-items: center;
+              gap: 4px;
+              max-width: 150px;
+              transition: all 0.15s ease;
+              user-select: none;
+              line-height: 1.2;
+            }
+            .pill-dot {
+              font-size: 8px;
+              flex-shrink: 0;
+            }
+            .pill-text {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+            .pill-vocab {
+              background: #ffffff;
+              border: 1px solid #cbd5e1;
+              color: #0f172a;
+            }
+            .pill-vocab:hover {
+              background: #f1f5f9;
+              border-color: #94a3b8;
+            }
+            .pill-vocab.pill-active {
+              background: #0f172a;
+              border-color: #0f172a;
+              color: #ffffff;
+              box-shadow: 0 1px 4px rgba(15, 23, 42, 0.3);
+            }
+            .pill-structure {
+              background: #fef3c7;
+              border: 1px solid #fde68a;
+              color: #92400e;
+            }
+            .pill-structure:hover {
+              background: #fde68a;
+              border-color: #f59e0b;
+            }
+            .pill-structure.pill-active {
+              background: #d97706;
+              border-color: #b45309;
+              color: #ffffff;
+              box-shadow: 0 1px 4px rgba(217, 119, 6, 0.35);
+            }
+            .pill-structure.pill-active .pill-dot {
+              color: #fef3c7;
+            }
           `;
           pipWindow.document.head.appendChild(style);
 
           const mainWindow = window;
           pipWindow.document.addEventListener('keydown', (e: KeyboardEvent) => {
+            const keyLower = e.key ? e.key.toLowerCase() : '';
             const isTargetKey = 
               e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
+              e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+              ['1', '2', '3', '4', '`'].includes(e.key) ||
               e.key === ',' || e.key === '.' ||
-              e.key === '[' || e.key.toLowerCase() === 'ư' || 
-              e.key === ']' || e.key.toLowerCase() === 'ơ';
+              e.key === '[' || keyLower === 'ư' || 
+              e.key === ']' || keyLower === 'ơ' ||
+              ((e.ctrlKey || e.metaKey) && keyLower === 's');
             if (isTargetKey) {
               e.preventDefault();
-              mainWindow.postMessage({ type: 'CYCLE_CLOUD', key: e.key }, '*');
+              mainWindow.postMessage({
+                type: 'TOEIC_HOTKEY',
+                key: e.key,
+                code: e.code,
+                ctrlKey: e.ctrlKey,
+                shiftKey: e.shiftKey,
+                metaKey: e.metaKey,
+                altKey: e.altKey
+              }, '*');
             }
           });
         }
+
+        (pipWindow as any).selectCloudIndex = (idx: number) => {
+          lastVocabHotkeyTime.current = Date.now();
+          updateCloudPopup(index, idx);
+        };
+        (pipWindow as any).cycleCloud = (key: string) => {
+          window.postMessage({ type: 'CYCLE_CLOUD', key }, '*');
+        };
 
         pipWindow.document.body.innerHTML = popupHtml;
         try {
@@ -916,6 +1101,16 @@ export default function ToeicPart2Player({
                 margin: 0;
                 background-color: #f8fafc;
                 color: #1e293b;
+                height: calc(100vh - 32px);
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+              }
+              .middle-scroll-container {
+                flex: 1;
+                overflow-y: auto;
+                min-height: 0;
+                margin-bottom: 10px;
               }
               .title-container {
                 position: sticky;
@@ -1015,21 +1210,148 @@ export default function ToeicPart2Player({
                 color: #d97706;
                 font-weight: bold;
               }
+              .footer-bar {
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                padding: 6px 10px;
+                margin-top: auto;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+                flex-shrink: 0;
+              }
+              .footer-items-list {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 5px;
+                flex: 1;
+                overflow-y: auto;
+                max-height: 52px;
+                padding: 2px 0;
+              }
+              .footer-nav-btns {
+                display: flex;
+                align-items: center;
+                gap: 3px;
+                flex-shrink: 0;
+              }
+              .btn-footer-nav {
+                background: #f1f5f9;
+                border: 1px solid #cbd5e1;
+                color: #334155;
+                font-size: 11px;
+                font-weight: 700;
+                width: 24px;
+                height: 24px;
+                border-radius: 6px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.15s ease;
+              }
+              .btn-footer-nav:hover {
+                background: #e2e8f0;
+                color: #0f172a;
+                border-color: #94a3b8;
+              }
+              .footer-pill {
+                cursor: pointer;
+                font-size: 11.5px;
+                font-weight: 700;
+                padding: 3px 8px;
+                border-radius: 6px;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                max-width: 150px;
+                transition: all 0.15s ease;
+                user-select: none;
+                line-height: 1.2;
+              }
+              .pill-dot {
+                font-size: 8px;
+                flex-shrink: 0;
+              }
+              .pill-text {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              }
+              .pill-vocab {
+                background: #ffffff;
+                border: 1px solid #cbd5e1;
+                color: #0f172a;
+              }
+              .pill-vocab:hover {
+                background: #f1f5f9;
+                border-color: #94a3b8;
+              }
+              .pill-vocab.pill-active {
+                background: #0f172a;
+                border-color: #0f172a;
+                color: #ffffff;
+                box-shadow: 0 1px 4px rgba(15, 23, 42, 0.3);
+              }
+              .pill-structure {
+                background: #fef3c7;
+                border: 1px solid #fde68a;
+                color: #92400e;
+              }
+              .pill-structure:hover {
+                background: #fde68a;
+                border-color: #f59e0b;
+              }
+              .pill-structure.pill-active {
+                background: #d97706;
+                border-color: #b45309;
+                color: #ffffff;
+                box-shadow: 0 1px 4px rgba(217, 119, 6, 0.35);
+              }
+              .pill-structure.pill-active .pill-dot {
+                color: #fef3c7;
+              }
             </style>
           </head>
           <body>
             ${popupHtml}
              <script>
+              window.selectCloudIndex = function(idx) {
+                if (window.opener) {
+                  window.opener.postMessage({ type: 'SELECT_CLOUD_INDEX', index: idx }, '*');
+                }
+              };
+              window.cycleCloud = function(key) {
+                if (window.opener) {
+                  window.opener.postMessage({ type: 'CYCLE_CLOUD', key: key }, '*');
+                }
+              };
               document.addEventListener('keydown', (e) => {
+                const keyLower = e.key ? e.key.toLowerCase() : '';
                 const isTargetKey = 
                   e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
+                  e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+                  ['1', '2', '3', '4'].includes(e.key) || e.code === 'Backquote' || e.key === String.fromCharCode(96) ||
                   e.key === ',' || e.key === '.' ||
-                  e.key === '[' || e.key.toLowerCase() === 'ư' || 
-                  e.key === ']' || e.key.toLowerCase() === 'ơ';
+                  e.key === '[' || keyLower === 'ư' || 
+                  e.key === ']' || keyLower === 'ơ' ||
+                  ((e.ctrlKey || e.metaKey) && keyLower === 's');
                 if (isTargetKey) {
                   e.preventDefault();
                   if (window.opener) {
-                    window.opener.postMessage({ type: 'CYCLE_CLOUD', key: e.key }, '*');
+                    window.opener.postMessage({
+                      type: 'TOEIC_HOTKEY',
+                      key: e.key,
+                      code: e.code,
+                      ctrlKey: e.ctrlKey,
+                      shiftKey: e.shiftKey,
+                      metaKey: e.metaKey,
+                      altKey: e.altKey
+                    }, '*');
                   }
                 }
               });
@@ -1063,6 +1385,16 @@ export default function ToeicPart2Player({
 
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
+      if (e.data && e.data.type === 'TOEIC_HOTKEY') {
+        latestHandleKeyDownRef.current?.(e.data);
+      }
+      if (e.data && e.data.type === 'SELECT_CLOUD_INDEX') {
+        lastVocabHotkeyTime.current = Date.now();
+        const targetIdx = e.data.index;
+        if (typeof targetIdx === 'number') {
+          updateCloudPopup(currentIndex, targetIdx);
+        }
+      }
       if (e.data && e.data.type === 'CYCLE_CLOUD') {
         lastVocabHotkeyTime.current = Date.now();
         const matchedFamilies = getMatchedFamiliesForQuestion(currentIndex);
@@ -1704,27 +2036,24 @@ export default function ToeicPart2Player({
           (typeof target.closest === 'function' && target.closest('[contenteditable]') !== null)
         ))
       );
- 
+      
       // 1. Chặn phím tắt khi đang focus vào ô ghi chú Flag Note
-      if (target && target.id === 'flag-note-textarea') {
-        return;
-      }
+      if (target && target.id === 'flag-note-textarea') return;
  
       // 2. Khi đang chép chính tả: chỉ cho phép 1, 2, 3, 4 và phím ` phát âm thanh hoạt động
       const isDictation = (target && target.getAttribute('data-dictation') === 'true') || (activeEl && activeEl.getAttribute('data-dictation') === 'true');
       if (isDictation) {
-        if (!['1', '2', '3', '4', '`'].includes(e.key)) {
-          return;
-        }
+        if (!['1', '2', '3', '4', '`'].includes(e.key)) return;
       } else {
         // 3. Ở các input/textarea khác: Chặn hoàn toàn phím tắt
-        if (isInput) {
-          return;
-        }
+        if (isInput) return;
       }
+
+      const key = e.key;
+      const keyLower = typeof key === 'string' ? key.toLowerCase() : '';
  
-      if (e.key === '`') {
-        e.preventDefault();
+      if (key === '`') {
+        e.preventDefault?.();
         if (!wavesurfer.current) return;
         const ws = wavesurfer.current;
         const regions = regionsPlugin.current?.getRegions();
@@ -1732,8 +2061,8 @@ export default function ToeicPart2Player({
           const r = regions[0];
           if (ws.isPlaying()) ws.pause(); else ws.play(r.start);
         } else { ws.playPause(); }
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
+      } else if (key === 'ArrowLeft') {
+        e.preventDefault?.();
         const timeSinceVocab = Date.now() - lastVocabHotkeyTime.current;
         if (timeSinceVocab < 1200) return;
         if (currentIndex === 0) {
@@ -1741,8 +2070,8 @@ export default function ToeicPart2Player({
         } else {
           setCurrentIndex(prev => prev - 1);
         }
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
+      } else if (key === 'ArrowRight') {
+        e.preventDefault?.();
         const timeSinceVocab = Date.now() - lastVocabHotkeyTime.current;
         if (timeSinceVocab < 1200) return;
         if (currentIndex === data.length - 1) {
@@ -1750,22 +2079,22 @@ export default function ToeicPart2Player({
         } else {
           setCurrentIndex(prev => prev + 1);
         }
-      } else if (['1', '2', '3', '4'].includes(e.key)) {
-        e.preventDefault();
+      } else if (['1', '2', '3', '4'].includes(key)) {
+        e.preventDefault?.();
         const labels = ['question', 'A', 'B', 'C'];
-        latestPlaySegmentRef.current(labels[parseInt(e.key) - 1]);
+        latestPlaySegmentRef.current(labels[parseInt(key) - 1]);
         return;
       } else if ((isAdminMode || canEdit) && (
-        e.key === ',' || e.key === '.' ||
-        e.key === '[' || e.key.toLowerCase() === 'ư' || 
-        e.key === ']' || e.key.toLowerCase() === 'ơ'
+        key === ',' || key === '.' ||
+        key === '[' || keyLower === 'ư' || 
+        key === ']' || keyLower === 'ơ'
       )) {
         lastVocabHotkeyTime.current = Date.now();
-        e.preventDefault();
+        e.preventDefault?.();
         const matchedFamilies = getMatchedFamiliesForQuestion(currentIndex);
         let nextIdx = 0;
         if (matchedFamilies.length > 0) {
-          const isNext = e.key === '.' || e.key === ']' || e.key.toLowerCase() === 'ơ';
+          const isNext = key === '.' || key === ']' || keyLower === 'ơ';
           if (isNext) {
             nextIdx = selectedCloudIndex === -1 ? 0 : (selectedCloudIndex + 1) % matchedFamilies.length;
           } else {
@@ -1776,15 +2105,15 @@ export default function ToeicPart2Player({
       }
  
       // CTRL/CMD + SHIFT + S: Toggle Solution
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 's') {
-        e.preventDefault();
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && keyLower === 's') {
+        e.preventDefault?.();
         setRevealMode(prev => !prev);
         return;
       }
 
       // CTRL/CMD + S: Toggle English-only Reveal
-      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 's') {
-        e.preventDefault();
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && keyLower === 's') {
+        e.preventDefault?.();
         setRevealEnglishMode(prev => !prev);
         return;
       }

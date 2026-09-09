@@ -462,6 +462,7 @@ export default function ToeicPart5Player({
   };
 
   const pipWindowRef = useRef<any>(null);
+  const latestHandleKeyDownRef = useRef<(e: any) => void>(() => {});
 
   const updateCloudPopup = async (index: number, targetCloudIndex: number) => {
     if (!isAdminMode && !canEdit) return;
@@ -976,14 +977,25 @@ export default function ToeicPart5Player({
 
           const mainWindow = window;
           pipWindow.document.addEventListener('keydown', (e: KeyboardEvent) => {
+            const keyLower = e.key ? e.key.toLowerCase() : '';
             const isTargetKey = 
               e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
+              e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
               e.key === ',' || e.key === '.' ||
-              e.key === '[' || e.key.toLowerCase() === 'ư' || 
-              e.key === ']' || e.key.toLowerCase() === 'ơ';
+              e.key === '[' || keyLower === 'ư' || 
+              e.key === ']' || keyLower === 'ơ' ||
+              ((e.ctrlKey || e.metaKey) && keyLower === 's');
             if (isTargetKey) {
               e.preventDefault();
-              mainWindow.postMessage({ type: 'CYCLE_CLOUD', key: e.key }, '*');
+              mainWindow.postMessage({
+                type: 'TOEIC_HOTKEY',
+                key: e.key,
+                code: e.code,
+                ctrlKey: e.ctrlKey,
+                shiftKey: e.shiftKey,
+                metaKey: e.metaKey,
+                altKey: e.altKey
+              }, '*');
             }
           });
         }
@@ -1366,15 +1378,26 @@ export default function ToeicPart5Player({
                 }
               };
               document.addEventListener('keydown', (e) => {
+                const keyLower = e.key ? e.key.toLowerCase() : '';
                 const isTargetKey = 
                   e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
+                  e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
                   e.key === ',' || e.key === '.' ||
-                  e.key === '[' || e.key.toLowerCase() === 'ư' || 
-                  e.key === ']' || e.key.toLowerCase() === 'ơ';
+                  e.key === '[' || keyLower === 'ư' || 
+                  e.key === ']' || keyLower === 'ơ' ||
+                  ((e.ctrlKey || e.metaKey) && keyLower === 's');
                 if (isTargetKey) {
                   e.preventDefault();
                   if (window.opener) {
-                    window.opener.postMessage({ type: 'CYCLE_CLOUD', key: e.key }, '*');
+                    window.opener.postMessage({
+                      type: 'TOEIC_HOTKEY',
+                      key: e.key,
+                      code: e.code,
+                      ctrlKey: e.ctrlKey,
+                      shiftKey: e.shiftKey,
+                      metaKey: e.metaKey,
+                      altKey: e.altKey
+                    }, '*');
                   }
                 }
               });
@@ -1411,6 +1434,9 @@ export default function ToeicPart5Player({
   // Nhận thông điệp chuyển câu/đám mây từ cửa sổ popup khi nó đang được focus
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
+      if (e.data && e.data.type === 'TOEIC_HOTKEY') {
+        latestHandleKeyDownRef.current?.(e.data);
+      }
       if (e.data && e.data.type === 'SELECT_CLOUD_INDEX') {
         lastVocabHotkeyTime.current = Date.now();
         const targetIdx = e.data.index;
@@ -1646,16 +1672,15 @@ export default function ToeicPart5Player({
   };
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Bỏ qua phím tắt nếu đang gõ trong input/textarea/contentEditable
+    const handleKeyDown = (e: any) => {
       const target = e.target as HTMLElement;
-      const activeEl = document.activeElement as HTMLElement | null;
+      const activeEl = typeof document !== 'undefined' ? (document.activeElement as HTMLElement | null) : null;
       const isInput = (
         (activeEl && (
           activeEl.tagName === 'INPUT' ||
           activeEl.tagName === 'TEXTAREA' ||
           activeEl.isContentEditable ||
-          activeEl.closest('[contenteditable]') !== null
+          (typeof activeEl.closest === 'function' && activeEl.closest('[contenteditable]') !== null)
         )) ||
         (target && (
           target.tagName === 'INPUT' ||
@@ -1664,48 +1689,42 @@ export default function ToeicPart5Player({
           (typeof target.closest === 'function' && target.closest('[contenteditable]') !== null)
         ))
       );
-      if (isInput) return;
+      if (isInput) {
+        return;
+      }
 
-      console.log("[DEBUG KEYDOWN] key:", e.key, "code:", e.code, "currentIndex:", currentIndex);
+      const key = e.key;
+      const keyLower = typeof key === 'string' ? key.toLowerCase() : '';
 
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
+      if (key === 'ArrowLeft') {
+        e.preventDefault?.();
         const timeSinceVocab = Date.now() - lastVocabHotkeyTime.current;
-        console.log("[DEBUG ARROWLEFT] timeSinceVocab:", timeSinceVocab, "lastVocabHotkeyTime:", lastVocabHotkeyTime.current);
-        if (timeSinceVocab < 1200) {
-          console.log("[DEBUG IGNORE] Ignored simulated ArrowLeft due to recent vocab hotkey. Diff:", timeSinceVocab);
-          return;
-        }
+        if (timeSinceVocab < 1200) return;
         if (currentIndex === 0) {
           if (isFullTest && onPrevPart) onPrevPart();
-        } else {
-          setCurrentIndex(prev => prev - 1);
-        }
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        const timeSinceVocab = Date.now() - lastVocabHotkeyTime.current;
-        console.log("[DEBUG ARROWRIGHT] timeSinceVocab:", timeSinceVocab, "lastVocabHotkeyTime:", lastVocabHotkeyTime.current);
-        if (timeSinceVocab < 1200) {
-          console.log("[DEBUG IGNORE] Ignored simulated ArrowRight due to recent vocab hotkey. Diff:", timeSinceVocab);
           return;
         }
+        setCurrentIndex(prev => prev - 1);
+      } else if (key === 'ArrowRight') {
+        e.preventDefault?.();
+        const timeSinceVocab = Date.now() - lastVocabHotkeyTime.current;
+        if (timeSinceVocab < 1200) return;
         if (currentIndex === questions.length - 1) {
           if (isFullTest && onNextPart) onNextPart();
         } else {
           setCurrentIndex(prev => prev + 1);
         }
       } else if ((isAdminMode || canEdit) && (
-        e.key === ',' || e.key === '.' ||
-        e.key === '[' || e.key.toLowerCase() === 'ư' || 
-        e.key === ']' || e.key.toLowerCase() === 'ơ'
+        key === ',' || key === '.' ||
+        key === '[' || keyLower === 'ư' || 
+        key === ']' || keyLower === 'ơ'
       )) {
         lastVocabHotkeyTime.current = Date.now();
-        console.log("[DEBUG VOCAB KEY] updated lastVocabHotkeyTime to:", lastVocabHotkeyTime.current);
-        e.preventDefault();
+        e.preventDefault?.();
         const matchedFamilies = getMatchedFamiliesForQuestion(currentIndex);
         if (matchedFamilies.length > 0) {
           let nextIdx = 0;
-          const isNext = e.key === '.' || e.key === ']' || e.key.toLowerCase() === 'ơ';
+          const isNext = key === '.' || key === ']' || keyLower === 'ơ';
           if (isNext) {
             nextIdx = selectedCloudIndex === -1 ? 0 : (selectedCloudIndex + 1) % matchedFamilies.length;
           } else {
@@ -1716,8 +1735,8 @@ export default function ToeicPart5Player({
       }
 
       // CTRL/CMD + SHIFT + S: Toggle Solution
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 's') {
-        e.preventDefault();
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && keyLower === 's') {
+        e.preventDefault?.();
         const currentQ = questions[currentIndex];
         if (currentQ) {
           setShowExplain(prev => {
@@ -1732,8 +1751,8 @@ export default function ToeicPart5Player({
       }
 
       // CTRL/CMD + S: Toggle Solution Hint (Gợi ý đầy đủ thông tin nhưng không lộ đáp án đúng/sai)
-      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 's') {
-        e.preventDefault();
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && keyLower === 's') {
+        e.preventDefault?.();
         const currentQ = questions[currentIndex];
         if (currentQ) {
           setShowExplainPartial(prev => {
@@ -1747,6 +1766,7 @@ export default function ToeicPart5Player({
         return;
       }
     };
+    latestHandleKeyDownRef.current = handleKeyDown;
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [questions.length, currentIndex, isFullTest, onPrevPart, onNextPart, isAdminMode, canEdit, selectedCloudIndex, updateCloudPopup]);
