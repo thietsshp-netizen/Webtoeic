@@ -380,7 +380,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
         const updatedExpansion: SubtitleExpansion = {
           paraphrase: payload.paraphrase !== undefined ? payload.paraphrase : targetSub.expansion?.paraphrase,
-          paraphrases: targetSub.expansion?.paraphrases,
+          paraphrases: payload.paraphrases !== undefined ? payload.paraphrases : targetSub.expansion?.paraphrases,
           vocabulary: [...(targetSub.expansion?.vocabulary || [])],
           structures: [...(targetSub.expansion?.structures || [])]
         };
@@ -396,7 +396,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             antonyms: payload.data.antonyms || existingVocab?.antonyms || '',
             meaning: payload.data.meaning || '',
             examples: payload.data.examples || [],
-            semantic_field_expansion: payload.data.semantic_field_expansion || existingVocab?.semantic_field_expansion
+            semantic_field_expansion: payload.data.semantic_field_expansion
           };
           if (payload.rawIndex >= 0 && updatedExpansion.vocabulary && updatedExpansion.vocabulary[payload.rawIndex]) {
             updatedExpansion.vocabulary[payload.rawIndex] = vocabData;

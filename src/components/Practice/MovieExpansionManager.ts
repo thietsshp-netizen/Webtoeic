@@ -1285,6 +1285,57 @@ export const generateMovieExpansionPopupStyles = () => `
     background: #e2e8f0;
     color: #0f172a;
   }
+  /* Semantic Field Form Styles */
+  .sf-form-item {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .sf-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .sf-form-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #166534;
+  }
+  .btn-add-sf {
+    width: 100%;
+    background: #ecfdf5;
+    border: 1px dashed #6ee7b7;
+    color: #047857;
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 12px;
+    margin-bottom: 12px;
+    transition: all 0.15s ease;
+  }
+  .btn-add-sf:hover {
+    background: #d1fae5;
+    color: #065f46;
+  }
+  .form-sublabel {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 3px;
+  }
+  .para-form-item {
+    background: #fff1f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 6px 8px;
+    margin-bottom: 6px;
+  }
   /* Subtle Bottom-Right Help Button */
   .help-btn {
     position: fixed;
@@ -1428,6 +1479,17 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
           ? currentItem.examples
           : [{ en: '', ipa: '', vi: '' }];
 
+        const semanticFieldList = isVocab && Array.isArray(currentItem?.semantic_field_expansion)
+          ? currentItem.semantic_field_expansion
+          : [];
+
+        const paraphraseList: ParaphraseItem[] =
+          Array.isArray(sub.expansion?.paraphrases) && sub.expansion.paraphrases.length > 0
+            ? sub.expansion.paraphrases
+            : sub.expansion?.paraphrase
+            ? [{ text: sub.expansion.paraphrase }]
+            : [];
+
         return `
           <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -1445,8 +1507,19 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
               <input type="hidden" id="formRawIndex" value="${currentItem?.rawIndex ?? -1}">
 
               <div class="form-group">
-                <label class="form-label">Câu Diễn Giải Đơn Giản (Paraphrase)</label>
-                <input type="text" id="fieldParaphrase" class="form-input" value="${escapeHtml(paraphraseText)}" placeholder="Ví dụ: It seems this task requires two people to complete.">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                  <label class="form-label" style="margin-bottom: 0;">Câu Diễn Giải Đa Phương Pháp (Paraphrase)</label>
+                </div>
+                <div id="paraphrasesContainer" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px;">
+                  ${(paraphraseList.length > 0 ? paraphraseList : [{ method: '', text: paraphraseText }]).map((p, pIdx) => `
+                    <div class="para-form-item" data-para-index="${pIdx}" style="display: flex; gap: 6px; align-items: center;">
+                      <input type="text" class="form-input para-input-method" style="width: 140px; flex-shrink: 0;" placeholder="Phương pháp (VD: Idiomatic)" value="${escapeHtml(p.method || '')}">
+                      <input type="text" class="form-input para-input-text" style="flex: 1;" placeholder="Câu diễn giải tiếng Anh" value="${escapeHtml(p.text || '')}">
+                      <button type="button" class="btn-remove-ex" onclick="window.removeParaphraseRow && window.removeParaphraseRow(this)">✕</button>
+                    </div>
+                  `).join('')}
+                </div>
+                <button type="button" class="btn-add-ex" style="margin-bottom: 6px; padding: 4px;" onclick="window.addParaphraseRow && window.addParaphraseRow()">+ Thêm cách diễn giải (Paraphrase)</button>
               </div>
 
               ${isVocab ? `
@@ -1513,6 +1586,54 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
               </div>
 
               <button type="button" class="btn-add-ex" onclick="window.addExampleRow && window.addExampleRow()">+ Thêm ví dụ tiếp theo</button>
+
+              ${isVocab ? `
+                <div style="font-size: 11px; font-weight: 800; color: #166534; margin: 16px 0 6px 0; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
+                  <span>🌐 Mở rộng cách diễn đạt liên quan (Semantic Field)</span>
+                </div>
+
+                <div id="semanticFieldsContainer" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px;">
+                  ${semanticFieldList.map((sf, sfIdx) => `
+                    <div class="sf-form-item" data-sf-index="${sfIdx}">
+                      <div class="sf-form-header">
+                        <span class="sf-form-title">Mục ${sfIdx + 1}</span>
+                        <button type="button" class="btn-remove-ex" onclick="window.removeSemanticFieldRow && window.removeSemanticFieldRow(this)">✕ Xóa</button>
+                      </div>
+                      <div style="display: grid; grid-template-columns: 150px 1fr; gap: 8px; margin-bottom: 6px;">
+                        <div>
+                          <label class="form-sublabel">Phân loại (Type)</label>
+                          <select class="form-input sf-input-type" style="padding: 5px 8px;">
+                            <option value="slang" ${sf.type === 'slang' ? 'selected' : ''}>Slang (Tiếng lóng)</option>
+                            <option value="idiom" ${sf.type === 'idiom' ? 'selected' : ''}>Idiom (Thành ngữ)</option>
+                            <option value="related phrase" ${(!sf.type || sf.type === 'related phrase') ? 'selected' : ''}>Related phrase (Cụm liên quan)</option>
+                            <option value="synonym" ${sf.type === 'synonym' ? 'selected' : ''}>Synonym (Từ đồng nghĩa)</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label class="form-sublabel">Từ / Cụm từ (Expression)</label>
+                          <input type="text" class="form-input sf-input-expr" placeholder="Ví dụ: mojo, get back out there" value="${escapeHtml(sf.expression || '')}">
+                        </div>
+                      </div>
+                      <div style="margin-bottom: 6px;">
+                        <label class="form-sublabel">Nghĩa tiếng Việt</label>
+                        <input type="text" class="form-input sf-input-meaning" placeholder="Giải thích nghĩa súc tích" value="${escapeHtml(sf.meaning || '')}">
+                      </div>
+                      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div>
+                          <label class="form-sublabel">Ví dụ tiếng Anh (&lt;mark&gt;...&lt;/mark&gt;)</label>
+                          <input type="text" class="form-input sf-input-ex-en" placeholder="Ví dụ: He lost his <mark>mojo</mark>." value="${escapeHtml(sf.example_en || '')}">
+                        </div>
+                        <div>
+                          <label class="form-sublabel">Dịch ví dụ tiếng Việt</label>
+                          <input type="text" class="form-input sf-input-ex-vi" placeholder="Ví dụ: Anh ta mất hết sức quyến rũ rồi." value="${escapeHtml(sf.example_vi || '')}">
+                        </div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+
+                <button type="button" class="btn-add-sf" onclick="window.addSemanticFieldRow && window.addSemanticFieldRow()">+ Thêm cách diễn đạt liên quan</button>
+              ` : ''}
 
               <div class="actions-bar" style="margin-top: 16px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
                 <button type="button" class="btn btn-cancel" onclick="window.cancelEditMode && window.cancelEditMode()">Hủy</button>
@@ -1957,6 +2078,75 @@ export const updateMovieExpansionPopupDom = (
     if (item) item.remove();
   };
 
+  targetWin.addSemanticFieldRow = () => {
+    const container = targetDoc.getElementById('semanticFieldsContainer');
+    if (!container) return;
+    const count = container.querySelectorAll('.sf-form-item').length;
+    const itemDiv = targetDoc.createElement('div');
+    itemDiv.className = 'sf-form-item';
+    itemDiv.dataset.sfIndex = String(count);
+    itemDiv.innerHTML = '<div class="sf-form-header">' +
+      '<span class="sf-form-title">Mục ' + (count + 1) + '</span>' +
+      '<button type="button" class="btn-remove-ex" onclick="window.removeSemanticFieldRow && window.removeSemanticFieldRow(this)">✕ Xóa</button>' +
+      '</div>' +
+      '<div style="display: grid; grid-template-columns: 150px 1fr; gap: 8px; margin-bottom: 6px;">' +
+      '<div>' +
+      '<label class="form-sublabel">Phân loại (Type)</label>' +
+      '<select class="form-input sf-input-type" style="padding: 5px 8px;">' +
+      '<option value="slang">Slang (Tiếng lóng)</option>' +
+      '<option value="idiom">Idiom (Thành ngữ)</option>' +
+      '<option value="related phrase" selected>Related phrase (Cụm liên quan)</option>' +
+      '<option value="synonym">Synonym (Từ đồng nghĩa)</option>' +
+      '</select>' +
+      '</div>' +
+      '<div>' +
+      '<label class="form-sublabel">Từ / Cụm từ (Expression)</label>' +
+      '<input type="text" class="form-input sf-input-expr" placeholder="Ví dụ: mojo, get back out there">' +
+      '</div>' +
+      '</div>' +
+      '<div style="margin-bottom: 6px;">' +
+      '<label class="form-sublabel">Nghĩa tiếng Việt</label>' +
+      '<input type="text" class="form-input sf-input-meaning" placeholder="Giải thích nghĩa súc tích">' +
+      '</div>' +
+      '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">' +
+      '<div>' +
+      '<label class="form-sublabel">Ví dụ tiếng Anh (&lt;mark&gt;...&lt;/mark&gt;)</label>' +
+      '<input type="text" class="form-input sf-input-ex-en" placeholder="Ví dụ: He lost his &lt;mark&gt;mojo&lt;/mark&gt;.">' +
+      '</div>' +
+      '<div>' +
+      '<label class="form-sublabel">Dịch ví dụ tiếng Việt</label>' +
+      '<input type="text" class="form-input sf-input-ex-vi" placeholder="Ví dụ: Anh ta mất hết sức quyến rũ rồi.">' +
+      '</div>' +
+      '</div>';
+    container.appendChild(itemDiv);
+  };
+
+  targetWin.removeSemanticFieldRow = (btn: HTMLElement) => {
+    const item = btn.closest('.sf-form-item');
+    if (item) item.remove();
+  };
+
+  targetWin.addParaphraseRow = () => {
+    const container = targetDoc.getElementById('paraphrasesContainer');
+    if (!container) return;
+    const count = container.querySelectorAll('.para-form-item').length;
+    const itemDiv = targetDoc.createElement('div');
+    itemDiv.className = 'para-form-item';
+    itemDiv.dataset.paraIndex = String(count);
+    itemDiv.style.display = 'flex';
+    itemDiv.style.gap = '6px';
+    itemDiv.style.alignItems = 'center';
+    itemDiv.innerHTML = '<input type="text" class="form-input para-input-method" style="width: 140px; flex-shrink: 0;" placeholder="Phương pháp (VD: Idiomatic)">' +
+      '<input type="text" class="form-input para-input-text" style="flex: 1;" placeholder="Câu diễn giải tiếng Anh">' +
+      '<button type="button" class="btn-remove-ex" onclick="window.removeParaphraseRow && window.removeParaphraseRow(this)">✕</button>';
+    container.appendChild(itemDiv);
+  };
+
+  targetWin.removeParaphraseRow = (btn: HTMLElement) => {
+    const item = btn.closest('.para-form-item');
+    if (item) item.remove();
+  };
+
   targetWin.handleSaveRawJson = () => {
     const rawInput = (targetDoc.getElementById('rawJsonInput') as HTMLTextAreaElement)?.value?.trim() || '';
     const errorDiv = targetDoc.getElementById('jsonErrorMsg');
@@ -1985,7 +2175,21 @@ export const updateMovieExpansionPopupDom = (
     const formItemType = (targetDoc.getElementById('formItemType') as HTMLInputElement)?.value || 'vocabulary';
     const formRawIndex = parseInt((targetDoc.getElementById('formRawIndex') as HTMLInputElement)?.value || '-1', 10);
     const meaningVal = (targetDoc.getElementById('fieldMeaning') as HTMLTextAreaElement)?.value?.trim() || '';
-    const paraphraseVal = (targetDoc.getElementById('fieldParaphrase') as HTMLInputElement)?.value?.trim() || '';
+
+    // Paraphrases
+    const paraItems = targetDoc.querySelectorAll('.para-form-item');
+    const paraphrases: ParaphraseItem[] = [];
+    paraItems.forEach(el => {
+      const method = (el.querySelector('.para-input-method') as HTMLInputElement)?.value?.trim() || '';
+      const text = (el.querySelector('.para-input-text') as HTMLInputElement)?.value?.trim() || '';
+      if (text) {
+        paraphrases.push({ method: method || undefined, text });
+      }
+    });
+    const legacyParaphraseInput = targetDoc.getElementById('fieldParaphrase') as HTMLInputElement | null;
+    const paraphraseVal = paraphrases.length > 0
+      ? paraphrases[0].text
+      : (legacyParaphraseInput ? legacyParaphraseInput.value.trim() : '');
 
     const examples: ExampleItem[] = [];
     const exItems = targetDoc.querySelectorAll('.ex-form-item');
@@ -2005,10 +2209,25 @@ export const updateMovieExpansionPopupDom = (
       const registerVal = (targetDoc.getElementById('fieldRegister') as HTMLInputElement)?.value?.trim() || '';
       const synonymsVal = (targetDoc.getElementById('fieldSynonyms') as HTMLInputElement)?.value?.trim() || '';
       const antonymsVal = (targetDoc.getElementById('fieldAntonyms') as HTMLInputElement)?.value?.trim() || '';
+
+      const sfItems = targetDoc.querySelectorAll('.sf-form-item');
+      const semantic_field_expansion: SemanticFieldItem[] = [];
+      sfItems.forEach(el => {
+        const type = (el.querySelector('.sf-input-type') as HTMLSelectElement | HTMLInputElement)?.value?.trim() || 'related phrase';
+        const expression = (el.querySelector('.sf-input-expr') as HTMLInputElement)?.value?.trim() || '';
+        const meaning = (el.querySelector('.sf-input-meaning') as HTMLInputElement)?.value?.trim() || '';
+        const example_en = (el.querySelector('.sf-input-ex-en') as HTMLInputElement)?.value?.trim() || '';
+        const example_vi = (el.querySelector('.sf-input-ex-vi') as HTMLInputElement)?.value?.trim() || '';
+        if (expression || meaning) {
+          semantic_field_expansion.push({ type, expression, meaning, example_en, example_vi });
+        }
+      });
+
       updatedPayload = {
         type: 'vocabulary',
         rawIndex: formRawIndex,
         paraphrase: paraphraseVal,
+        paraphrases: paraphrases.length > 0 ? paraphrases : undefined,
         data: {
           word: wordVal,
           ipa: ipaVal,
@@ -2017,7 +2236,8 @@ export const updateMovieExpansionPopupDom = (
           synonyms: synonymsVal,
           antonyms: antonymsVal,
           meaning: meaningVal,
-          examples
+          examples,
+          semantic_field_expansion: semantic_field_expansion.length > 0 ? semantic_field_expansion : undefined
         }
       };
     } else {
@@ -2026,10 +2246,10 @@ export const updateMovieExpansionPopupDom = (
         type: 'structure',
         rawIndex: formRawIndex,
         paraphrase: paraphraseVal,
+        paraphrases: paraphrases.length > 0 ? paraphrases : undefined,
         data: { pattern: patternVal, meaning: meaningVal, examples }
       };
     }
-
 
     callbacks.onSaveItem(subIndex, updatedPayload);
   };
