@@ -328,6 +328,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
         const updatedExpansion: SubtitleExpansion = {
           paraphrase: targetSub.expansion.paraphrase,
+          paraphrases: targetSub.expansion.paraphrases,
           vocabulary: [...(targetSub.expansion.vocabulary || [])],
           structures: [...(targetSub.expansion.structures || [])]
         };
@@ -378,20 +379,23 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
         const updatedExpansion: SubtitleExpansion = {
           paraphrase: payload.paraphrase !== undefined ? payload.paraphrase : targetSub.expansion?.paraphrase,
+          paraphrases: targetSub.expansion?.paraphrases,
           vocabulary: [...(targetSub.expansion?.vocabulary || [])],
           structures: [...(targetSub.expansion?.structures || [])]
         };
 
         if (payload.type === 'vocabulary') {
+          const existingVocab = (payload.rawIndex >= 0 && updatedExpansion.vocabulary) ? updatedExpansion.vocabulary[payload.rawIndex] : null;
           const vocabData: ExpansionVocabItem = {
             word: payload.data.word || '',
             ipa: payload.data.ipa || '',
-            part_of_speech: payload.data.part_of_speech || '',
-            register: payload.data.register || '',
+            part_of_speech: payload.data.part_of_speech || existingVocab?.part_of_speech || '',
+            register: payload.data.register || existingVocab?.register || '',
             synonyms: payload.data.synonyms || '',
-            antonyms: payload.data.antonyms || '',
+            antonyms: payload.data.antonyms || existingVocab?.antonyms || '',
             meaning: payload.data.meaning || '',
-            examples: payload.data.examples || []
+            examples: payload.data.examples || [],
+            semantic_field_expansion: payload.data.semantic_field_expansion || existingVocab?.semantic_field_expansion
           };
           if (payload.rawIndex >= 0 && updatedExpansion.vocabulary && updatedExpansion.vocabulary[payload.rawIndex]) {
             updatedExpansion.vocabulary[payload.rawIndex] = vocabData;
@@ -640,6 +644,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
         const updatedExpansion: SubtitleExpansion = {
           paraphrase: targetSub.expansion.paraphrase,
+          paraphrases: targetSub.expansion.paraphrases,
           vocabulary: [...(targetSub.expansion.vocabulary || [])],
           structures: [...(targetSub.expansion.structures || [])]
         };
@@ -729,17 +734,23 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
         const updatedExpansion: SubtitleExpansion = {
           paraphrase: payload.paraphrase !== undefined ? payload.paraphrase : targetSub.expansion?.paraphrase,
+          paraphrases: targetSub.expansion?.paraphrases,
           vocabulary: [...(targetSub.expansion?.vocabulary || [])],
           structures: [...(targetSub.expansion?.structures || [])]
         };
 
         if (payload.type === 'vocabulary') {
+          const existingVocab = (payload.rawIndex >= 0 && updatedExpansion.vocabulary) ? updatedExpansion.vocabulary[payload.rawIndex] : null;
           const vocabData: ExpansionVocabItem = {
             word: payload.data.word || '',
             ipa: payload.data.ipa || '',
+            part_of_speech: payload.data.part_of_speech || existingVocab?.part_of_speech || '',
+            register: payload.data.register || existingVocab?.register || '',
             synonyms: payload.data.synonyms || '',
+            antonyms: payload.data.antonyms || existingVocab?.antonyms || '',
             meaning: payload.data.meaning || '',
-            examples: payload.data.examples || []
+            examples: payload.data.examples || [],
+            semantic_field_expansion: payload.data.semantic_field_expansion || existingVocab?.semantic_field_expansion
           };
           if (payload.rawIndex >= 0 && updatedExpansion.vocabulary && updatedExpansion.vocabulary[payload.rawIndex]) {
             updatedExpansion.vocabulary[payload.rawIndex] = vocabData;
@@ -1269,49 +1280,52 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       
       // Shortcuts without modifiers when NOT typing
       if (!isTyping) {
-        if (e.code === "KeyN" || e.key === "Enter") {
-          e.preventDefault();
-          playSubtitleRow(currentIndex + 1);
-        } else if (e.code === "KeyV") {
-          e.preventDefault();
-          playSubtitleRow(currentIndex - 1);
-        } else if (e.code === "KeyB") {
-          e.preventDefault();
-          playSubtitleRow(currentIndex);
-        } else if (e.code === "Backquote") {
-          e.preventDefault();
-          togglePlay();
-        } else if (hasExpansionAccess && (
-          e.key === ',' || e.key === '.' ||
-          e.key === '[' || e.key.toLowerCase() === 'ư' ||
-          e.key === ']' || e.key.toLowerCase() === 'ơ'
-        )) {
-          e.preventDefault();
-          const now = Date.now();
-          if (now - lastExpansionHotkeyTime.current < 40) return;
-          lastExpansionHotkeyTime.current = now;
+        // IMPORTANT: Do NOT intercept if Cmd or Ctrl is pressed (allows Cmd+V, Cmd+C, Cmd+A, macOS Shortcuts, etc.)
+        if (!e.metaKey && !e.ctrlKey) {
+          if (e.code === "KeyN" || e.key === "Enter") {
+            e.preventDefault();
+            playSubtitleRow(currentIndex + 1);
+          } else if (e.code === "KeyV") {
+            e.preventDefault();
+            playSubtitleRow(currentIndex - 1);
+          } else if (e.code === "KeyB") {
+            e.preventDefault();
+            playSubtitleRow(currentIndex);
+          } else if (e.code === "Backquote") {
+            e.preventDefault();
+            togglePlay();
+          } else if (hasExpansionAccess && (
+            e.key === ',' || e.key === '.' ||
+            e.key === '[' || e.key.toLowerCase() === 'ư' ||
+            e.key === ']' || e.key.toLowerCase() === 'ơ'
+          )) {
+            e.preventDefault();
+            const now = Date.now();
+            if (now - lastExpansionHotkeyTime.current < 40) return;
+            lastExpansionHotkeyTime.current = now;
 
-          const currentSub = subtitles[currentIndex];
-          if (currentSub) {
-            const items = getFlattenedExpansionItems(currentSub);
-            if (items.length > 0) {
-              const isNext = e.key === '.' || e.key === ']' || e.key.toLowerCase() === 'ơ';
-              const nextIdx = isNext 
-                ? (selectedExpansionIndexRef.current + 1) % items.length 
-                : (selectedExpansionIndexRef.current - 1 + items.length) % items.length;
-              updateExpansionPopup(currentIndex, nextIdx, false, null, false);
-            } else {
-              updateExpansionPopup(currentIndex, 0, false, null, false);
+            const currentSub = subtitles[currentIndex];
+            if (currentSub) {
+              const items = getFlattenedExpansionItems(currentSub);
+              if (items.length > 0) {
+                const isNext = e.key === '.' || e.key === ']' || e.key.toLowerCase() === 'ơ';
+                const nextIdx = isNext 
+                  ? (selectedExpansionIndexRef.current + 1) % items.length 
+                  : (selectedExpansionIndexRef.current - 1 + items.length) % items.length;
+                updateExpansionPopup(currentIndex, nextIdx, false, null, false);
+              } else {
+                updateExpansionPopup(currentIndex, 0, false, null, false);
+              }
             }
           }
         }
       } 
       // Shortcuts when user is typing in the box (e.g. dictation mode)
       else if (isTyping) {
-        if (e.code === "Backquote") {
+        if (e.code === "Backquote" && !e.metaKey && !e.ctrlKey) {
           e.preventDefault();
           togglePlay();
-        } else if (e.key === "Enter" && !e.shiftKey) {
+        } else if (e.key === "Enter" && !e.shiftKey && !e.metaKey && !e.ctrlKey) {
           e.preventDefault();
           playSubtitleRow(currentIndex + 1);
         } else if (e.altKey) {

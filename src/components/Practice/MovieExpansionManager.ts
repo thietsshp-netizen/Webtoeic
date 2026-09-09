@@ -4,6 +4,19 @@ export interface ExampleItem {
   vi: string;
 }
 
+export interface ParaphraseItem {
+  method?: string;
+  text: string;
+}
+
+export interface SemanticFieldItem {
+  expression: string;
+  type?: 'synonym' | 'related phrase' | 'slang' | 'idiom' | string;
+  meaning: string;
+  example_en?: string;
+  example_vi?: string;
+}
+
 export interface ExpansionVocabItem {
   word: string;
   ipa?: string;
@@ -13,6 +26,7 @@ export interface ExpansionVocabItem {
   synonyms?: string;
   antonyms?: string;
   examples: ExampleItem[];
+  semantic_field_expansion?: SemanticFieldItem[];
 }
 
 export interface ExpansionStructureItem {
@@ -22,7 +36,8 @@ export interface ExpansionStructureItem {
 }
 
 export interface SubtitleExpansion {
-  paraphrase?: string;
+  paraphrase?: string; // Tương thích dữ liệu cũ
+  paraphrases?: ParaphraseItem[]; // Dữ liệu mới đa phương pháp
   vocabulary?: ExpansionVocabItem[];
   structures?: ExpansionStructureItem[];
 }
@@ -49,9 +64,10 @@ export interface FlattenedExpansionItem {
   synonyms?: string;
   antonyms?: string;
   paraphrase?: string;
+  paraphrases?: ParaphraseItem[];
   examples: ExampleItem[];
+  semantic_field_expansion?: SemanticFieldItem[];
 }
-
 
 export interface ExpansionPopupParams {
   subIndex: number;
@@ -78,6 +94,7 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
   if (!sub || !sub.expansion) return [];
   const items: FlattenedExpansionItem[] = [];
   const paraphrase = sub.expansion.paraphrase || '';
+  const paraphrases = Array.isArray(sub.expansion.paraphrases) ? sub.expansion.paraphrases : [];
 
   if (Array.isArray(sub.expansion.vocabulary)) {
     sub.expansion.vocabulary.forEach((v: any, idx) => {
@@ -96,6 +113,21 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
           antVal = String(v.antonyms).trim();
         }
 
+        const semanticFields: SemanticFieldItem[] = [];
+        if (Array.isArray(v.semantic_field_expansion)) {
+          v.semantic_field_expansion.forEach((sf: any) => {
+            if (sf && (sf.expression || sf.meaning)) {
+              semanticFields.push({
+                expression: String(sf.expression || '').trim(),
+                type: String(sf.type || 'related phrase').trim(),
+                meaning: String(sf.meaning || '').trim(),
+                example_en: String(sf.example_en || sf.example || '').trim(),
+                example_vi: String(sf.example_vi || '').trim()
+              });
+            }
+          });
+        }
+
         items.push({
           type: 'vocabulary',
           rawIndex: idx,
@@ -107,12 +139,13 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
           synonyms: synVal,
           antonyms: antVal,
           paraphrase,
+          paraphrases,
           examples: Array.isArray(v.examples) ? v.examples : [],
+          semantic_field_expansion: semanticFields.length > 0 ? semanticFields : undefined
         });
       }
     });
   }
-
 
   if (Array.isArray(sub.expansion.structures)) {
     sub.expansion.structures.forEach((s, idx) => {
@@ -123,6 +156,7 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
           pattern: s.pattern || '',
           meaning: s.meaning || '',
           paraphrase,
+          paraphrases,
           examples: Array.isArray(s.examples) ? s.examples : [],
         });
       }
@@ -137,191 +171,113 @@ export const generateGeminiPromptForSub = (sub: Subtitle): string => {
   const subVi = (sub.vietnamese || '').trim();
   return `# VAI TRÒ
 Bạn là chuyên gia ngôn ngữ Anh-Mỹ (American English) và giảng dạy tiếng Anh giao tiếp thực tế cho người Việt, chuyên sâu về:
-* Spoken English
-* Pragmatics
-* Collocations
-* Phrasal Verbs
-* Idioms
-* Conversational Patterns
-* Natural American English
+* Spoken English & Pragmatics
+* Collocations, Phrasal Verbs, Slang & Idioms
+* Conversational Patterns & Semantic Fields
+* Natural American English Re-expression
 
-Mục tiêu là giúp người học nói và hiểu tiếng Anh tự nhiên như người Mỹ trong đời sống thực tế, đặc biệt là ngôn ngữ hội thoại trong phim, TV series và giao tiếp hằng ngày.
+Mục tiêu: Giúp người học nói và hiểu tiếng Anh tự nhiên như người Mỹ bản xứ trong giao tiếp đời thường, phim ảnh và TV series.
 
-Bạn phải ưu tiên:
-Naturalness > Literalness > Lexical sophistication
-Không được biến một câu giao tiếp tự nhiên thành văn viết học thuật hoặc cố tình dùng từ "cao cấp" một cách máy móc.
+Ưu tiên tuyệt đối: Naturalness > Literalness > Lexical sophistication.
+Không biến câu thoại tự nhiên thành văn viết học thuật hay cố tình nhồi nhét từ vựng gượng gạo.
 
 ---
 
 # NHIỆM VỤ
 Phân tích câu thoại được cung cấp và trả về DUY NHẤT một JSON hợp lệ theo đúng schema ở cuối prompt.
-Không viết lời dẫn.
-Không giải thích ngoài JSON.
-Không bọc JSON trong Markdown code fence.
-Không thêm bất kỳ field nào ngoài schema.
+* Không viết lời dẫn hay kết luận.
+* Không giải thích bất kỳ điều gì ngoài JSON.
+* Không bọc JSON trong Markdown code block (\`\`\`json ... \`\`\`) nếu có thể, chỉ trả về chuỗi JSON thuần túy.
+* Tuyệt đối không thêm trường (field) nào nằm ngoài schema.
 
 ---
 
-# NGUYÊN TẮC 1 — PARAPHRASE
+# NGUYÊN TẮC 1 — PARAPHRASE ĐA PHƯƠNG PHÁP (paraphrases)
+Cung cấp từ 2 đến 3 cách diễn đạt lại (Natural Re-expressions) khác nhau cho câu gốc, phản ánh các góc nhìn ngôn ngữ thực tế của người Mỹ bản xứ.
 
-## 1.1. Mục tiêu
-paraphrase là một Natural Re-expression:
-> Diễn đạt lại cùng một ý bằng một cách nói tự nhiên khác mà người Mỹ thực sự có thể sử dụng trong giao tiếp đời thường.
+## 1.1. Các phương pháp paraphrase gợi ý áp dụng:
+* Lexical / Phrasal Re-expression: Thay thế bằng cụm từ tự nhiên, phrasal verb hoặc collocation tương đương.
+* Structural Shift: Thay đổi cấu trúc câu (chuyển đổi chủ ngữ, dùng mệnh đề danh ngữ, đảo trật tự ý, v.v.) nhưng giữ nguyên ngữ nghĩa.
+* Conversational Idiomatic Chunk: Sử dụng idiom, tiếng lóng nhẹ (mild slang), hoặc câu cửa miệng phổ biến trong đời sống.
 
-Paraphrase không phải là:
-* dịch ngược từ tiếng Việt;
-* thay từng từ bằng synonym;
-* sửa ngữ pháp một cách máy móc;
-* làm câu trở nên "cao cấp" hơn;
-* cố tình thay đổi càng nhiều từ càng tốt.
-
-### Ví dụ:
-Gốc: I have to go.
-Paraphrase tự nhiên: I <mark>need to take off</mark>.
-(Không biến thành "I must depart" vì không tự nhiên trong giao tiếp đời thường).
+## 1.2. Yêu cầu cho từng câu paraphrase:
+* Đảm bảo Naturalness Test: Giữ nguyên sắc thái, cảm xúc, mức độ trang trọng (register) của ngữ cảnh phim.
+* Sử dụng thẻ <mark>...</mark> để đánh dấu chính xác phần từ ngữ/cấu trúc được thay đổi hoặc viết lại so với câu gốc.
 
 ---
 
-## 1.2. Không dùng Thesaurus Substitution
-Không được thực hiện kiểu: happy → glad, big → large, start → commence, go → depart chỉ để tạo cảm giác paraphrase.
-Được phép thay đổi: từ, cụm từ, collocation, phrasal verb, idiom, cấu trúc câu, trật tự từ, cách chia/gộp ý, chủ động ↔ bị động, câu dài ↔ câu ngắn, lexical chunk, conversational pattern miễn là ý nghĩa và sắc thái giao tiếp vẫn được bảo toàn.
+# NGUYÊN TẮC 2 — TỪ VỰNG TRỌNG TÂM & MỞ RỘNG TRƯỜNG NGHĨA (vocabulary)
+
+## 2.1. Tiêu chí chọn từ vựng mục tiêu (word):
+* Nguồn: Ưu tiên từ CÂU GỐC, sau đó đến các CÂU PARAPHRASE có giá trị học tập cao.
+* Reusability Test: Chỉ chọn từ/cụm từ/idiom có tính ứng dụng cao, giúp người học tái sử dụng để diễn đạt trong nhiều ngữ cảnh đời thường khác nhau.
+* Không chọn từ quá sơ cấp/hiển nhiên (I, you, go, have, do, be...). Nếu câu không có từ nào đáng chú ý, trả về "vocabulary": [].
+
+## 2.2. Thông tin từ vựng:
+* ipa: Phiên âm General American (GA) đặt trong /.../.
+* part_of_speech: Chỉ chọn 1 trong: idiom | phrasal verb | phrase | verb | noun | adjective | adverb | collocation.
+* register: Chỉ chọn 1 trong: casual | neutral | informal | slang | idiomatic | formal.
+* meaning: Giải nghĩa tiếng Việt ngắn gọn, sát đúng ngữ cảnh câu.
+* synonyms / antonyms: Cung cấp từ/cụm tương đương tự nhiên hoặc để "" nếu không có.
+* examples: Tối thiểu 1-2 ví dụ thực tế. BẮT BUỘC dùng thẻ <mark>...</mark> bao quanh từ/cụm từ mục tiêu trong câu tiếng Anh (en).
+
+## 2.3. Mở rộng trường nghĩa (semantic_field_expansion):
+* Với mỗi mục từ vựng, cung cấp từ 2 đến 3 cách nói/từ vựng liên quan trong cùng trường nghĩa/chủ đề để làm giàu vốn diễn đạt cho người học.
+* type: Chọn đúng 1 trong: synonym | related phrase | slang | idiom.
+* example_en: Ví dụ BẮT BUỘC NGẮN GỌN (dưới 10 từ), súc tích, phản ánh đúng văn nói và BẮT BUỘC có thẻ <mark>...</mark> bọc quanh từ mở rộng.
+* example_vi: Dịch nghĩa tiếng Việt cho ví dụ ngắn.
 
 ---
 
-## 1.3. Những gì phải được giữ nguyên
-Paraphrase phải giữ nguyên: ý nghĩa cốt lõi, người/vật được nói đến, thông tin quan trọng, mức độ chắc chắn, mức độ phủ định, cảm xúc, thái độ, mức độ lịch sự, sắc thái giao tiếp.
-Không được tự ý thêm thông tin hoặc sắc thái mà câu gốc không hỗ trợ.
-
----
-
-## 1.4. Naturalness Test
-Trước khi tạo paraphrase, hãy tự kiểm tra:
-1. Câu mới có giữ nguyên ý không?
-2. Có giữ nguyên mức độ chắc chắn, cảm xúc và thái độ không?
-3. Người Mỹ có thực sự nói câu này trong hội thoại đời thường không?
-4. Câu mới có nghe tự nhiên hơn hoặc cung cấp một cách diễn đạt hữu ích khác không?
-5. Có phải chỉ đơn giản thay synonym không?
-Nguyên tắc: Naturalness > Degree of lexical change.
-
----
-
-## 1.5. Khi câu gốc đã rất tự nhiên
-Nếu câu gốc đã là một cách nói rất tự nhiên của người Mỹ, vẫn có thể tạo một paraphrase tương đương nếu tồn tại một cách diễn đạt khác thực sự hữu ích. Không được cố tình làm câu kém tự nhiên chỉ để tạo sự khác biệt.
-
----
-
-# NGUYÊN TẮC 2 — THẺ <mark>
-Trong paraphrase, bắt buộc dùng <mark>...</mark> để đánh dấu phần được viết lại hoặc thay đổi so với câu gốc.
-Ví dụ:
-* Gốc: "I don't really have a choice." → Paraphrase: "I <mark>pretty much have to</mark>."
-* Gốc: "What are you doing here?" → Paraphrase: "<mark>What brings you here?</mark>"
-* Gốc: "I don't know what happened." → Paraphrase: "<mark>I have no idea what happened.</mark>"
-
----
-
-# NGUYÊN TẮC 3 — VOCABULARY
-
-## 3.1. Nguồn trích xuất
-vocabulary có thể lấy từ:
-1. CÂU GỐC (Nguồn chính)
-2. PHẦN PARAPHRASE (Nguồn bổ sung)
-Không được đưa một từ/cụm vào vocabulary chỉ vì nó xuất hiện trong paraphrase. Chỉ thêm nếu có giá trị học tập cao (phrasal verb, collocation, idiom, conversational phrase, useful lexical chunk...).
-
-## 3.2. Reusability Test
-Chỉ đưa một vocabulary item vào JSON nếu người học có thể tái sử dụng nó để tạo ra nhiều câu tự nhiên trong những tình huống giao tiếp khác.
-
-## 3.3. Chất lượng hơn số lượng
-Không cố tạo nhiều vocabulary. Có thể trả về "vocabulary": [] nếu câu không có expression nào thực sự đáng học. Tuyệt đối không gượng ép đưa những từ quá cơ bản (I, you, he, she, the, a, go, come, have, do, be...).
-
-## 3.4. Tránh trùng lặp
-Nếu là fixed expression, idiom, phrasal verb, collocation → ưu tiên đưa vào vocabulary. Không đưa cùng một expression vào cả vocabulary và structures.
-
-* LÀM NỔI BẬT TỪ VỰNG TRONG VÍ DỤ: Trong các câu ví dụ (en) của vocabulary, dùng thẻ <mark>...</mark> bao quanh từ/cụm từ mục tiêu (Ví dụ: "What I just told you is the <mark>absolute truth</mark>.").
-
----
-
-# NGUYÊN TẮC 4 — SYNONYMS & ANTONYMS
-* synonyms: Chỉ đưa từ/cụm có thể thay thế tự nhiên trong chính ngữ cảnh đang xét. Nếu không có synonym tự nhiên phù hợp, để "".
-* antonyms: Chỉ cung cấp nếu có từ/cụm đối lập tự nhiên và hữu ích trong giao tiếp (không tự chế bằng cách thêm un-, dis-, non-, not-). Nếu không có, để "".
-
----
-
-# NGUYÊN TẮC 5 — IPA, PART OF SPEECH, REGISTER
-* ipa: General American English (GA) trong dấu gạch chéo /.../.
-* part_of_speech: Chỉ dùng đúng 1 trong các giá trị: idiom | phrasal verb | phrase | verb | noun | adjective | adverb | collocation.
-* register: Chỉ dùng đúng 1 trong các giá trị: casual | neutral | informal | slang | idiomatic | formal.
-
----
-
-# NGUYÊN TẮC 6 — STRUCTURES
-* Nguồn bắt buộc: CHỈ được trích xuất từ CÂU GỐC. Tuyệt đối không lấy structure từ paraphrase.
-* Reusable Conversational Frame: Phải là một sentence pattern / frame có thể thay thế thành phần để tạo nhiều câu mới (Ví dụ: "What a + (adj) + noun + to + V...", "I don't know + wh-clause").
-* Không lấy grammar cơ bản SGK: Không lấy S + V + O, thì hiện tại đơn, mạo từ...
-* LÀM NỔI BẬT CẤU TRÚC TRONG CÂU VÍ DỤ: Trong các câu ví dụ tiếng Anh (en) của structures, BẮT BUỘC dùng thẻ <mark>...</mark> bao quanh phần cấu trúc / khung câu được áp dụng, giúp người học nhìn vào là nhận diện được ngay cấu trúc đang dùng.
-  Ví dụ:
-  - Pattern: "What a + (adj) + noun + to + V..."
-  - Example 1: "<mark>What a terrible time to lose</mark> your phone!"
-  - Example 2: "<mark>What a strange thing to say</mark> in public."
-* Nếu không có structure nào thực sự đáng học, trả về: "structures": [].
-
----
-
-# NGUYÊN TẮC 7 — PHÂN BIỆT VOCABULARY VÀ STRUCTURES
-* Vocabulary (WHAT TO SAY): Từ, cụm từ, expression học như một đơn vị (Ví dụ: figure out, hang out, give me a break, be into something).
-* Structures (HOW TO BUILD THE SENTENCE): Sentence frame có thể thay thế thành phần để tạo nhiều câu mới (Ví dụ: I don't know + wh-clause, The thing is + clause, What I mean is + clause).
-
----
-
-# NGUYÊN TẮC 8 — KHÔNG ÉP TẠO NỘI DUNG
-Nếu câu không có từ vựng hoặc cấu trúc nào thực sự đáng học, trả về "vocabulary": [], "structures": []. Không có gì đáng học vẫn là một kết quả hoàn toàn hợp lệ.
-
----
-
-# NGUYÊN TẮC 9 — BẢN DỊCH TIẾNG VIỆT
-Bản dịch tiếng Việt chỉ dùng để hiểu ngữ cảnh, không dịch word-by-word. Tiếng Anh gốc luôn là nguồn chính.
-
----
-
-# NGUYÊN TẮC 10 — QUY TRÌNH SUY LUẬN NỘI BỘ
-Trước khi trả JSON, hãy tự kiểm tra nội bộ:
-1. Hiểu đúng ngữ cảnh và nghĩa câu gốc.
-2. Tạo paraphrase tự nhiên nhất (Natural Re-expression).
-3. Bọc thẻ <mark>...</mark> quanh phần thay đổi.
-4. Lọc vocabulary (từ câu gốc hoặc paraphrase) đạt chuẩn Reusability Test.
-5. Lọc structures CHỈ TỪ CÂU GỐC (phải là sentence pattern tái sử dụng được).
-6. Bọc thẻ <mark>...</mark> quanh cấu trúc trong câu ví dụ (en).
-7. Loại bỏ nội dung cơ bản/gượng ép, trả về [] nếu không có gì đáng học.
-8. Đảm bảo JSON hợp lệ, đúng schema tuyệt đối.
+# NGUYÊN TẮC 3 — CẤU TRÚC KHUNG CÂU GIAO TIẾP (structures)
+* Nguồn: CHỈ trích xuất cấu trúc từ CÂU GỐC.
+* Conversational Frame: Phải là mẫu câu / sentence pattern có thể lắp ghép thành phần khác để tạo câu mới (Ví dụ: "It's not like + clause", "What if we + V...", "There's no point in + V-ing").
+* Không lấy ngữ pháp ngữ văn cơ bản (S + V + O, thì thì hiện tại...). Nếu không có cấu trúc nào đặc sắc, trả về "structures": [].
+* Ví dụ: BẮT BUỘC dùng thẻ <mark>...</mark> bọc quanh phần cấu trúc áp dụng trong câu ví dụ (en).
 
 ---
 
 # SCHEMA JSON BẮT BUỘC
 {
-  "paraphrase": "Câu diễn đạt lại tự nhiên có chứa <mark>...</mark> ở phần thay đổi",
+  "paraphrases": [
+    {
+      "method": "Tên phương pháp (VD: Lexical / Phrasal Re-expression | Structural Shift | Conversational Idiom...)",
+      "text": "Câu diễn đạt lại tự nhiên có chứa <mark>...</mark> ở phần thay đổi"
+    }
+  ],
   "vocabulary": [
     {
-      "word": "Từ / cụm từ / phrasal verb / idiom",
+      "word": "Từ / cụm từ / idiom mục tiêu",
       "ipa": "/.../",
       "part_of_speech": "idiom | phrasal verb | phrase | verb | noun | adjective | adverb | collocation",
       "register": "casual | neutral | informal | slang | idiomatic | formal",
       "meaning": "Nghĩa tiếng Việt ngắn gọn, sát ngữ cảnh",
-      "synonyms": "Từ/cụm đồng nghĩa tự nhiên trong ngữ cảnh hoặc \"\"",
-      "antonyms": "Từ/cụm trái nghĩa tự nhiên nếu có hoặc \"\"",
+      "synonyms": "Từ/cụm đồng nghĩa thay thế trực tiếp được hoặc \\"\\"",
+      "antonyms": "Từ/cụm trái nghĩa hoặc \\"\\"",
       "examples": [
         {
-          "en": "Ví dụ tiếng Anh có dùng <mark>...</mark> bọc từ/cụm từ mục tiêu",
+          "en": "Câu ví dụ tiếng Anh có dùng <mark>...</mark> bọc từ/cụm từ mục tiêu",
           "vi": "Dịch nghĩa tiếng Việt"
+        }
+      ],
+      "semantic_field_expansion": [
+        {
+          "expression": "Từ/cụm từ/slang/idiom mở rộng cùng trường nghĩa",
+          "type": "synonym | related phrase | slang | idiom",
+          "meaning": "Nghĩa tiếng Việt",
+          "example_en": "Ví dụ cực ngắn dưới 10 từ có <mark>...</mark>",
+          "example_vi": "Dịch nghĩa tiếng Việt"
         }
       ]
     }
   ],
   "structures": [
     {
-      "pattern": "Cấu trúc hoặc sentence frame giao tiếp CHỈ lấy từ câu gốc",
-      "meaning": "Ý nghĩa và cách dùng thực tế trong câu gốc",
+      "pattern": "Sentence frame/pattern giao tiếp chỉ lấy từ câu gốc",
+      "meaning": "Cách sử dụng thực tế trong câu",
       "examples": [
         {
-          "en": "Ví dụ tiếng Anh BẮT BUỘC dùng <mark>...</mark> bọc quanh cấu trúc áp dụng",
+          "en": "Ví dụ tiếng Anh có <mark>...</mark> bọc quanh khung cấu trúc",
           "vi": "Dịch nghĩa tiếng Việt"
         }
       ]
@@ -336,9 +292,6 @@ Câu thoại: "${subText}"
 ${subVi ? `Bản dịch tham khảo: "${subVi}"` : ''}`;
 };
 
-
-
-
 export const sanitizeExpansionJson = (rawInput: any): SubtitleExpansion => {
   let parsed: any = rawInput;
   if (typeof rawInput === 'string') {
@@ -351,13 +304,28 @@ export const sanitizeExpansionJson = (rawInput: any): SubtitleExpansion => {
   }
 
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    throw new Error('Dữ liệu JSON không hợp lệ: Phải là một Object {} chứa các trường paraphrase, vocabulary, structures.');
+    throw new Error('Dữ liệu JSON không hợp lệ: Phải là một Object {} chứa các trường paraphrases, vocabulary, structures.');
   }
 
   const result: SubtitleExpansion = {};
 
-  // 1. Paraphrase
-  if (typeof parsed.paraphrase === 'string' && parsed.paraphrase.trim()) {
+  // 1. Paraphrases (hỗ trợ mảng mới hoặc chuỗi đơn cũ)
+  if (Array.isArray(parsed.paraphrases)) {
+    const pList: ParaphraseItem[] = [];
+    parsed.paraphrases.forEach((p: any) => {
+      if (typeof p === 'string' && p.trim()) {
+        pList.push({ text: p.trim() });
+      } else if (p && typeof p === 'object' && p.text) {
+        pList.push({
+          method: p.method ? String(p.method).trim() : undefined,
+          text: String(p.text).trim()
+        });
+      }
+    });
+    if (pList.length > 0) {
+      result.paraphrases = pList;
+    }
+  } else if (typeof parsed.paraphrase === 'string' && parsed.paraphrase.trim()) {
     result.paraphrase = parsed.paraphrase.trim();
   }
 
@@ -393,6 +361,21 @@ export const sanitizeExpansionJson = (rawInput: any): SubtitleExpansion => {
           antText = String(item.antonyms).trim();
         }
 
+        const semanticFields: SemanticFieldItem[] = [];
+        if (Array.isArray(item.semantic_field_expansion)) {
+          item.semantic_field_expansion.forEach((sf: any) => {
+            if (sf && (sf.expression || sf.meaning)) {
+              semanticFields.push({
+                expression: String(sf.expression || '').trim(),
+                type: String(sf.type || 'related phrase').trim(),
+                meaning: String(sf.meaning || '').trim(),
+                example_en: String(sf.example_en || sf.example || '').trim(),
+                example_vi: String(sf.example_vi || '').trim()
+              });
+            }
+          });
+        }
+
         vocabList.push({
           word: String(item.word || '').trim(),
           meaning: meaningText,
@@ -401,10 +384,9 @@ export const sanitizeExpansionJson = (rawInput: any): SubtitleExpansion => {
           ...(item.register ? { register: String(item.register).trim() } : {}),
           ...(synText ? { synonyms: synText } : {}),
           ...(antText ? { antonyms: antText } : {}),
-          examples
+          examples,
+          ...(semanticFields.length > 0 ? { semantic_field_expansion: semanticFields } : {})
         });
-
-
       }
     });
     if (vocabList.length > 0) {
@@ -608,77 +590,57 @@ export const generateMovieExpansionPopupStyles = () => `
     box-shadow: 0 1px 2px rgba(0,0,0,0.02);
   }
   .original-sub-text {
-    font-size: 15px;
+    font-size: 15.5px;
     font-weight: 700;
     color: #dc2626;
     line-height: 1.45;
+    text-align: center;
   }
   .original-sub-vi {
-    font-size: 12.5px;
+    font-size: 13px;
     font-style: italic;
     color: #64748b;
-    margin-top: 3px;
+    margin-top: 4px;
     line-height: 1.4;
+    text-align: center;
   }
-  .paraphrase-row {
-    margin-top: 8px;
-    padding-top: 8px;
+  .paraphrase-table {
+    margin-top: 10px;
+    padding-top: 10px;
     border-top: 1px dashed #fecaca;
-    display: flex;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 8px 12px;
     align-items: baseline;
-    gap: 8px;
-    font-size: 13.5px;
-    line-height: 1.45;
   }
   .paraphrase-badge {
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 800;
     color: #15803d;
     background: #dcfce7;
     border: 1px solid #bbf7d0;
-    padding: 1px 6px;
+    padding: 2px 7px;
     border-radius: 4px;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    flex-shrink: 0;
+    white-space: nowrap;
+    display: inline-block;
   }
   .paraphrase-val {
-    font-weight: 700;
-    color: #166534;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.5;
   }
   .orig-diff {
-    color: #991b1b;
-    background: #ffedd5;
-    border: 1px solid #fed7aa;
-    padding: 0 4px;
-    border-radius: 4px;
+    color: #ea580c;
     font-weight: 800;
-    text-decoration: underline wavy #ea580c;
-    text-decoration-thickness: 1.5px;
-    text-underline-offset: 3px;
-    display: inline-block;
-    transition: all 0.15s ease;
-  }
-  .orig-diff:hover {
-    background: #fed7aa;
-    transform: translateY(-1px);
+    display: inline;
   }
   .ph-diff {
     color: #e11d48;
-    background: #ffe4e6;
-    border: 1px solid #fecdd3;
-    padding: 0 4px;
-    border-radius: 4px;
     font-weight: 800;
-    text-decoration: underline solid #fb7185;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 3px;
-    display: inline-block;
-    transition: all 0.15s ease;
-  }
-  .ph-diff:hover {
-    background: #fecdd3;
-    transform: translateY(-1px);
+    display: inline;
   }
   .card {
 
@@ -865,6 +827,99 @@ export const generateMovieExpansionPopupStyles = () => `
     margin-top: 4px;
     line-height: 1.45;
     padding-left: 14px;
+  }
+  /* Semantic Field Expansion */
+  .semantic-field-box {
+    margin-top: 14px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .semantic-field-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    color: #166534;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .semantic-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .semantic-item {
+    background: #ffffff;
+    border: 1px solid #dcfce7;
+    border-radius: 6px;
+    padding: 8px 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  }
+  .semantic-item-top {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 13.5px;
+  }
+  .semantic-type-tag {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    flex-shrink: 0;
+  }
+  .tag-slang {
+    background: #f3e8ff;
+    color: #7e22ce;
+    border: 1px solid #e9d5ff;
+  }
+  .tag-idiom {
+    background: #ffedd5;
+    color: #c2410c;
+    border: 1px solid #fed7aa;
+  }
+  .tag-synonym {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+  }
+  .tag-related {
+    background: #ccfbf1;
+    color: #0f766e;
+    border: 1px solid #99f6e4;
+  }
+  .semantic-expr {
+    font-weight: 800;
+    color: #0f172a;
+  }
+  .semantic-meaning {
+    color: #475569;
+    font-weight: 500;
+  }
+  .semantic-example {
+    margin-top: 4px;
+    padding-left: 6px;
+    border-left: 2px solid #86efac;
+  }
+  .semantic-ex-en {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.4;
+  }
+  .semantic-ex-vi {
+    font-size: 12px;
+    color: #15803d;
+    font-style: italic;
+    margin-top: 1px;
+    line-height: 1.35;
   }
   .actions-bar {
     display: flex;
@@ -1467,15 +1522,27 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
 
       // 4. VIEW MODE CARD
       const isVocab = currentItem.type === 'vocabulary';
-      const { origHtml, paraHtml } = renderSentenceDiffPair(sub.text || '', paraphraseText);
+      const paraphraseList: ParaphraseItem[] =
+        Array.isArray(sub.expansion?.paraphrases) && sub.expansion.paraphrases.length > 0
+          ? sub.expansion.paraphrases
+          : sub.expansion?.paraphrase
+          ? [{ text: sub.expansion.paraphrase }]
+          : [];
+
       return `
         <div class="header-sentences-box">
-          <div class="original-sub-text">"${origHtml}"</div>
+          <div class="original-sub-text">"${escapeHtml(sub.text || '')}"</div>
           ${sub.vietnamese ? `<div class="original-sub-vi">${escapeHtml(sub.vietnamese)}</div>` : ''}
-          ${paraphraseText ? `
-            <div class="paraphrase-row">
-              <span class="paraphrase-badge">💡 Paraphrase:</span>
-              <span class="paraphrase-val">"${paraHtml}"</span>
+          ${paraphraseList.length > 0 ? `
+            <div class="paraphrase-table">
+              ${paraphraseList.map((pItem, pIdx) => {
+                const pMethod = pItem.method || (paraphraseList.length > 1 ? `Cách ${pIdx + 1}` : 'Paraphrase');
+                const pHtml = renderParaphraseHtml(pItem.text || '');
+                return `
+                  <div><span class="paraphrase-badge">${escapeHtml(pMethod)}</span></div>
+                  <div class="paraphrase-val">"${pHtml}"</div>
+                `;
+              }).join('')}
             </div>
           ` : ''}
         </div>
@@ -1532,6 +1599,36 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
                   <div class="ex-vi">${escapeHtml(ex.vi || '')}</div>
                 </div>
               `).join('')}
+            </div>
+          ` : ''}
+
+          ${currentItem.semantic_field_expansion && currentItem.semantic_field_expansion.length > 0 ? `
+            <div class="semantic-field-box">
+              <div class="semantic-field-header">
+                <span class="semantic-header-icon">🌐</span>
+                <span class="semantic-header-title">Mở rộng cách diễn đạt liên quan (Semantic Field)</span>
+              </div>
+              <div class="semantic-items-list">
+                ${currentItem.semantic_field_expansion.map(sf => {
+                  const typeLower = (sf.type || 'related phrase').toLowerCase();
+                  const typeClass = typeLower.includes('slang') ? 'tag-slang' : typeLower.includes('idiom') ? 'tag-idiom' : typeLower.includes('synonym') ? 'tag-synonym' : 'tag-related';
+                  return `
+                    <div class="semantic-item">
+                      <div class="semantic-item-top">
+                        <span class="semantic-type-tag ${typeClass}">${escapeHtml(sf.type || 'related')}</span>
+                        <span class="semantic-expr">${escapeHtml(sf.expression || '')}</span>
+                        ${sf.meaning ? `<span class="semantic-meaning">— ${escapeHtml(sf.meaning)}</span>` : ''}
+                      </div>
+                      ${sf.example_en ? `
+                        <div class="semantic-example">
+                          <div class="semantic-ex-en">💬 ${renderMarkupText(sf.example_en)}</div>
+                          ${sf.example_vi ? `<div class="semantic-ex-vi">${escapeHtml(sf.example_vi)}</div>` : ''}
+                        </div>
+                      ` : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
             </div>
           ` : ''}
         </div>
@@ -1667,7 +1764,10 @@ export const updateMovieExpansionPopupDom = (
         const isTyping = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA');
         if (isTyping) return;
 
-        // Navigation hotkeys
+        // IMPORTANT: Do NOT intercept if Cmd, Ctrl, or Alt is held (allows Cmd+V, Cmd+C, Cmd+A, macOS Shortcuts, etc.)
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+        // Navigation hotkeys (only without modifiers)
         if (e.key === ',' || e.key === '.' || e.key === '[' || e.key === ']' || e.key.toLowerCase() === 'ư' || e.key.toLowerCase() === 'ơ') {
           e.preventDefault();
           if (typeof targetWin.sendCycleMessage === 'function') {
