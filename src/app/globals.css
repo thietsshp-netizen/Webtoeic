@@ -122,8 +122,20 @@ h1, h2, h3, h4, h5, h6 {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes auto-study-slide-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-36px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .animate-fade-in  { animation: fade-in  0.4s ease both; }
 .animate-slide-up { animation: slide-up 0.5s ease both; }
+.animate-auto-study-slide { animation: auto-study-slide-down 0.65s cubic-bezier(0.16, 1, 0.3, 1) both; }
 
 @keyframes pulse-blue {
   0% { background-color: transparent; }
