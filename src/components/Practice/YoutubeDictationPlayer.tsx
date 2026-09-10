@@ -628,7 +628,8 @@ const renderAutoStudyOverlayContent = (
   displayMode: "typewriter" | "instant" = "typewriter",
   borderWidth: number = 2,
   borderColor: string = "#ffffff",
-  borderOpacity: number = 70
+  borderOpacity: number = 70,
+  isLoopingSub: boolean = false
 ) => {
   // Chỉ lấy các mục từ vựng/cụm từ/slang/idiom (bỏ hoàn toàn cấu trúc theo yêu cầu)
   const vocabItems = items.filter(it => it.type === "vocabulary");
@@ -993,7 +994,11 @@ const renderAutoStudyOverlayContent = (
           {title}
         </span>
       </div>
-      {phase === "replaying" ? (
+      {isLoopingSub ? (
+        <span className="text-[9.5px] sm:text-[10.5px] font-bold text-amber-300 bg-amber-950/70 px-1.5 py-0.5 rounded-full border border-amber-400/40 flex items-center gap-1 animate-pulse shadow-sm">
+          <span>🔁</span> Lặp vô hạn (Phím L)
+        </span>
+      ) : phase === "replaying" ? (
         <span className="text-[9.5px] sm:text-[10.5px] font-bold text-amber-300 bg-amber-950/70 px-1.5 py-0.5 rounded-full border border-amber-400/40 flex items-center gap-1 animate-pulse shadow-sm">
           <span>🔁</span> Phát lại: {totalLoops - loopsLeft + 1}/{totalLoops}
         </span>
@@ -1322,6 +1327,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   autoStudyLoopsRef.current = autoStudyLoops;
   const autoStudySpeedRef = useRef<number>(autoStudySpeed);
   autoStudySpeedRef.current = autoStudySpeed;
+  const isLoopingCurrentSubRef = useRef<boolean>(isLoopingCurrentSub);
+  isLoopingCurrentSubRef.current = isLoopingCurrentSub;
 
   const stopAutoStudy = () => {
     if (autoStudyTimerRef.current) {
@@ -1437,8 +1444,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           if (isAutoStudyPausedRef.current) {
             return;
           }
-          const totalLoops = autoStudyLoopsRef.current;
-          if (totalLoops > 0) {
+          const isInfiniteLoop = isLoopingCurrentSubRef.current;
+          const totalLoops = isInfiniteLoop ? 999999 : autoStudyLoopsRef.current;
+          if (isInfiniteLoop || totalLoops > 0) {
             startAutoStudyReplay(targetIdx, totalLoops);
           } else {
             stopAutoStudy();
@@ -1463,8 +1471,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     if (currentChars < fullText.length) {
       runAutoStudyTypingLoop(currentChars, fullText.length, targetIdx);
     } else {
-      const totalLoops = autoStudyLoopsRef.current;
-      if (totalLoops > 0) {
+      const isInfiniteLoop = isLoopingCurrentSubRef.current;
+      const totalLoops = isInfiniteLoop ? 999999 : autoStudyLoopsRef.current;
+      if (isInfiniteLoop || totalLoops > 0) {
         startAutoStudyReplay(targetIdx, totalLoops);
       } else {
         stopAutoStudy();
@@ -2388,8 +2397,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     hasTriggeredAutoStudyRef.current = currentIndex;
                     startAutoStudyInstant(currentIndex, originalExpItems);
                   } else if (autoStudyPhaseRef.current === "showing" && time >= (currentSub.end + 0.15)) {
-                    if (autoStudyLoopsRef.current > 0) {
-                      startAutoStudyReplay(currentIndex, autoStudyLoopsRef.current);
+                    if (isLoopingCurrentSubRef.current || autoStudyLoopsRef.current > 0) {
+                      startAutoStudyReplay(currentIndex, isLoopingCurrentSubRef.current ? 999999 : autoStudyLoopsRef.current);
                     } else {
                       stopAutoStudy();
                     }
@@ -2411,6 +2420,17 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           if (autoStudyPhaseRef.current === "replaying" && subtitles.length > 0) {
             const currentSub = subtitles[currentIndex];
             if (currentSub && time >= (currentSub.end + 0.15)) {
+              if (isLoopingCurrentSubRef.current) {
+                // Infinite loop mode: keep replaying the current sub continuously
+                lastSeekTimeRef.current = Date.now();
+                if (playerRef.current && typeof playerRef.current.seekTo === "function") {
+                  playerRef.current.seekTo(currentSub.start, true);
+                  playerRef.current.playVideo();
+                  setIsPlaying(true);
+                }
+                return;
+              }
+
               if (autoStudyLoopRemainingRef.current > 1) {
                 autoStudyLoopRemainingRef.current -= 1;
                 setAutoStudyLoopRemaining(autoStudyLoopRemainingRef.current);
@@ -2923,8 +2943,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                           hasTriggeredAutoStudyRef.current = currentIndex;
                           startAutoStudyInstant(currentIndex, originalExpItems);
                         } else if (autoStudyPhaseRef.current === "showing" && time >= (currentSub.end + 0.15)) {
-                          if (autoStudyLoopsRef.current > 0) {
-                            startAutoStudyReplay(currentIndex, autoStudyLoopsRef.current);
+                          if (isLoopingCurrentSubRef.current || autoStudyLoopsRef.current > 0) {
+                            startAutoStudyReplay(currentIndex, isLoopingCurrentSubRef.current ? 999999 : autoStudyLoopsRef.current);
                           } else {
                             stopAutoStudy();
                           }
@@ -2946,6 +2966,17 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 if (autoStudyPhaseRef.current === "replaying" && subtitles.length > 0) {
                   const currentSub = subtitles[currentIndex];
                   if (currentSub && time >= (currentSub.end + 0.15)) {
+                    if (isLoopingCurrentSubRef.current) {
+                      // Infinite loop mode: keep replaying the current sub continuously
+                      lastSeekTimeRef.current = Date.now();
+                      if (videoRef.current) {
+                        videoRef.current.currentTime = currentSub.start;
+                        videoRef.current.play().catch(() => {});
+                        setIsPlaying(true);
+                      }
+                      return;
+                    }
+
                     if (autoStudyLoopRemainingRef.current > 1) {
                       autoStudyLoopRemainingRef.current -= 1;
                       setAutoStudyLoopRemaining(autoStudyLoopRemainingRef.current);
@@ -3059,7 +3090,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 autoStudyDisplayMode,
                 autoStudyBorderWidth,
                 autoStudyBorderColor,
-                autoStudyBorderOpacity
+                autoStudyBorderOpacity,
+                isLoopingCurrentSub
               )}
             </div>
           )}
