@@ -174,7 +174,8 @@ Cung cấp từ 2 đến 3 cách diễn đạt lại (Natural Re-expressions) kh
 * Không chọn từ quá sơ cấp/hiển nhiên (I, you, go, have, do, be...). Nếu câu không có từ nào đáng chú ý, trả về "vocabulary": [].
 
 ## 2.2. Thông tin từ vựng:
-* word: Từ / cụm từ / idiom mục tiêu.
+* word: Từ / cụm từ / idiom mục tiêu (dạng nguyên thể hoặc dạng từ điển).
+* matched_text: BẮT BUỘC cung cấp đoạn ký tự/từ ngữ NGUYÊN VĂN xuất hiện trong câu thoại gốc (hoặc câu paraphrase) tương ứng với mục từ vựng này. Ví dụ: Nếu word là "go through" nhưng trong câu thoại chia thì quá khứ là "went through" thì matched_text BẮT BUỘC ghi "went through". Nếu word là "make up one's mind" và trong câu là "made up my mind" thì matched_text ghi "made up my mind".
 * source: BẮT BUỘC ghi đúng 1 trong: "original" (nếu từ câu gốc) | "paraphrase" (nếu từ câu paraphrase).
 * ipa: Phiên âm General American (GA) đặt trong /.../.
 * part_of_speech: Chỉ chọn 1 trong: idiom | phrasal verb | phrase | verb | noun | adjective | adverb | collocation.
@@ -212,7 +213,8 @@ Cung cấp từ 2 đến 3 cách diễn đạt lại (Natural Re-expressions) kh
   ],
   "vocabulary": [
     {
-      "word": "Từ / cụm từ / idiom mục tiêu",
+      "word": "Từ / cụm từ / idiom mục tiêu (Ví dụ: go through)",
+      "matched_text": "Đoạn chữ nguyên văn xuất hiện trong câu thoại gốc/paraphrase (Ví dụ: went through)",
       "source": "original | paraphrase",
       "ipa": "/.../",
       "part_of_speech": "idiom | phrasal verb | phrase | verb | noun | adjective | adverb | collocation",
@@ -240,6 +242,7 @@ Cung cấp từ 2 đến 3 cách diễn đạt lại (Natural Re-expressions) kh
   "structures": [
     {
       "pattern": "Sentence frame/pattern giao tiếp",
+      "matched_text": "Đoạn chữ nguyên văn xuất hiện trong câu",
       "source": "original | paraphrase",
       "meaning": "Cách sử dụng thực tế trong câu",
       "examples": [

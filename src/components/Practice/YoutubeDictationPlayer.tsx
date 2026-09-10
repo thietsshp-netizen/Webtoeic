@@ -170,6 +170,433 @@ const renderFormattedNote = (noteText: string, fontSize: number) => {
   );
 };
 
+const getAutoStudyItemText = (it: FlattenedExpansionItem): string => {
+  const isVocab = it.type === "vocabulary";
+  if (isVocab) {
+    const w = it.word || "";
+    const ipa = it.ipa ? ` /${it.ipa}/` : "";
+    const m = it.meaning || "";
+    let sfText = "";
+    if (it.semantic_field_expansion && it.semantic_field_expansion.length > 0) {
+      sfText = " Mở rộng:" + it.semantic_field_expansion.map(sf => {
+        const t = sf.type ? ` [${sf.type}]` : "";
+        const expr = sf.expression ? ` ${sf.expression}` : "";
+        const mean = sf.meaning ? ` — ${sf.meaning}` : "";
+        const rawExEn = sf.example_en ? sf.example_en.replace(/<[^>]*>/g, '').trim() : "";
+        const rawExVi = sf.example_vi ? sf.example_vi.trim() : "";
+        const exEn = rawExEn ? ` ${rawExEn}` : "";
+        const exVi = rawExVi ? ` (${rawExVi})` : "";
+        return `${t}${expr}${mean}${exEn}${exVi}`;
+      }).join("");
+    } else {
+      const syn = it.synonyms ? ` Đồng nghĩa: ${it.synonyms}` : (it.antonyms ? ` Trái nghĩa: ${it.antonyms}` : "");
+      const primaryEx = it.examples && it.examples.length > 0 ? it.examples[0] : null;
+      const rawExEn = primaryEx?.en ? primaryEx.en.replace(/<[^>]*>/g, '').trim() : "";
+      const rawExVi = primaryEx?.vi ? primaryEx.vi.trim() : "";
+      const exEn = rawExEn ? ` ${rawExEn}` : "";
+      const exVi = rawExVi ? ` (${rawExVi})` : "";
+      sfText = syn + exEn + exVi;
+    }
+    return w + ipa + m + sfText;
+  } else {
+    // Structure: Giữ nguyên
+    const p = it.pattern || "";
+    const ipa = it.ipa ? ` /${it.ipa}/` : "";
+    const m = it.meaning || "";
+    const syn = it.synonyms ? ` Đồng nghĩa: ${it.synonyms}` : (it.antonyms ? ` Trái nghĩa: ${it.antonyms}` : "");
+    const primaryEx = it.examples && it.examples.length > 0 ? it.examples[0] : null;
+    const rawExEn = primaryEx?.en ? primaryEx.en.replace(/<[^>]*>/g, '').trim() : "";
+    const rawExVi = primaryEx?.vi ? primaryEx.vi.trim() : "";
+    const exEn = rawExEn ? ` ${rawExEn}` : "";
+    const exVi = rawExVi ? ` (${rawExVi})` : "";
+    return p + ipa + m + syn + exEn + exVi;
+  }
+};
+
+// Bảng từ điển các biến thể động từ thông dụng & bất quy tắc (Irregular Verbs & Common Verb Inflections)
+const VERB_STEMS_MAP: Record<string, string[]> = {
+  move: ["move", "moves", "moved", "moving"],
+  pack: ["pack", "packs", "packed", "packing"],
+  pick: ["pick", "picks", "picked", "picking"],
+  clean: ["clean", "cleans", "cleaned", "cleaning"],
+  pass: ["pass", "passes", "passed", "passing"],
+  carry: ["carry", "carries", "carried", "carrying"],
+  tear: ["tear", "tears", "tore", "torn", "tearing"],
+  show: ["show", "shows", "showed", "shown", "showing"],
+  fill: ["fill", "fills", "filled", "filling"],
+  call: ["call", "calls", "called", "calling"],
+  point: ["point", "points", "pointed", "pointing"],
+  shut: ["shut", "shuts", "shutting"],
+  lock: ["lock", "locks", "locked", "locking"],
+  kick: ["kick", "kicks", "kicked", "kicking"],
+  cheer: ["cheer", "cheers", "cheered", "cheering"],
+  figure: ["figure", "figures", "figured", "figuring"],
+  wake: ["wake", "wakes", "woke", "woken", "waking"],
+  dress: ["dress", "dresses", "dressed", "dressing"],
+  cross: ["cross", "crosses", "crossed", "crossing"],
+  cut: ["cut", "cuts", "cutting"],
+  burn: ["burn", "burns", "burned", "burnt", "burning"],
+  hand: ["hand", "hands", "handed", "handing"],
+  let: ["let", "lets", "letting"],
+  pay: ["pay", "pays", "paid", "paying"],
+  check: ["check", "checks", "checked", "checking"],
+  drop: ["drop", "drops", "dropped", "dropping"],
+  pull: ["pull", "pulls", "pulled", "pulling"],
+  push: ["push", "pushes", "pushed", "pushing"],
+  step: ["step", "steps", "stepped", "stepping"],
+  grow: ["grow", "grows", "grew", "grown", "growing"],
+  go: ["go", "goes", "went", "gone", "going"],
+  take: ["take", "takes", "took", "taken", "taking"],
+  get: ["get", "gets", "got", "gotten", "getting"],
+  make: ["make", "makes", "made", "making"],
+  have: ["have", "has", "had", "having"],
+  see: ["see", "sees", "saw", "seen", "seeing"],
+  know: ["know", "knows", "knew", "known", "knowing"],
+  say: ["say", "says", "said", "saying"],
+  come: ["come", "comes", "came", "coming"],
+  give: ["give", "gives", "gave", "given", "giving"],
+  keep: ["keep", "keeps", "kept", "keeping"],
+  feel: ["feel", "feels", "felt", "feeling"],
+  leave: ["leave", "leaves", "left", "leaving"],
+  find: ["find", "finds", "found", "finding"],
+  think: ["think", "thinks", "thought", "thinking"],
+  tell: ["tell", "tells", "told", "telling"],
+  lose: ["lose", "loses", "lost", "losing"],
+  put: ["put", "puts", "putting"],
+  run: ["run", "runs", "ran", "running"],
+  bring: ["bring", "brings", "brought", "bringing"],
+  buy: ["buy", "buys", "bought", "buying"],
+  catch: ["catch", "catches", "caught", "catching"],
+  fall: ["fall", "falls", "fell", "fallen", "falling"],
+  hear: ["hear", "hears", "heard", "hearing"],
+  hold: ["hold", "holds", "held", "holding"],
+  lead: ["lead", "leads", "led", "leading"],
+  meet: ["meet", "meets", "met", "meeting"],
+  read: ["read", "reads", "reading"],
+  set: ["set", "sets", "setting"],
+  sit: ["sit", "sits", "sat", "sitting"],
+  speak: ["speak", "speaks", "spoke", "spoken", "speaking"],
+  stand: ["stand", "stands", "stood", "standing"],
+  understand: ["understand", "understands", "understood", "understanding"],
+  win: ["win", "wins", "won", "winning"],
+  write: ["write", "writes", "wrote", "written", "writing"],
+  kill: ["kill", "kills", "killed", "killing"],
+  die: ["die", "dies", "died", "dying"],
+  drive: ["drive", "drives", "drove", "driven", "driving"],
+  hang: ["hang", "hangs", "hung", "hanging"],
+  blow: ["blow", "blows", "blew", "blown", "blowing"],
+  break: ["break", "breaks", "broke", "broken", "breaking"],
+  hit: ["hit", "hits", "hitting"],
+  throw: ["throw", "throws", "threw", "thrown", "throwing"],
+  turn: ["turn", "turns", "turned", "turning"],
+  walk: ["walk", "walks", "walked", "walking"],
+  work: ["work", "works", "worked", "working"],
+  look: ["look", "looks", "looked", "looking"],
+  watch: ["watch", "watches", "watched", "watching"]
+};
+
+// Helper: Xây dựng Regex pattern cho 1 từ đơn (xử lý chia thì, đuôi e, gấp đôi phụ âm, bất quy tắc)
+const buildWordRegexPattern = (w: string): string => {
+  const clean = w.toLowerCase().replace(/[^a-z0-9']/g, '');
+  if (!clean) return "";
+
+  // 1. Placeholder pronouns / object placeholders
+  if (["someone", "somebody", "sb", "one's", "oneself", "myself", "yourself", "himself", "herself", "themselves", "ourselves"].includes(clean)) {
+    return `(?:someone|somebody|sb|myself|yourself|himself|herself|themselves|ourselves|me|you|him|her|them|us|one's|my|your|his|their|our|\\w+(?:'s)?)`;
+  }
+  if (["something", "sth"].includes(clean)) {
+    return `(?:something|sth|it|this|that|\\w+)`;
+  }
+
+  // 2. Irregular & common verb stems
+  for (const [, forms] of Object.entries(VERB_STEMS_MAP)) {
+    if (forms.includes(clean)) {
+      return `(?:${forms.join("|")})`;
+    }
+  }
+
+  // 3. Verbs ending in -e (move -> move, moves, moved, moving; hope, store, save...)
+  if (clean.endsWith('e') && clean.length >= 3) {
+    const stem = clean.slice(0, -1);
+    return `(?:${clean}|${clean}s|${clean}d|${stem}ing)`;
+  }
+
+  // 4. Verbs ending in consonant doubling (stop -> stopped, stopping; drop, plan, run, hit...)
+  if (clean.length >= 3 && /[bcdfghjklmnpqrstvwxyz][aeiou][bcdfghjklmnpqrstvwxyz]$/i.test(clean) && !/[wxy]$/i.test(clean)) {
+    const lastChar = clean.slice(-1);
+    return `(?:${clean}|${clean}s|${clean}es|${clean}ed|${clean}${lastChar}ed|${clean}ing|${clean}${lastChar}ing)`;
+  }
+
+  // 5. Regular verb / noun inflection (-s, -es, -ed, -ing)
+  const escaped = clean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  if (clean.length > 3) {
+    const base = clean.replace(/(?:ing|ed|es|s)$/, '');
+    if (base.length >= 3) {
+      return `(?:${escaped}|${base}(?:ing|ed|es|s|d)?)`;
+    }
+  }
+
+  return escaped;
+};
+
+// Helper: Xây dựng Regex thông minh cho cụm từ liền kề
+const buildFlexiblePhraseRegex = (phrase: string): RegExp => {
+  const words = phrase.trim().split(/\s+/);
+  const regexParts = words.map(w => buildWordRegexPattern(w)).filter(Boolean);
+
+  if (regexParts.length === 0) {
+    const fallbackEscaped = phrase.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`\\b${fallbackEscaped}\\b`, 'gi');
+  }
+
+  return new RegExp(`\\b${regexParts.join("[\\s\\-\\–',]+")}\\b`, 'gi');
+};
+
+const renderHighlightedSubtitle = (
+  rawText: string,
+  vocabItems: FlattenedExpansionItem[],
+  activeItemIdx: number,
+  isAutoStudyActive: boolean,
+  isReplaying: boolean,
+  isLightMode: boolean = false
+): React.ReactNode => {
+  if (!isAutoStudyActive || !vocabItems || vocabItems.length === 0 || !rawText) {
+    return rawText;
+  }
+
+  // Find occurrences of each vocabItem in rawText
+  interface MatchInterval {
+    start: number;
+    end: number;
+    itemIdx: number;
+    item: FlattenedExpansionItem;
+  }
+
+  const intervals: MatchInterval[] = [];
+
+  vocabItems.forEach((it, itIdx) => {
+    // 0. Ưu tiên 1 (Tuyệt đối chính xác 100%): Dùng matched_text nguyên văn do Gemini gắn cờ trực tiếp
+    const exactMatchedText = (it.matched_text || "").trim();
+    if (exactMatchedText) {
+      // Nếu matched_text chứa dấu phân tách cụm rời (ví dụ: "moved ... out", "moved / out", "moved ~ out")
+      const splitParts = exactMatchedText.split(/\s*(?:\.\.\.|\.\.|\/|~)\s*/).filter(Boolean);
+      if (splitParts.length > 1) {
+        let allMatched = true;
+        const tempIntervals: MatchInterval[] = [];
+        let searchFrom = 0;
+        for (const part of splitParts) {
+          const escapedPart = part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const regexPart = new RegExp(`\\b${escapedPart}\\b`, 'gi');
+          const sliceText = rawText.slice(searchFrom);
+          const matchPart = regexPart.exec(sliceText);
+          if (matchPart) {
+            const partStart = searchFrom + matchPart.index;
+            const partEnd = partStart + matchPart[0].length;
+            tempIntervals.push({
+              start: partStart,
+              end: partEnd,
+              itemIdx: itIdx,
+              item: it
+            });
+            searchFrom = partEnd;
+          } else {
+            allMatched = false;
+            break;
+          }
+        }
+        if (allMatched && tempIntervals.length > 0) {
+          intervals.push(...tempIntervals);
+          return;
+        }
+      }
+
+      try {
+        const escaped = exactMatchedText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        let regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+        let match = regex.exec(rawText);
+        if (!match) {
+          regex = new RegExp(escaped, 'gi');
+          match = regex.exec(rawText);
+        }
+        if (match) {
+          intervals.push({
+            start: match.index,
+            end: match.index + match[0].length,
+            itemIdx: itIdx,
+            item: it
+          });
+          return;
+        }
+      } catch {
+        // ignore and fallback
+      }
+    }
+
+    const word = (it.word || it.pattern || "").trim();
+    if (!word) return;
+
+    // 1. Khớp thông minh nguyên cụm liền kề (Contiguous matching with irregular & inflections)
+    try {
+      const smartRegex = buildFlexiblePhraseRegex(word);
+      const match = smartRegex.exec(rawText);
+      if (match) {
+        intervals.push({
+          start: match.index,
+          end: match.index + match[0].length,
+          itemIdx: itIdx,
+          item: it
+        });
+        return;
+      }
+    } catch {
+      // ignore regex error and try fallback
+    }
+
+    // 2. Khớp cụm động từ tách rời (Separable Phrasal Verbs, e.g. "move out" -> "moved her stuff out", "pick up" -> "picked it up")
+    try {
+      const words = word.split(/\s+/).filter(Boolean);
+      if (words.length >= 2) {
+        const firstPattern = buildWordRegexPattern(words[0]);
+        const lastPattern = buildWordRegexPattern(words[words.length - 1]);
+        if (firstPattern && lastPattern) {
+          // Cho phép cách nhau từ 1 đến 4 từ ở giữa (tân ngữ/đại từ: "her stuff", "it", "the box", "me", etc.)
+          const separableRegex = new RegExp(`\\b(${firstPattern})\\b(\\s+(?:[\\w'’\\-]+\\s+){0,4}?)\\b(${lastPattern})\\b`, 'i');
+          const sepMatch = separableRegex.exec(rawText);
+          if (sepMatch) {
+            const firstStart = sepMatch.index;
+            const firstEnd = firstStart + sepMatch[1].length;
+            const secondStart = firstStart + sepMatch[1].length + sepMatch[2].length;
+            const secondEnd = secondStart + sepMatch[3].length;
+
+            intervals.push({
+              start: firstStart,
+              end: firstEnd,
+              itemIdx: itIdx,
+              item: it
+            });
+            intervals.push({
+              start: secondStart,
+              end: secondEnd,
+              itemIdx: itIdx,
+              item: it
+            });
+            return;
+          }
+        }
+      }
+    } catch {
+      // ignore and fallback
+    }
+
+    // 3. Fallback: Khớp nguyên văn case-insensitive có word boundary
+    const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    let regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+    let match = regex.exec(rawText);
+
+    // 4. Fallback: Khớp chuỗi con không cần word boundary
+    if (!match) {
+      regex = new RegExp(escaped, 'gi');
+      match = regex.exec(rawText);
+    }
+
+    if (match) {
+      intervals.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        itemIdx: itIdx,
+        item: it
+      });
+    }
+  });
+
+  if (intervals.length === 0) {
+    return rawText;
+  }
+
+  // Sort intervals by start position
+  intervals.sort((a, b) => a.start - b.start);
+
+  // Filter overlapping intervals
+  const nonOverlapping: MatchInterval[] = [];
+  let lastEnd = 0;
+  for (const interval of intervals) {
+    if (interval.start >= lastEnd) {
+      nonOverlapping.push(interval);
+      lastEnd = interval.end;
+    }
+  }
+
+  // Build segments
+  const nodes: React.ReactNode[] = [];
+  let currIdx = 0;
+
+  nonOverlapping.forEach((interval, idx) => {
+    if (interval.start > currIdx) {
+      nodes.push(
+        <span key={`text-${idx}`}>{rawText.slice(currIdx, interval.start)}</span>
+      );
+    }
+
+    const matchedText = rawText.slice(interval.start, interval.end);
+    const isActive = isReplaying || interval.itemIdx === activeItemIdx;
+    const badgeNumber = interval.itemIdx + 1;
+
+    if (isLightMode) {
+      nodes.push(
+        <span
+          key={`match-${idx}`}
+          className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded-md transition-all duration-300 align-baseline ${
+            isActive
+              ? "bg-amber-100 border border-amber-400 text-amber-900 font-extrabold shadow-sm animate-pulse"
+              : "bg-red-50 border border-red-300 text-red-700 font-bold"
+          }`}
+        >
+          <span
+            className={`inline-flex items-center justify-center w-3.5 h-3.5 rounded-full text-[9px] font-black shrink-0 select-none ${
+              isActive ? "bg-amber-500 text-white" : "bg-red-500 text-white"
+            }`}
+          >
+            {badgeNumber}
+          </span>
+          <span>{matchedText}</span>
+        </span>
+      );
+    } else {
+      nodes.push(
+        <span
+          key={`match-${idx}`}
+          className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded-lg transition-all duration-300 align-baseline ${
+            isActive
+              ? "bg-amber-400/30 border-2 border-amber-300 text-amber-200 font-extrabold shadow-[0_0_16px_rgba(251,191,36,0.85)] animate-pulse"
+              : "bg-red-950/70 border border-red-400/60 text-red-300 font-bold"
+          }`}
+        >
+          <span
+            className={`inline-flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-black shrink-0 select-none shadow-xs ${
+              isActive ? "bg-amber-400 text-slate-950 font-black" : "bg-red-500 text-white font-bold"
+            }`}
+          >
+            {badgeNumber}
+          </span>
+          <span className={isActive ? "text-amber-200 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]" : "text-red-300"}>
+            {matchedText}
+          </span>
+        </span>
+      );
+    }
+
+    currIdx = interval.end;
+  });
+
+  if (currIdx < rawText.length) {
+    nodes.push(
+      <span key="text-tail">{rawText.slice(currIdx)}</span>
+    );
+  }
+
+  return nodes;
+};
+
 const renderAutoStudyOverlayContent = (
   items: FlattenedExpansionItem[],
   revealedChars: number,
@@ -180,9 +607,9 @@ const renderAutoStudyOverlayContent = (
   opacity: number = 85,
   isPaused: boolean = false
 ) => {
+  // Chỉ lấy các mục từ vựng/cụm từ/slang/idiom (bỏ hoàn toàn cấu trúc theo yêu cầu)
   const vocabItems = items.filter(it => it.type === "vocabulary");
-  const structItems = items.filter(it => it.type === "structure");
-  const hasBoth = vocabItems.length > 0 && structItems.length > 0;
+  if (vocabItems.length === 0) return null;
 
   const userOpacity = typeof opacity === "number" ? opacity : 85;
   const bgAlpha = Math.min(1, Math.max(0, userOpacity / 100));
@@ -198,40 +625,19 @@ const renderAutoStudyOverlayContent = (
     borderColor: `rgba(255, 255, 255, ${Math.min(0.9, Math.max(0.2, bgAlpha * 0.7 + 0.2))})`,
   };
 
-  const getItemText = (it: FlattenedExpansionItem) => {
-    const isVocab = it.type === "vocabulary";
-    const w = (isVocab ? it.word : it.pattern) || "";
-    const ipa = it.ipa ? ` /${it.ipa}/` : "";
-    const m = it.meaning || "";
-    const syn = it.synonyms ? ` Đồng nghĩa: ${it.synonyms}` : (it.antonyms ? ` Trái nghĩa: ${it.antonyms}` : "");
-    
-    const primaryEx = it.examples && it.examples.length > 0 ? it.examples[0] : null;
-    const rawExEn = primaryEx?.en ? primaryEx.en.replace(/<[^>]*>/g, '').trim() : "";
-    const rawExVi = primaryEx?.vi ? primaryEx.vi.trim() : "";
-    const exEn = rawExEn ? ` ${rawExEn}` : "";
-    const exVi = rawExVi ? ` (${rawExVi})` : "";
-    return w + ipa + m + syn + exEn + exVi;
-  };
-
-  const vocabTextLength = vocabItems.map(getItemText).join("").length;
-  const vocabRevealed = Math.min(revealedChars, vocabTextLength);
-  const structRevealed = Math.max(0, revealedChars - vocabTextLength);
-  const isStructStarted = phase === "replaying" || structRevealed > 0 || vocabItems.length === 0;
-
-  const renderSectionItems = (sectionItems: FlattenedExpansionItem[], sectionRevealedChars: number, sectionIsTyping: boolean) => {
+  const renderSectionItems = (
+    sectionItems: FlattenedExpansionItem[],
+    sectionRevealedChars: number,
+    sectionIsTyping: boolean,
+    itemNumberOffset: number = 0
+  ) => {
     let charOffset = 0;
     return sectionItems.map((item, itIdx) => {
+      const itemNumber = itemNumberOffset + itIdx + 1;
       const isVocab = item.type === "vocabulary";
       const titleText = (isVocab ? item.word : item.pattern) || "";
       const ipaText = item.ipa ? ` /${item.ipa}/` : "";
       const meaningText = item.meaning || "";
-      const synText = item.synonyms ? ` Đồng nghĩa: ${item.synonyms}` : (item.antonyms ? ` Trái nghĩa: ${item.antonyms}` : "");
-
-      const primaryEx = item.examples && item.examples.length > 0 ? item.examples[0] : null;
-      const rawExEn = primaryEx?.en ? primaryEx.en.replace(/<[^>]*>/g, '').trim() : "";
-      const rawExVi = primaryEx?.vi ? primaryEx.vi.trim() : "";
-      const exEnText = rawExEn ? ` ${rawExEn}` : "";
-      const exViText = rawExVi ? ` (${rawExVi})` : "";
 
       // Title slice
       const titleStart = charOffset;
@@ -256,26 +662,143 @@ const renderAutoStudyOverlayContent = (
       const isTypingMeaning = sectionIsTyping && sectionRevealedChars >= meaningStart && sectionRevealedChars < meaningEnd;
       charOffset = meaningEnd;
 
-      // Synonyms slice
-      const synStart = charOffset;
-      const synEnd = synStart + synText.length;
-      const visibleSyn = synText.slice(0, Math.max(0, sectionRevealedChars - synStart));
-      const isTypingSyn = sectionIsTyping && sectionRevealedChars >= synStart && sectionRevealedChars < synEnd;
-      charOffset = synEnd;
+      let sfRenderData: {
+        hasHeader: boolean;
+        visibleHeader: string;
+        isTypingHeader: boolean;
+        items: Array<{
+          type: string;
+          showTypeBadge: boolean;
+          visibleExpr: string;
+          isTypingExpr: boolean;
+          visibleMean: string;
+          isTypingMean: boolean;
+          visibleExEn: string;
+          isTypingExEn: boolean;
+          visibleExVi: string;
+          isTypingExVi: boolean;
+        }>;
+      } | null = null;
 
-      // Example EN slice
-      const exEnStart = charOffset;
-      const exEnEnd = exEnStart + exEnText.length;
-      const visibleExEn = exEnText.slice(0, Math.max(0, sectionRevealedChars - exEnStart));
-      const isTypingExEn = sectionIsTyping && sectionRevealedChars >= exEnStart && sectionRevealedChars < exEnEnd;
-      charOffset = exEnEnd;
+      let fallbackData: {
+        visibleSyn: string;
+        isTypingSyn: boolean;
+        visibleExEn: string;
+        isTypingExEn: boolean;
+        visibleExVi: string;
+        isTypingExVi: boolean;
+      } | null = null;
 
-      // Example VI slice
-      const exViStart = charOffset;
-      const exViEnd = exViStart + exViText.length;
-      const visibleExVi = exViText.slice(0, Math.max(0, sectionRevealedChars - exViStart));
-      const isTypingExVi = sectionIsTyping && sectionRevealedChars >= exViStart && sectionRevealedChars < exViEnd;
-      charOffset = exViEnd;
+      if (isVocab && item.semantic_field_expansion && item.semantic_field_expansion.length > 0) {
+        const headerText = " Mở rộng:";
+        const headerStart = charOffset;
+        const headerEnd = headerStart + headerText.length;
+        const visibleHeader = headerText.slice(0, Math.max(0, sectionRevealedChars - headerStart));
+        const isTypingHeader = sectionIsTyping && sectionRevealedChars >= headerStart && sectionRevealedChars < headerEnd;
+        charOffset = headerEnd;
+
+        const sfItems = item.semantic_field_expansion.map(sf => {
+          const typeText = sf.type ? ` [${sf.type}]` : "";
+          const exprText = sf.expression ? ` ${sf.expression}` : "";
+          const meanText = sf.meaning ? ` — ${sf.meaning}` : "";
+          const rawExEn = sf.example_en ? sf.example_en.replace(/<[^>]*>/g, '').trim() : "";
+          const rawExVi = sf.example_vi ? sf.example_vi.trim() : "";
+          const exEnText = rawExEn ? ` ${rawExEn}` : "";
+          const exViText = rawExVi ? ` (${rawExVi})` : "";
+
+          // Type slice
+          const tStart = charOffset;
+          const tEnd = tStart + typeText.length;
+          const showTypeBadge = !sectionIsTyping || sectionRevealedChars >= tEnd;
+          charOffset = tEnd;
+
+          // Expr slice
+          const exprStart = charOffset;
+          const exprEnd = exprStart + exprText.length;
+          const visibleExpr = exprText.slice(0, Math.max(0, sectionRevealedChars - exprStart));
+          const isTypingExpr = sectionIsTyping && sectionRevealedChars >= exprStart && sectionRevealedChars < exprEnd;
+          charOffset = exprEnd;
+
+          // Meaning slice
+          const meanStart = charOffset;
+          const meanEnd = meanStart + meanText.length;
+          const visibleMean = meanText.slice(0, Math.max(0, sectionRevealedChars - meanStart));
+          const isTypingMean = sectionIsTyping && sectionRevealedChars >= meanStart && sectionRevealedChars < meanEnd;
+          charOffset = meanEnd;
+
+          // Example EN slice
+          const exEnStart = charOffset;
+          const exEnEnd = exEnStart + exEnText.length;
+          const visibleExEn = exEnText.slice(0, Math.max(0, sectionRevealedChars - exEnStart));
+          const isTypingExEn = sectionIsTyping && sectionRevealedChars >= exEnStart && sectionRevealedChars < exEnEnd;
+          charOffset = exEnEnd;
+
+          // Example VI slice
+          const exViStart = charOffset;
+          const exViEnd = exViStart + exViText.length;
+          const visibleExVi = exViText.slice(0, Math.max(0, sectionRevealedChars - exViStart));
+          const isTypingExVi = sectionIsTyping && sectionRevealedChars >= exViStart && sectionRevealedChars < exViEnd;
+          charOffset = exViEnd;
+
+          return {
+            type: sf.type || "related",
+            showTypeBadge,
+            visibleExpr,
+            isTypingExpr,
+            visibleMean,
+            isTypingMean,
+            visibleExEn,
+            isTypingExEn,
+            visibleExVi,
+            isTypingExVi,
+          };
+        });
+
+        sfRenderData = {
+          hasHeader: true,
+          visibleHeader,
+          isTypingHeader,
+          items: sfItems,
+        };
+      } else {
+        // Fallback for legacy vocab or standard structure
+        const synText = item.synonyms ? ` Đồng nghĩa: ${item.synonyms}` : (item.antonyms ? ` Trái nghĩa: ${item.antonyms}` : "");
+        const primaryEx = item.examples && item.examples.length > 0 ? item.examples[0] : null;
+        const rawExEn = primaryEx?.en ? primaryEx.en.replace(/<[^>]*>/g, '').trim() : "";
+        const rawExVi = primaryEx?.vi ? primaryEx.vi.trim() : "";
+        const exEnText = rawExEn ? ` ${rawExEn}` : "";
+        const exViText = rawExVi ? ` (${rawExVi})` : "";
+
+        // Synonyms slice
+        const synStart = charOffset;
+        const synEnd = synStart + synText.length;
+        const visibleSyn = synText.slice(0, Math.max(0, sectionRevealedChars - synStart));
+        const isTypingSyn = sectionIsTyping && sectionRevealedChars >= synStart && sectionRevealedChars < synEnd;
+        charOffset = synEnd;
+
+        // Example EN slice
+        const exEnStart = charOffset;
+        const exEnEnd = exEnStart + exEnText.length;
+        const visibleExEn = exEnText.slice(0, Math.max(0, sectionRevealedChars - exEnStart));
+        const isTypingExEn = sectionIsTyping && sectionRevealedChars >= exEnStart && sectionRevealedChars < exEnEnd;
+        charOffset = exEnEnd;
+
+        // Example VI slice
+        const exViStart = charOffset;
+        const exViEnd = exViStart + exViText.length;
+        const visibleExVi = exViText.slice(0, Math.max(0, sectionRevealedChars - exViStart));
+        const isTypingExVi = sectionIsTyping && sectionRevealedChars >= exViStart && sectionRevealedChars < exViEnd;
+        charOffset = exViEnd;
+
+        fallbackData = {
+          visibleSyn,
+          isTypingSyn,
+          visibleExEn,
+          isTypingExEn,
+          visibleExVi,
+          isTypingExVi,
+        };
+      }
 
       if (visibleTitle.length === 0 && !isTypingTitle && sectionIsTyping) {
         return null;
@@ -283,29 +806,32 @@ const renderAutoStudyOverlayContent = (
 
       return (
         <div key={itIdx} className={`space-y-1 ${itIdx > 0 ? "pt-2 border-t border-white/10" : ""}`}>
-          {/* Row 1: Word/Pattern (Red, bold) + IPA (soft purple) + Badges */}
-          <div className="flex flex-wrap items-baseline gap-1.5 md:gap-2">
-            <span className="text-base sm:text-lg md:text-xl font-extrabold text-red-400 tracking-wide drop-shadow-md">
+          {/* Row 1: Word/Pattern (Vocab Red, font-extrabold) + Item Number Badge + IPA + Badges */}
+          <div className="flex flex-wrap items-baseline gap-1 sm:gap-1.5">
+            <span className="inline-flex items-center justify-center w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full bg-red-500 text-white text-[9px] sm:text-[10px] font-black shrink-0 shadow-sm mr-0.5">
+              {itemNumber}
+            </span>
+            <span className="text-sm sm:text-base md:text-lg font-extrabold tracking-wide drop-shadow-md text-red-400">
               {visibleTitle}
-              {isTypingTitle && <span className="inline-block w-1.5 h-4 bg-red-400 ml-0.5 animate-pulse align-middle" />}
+              {isTypingTitle && <span className="inline-block w-1.5 h-3.5 ml-0.5 animate-pulse align-middle bg-red-400" />}
             </span>
 
             {visibleIpa && (
-              <span className="text-xs sm:text-sm font-mono font-medium text-violet-300 drop-shadow-xs">
+              <span className="text-[11px] sm:text-xs font-mono font-medium text-violet-300 drop-shadow-xs">
                 {visibleIpa}
-                {isTypingIpa && <span className="inline-block w-1.5 h-3.5 bg-violet-300 ml-0.5 animate-pulse align-middle" />}
+                {isTypingIpa && <span className="inline-block w-1.5 h-3 bg-violet-300 ml-0.5 animate-pulse align-middle" />}
               </span>
             )}
 
             {showBadges && (
               <div className="inline-flex items-center gap-1 ml-0.5">
                 {item.part_of_speech && (
-                  <span className="px-1.5 py-0.2 rounded-md bg-emerald-950/70 border border-emerald-400/40 text-emerald-300 font-bold text-[9px] md:text-[10px] uppercase tracking-wider">
+                  <span className="px-1 py-0.2 rounded bg-emerald-950/70 border border-emerald-400/40 text-emerald-300 font-bold text-[8px] sm:text-[9px] uppercase tracking-wider">
                     {item.part_of_speech}
                   </span>
                 )}
                 {item.register && (
-                  <span className="px-1.5 py-0.2 rounded-md bg-purple-950/70 border border-purple-400/40 text-purple-300 font-bold text-[9px] md:text-[10px] tracking-wider">
+                  <span className="px-1 py-0.2 rounded bg-purple-950/70 border border-purple-400/40 text-purple-300 font-bold text-[8px] sm:text-[9px] tracking-wider">
                     {item.register}
                   </span>
                 )}
@@ -315,47 +841,118 @@ const renderAutoStudyOverlayContent = (
 
           {/* Row 2: Vietnamese Meaning (White) */}
           {(visibleMeaning || isTypingMeaning) && (
-            <div className="text-xs sm:text-sm md:text-base font-semibold text-white leading-relaxed drop-shadow-sm flex items-start gap-1.5">
-              <span className="text-emerald-400 shrink-0 select-none">👉</span>
+            <div className="text-xs sm:text-sm font-semibold text-white leading-snug drop-shadow-sm flex items-start gap-1">
+              <span className="text-emerald-400 shrink-0 select-none text-xs">👉</span>
               <span>
                 {visibleMeaning}
-                {isTypingMeaning && <span className="inline-block w-1.5 h-3.5 bg-white ml-0.5 animate-pulse align-middle" />}
+                {isTypingMeaning && <span className="inline-block w-1.5 h-3 bg-white ml-0.5 animate-pulse align-middle" />}
               </span>
             </div>
           )}
 
-          {/* Row 3: Synonyms / Antonyms (Soft yellow) */}
-          {(visibleSyn || isTypingSyn) && (
-            <div className="text-[11px] sm:text-xs font-medium text-amber-200/90 leading-snug pl-5">
-              <span className="inline-flex items-center gap-1">
-                <span>🔗</span>
-                <span>{visibleSyn}</span>
-                {isTypingSyn && <span className="inline-block w-1 h-3 bg-amber-300 ml-0.5 animate-pulse align-middle" />}
-              </span>
+          {/* Row 3 (Mở rộng): Semantic Field Expansion for Vocab */}
+          {sfRenderData && (sfRenderData.visibleHeader || sfRenderData.isTypingHeader || sfRenderData.items.some(it => it.visibleExpr)) && (
+            <div className="pt-1 border-t border-white/10 space-y-1">
+              <div className="text-[10px] sm:text-[11px] font-bold text-amber-300 flex items-center gap-1">
+                <span>🌐</span>
+                <span>{sfRenderData.visibleHeader.trim() || "Mở rộng:"}</span>
+                {sfRenderData.isTypingHeader && <span className="inline-block w-1.5 h-2.5 bg-amber-300 ml-0.5 animate-pulse align-middle" />}
+              </div>
+              <div className="space-y-1 pl-1.5 sm:pl-2">
+                {sfRenderData.items.map((sfItem, sfIdx) => {
+                  if (!sfItem.visibleExpr && !sfItem.isTypingExpr && !sfItem.visibleMean && sectionIsTyping) return null;
+                  const typeLower = (sfItem.type || "").toLowerCase();
+                  const badgeClass = typeLower.includes("slang")
+                    ? "bg-orange-950/80 border-orange-400/50 text-orange-300"
+                    : typeLower.includes("idiom")
+                    ? "bg-purple-950/80 border-purple-400/50 text-purple-300"
+                    : typeLower.includes("synonym")
+                    ? "bg-emerald-950/80 border-emerald-400/50 text-emerald-300"
+                    : "bg-sky-950/80 border-sky-400/50 text-sky-300";
+
+                  return (
+                    <div key={sfIdx} className="space-y-0.5">
+                      <div className="flex flex-wrap items-baseline gap-1">
+                        {sfItem.showTypeBadge && sfItem.type && (
+                          <span className={`px-1 py-0.2 rounded border font-bold text-[8px] sm:text-[9px] uppercase tracking-wider shrink-0 ${badgeClass}`}>
+                            {sfItem.type}
+                          </span>
+                        )}
+                        <span className="font-bold text-amber-200 text-xs sm:text-[13px]">
+                          {sfItem.visibleExpr}
+                          {sfItem.isTypingExpr && <span className="inline-block w-1.5 h-3 bg-amber-300 ml-0.5 animate-pulse align-middle" />}
+                        </span>
+                        {(sfItem.visibleMean || sfItem.isTypingMean) && (
+                          <span className="text-slate-200 text-[11px] sm:text-xs font-medium">
+                            {sfItem.visibleMean}
+                            {sfItem.isTypingMean && <span className="inline-block w-1.5 h-3 bg-slate-300 ml-0.5 animate-pulse align-middle" />}
+                          </span>
+                        )}
+                      </div>
+                      {/* Example in semantic field if present */}
+                      {(sfItem.visibleExEn || sfItem.isTypingExEn || sfItem.visibleExVi || sfItem.isTypingExVi) && (
+                        <div className="text-[10px] sm:text-[11px] leading-tight pl-3 pt-0.5 space-y-0.5">
+                          {(sfItem.visibleExEn || sfItem.isTypingExEn) && (
+                            <div className="flex items-start gap-1 font-mono text-cyan-200">
+                              <span className="text-cyan-400 shrink-0 select-none">💬</span>
+                              <span className="italic">
+                                {sfItem.visibleExEn}
+                                {sfItem.isTypingExEn && <span className="inline-block w-1 h-2.5 bg-cyan-300 ml-0.5 animate-pulse align-middle" />}
+                              </span>
+                            </div>
+                          )}
+                          {(sfItem.visibleExVi || sfItem.isTypingExVi) && (
+                            <div className="text-slate-300/90 pl-4 text-[9px] sm:text-[10px]">
+                              <span>
+                                {sfItem.visibleExVi}
+                                {sfItem.isTypingExVi && <span className="inline-block w-1 h-2.5 bg-slate-300 ml-0.5 animate-pulse align-middle" />}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
-          {/* Row 4: Example Sentence with Vietnamese Translation */}
-          {(visibleExEn || isTypingExEn || visibleExVi || isTypingExVi) && (
-            <div className="text-[11px] sm:text-xs leading-snug pl-5 pt-1 border-t border-white/5 space-y-0.5">
-              {(visibleExEn || isTypingExEn) && (
-                <div className="flex items-start gap-1 font-mono text-cyan-200">
-                  <span className="text-cyan-400 shrink-0 select-none">💬</span>
-                  <span className="italic">
-                    {visibleExEn}
-                    {isTypingExEn && <span className="inline-block w-1 h-3 bg-cyan-300 ml-0.5 animate-pulse align-middle" />}
+          {/* Fallback or Structure: Synonyms / Antonyms & Example Sentence */}
+          {fallbackData && (
+            <>
+              {(fallbackData.visibleSyn || fallbackData.isTypingSyn) && (
+                <div className="text-[10px] sm:text-[11px] font-medium text-amber-200/90 leading-snug pl-4">
+                  <span className="inline-flex items-center gap-1">
+                    <span>🔗</span>
+                    <span>{fallbackData.visibleSyn}</span>
+                    {fallbackData.isTypingSyn && <span className="inline-block w-1 h-2.5 bg-amber-300 ml-0.5 animate-pulse align-middle" />}
                   </span>
                 </div>
               )}
-              {(visibleExVi || isTypingExVi) && (
-                <div className="text-slate-300/90 pl-5 text-[10px] sm:text-[11px]">
-                  <span>
-                    {visibleExVi}
-                    {isTypingExVi && <span className="inline-block w-1 h-3 bg-slate-300 ml-0.5 animate-pulse align-middle" />}
-                  </span>
+
+              {(fallbackData.visibleExEn || fallbackData.isTypingExEn || fallbackData.visibleExVi || fallbackData.isTypingExVi) && (
+                <div className="text-[10px] sm:text-[11px] leading-tight pl-3 pt-0.5 border-t border-white/5 space-y-0.5">
+                  {(fallbackData.visibleExEn || fallbackData.isTypingExEn) && (
+                    <div className="flex items-start gap-1 font-mono text-cyan-200">
+                      <span className="text-cyan-400 shrink-0 select-none">💬</span>
+                      <span className="italic">
+                        {fallbackData.visibleExEn}
+                        {fallbackData.isTypingExEn && <span className="inline-block w-1 h-2.5 bg-cyan-300 ml-0.5 animate-pulse align-middle" />}
+                      </span>
+                    </div>
+                  )}
+                  {(fallbackData.visibleExVi || fallbackData.isTypingExVi) && (
+                    <div className="text-slate-300/90 pl-4 text-[9px] sm:text-[10px]">
+                      <span>
+                        {fallbackData.visibleExVi}
+                        {fallbackData.isTypingExVi && <span className="inline-block w-1 h-2.5 bg-slate-300 ml-0.5 animate-pulse align-middle" />}
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
-            </div>
+            </>
           )}
         </div>
       );
@@ -363,97 +960,103 @@ const renderAutoStudyOverlayContent = (
   };
 
   const renderHeaderBar = (title: string, icon: string, sectionIsTyping: boolean) => (
-    <div className="flex items-center justify-between border-b border-white/15 pb-1 mb-2">
-      <div className="flex items-center gap-1.5">
-        <span className="text-xs md:text-sm">{icon}</span>
-        <span className="text-[10px] md:text-[11px] font-extrabold uppercase tracking-wider text-emerald-300">
+    <div className="flex items-center justify-between border-b border-white/15 pb-1 mb-1.5">
+      <div className="flex items-center gap-1">
+        <span className="text-xs">{icon}</span>
+        <span className="text-[9px] sm:text-[10px] md:text-[11px] font-extrabold uppercase tracking-wider text-emerald-300">
           {title}
         </span>
       </div>
       {phase === "replaying" ? (
-        <span className="text-[10px] md:text-[11px] font-bold text-amber-300 bg-amber-950/70 px-2 py-0.5 rounded-full border border-amber-400/40 flex items-center gap-1 animate-pulse shadow-sm">
-          <span>🔁</span> Phát lại: Lần {totalLoops - loopsLeft + 1}/{totalLoops}
+        <span className="text-[9px] sm:text-[10px] font-bold text-amber-300 bg-amber-950/70 px-1.5 py-0.5 rounded-full border border-amber-400/40 flex items-center gap-1 animate-pulse shadow-sm">
+          <span>🔁</span> Phát lại: {totalLoops - loopsLeft + 1}/{totalLoops}
         </span>
       ) : isPaused ? (
-        <span className="text-[9px] md:text-[10px] font-bold text-amber-300 bg-amber-900/60 px-2 py-0.5 rounded-full border border-amber-400/40 flex items-center gap-1 shadow-sm">
-          <span>⏸️</span> Đang tạm dừng
+        <span className="text-[8px] sm:text-[9px] font-bold text-amber-300 bg-amber-900/60 px-1.5 py-0.5 rounded-full border border-amber-400/40 flex items-center gap-1 shadow-sm">
+          <span>⏸️</span> Tạm dừng
         </span>
       ) : sectionIsTyping ? (
-        <span className="text-[9px] md:text-[10px] font-semibold text-slate-300 flex items-center gap-1">
+        <span className="text-[8px] sm:text-[9px] font-semibold text-slate-300 flex items-center gap-1">
           <span>⚡</span> Đang gõ chữ...
         </span>
       ) : (
-        <span className="text-[9px] md:text-[10px] font-semibold text-emerald-300 flex items-center gap-1">
+        <span className="text-[8px] sm:text-[9px] font-semibold text-emerald-300 flex items-center gap-1">
           <span>✓</span> Đã xong
         </span>
       )}
     </div>
   );
 
-  // 1. CẢ TỪ VỰNG & CẤU TRÚC: Gõ lần lượt (Từ vựng trước, Cấu trúc sau)
-  if (hasBoth) {
-    const isVocabTyping = isTyping && revealedChars < vocabTextLength;
-    const isStructTyping = isTyping && revealedChars >= vocabTextLength;
-
-    // Khi Cấu trúc chưa bắt đầu gõ -> Chỉ hiển thị duy nhất 1 khung Từ Vựng ở giữa
-    if (!isStructStarted) {
-      return (
-        <div className="w-full max-w-2xl pointer-events-auto transition-all duration-300 animate-in fade-in zoom-in-95">
-          <div 
-            className="border-2 rounded-xl md:rounded-2xl p-3 md:p-4 transition-all flex flex-col justify-start"
-            style={cardBgStyle}
-          >
-            {renderHeaderBar("TỪ VỰNG (VOCABULARY)", "💎", isVocabTyping)}
-            <div className="space-y-2.5">
-              {renderSectionItems(vocabItems, vocabRevealed, isVocabTyping)}
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // Khi Cấu trúc bắt đầu gõ (hoặc khi phát lại) -> Mở rộng thành 2 cột
+  // Layout 1: Chỉ có 1 từ/cụm từ -> Hiển thị 1 khung ở giữa
+  if (vocabItems.length === 1) {
     return (
-      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-3.5 pointer-events-auto transition-all duration-300">
-        {/* Cột Trái: Từ Vựng (đã gõ xong) */}
+      <div className="w-full max-w-2xl max-h-full pointer-events-auto transition-all duration-300 animate-in fade-in zoom-in-95 flex flex-col justify-start">
         <div 
-          className="border-2 rounded-xl md:rounded-2xl p-3 md:p-3.5 transition-all flex flex-col justify-start"
+          className="border-2 rounded-xl p-2.5 sm:p-3 md:p-3.5 transition-all flex flex-col justify-start max-h-full overflow-y-auto no-scrollbar"
           style={cardBgStyle}
         >
-          {renderHeaderBar("TỪ VỰNG (VOCABULARY)", "💎", isVocabTyping)}
-          <div className="space-y-2.5">
-            {renderSectionItems(vocabItems, vocabRevealed, isVocabTyping)}
-          </div>
-        </div>
-
-        {/* Cột Phải: Cấu Trúc (Xuất hiện khi tới lượt gõ) */}
-        <div 
-          className="border-2 rounded-xl md:rounded-2xl p-3 md:p-3.5 transition-all flex flex-col justify-start animate-in fade-in slide-in-from-right-4 duration-300"
-          style={cardBgStyle}
-        >
-          {renderHeaderBar("CẤU TRÚC (STRUCTURES)", "📐", isStructTyping)}
-          <div className="space-y-2.5">
-            {renderSectionItems(structItems, structRevealed, isStructTyping)}
+          {renderHeaderBar("TỪ VỰNG ①", "💎", isTyping)}
+          <div className="space-y-2">
+            {renderSectionItems(vocabItems, revealedChars, isTyping, 0)}
           </div>
         </div>
       </div>
     );
   }
 
-  // 2. CHỈ CÓ TỪ VỰNG HOẶC CHỈ CÓ CẤU TRÚC: 1 Khung ở giữa
-  const isOnlyVocab = vocabItems.length > 0;
-  const title = isOnlyVocab ? "TỪ VỰNG (VOCABULARY)" : "CẤU TRÚC (STRUCTURES)";
-  const icon = isOnlyVocab ? "💎" : "📐";
-  const targetItems = isOnlyVocab ? vocabItems : structItems;
+  // Layout 2: Có từ 2 từ/cụm từ trở lên -> Chia đều ra 2 cột (Cột 1 gõ trước, Cột 2 gõ sau)
+  const splitIdx = Math.ceil(vocabItems.length / 2);
+  const col1Items = vocabItems.slice(0, splitIdx);
+  const col2Items = vocabItems.slice(splitIdx);
 
+  const col1Length = col1Items.map(getAutoStudyItemText).join("").length;
+  const col1Revealed = Math.min(revealedChars, col1Length);
+  const col2Revealed = Math.max(0, revealedChars - col1Length);
+
+  const isCol1Typing = isTyping && revealedChars < col1Length;
+  const isCol2Typing = isTyping && revealedChars >= col1Length;
+  const isCol2Started = phase === "replaying" || col2Revealed > 0;
+
+  // Khi Cột 2 chưa bắt đầu gõ -> Chỉ hiển thị duy nhất Cột 1 ở giữa
+  if (!isCol2Started) {
+    return (
+      <div className="w-full max-w-2xl max-h-full pointer-events-auto transition-all duration-300 animate-in fade-in zoom-in-95 flex flex-col justify-start">
+        <div 
+          className="border-2 rounded-xl p-2.5 sm:p-3 md:p-3.5 transition-all flex flex-col justify-start max-h-full overflow-y-auto no-scrollbar"
+          style={cardBgStyle}
+        >
+          {renderHeaderBar("TỪ VỰNG ①", "💎", isCol1Typing)}
+          <div className="space-y-2">
+            {renderSectionItems(col1Items, col1Revealed, isCol1Typing, 0)}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Khi Cột 2 bắt đầu gõ (hoặc khi phát lại) -> Mở rộng thành 2 cột đều chứa từ vựng
   return (
-    <div 
-      className="w-full max-w-2xl border-2 rounded-xl md:rounded-2xl p-3 md:p-4 transition-all pointer-events-auto"
-      style={cardBgStyle}
-    >
-      {renderHeaderBar(title, icon, isTyping)}
-      <div className="space-y-3">
-        {renderSectionItems(targetItems, revealedChars, isTyping)}
+    <div className="w-full max-w-5xl max-h-full grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3 pointer-events-auto transition-all duration-300 overflow-y-auto no-scrollbar">
+      {/* Cột Trái: Từ Vựng Phần 1 */}
+      <div 
+        className="border-2 rounded-xl p-2.5 sm:p-3 transition-all flex flex-col justify-start max-h-full overflow-y-auto no-scrollbar"
+        style={cardBgStyle}
+      >
+        {renderHeaderBar("TỪ VỰNG ①", "💎", isCol1Typing)}
+        <div className="space-y-2">
+          {renderSectionItems(col1Items, col1Revealed, isCol1Typing, 0)}
+        </div>
+      </div>
+
+      {/* Cột Phải: Từ Vựng Phần 2 (Xuất hiện khi tới lượt gõ) */}
+      <div 
+        className="border-2 rounded-xl p-2.5 sm:p-3 transition-all flex flex-col justify-start animate-in fade-in slide-in-from-right-4 duration-300 max-h-full overflow-y-auto no-scrollbar"
+        style={cardBgStyle}
+      >
+        {renderHeaderBar("TỪ VỰNG ②", "💎", isCol2Typing)}
+        <div className="space-y-2">
+          {renderSectionItems(col2Items, col2Revealed, isCol2Typing, col1Items.length)}
+        </div>
       </div>
     </div>
   );
@@ -619,6 +1222,20 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const [autoStudyItems, setAutoStudyItems] = useState<FlattenedExpansionItem[]>([]);
   const [autoStudyTypedChars, setAutoStudyTypedChars] = useState<number>(0);
   const [autoStudyLoopRemaining, setAutoStudyLoopRemaining] = useState<number>(2);
+
+  const currentActiveAutoStudyItemIdx = (() => {
+    if (autoStudyPhase === "replaying") return -1;
+    if (autoStudyItems.length <= 1) return 0;
+    let count = 0;
+    for (let i = 0; i < autoStudyItems.length; i++) {
+      const len = getAutoStudyItemText(autoStudyItems[i]).length;
+      if (autoStudyTypedChars < count + len) {
+        return i;
+      }
+      count += len;
+    }
+    return autoStudyItems.length - 1;
+  })();
 
   const [isAutoStudyPaused, setIsAutoStudyPaused] = useState<boolean>(false);
   const isAutoStudyPausedRef = useRef<boolean>(false);
@@ -807,36 +1424,18 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     }, 300);
 
     const vocabItems = items.filter(it => it.type === "vocabulary");
-    const structItems = items.filter(it => it.type === "structure");
-    const hasBoth = vocabItems.length > 0 && structItems.length > 0;
+    if (vocabItems.length === 0) {
+      return;
+    }
 
-    const getItemText = (it: FlattenedExpansionItem) => {
-      const isVocab = it.type === "vocabulary";
-      const w = (isVocab ? it.word : it.pattern) || "";
-      const ipa = it.ipa ? ` /${it.ipa}/` : "";
-      const m = it.meaning || "";
-      const syn = it.synonyms ? ` Đồng nghĩa: ${it.synonyms}` : (it.antonyms ? ` Trái nghĩa: ${it.antonyms}` : "");
-      
-      const primaryEx = it.examples && it.examples.length > 0 ? it.examples[0] : null;
-      const rawExEn = primaryEx?.en ? primaryEx.en.replace(/<[^>]*>/g, '').trim() : "";
-      const rawExVi = primaryEx?.vi ? primaryEx.vi.trim() : "";
-      const exEn = rawExEn ? ` ${rawExEn}` : "";
-      const exVi = rawExVi ? ` (${rawExVi})` : "";
-      return w + ipa + m + syn + exEn + exVi;
-    };
-
-    const vocabText = vocabItems.map(getItemText).join("");
-    const structText = structItems.map(getItemText).join("");
-
-    // Gõ tuần tự: Từ vựng gõ trước, Cấu trúc gõ sau
-    const fullStreamText = vocabText + structText;
+    const fullStreamText = vocabItems.map(getAutoStudyItemText).join("");
 
     autoStudyFullStreamTextRef.current = fullStreamText;
     const totalLen = fullStreamText.length;
 
     setAutoStudyPhase("typing");
     autoStudyPhaseRef.current = "typing";
-    setAutoStudyItems(items);
+    setAutoStudyItems(vocabItems);
     setAutoStudyTypedChars(0);
     autoStudyCharCountRef.current = 0;
 
@@ -1705,7 +2304,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             const currentSub = subtitles[currentIndex];
             if (currentSub && currentSub.expansion) {
               const allItems = getFlattenedExpansionItems(currentSub);
-              const originalExpItems = allItems.filter(it => isItemFromOriginal(it, currentSub.text));
+              const originalExpItems = allItems.filter(it => isItemFromOriginal(it, currentSub.text) && it.type === "vocabulary");
               if (originalExpItems.length > 0 && time >= (currentSub.end + 0.2) && hasTriggeredAutoStudyRef.current !== currentIndex) {
                 hasTriggeredAutoStudyRef.current = currentIndex;
                 startAutoStudySequence(currentIndex, originalExpItems);
@@ -2219,7 +2818,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   const currentSub = subtitles[currentIndex];
                   if (currentSub && currentSub.expansion) {
                     const allItems = getFlattenedExpansionItems(currentSub);
-                    const originalExpItems = allItems.filter(it => isItemFromOriginal(it, currentSub.text));
+                    const originalExpItems = allItems.filter(it => isItemFromOriginal(it, currentSub.text) && it.type === "vocabulary");
                     if (originalExpItems.length > 0 && time >= (currentSub.end + 0.2) && hasTriggeredAutoStudyRef.current !== currentIndex) {
                       hasTriggeredAutoStudyRef.current = currentIndex;
                       startAutoStudySequence(currentIndex, originalExpItems);
@@ -2329,7 +2928,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
           {/* Auto-Study Vocab Top Overlay */}
           {isAutoStudyMode && autoStudyPhase !== "idle" && autoStudyItems.length > 0 && (
-            <div className="absolute top-2 sm:top-3 md:top-4 left-0 right-0 z-50 pointer-events-none flex justify-center px-2 sm:px-4">
+            <div className="absolute top-2 sm:top-3 md:top-4 left-2 right-2 sm:left-3 sm:right-3 bottom-14 sm:bottom-16 md:bottom-20 z-50 pointer-events-none flex justify-center items-start overflow-hidden">
               {renderAutoStudyOverlayContent(
                 autoStudyItems,
                 autoStudyPhase === 'replaying' ? 999999 : autoStudyTypedChars,
@@ -2354,7 +2953,13 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   }} 
                   className="font-extrabold leading-normal drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,0.8)] md:drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
                 >
-                  {subtitles[currentIndex].text}
+                  {renderHighlightedSubtitle(
+                    subtitles[currentIndex].text,
+                    autoStudyItems,
+                    currentActiveAutoStudyItemIdx,
+                    isAutoStudyMode && autoStudyPhase !== "idle",
+                    autoStudyPhase === "replaying"
+                  )}
                 </p>
                 {showIpa && subtitles[currentIndex].ipa && (
                   <p 
@@ -2986,7 +3591,16 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                           style={{ fontSize: `${fontSize}px` }}
                           className={`font-bold leading-snug ${isActive ? "text-red-600 font-black" : "text-slate-800"}`}
                         >
-                          {sub.text}
+                          {isActive && isAutoStudyMode && autoStudyPhase !== "idle"
+                            ? renderHighlightedSubtitle(
+                                sub.text,
+                                autoStudyItems,
+                                currentActiveAutoStudyItemIdx,
+                                true,
+                                autoStudyPhase === "replaying",
+                                true
+                              )
+                            : sub.text}
                         </p>
                         {sub.ipa && showIpa && (
                           <p 

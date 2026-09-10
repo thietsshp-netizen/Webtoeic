@@ -19,6 +19,7 @@ export interface SemanticFieldItem {
 
 export interface ExpansionVocabItem {
   word: string;
+  matched_text?: string;
   source?: 'original' | 'paraphrase' | string;
   ipa?: string;
   part_of_speech?: string;
@@ -32,6 +33,7 @@ export interface ExpansionVocabItem {
 
 export interface ExpansionStructureItem {
   pattern: string;
+  matched_text?: string;
   source?: 'original' | 'paraphrase' | string;
   meaning: string;
   examples: ExampleItem[];
@@ -60,6 +62,7 @@ export interface FlattenedExpansionItem {
   source?: 'original' | 'paraphrase' | string;
   word?: string;
   pattern?: string;
+  matched_text?: string;
   ipa?: string;
   part_of_speech?: string;
   register?: string;
@@ -181,6 +184,7 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
           rawIndex: idx,
           source,
           word: String(v.word || '').trim(),
+          matched_text: String(v.matched_text || v.exact_match || '').trim() || undefined,
           ipa: String(v.ipa || v.ipa_us || v.ipa_uk || '').trim(),
           part_of_speech: String(v.part_of_speech || v.pos || '').trim(),
           register: String(v.register || '').trim(),
@@ -208,6 +212,7 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
           rawIndex: idx,
           source,
           pattern: s.pattern || '',
+          matched_text: String(s.matched_text || s.exact_match || '').trim() || undefined,
           meaning: s.meaning || '',
           paraphrase,
           paraphrases,
@@ -275,7 +280,8 @@ Cung cấp từ 2 đến 3 cách diễn đạt lại (Natural Re-expressions) kh
 * Không chọn từ quá sơ cấp/hiển nhiên (I, you, go, have, do, be...). Nếu câu không có từ nào đáng chú ý, trả về "vocabulary": [].
 
 ## 2.2. Thông tin từ vựng:
-* word: Từ / cụm từ / idiom mục tiêu.
+* word: Từ / cụm từ / idiom mục tiêu (dạng nguyên thể hoặc từ điển).
+* matched_text: BẮT BUỘC cung cấp đoạn ký tự/từ ngữ NGUYÊN VĂN xuất hiện trong câu thoại gốc (hoặc câu paraphrase) tương ứng với mục từ vựng này. Ví dụ: Nếu word là "go through" nhưng trong câu thoại chia thì quá khứ là "went through" thì matched_text BẮT BUỘC ghi "went through". Nếu word là "make up one's mind" và trong câu là "made up my mind" thì matched_text ghi "made up my mind".
 * source: BẮT BUỘC ghi đúng 1 trong: "original" (nếu từ câu gốc) | "paraphrase" (nếu từ câu paraphrase).
 * ipa: Phiên âm General American (GA) đặt trong /.../.
 * part_of_speech: Chỉ chọn 1 trong: idiom | phrasal verb | phrase | verb | noun | adjective | adverb | collocation.
@@ -313,14 +319,15 @@ Cung cấp từ 2 đến 3 cách diễn đạt lại (Natural Re-expressions) kh
   ],
   "vocabulary": [
     {
-      "word": "Từ / cụm từ / idiom mục tiêu",
+      "word": "Từ / cụm từ / idiom mục tiêu (Ví dụ: go through)",
+      "matched_text": "Đoạn chữ nguyên văn xuất hiện trong câu thoại gốc/paraphrase (Ví dụ: went through)",
       "source": "original | paraphrase",
       "ipa": "/.../",
       "part_of_speech": "idiom | phrasal verb | phrase | verb | noun | adjective | adverb | collocation",
       "register": "casual | neutral | informal | slang | idiomatic | formal",
       "meaning": "Nghĩa tiếng Việt ngắn gọn, sát ngữ cảnh",
-      "synonyms": "Từ/cụm đồng nghĩa thay thế trực tiếp được hoặc \\"\\"",
-      "antonyms": "Từ/cụm trái nghĩa hoặc \\"\\"",
+      "synonyms": "Từ/cụm đồng nghĩa thay thế trực tiếp được hoặc \"\"",
+      "antonyms": "Từ/cụm trái nghĩa hoặc \"\"",
       "examples": [
         {
           "en": "Câu ví dụ tiếng Anh có dùng <mark>...</mark> bọc từ/cụm từ mục tiêu",
@@ -341,6 +348,7 @@ Cung cấp từ 2 đến 3 cách diễn đạt lại (Natural Re-expressions) kh
   "structures": [
     {
       "pattern": "Sentence frame/pattern giao tiếp",
+      "matched_text": "Đoạn chữ nguyên văn xuất hiện trong câu",
       "source": "original | paraphrase",
       "meaning": "Cách sử dụng thực tế trong câu",
       "examples": [
@@ -446,9 +454,11 @@ export const sanitizeExpansionJson = (rawInput: any): SubtitleExpansion => {
 
         const rawSource = String(item.source || '').toLowerCase().trim();
         const sourceVal = rawSource === 'paraphrase' ? 'paraphrase' : (rawSource === 'original' ? 'original' : undefined);
+        const matchedTextVal = String(item.matched_text || item.exact_match || '').trim();
 
         vocabList.push({
           word: String(item.word || '').trim(),
+          ...(matchedTextVal ? { matched_text: matchedTextVal } : {}),
           ...(sourceVal ? { source: sourceVal } : {}),
           meaning: meaningText,
           ...(item.ipa ? { ipa: String(item.ipa).trim() } : {}),
@@ -487,9 +497,11 @@ export const sanitizeExpansionJson = (rawInput: any): SubtitleExpansion => {
         }
         const rawSource = String(item.source || '').toLowerCase().trim();
         const sourceVal = rawSource === 'paraphrase' ? 'paraphrase' : (rawSource === 'original' ? 'original' : undefined);
+        const matchedTextVal = String(item.matched_text || item.exact_match || '').trim();
 
         structList.push({
           pattern: patternText,
+          ...(matchedTextVal ? { matched_text: matchedTextVal } : {}),
           ...(sourceVal ? { source: sourceVal } : {}),
           meaning: meaningText,
           examples
