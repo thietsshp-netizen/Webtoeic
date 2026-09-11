@@ -178,7 +178,7 @@ export default function FeatureVideoShowcase() {
         const nextUrl = videos[index]?.videoUrl || "";
         videoRef.current.src = nextUrl;
         videoRef.current.load();
-        
+
         const playPromise = videoRef.current.play();
         if (playPromise !== undefined) {
           playPromise
@@ -301,22 +301,22 @@ export default function FeatureVideoShowcase() {
       <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10 px-2">
         <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-blue-50 via-indigo-50 to-emerald-50 text-blue-700 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-widest mb-3 sm:mb-4 border border-blue-100/70 shadow-sm">
           <Sparkles size={13} className="text-blue-600 flex-shrink-0" />
-          <span>TÍNH NĂNG NỔI BẬT & ĐỘC QUYỀN</span>
+          <span>WEB LUYỆN THI TOEIC ĐỘC QUYỀN</span>
         </div>
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-snug sm:leading-normal uppercase italic mb-3 sm:mb-4">
-          Khám Phá Hệ Thống Học TOEIC{" "}
+          Khám Phá Các Tính Năng Của Web Luyện Thi TOEIC{" "}
           <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-teal-600 pt-2.5 pb-2 pl-1 pr-6 leading-normal">
             Thông Minh Hàng Đầu
           </span>
         </h2>
         <p className="text-slate-500 font-medium text-xs sm:text-sm md:text-base leading-relaxed px-2">
-          Xem video trải nghiệm trực quan các công cụ luyện thi thực chiến, phân tích lỗi sai và phương pháp ghi nhớ từ vựng đỉnh cao được tích hợp độc quyền trên hoctoeic.
+          Xem video giới thiệu các tính năng độc đáo, nổi bật được tích hợp trên web luyện thi Toeic của Mr. Thiệt.
         </p>
       </div>
 
       {/* Single-Column Showcase Card */}
       <div className="bg-white/95 backdrop-blur-xl rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] p-3 sm:p-6 md:p-8 border border-slate-200/80 shadow-[0_20px_50px_rgba(15,23,42,0.06)] flex flex-col gap-5 sm:gap-6">
-        
+
         {/* 1. Main Cinema Video Player */}
         <div
           className="relative aspect-video rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.25rem] overflow-hidden bg-slate-950 border-2 sm:border-4 border-slate-900 shadow-2xl group select-none flex-shrink-0 w-full"
@@ -408,9 +408,8 @@ export default function FeatureVideoShowcase() {
 
           {/* Custom Control Bar (Bottom) */}
           <div
-            className={`absolute bottom-0 left-0 right-0 p-2.5 sm:p-4 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent transition-opacity duration-300 ${
-              showControls || !isPlaying ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-            }`}
+            className={`absolute bottom-0 left-0 right-0 p-2.5 sm:p-4 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent transition-opacity duration-300 ${showControls || !isPlaying ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+              }`}
           >
             {/* Scrubber Progress Bar */}
             <div className="relative mb-2 sm:mb-3 flex items-center group/progress">
@@ -496,7 +495,7 @@ export default function FeatureVideoShowcase() {
 
         {/* 2. Compact Navigation Bar (Placed DIRECTLY under video) */}
         <div className="flex items-center justify-between gap-2 p-2 sm:p-3 bg-slate-50/90 rounded-2xl sm:rounded-[1.75rem] border border-slate-100">
-          
+
           {/* Nút Video Trước */}
           <button
             onClick={() => handleSelectVideo((activeIndex - 1 + videos.length) % videos.length)}
@@ -517,11 +516,10 @@ export default function FeatureVideoShowcase() {
                 <button
                   key={vid.id || idx}
                   onClick={() => handleSelectVideo(idx)}
-                  className={`flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap active:scale-95 ${
-                    isActive
+                  className={`flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap active:scale-95 ${isActive
                       ? `${cardTheme.bg} text-white shadow-md shadow-blue-500/20`
                       : "bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/60"
-                  }`}
+                    }`}
                 >
                   <span className="flex-shrink-0">{getIconForIndex(vid.order)}</span>
                   <span className="hidden md:inline">{getShortTitleForIndex(vid.order)}</span>
@@ -556,7 +554,7 @@ export default function FeatureVideoShowcase() {
           <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight leading-snug mb-1.5">
             {currentVideo?.title}
           </h3>
-          
+
           {currentVideo?.subtitle && (
             <p className="text-xs sm:text-sm font-bold text-slate-600 mb-3 sm:mb-4 italic">
               {currentVideo.subtitle}
