@@ -19,6 +19,7 @@ import FlagSelector, { FlagColor } from '../Player/FlagSelector';
 import ConfirmModal from '@/components/UI/ConfirmModal';
 import { startToeicPartTour } from './toeicTour';
 import FloatingVideoExplanationPlayer from '../Player/FloatingVideoExplanationPlayer';
+import { speakVocab } from '@/lib/vocab-audio';
 
 interface ProgressType {
   isCorrect: boolean;
@@ -1850,99 +1851,8 @@ export default function ToeicPart5Player({
     });
   };
 
-  const fallbackSpeak = (text: string, type: 'uk' | 'us' = 'us') => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    const voices = window.speechSynthesis.getVoices();
-    const voice = voices.find(v => {
-      if (type === 'uk') return v.lang === 'en-GB';
-      return v.lang === 'en-US' || v.lang === 'en_US';
-    }) || voices.find(v => v.lang.startsWith('en'));
-    if (voice) utterance.voice = voice;
-    utterance.rate = 0.9;
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const speak = async (text: string, type: 'uk' | 'us' = 'us') => {
-    if (typeof window === 'undefined') return;
-
-    // Loại bỏ nhãn từ loại trong dấu ngoặc đơn ở cuối từ (ví dụ: "Bicyclist (n)" -> "Bicyclist")
-    const cleanSpeechText = text.replace(/\s*\([^)]*\)/g, '').trim();
-
-    if (cleanSpeechText.includes(' ')) {
-      fallbackSpeak(cleanSpeechText, type);
-      return;
-    }
-
-    const cleanWord = cleanSpeechText.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const cacheKey = `${cleanWord}_${type}`;
-
-    // 1. Kiểm tra cache trước
-    if (audioCache.has(cacheKey)) {
-      const cachedUrl = audioCache.get(cacheKey)!;
-      if (cachedUrl === 'tts') {
-        fallbackSpeak(cleanSpeechText, type);
-      } else {
-        const audio = new Audio(cachedUrl);
-        audio.play().catch(() => fallbackSpeak(cleanSpeechText, type));
-      }
-      return;
-    }
-
-    const folder = type === 'us' ? 'ame' : 'bre';
-    const legacySuffix = type === 'us' ? '__us_1' : '__gb_1';
-
-    const urls = [
-      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}.mp3`,
-      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}1.mp3`,
-      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}2.mp3`,
-      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}${legacySuffix}.mp3`
-    ];
-
-    // 2. Kiểm tra song song bằng HTTP HEAD
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    try {
-      const checkPromises = urls.map(async (url, index) => {
-        try {
-          const timeoutPromise = new Promise<null>((_, reject) =>
-            setTimeout(() => reject(new Error('timeout')), 1000)
-          );
-          const fetchPromise = fetch(url, { method: 'HEAD', signal });
-          
-          const response = await Promise.race([fetchPromise, timeoutPromise]);
-          if (response && response.status === 200) {
-            return { index, url, exists: true };
-          }
-          return { index, url, exists: false };
-        } catch {
-          return { index, url, exists: false };
-        }
-      });
-
-      const results = await Promise.all(checkPromises);
-      const validResults = results
-        .filter(r => r.exists)
-        .sort((a, b) => a.index - b.index);
-
-      if (validResults.length > 0) {
-        const bestUrl = validResults[0].url;
-        audioCache.set(cacheKey, bestUrl);
-        
-        const audio = new Audio(bestUrl);
-        audio.play().catch(() => fallbackSpeak(cleanSpeechText, type));
-      } else {
-        audioCache.set(cacheKey, 'tts');
-        fallbackSpeak(cleanSpeechText, type);
-      }
-    } catch (err) {
-      console.warn('[Audio] Error in parallel check:', err);
-      fallbackSpeak(cleanSpeechText, type);
-    } finally {
-      controller.abort();
-    }
+  const speak = (text: string, type: 'uk' | 'us' = 'us') => {
+    speakVocab(text, type);
   };
 
   const isValidData = (val: string | null | undefined) => {
@@ -3560,51 +3470,8 @@ function WordFamilyPopover({ wordFamilies: initialWordFamilies, position, onClos
     startLineEdit(id, lines.length, "");
   };
 
-  const speak = async (text: string, type: 'uk' | 'us' = 'us') => {
-    if (typeof window === 'undefined') return;
-
-    const fallbackSpeak = (t: string) => {
-      if (!('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(t);
-      const voices = window.speechSynthesis.getVoices();
-      const voice = voices.find(v => {
-        if (type === 'uk') return v.lang === 'en-GB';
-        return v.lang === 'en-US' || v.lang === 'en_US';
-      }) || voices.find(v => v.lang.startsWith('en'));
-      if (voice) utterance.voice = voice;
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
-    };
-
-    const cleanSpeechText = text.replace(/\s*\([^)]*\)/g, '').trim();
-    if (cleanSpeechText.includes(' ')) {
-      fallbackSpeak(cleanSpeechText);
-      return;
-    }
-
-    const cleanWord = cleanSpeechText.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const cacheKey = `${cleanWord}_${type}`;
-
-    if (audioCache.has(cacheKey)) {
-      const cachedUrl = audioCache.get(cacheKey)!;
-      if (cachedUrl === 'tts') {
-        fallbackSpeak(cleanSpeechText);
-      } else {
-        const audio = new Audio(cachedUrl);
-        audio.play().catch(() => fallbackSpeak(cleanSpeechText));
-      }
-      return;
-    }
-
-    try {
-      const audioUrl = `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(cleanWord)}&type=${type === 'uk' ? '1' : '2'}`;
-      audioCache.set(cacheKey, audioUrl);
-      const audio = new Audio(audioUrl);
-      await audio.play();
-    } catch (err) {
-      fallbackSpeak(cleanSpeechText);
-    }
+  const speak = (text: string, type: 'uk' | 'us' = 'us') => {
+    speakVocab(text, type);
   };
 
   const popoverRef = useRef<HTMLDivElement>(null);

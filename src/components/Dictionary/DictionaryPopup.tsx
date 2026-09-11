@@ -8,6 +8,7 @@ import { Volume2, X, ChevronRight, BookOpen, Layers, Hash, List, Star, Link2, Re
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import VocabDeckSelector from '../Vocab/VocabDeckSelector';
+import { speakVocab } from '@/lib/vocab-audio';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -358,94 +359,8 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
     setActiveSection('meaning-1');
   }, [word]);
 
-  const speak = async (text: string, type: 'uk' | 'us' = 'us') => {
-    if (typeof window === 'undefined') return;
-
-    // Loại bỏ nhãn từ loại trong dấu ngoặc đơn ở cuối từ (ví dụ: "Bicyclist (n)" -> "Bicyclist")
-    const cleanSpeechText = text.replace(/\s*\([^)]*\)/g, '').trim();
-
-    const fallbackSpeak = () => {
-      if (typeof window === 'undefined' || !window.speechSynthesis) return;
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(cleanSpeechText);
-      utterance.lang = type === 'uk' ? 'en-GB' : 'en-US';
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
-    };
-
-    if (cleanSpeechText.includes(' ')) {
-      fallbackSpeak();
-      return;
-    }
-
-    const cleanWord = cleanSpeechText.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const cacheKey = `${cleanWord}_${type}`;
-
-    // 1. Kiểm tra cache trước
-    if (audioCache.has(cacheKey)) {
-      const cachedUrl = audioCache.get(cacheKey)!;
-      if (cachedUrl === 'tts') {
-        fallbackSpeak();
-      } else {
-        const audio = new Audio(cachedUrl);
-        audio.play().catch(() => fallbackSpeak());
-      }
-      return;
-    }
-
-    const folder = type === 'us' ? 'ame' : 'bre';
-    const legacySuffix = type === 'us' ? '__us_1' : '__gb_1';
-
-    const urls = [
-      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}.mp3`,
-      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}1.mp3`,
-      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}2.mp3`,
-      `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}${legacySuffix}.mp3`
-    ];
-
-    // 2. Kiểm tra song song bằng HTTP HEAD
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    try {
-      const checkPromises = urls.map(async (url, index) => {
-        try {
-          const timeoutPromise = new Promise<null>((_, reject) =>
-            setTimeout(() => reject(new Error('timeout')), 1000)
-          );
-          const fetchPromise = fetch(url, { method: 'HEAD', signal });
-          
-          const response = await Promise.race([fetchPromise, timeoutPromise]);
-          if (response && response.status === 200) {
-            return { index, url, exists: true };
-          }
-          return { index, url, exists: false };
-        } catch {
-          return { index, url, exists: false };
-        }
-      });
-
-      const results = await Promise.all(checkPromises);
-      const validResults = results
-        .filter(r => r.exists)
-        .sort((a, b) => a.index - b.index);
-
-      if (validResults.length > 0) {
-        const bestUrl = validResults[0].url;
-        audioCache.set(cacheKey, bestUrl);
-        
-        const audio = new Audio(bestUrl);
-        audio.play().catch(() => fallbackSpeak());
-      } else {
-        audioCache.set(cacheKey, 'tts');
-        fallbackSpeak();
-      }
-    } catch (err) {
-      console.warn('[Dict Audio] Error in parallel check:', err);
-      fallbackSpeak();
-    } finally {
-      controller.abort();
-    }
+  const speak = (text: string, type: 'uk' | 'us' = 'us') => {
+    speakVocab(text, type);
   };
 
   const scrollToSection = (id: string) => {

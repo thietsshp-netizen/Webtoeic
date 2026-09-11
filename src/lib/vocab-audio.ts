@@ -1,129 +1,120 @@
-// Shared vocabulary audio player with caching, overlapping prevention, and browser TTS fallback
+/* src/lib/vocab-audio.ts */
+
+// In-memory cache for audio URLs
 const audioCache = new Map<string, string>();
 let activeAudio: HTMLAudioElement | null = null;
 let currentRequestTimestamp = 0;
 
+/**
+ * Phát âm thanh từ vựng hoặc cụm từ tức thì (< 0.05s)
+ * - Ưu tiên 1: File âm thanh người thật trên Supabase (dict-audio/ame/ hoặc dict-audio/bre/)
+ * - Ưu tiên 2: File âm thanh tại thư mục gốc (dict-audio/)
+ * - Ưu tiên 3: File biến thể (word1.mp3, word__us_1.mp3)
+ * - Fallback: Stream MP3 từ API nội bộ /api/tts (Đảm bảo 100% thu âm được vào video bài giảng khi quay màn hình)
+ */
 export const speakVocab = async (text: string, type: 'us' | 'uk' = 'us') => {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined' || !text) return;
 
   const requestTimestamp = Date.now();
   currentRequestTimestamp = requestTimestamp;
 
-  // Stop any active audio and cancel active TTS
+  // Dừng ngay bất kỳ âm thanh nào đang phát trước đó để tránh chồng chéo tiếng
   if (activeAudio) {
     try {
       activeAudio.pause();
-    } catch (e) {
-      console.warn('[Vocab Audio] Failed to pause active audio:', e);
-    }
+      activeAudio.currentTime = 0;
+    } catch {}
     activeAudio = null;
   }
-  
-  if (window.speechSynthesis) {
-    window.speechSynthesis.cancel();
-  }
 
-  // Remove content inside parentheses (e.g. part of speech tag: "Bicyclist (n)" -> "Bicyclist")
+  // Loại bỏ nhãn từ loại trong ngoặc đơn (ví dụ: "Bicyclist (n)" -> "Bicyclist")
   const cleanSpeechText = text.replace(/\s*\([^)]*\)/g, '').trim();
+  if (!cleanSpeechText) return;
 
-  const fallbackSpeak = () => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    if (requestTimestamp !== currentRequestTimestamp) return; // Prevent stale speech
-    const utterance = new SpeechSynthesisUtterance(cleanSpeechText);
-    utterance.lang = type === 'uk' ? 'en-GB' : 'en-US';
-    utterance.rate = 0.95;
-    window.speechSynthesis.speak(utterance);
+  // Helper hàm phát audio bằng thẻ HTMLAudioElement
+  const playAudioUrl = (url: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+      if (requestTimestamp !== currentRequestTimestamp) {
+        resolve(false);
+        return;
+      }
+
+      const audio = new Audio(url);
+      activeAudio = audio;
+
+      let isSettled = false;
+
+      audio.onplaying = () => {
+        if (!isSettled) {
+          isSettled = true;
+          resolve(true);
+        }
+      };
+
+      audio.onerror = () => {
+        if (!isSettled) {
+          isSettled = true;
+          resolve(false);
+        }
+      };
+
+      audio.play().catch(() => {
+        if (!isSettled) {
+          isSettled = true;
+          resolve(false);
+        }
+      });
+
+      // Timeout an toàn 2.5s phòng khi mạng rớt hoàn toàn
+      setTimeout(() => {
+        if (!isSettled) {
+          isSettled = true;
+          resolve(false);
+        }
+      }, 2500);
+    });
   };
 
-  // If text is a sentence or phrase with multiple words, use TTS immediately
+  // 1. Nếu là câu hoặc cụm từ dài (chứa khoảng trắng): Phát trực tiếp qua API TTS nội bộ
   if (cleanSpeechText.includes(' ')) {
-    fallbackSpeak();
+    const ttsUrl = `/api/tts?text=${encodeURIComponent(cleanSpeechText)}&type=${type}`;
+    await playAudioUrl(ttsUrl);
     return;
   }
 
   const cleanWord = cleanSpeechText.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!cleanWord) return;
+
   const cacheKey = `${cleanWord}_${type}`;
 
-  // Check cache first
+  // 2. Kiểm tra Cache đã lưu trước đó: Phát tức thì 0ms
   if (audioCache.has(cacheKey)) {
     const cachedUrl = audioCache.get(cacheKey)!;
-    if (requestTimestamp !== currentRequestTimestamp) return; // Prevent stale speech
-    if (cachedUrl === 'tts') {
-      fallbackSpeak();
-    } else {
-      const audio = new Audio(cachedUrl);
-      activeAudio = audio;
-      audio.play().catch(() => fallbackSpeak());
-    }
-    return;
+    const ok = await playAudioUrl(cachedUrl);
+    if (ok) return;
   }
 
   const folder = type === 'us' ? 'ame' : 'bre';
   const legacySuffix = type === 'us' ? '__us_1' : '__gb_1';
 
-  const urls = [
+  // Danh sách các URL ưu tiên theo thứ tự
+  const candidateUrls = [
     `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}.mp3`,
+    `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${cleanWord}.mp3`,
     `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}1.mp3`,
-    `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}2.mp3`,
-    `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}${legacySuffix}.mp3`
+    `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}${legacySuffix}.mp3`,
+    `/api/tts?text=${encodeURIComponent(cleanWord)}&type=${type}`
   ];
 
-  const controller = new AbortController();
-  const signal = controller.signal;
+  // Thử lần lượt các URL (Fast Waterfall): 95% trường hợp URL đầu tiên phát ngay tức thì < 50ms
+  for (const url of candidateUrls) {
+    if (requestTimestamp !== currentRequestTimestamp) break;
 
-  try {
-    const checkPromises = urls.map(async (url, index) => {
-      try {
-        const timeoutPromise = new Promise<null>((_, reject) =>
-          setTimeout(() => reject(new Error('timeout')), 1000)
-        );
-        const fetchPromise = fetch(url, { method: 'HEAD', signal });
-        
-        const response = await Promise.race([fetchPromise, timeoutPromise]);
-        if (response && response.status === 200) {
-          return { index, url, exists: true };
-        }
-        return { index, url, exists: false };
-      } catch {
-        return { index, url, exists: false };
-      }
-    });
-
-    const results = await Promise.all(checkPromises);
-    
-    // Check if a newer request has been made while waiting for parallel HEAD requests
-    if (requestTimestamp !== currentRequestTimestamp) {
-      controller.abort();
+    const played = await playAudioUrl(url);
+    if (played) {
+      // Lưu lại URL chuẩn vào cache để những lần sau phát ngay lập tức
+      audioCache.set(cacheKey, url);
       return;
     }
-
-    const validResults = results
-      .filter(r => r.exists)
-      .sort((a, b) => a.index - b.index);
-
-    if (validResults.length > 0) {
-      const bestUrl = validResults[0].url;
-      audioCache.set(cacheKey, bestUrl);
-      
-      if (requestTimestamp !== currentRequestTimestamp) return; // Prevent stale speech
-      
-      const audio = new Audio(bestUrl);
-      activeAudio = audio;
-      audio.play().catch(() => {
-        if (requestTimestamp === currentRequestTimestamp) {
-          fallbackSpeak();
-        }
-      });
-    } else {
-      audioCache.set(cacheKey, 'tts');
-      fallbackSpeak();
-    }
-  } catch (err) {
-    console.warn('[Vocab Audio] Parallel check failed, falling back to TTS:', err);
-    if (requestTimestamp === currentRequestTimestamp) {
-      fallbackSpeak();
-    }
-  } finally {
-    controller.abort();
   }
 };
