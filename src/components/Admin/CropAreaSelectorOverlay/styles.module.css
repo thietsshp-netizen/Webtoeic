@@ -1,0 +1,99 @@
+/* src/components/Admin/CropAreaSelectorOverlay/styles.module.css */
+
+.overlayContainer {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  cursor: crosshair;
+  user-select: none;
+  touch-action: none;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(1px);
+}
+
+.hintBanner {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.selectionBox {
+  position: absolute;
+  border: 2px dashed #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 99999px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
+
+.boxToolbar {
+  position: absolute;
+  bottom: -44px;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
+
+.dimensionBadge {
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #93c5fd;
+  padding: 2px 6px;
+}
+
+.confirmBtn {
+  background: #22c55e;
+  border: none;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s;
+}
+
+.confirmBtn:hover {
+  background: #16a34a;
+  transform: scale(1.05);
+}
+
+.cancelBtn {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.cancelBtn:hover {
+  background: rgba(239, 68, 68, 0.4);
+  color: #ffffff;
+}

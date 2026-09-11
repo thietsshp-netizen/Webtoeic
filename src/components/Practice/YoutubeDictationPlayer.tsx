@@ -19,7 +19,29 @@ import {
   sanitizeExpansionJson
 } from "./MovieExpansionManager";
 
-// Mechanical typewriter click sound synthesizer using Web Audio API
+// Pre-rendered typewriter click audio buffer for zero-CPU, leak-free mechanical sound
+let cachedTypewriterBuffer: AudioBuffer | null = null;
+
+function getTypewriterClickBuffer(ctx: AudioContext): AudioBuffer {
+  if (cachedTypewriterBuffer && cachedTypewriterBuffer.sampleRate === ctx.sampleRate) {
+    return cachedTypewriterBuffer;
+  }
+  const sampleRate = ctx.sampleRate;
+  const length = Math.floor(sampleRate * 0.02); // 20ms
+  const buffer = ctx.createBuffer(1, length, sampleRate);
+  const data = buffer.getChannelData(0);
+
+  for (let i = 0; i < length; i++) {
+    const t = i / sampleRate;
+    const env = Math.exp(-t * 240);
+    const click = Math.sin(2 * Math.PI * 2600 * t) * 0.5;
+    const thud = Math.sin(2 * Math.PI * 170 * t) * 0.35;
+    data[i] = (click + thud) * env * 0.2;
+  }
+  cachedTypewriterBuffer = buffer;
+  return buffer;
+}
+
 const playTypewriterClickSound = (audioCtxRef: React.MutableRefObject<AudioContext | null>) => {
   try {
     if (typeof window === "undefined") return;
@@ -33,37 +55,16 @@ const playTypewriterClickSound = (audioCtxRef: React.MutableRefObject<AudioConte
       ctx.resume().catch(() => {});
     }
 
-    const now = ctx.currentTime;
-
-    // 1. High crisp click transient
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const randomFreq = 2200 + Math.random() * 800;
-    osc.type = "triangle";
-    osc.frequency.setValueAtTime(randomFreq, now);
-    osc.frequency.exponentialRampToValueAtTime(120, now + 0.016);
-
-    gain.gain.setValueAtTime(0.08, now);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.016);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.018);
-
-    // 2. Mechanical key bottom-out thud
-    const thud = ctx.createOscillator();
-    const thudGain = ctx.createGain();
-    thud.type = "sine";
-    thud.frequency.setValueAtTime(180 + Math.random() * 50, now);
-    thud.frequency.exponentialRampToValueAtTime(40, now + 0.014);
-    thudGain.gain.setValueAtTime(0.05, now);
-    thudGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.014);
-
-    thud.connect(thudGain);
-    thudGain.connect(ctx.destination);
-    thud.start(now);
-    thud.stop(now + 0.016);
+    const buffer = getTypewriterClickBuffer(ctx);
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(ctx.destination);
+    source.onended = () => {
+      try {
+        source.disconnect();
+      } catch {}
+    };
+    source.start();
   } catch (e) {}
 };
 
@@ -1006,17 +1007,9 @@ const renderAutoStudyOverlayContent = (
         <span className="text-[9px] sm:text-[10px] font-bold text-amber-300 bg-amber-900/60 px-1.5 py-0.5 rounded-full border border-amber-400/40 flex items-center gap-1 shadow-sm">
           <span>⏸️</span> Tạm dừng
         </span>
-      ) : displayMode === "instant" ? (
-        <span className="text-[9.5px] sm:text-[10.5px] font-bold text-emerald-300 bg-emerald-950/70 px-2 py-0.5 rounded-full border border-emerald-400/40 flex items-center gap-1 shadow-sm">
-          <span>⚡</span> Từ vựng trọng tâm
-        </span>
-      ) : sectionIsTyping ? (
-        <span className="text-[9px] sm:text-[10px] font-semibold text-slate-300 flex items-center gap-1">
-          <span>⚡</span> Đang gõ...
-        </span>
       ) : (
-        <span className="text-[9px] sm:text-[10px] font-semibold text-emerald-300 flex items-center gap-1">
-          <span>✓</span> Đã xong
+        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-emerald-300 bg-emerald-950/70 px-2 py-0.5 rounded-full border border-emerald-400/40 flex items-center gap-1 shadow-sm">
+          <span>⚡</span> TOEIC MR. THIỆT
         </span>
       )}
     </div>
@@ -1031,7 +1024,7 @@ const renderAutoStudyOverlayContent = (
           : "animate-fade-in"
       }`}>
         <div 
-          className="w-full md:w-[44%] lg:w-[41%] rounded-xl p-2 sm:p-2.5 transition-all flex flex-col justify-start max-h-full overflow-y-auto no-scrollbar shadow-lg"
+          className="w-full md:w-[44%] lg:w-[41%] rounded-xl p-2 sm:p-2.5 transition-all flex flex-col justify-start max-h-full relative shadow-lg"
           style={cardBgStyle}
         >
           {renderHeaderBar("TỪ VỰNG ①", "💎", isTyping)}
@@ -1061,7 +1054,7 @@ const renderAutoStudyOverlayContent = (
     return (
       <div className="w-full max-h-full flex justify-start pointer-events-auto transition-all duration-300 animate-fade-in px-1 sm:px-2">
         <div 
-          className="w-full md:w-[44%] lg:w-[41%] rounded-xl p-2 sm:p-2.5 transition-all flex flex-col justify-start max-h-full overflow-y-auto no-scrollbar shadow-lg"
+          className="w-full md:w-[44%] lg:w-[41%] rounded-xl p-2 sm:p-2.5 transition-all flex flex-col justify-start max-h-full relative shadow-lg"
           style={cardBgStyle}
         >
           {renderHeaderBar("TỪ VỰNG ①", "💎", isCol1Typing)}
@@ -1075,12 +1068,12 @@ const renderAutoStudyOverlayContent = (
 
   // Khi Cột 2 bắt đầu gõ (hoặc khi phát lại / hoặc ở chế độ instant) -> Mở rộng thành 2 cột thu gọn nằm ở 2 bên mép, để hở khoảng trống ở giữa
   return (
-    <div className={`w-full max-h-full flex flex-col md:flex-row justify-between items-start gap-3 md:gap-6 lg:gap-10 pointer-events-auto transition-all duration-500 overflow-y-auto no-scrollbar px-1 sm:px-2 ${
+    <div className={`w-full max-h-full flex flex-col md:flex-row justify-between items-start gap-3 md:gap-6 lg:gap-10 pointer-events-auto transition-all duration-500 px-1 sm:px-2 ${
       displayMode === "instant" ? "animate-auto-study-slide" : ""
     }`}>
       {/* Cột Trái: Từ Vựng Phần 1 (Thu nhỏ, nằm ép sang trái) */}
       <div 
-        className="w-full md:w-[44%] lg:w-[41%] rounded-xl p-2 sm:p-2.5 transition-all flex flex-col justify-start max-h-full overflow-y-auto no-scrollbar shadow-lg"
+        className="w-full md:w-[44%] lg:w-[41%] rounded-xl p-2 sm:p-2.5 transition-all flex flex-col justify-start max-h-full relative shadow-lg"
         style={cardBgStyle}
       >
         {renderHeaderBar("TỪ VỰNG ①", "💎", isCol1Typing)}
@@ -1091,7 +1084,7 @@ const renderAutoStudyOverlayContent = (
 
       {/* Cột Phải: Từ Vựng Phần 2 (Thu nhỏ, nằm ép sang phải) */}
       <div 
-        className="w-full md:w-[44%] lg:w-[41%] rounded-xl p-2 sm:p-2.5 transition-all flex flex-col justify-start max-h-full overflow-y-auto no-scrollbar shadow-lg"
+        className="w-full md:w-[44%] lg:w-[41%] rounded-xl p-2 sm:p-2.5 transition-all flex flex-col justify-start max-h-full relative shadow-lg"
         style={cardBgStyle}
       >
         {renderHeaderBar("TỪ VỰNG ②", "💎", isCol2Typing)}
@@ -1330,15 +1323,20 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const isLoopingCurrentSubRef = useRef<boolean>(isLoopingCurrentSub);
   isLoopingCurrentSubRef.current = isLoopingCurrentSub;
 
-  const stopAutoStudy = () => {
+  const clearAutoStudyTimers = () => {
     if (autoStudyTimerRef.current) {
       clearInterval(autoStudyTimerRef.current);
+      cancelAnimationFrame(autoStudyTimerRef.current);
       autoStudyTimerRef.current = null;
     }
     if (autoStudyTimeoutRef.current) {
       clearTimeout(autoStudyTimeoutRef.current);
       autoStudyTimeoutRef.current = null;
     }
+  };
+
+  const stopAutoStudy = () => {
+    clearAutoStudyTimers();
     setIsAutoStudyPaused(false);
     isAutoStudyPausedRef.current = false;
     setAutoStudyPhase("idle");
@@ -1349,14 +1347,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   };
 
   const pauseAutoStudyTyping = () => {
-    if (autoStudyTimerRef.current) {
-      clearInterval(autoStudyTimerRef.current);
-      autoStudyTimerRef.current = null;
-    }
-    if (autoStudyTimeoutRef.current) {
-      clearTimeout(autoStudyTimeoutRef.current);
-      autoStudyTimeoutRef.current = null;
-    }
+    clearAutoStudyTimers();
     setIsAutoStudyPaused(true);
     isAutoStudyPausedRef.current = true;
   };
@@ -1390,8 +1381,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   };
 
   const startAutoStudyInstant = (targetIdx: number, items: FlattenedExpansionItem[]) => {
-    if (autoStudyTimerRef.current) clearInterval(autoStudyTimerRef.current);
-    if (autoStudyTimeoutRef.current) clearTimeout(autoStudyTimeoutRef.current);
+    clearAutoStudyTimers();
 
     autoStudyTargetIdxRef.current = targetIdx;
     setIsAutoStudyPaused(false);
@@ -1411,54 +1401,70 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   };
 
   const runAutoStudyTypingLoop = (startChar: number, totalLen: number, targetIdx: number) => {
-    if (autoStudyTimerRef.current) clearInterval(autoStudyTimerRef.current);
+    clearAutoStudyTimers();
 
     let charCount = startChar;
     const speed = autoStudySpeedRef.current || 40;
     const fullStreamText = autoStudyFullStreamTextRef.current;
+    let lastTime = performance.now();
+    let accumulatedTime = 0;
 
-    autoStudyTimerRef.current = setInterval(() => {
+    const tick = (currentTime: number) => {
       if (isAutoStudyPausedRef.current) {
+        lastTime = currentTime;
+        autoStudyTimerRef.current = requestAnimationFrame(tick);
         return;
       }
 
-      charCount += 1;
-      autoStudyCharCountRef.current = charCount;
-      setAutoStudyTypedChars(charCount);
+      const delta = currentTime - lastTime;
+      lastTime = currentTime;
+      accumulatedTime += delta;
 
-      if (autoStudySoundRef.current && charCount <= totalLen) {
-        const currentChar = fullStreamText[charCount - 1];
-        if (currentChar && currentChar !== " ") {
-          playTypewriterClickSound(audioCtxRef);
-        }
-      }
+      const charsToAdvance = Math.floor(accumulatedTime / speed);
+      if (charsToAdvance > 0) {
+        accumulatedTime -= charsToAdvance * speed;
+        // Giới hạn bước nhảy tối đa 3 ký tự/frame để hiệu ứng luôn mượt dù hệ thống tải nặng
+        const step = Math.min(charsToAdvance, 3);
+        const nextCount = Math.min(totalLen, charCount + step);
 
-      if (charCount >= totalLen) {
-        if (autoStudyTimerRef.current) {
-          clearInterval(autoStudyTimerRef.current);
-          autoStudyTimerRef.current = null;
-        }
-
-        // Wait 1.2s for reading then start replay loops
-        autoStudyTimeoutRef.current = setTimeout(() => {
-          if (isAutoStudyPausedRef.current) {
-            return;
+        if (nextCount > charCount) {
+          if (autoStudySoundRef.current) {
+            playTypewriterClickSound(audioCtxRef);
           }
-          const isInfiniteLoop = isLoopingCurrentSubRef.current;
-          const totalLoops = isInfiniteLoop ? 999999 : autoStudyLoopsRef.current;
-          if (isInfiniteLoop || totalLoops > 0) {
-            startAutoStudyReplay(targetIdx, totalLoops);
-          } else {
-            stopAutoStudy();
-            if (isDirectVideo) {
-              if (videoRef.current) videoRef.current.play().catch(() => {});
-            } else {
-              if (playerRef.current && typeof playerRef.current.playVideo === "function") playerRef.current.playVideo();
+          charCount = nextCount;
+          autoStudyCharCountRef.current = charCount;
+          setAutoStudyTypedChars(charCount);
+        }
+
+        if (charCount >= totalLen) {
+          clearAutoStudyTimers();
+
+          // Wait 1.2s for reading then start replay loops
+          autoStudyTimeoutRef.current = setTimeout(() => {
+            if (isAutoStudyPausedRef.current) {
+              return;
             }
-          }
-        }, 1200);
+            const isInfiniteLoop = isLoopingCurrentSubRef.current;
+            const totalLoops = isInfiniteLoop ? 999999 : autoStudyLoopsRef.current;
+            if (isInfiniteLoop || totalLoops > 0) {
+              startAutoStudyReplay(targetIdx, totalLoops);
+            } else {
+              stopAutoStudy();
+              if (isDirectVideo) {
+                if (videoRef.current) videoRef.current.play().catch(() => {});
+              } else {
+                if (playerRef.current && typeof playerRef.current.playVideo === "function") playerRef.current.playVideo();
+              }
+            }
+          }, 1200);
+          return;
+        }
       }
-    }, speed);
+
+      autoStudyTimerRef.current = requestAnimationFrame(tick);
+    };
+
+    autoStudyTimerRef.current = requestAnimationFrame(tick);
   };
 
   const resumeAutoStudyTyping = () => {
@@ -1482,8 +1488,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   };
 
   const startAutoStudyTypewriter = (targetIdx: number, items: FlattenedExpansionItem[]) => {
-    if (autoStudyTimerRef.current) clearInterval(autoStudyTimerRef.current);
-    if (autoStudyTimeoutRef.current) clearTimeout(autoStudyTimeoutRef.current);
+    clearAutoStudyTimers();
 
     autoStudyTargetIdxRef.current = targetIdx;
     setIsAutoStudyPaused(false);
@@ -1540,8 +1545,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   // Clean up auto study timers on unmount
   useEffect(() => {
     return () => {
-      if (autoStudyTimerRef.current) clearInterval(autoStudyTimerRef.current);
-      if (autoStudyTimeoutRef.current) clearTimeout(autoStudyTimeoutRef.current);
+      clearAutoStudyTimers();
       if (audioCtxRef.current && audioCtxRef.current.state !== "closed") {
         audioCtxRef.current.close().catch(() => {});
       }
@@ -2884,6 +2888,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       {/* TOP: Video Player (Centered, takes full-width with a max-width limit) */}
       <div className="w-full flex justify-center bg-slate-900 shadow-inner p-2 md:p-4 shrink-0">
         <div 
+          id="youtube-dictation-video-container"
           ref={videoContainerRef}
           tabIndex={-1}
           onMouseLeave={() => videoContainerRef.current?.focus()}
@@ -2901,7 +2906,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               ref={videoRef}
               src={directVideoUrl}
               className="w-full h-full object-contain bg-black cursor-pointer"
-              onClick={isMobile ? togglePlay : undefined}
+              onClick={togglePlay}
               onError={(e) => {
                 const vid = e.currentTarget;
                 const errCode = vid.error?.code;
@@ -3043,7 +3048,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   pauseAutoStudyTyping();
                 }
               }}
-              controls={!isMobile}
+              controls={false}
               playsInline
               preload="metadata"
             />
@@ -3058,6 +3063,28 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           ) : (
             <div className="flex items-center justify-center h-full text-slate-400 font-bold text-xs md:text-sm">
               Chưa có video URL hợp lệ
+            </div>
+          )}
+
+          {/* Minimalist Video Timestamp & Percentage Badge (Góc trái bên dưới) */}
+          {duration > 0 && (
+            <div className="absolute bottom-2 left-2 z-30 pointer-events-none select-none px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm border border-white/10 text-[11px] sm:text-xs font-mono font-medium text-white/90 flex items-center gap-1 shadow-md">
+              <span>
+                {(() => {
+                  const fmt = (sec: number) => {
+                    if (isNaN(sec) || sec < 0) return "0:00";
+                    const h = Math.floor(sec / 3600);
+                    const m = Math.floor((sec % 3600) / 60);
+                    const s = Math.floor(sec % 60);
+                    if (h > 0) {
+                      return `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+                    }
+                    return `${m}:${s.toString().padStart(2, "0")}`;
+                  };
+                  const pct = duration > 0 ? Math.round((currentTime / duration) * 100) : 0;
+                  return `${fmt(currentTime)}/${fmt(duration)} (${pct}%)`;
+                })()}
+              </span>
             </div>
           )}
 

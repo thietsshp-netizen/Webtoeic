@@ -8,6 +8,7 @@ import SessionGuard from "@/components/Auth/SessionGuard";
 
 import { GlobalScreenDraw } from "@/components/Common/GlobalScreenDraw";
 import { GlobalClassCalling } from "@/components/Common/GlobalClassCalling";
+import { AdminScreenRecorder } from "@/components/Admin/AdminScreenRecorder";
 import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({
@@ -43,6 +44,7 @@ export default function RootLayout({
             {children}
             <GlobalScreenDraw />
             <GlobalClassCalling />
+            <AdminScreenRecorder />
           </DictionaryProvider>
         </AuthProvider>
       </body>
