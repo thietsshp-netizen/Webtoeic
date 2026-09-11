@@ -6,10 +6,8 @@ import { DictionaryProvider } from "@/components/Dictionary/DictionaryProvider";
 import FingerprintInitializer from "@/components/Auth/FingerprintInitializer";
 import SessionGuard from "@/components/Auth/SessionGuard";
 
-import { GlobalScreenDraw } from "@/components/Common/GlobalScreenDraw";
-import { GlobalClassCalling } from "@/components/Common/GlobalClassCalling";
-import { AdminScreenRecorder } from "@/components/Admin/AdminScreenRecorder";
 import NextTopLoader from "nextjs-toploader";
+import ClientBackgroundTools from "@/components/Common/ClientBackgroundTools";
 
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
@@ -42,9 +40,7 @@ export default function RootLayout({
           <SessionGuard />
           <DictionaryProvider>
             {children}
-            <GlobalScreenDraw />
-            <GlobalClassCalling />
-            <AdminScreenRecorder />
+            <ClientBackgroundTools />
           </DictionaryProvider>
         </AuthProvider>
       </body>

@@ -6,11 +6,10 @@ import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
 import { getFriendlyErrorMessage } from "@/app/auth/signin/page";
 import { clsx } from "clsx";
+import dynamic from "next/dynamic";
 import CourseCard from "@/components/Course/CourseCard";
-import PlacementTest from "@/components/PlacementTest/PlacementTest";
-import VocabGuideModal, { VocabGuideContent } from "@/components/Vocab/VocabGuideModal";
-import FloatingMessenger from "@/components/UI/FloatingMessenger";
 import FeatureVideoShowcase from "@/components/Home/FeatureVideoShowcase";
+import HomeSkeleton from "@/components/Home/HomeSkeleton";
 import { speakVocab } from "@/lib/vocab-audio";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail } from "lucide-react";
@@ -80,10 +79,58 @@ import {
   Compass
 } from "lucide-react";
 
-import { ScrambleGame, FillGame, MatchGame, SynonymGame, VocabWord } from "@/components/Vocab/VocabGamePlayer";
-import DeviceManagement from "@/components/Account/DeviceManagement";
+import type { VocabWord } from "@/components/Vocab/VocabGamePlayer";
 import { startVocabTour } from "@/components/Toeic/toeicTour";
 import VocabDeckSelector from "@/components/Vocab/VocabDeckSelector";
+
+// Dynamic imports cho các module nặng để tối ưu dung lượng tải ban đầu trên di động
+const PlacementTest = dynamic(() => import("@/components/PlacementTest/PlacementTest"), {
+  ssr: false,
+  loading: () => (
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl p-8 max-w-md w-full text-center shadow-2xl space-y-4 animate-pulse">
+        <div className="w-12 h-12 bg-blue-100 rounded-2xl mx-auto flex items-center justify-center">
+          <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        </div>
+        <div className="text-lg font-bold text-slate-800">Đang chuẩn bị đề thi thử...</div>
+        <div className="text-sm text-slate-500">Hệ thống đang tải câu hỏi và âm thanh TOEIC</div>
+      </div>
+    </div>
+  ),
+});
+
+const VocabGuideModal = dynamic(() => import("@/components/Vocab/VocabGuideModal"), {
+  ssr: false,
+});
+const VocabGuideContent = dynamic(
+  () => import("@/components/Vocab/VocabGuideModal").then((m) => m.VocabGuideContent),
+  { ssr: false }
+);
+
+const FloatingMessenger = dynamic(() => import("@/components/UI/FloatingMessenger"), {
+  ssr: false,
+});
+
+const DeviceManagement = dynamic(() => import("@/components/Account/DeviceManagement"), {
+  ssr: false,
+});
+
+const ScrambleGame = dynamic(
+  () => import("@/components/Vocab/VocabGamePlayer").then((m) => m.ScrambleGame),
+  { ssr: false }
+);
+const FillGame = dynamic(
+  () => import("@/components/Vocab/VocabGamePlayer").then((m) => m.FillGame),
+  { ssr: false }
+);
+const MatchGame = dynamic(
+  () => import("@/components/Vocab/VocabGamePlayer").then((m) => m.MatchGame),
+  { ssr: false }
+);
+const SynonymGame = dynamic(
+  () => import("@/components/Vocab/VocabGamePlayer").then((m) => m.SynonymGame),
+  { ssr: false }
+);
 
 function HomeContent() {
   const { data: session, status, update } = useSession() as any;
@@ -492,7 +539,7 @@ function HomeContent() {
 
   const isAdmin = (session?.user as any)?.role === "ADMIN";
 
-  if (!mounted) return <div className="min-h-screen bg-white" />;
+  if (!mounted) return <HomeSkeleton />;
 
   return (
     <div className="min-h-screen bg-[#fcfdfe] font-sans selection:bg-blue-100 selection:text-blue-900">
