@@ -443,7 +443,7 @@ export default function FeatureVideoShowcase() {
                 initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.85 }}
-                className="absolute inset-0 flex items-center justify-center bg-slate-950/45 backdrop-blur-[2px] cursor-pointer"
+                className="absolute inset-0 flex items-center justify-center bg-transparent cursor-pointer"
                 onClick={togglePlay}
               >
                 {isBuffering ? (
