@@ -162,7 +162,7 @@ export default function FeatureVideoShowcase() {
     }
   }, []);
 
-  // Chuyển video mượt mà và nạp lại buffer đúng chuẩn
+  // Chuyển video và TỰ ĐỘNG PHÁT NGAY LẬP TỨC
   const handleSelectVideo = useCallback(
     (index: number) => {
       if (index === activeIndex) {
@@ -171,22 +171,28 @@ export default function FeatureVideoShowcase() {
       }
       setActiveIndex(index);
       setCurrentTime(0);
+      setIsPlaying(true);
       setIsBuffering(true);
 
       if (videoRef.current) {
-        videoRef.current.src = videos[index]?.videoUrl || "";
+        const nextUrl = videos[index]?.videoUrl || "";
+        videoRef.current.src = nextUrl;
         videoRef.current.load();
-        videoRef.current
-          .play()
-          .then(() => {
-            setIsPlaying(true);
-            setIsBuffering(false);
-          })
-          .catch((err) => {
-            console.log("Autoplay policy notice:", err);
-            setIsPlaying(false);
-            setIsBuffering(false);
-          });
+        
+        const playPromise = videoRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              setIsPlaying(true);
+              setIsBuffering(false);
+            })
+            .catch((err) => {
+              console.log("Autoplay notice:", err);
+              // Nếu bị trình duyệt chặn (rất hiếm khi người dùng đã click), hiển thị nút Play
+              setIsPlaying(false);
+              setIsBuffering(false);
+            });
+        }
       }
     },
     [activeIndex, togglePlay, videos]
@@ -351,6 +357,7 @@ export default function FeatureVideoShowcase() {
               }
             }}
             onWaiting={() => setIsBuffering(true)}
+            onCanPlay={() => setIsBuffering(false)}
             onPlaying={() => {
               setIsBuffering(false);
               setIsPlaying(true);
@@ -371,7 +378,7 @@ export default function FeatureVideoShowcase() {
               >
                 {isBuffering ? (
                   <div className="w-12 sm:w-16 h-12 sm:h-16 border-3 sm:border-4 border-white/30 border-t-white rounded-full animate-spin" />
-                ) : (
+                ) : !isPlaying ? (
                   <div className="relative group/btn">
                     <div
                       className="absolute -inset-3 sm:-inset-4 rounded-full blur-xl opacity-75 group-hover/btn:opacity-100 transition duration-500"
@@ -381,7 +388,7 @@ export default function FeatureVideoShowcase() {
                       <Play size={24} className="ml-0.5 sm:ml-1 fill-slate-900 text-slate-900" />
                     </div>
                   </div>
-                )}
+                ) : null}
               </motion.div>
             )}
           </AnimatePresence>
