@@ -9,6 +9,7 @@ import { clsx } from "clsx";
 import dynamic from "next/dynamic";
 import CourseCard from "@/components/Course/CourseCard";
 import FeatureVideoShowcase from "@/components/Home/FeatureVideoShowcase";
+import TeacherCertificateShowcase from "@/components/Home/TeacherCertificateShowcase";
 import HomeSkeleton from "@/components/Home/HomeSkeleton";
 import { speakVocab } from "@/lib/vocab-audio";
 import { motion, AnimatePresence } from "framer-motion";
@@ -252,9 +253,10 @@ function HomeContent() {
       try {
         const { createClient } = await import("@supabase/supabase-js");
         const supabaseUrl = "https://lvbdcqoagtrzvnaeeznm.supabase.co";
-        const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+        const supabaseKey =
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2YmRjcW9hZ3RyenZuYWVlem5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzODUwMzgsImV4cCI6MjA5MDk2MTAzOH0.vJ2BdsnGvKZSCUW4oU4kF88aFozDWLzmRTIbBCAKEkk";
 
-        if (!supabaseKey) return;
         const supabase = createClient(supabaseUrl, supabaseKey);
 
         const bucket = 'marketing';
@@ -652,54 +654,16 @@ function HomeContent() {
               </div>
             </section>
 
-            <section className="bg-white rounded-[3rem] md:rounded-[4rem] p-8 md:p-20 border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] mb-24 relative overflow-hidden">
+            <section className="bg-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-4 sm:p-8 md:p-20 border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] mb-16 sm:mb-24 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.02),transparent)] pointer-events-none"></div>
 
-              <div className="relative z-10 grid lg:grid-cols-10 gap-8 md:gap-16 items-center">
-                <div className="lg:col-span-6">
-                  <div className="relative group">
-                    <div className="absolute -inset-4 bg-yellow-400/10 rounded-[3rem] blur-2xl group-hover:opacity-100 transition duration-1000"></div>
-                    <Swiper
-                      modules={[Navigation, Pagination, Autoplay]}
-                      spaceBetween={0}
-                      slidesPerView={1}
-                      pagination={{ clickable: true }}
-                      autoplay={{ delay: 4000 }}
-                      className="rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl aspect-video bg-[#f8f9fa] relative"
-                    >
-                      <SwiperSlide>
-                        <div className="relative h-full w-full p-2 md:p-6 flex items-center justify-center">
-                          <img
-                            src="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/marketing/teacher-info/teacher2.jpg"
-                            alt="TOEIC 990 - 2023"
-                            className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105"
-                          />
-                          <div className="absolute bottom-4 left-6 bg-emerald-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-lg border border-white/20">
-                            CERTIFICATE: 2023
-                          </div>
-                        </div>
-                      </SwiperSlide>
-                      <SwiperSlide>
-                        <div className="relative h-full w-full p-2 md:p-6 flex items-center justify-center">
-                          <img
-                            src="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/marketing/teacher-info/teacher1.jpg"
-                            alt="TOEIC 990 - 2018"
-                            className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105"
-                          />
-                          <div className="absolute bottom-4 left-6 bg-blue-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-lg border border-white/20">
-                            CERTIFICATE: 2018
-                          </div>
-                        </div>
-                      </SwiperSlide>
-                      <div className="absolute top-4 right-4 z-20 bg-yellow-400 text-white w-12 h-12 rounded-2xl flex items-center justify-center border-4 border-white shadow-xl rotate-12 group-hover:rotate-0 transition-all duration-500">
-                        <Trophy size={24} fill="currentColor" />
-                      </div>
-                    </Swiper>
-                  </div>
+              <div className="relative z-10 grid lg:grid-cols-10 gap-6 sm:gap-8 md:gap-16 items-center">
+                <div className="lg:col-span-6 w-full">
+                  <TeacherCertificateShowcase />
                 </div>
 
-                <div className="lg:col-span-4 space-y-8">
-                  <div className="space-y-4">
+                <div className="lg:col-span-4 space-y-6 sm:space-y-8">
+                  <div className="space-y-3 sm:space-y-4">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-[10px] font-bold uppercase tracking-widest border border-blue-100">
                       <Zap size={14} fill="currentColor" /> EXPERT INSTRUCTOR
                     </div>
@@ -707,28 +671,28 @@ function HomeContent() {
                       <span className="text-xl md:text-2xl block mb-1">Học với chuyên gia</span>
                       <span className="text-3xl md:text-5xl text-blue-600">Mr. Thiệt 990/990</span>
                     </h2>
-                    <p className="text-slate-500 font-medium leading-relaxed italic text-base border-l-4 border-emerald-500 pl-4">
+                    <p className="text-slate-500 font-medium leading-relaxed italic text-sm sm:text-base border-l-4 border-emerald-500 pl-4">
                       "Học với người đạt 990 không chỉ là học kiến thức, mà là học phương pháp giải đề tối ưu và tâm thế làm chủ bài thi từ trải nghiệm thực tế."
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4">
-                    <div className="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-300">
-                      <div className="w-12 h-12 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200">
-                        <Trophy size={22} />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 sm:gap-4">
+                    <div className="flex items-center gap-4 p-4 sm:p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-300">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200 flex-shrink-0">
+                        <Trophy size={20} className="sm:w-[22px] sm:h-[22px]" />
                       </div>
                       <div>
                         <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Kinh nghiệm</div>
-                        <div className="text-sm font-bold text-slate-700 uppercase italic leading-none">10+ Năm đào tạo</div>
+                        <div className="text-xs sm:text-sm font-bold text-slate-700 uppercase italic leading-none">10+ Năm đào tạo</div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-300">
-                      <div className="w-12 h-12 bg-blue-500 text-white rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
-                        <Target size={22} />
+                    <div className="flex items-center gap-4 p-4 sm:p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-300">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 bg-blue-500 text-white rounded-xl flex items-center justify-center shadow-lg shadow-blue-200 flex-shrink-0">
+                        <Target size={20} className="sm:w-[22px] sm:h-[22px]" />
                       </div>
                       <div>
                         <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Phương pháp</div>
-                        <div className="text-sm font-bold text-slate-700 uppercase italic leading-none">Giải đề thực chiến</div>
+                        <div className="text-xs sm:text-sm font-bold text-slate-700 uppercase italic leading-none">Giải đề thực chiến</div>
                       </div>
                     </div>
                   </div>
@@ -2113,7 +2077,9 @@ function HomeContent() {
       />
 
       {/* --- PLACEMENT TEST MODAL --- */}
-      <PlacementTest isOpen={showPlacementTest} onClose={() => setShowPlacementTest(false)} />
+      {showPlacementTest && (
+        <PlacementTest isOpen={showPlacementTest} onClose={() => setShowPlacementTest(false)} />
+      )}
       <FloatingMessenger />
     </div>
   );
