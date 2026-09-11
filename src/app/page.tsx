@@ -10,6 +10,7 @@ import CourseCard from "@/components/Course/CourseCard";
 import PlacementTest from "@/components/PlacementTest/PlacementTest";
 import VocabGuideModal, { VocabGuideContent } from "@/components/Vocab/VocabGuideModal";
 import FloatingMessenger from "@/components/UI/FloatingMessenger";
+import FeatureVideoShowcase from "@/components/Home/FeatureVideoShowcase";
 import { speakVocab } from "@/lib/vocab-audio";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail } from "lucide-react";
@@ -585,6 +586,9 @@ function HomeContent() {
                   Kiểm tra trình độ miễn phí
                 </button>
               </div>
+
+              {/* Khung Video Giới Thiệu Tính Năng Đặc Biệt */}
+              <FeatureVideoShowcase />
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 border-t border-slate-100 pt-16">
                 {[
