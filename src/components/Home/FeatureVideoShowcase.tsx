@@ -82,6 +82,21 @@ const getIconForIndex = (order: number) => {
   }
 };
 
+const getShortTitleForIndex = (order: number) => {
+  switch (order) {
+    case 1:
+      return "Từ điển & Game";
+    case 2:
+      return "Nghe từng câu";
+    case 3:
+      return "Thống kê lỗi sai";
+    case 4:
+      return "Bí quyết từ vựng";
+    default:
+      return `Tính năng ${order}`;
+  }
+};
+
 export default function FeatureVideoShowcase() {
   const [videos, setVideos] = useState<FeatureVideoItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -96,6 +111,10 @@ export default function FeatureVideoShowcase() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Touch swipe support
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
 
   // Fetch danh sách video từ API
   useEffect(() => {
@@ -121,40 +140,89 @@ export default function FeatureVideoShowcase() {
   const currentTheme =
     COLOR_MAP[currentVideo?.color || "blue"] || COLOR_MAP.blue;
 
-  // Xử lý Play / Pause
+  // Xử lý Play / Pause an toàn trên mọi thiết bị
   const togglePlay = useCallback(() => {
     if (!videoRef.current) return;
     if (videoRef.current.paused) {
+      setIsBuffering(true);
       videoRef.current
         .play()
-        .then(() => setIsPlaying(true))
-        .catch((e) => console.log("Play interrupted:", e));
+        .then(() => {
+          setIsPlaying(true);
+          setIsBuffering(false);
+        })
+        .catch((e) => {
+          console.warn("Play interrupted or autoplay blocked:", e);
+          setIsPlaying(false);
+          setIsBuffering(false);
+        });
     } else {
       videoRef.current.pause();
       setIsPlaying(false);
     }
   }, []);
 
-  // Chuyển video
-  const handleSelectVideo = (index: number) => {
-    if (index === activeIndex) {
-      togglePlay();
-      return;
-    }
-    setActiveIndex(index);
-    setIsPlaying(true);
-    setCurrentTime(0);
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-    }
-  };
+  // Chuyển video mượt mà và nạp lại buffer đúng chuẩn
+  const handleSelectVideo = useCallback(
+    (index: number) => {
+      if (index === activeIndex) {
+        togglePlay();
+        return;
+      }
+      setActiveIndex(index);
+      setCurrentTime(0);
+      setIsBuffering(true);
+
+      if (videoRef.current) {
+        videoRef.current.src = videos[index]?.videoUrl || "";
+        videoRef.current.load();
+        videoRef.current
+          .play()
+          .then(() => {
+            setIsPlaying(true);
+            setIsBuffering(false);
+          })
+          .catch((err) => {
+            console.log("Autoplay policy notice:", err);
+            setIsPlaying(false);
+            setIsBuffering(false);
+          });
+      }
+    },
+    [activeIndex, togglePlay, videos]
+  );
 
   // Tự động chuyển sang video kế tiếp khi xem hết
-  const handleVideoEnded = () => {
+  const handleVideoEnded = useCallback(() => {
     if (videos.length === 0) return;
     const nextIndex = (activeIndex + 1) % videos.length;
-    setActiveIndex(nextIndex);
-    setIsPlaying(true);
+    handleSelectVideo(nextIndex);
+  }, [activeIndex, handleSelectVideo, videos.length]);
+
+  // Touch Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    const diffX = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 50;
+
+    if (diffX > minSwipeDistance) {
+      // Vuốt sang trái -> Video tiếp theo
+      handleSelectVideo((activeIndex + 1) % videos.length);
+    } else if (diffX < -minSwipeDistance) {
+      // Vuốt sang phải -> Video trước đó
+      handleSelectVideo((activeIndex - 1 + videos.length) % videos.length);
+    }
+
+    touchStartX.current = null;
+    touchEndX.current = null;
   };
 
   // Xử lý tua video
@@ -202,30 +270,13 @@ export default function FeatureVideoShowcase() {
     return `${m < 10 ? "0" + m : m}:${s < 10 ? "0" + s : s}`;
   };
 
-  // Tự động phát khi đổi activeIndex
-  useEffect(() => {
-    if (videoRef.current && isPlaying) {
-      videoRef.current
-        .play()
-        .catch(() => {
-          setIsPlaying(false);
-        });
-    }
-  }, [activeIndex, isPlaying]);
-
   if (loading) {
     return (
-      <div className="w-full my-20 bg-slate-50/50 rounded-[3rem] p-8 md:p-14 border border-slate-100 animate-pulse">
-        <div className="h-8 bg-slate-200 rounded-full w-64 mx-auto mb-6"></div>
-        <div className="h-12 bg-slate-200 rounded-2xl w-96 mx-auto mb-12"></div>
-        <div className="grid lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-7 aspect-video bg-slate-200 rounded-[2.5rem]"></div>
-          <div className="lg:col-span-5 space-y-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-28 bg-slate-200 rounded-2xl"></div>
-            ))}
-          </div>
-        </div>
+      <div className="w-full max-w-5xl mx-auto my-16 bg-slate-50/50 rounded-[2.5rem] p-6 sm:p-10 border border-slate-100 animate-pulse">
+        <div className="h-8 bg-slate-200 rounded-full w-48 mx-auto mb-4"></div>
+        <div className="h-10 bg-slate-200 rounded-2xl w-80 mx-auto mb-8"></div>
+        <div className="aspect-video bg-slate-200 rounded-[2rem] max-w-4xl mx-auto mb-6"></div>
+        <div className="h-14 bg-slate-200 rounded-2xl max-w-md mx-auto"></div>
       </div>
     );
   }
@@ -233,15 +284,15 @@ export default function FeatureVideoShowcase() {
   if (videos.length === 0) return null;
 
   return (
-    <section className="my-12 sm:my-20 md:my-24 relative overflow-hidden lg:overflow-visible">
+    <section className="my-10 sm:my-16 md:my-20 relative overflow-hidden lg:overflow-visible max-w-5xl mx-auto px-2 sm:px-4">
       {/* Background Ambient Glow */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[600px] lg:w-[850px] h-[320px] sm:h-[450px] lg:h-[550px] blur-[100px] sm:blur-[140px] -z-10 rounded-full transition-colors duration-1000 opacity-40 sm:opacity-50 pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[650px] lg:w-[850px] h-[320px] sm:h-[450px] lg:h-[550px] blur-[110px] sm:blur-[140px] -z-10 rounded-full transition-colors duration-1000 opacity-40 sm:opacity-50 pointer-events-none"
         style={{ backgroundColor: currentTheme.glow }}
       />
 
       {/* Section Header */}
-      <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 px-2">
+      <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10 px-2">
         <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-blue-50 via-indigo-50 to-emerald-50 text-blue-700 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-widest mb-3 sm:mb-4 border border-blue-100/70 shadow-sm">
           <Sparkles size={13} className="text-blue-600 flex-shrink-0" />
           <span>TÍNH NĂNG NỔI BẬT & ĐỘC QUYỀN</span>
@@ -257,390 +308,271 @@ export default function FeatureVideoShowcase() {
         </p>
       </div>
 
-      {/* Main Showcase Container */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3.5rem] p-3.5 sm:p-6 md:p-9 border border-slate-200/80 shadow-[0_20px_50px_rgba(15,23,42,0.06)]">
-        <div className="grid lg:grid-cols-12 gap-5 lg:gap-8 items-stretch">
-          
-          {/* LEFT: Cinema Video Player + Details (7 Cols) */}
-          <div className="lg:col-span-7 flex flex-col justify-between gap-5 sm:gap-6">
-            
-            {/* Cinema Player Box */}
-            <div
-              className="relative aspect-video rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-slate-950 border-2 sm:border-4 border-slate-900 shadow-2xl group select-none flex-shrink-0"
-              onMouseEnter={() => setShowControls(true)}
-              onMouseMove={() => {
-                setShowControls(true);
-                if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
-                controlsTimeoutRef.current = setTimeout(() => {
-                  if (isPlaying) setShowControls(false);
-                }, 3000);
-              }}
-              onMouseLeave={() => {
-                if (isPlaying) setShowControls(false);
-              }}
-            >
-              {/* Video Element */}
-              <video
-                ref={videoRef}
-                src={currentVideo?.videoUrl}
-                poster={currentVideo?.thumbnail}
-                playsInline
-                preload="metadata"
-                className="w-full h-full object-contain cursor-pointer"
+      {/* Single-Column Showcase Card */}
+      <div className="bg-white/95 backdrop-blur-xl rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] p-3 sm:p-6 md:p-8 border border-slate-200/80 shadow-[0_20px_50px_rgba(15,23,42,0.06)] flex flex-col gap-5 sm:gap-6">
+        
+        {/* 1. Main Cinema Video Player */}
+        <div
+          className="relative aspect-video rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.25rem] overflow-hidden bg-slate-950 border-2 sm:border-4 border-slate-900 shadow-2xl group select-none flex-shrink-0 w-full"
+          onMouseEnter={() => setShowControls(true)}
+          onMouseMove={() => {
+            setShowControls(true);
+            if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+            controlsTimeoutRef.current = setTimeout(() => {
+              if (isPlaying) setShowControls(false);
+            }, 3000);
+          }}
+          onMouseLeave={() => {
+            if (isPlaying) setShowControls(false);
+          }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Video Element */}
+          <video
+            ref={videoRef}
+            src={currentVideo?.videoUrl}
+            poster={currentVideo?.thumbnail}
+            playsInline
+            preload="auto"
+            crossOrigin="anonymous"
+            className="w-full h-full object-contain cursor-pointer"
+            onClick={togglePlay}
+            onTimeUpdate={() => {
+              if (videoRef.current) {
+                setCurrentTime(videoRef.current.currentTime);
+              }
+            }}
+            onLoadedMetadata={() => {
+              if (videoRef.current) {
+                setDuration(videoRef.current.duration);
+                videoRef.current.playbackRate = playbackSpeed;
+              }
+            }}
+            onWaiting={() => setIsBuffering(true)}
+            onPlaying={() => {
+              setIsBuffering(false);
+              setIsPlaying(true);
+            }}
+            onPause={() => setIsPlaying(false)}
+            onEnded={handleVideoEnded}
+          />
+
+          {/* Big Center Play / Pause Indicator on Hover / Paused */}
+          <AnimatePresence>
+            {(!isPlaying || isBuffering) && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.85 }}
+                className="absolute inset-0 flex items-center justify-center bg-slate-950/45 backdrop-blur-[2px] cursor-pointer"
                 onClick={togglePlay}
-                onTimeUpdate={() => {
-                  if (videoRef.current) {
-                    setCurrentTime(videoRef.current.currentTime);
-                  }
-                }}
-                onLoadedMetadata={() => {
-                  if (videoRef.current) {
-                    setDuration(videoRef.current.duration);
-                    videoRef.current.playbackRate = playbackSpeed;
-                  }
-                }}
-                onWaiting={() => setIsBuffering(true)}
-                onPlaying={() => {
-                  setIsBuffering(false);
-                  setIsPlaying(true);
-                }}
-                onPause={() => setIsPlaying(false)}
-                onEnded={handleVideoEnded}
+              >
+                {isBuffering ? (
+                  <div className="w-12 sm:w-16 h-12 sm:h-16 border-3 sm:border-4 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <div className="relative group/btn">
+                    <div
+                      className="absolute -inset-3 sm:-inset-4 rounded-full blur-xl opacity-75 group-hover/btn:opacity-100 transition duration-500"
+                      style={{ backgroundColor: currentTheme.glow }}
+                    />
+                    <div className="relative w-14 h-14 sm:w-20 sm:h-20 bg-white text-slate-900 rounded-full flex items-center justify-center shadow-2xl transform group-hover/btn:scale-110 active:scale-95 transition-all duration-300">
+                      <Play size={24} className="ml-0.5 sm:ml-1 fill-slate-900 text-slate-900" />
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Top Bar Header on Video */}
+          <div className="absolute top-0 left-0 right-0 p-2.5 sm:p-4 bg-gradient-to-b from-slate-950/80 via-slate-950/30 to-transparent flex items-center justify-between text-white pointer-events-none">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-200 truncate max-w-[170px] sm:max-w-none">
+                Video #{currentVideo?.order} • {currentVideo?.category}
+              </span>
+            </div>
+            <span className="text-[10px] sm:text-xs font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 bg-white/20 backdrop-blur-md rounded-md sm:rounded-lg text-white">
+              {currentVideo?.badge}
+            </span>
+          </div>
+
+          {/* Custom Control Bar (Bottom) */}
+          <div
+            className={`absolute bottom-0 left-0 right-0 p-2.5 sm:p-4 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent transition-opacity duration-300 ${
+              showControls || !isPlaying ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            }`}
+          >
+            {/* Scrubber Progress Bar */}
+            <div className="relative mb-2 sm:mb-3 flex items-center group/progress">
+              <input
+                type="range"
+                min={0}
+                max={duration || 100}
+                step={0.1}
+                value={currentTime}
+                onChange={handleSeek}
+                className="w-full h-1 sm:h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:h-2 sm:hover:h-2.5 transition-all"
               />
-
-              {/* Big Center Play / Pause Indicator on Hover / Paused */}
-              <AnimatePresence>
-                {(!isPlaying || isBuffering) && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    className="absolute inset-0 flex items-center justify-center bg-slate-950/40 backdrop-blur-[2px] cursor-pointer"
-                    onClick={togglePlay}
-                  >
-                    {isBuffering ? (
-                      <div className="w-12 sm:w-16 h-12 sm:h-16 border-3 sm:border-4 border-white/30 border-t-white rounded-full animate-spin" />
-                    ) : (
-                      <div className="relative group/btn">
-                        <div
-                          className="absolute -inset-3 sm:-inset-4 rounded-full blur-xl opacity-75 group-hover/btn:opacity-100 transition duration-500"
-                          style={{ backgroundColor: currentTheme.glow }}
-                        />
-                        <div className="relative w-14 h-14 sm:w-20 sm:h-20 bg-white text-slate-900 rounded-full flex items-center justify-center shadow-2xl transform group-hover/btn:scale-110 active:scale-95 transition-all duration-300">
-                          <Play size={24} className="ml-0.5 sm:ml-1 fill-slate-900 text-slate-900" />
-                        </div>
-                      </div>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Top Bar Header on Video */}
-              <div className="absolute top-0 left-0 right-0 p-2.5 sm:p-4 bg-gradient-to-b from-slate-950/80 via-slate-950/30 to-transparent flex items-center justify-between text-white pointer-events-none">
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                  <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-200 truncate max-w-[170px] sm:max-w-none">
-                    Video #{currentVideo?.order} • {currentVideo?.category}
-                  </span>
-                </div>
-                <span className="text-[10px] sm:text-xs font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 bg-white/20 backdrop-blur-md rounded-md sm:rounded-lg text-white">
-                  {currentVideo?.badge}
-                </span>
-              </div>
-
-              {/* Custom Control Bar (Bottom) */}
-              <div
-                className={`absolute bottom-0 left-0 right-0 p-2.5 sm:p-4 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent transition-opacity duration-300 ${
-                  showControls || !isPlaying ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-                }`}
-              >
-                {/* Scrubber Progress Bar */}
-                <div className="relative mb-2 sm:mb-3 flex items-center group/progress">
-                  <input
-                    type="range"
-                    min={0}
-                    max={duration || 100}
-                    step={0.1}
-                    value={currentTime}
-                    onChange={handleSeek}
-                    className="w-full h-1 sm:h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:h-2 sm:hover:h-2.5 transition-all"
-                  />
-                </div>
-
-                {/* Controls Row */}
-                <div className="flex items-center justify-between text-white text-[11px] sm:text-xs">
-                  {/* Left: Play/Pause, Replay, Time */}
-                  <div className="flex items-center gap-1.5 sm:gap-3">
-                    <button
-                      onClick={togglePlay}
-                      className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors"
-                      title={isPlaying ? "Tạm dừng" : "Phát video"}
-                    >
-                      {isPlaying ? <Pause size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Play size={16} className="sm:w-[18px] sm:h-[18px] fill-white" />}
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        if (videoRef.current) {
-                          videoRef.current.currentTime = 0;
-                          setCurrentTime(0);
-                        }
-                      }}
-                      className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-300 hover:text-white"
-                      title="Xem lại từ đầu"
-                    >
-                      <RotateCcw size={14} className="sm:w-4 sm:h-4" />
-                    </button>
-
-                    <div className="font-mono text-[10px] sm:text-[11px] text-slate-300 select-none">
-                      {formatTime(currentTime)} / {formatTime(duration)}
-                    </div>
-                  </div>
-
-                  {/* Right: Next Video, Speed, Mute, Fullscreen */}
-                  <div className="flex items-center gap-1 sm:gap-2">
-                    <button
-                      onClick={handleVideoEnded}
-                      className="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-white/10 hover:bg-white/20 rounded-md sm:rounded-lg transition-colors text-[10px] sm:text-[11px] font-bold flex items-center gap-1 text-slate-200 hover:text-white"
-                      title="Chuyển video tiếp theo"
-                    >
-                      <span className="hidden xs:inline">Tiếp</span>
-                      <FastForward size={13} />
-                    </button>
-
-                    <button
-                      onClick={handleSpeedChange}
-                      className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-white/10 hover:bg-white/20 rounded-md sm:rounded-lg transition-colors text-[10px] sm:text-[11px] font-bold text-slate-200"
-                      title="Tốc độ phát"
-                    >
-                      {playbackSpeed}x
-                    </button>
-
-                    <button
-                      onClick={toggleMute}
-                      className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-200 hover:text-white"
-                      title={isMuted ? "Bật âm thanh" : "Tắt âm thanh"}
-                    >
-                      {isMuted ? <VolumeX size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Volume2 size={16} className="sm:w-[18px] sm:h-[18px]" />}
-                    </button>
-
-                    <button
-                      onClick={handleFullscreen}
-                      className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-200 hover:text-white"
-                      title="Toàn màn hình"
-                    >
-                      <Maximize2 size={16} className="sm:w-[18px] sm:h-[18px]" />
-                    </button>
-                  </div>
-                </div>
-              </div>
             </div>
 
-            {/* Video Description Card below player (Fill height neatly) */}
-            <div className="bg-slate-50/90 rounded-[2rem] p-5 sm:p-7 border border-slate-100 flex-1 flex flex-col justify-between">
-              <div>
-                <div className="flex flex-wrap items-center gap-2.5 mb-2.5">
-                  <span className={`px-3 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${currentTheme.badgeBg}`}>
-                    {currentVideo?.badge}
-                  </span>
-                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                    Video {currentVideo?.order} / {videos.length}
-                  </span>
+            {/* Controls Row */}
+            <div className="flex items-center justify-between text-white text-[11px] sm:text-xs">
+              {/* Left: Play/Pause, Replay, Time */}
+              <div className="flex items-center gap-1.5 sm:gap-3">
+                <button
+                  onClick={togglePlay}
+                  className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors"
+                  title={isPlaying ? "Tạm dừng" : "Phát video"}
+                >
+                  {isPlaying ? <Pause size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Play size={16} className="sm:w-[18px] sm:h-[18px] fill-white" />}
+                </button>
+
+                <button
+                  onClick={() => {
+                    if (videoRef.current) {
+                      videoRef.current.currentTime = 0;
+                      setCurrentTime(0);
+                    }
+                  }}
+                  className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-300 hover:text-white"
+                  title="Xem lại từ đầu"
+                >
+                  <RotateCcw size={14} className="sm:w-4 sm:h-4" />
+                </button>
+
+                <div className="font-mono text-[10px] sm:text-[11px] text-slate-300 select-none">
+                  {formatTime(currentTime)} / {formatTime(duration)}
                 </div>
-
-                <h3 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight leading-snug mb-1.5">
-                  {currentVideo?.title}
-                </h3>
-                
-                {currentVideo?.subtitle && (
-                  <p className="text-xs sm:text-sm font-bold text-slate-600 mb-3 italic">
-                    {currentVideo.subtitle}
-                  </p>
-                )}
-
-                <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-4 font-medium">
-                  {currentVideo?.description}
-                </p>
               </div>
 
-              {/* Highlights Bullet List */}
-              {currentVideo?.highlights && currentVideo.highlights.length > 0 && (
-                <div className="grid sm:grid-cols-2 gap-2.5 pt-3.5 border-t border-slate-200/70">
-                  {currentVideo.highlights.map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-2 text-xs font-semibold text-slate-700">
-                      <CheckCircle2 size={15} className={`flex-shrink-0 mt-0.5 ${currentTheme.text}`} />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+              {/* Right: Next Video, Speed, Mute, Fullscreen */}
+              <div className="flex items-center gap-1 sm:gap-2">
+                <button
+                  onClick={handleVideoEnded}
+                  className="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-white/10 hover:bg-white/20 rounded-md sm:rounded-lg transition-colors text-[10px] sm:text-[11px] font-bold flex items-center gap-1 text-slate-200 hover:text-white"
+                  title="Chuyển video tiếp theo"
+                >
+                  <span className="hidden xs:inline">Tiếp</span>
+                  <FastForward size={13} />
+                </button>
+
+                <button
+                  onClick={handleSpeedChange}
+                  className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-white/10 hover:bg-white/20 rounded-md sm:rounded-lg transition-colors text-[10px] sm:text-[11px] font-bold text-slate-200"
+                  title="Tốc độ phát"
+                >
+                  {playbackSpeed}x
+                </button>
+
+                <button
+                  onClick={toggleMute}
+                  className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-200 hover:text-white"
+                  title={isMuted ? "Bật âm thanh" : "Tắt âm thanh"}
+                >
+                  {isMuted ? <VolumeX size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Volume2 size={16} className="sm:w-[18px] sm:h-[18px]" />}
+                </button>
+
+                <button
+                  onClick={handleFullscreen}
+                  className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-200 hover:text-white"
+                  title="Toàn màn hình"
+                >
+                  <Maximize2 size={18} />
+                </button>
+              </div>
             </div>
           </div>
-
-          {/* RIGHT: YouTube-style Video Playlist (5 Cols) */}
-          <div className="lg:col-span-5 flex flex-col justify-between gap-3 h-full">
-            <div>
-              {/* Header Playlist */}
-              <div className="flex items-center justify-between px-2 mb-2.5">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
-                  <Tv size={15} className="text-blue-600" />
-                  <span>DANH SÁCH VIDEO TÍNH NĂNG ({videos.length})</span>
-                </div>
-                <div className="text-[11px] font-bold text-blue-600 flex items-center gap-0.5">
-                  <span>Chọn video để xem</span>
-                  <ChevronRight size={14} />
-                </div>
-              </div>
-
-              {/* YouTube-style Video Cards List */}
-              <div className="space-y-3">
-                {videos.map((vid, idx) => {
-                  const isActive = idx === activeIndex;
-                  const cardTheme = COLOR_MAP[vid.color || "blue"] || COLOR_MAP.blue;
-
-                  return (
-                    <motion.div
-                      key={vid.id || idx}
-                      whileHover={{ scale: 1.012 }}
-                      whileTap={{ scale: 0.988 }}
-                      onClick={() => handleSelectVideo(idx)}
-                      className={`group relative p-2.5 sm:p-3 rounded-2xl cursor-pointer transition-all duration-300 border ${
-                        isActive
-                          ? `bg-white shadow-xl ${cardTheme.border} ring-2 ring-blue-500/20`
-                          : "bg-slate-50/80 hover:bg-white border-slate-100 hover:border-slate-200 hover:shadow-md"
-                      }`}
-                    >
-                      {/* Active Left Indicator Bar */}
-                      {isActive && (
-                        <motion.div
-                          layoutId="activeBar"
-                          className={`absolute left-0 top-3 bottom-3 w-1.5 rounded-r-full ${cardTheme.bg}`}
-                        />
-                      )}
-
-                      <div className="flex items-center gap-3 sm:gap-3.5">
-                        
-                        {/* Video Thumbnail (YouTube style aspect-video) */}
-                        <div className="relative w-28 xs:w-32 sm:w-36 md:w-40 aspect-video rounded-lg sm:rounded-xl overflow-hidden bg-slate-900 flex-shrink-0 border border-slate-200 shadow-sm group-hover:border-blue-400 transition-all">
-                          {vid.thumbnail ? (
-                            <img
-                              src={vid.thumbnail}
-                              alt={vid.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            />
-                          ) : (
-                            <video
-                              src={`${vid.videoUrl}#t=0.5`}
-                              preload="metadata"
-                              muted
-                              playsInline
-                              className="w-full h-full object-cover pointer-events-none group-hover:scale-105 transition-transform duration-500"
-                            />
-                          )}
-
-                          {/* Dark overlay on hover or active */}
-                          <div className={`absolute inset-0 transition-opacity duration-300 flex items-center justify-center ${
-                            isActive ? "bg-slate-950/40" : "bg-slate-950/20 group-hover:bg-slate-950/40"
-                          }`}>
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 ${
-                              isActive ? `${cardTheme.bg} text-white scale-110` : "bg-white/90 text-slate-900 group-hover:scale-110"
-                            }`}>
-                              {isActive && isPlaying ? (
-                                <span className="flex items-center gap-0.5">
-                                  <span className="w-1 h-3 bg-white animate-pulse" />
-                                  <span className="w-1 h-3 bg-white animate-pulse delay-75" />
-                                </span>
-                              ) : (
-                                <Play size={14} className="ml-0.5 fill-current" />
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Order index badge on thumbnail corner */}
-                          <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-slate-900/80 backdrop-blur-md rounded-md text-[9px] font-black text-white">
-                            #{vid.order}
-                          </div>
-
-                          {/* Duration / Demo badge */}
-                          <div className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 bg-slate-900/80 backdrop-blur-md rounded-md text-[9px] font-bold text-white flex items-center gap-1">
-                            {getIconForIndex(vid.order)}
-                          </div>
-                        </div>
-
-                        {/* Content Right (Title, Badge, Description) */}
-                        <div className="flex-1 min-w-0 pr-1">
-                          <div className="flex items-center justify-between gap-1.5 mb-1">
-                            <span
-                              className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md truncate max-w-[140px] ${
-                                isActive
-                                  ? cardTheme.badgeBg
-                                  : "bg-slate-200/70 text-slate-600"
-                              }`}
-                            >
-                              {vid.badge || `TÍNH NĂNG ${vid.order}`}
-                            </span>
-
-                            {isActive && (
-                              <span className="flex items-center gap-1 text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200 flex-shrink-0">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-                                ĐANG PHÁT
-                              </span>
-                            )}
-                          </div>
-
-                          <h4
-                            className={`text-xs sm:text-sm font-bold tracking-tight leading-snug line-clamp-2 mb-1 ${
-                              isActive ? "text-slate-900 font-extrabold" : "text-slate-800 group-hover:text-blue-600"
-                            }`}
-                          >
-                            {vid.title}
-                          </h4>
-
-                          <p className="text-[11px] text-slate-500 font-medium line-clamp-2 leading-relaxed">
-                            {vid.subtitle || vid.description}
-                          </p>
-                        </div>
-
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Quick Navigation Footer (Balanced at bottom) */}
-            <div className="flex items-center justify-between pt-3 px-3 text-xs text-slate-500 font-semibold border-t border-slate-100 bg-slate-50/50 rounded-2xl mt-2">
-              <button
-                onClick={() => handleSelectVideo((activeIndex - 1 + videos.length) % videos.length)}
-                className="flex items-center gap-1 hover:text-blue-600 transition-colors py-1.5 px-3 rounded-xl hover:bg-white hover:shadow-sm"
-              >
-                <ChevronLeft size={16} /> Video trước
-              </button>
-              
-              <div className="flex items-center gap-1.5">
-                {videos.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => handleSelectVideo(i)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      i === activeIndex ? "w-6 bg-blue-600" : "w-2 bg-slate-300 hover:bg-slate-400"
-                    }`}
-                    title={`Chuyển tới Video ${i + 1}`}
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={() => handleSelectVideo((activeIndex + 1) % videos.length)}
-                className="flex items-center gap-1 hover:text-blue-600 transition-colors py-1.5 px-3 rounded-xl hover:bg-white hover:shadow-sm"
-              >
-                Video tiếp <ChevronRight size={16} />
-              </button>
-            </div>
-
-          </div>
-
         </div>
+
+        {/* 2. Compact Navigation Bar (Placed DIRECTLY under video) */}
+        <div className="flex items-center justify-between gap-2 p-2 sm:p-3 bg-slate-50/90 rounded-2xl sm:rounded-[1.75rem] border border-slate-100">
+          
+          {/* Nút Video Trước */}
+          <button
+            onClick={() => handleSelectVideo((activeIndex - 1 + videos.length) % videos.length)}
+            className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-white text-slate-700 hover:text-blue-600 rounded-xl text-xs sm:text-sm font-bold shadow-sm hover:shadow transition-all active:scale-95 flex-shrink-0"
+          >
+            <ChevronLeft size={16} />
+            <span className="hidden sm:inline">Video trước</span>
+            <span className="sm:hidden">Trước</span>
+          </button>
+
+          {/* Quick Select Buttons / Pills */}
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1 px-1">
+            {videos.map((vid, idx) => {
+              const isActive = idx === activeIndex;
+              const cardTheme = COLOR_MAP[vid.color || "blue"] || COLOR_MAP.blue;
+
+              return (
+                <button
+                  key={vid.id || idx}
+                  onClick={() => handleSelectVideo(idx)}
+                  className={`flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap active:scale-95 ${
+                    isActive
+                      ? `${cardTheme.bg} text-white shadow-md shadow-blue-500/20`
+                      : "bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/60"
+                  }`}
+                >
+                  <span className="flex-shrink-0">{getIconForIndex(vid.order)}</span>
+                  <span className="hidden md:inline">{getShortTitleForIndex(vid.order)}</span>
+                  <span className="md:hidden">#{vid.order}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Nút Video Tiếp */}
+          <button
+            onClick={() => handleSelectVideo((activeIndex + 1) % videos.length)}
+            className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-blue-500/20 transition-all active:scale-95 flex-shrink-0"
+          >
+            <span className="hidden sm:inline">Video tiếp</span>
+            <span className="sm:hidden">Tiếp</span>
+            <ChevronRight size={16} />
+          </button>
+        </div>
+
+        {/* 3. Detailed Feature Information Card */}
+        <div className="bg-slate-50/90 rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 border border-slate-100">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-2 sm:mb-3">
+            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${currentTheme.badgeBg}`}>
+              {currentVideo?.badge}
+            </span>
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+              Video {currentVideo?.order} / {videos.length} • Vuốt trên video để chuyển nhanh
+            </span>
+          </div>
+
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight leading-snug mb-1.5">
+            {currentVideo?.title}
+          </h3>
+          
+          {currentVideo?.subtitle && (
+            <p className="text-xs sm:text-sm font-bold text-slate-600 mb-3 sm:mb-4 italic">
+              {currentVideo.subtitle}
+            </p>
+          )}
+
+          <p className="text-slate-600 text-xs sm:text-sm md:text-base leading-relaxed mb-5 font-medium">
+            {currentVideo?.description}
+          </p>
+
+          {/* Highlights Bullet List */}
+          {currentVideo?.highlights && currentVideo.highlights.length > 0 && (
+            <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-3.5 pt-4 border-t border-slate-200/70">
+              {currentVideo.highlights.map((item, idx) => (
+                <div key={idx} className="flex items-start gap-2 sm:gap-2.5 text-xs sm:text-sm font-semibold text-slate-700">
+                  <CheckCircle2 size={16} className={`flex-shrink-0 mt-0.5 ${currentTheme.text}`} />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
       </div>
     </section>
   );
