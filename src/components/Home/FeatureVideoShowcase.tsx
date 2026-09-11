@@ -111,6 +111,11 @@ export default function FeatureVideoShowcase() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isPlayingRef = useRef(false);
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
 
   // Touch swipe support
   const touchStartX = useRef<number | null>(null);
@@ -140,6 +145,17 @@ export default function FeatureVideoShowcase() {
   const currentTheme =
     COLOR_MAP[currentVideo?.color || "blue"] || COLOR_MAP.blue;
 
+  // Tự động ẩn controls sau 2.5s khi video đang chạy (hoạt động chuẩn xác trên cả PC và Mobile)
+  const triggerControlsTemporarily = useCallback(() => {
+    setShowControls(true);
+    if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+    controlsTimeoutRef.current = setTimeout(() => {
+      if (isPlayingRef.current || (videoRef.current && !videoRef.current.paused)) {
+        setShowControls(false);
+      }
+    }, 2500);
+  }, []);
+
   // Xử lý Play / Pause an toàn trên mọi thiết bị
   const togglePlay = useCallback(() => {
     if (!videoRef.current) return;
@@ -149,18 +165,24 @@ export default function FeatureVideoShowcase() {
         .play()
         .then(() => {
           setIsPlaying(true);
+          isPlayingRef.current = true;
           setIsBuffering(false);
+          triggerControlsTemporarily();
         })
         .catch((e) => {
           console.warn("Play interrupted or autoplay blocked:", e);
           setIsPlaying(false);
+          isPlayingRef.current = false;
           setIsBuffering(false);
         });
     } else {
       videoRef.current.pause();
       setIsPlaying(false);
+      isPlayingRef.current = false;
+      setShowControls(true);
+      if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
     }
-  }, []);
+  }, [triggerControlsTemporarily]);
 
   // Chuyển video và TỰ ĐỘNG PHÁT NGAY LẬP TỨC
   const handleSelectVideo = useCallback(
@@ -172,7 +194,9 @@ export default function FeatureVideoShowcase() {
       setActiveIndex(index);
       setCurrentTime(0);
       setIsPlaying(true);
+      isPlayingRef.current = true;
       setIsBuffering(true);
+      triggerControlsTemporarily();
 
       if (videoRef.current) {
         const nextUrl = videos[index]?.videoUrl || "";
@@ -184,18 +208,21 @@ export default function FeatureVideoShowcase() {
           playPromise
             .then(() => {
               setIsPlaying(true);
+              isPlayingRef.current = true;
               setIsBuffering(false);
+              triggerControlsTemporarily();
             })
             .catch((err) => {
               console.log("Autoplay notice:", err);
-              // Nếu bị trình duyệt chặn (rất hiếm khi người dùng đã click), hiển thị nút Play
               setIsPlaying(false);
+              isPlayingRef.current = false;
               setIsBuffering(false);
+              setShowControls(true);
             });
         }
       }
     },
-    [activeIndex, togglePlay, videos]
+    [activeIndex, togglePlay, triggerControlsTemporarily, videos]
   );
 
   // Tự động chuyển sang video kế tiếp khi xem hết
@@ -205,7 +232,7 @@ export default function FeatureVideoShowcase() {
     handleSelectVideo(nextIndex);
   }, [activeIndex, handleSelectVideo, videos.length]);
 
-  // Touch Swipe handlers
+  // Touch Swipe handlers & Tap controls
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
   };
@@ -214,8 +241,22 @@ export default function FeatureVideoShowcase() {
     touchEndX.current = e.targetTouches[0].clientX;
   };
 
-  const handleTouchEnd = () => {
-    if (!touchStartX.current || !touchEndX.current) return;
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartX.current || !touchEndX.current) {
+      // Tap trên mobile
+      if (!(e.target as HTMLElement).closest("button, input")) {
+        if (showControls && (isPlayingRef.current || (videoRef.current && !videoRef.current.paused))) {
+          setShowControls(false);
+          if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+        } else {
+          triggerControlsTemporarily();
+        }
+      }
+      touchStartX.current = null;
+      touchEndX.current = null;
+      return;
+    }
+
     const diffX = touchStartX.current - touchEndX.current;
     const minSwipeDistance = 50;
 
@@ -225,6 +266,16 @@ export default function FeatureVideoShowcase() {
     } else if (diffX < -minSwipeDistance) {
       // Vuốt sang phải -> Video trước đó
       handleSelectVideo((activeIndex - 1 + videos.length) % videos.length);
+    } else {
+      // Chạm nhẹ
+      if (!(e.target as HTMLElement).closest("button, input")) {
+        if (showControls && (isPlayingRef.current || (videoRef.current && !videoRef.current.paused))) {
+          setShowControls(false);
+          if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+        } else {
+          triggerControlsTemporarily();
+        }
+      }
     }
 
     touchStartX.current = null;
@@ -290,7 +341,7 @@ export default function FeatureVideoShowcase() {
   if (videos.length === 0) return null;
 
   return (
-    <section className="my-10 sm:my-16 md:my-20 relative overflow-hidden lg:overflow-visible max-w-5xl mx-auto px-2 sm:px-4">
+    <section className="my-6 sm:my-16 md:my-20 relative overflow-hidden lg:overflow-visible max-w-5xl mx-auto px-1 sm:px-4">
       {/* Background Ambient Glow */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[650px] lg:w-[850px] h-[320px] sm:h-[450px] lg:h-[550px] blur-[110px] sm:blur-[140px] -z-10 rounded-full transition-colors duration-1000 opacity-40 sm:opacity-50 pointer-events-none"
@@ -298,7 +349,7 @@ export default function FeatureVideoShowcase() {
       />
 
       {/* Section Header */}
-      <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10 px-2">
+      <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-10 px-2">
         <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-blue-50 via-indigo-50 to-emerald-50 text-blue-700 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-widest mb-3 sm:mb-4 border border-blue-100/70 shadow-sm">
           <Sparkles size={13} className="text-blue-600 flex-shrink-0" />
           <span>WEB LUYỆN THI TOEIC ĐỘC QUYỀN</span>
@@ -315,21 +366,18 @@ export default function FeatureVideoShowcase() {
       </div>
 
       {/* Single-Column Showcase Card */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] p-3 sm:p-6 md:p-8 border border-slate-200/80 shadow-[0_20px_50px_rgba(15,23,42,0.06)] flex flex-col gap-5 sm:gap-6">
+      <div className="bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] p-1.5 sm:p-6 md:p-8 border border-slate-200/80 shadow-[0_20px_50px_rgba(15,23,42,0.06)] flex flex-col gap-3 sm:gap-6">
 
         {/* 1. Main Cinema Video Player */}
         <div
-          className="relative aspect-video rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.25rem] overflow-hidden bg-slate-950 border-2 sm:border-4 border-slate-900 shadow-2xl group select-none flex-shrink-0 w-full"
-          onMouseEnter={() => setShowControls(true)}
-          onMouseMove={() => {
-            setShowControls(true);
-            if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
-            controlsTimeoutRef.current = setTimeout(() => {
-              if (isPlaying) setShowControls(false);
-            }, 3000);
-          }}
+          className="relative aspect-video rounded-xl sm:rounded-[2rem] md:rounded-[2.25rem] overflow-hidden bg-slate-950 border border-slate-900 sm:border-4 shadow-2xl group select-none flex-shrink-0 w-full"
+          onMouseEnter={() => triggerControlsTemporarily()}
+          onMouseMove={() => triggerControlsTemporarily()}
           onMouseLeave={() => {
-            if (isPlaying) setShowControls(false);
+            if (videoRef.current && !videoRef.current.paused) {
+              setShowControls(false);
+              if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+            }
           }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -361,8 +409,12 @@ export default function FeatureVideoShowcase() {
             onPlaying={() => {
               setIsBuffering(false);
               setIsPlaying(true);
+              triggerControlsTemporarily();
             }}
-            onPause={() => setIsPlaying(false)}
+            onPause={() => {
+              setIsPlaying(false);
+              setShowControls(true);
+            }}
             onEnded={handleVideoEnded}
           />
 
@@ -377,15 +429,15 @@ export default function FeatureVideoShowcase() {
                 onClick={togglePlay}
               >
                 {isBuffering ? (
-                  <div className="w-12 sm:w-16 h-12 sm:h-16 border-3 sm:border-4 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-10 sm:w-16 h-10 sm:h-16 border-3 sm:border-4 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : !isPlaying ? (
                   <div className="relative group/btn">
                     <div
                       className="absolute -inset-3 sm:-inset-4 rounded-full blur-xl opacity-75 group-hover/btn:opacity-100 transition duration-500"
                       style={{ backgroundColor: currentTheme.glow }}
                     />
-                    <div className="relative w-14 h-14 sm:w-20 sm:h-20 bg-white text-slate-900 rounded-full flex items-center justify-center shadow-2xl transform group-hover/btn:scale-110 active:scale-95 transition-all duration-300">
-                      <Play size={24} className="ml-0.5 sm:ml-1 fill-slate-900 text-slate-900" />
+                    <div className="relative w-12 h-12 sm:w-20 sm:h-20 bg-white text-slate-900 rounded-full flex items-center justify-center shadow-2xl transform group-hover/btn:scale-110 active:scale-95 transition-all duration-300">
+                      <Play size={20} className="ml-0.5 sm:ml-1 fill-slate-900 text-slate-900 sm:w-6 sm:h-6" />
                     </div>
                   </div>
                 ) : null}
@@ -394,25 +446,30 @@ export default function FeatureVideoShowcase() {
           </AnimatePresence>
 
           {/* Top Bar Header on Video */}
-          <div className="absolute top-0 left-0 right-0 p-2.5 sm:p-4 bg-gradient-to-b from-slate-950/80 via-slate-950/30 to-transparent flex items-center justify-between text-white pointer-events-none">
+          <div
+            className={`absolute top-0 left-0 right-0 p-2 sm:p-4 bg-gradient-to-b from-black/70 via-black/20 to-transparent flex items-center justify-between text-white pointer-events-none transition-opacity duration-300 ${
+              showControls || !isPlaying ? "opacity-100" : "opacity-0"
+            }`}
+          >
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 animate-pulse" />
               <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-200 truncate max-w-[170px] sm:max-w-none">
                 Video #{currentVideo?.order} • {currentVideo?.category}
               </span>
             </div>
-            <span className="text-[10px] sm:text-xs font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 bg-white/20 backdrop-blur-md rounded-md sm:rounded-lg text-white">
+            <span className="text-[9px] sm:text-xs font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 bg-white/20 backdrop-blur-md rounded-md sm:rounded-lg text-white">
               {currentVideo?.badge}
             </span>
           </div>
 
-          {/* Custom Control Bar (Bottom) */}
+          {/* Custom Control Bar (Bottom) - Sleek, Thin & Auto-hiding */}
           <div
-            className={`absolute bottom-0 left-0 right-0 p-2.5 sm:p-4 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent transition-opacity duration-300 ${showControls || !isPlaying ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-              }`}
+            className={`absolute bottom-0 left-0 right-0 pt-6 pb-1 sm:pb-3 px-2 sm:px-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-opacity duration-300 ${
+              showControls || !isPlaying ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            }`}
           >
             {/* Scrubber Progress Bar */}
-            <div className="relative mb-2 sm:mb-3 flex items-center group/progress">
+            <div className="relative mb-1 sm:mb-2.5 flex items-center group/progress">
               <input
                 type="range"
                 min={0}
@@ -425,15 +482,19 @@ export default function FeatureVideoShowcase() {
             </div>
 
             {/* Controls Row */}
-            <div className="flex items-center justify-between text-white text-[11px] sm:text-xs">
+            <div className="flex items-center justify-between text-white text-[10px] sm:text-xs">
               {/* Left: Play/Pause, Replay, Time */}
-              <div className="flex items-center gap-1.5 sm:gap-3">
+              <div className="flex items-center gap-1 sm:gap-2.5">
                 <button
                   onClick={togglePlay}
                   className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors"
                   title={isPlaying ? "Tạm dừng" : "Phát video"}
                 >
-                  {isPlaying ? <Pause size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Play size={16} className="sm:w-[18px] sm:h-[18px] fill-white" />}
+                  {isPlaying ? (
+                    <Pause size={14} className="sm:w-[17px] sm:h-[17px]" />
+                  ) : (
+                    <Play size={14} className="sm:w-[17px] sm:h-[17px] fill-white" />
+                  )}
                 </button>
 
                 <button
@@ -446,28 +507,19 @@ export default function FeatureVideoShowcase() {
                   className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-300 hover:text-white"
                   title="Xem lại từ đầu"
                 >
-                  <RotateCcw size={14} className="sm:w-4 sm:h-4" />
+                  <RotateCcw size={12} className="sm:w-3.5 sm:h-3.5" />
                 </button>
 
-                <div className="font-mono text-[10px] sm:text-[11px] text-slate-300 select-none">
+                <div className="font-mono text-[9px] sm:text-[11px] text-slate-300 select-none">
                   {formatTime(currentTime)} / {formatTime(duration)}
                 </div>
               </div>
 
-              {/* Right: Next Video, Speed, Mute, Fullscreen */}
+              {/* Right: Speed, Mute, Fullscreen */}
               <div className="flex items-center gap-1 sm:gap-2">
                 <button
-                  onClick={handleVideoEnded}
-                  className="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-white/10 hover:bg-white/20 rounded-md sm:rounded-lg transition-colors text-[10px] sm:text-[11px] font-bold flex items-center gap-1 text-slate-200 hover:text-white"
-                  title="Chuyển video tiếp theo"
-                >
-                  <span className="hidden xs:inline">Tiếp</span>
-                  <FastForward size={13} />
-                </button>
-
-                <button
                   onClick={handleSpeedChange}
-                  className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-white/10 hover:bg-white/20 rounded-md sm:rounded-lg transition-colors text-[10px] sm:text-[11px] font-bold text-slate-200"
+                  className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-white/10 hover:bg-white/20 rounded-md sm:rounded-lg transition-colors text-[9px] sm:text-[11px] font-bold text-slate-200"
                   title="Tốc độ phát"
                 >
                   {playbackSpeed}x
@@ -478,7 +530,11 @@ export default function FeatureVideoShowcase() {
                   className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-200 hover:text-white"
                   title={isMuted ? "Bật âm thanh" : "Tắt âm thanh"}
                 >
-                  {isMuted ? <VolumeX size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Volume2 size={16} className="sm:w-[18px] sm:h-[18px]" />}
+                  {isMuted ? (
+                    <VolumeX size={14} className="sm:w-[17px] sm:h-[17px]" />
+                  ) : (
+                    <Volume2 size={14} className="sm:w-[17px] sm:h-[17px]" />
+                  )}
                 </button>
 
                 <button
@@ -486,7 +542,7 @@ export default function FeatureVideoShowcase() {
                   className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-200 hover:text-white"
                   title="Toàn màn hình"
                 >
-                  <Maximize2 size={18} />
+                  <Maximize2 size={14} className="sm:w-4 sm:h-4" />
                 </button>
               </div>
             </div>
