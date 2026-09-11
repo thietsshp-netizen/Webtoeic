@@ -33,6 +33,7 @@ export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> 
       "Gắn sao phân loại theo Deck/Bộ thẻ thông minh",
       "4 Mini-Game tương tác kích thích phản xạ nhớ từ vựng sâu",
     ],
+    thumbnail: `${SUPABASE_STORAGE_BASE}/video-thumb-1.jpg`,
     color: "blue",
   },
   2: {
@@ -49,6 +50,7 @@ export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> 
       "Tùy chỉnh tốc độ nghe 0.75x - 1.25x linh hoạt",
       "Hiển thị phụ đề song ngữ và phân tích bẫy nghe thường gặp",
     ],
+    thumbnail: `${SUPABASE_STORAGE_BASE}/video-thumb-2.jpg`,
     color: "emerald",
   },
   3: {
@@ -65,6 +67,7 @@ export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> 
       "Đề xuất bộ đề và bài tập củng cố đúng trọng tâm",
       "Theo dõi sự tiến bộ rõ rệt qua từng ngày học",
     ],
+    thumbnail: `${SUPABASE_STORAGE_BASE}/video-thumb-3.jpg`,
     color: "purple",
   },
   4: {
@@ -81,6 +84,7 @@ export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> 
       "Mẹo nhận diện nhanh đáp án đúng trong 5 giây",
       "Thuật toán lặp lại ngắt quãng (SRS) giúp nhớ từ vựng vĩnh viễn",
     ],
+    thumbnail: `${SUPABASE_STORAGE_BASE}/video-thumb-4.jpg`,
     color: "amber",
   },
 };
@@ -91,7 +95,7 @@ export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> 
  *        "02 - Nghe tu khoa.mp4" -> 2
  */
 export function extractOrderFromFileName(fileName: string, fallbackIndex: number): number {
-  const match = fileName.match(/^(\d+)/);
+  const match = fileName.match(/(?:^|[^\d])(\d+)(?:[^\d]|$)/);
   if (match) {
     const num = parseInt(match[1], 10);
     if (!isNaN(num)) return num;
