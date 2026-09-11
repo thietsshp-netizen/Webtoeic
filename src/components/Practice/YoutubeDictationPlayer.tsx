@@ -19,27 +19,56 @@ import {
   sanitizeExpansionJson
 } from "./MovieExpansionManager";
 
-// Pre-rendered typewriter click audio buffer for zero-CPU, leak-free mechanical sound
-let cachedTypewriterBuffer: AudioBuffer | null = null;
+// Multi-buffer sound pool for realistic, warm, soft mechanical keyboard acoustics (ASMR thock)
+const KEY_SOUND_VARIATIONS = 4;
+let cachedKeyBuffers: AudioBuffer[] | null = null;
+let cachedKeySampleRate: number = 0;
 
-function getTypewriterClickBuffer(ctx: AudioContext): AudioBuffer {
-  if (cachedTypewriterBuffer && cachedTypewriterBuffer.sampleRate === ctx.sampleRate) {
-    return cachedTypewriterBuffer;
+function getKeyClickBuffers(ctx: AudioContext): AudioBuffer[] {
+  if (cachedKeyBuffers && cachedKeySampleRate === ctx.sampleRate) {
+    return cachedKeyBuffers;
   }
+
   const sampleRate = ctx.sampleRate;
-  const length = Math.floor(sampleRate * 0.02); // 20ms
-  const buffer = ctx.createBuffer(1, length, sampleRate);
-  const data = buffer.getChannelData(0);
+  const length = Math.floor(sampleRate * 0.035); // 35ms natural decay
+  const buffers: AudioBuffer[] = [];
 
-  for (let i = 0; i < length; i++) {
-    const t = i / sampleRate;
-    const env = Math.exp(-t * 240);
-    const click = Math.sin(2 * Math.PI * 2600 * t) * 0.5;
-    const thud = Math.sin(2 * Math.PI * 170 * t) * 0.35;
-    data[i] = (click + thud) * env * 0.2;
+  // Frequencies for subtle mechanical keystrokes (Warm thock 140-200Hz + soft keycap contact 700-950Hz)
+  const baseFreqs = [
+    { thud: 155, click: 780, noiseMix: 0.10 },
+    { thud: 175, click: 880, noiseMix: 0.08 },
+    { thud: 145, click: 720, noiseMix: 0.12 },
+    { thud: 190, click: 840, noiseMix: 0.09 },
+  ];
+
+  for (let b = 0; b < KEY_SOUND_VARIATIONS; b++) {
+    const buffer = ctx.createBuffer(1, length, sampleRate);
+    const data = buffer.getChannelData(0);
+    const { thud, click, noiseMix } = baseFreqs[b];
+
+    for (let i = 0; i < length; i++) {
+      const t = i / sampleRate;
+      // Exponential decay envelope
+      const envThud = Math.exp(-t * 130);
+      const envClick = Math.exp(-t * 260);
+
+      // Low frequency keycap bottom-out thud (warm body)
+      const thudWave = Math.sin(2 * Math.PI * thud * t) * 0.45 * envThud;
+      
+      // Mid frequency soft mechanical switch click (no piercing highs)
+      const clickWave = Math.sin(2 * Math.PI * click * t) * 0.35 * envClick;
+
+      // Subtle noise component simulating physical switch contact
+      const whiteNoise = (Math.random() * 2 - 1) * noiseMix * envClick;
+
+      data[i] = (thudWave + clickWave + whiteNoise);
+    }
+    buffers.push(buffer);
   }
-  cachedTypewriterBuffer = buffer;
-  return buffer;
+
+  cachedKeyBuffers = buffers;
+  cachedKeySampleRate = sampleRate;
+  return buffers;
 }
 
 const playTypewriterClickSound = (audioCtxRef: React.MutableRefObject<AudioContext | null>) => {
@@ -55,13 +84,34 @@ const playTypewriterClickSound = (audioCtxRef: React.MutableRefObject<AudioConte
       ctx.resume().catch(() => {});
     }
 
-    const buffer = getTypewriterClickBuffer(ctx);
+    const buffers = getKeyClickBuffers(ctx);
+    // Pick random key sound variant
+    const randomBuffer = buffers[Math.floor(Math.random() * buffers.length)];
+
     const source = ctx.createBufferSource();
-    source.buffer = buffer;
-    source.connect(ctx.destination);
+    source.buffer = randomBuffer;
+    
+    // Natural human pitch variation (±7%)
+    source.playbackRate.value = 0.93 + Math.random() * 0.14;
+
+    // Soft master gain (Gentle ~7% volume, ASMR style, no ear fatigue)
+    const gainNode = ctx.createGain();
+    gainNode.gain.setValueAtTime(0.07, ctx.currentTime);
+
+    // Low-pass filter to guarantee zero harshness/sharpness (> 1800Hz cut)
+    const filter = ctx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(1800, ctx.currentTime);
+
+    source.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
     source.onended = () => {
       try {
         source.disconnect();
+        filter.disconnect();
+        gainNode.disconnect();
       } catch {}
     };
     source.start();
@@ -186,14 +236,13 @@ const getAutoStudyItemText = (it: FlattenedExpansionItem): string => {
     let sfText = "";
     if (it.semantic_field_expansion && it.semantic_field_expansion.length > 0) {
       sfText = " Mở rộng:" + it.semantic_field_expansion.map(sf => {
-        const t = sf.type ? ` [${sf.type}]` : "";
         const expr = sf.expression ? ` ${sf.expression}` : "";
         const mean = sf.meaning ? ` — ${sf.meaning}` : "";
         const rawExEn = sf.example_en ? sf.example_en.replace(/<[^>]*>/g, '').trim() : "";
         const rawExVi = sf.example_vi ? sf.example_vi.trim() : "";
         const exEn = rawExEn ? ` ${rawExEn}` : "";
         const exVi = rawExVi ? ` (${rawExVi})` : "";
-        return `${t}${expr}${mean}${exEn}${exVi}`;
+        return `${expr}${mean}${exEn}${exVi}`;
       }).join("");
     } else {
       const syn = it.synonyms ? ` Đồng nghĩa: ${it.synonyms}` : (it.antonyms ? ` Trái nghĩa: ${it.antonyms}` : "");
@@ -730,7 +779,6 @@ const renderAutoStudyOverlayContent = (
         charOffset = headerEnd;
 
         const sfItems = item.semantic_field_expansion.map(sf => {
-          const typeText = sf.type ? ` [${sf.type}]` : "";
           const exprText = sf.expression ? ` ${sf.expression}` : "";
           const meanText = sf.meaning ? ` — ${sf.meaning}` : "";
           const rawExEn = sf.example_en ? sf.example_en.replace(/<[^>]*>/g, '').trim() : "";
@@ -738,17 +786,12 @@ const renderAutoStudyOverlayContent = (
           const exEnText = rawExEn ? ` ${rawExEn}` : "";
           const exViText = rawExVi ? ` (${rawExVi})` : "";
 
-          // Type slice
-          const tStart = charOffset;
-          const tEnd = tStart + typeText.length;
-          const showTypeBadge = !sectionIsTyping || sectionRevealedChars >= tEnd;
-          charOffset = tEnd;
-
           // Expr slice
           const exprStart = charOffset;
           const exprEnd = exprStart + exprText.length;
           const visibleExpr = exprText.slice(0, Math.max(0, sectionRevealedChars - exprStart));
           const isTypingExpr = sectionIsTyping && sectionRevealedChars >= exprStart && sectionRevealedChars < exprEnd;
+          const showTypeBadge = !sectionIsTyping || sectionRevealedChars >= exprStart;
           charOffset = exprEnd;
 
           // Meaning slice
@@ -1404,7 +1447,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     clearAutoStudyTimers();
 
     let charCount = startChar;
-    const speed = autoStudySpeedRef.current || 40;
+    const baseSpeed = autoStudySpeedRef.current || 40;
     const fullStreamText = autoStudyFullStreamTextRef.current;
     let lastTime = performance.now();
     let accumulatedTime = 0;
@@ -1420,15 +1463,22 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       lastTime = currentTime;
       accumulatedTime += delta;
 
-      const charsToAdvance = Math.floor(accumulatedTime / speed);
-      if (charsToAdvance > 0) {
-        accumulatedTime -= charsToAdvance * speed;
-        // Giới hạn bước nhảy tối đa 3 ký tự/frame để hiệu ứng luôn mượt dù hệ thống tải nặng
-        const step = Math.min(charsToAdvance, 3);
-        const nextCount = Math.min(totalLen, charCount + step);
+      // Nhịp gõ tự nhiên (Humanized cadence): dấu cách và dấu câu có độ ngắt nghỉ nhẹ
+      const currentChar = fullStreamText[charCount] || "";
+      let charDelay = baseSpeed;
+      if (currentChar === " ") {
+        charDelay = baseSpeed * 1.35; // Nghỉ nhẹ giữa các từ
+      } else if (currentChar === "," || currentChar === "." || currentChar === "—" || currentChar === "-" || currentChar === "!" || currentChar === "?") {
+        charDelay = baseSpeed * 2.1; // Nghỉ tự nhiên tại dấu câu
+      }
+
+      if (accumulatedTime >= charDelay) {
+        accumulatedTime -= charDelay;
+        const nextCount = Math.min(totalLen, charCount + 1);
 
         if (nextCount > charCount) {
-          if (autoStudySoundRef.current) {
+          // Chỉ phát tiếng gõ khi ký tự thực sự là chữ cái nhìn thấy được trên màn hình
+          if (autoStudySoundRef.current && currentChar.trim().length > 0) {
             playTypewriterClickSound(audioCtxRef);
           }
           charCount = nextCount;
