@@ -246,9 +246,9 @@ export default function FeatureVideoShowcase() {
           <Sparkles size={13} className="text-blue-600 flex-shrink-0" />
           <span>TÍNH NĂNG NỔI BẬT & ĐỘC QUYỀN</span>
         </div>
-        <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight uppercase italic mb-3 sm:mb-4">
+        <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-snug sm:leading-normal uppercase italic mb-3 sm:mb-4">
           Khám Phá Hệ Thống Học TOEIC{" "}
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-teal-600">
+          <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-teal-600 pt-2.5 pb-2 pl-1 pr-6 leading-normal">
             Thông Minh Hàng Đầu
           </span>
         </h2>
