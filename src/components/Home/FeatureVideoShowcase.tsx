@@ -112,6 +112,7 @@ export default function FeatureVideoShowcase() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isPlayingRef = useRef(false);
+  const hasStartedPlaying = useRef(false);
 
   useEffect(() => {
     isPlayingRef.current = isPlaying;
@@ -160,6 +161,13 @@ export default function FeatureVideoShowcase() {
   const togglePlay = useCallback(() => {
     if (!videoRef.current) return;
     if (videoRef.current.paused) {
+      // Nếu là lần đầu bấm phát từ khung hình preview (giây thứ 3) -> tua về 0s để phát từ đầu
+      if (!hasStartedPlaying.current) {
+        videoRef.current.currentTime = 0;
+        hasStartedPlaying.current = true;
+        setCurrentTime(0);
+      }
+
       setIsBuffering(true);
       videoRef.current
         .play()
@@ -195,6 +203,7 @@ export default function FeatureVideoShowcase() {
       setCurrentTime(0);
       setIsPlaying(true);
       isPlayingRef.current = true;
+      hasStartedPlaying.current = true;
       setIsBuffering(true);
       triggerControlsTemporarily();
 
@@ -386,7 +395,7 @@ export default function FeatureVideoShowcase() {
           {/* Video Element */}
           <video
             ref={videoRef}
-            src={currentVideo?.videoUrl}
+            src={currentVideo?.videoUrl ? `${currentVideo.videoUrl}#t=3` : undefined}
             poster={currentVideo?.thumbnail}
             playsInline
             preload="auto"
@@ -395,13 +404,21 @@ export default function FeatureVideoShowcase() {
             onClick={togglePlay}
             onTimeUpdate={() => {
               if (videoRef.current) {
-                setCurrentTime(videoRef.current.currentTime);
+                if (hasStartedPlaying.current || isPlayingRef.current) {
+                  setCurrentTime(videoRef.current.currentTime);
+                }
               }
             }}
             onLoadedMetadata={() => {
               if (videoRef.current) {
                 setDuration(videoRef.current.duration);
                 videoRef.current.playbackRate = playbackSpeed;
+                // Tự động tua tới giây thứ 3 để lấy khung hình đại diện (thumbnail) sắc nét thay vì màu đen lúc 0s
+                if (!hasStartedPlaying.current && !isPlayingRef.current) {
+                  const previewTime = Math.min(3.0, (videoRef.current.duration || 10) / 2);
+                  videoRef.current.currentTime = previewTime;
+                  setCurrentTime(0);
+                }
               }
             }}
             onWaiting={() => setIsBuffering(true)}
@@ -409,6 +426,7 @@ export default function FeatureVideoShowcase() {
             onPlaying={() => {
               setIsBuffering(false);
               setIsPlaying(true);
+              hasStartedPlaying.current = true;
               triggerControlsTemporarily();
             }}
             onPause={() => {
