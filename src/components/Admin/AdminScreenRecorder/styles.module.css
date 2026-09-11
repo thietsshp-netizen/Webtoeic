@@ -1,33 +1,67 @@
 /* src/components/Admin/AdminScreenRecorder/styles.module.css */
 
-.floatingTrigger {
-  position: fixed;
-  bottom: 90px;
-  right: 24px;
-  z-index: 9998;
+.headerTriggerBtn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
   border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 15px rgba(239, 68, 68, 0.3);
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
 }
 
-.floatingTrigger:hover {
-  transform: translateY(-2px) scale(1.02);
-  background: rgba(15, 23, 42, 0.95);
-  border-color: rgba(239, 68, 68, 0.5);
-  box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(239, 68, 68, 0.5);
+.headerTriggerBtn:hover {
+  transform: scale(1.05);
+  color: #ffffff;
+  border-color: rgba(239, 68, 68, 0.6);
+  background: rgba(30, 41, 59, 0.95);
+  box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.3);
+}
+
+.headerTriggerBtn:active {
+  transform: scale(0.95);
+}
+
+.headerTriggerBtnActive {
+  background: rgba(239, 68, 68, 0.95) !important;
+  border-color: #ef4444 !important;
+  color: #ffffff !important;
+  box-shadow: 0 15px 25px -5px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Tooltip hiển thị khi hover vào nút máy quay */
+.btnTooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: rgba(15, 23, 42, 0.96);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f8fafc;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000000010;
+}
+
+.headerTriggerBtn:hover .btnTooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 .redDot {
@@ -60,26 +94,24 @@
 /* Panel Modal / Dropdown */
 .panelOverlay {
   position: fixed;
-  bottom: 145px;
-  right: 24px;
-  z-index: 9999;
+  z-index: 1000000006;
   width: 360px;
-  max-width: calc(100vw - 48px);
-  background: rgba(15, 23, 42, 0.92);
+  max-width: calc(100vw - 32px);
+  background: rgba(15, 23, 42, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 20px;
   padding: 18px;
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7), 0 0 25px rgba(59, 130, 246, 0.15);
   color: #f8fafc;
-  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideDown 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes slideUp {
+@keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(12px) scale(0.96);
+    transform: translateY(-10px) scale(0.96);
   }
   to {
     opacity: 1;
@@ -253,16 +285,14 @@
   background: linear-gradient(135deg, #f87171, #ef4444);
 }
 
-/* Active Recording Floating Bar */
+/* Active Recording Floating Bar (Draggable on Header/Screen) */
 .activeRecordingBar {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 9999;
+  z-index: 1000000010;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 18px;
+  padding: 6px 14px;
   border-radius: 9999px;
   background: rgba(15, 23, 42, 0.94);
   backdrop-filter: blur(16px);
@@ -271,7 +301,14 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(239, 68, 68, 0.3);
   color: #ffffff;
   font-family: inherit;
-  animation: slideUp 0.3s ease-out;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  animation: slideDown 0.2s ease-out;
+}
+
+.activeRecordingBar:active {
+  cursor: grabbing;
 }
 
 .activeRecordingBarPaused {
@@ -281,17 +318,17 @@
 
 .timerText {
   font-variant-numeric: tabular-nums;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: #f8fafc;
-  min-width: 48px;
+  min-width: 44px;
 }
 
 .barBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: 6px;
   border-radius: 50%;
   border: none;
   cursor: pointer;
@@ -324,13 +361,17 @@
 .stopBtn {
   background: #ef4444;
   color: #ffffff;
-  padding: 8px 14px;
+  padding: 6px 12px;
   border-radius: 9999px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4);
+  transition: all 0.15s;
 }
 
 .stopBtn:hover {
@@ -338,35 +379,159 @@
   transform: scale(1.03);
 }
 
-/* Toast Saved Popup */
-.savedToast {
-  position: fixed;
-  top: 30px;
-  right: 30px;
-  z-index: 10000;
-  background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(34, 197, 94, 0.4);
+/* Glowing Saved Video Card inside Panel */
+.savedVideoGlowCard {
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.5), rgba(15, 23, 42, 0.9));
+  border: 1px solid rgba(16, 185, 129, 0.55);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.25), 0 10px 25px -5px rgba(0, 0, 0, 0.4);
   border-radius: 14px;
-  padding: 14px 18px;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(34, 197, 94, 0.2);
+  padding: 12px 14px;
+  margin-bottom: 14px;
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  max-width: 380px;
-  color: #f8fafc;
-  animation: slideInDown 0.3s ease-out;
+  flex-direction: column;
+  gap: 8px;
+  animation: glowPulse 2.5s infinite ease-in-out;
 }
 
-@keyframes slideInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-16px);
+@keyframes glowPulse {
+  0% {
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.2), 0 10px 25px -5px rgba(0, 0, 0, 0.4);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  50% {
+    box-shadow: 0 0 28px rgba(16, 185, 129, 0.5), 0 10px 30px -5px rgba(0, 0, 0, 0.5);
   }
+  100% {
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.2), 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.savedVideoHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.savedVideoBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #34d399;
+}
+
+.savedVideoDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  color: #cbd5e1;
+}
+
+.savedVideoFileName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #93c5fd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: monospace;
+}
+
+.savedVideoFolder {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.savedVideoActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.openFolderHighlightBtn {
+  flex: 1.2;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+  transition: all 0.15s ease;
+}
+
+.openFolderHighlightBtn:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
+  background: linear-gradient(135deg, #34d399, #10b981);
+}
+
+.previewVideoBtn {
+  flex: 1;
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.previewVideoBtn:hover {
+  background: rgba(51, 65, 85, 0.95);
+  color: #ffffff;
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.downloadCopyBtn {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  border-radius: 8px;
+  padding: 7px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.downloadCopyBtn:hover {
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.greenSavedDot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 2px solid #0f172a;
+  box-shadow: 0 0 8px #10b981;
 }
 
 /* Tab Navigation inside Modal */

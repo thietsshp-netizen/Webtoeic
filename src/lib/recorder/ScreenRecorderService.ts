@@ -22,6 +22,18 @@ export interface StartRecorderOptions {
   cropMode?: CropMode;
   targetElementId?: string; // e.g. "youtube-dictation-video-container"
   customCropRect?: CustomCropRect;
+  lessonTitle?: string;
+}
+
+export function sanitizeFileName(name: string): string {
+  if (!name) return "BaiHoc";
+  return name
+    .trim()
+    .replace(/[/\\?%*:|"<>#]/g, "-") // Thay các ký tự không hợp lệ trong file path
+    .replace(/\s+/g, "_")           // Thay khoảng trắng thành gạch dưới
+    .replace(/_+/g, "_")            // Rút gọn các dấu gạch dưới liên tiếp
+    .replace(/^[-_.]+|[-_.]+$/g, "") // Bỏ dấu gạch ở đầu và cuối
+    .slice(0, 60) || "BaiHoc";
 }
 
 export interface SaveResult {
@@ -118,112 +130,78 @@ export class ScreenRecorderService {
 
       let finalVideoTrack: MediaStreamTrack = this.displayStream.getVideoTracks()[0];
 
-      // 2. Xử lý Crop theo chế độ
-      if (cropMode === "video" && options.targetElementId) {
-        // Chế độ 1: Khóa tự động vào khung video bằng Region Capture API chuẩn của Chrome
-        const targetEl = document.getElementById(options.targetElementId);
-        if (targetEl && (window as any).CropTarget && (window as any).CropTarget.fromElement) {
-          try {
-            const cropTarget = await (window as any).CropTarget.fromElement(targetEl);
-            const videoTrack: any = this.displayStream.getVideoTracks()[0];
-            if (videoTrack && videoTrack.cropTo) {
-              await videoTrack.cropTo(cropTarget);
-            }
-          } catch (cropErr) {
-            console.warn("[ScreenRecorder] Region Crop error (falling back to full tab):", cropErr);
+      // 2. Xử lý Crop theo chế độ (Tự động loại bỏ Header, Thanh Sub-header bài học và Thanh công cụ recording)
+      // Sử dụng Canvas Pipeline 60fps Retina để đảm bảo độ phân giải luôn là SỐ CHẴN (Even dimensions),
+      // ngăn chặn hoàn toàn lỗi "Encoder initialization failed" của bộ mã hóa H.264 phần cứng trên macOS/Chrome.
+      const getElementRect = (el: HTMLElement | null): CustomCropRect | null => {
+        if (!el) return null;
+        const b = el.getBoundingClientRect();
+        if (b.width <= 0 || b.height <= 0) return null;
+        return {
+          x: Math.max(0, Math.round(b.left)),
+          y: Math.max(0, Math.round(b.top)),
+          width: Math.max(100, Math.round(b.width)),
+          height: Math.max(100, Math.round(b.height)),
+        };
+      };
+
+      if (cropMode === "video") {
+        // Chế độ 1: Khóa tự động vào khung video bài giảng (nếu là bài luyện phim/dictation) HOẶC toàn bộ khu vực bài tập (nếu không có phim)
+        const videoTargetEl = (options.targetElementId ? document.getElementById(options.targetElementId) : null) || 
+                              document.getElementById("youtube-dictation-video-container") ||
+                              document.querySelector("[data-crop-target='main-player']");
+
+        const videoRect = getElementRect(videoTargetEl as HTMLElement);
+        if (videoRect) {
+          finalVideoTrack = await this.setupCanvasCrop(videoRect);
+        } else {
+          // Nếu bài học không có video phim/dictation: Tự động quay toàn bộ vùng nội dung bài học (#lesson-main-content), BỎ CẢ Top Header VÀ Lesson Sub-header
+          const mainContentEl = document.getElementById("lesson-main-content") || 
+                                document.querySelector("[data-crop-target='lesson-content']") ||
+                                document.getElementById("learn-workspace-container") || 
+                                document.querySelector("main");
+          const mainRect = getElementRect(mainContentEl as HTMLElement);
+          if (mainRect) {
+            finalVideoTrack = await this.setupCanvasCrop(mainRect);
+          } else {
+            const headerEl = document.querySelector("header");
+            const subHeaderEl = document.getElementById("lesson-sub-header");
+            const topOffset = (headerEl ? headerEl.getBoundingClientRect().height : 56) + 
+                              (subHeaderEl ? subHeaderEl.getBoundingClientRect().height : 60);
+            const fallbackRect: CustomCropRect = {
+              x: 0,
+              y: Math.round(topOffset),
+              width: window.innerWidth,
+              height: Math.max(100, window.innerHeight - Math.round(topOffset)),
+            };
+            finalVideoTrack = await this.setupCanvasCrop(fallbackRect);
           }
+        }
+      } else if (cropMode === "full") {
+        // Chế độ 3: Quay toàn bộ không gian bài học - Tự động CẮT BỎ CẢ Top Header & Thanh Sub-header bài học
+        const mainContentEl = document.getElementById("lesson-main-content") || 
+                              document.querySelector("[data-crop-target='lesson-content']") ||
+                              document.getElementById("learn-workspace-container") || 
+                              document.querySelector("main");
+        const mainRect = getElementRect(mainContentEl as HTMLElement);
+        if (mainRect) {
+          finalVideoTrack = await this.setupCanvasCrop(mainRect);
+        } else {
+          const headerEl = document.querySelector("header");
+          const subHeaderEl = document.getElementById("lesson-sub-header");
+          const topOffset = (headerEl ? headerEl.getBoundingClientRect().height : 56) + 
+                            (subHeaderEl ? subHeaderEl.getBoundingClientRect().height : 60);
+          const fallbackRect: CustomCropRect = {
+            x: 0,
+            y: Math.round(topOffset),
+            width: window.innerWidth,
+            height: Math.max(100, window.innerHeight - Math.round(topOffset)),
+          };
+          finalVideoTrack = await this.setupCanvasCrop(fallbackRect);
         }
       } else if (cropMode === "custom" && options.customCropRect) {
-        // Chế độ 2: Tự vẽ khung tùy ý qua Canvas Pipeline 60fps chuẩn nét Retina 1:1
-        const rect = options.customCropRect;
-        this.customCropVideo = document.createElement("video");
-        this.customCropVideo.autoplay = true;
-        this.customCropVideo.playsInline = true;
-        this.customCropVideo.muted = true;
-        this.customCropVideo.style.cssText = "position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-9999;";
-        document.body.appendChild(this.customCropVideo);
-        this.customCropVideo.srcObject = this.displayStream;
-        await this.customCropVideo.play();
-
-        // Đợi metadata video để lấy đúng độ phân giải vật lý của màn hình Retina (2x / 3x)
-        await new Promise<void>((resolve) => {
-          if (this.customCropVideo!.readyState >= 2 && this.customCropVideo!.videoWidth > 0) {
-            resolve();
-          } else {
-            this.customCropVideo!.onloadedmetadata = () => resolve();
-            setTimeout(resolve, 300);
-          }
-        });
-
-        const winW = window.innerWidth || 1920;
-        const winH = window.innerHeight || 1080;
-        const vw = this.customCropVideo.videoWidth || (winW * (window.devicePixelRatio || 2));
-        const vh = this.customCropVideo.videoHeight || (winH * (window.devicePixelRatio || 2));
-        const scaleX = vw / winW;
-        const scaleY = vh / winH;
-
-        // Kích thước canvas thực tế (Native Retina Pixels) - Tránh bị mờ do nén về CSS pixels
-        let nativeCropW = Math.max(2, Math.round(rect.width * scaleX));
-        let nativeCropH = Math.max(2, Math.round(rect.height * scaleY));
-
-        // BẮT BUỘC: Chiều rộng và chiều cao phải là số CHẴN (Even) để encoder video (H.264/MP4) không bị lỗi treo khi dừng
-        if (nativeCropW % 2 !== 0) nativeCropW += 1;
-        if (nativeCropH % 2 !== 0) nativeCropH += 1;
-
-        this.customCropCanvas = document.createElement("canvas");
-        this.customCropCanvas.width = nativeCropW;
-        this.customCropCanvas.height = nativeCropH;
-        const ctx = this.customCropCanvas.getContext("2d", { alpha: false, desynchronized: true });
-        if (ctx) {
-          ctx.imageSmoothingEnabled = true;
-          ctx.imageSmoothingQuality = "high";
-          // Vẽ ngay frame đầu tiên trước khi captureStream để track video có dữ liệu ngay lập tức
-          try {
-            ctx.drawImage(
-              this.customCropVideo,
-              rect.x * scaleX,
-              rect.y * scaleY,
-              rect.width * scaleX,
-              rect.height * scaleY,
-              0,
-              0,
-              nativeCropW,
-              nativeCropH
-            );
-          } catch {}
-        }
-
-        const renderLoop = () => {
-          if (!this.customCropVideo || !this.customCropCanvas || !ctx) return;
-          const currentVw = this.customCropVideo.videoWidth || vw;
-          const currentVh = this.customCropVideo.videoHeight || vh;
-          const sX = currentVw / (window.innerWidth || winW);
-          const sY = currentVh / (window.innerHeight || winH);
-
-          const sx = Math.max(0, rect.x * sX);
-          const sy = Math.max(0, rect.y * sY);
-          const sw = Math.min(currentVw - sx, rect.width * sX);
-          const sh = Math.min(currentVh - sy, rect.height * sY);
-
-          try {
-            ctx.drawImage(
-              this.customCropVideo,
-              sx,
-              sy,
-              sw,
-              sh,
-              0,
-              0,
-              nativeCropW,
-              nativeCropH
-            );
-          } catch {}
-          this.customCropAnimId = requestAnimationFrame(renderLoop);
-        };
-        this.customCropAnimId = requestAnimationFrame(renderLoop);
-
-        const canvasStream = (this.customCropCanvas as any).captureStream(60);
-        finalVideoTrack = canvasStream.getVideoTracks()[0];
+        // Chế độ 2: Tự vẽ khung tùy ý qua Canvas Pipeline 60fps Retina
+        finalVideoTrack = await this.setupCanvasCrop(options.customCropRect);
       }
 
       // 3. Thu Micro nếu được bật
@@ -261,13 +239,60 @@ export class ScreenRecorderService {
       }
       this.combinedStream = new MediaStream(tracks);
 
-      // 6. Cấu hình MediaRecorder với Bitrate 12 Mbps (Siêu nét Full HD / 2K 60fps, tương thích 100% QuickTime/YouTube/TikTok)
-      const mimeType = this.getBestMimeType();
-      const recorderOptions: MediaRecorderOptions = {
-        mimeType: mimeType || undefined,
-        videoBitsPerSecond: 12_000_000, // 12 Mbps (Chất lượng sắc nét từng chi tiết chữ và khung hình)
-        audioBitsPerSecond: 192_000,    // 192 kbps
-      };
+      // 6. Cấu hình MediaRecorder: Sử dụng codec siêu ổn định (VP9/VP8/Opus) cho luồng Canvas để không bao giờ bị lỗi phần cứng EncodingError
+      const isCanvasCropped = (cropMode === "video" || cropMode === "full" || cropMode === "custom");
+      const hasAudioTrack = this.combinedStream.getAudioTracks().length > 0;
+      
+      const rawMimeTypes = isCanvasCropped
+        ? (hasAudioTrack
+            ? [
+                "video/webm;codecs=vp9,opus",
+                "video/webm;codecs=vp8,opus",
+                "video/webm;codecs=h264,opus",
+                "video/webm",
+                "video/mp4;codecs=avc1,mp4a.40.2",
+                "video/mp4;codecs=avc1",
+                "video/mp4",
+              ]
+            : [
+                "video/webm;codecs=vp9",
+                "video/webm;codecs=vp8",
+                "video/webm;codecs=h264",
+                "video/webm",
+                "video/mp4;codecs=avc1",
+                "video/mp4",
+              ])
+        : (hasAudioTrack
+            ? [
+                "video/mp4;codecs=avc1,mp4a.40.2",
+                "video/mp4;codecs=avc1",
+                "video/mp4",
+                "video/webm;codecs=vp9,opus",
+                "video/webm;codecs=vp8,opus",
+                "video/webm;codecs=h264,opus",
+                "video/webm",
+              ]
+            : [
+                "video/mp4;codecs=avc1",
+                "video/mp4",
+                "video/webm;codecs=vp9",
+                "video/webm;codecs=vp8",
+                "video/webm;codecs=h264",
+                "video/webm",
+              ]);
+
+      const mimeTypes = rawMimeTypes.filter((mime) => {
+        try {
+          return typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(mime);
+        } catch {
+          return false;
+        }
+      });
+      if (mimeTypes.length === 0) {
+        mimeTypes.push("");
+      }
+
+      const primaryMimeType = this.getBestMimeType(hasAudioTrack);
 
       // 7. Khởi tạo ghi trực tiếp xuống ổ đĩa (Direct-to-Disk Streaming) nếu đã có thư mục lưu
       this.activeWritable = null;
@@ -286,8 +311,9 @@ export class ScreenRecorderService {
           if (permission === "granted" || permission === undefined) {
             const now = new Date();
             const dateStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}_${now.getHours().toString().padStart(2, "0")}${now.getMinutes().toString().padStart(2, "0")}`;
-            const ext = mimeType.includes("mp4") ? ".mp4" : ".webm";
-            const targetName = `HocToeic_Lesson_${dateStr}${ext}`;
+            const ext = isCanvasCropped ? ".webm" : (primaryMimeType.includes("mp4") ? ".mp4" : ".webm");
+            const cleanTitle = sanitizeFileName(options.lessonTitle || "BaiHoc");
+            const targetName = `${cleanTitle}_${dateStr}${ext}`;
 
             const fileHandle = await dirHandle.getFileHandle(targetName, { create: true });
             this.activeWritable = await (fileHandle as any).createWritable();
@@ -303,31 +329,101 @@ export class ScreenRecorderService {
       }
 
       this.recordedChunks = [];
-      this.mediaRecorder = new MediaRecorder(this.combinedStream, recorderOptions);
+      let hasTriedFallback = false;
 
-      this.mediaRecorder.onerror = (ev: any) => {
-        console.error("[ScreenRecorder] MediaRecorder error event:", ev);
-        if (this.onError) {
-          this.onError(`Lỗi ghi hình MediaRecorder: ${ev?.error?.message || "Lỗi không xác định"}`);
+      const startRecorderWithCodec = (mimeIndex: number) => {
+        const mime = mimeTypes[mimeIndex] || "";
+        const recOpts: MediaRecorderOptions = {
+          mimeType: mime || undefined,
+          videoBitsPerSecond: isCanvasCropped ? 5_000_000 : 8_000_000,
+        };
+        if (hasAudioTrack) {
+          recOpts.audioBitsPerSecond = 128_000;
         }
-      };
 
-      this.mediaRecorder.ondataavailable = async (event) => {
-        if (event.data && event.data.size > 0) {
-          // Luôn giữ các chunk trong mảng để luôn có Video Blob hoàn chỉnh để xem trước & tải về
-          this.recordedChunks.push(event.data);
+        if (!this.combinedStream) return;
 
-          if (this.activeWritable) {
-            try {
-              await this.activeWritable.write(event.data);
-            } catch (wErr) {
-              console.warn("[ScreenRecorder] Direct write error:", wErr);
+        try {
+          this.mediaRecorder = new MediaRecorder(this.combinedStream, mime ? recOpts : undefined);
+        } catch (initErr) {
+          console.warn(`[ScreenRecorder] Sync init failed for ${mime}, trying next format...`, initErr);
+          if (mimeIndex < mimeTypes.length - 1) {
+            startRecorderWithCodec(mimeIndex + 1);
+            return;
+          }
+          try {
+            this.mediaRecorder = new MediaRecorder(this.combinedStream);
+          } catch (lastErr: any) {
+            this.cleanup();
+            this.setState("idle");
+            if (this.onError) {
+              this.onError(`Không thể khởi tạo bộ ghi hình (MediaRecorder): ${lastErr?.message || "Lỗi thiết bị"}`);
             }
+            return;
+          }
+        }
+
+        const currentRecorder = this.mediaRecorder;
+
+        currentRecorder.onerror = (ev: any) => {
+          console.error("[ScreenRecorder] MediaRecorder error event:", ev?.error || ev);
+          const errStr = String(ev?.error?.name || ev?.error?.message || ev?.error || "");
+          
+          // Tự động chuyển đổi codec mượt mà nếu phần cứng gặp lỗi EncodingError khi bắt đầu
+          if (!hasTriedFallback && (errStr.includes("EncodingError") || errStr.includes("Encoder") || errStr.includes("initialization"))) {
+            hasTriedFallback = true;
+            console.warn("[ScreenRecorder] EncodingError detected, auto-falling back to next available codec...");
+            try {
+              currentRecorder.stop();
+            } catch {}
+            if (mimeIndex + 1 < mimeTypes.length) {
+              startRecorderWithCodec(mimeIndex + 1);
+              return;
+            }
+          }
+
+          // NẾU CÓ LỖI XẢY RA: DỪNG QUAY NGAY LẬP TỨC, HỦY TIMER, BÁO ĐỘNG ĐỂ ADMIN KHÔNG GIẢNG OAN!
+          console.error("[ScreenRecorder] Fatal recorder error, immediately halting session!");
+          this.cleanup();
+          this.setState("idle");
+
+          const errDetail = ev?.error?.name || ev?.error?.message || "Lỗi luồng ghi hình phần cứng";
+          if (this.onError) {
+            this.onError(`Quá trình quay bị dừng do lỗi: ${errDetail}. Hệ thống đã ngắt phiên quay để bạn không mất công giảng bài.`);
+          }
+        };
+
+        currentRecorder.ondataavailable = async (event) => {
+          if (event.data && event.data.size > 0) {
+            this.recordedChunks.push(event.data);
+            if (this.activeWritable) {
+              try {
+                await this.activeWritable.write(event.data);
+              } catch (wErr) {
+                console.warn("[ScreenRecorder] Direct write error:", wErr);
+              }
+            }
+          }
+        };
+
+        try {
+          currentRecorder.start(1000);
+        } catch (startErr: any) {
+          console.warn(`[ScreenRecorder] start() failed with ${mime}, trying next...`, startErr);
+          if (mimeIndex < mimeTypes.length - 1) {
+            startRecorderWithCodec(mimeIndex + 1);
+            return;
+          }
+          this.cleanup();
+          this.setState("idle");
+          if (this.onError) {
+            this.onError(`Không thể bắt đầu ghi dữ liệu: ${startErr?.message || "Lỗi MediaRecorder.start"}`);
           }
         }
       };
 
-      this.mediaRecorder.start(1000); // Thu theo từng chunk 1 giây
+      startRecorderWithCodec(0);
+
       this.startTime = Date.now();
       this.accumulatedTime = 0;
       this.setState("recording");
@@ -335,6 +431,20 @@ export class ScreenRecorderService {
       // Bắt đầu timer
       this.startTimer();
       this.startMeter();
+
+      // Giám sát tính toàn vẹn: nếu sau 3.5s chưa có frame/chunk và recorder bị lỗi/ngừng
+      setTimeout(() => {
+        if (this.state === "recording") {
+          if (this.recordedChunks.length === 0 && (!this.mediaRecorder || this.mediaRecorder.state === "inactive")) {
+            console.error("[ScreenRecorder] Healthcheck failed: No video chunks generated!");
+            this.cleanup();
+            this.setState("idle");
+            if (this.onError) {
+              this.onError("Cảnh báo: Trình duyệt không ghi nhận được khung hình video nào. Hệ thống đã tự động dừng để bạn không mất công giảng bài.");
+            }
+          }
+        }
+      }, 3500);
 
       return true;
     } catch (err: any) {
@@ -417,7 +527,7 @@ export class ScreenRecorderService {
       this.stopMeter();
 
       let isResolved = false;
-      const mimeType = this.mediaRecorder?.mimeType || "video/webm";
+      const mimeType = this.mediaRecorder?.mimeType || "video/mp4";
 
       const finishAndResolve = async () => {
         if (isResolved) return;
@@ -488,39 +598,47 @@ export class ScreenRecorderService {
       };
     }
 
-    const isMp4 = blob.type.includes("mp4");
-    const ext = isMp4 ? ".mp4" : ".webm";
-    
-    let defaultName = suggestedFileName || `HocToeic_Lesson_${new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)}${ext}`;
-    if (suggestedFileName) {
-      if (isMp4 && !defaultName.endsWith(".mp4")) {
-        defaultName = defaultName.replace(/\.[^/.]+$/, "") + ".mp4";
-      } else if (!isMp4 && !defaultName.endsWith(".webm")) {
-        defaultName = defaultName.replace(/\.[^/.]+$/, "") + ".webm";
-      }
-    }
+    const cleanSuggested = suggestedFileName || `HocToeic_Lesson_${new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)}`;
+    const finalMp4Name = cleanSuggested.endsWith(".mp4") 
+      ? cleanSuggested 
+      : `${cleanSuggested.replace(/\.[^/.]+$/, "")}.mp4`;
 
     const blobUrl = URL.createObjectURL(blob);
     const sizeInMB = (blob.size / (1024 * 1024)).toFixed(1) + " MB";
 
-    // Nếu video đã được ghi trực tiếp theo thời gian thực xuống ổ đĩa (Direct-to-Disk Streaming)
-    if (this.isDirectlySaved && this.activeFileName) {
-      const savedResult: SaveResult = {
-        success: true,
-        savedVia: "directory",
-        folderName: this.activeFolderName,
-        fileName: this.activeFileName,
-        fileSize: sizeInMB,
-        blob,
-        blobUrl,
-      };
-      this.isDirectlySaved = false;
-      this.activeFileName = "";
-      this.activeFolderName = "";
-      return savedResult;
+    // 1. Tự động chuyển đổi sang chuẩn MP4 (H.264 / AAC) với FastStart bằng FFmpeg Server
+    try {
+      const formData = new FormData();
+      formData.append("file", blob, finalMp4Name);
+      formData.append("fileName", finalMp4Name);
+      if (this.activeFolderName) {
+        formData.append("folderName", this.activeFolderName);
+      }
+
+      const res = await fetch("/api/admin/convert-recording", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success) {
+          return {
+            success: true,
+            savedVia: "directory",
+            folderName: data.folderName || "Movies",
+            fileName: data.fileName || finalMp4Name,
+            fileSize: data.fileSize || sizeInMB,
+            blob,
+            blobUrl,
+          };
+        }
+      }
+    } catch (apiErr) {
+      console.warn("[ScreenRecorder] Server-side FFmpeg MP4 convert failed, falling back to client save:", apiErr);
     }
 
-    // 1. Kiểm tra xem đã có thư mục lưu được cấp quyền trước đó trong IndexedDB chưa
+    // 2. Fallback: Nếu không dùng được API FFmpeg server, lưu trực tiếp qua File System Access
     try {
       const dirHandle = await getSavedDirectoryHandle();
       if (dirHandle) {
@@ -531,7 +649,7 @@ export class ScreenRecorderService {
         }
 
         if (permission === "granted" || permission === undefined) {
-          const fileHandle = await dirHandle.getFileHandle(defaultName, { create: true });
+          const fileHandle = await dirHandle.getFileHandle(finalMp4Name, { create: true });
           const writable = await (fileHandle as any).createWritable();
           await writable.write(blob);
           await writable.close();
@@ -540,7 +658,7 @@ export class ScreenRecorderService {
             success: true,
             savedVia: "directory",
             folderName: dirHandle.name,
-            fileName: defaultName,
+            fileName: finalMp4Name,
             fileSize: sizeInMB,
             blob,
             blobUrl,
@@ -551,13 +669,13 @@ export class ScreenRecorderService {
       console.warn("[ScreenRecorder] File System Access auto-save failed, falling back to download:", fsErr);
     }
 
-    // 2. Fallback: Nếu không dùng được DirectoryHandle, tải về trình duyệt tự động vào Downloads
+    // 3. Fallback cuối cùng: Tải về trình duyệt tự động vào Downloads
     try {
-      this.downloadBlob(blob, defaultName);
+      this.downloadBlob(blob, finalMp4Name);
       return {
         success: true,
         savedVia: "download",
-        fileName: defaultName,
+        fileName: finalMp4Name,
         fileSize: sizeInMB,
         blob,
         blobUrl,
@@ -566,7 +684,7 @@ export class ScreenRecorderService {
       return {
         success: false,
         savedVia: "download",
-        fileName: defaultName,
+        fileName: finalMp4Name,
         fileSize: sizeInMB,
         blob,
         blobUrl,
@@ -635,16 +753,25 @@ export class ScreenRecorderService {
 
   // --- Các hàm phụ trợ ---
 
-  private getBestMimeType(): string {
-    const types = [
-      "video/mp4;codecs=avc1,mp4a.40.2",
-      "video/mp4;codecs=avc1",
-      "video/mp4",
-      "video/webm;codecs=vp9,opus",
-      "video/webm;codecs=vp8,opus",
-      "video/webm;codecs=h264,opus",
-      "video/webm",
-    ];
+  private getBestMimeType(hasAudio: boolean = true): string {
+    const types = hasAudio
+      ? [
+          "video/mp4;codecs=avc1,mp4a.40.2",
+          "video/mp4;codecs=avc1",
+          "video/mp4",
+          "video/webm;codecs=h264,opus",
+          "video/webm;codecs=vp9,opus",
+          "video/webm;codecs=vp8,opus",
+          "video/webm",
+        ]
+      : [
+          "video/mp4;codecs=avc1",
+          "video/mp4",
+          "video/webm;codecs=h264",
+          "video/webm;codecs=vp9",
+          "video/webm;codecs=vp8",
+          "video/webm",
+        ];
     for (const type of types) {
       if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(type)) {
         return type;
@@ -687,6 +814,114 @@ export class ScreenRecorderService {
       clearInterval(this.meterInterval);
       this.meterInterval = null;
     }
+  }
+
+  private async setupCanvasCrop(rect: CustomCropRect): Promise<MediaStreamTrack> {
+    if (!this.displayStream) {
+      throw new Error("Display stream is not initialized");
+    }
+
+    this.customCropVideo = document.createElement("video");
+    this.customCropVideo.autoplay = true;
+    this.customCropVideo.playsInline = true;
+    this.customCropVideo.muted = true;
+    // Giữ video element có kích thước thực trên viewport với opacity cực nhỏ để Chromium không bao giờ đóng băng/throttle frame
+    this.customCropVideo.style.cssText = "position:fixed;top:0;left:0;width:100vw;height:100vh;opacity:0.001;pointer-events:none;z-index:-999999;";
+    document.body.appendChild(this.customCropVideo);
+    this.customCropVideo.srcObject = this.displayStream;
+    await this.customCropVideo.play();
+
+    // Đợi metadata video để lấy đúng độ phân giải vật lý của màn hình Retina (2x / 3x)
+    await new Promise<void>((resolve) => {
+      if (this.customCropVideo!.readyState >= 2 && this.customCropVideo!.videoWidth > 0) {
+        resolve();
+      } else {
+        this.customCropVideo!.onloadedmetadata = () => resolve();
+        setTimeout(resolve, 300);
+      }
+    });
+
+    const winW = window.innerWidth || 1920;
+    const winH = window.innerHeight || 1080;
+    const vw = this.customCropVideo.videoWidth || (winW * (window.devicePixelRatio || 2));
+    const vh = this.customCropVideo.videoHeight || (winH * (window.devicePixelRatio || 2));
+    const scaleX = vw / winW;
+    const scaleY = vh / winH;
+
+    // Kích thước canvas thực tế (Native Retina Pixels) - Tránh bị mờ do nén về CSS pixels
+    // Giới hạn an toàn tối đa 2560x1440 (2K) để tránh vượt quá năng lực Macroblock của bộ mã hóa phần cứng macOS/Chrome
+    const MAX_CANVAS_WIDTH = 2560;
+    const MAX_CANVAS_HEIGHT = 1440;
+    let targetW = rect.width * scaleX;
+    let targetH = rect.height * scaleY;
+
+    if (targetW > MAX_CANVAS_WIDTH || targetH > MAX_CANVAS_HEIGHT) {
+      const scaleDown = Math.min(MAX_CANVAS_WIDTH / targetW, MAX_CANVAS_HEIGHT / targetH);
+      targetW *= scaleDown;
+      targetH *= scaleDown;
+    }
+
+    let nativeCropW = Math.max(16, Math.round(targetW));
+    let nativeCropH = Math.max(16, Math.round(targetH));
+
+    // BẮT BUỘC: Chiều rộng và chiều cao phải là số CHẴN (Even) để encoder video H.264 không bị lỗi EncodingError
+    if (nativeCropW % 2 !== 0) nativeCropW += 1;
+    if (nativeCropH % 2 !== 0) nativeCropH += 1;
+
+    this.customCropCanvas = document.createElement("canvas");
+    this.customCropCanvas.width = nativeCropW;
+    this.customCropCanvas.height = nativeCropH;
+    const ctx = this.customCropCanvas.getContext("2d", { alpha: false, desynchronized: true });
+    if (ctx) {
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      // Vẽ ngay frame đầu tiên trước khi captureStream để track video có dữ liệu ngay lập tức
+      try {
+        ctx.drawImage(
+          this.customCropVideo,
+          rect.x * scaleX,
+          rect.y * scaleY,
+          rect.width * scaleX,
+          rect.height * scaleY,
+          0,
+          0,
+          nativeCropW,
+          nativeCropH
+        );
+      } catch {}
+    }
+
+    const renderLoop = () => {
+      if (!this.customCropVideo || !this.customCropCanvas || !ctx) return;
+      const currentVw = this.customCropVideo.videoWidth || vw;
+      const currentVh = this.customCropVideo.videoHeight || vh;
+      const sX = currentVw / (window.innerWidth || winW);
+      const sY = currentVh / (window.innerHeight || winH);
+
+      const sx = Math.max(0, rect.x * sX);
+      const sy = Math.max(0, rect.y * sY);
+      const sw = Math.min(currentVw - sx, rect.width * sX);
+      const sh = Math.min(currentVh - sy, rect.height * sY);
+
+      try {
+        ctx.drawImage(
+          this.customCropVideo,
+          sx,
+          sy,
+          sw,
+          sh,
+          0,
+          0,
+          nativeCropW,
+          nativeCropH
+        );
+      } catch {}
+      this.customCropAnimId = requestAnimationFrame(renderLoop);
+    };
+    this.customCropAnimId = requestAnimationFrame(renderLoop);
+
+    const canvasStream = (this.customCropCanvas as any).captureStream(30);
+    return canvasStream.getVideoTracks()[0];
   }
 
   public cleanup() {

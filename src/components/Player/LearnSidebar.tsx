@@ -740,9 +740,12 @@ export default function LearnSidebar() {
                                     
                                     <div className="flex-1 min-w-0">
                                       <div className="flex items-center gap-1.5 min-w-0">
-                                        <p className={`text-[11px] font-semibold leading-snug truncate ${
-                                          isActive ? "text-indigo-800 font-bold" : isLocked ? "text-slate-300" : "text-slate-600"
-                                        }`}>
+                                        <p 
+                                          data-active-lesson-title={isActive ? lesson.title : undefined}
+                                          className={`text-[11px] font-semibold leading-snug truncate ${
+                                            isActive ? "text-indigo-800 font-bold" : isLocked ? "text-slate-300" : "text-slate-600"
+                                          }`}
+                                        >
                                           {lesson.title}
                                         </p>
                                         {(lesson.contentType === "VIDEO" || !!lesson.videoUrl || (lesson.videoExplanation && (Array.isArray(lesson.videoExplanation) ? lesson.videoExplanation.length > 0 : Object.keys(lesson.videoExplanation as object).length > 0))) && (

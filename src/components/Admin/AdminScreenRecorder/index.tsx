@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import { 
   Video, 
   Mic, 
@@ -27,9 +28,11 @@ import {
   Sliders,
   Download,
   RotateCcw,
-  Film
+  Film,
+  GripVertical,
+  AlertTriangle
 } from "lucide-react";
-import { screenRecorderService, RecorderState, SaveResult } from "@/lib/recorder/ScreenRecorderService";
+import { screenRecorderService, RecorderState, SaveResult, sanitizeFileName } from "@/lib/recorder/ScreenRecorderService";
 import { getSavedDirectoryHandle } from "@/lib/recorder/DirectoryStorage";
 import { 
   CameraSettings, 
@@ -43,9 +46,81 @@ import { FloatingWebcamBubble } from "../FloatingWebcamBubble";
 import { CropAreaSelectorOverlay, CropRect } from "../CropAreaSelectorOverlay";
 import styles from "./styles.module.css";
 
+// Helper lấy tên khóa học và bài học thực tế từ giao diện
+function getCurrentLessonTitle(): string {
+  if (typeof document === "undefined") return "BaiHoc";
+
+  const isInvalid = (str: string | null | undefined): boolean => {
+    if (!str) return true;
+    const s = str.trim().toLowerCase();
+    return (
+      s === "" ||
+      s.includes("nội dung khóa học") ||
+      s.includes("đang tải") ||
+      s.includes("dashboard") ||
+      s.includes("hỗ trợ") ||
+      s.includes("phân tích tiến độ") ||
+      s.includes("bài trước") ||
+      s.includes("bài tiếp")
+    );
+  };
+
+  // 1. Lấy trực tiếp từ các element có gắn ID / data attribute chuyên dụng
+  const lessonEl = document.getElementById("learn-lesson-title") || 
+                   document.querySelector("[data-lesson-title]") ||
+                   document.querySelector("[data-active-lesson-title]");
+  const courseEl = document.getElementById("learn-course-title") || 
+                   document.querySelector("[data-course-title]");
+
+  const lessonName = lessonEl?.getAttribute("data-lesson-title") || 
+                     lessonEl?.getAttribute("data-active-lesson-title") || 
+                     lessonEl?.textContent?.trim() || "";
+
+  const courseName = courseEl?.getAttribute("data-course-title") || 
+                     courseEl?.textContent?.trim() || "";
+
+  const validLesson = isInvalid(lessonName) ? "" : lessonName.trim();
+  const validCourse = isInvalid(courseName) ? "" : courseName.trim();
+
+  if (validCourse && validLesson) {
+    if (validLesson.toLowerCase().includes(validCourse.toLowerCase())) {
+      return validLesson;
+    }
+    return `${validCourse}_${validLesson}`;
+  }
+  if (validLesson) return validLesson;
+  if (validCourse) return validCourse;
+
+  // 2. Tìm kiếm trong khu vực nội dung bài học chính (#learn-workspace-container hoặc main), loại bỏ hoàn toàn Sidebar
+  const workspaceEl = document.getElementById("learn-workspace-container") || document.querySelector("main");
+  if (workspaceEl) {
+    const headings = workspaceEl.querySelectorAll("h1, h2, h3, [class*='title']");
+    for (let i = 0; i < headings.length; i++) {
+      const h = headings[i];
+      if (h.closest("aside") || h.closest("[class*='sidebar']") || h.closest("[class*='Sidebar']")) {
+        continue;
+      }
+      const txt = h.textContent?.trim();
+      if (txt && !isInvalid(txt) && txt.length > 2 && txt.length < 100) {
+        return txt;
+      }
+    }
+  }
+
+  // 3. Tiêu đề từ document.title
+  if (document.title && document.title.trim()) {
+    const cleanDocTitle = document.title.split("|")[0].split("-")[0].trim();
+    if (cleanDocTitle && !isInvalid(cleanDocTitle)) return cleanDocTitle;
+  }
+
+  return "BaiHoc";
+}
+
 export const AdminScreenRecorder: React.FC = () => {
   const { data: session } = useSession();
   const isAdmin = session?.user && (session.user as any).role === "ADMIN";
+  const pathname = usePathname();
+  const isLearnPage = pathname?.startsWith("/learn/");
 
   // UI States
   const [activeTab, setActiveTab] = useState<"general" | "camera">("general");
@@ -54,7 +129,48 @@ export const AdminScreenRecorder: React.FC = () => {
   const [recordedSeconds, setRecordedSeconds] = useState(0);
   const [savedCompactResult, setSavedCompactResult] = useState<SaveResult | null>(null);
   const [previewVideoUrl, setPreviewVideoUrl] = useState<string | null>(null);
-  const compactTimerRef = useRef<any>(null);
+  const [fatalErrorModal, setFatalErrorModal] = useState<string | null>(null);
+
+  // Vị trí thanh điều khiển khi đang quay (Mặc định ở Header, có thể kéo thả tùy ý)
+  const [barPos, setBarPos] = useState<{ x: number; y: number } | null>(null);
+  const isDraggingBar = useRef(false);
+  const dragBarStart = useRef({ mouseX: 0, mouseY: 0, startX: 0, startY: 0 });
+
+  const handlePointerDownBar = (e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest("button") || (e.target as HTMLElement).closest("input")) {
+      return;
+    }
+    isDraggingBar.current = true;
+    const rect = e.currentTarget.getBoundingClientRect();
+    dragBarStart.current = {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      startX: barPos ? barPos.x : rect.left,
+      startY: barPos ? barPos.y : rect.top,
+    };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMoveBar = (e: React.PointerEvent) => {
+    if (!isDraggingBar.current) return;
+    const deltaX = e.clientX - dragBarStart.current.mouseX;
+    const deltaY = e.clientY - dragBarStart.current.mouseY;
+    const maxX = window.innerWidth - 300;
+    const maxY = window.innerHeight - 50;
+    setBarPos({
+      x: Math.max(10, Math.min(maxX, dragBarStart.current.startX + deltaX)),
+      y: Math.max(5, Math.min(maxY, dragBarStart.current.startY + deltaY)),
+    });
+  };
+
+  const handlePointerUpBar = (e: React.PointerEvent) => {
+    if (isDraggingBar.current) {
+      isDraggingBar.current = false;
+      try {
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch {}
+    }
+  };
 
   // Settings States
   const [folderName, setFolderName] = useState<string | null>(null);
@@ -65,6 +181,7 @@ export const AdminScreenRecorder: React.FC = () => {
   const [cropMode, setCropMode] = useState<"video" | "custom" | "full">("video");
   const [customCropRect, setCustomCropRect] = useState<CropRect | null>(null);
   const [isSelectingCrop, setIsSelectingCrop] = useState<boolean>(false);
+  const [activeRecordingRect, setActiveRecordingRect] = useState<CropRect | null>(null);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isTabMuted, setIsTabMuted] = useState<boolean>(false);
   const [isMicMuted, setIsMicMuted] = useState<boolean>(false);
@@ -162,13 +279,85 @@ export const AdminScreenRecorder: React.FC = () => {
     };
 
     screenRecorderService.onError = (errorMsg) => {
-      alert(`[Lỗi ghi hình]: ${errorMsg}`);
+      setFatalErrorModal(errorMsg);
+      setRecorderState("idle");
+      setRecordedSeconds(0);
+      setActiveRecordingRect(null);
     };
 
     return () => {
       screenRecorderService.cleanup();
     };
   }, [isAdmin]);
+
+  // Tự động cập nhật Khung Viền Chỉ Báo Vùng Quay Thực Tế khi đang quay
+  useEffect(() => {
+    if (recorderState !== "recording" && recorderState !== "paused") {
+      setActiveRecordingRect(null);
+      return;
+    }
+
+    const updateActiveRect = () => {
+      if (cropMode === "custom" && customCropRect) {
+        setActiveRecordingRect(customCropRect);
+        return;
+      }
+
+      if (cropMode === "video") {
+        const videoEl = document.getElementById("youtube-dictation-video-container") ||
+                        document.querySelector("[data-crop-target='main-player']");
+        if (videoEl) {
+          const b = videoEl.getBoundingClientRect();
+          if (b.width > 0 && b.height > 0) {
+            setActiveRecordingRect({
+              x: Math.round(b.left),
+              y: Math.round(b.top),
+              width: Math.round(b.width),
+              height: Math.round(b.height),
+            });
+            return;
+          }
+        }
+      }
+
+      // Bài học không phải phim hoặc chế độ Toàn bài học
+      const mainEl = document.getElementById("lesson-main-content") ||
+                     document.querySelector("[data-crop-target='lesson-content']") ||
+                     document.getElementById("learn-workspace-container") ||
+                     document.querySelector("main");
+      if (mainEl) {
+        const b = mainEl.getBoundingClientRect();
+        if (b.width > 0 && b.height > 0) {
+          setActiveRecordingRect({
+            x: Math.round(b.left),
+            y: Math.round(b.top),
+            width: Math.round(b.width),
+            height: Math.round(b.height),
+          });
+          return;
+        }
+      }
+
+      const headerEl = document.querySelector("header");
+      const subHeaderEl = document.getElementById("lesson-sub-header");
+      const topOffset = (headerEl ? headerEl.getBoundingClientRect().height : 56) +
+                        (subHeaderEl ? subHeaderEl.getBoundingClientRect().height : 60);
+      setActiveRecordingRect({
+        x: 0,
+        y: Math.round(topOffset),
+        width: window.innerWidth,
+        height: Math.max(100, window.innerHeight - Math.round(topOffset)),
+      });
+    };
+
+    updateActiveRect();
+    const interval = setInterval(updateActiveRect, 1000);
+    window.addEventListener("resize", updateActiveRect);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("resize", updateActiveRect);
+    };
+  }, [recorderState, cropMode, customCropRect]);
 
   if (!isAdmin) return null;
 
@@ -243,6 +432,7 @@ export const AdminScreenRecorder: React.FC = () => {
     setIsTabMuted(false);
     setIsMicMuted(false);
     const targetElementId = cropMode === "video" ? "youtube-dictation-video-container" : undefined;
+    const currentLessonTitle = getCurrentLessonTitle();
     
     await screenRecorderService.start({
       micDeviceId: enableMic ? selectedMicId : undefined,
@@ -253,6 +443,7 @@ export const AdminScreenRecorder: React.FC = () => {
       cropMode,
       targetElementId,
       customCropRect: cropMode === "custom" && customCropRect ? customCropRect : undefined,
+      lessonTitle: currentLessonTitle,
     });
   };
 
@@ -292,7 +483,8 @@ export const AdminScreenRecorder: React.FC = () => {
         const now = new Date();
         const dateStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}_${now.getHours().toString().padStart(2, "0")}${now.getMinutes().toString().padStart(2, "0")}`;
         const ext = blob.type.includes("mp4") ? ".mp4" : ".webm";
-        const fileName = `HocToeic_Lesson_${dateStr}${ext}`;
+        const cleanTitle = sanitizeFileName(getCurrentLessonTitle());
+        const fileName = `${cleanTitle}_${dateStr}${ext}`;
         
         const res = await screenRecorderService.autoSaveToDisk(blob, fileName);
         setSavedCompactResult(res);
@@ -300,11 +492,8 @@ export const AdminScreenRecorder: React.FC = () => {
           setFolderName(res.folderName);
         }
 
-        // Tự động biến mất sau 7 giây, không bắt người dùng phải bấm tắt thủ công
-        if (compactTimerRef.current) clearTimeout(compactTimerRef.current);
-        compactTimerRef.current = setTimeout(() => {
-          setSavedCompactResult(null);
-        }, 7000);
+        // Tự động mở bảng Cài đặt & Quản lý Video để Admin thấy ngay các nút phát sáng
+        setIsOpenPanel(true);
       }
     } catch (err) {
       console.error("[AdminScreenRecorder] Error during stop & save:", err);
@@ -321,19 +510,36 @@ export const AdminScreenRecorder: React.FC = () => {
     }
   };
 
-  // Mở thư mục lưu file trên máy Mac
+  // Mở thư mục lưu file trực tiếp trong ứng dụng Finder của macOS
   const handleOpenFolder = async () => {
+    try {
+      const folderToOpen = savedCompactResult?.folderName || folderName || "Movies";
+      const fileToReveal = savedCompactResult?.fileName || undefined;
+
+      const res = await fetch("/api/admin/open-folder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          folderName: folderToOpen,
+          fileName: fileToReveal,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (data && data.success) {
+        return; // Đã mở thành công cửa sổ Finder gốc trên macOS!
+      }
+    } catch (apiErr) {
+      console.warn("[AdminScreenRecorder] Native open-folder API error:", apiErr);
+    }
+
+    // Fallback nếu môi trường cloud
     try {
       const dirHandle = await getSavedDirectoryHandle();
       if (dirHandle && typeof (window as any).showDirectoryPicker === "function") {
         await (window as any).showDirectoryPicker({
           mode: "readwrite",
           startIn: dirHandle,
-        });
-      } else if (typeof (window as any).showDirectoryPicker === "function") {
-        await (window as any).showDirectoryPicker({
-          mode: "readwrite",
-          startIn: "downloads",
         });
       }
     } catch (err: any) {
@@ -352,22 +558,37 @@ export const AdminScreenRecorder: React.FC = () => {
         onOpenSettings={() => { setIsOpenPanel(true); setActiveTab("camera"); }} 
       />
 
-      {/* 1. Nút nổi mở bảng cài đặt quay khi ở trạng thái Idle */}
+      {/* 1. Nút máy quay trên thanh Header (cạnh nút điểm danh) */}
       {recorderState === "idle" && (
         <button
-          onClick={() => setIsOpenPanel(!isOpenPanel)}
-          className={styles.floatingTrigger}
-          title="Mở công cụ quay bài giảng (Admin Only)"
+          onClick={(e) => {
+            setIsOpenPanel(!isOpenPanel);
+            e.currentTarget.blur();
+          }}
+          style={{
+            position: "fixed",
+            top: isLearnPage ? "9px" : "14px",
+            right: isLearnPage ? "262px" : "108px",
+            zIndex: 1000000005,
+          }}
+          className={`${styles.headerTriggerBtn} ${isOpenPanel ? styles.headerTriggerBtnActive : ""}`}
+          title="Quay video bài giảng (Admin Only)"
         >
-          <div className={`${styles.redDot} ${styles.pulsingDot}`} />
-          <span>Quay Video</span>
-          <Settings size={14} className="opacity-70" />
+          <Video size={18} />
+          {savedCompactResult && <div className={styles.greenSavedDot} />}
+          <span className={styles.btnTooltip}>Quay video</span>
         </button>
       )}
 
-      {/* 2. Bảng cài đặt trước khi quay (Settings Modal) */}
+      {/* 2. Bảng cài đặt & Quản lý video (Settings Dropdown) */}
       {isOpenPanel && recorderState === "idle" && (
-        <div className={styles.panelOverlay}>
+        <div 
+          className={styles.panelOverlay}
+          style={{
+            top: isLearnPage ? "56px" : "60px",
+            right: isLearnPage ? "140px" : "24px",
+          }}
+        >
           <div className={styles.panelHeader}>
             <div className={styles.panelTitle}>
               <Video size={18} className="text-red-500" />
@@ -377,6 +598,75 @@ export const AdminScreenRecorder: React.FC = () => {
               <X size={16} />
             </button>
           </div>
+
+          {/* Video vừa lưu phát sáng nổi bật ngay trong thanh công cụ */}
+          {savedCompactResult && (
+            <div className={styles.savedVideoGlowCard}>
+              <div className={styles.savedVideoHeader}>
+                <div className={styles.savedVideoBadge}>
+                  <CheckCircle2 size={15} />
+                  <span>Đã lưu video thành công</span>
+                  {savedCompactResult.fileSize && (
+                    <span className="text-[10px] text-emerald-300 font-mono font-medium">({savedCompactResult.fileSize})</span>
+                  )}
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => setSavedCompactResult(null)} 
+                  className="text-slate-400 hover:text-white p-0.5 cursor-pointer"
+                  title="Ẩn thông tin video này"
+                >
+                  <X size={13} />
+                </button>
+              </div>
+
+              <div className={styles.savedVideoDetails}>
+                <div className={styles.savedVideoFileName} title={savedCompactResult.fileName}>
+                  <FileVideo size={13} className="text-blue-400 shrink-0" />
+                  <span className="truncate">{savedCompactResult.fileName}</span>
+                </div>
+                <div className={styles.savedVideoFolder} title={savedCompactResult.folderName ? `Thư mục "${savedCompactResult.folderName}"` : "Thư mục Downloads"}>
+                  <FolderCheck size={13} className="text-emerald-400 shrink-0" />
+                  <span className="truncate">
+                    {savedCompactResult.folderName ? `Thư mục "${savedCompactResult.folderName}"` : "Thư mục Downloads"}
+                  </span>
+                </div>
+              </div>
+
+              <div className={styles.savedVideoActions}>
+                <button
+                  type="button"
+                  onClick={handleOpenFolder}
+                  className={styles.openFolderHighlightBtn}
+                  title="Mở thư mục lưu các video trên máy Mac"
+                >
+                  <FolderOpen size={14} />
+                  <span>Mở thư mục lưu</span>
+                </button>
+
+                {savedCompactResult.blobUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setPreviewVideoUrl(savedCompactResult.blobUrl || null)}
+                    className={styles.previewVideoBtn}
+                    title="Xem lại video vừa quay"
+                  >
+                    <Film size={13} />
+                    <span>Xem video</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleDownloadVideoCopy}
+                  className={styles.downloadCopyBtn}
+                  title="Tải thêm 1 bản về Downloads"
+                >
+                  <Download size={13} />
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Tab Navigation */}
           <div className={styles.tabNav}>
@@ -434,12 +724,12 @@ export const AdminScreenRecorder: React.FC = () => {
                 </div>
               </div>
 
-              {/* Cài đặt Khung hình (3 Chế độ: Khóa Video / Tự vẽ khung / Toàn bộ Tab) */}
+              {/* Cài đặt Khung hình (3 Chế độ: Khóa Video / Tự vẽ khung / Toàn bài học - Bỏ Header) */}
               <div className={styles.settingRow}>
                 <div className={styles.settingLabel}>
                   <span>Khu vực quay</span>
                   <span className="text-blue-400 font-normal">
-                    {cropMode === "video" ? "Khóa video & sub" : cropMode === "custom" ? "Tự vẽ khung" : "Toàn bộ Tab"}
+                    {cropMode === "video" ? "Khóa video & sub" : cropMode === "custom" ? "Tự vẽ khung" : "Toàn bài học (Bỏ Header)"}
                   </span>
                 </div>
                 <div className={styles.cropModeSelector}>
@@ -447,7 +737,7 @@ export const AdminScreenRecorder: React.FC = () => {
                     type="button"
                     onClick={() => setCropMode("video")}
                     className={`${styles.cropModeCard} ${cropMode === "video" ? styles.cropModeCardActive : ""}`}
-                    title="Tự động khóa theo khung video bài giảng và thẻ từ vựng"
+                    title="Tự động khóa theo khung video bài giảng và phụ đề (nếu không có video sẽ quay toàn bài học bỏ Header)"
                   >
                     <span className="text-sm">🎯</span>
                     <span>Khóa Video</span>
@@ -461,7 +751,7 @@ export const AdminScreenRecorder: React.FC = () => {
                       }
                     }}
                     className={`${styles.cropModeCard} ${cropMode === "custom" ? styles.cropModeCardActive : ""}`}
-                    title="Tự kéo chuột vẽ khung chữ nhật vùng quay tùy ý"
+                    title="Tự kéo chuột vẽ khung chữ nhật vùng quay tùy ý (Loại bỏ Header và thanh công cụ)"
                   >
                     <span className="text-sm">📐</span>
                     <span>Tự vẽ khung</span>
@@ -470,10 +760,10 @@ export const AdminScreenRecorder: React.FC = () => {
                     type="button"
                     onClick={() => setCropMode("full")}
                     className={`${styles.cropModeCard} ${cropMode === "full" ? styles.cropModeCardActive : ""}`}
-                    title="Quay toàn bộ giao diện tab trình duyệt"
+                    title="Quay toàn bộ không gian bài học (Tự động cắt bỏ thanh Header và thanh điều khiển quay)"
                   >
                     <span className="text-sm">🖥️</span>
-                    <span>Toàn Tab</span>
+                    <span>Toàn bài học</span>
                   </button>
                 </div>
 
@@ -789,9 +1079,36 @@ export const AdminScreenRecorder: React.FC = () => {
         </div>
       )}
 
-      {/* 3. Thanh điều khiển nổi khi ĐANG QUAY / TẠM DỪNG */}
+      {/* 3. Thanh điều khiển nổi khi ĐANG QUAY / TẠM DỪNG (Mặc định ở Header, Draggable) */}
       {(recorderState === "recording" || recorderState === "paused") && (
-        <div className={`${styles.activeRecordingBar} ${recorderState === "paused" ? styles.activeRecordingBarPaused : ""}`}>
+        <div 
+          onPointerDown={handlePointerDownBar}
+          onPointerMove={handlePointerMoveBar}
+          onPointerUp={handlePointerUpBar}
+          style={
+            barPos
+              ? {
+                  position: "fixed",
+                  left: `${barPos.x}px`,
+                  top: `${barPos.y}px`,
+                  bottom: "auto",
+                  right: "auto",
+                  zIndex: 1000000010,
+                }
+              : {
+                  position: "fixed",
+                  top: isLearnPage ? "8px" : "12px",
+                  right: isLearnPage ? "312px" : "156px",
+                  bottom: "auto",
+                  left: "auto",
+                  zIndex: 1000000010,
+                }
+          }
+          className={`${styles.activeRecordingBar} ${recorderState === "paused" ? styles.activeRecordingBarPaused : ""}`}
+          title="Kéo chuột để di chuyển thanh công cụ"
+        >
+          <GripVertical size={14} className="text-slate-400 opacity-60 hover:opacity-100 shrink-0 cursor-grab" />
+
           <div className="flex items-center gap-2">
             <div className={`${styles.redDot} ${recorderState === "recording" ? styles.pulsingDot : "bg-amber-400 shadow-amber-400"}`} />
             <span className={styles.timerText}>{formatTime(recordedSeconds)}</span>
@@ -843,11 +1160,11 @@ export const AdminScreenRecorder: React.FC = () => {
           {/* Nút Tạm dừng / Tiếp tục */}
           {recorderState === "recording" ? (
             <button onClick={handlePause} className={`${styles.barBtn} ${styles.pauseBtn}`} title="Tạm dừng quay">
-              <Pause size={16} />
+              <Pause size={15} />
             </button>
           ) : (
             <button onClick={handleResume} className={`${styles.barBtn} ${styles.resumeBtn}`} title="Tiếp tục quay">
-              <Play size={16} />
+              <Play size={15} />
             </button>
           )}
 
@@ -858,68 +1175,9 @@ export const AdminScreenRecorder: React.FC = () => {
             className={`${styles.stopBtn} ${isSaving ? "opacity-70 cursor-not-allowed" : ""}`} 
             title="Dừng và lưu video"
           >
-            <Square size={13} fill="currentColor" />
+            <Square size={12} fill="currentColor" />
             <span>{isSaving ? "Đang lưu..." : "Dừng & Lưu"}</span>
           </button>
-        </div>
-      )}
-
-      {/* 4. Thông báo Lưu video nhỏ gọn (Capsule) ở góc phải dưới (Không che màn hình xem phim) */}
-      {savedCompactResult && (
-        <div className={styles.compactSavedBar}>
-          <CheckCircle2 size={18} className="text-emerald-400 shrink-0" />
-          <div className={styles.compactTextContainer}>
-            <div className={styles.compactTitle}>
-              <span>✓ Đã lưu video</span>
-              {savedCompactResult.fileSize && (
-                <span className={styles.compactSizeTag}>({savedCompactResult.fileSize})</span>
-              )}
-            </div>
-            {/* Tên file */}
-            <div className={styles.compactFileName} title={savedCompactResult.fileName}>
-              <FileVideo size={12} className="text-blue-400 shrink-0" />
-              <span>{savedCompactResult.fileName}</span>
-            </div>
-            {/* Tên thư mục */}
-            <div className={styles.compactSub} title={savedCompactResult.folderName ? `Thư mục "${savedCompactResult.folderName}"` : "Thư mục Downloads"}>
-              <FolderCheck size={12} className="text-emerald-400 shrink-0" />
-              <span>{savedCompactResult.folderName ? `Thư mục "${savedCompactResult.folderName}"` : `Thư mục Downloads`}</span>
-            </div>
-          </div>
-
-          <div className={styles.compactActions}>
-            {savedCompactResult.blobUrl && (
-              <button
-                type="button"
-                onClick={() => setPreviewVideoUrl(savedCompactResult.blobUrl || null)}
-                className={styles.compactActionBtn}
-                title="Xem lại video vừa quay"
-              >
-                <Film size={12} />
-                <span>Xem video</span>
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={handleOpenFolder}
-              className={styles.compactActionBtn}
-              title="Mở thư mục lưu file trên máy"
-            >
-              <FolderOpen size={12} />
-              <span>Mở thư mục</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                if (compactTimerRef.current) clearTimeout(compactTimerRef.current);
-                setSavedCompactResult(null);
-              }}
-              className={styles.compactCloseBtn}
-              title="Đóng thông báo"
-            >
-              <X size={13} />
-            </button>
-          </div>
         </div>
       )}
 
@@ -965,6 +1223,44 @@ export const AdminScreenRecorder: React.FC = () => {
         </div>
       )}
 
+      {/* 5. Khung viền chỉ báo trực quan VÙNG ĐANG THU HÌNH THỰC TẾ (Nằm chính xác ngoài mép vùng quay) */}
+      {(recorderState === "recording" || recorderState === "paused") && activeRecordingRect && (
+        <div
+          style={{
+            position: "fixed",
+            left: `${Math.max(0, activeRecordingRect.x - 2)}px`,
+            top: `${Math.max(0, activeRecordingRect.y - 2)}px`,
+            width: `${activeRecordingRect.width + 4}px`,
+            height: `${activeRecordingRect.height + 4}px`,
+            border: "2px solid #ef4444",
+            boxShadow: "0 0 0 1px rgba(255, 255, 255, 0.4), inset 0 0 8px rgba(239, 68, 68, 0.15)",
+            borderRadius: "6px",
+            pointerEvents: "none",
+            zIndex: 999999999,
+            transition: "all 0.15s ease",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: "-20px",
+              left: "4px",
+              background: "#ef4444",
+              color: "#ffffff",
+              fontSize: "9px",
+              fontWeight: 900,
+              padding: "1px 6px",
+              borderRadius: "3px",
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
+              boxShadow: "0 2px 4px rgba(239, 68, 68, 0.4)",
+            }}
+          >
+            REC • KHUNG HÌNH VIDEO
+          </div>
+        </div>
+      )}
+
       {/* 6. Khung kéo chuột chọn vùng quay tùy chỉnh */}
       <CropAreaSelectorOverlay
         isActive={isSelectingCrop}
@@ -976,6 +1272,130 @@ export const AdminScreenRecorder: React.FC = () => {
           setIsSelectingCrop(false);
         }}
       />
+
+      {/* 7. Modal Cảnh Báo Lỗi Khẩn Cấp - Dừng quay ngay lập tức để Admin không giảng bài uổng công */}
+      {fatalErrorModal && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 1000000020,
+            background: "rgba(0, 0, 0, 0.78)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+            animation: "fadeIn 0.2s ease-out",
+          }}
+          onClick={() => setFatalErrorModal(null)}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "520px",
+              background: "linear-gradient(135deg, rgba(30, 20, 20, 0.98), rgba(20, 10, 10, 0.98))",
+              border: "2px solid #ef4444",
+              borderRadius: "20px",
+              padding: "24px",
+              boxShadow: "0 25px 50px -12px rgba(239, 68, 68, 0.4), 0 0 30px rgba(239, 68, 68, 0.25)",
+              color: "#ffffff",
+              display: "flex",
+              flexDirection: "column",
+              gap: "18px",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+              <div
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "14px",
+                  background: "rgba(239, 68, 68, 0.2)",
+                  border: "1px solid rgba(239, 68, 68, 0.4)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#ef4444",
+                  flexShrink: 0,
+                }}
+              >
+                <AlertTriangle size={28} />
+              </div>
+              <div>
+                <h3 style={{ fontSize: "17px", fontWeight: 800, color: "#f87171", margin: 0, lineHeight: 1.3 }}>
+                  ĐÃ DỪNG GHI HÌNH VÌ GẶP LỖI!
+                </h3>
+                <p style={{ fontSize: "12px", color: "#cbd5e1", margin: "4px 0 0 0" }}>
+                  Hệ thống đã tự động ngắt để bảo vệ công sức giảng bài của bạn.
+                </p>
+              </div>
+            </div>
+
+            <div
+              style={{
+                background: "rgba(0, 0, 0, 0.55)",
+                border: "1px solid rgba(239, 68, 68, 0.35)",
+                borderRadius: "12px",
+                padding: "14px",
+                fontSize: "13px",
+                color: "#fca5a5",
+                lineHeight: 1.5,
+                wordBreak: "break-word",
+              }}
+            >
+              <strong style={{ color: "#f87171" }}>Chi tiết lỗi:</strong>
+              <div style={{ marginTop: "4px", fontFamily: "monospace", fontSize: "12px", color: "#fecaca" }}>
+                {fatalErrorModal}
+              </div>
+            </div>
+
+            <div style={{ fontSize: "12px", color: "#94a3b8", lineHeight: 1.4 }}>
+              💡 <strong>Lưu ý:</strong> Vui lòng không tiếp tục giảng bài cho đến khi đã khắc phục hoặc bắt đầu lại phiên quay thành công.
+            </div>
+
+            <div style={{ display: "flex", gap: "10px", marginTop: "4px" }}>
+              <button
+                onClick={() => {
+                  setFatalErrorModal(null);
+                  setIsOpenPanel(true);
+                }}
+                style={{
+                  flex: 1,
+                  padding: "10px 16px",
+                  background: "#ef4444",
+                  color: "#ffffff",
+                  border: "none",
+                  borderRadius: "10px",
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  boxShadow: "0 4px 12px rgba(239, 68, 68, 0.3)",
+                }}
+              >
+                Mở Cài Đặt & Thử Lại
+              </button>
+              <button
+                onClick={() => setFatalErrorModal(null)}
+                style={{
+                  padding: "10px 16px",
+                  background: "rgba(255, 255, 255, 0.1)",
+                  color: "#e2e8f0",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  borderRadius: "10px",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -163,7 +163,7 @@ export default function LearnLayout({
             </Link>
             <div className="h-4 w-px bg-white/20 mx-1"></div>
             <h1 className="text-sm font-black tracking-tight flex items-center gap-3">
-              <span className="max-w-[150px] sm:max-w-sm truncate uppercase italic text-blue-400">{courseTitle}</span>
+              <span id="learn-course-title" data-course-title={courseTitle} className="max-w-[150px] sm:max-w-sm truncate uppercase italic text-blue-400">{courseTitle}</span>
               <span className="text-[10px] bg-blue-600 px-2 py-0.5 rounded text-white font-black uppercase tracking-widest">PRO</span>
             </h1>
           </div>
@@ -207,7 +207,7 @@ export default function LearnLayout({
         </header>
 
         {/* Main Learning Workspace */}
-        <div className="flex flex-1 overflow-hidden relative">
+        <div id="learn-workspace-container" className="flex flex-1 overflow-hidden relative">
           {/* Sidebar Bên Trái (Collapsible & Resizable) */}
           <div 
             style={sidebarOpen ? { width: `${sidebarWidth}px` } : {}}

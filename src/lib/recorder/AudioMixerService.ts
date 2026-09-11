@@ -29,12 +29,6 @@ export class AudioMixerService {
   }
 
   public init(options: AudioMixerOptions): MediaStreamTrack | null {
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioContextClass) return null;
-
-    this.audioContext = new AudioContextClass();
-    this.destination = this.audioContext.createMediaStreamDestination();
-
     const {
       tabStream,
       micStream,
@@ -42,6 +36,23 @@ export class AudioMixerService {
       micVolume = 1.0,
       enableFanFilter = true,
     } = options;
+
+    const hasTabAudio = !!(tabStream && tabStream.getAudioTracks().length > 0);
+    const hasMicAudio = !!(micStream && micStream.getAudioTracks().length > 0);
+
+    if (!hasTabAudio && !hasMicAudio) {
+      return null;
+    }
+
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContextClass) return null;
+
+    this.audioContext = new AudioContextClass();
+    if (this.audioContext.state === "suspended") {
+      this.audioContext.resume().catch(() => {});
+    }
+
+    this.destination = this.audioContext.createMediaStreamDestination();
 
     // 1. Process Tab Audio (Phim + Tra từ)
     if (tabStream && tabStream.getAudioTracks().length > 0) {

@@ -137,7 +137,7 @@ export default async function LessonDetailPage({
       )}
 
       {/* HEADER BÀI HỌC (LUÔN HIỂN THỊ) */}
-      <div className={`py-3 pl-3 md:py-6 md:pl-6 bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${
+      <div id="lesson-sub-header" className={`py-3 pl-3 md:py-6 md:pl-6 bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${
         ["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC", "IELTS_READING"].includes(lesson.contentType as string)
           ? "pr-16 md:pr-24"
           : "pr-3 md:pr-6"
@@ -147,7 +147,7 @@ export default async function LessonDetailPage({
             {lesson.contentType === "VIDEO" ? <PlayCircle size={24} /> : <FileText size={24} />}
           </div>
           <div>
-            <h2 className="text-xs md:text-sm font-bold text-slate-800 tracking-tight flex items-center gap-2 max-w-[150px] xs:max-w-[200px] sm:max-w-none truncate sm:whitespace-normal">
+            <h2 id="learn-lesson-title" data-lesson-title={lesson.title} className="text-xs md:text-sm font-bold text-slate-800 tracking-tight flex items-center gap-2 max-w-[150px] xs:max-w-[200px] sm:max-w-none truncate sm:whitespace-normal">
               {lesson.title}
             </h2>
           </div>
@@ -185,7 +185,7 @@ export default async function LessonDetailPage({
         </div>
       </div>
 
-      <div className={`flex-1 ${lesson.contentType === "TOEIC_TEST" || lesson.contentType === "PART6_DYNAMIC" || lesson.contentType === "PART7_DYNAMIC" || lesson.contentType === "DYNAMIC_PART" || lesson.contentType === "IELTS_READING" ? "overflow-hidden pb-0 lg:pb-0" : "overflow-y-auto pb-4 lg:pb-10"} pt-4 px-4 lg:pt-0 lg:px-10 relative`}>
+      <div id="lesson-main-content" data-crop-target="lesson-content" className={`flex-1 ${lesson.contentType === "TOEIC_TEST" || lesson.contentType === "PART6_DYNAMIC" || lesson.contentType === "PART7_DYNAMIC" || lesson.contentType === "DYNAMIC_PART" || lesson.contentType === "IELTS_READING" ? "overflow-hidden pb-0 lg:pb-0" : "overflow-y-auto pb-4 lg:pb-10"} pt-4 px-4 lg:pt-0 lg:px-10 relative`}>
         <div className={`mx-auto ${lesson.contentType === "TOEIC_TEST" || lesson.contentType === "PART6_DYNAMIC" || lesson.contentType === "PART7_DYNAMIC" || lesson.contentType === "DYNAMIC_PART" || lesson.contentType === "IELTS_READING" ? "h-full flex flex-col max-w-[1700px] overflow-hidden" : "max-w-[1200px]"}`}>
 
           {hasAccess ? (
