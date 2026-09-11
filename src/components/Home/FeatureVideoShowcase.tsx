@@ -20,7 +20,7 @@ import {
   Zap,
   FastForward,
 } from "lucide-react";
-import { FeatureVideoItem } from "@/data/featureVideos";
+import { FeatureVideoItem, getDefaultFeatureVideos } from "@/data/featureVideos";
 
 const COLOR_MAP: Record<
   string,
@@ -98,8 +98,8 @@ const getShortTitleForIndex = (order: number) => {
 };
 
 export default function FeatureVideoShowcase() {
-  const [videos, setVideos] = useState<FeatureVideoItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [videos, setVideos] = useState<FeatureVideoItem[]>(() => getDefaultFeatureVideos());
+  const [loading, setLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);

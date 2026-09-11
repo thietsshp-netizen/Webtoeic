@@ -13,10 +13,14 @@ export interface FeatureVideoItem {
   color?: string; // blue, emerald, purple, amber, rose
 }
 
+export const SUPABASE_STORAGE_BASE =
+  "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Video_web_function";
+
 // Cấu hình Metadata chi tiết cho từng video tính năng
 // Bạn có thể tùy chỉnh tiêu đề, mô tả, badge, highlights bất kỳ lúc nào tại đây!
 export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> = {
   1: {
+    fileName: "1_Chuc_nang_tu_dien_choi gam.mp4",
     title: "Chức năng Từ điển thông minh, Gắn sao & Học chơi Game",
     subtitle: "Tra cứu 1-chạm & 4 chế độ Mini-Game luyện trí nhớ đỉnh cao",
     badge: "TƯƠNG TÁC ĐỘT PHÁ",
@@ -32,6 +36,7 @@ export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> 
     color: "blue",
   },
   2: {
+    fileName: "2_Nghe_tung_cau.mp4",
     title: "Chức năng Nghe từng câu & Luyện đoạn chứa Keywords",
     subtitle: "Luyện nghe bắt âm chính xác, bắt trúng từ khóa ăn điểm Part 1 - 4",
     badge: "BÍ QUYẾT LISTENING",
@@ -47,6 +52,7 @@ export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> 
     color: "emerald",
   },
   3: {
+    fileName: "3_Thong_ke_dang_bai_hay_sai.mp4",
     title: "Tính năng Thống kê dạng bài hay sai",
     subtitle: "Báo cáo lỗi sai chi tiết, định vị chính xác lỗ hổng kiến thức",
     badge: "PHÂN TÍCH THÔNG MINH",
@@ -62,6 +68,7 @@ export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> 
     color: "purple",
   },
   4: {
+    fileName: "4_Hay_sai_cau_tu_vung_thi_phai_xem_web_nay.mp4",
     title: "Hay sai các câu từ vựng - Nhất định phải thử website này",
     subtitle: "Giải pháp đột phá chinh phục câu hỏi từ vựng khó Part 5 & 6",
     badge: "CHIẾN THUẬT PART 5 & 6",
@@ -127,4 +134,30 @@ export function getFeatureVideoMeta(order: number, fileName: string): Partial<Fe
     ],
     color: "blue",
   };
+}
+
+/**
+ * Danh sách video mặc định dự phòng chuẩn xác (đảm bảo luôn có video URL thật)
+ */
+export function getDefaultFeatureVideos(): FeatureVideoItem[] {
+  return Object.entries(FEATURE_VIDEOS_METADATA).map(([key, meta]) => {
+    const order = parseInt(key, 10);
+    const fileName = meta.fileName || `${order}_video.mp4`;
+    const publicUrl = `${SUPABASE_STORAGE_BASE}/${encodeURIComponent(fileName)}`;
+
+    return {
+      id: `default-video-${order}`,
+      order: order,
+      fileName: fileName,
+      videoUrl: publicUrl,
+      title: meta.title || `Tính năng số ${order}`,
+      subtitle: meta.subtitle || "",
+      badge: meta.badge || `TÍNH NĂNG ${order}`,
+      category: meta.category || "TÍNH NĂNG",
+      description: meta.description || "",
+      highlights: meta.highlights || [],
+      thumbnail: meta.thumbnail,
+      color: meta.color || "blue",
+    };
+  });
 }
