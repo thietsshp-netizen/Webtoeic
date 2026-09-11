@@ -2,6 +2,7 @@
 
 import { AudioMixerService, AudioMixerOptions } from "./AudioMixerService";
 import { getSavedDirectoryHandle, saveDirectoryHandle, clearSavedDirectoryHandle } from "./DirectoryStorage";
+import { fixMp4Duration, patchFileHandleDuration } from "./Mp4DurationFixer";
 
 export type RecorderState = "idle" | "preparing" | "recording" | "paused" | "stopped";
 export type CropMode = "video" | "custom" | "full";
@@ -70,6 +71,7 @@ export class ScreenRecorderService {
 
   // Direct-to-Disk Stream Writing (Chống tràn RAM cho buổi học dài 2-3 tiếng & chống mất video)
   private activeWritable: any = null;
+  private activeFileHandle: any = null;
   private activeFileName: string = "";
   private activeFolderName: string = "";
   private isDirectlySaved: boolean = false;
@@ -239,47 +241,28 @@ export class ScreenRecorderService {
       }
       this.combinedStream = new MediaStream(tracks);
 
-      // 6. Cấu hình MediaRecorder: Sử dụng codec siêu ổn định (VP9/VP8/Opus) cho luồng Canvas để không bao giờ bị lỗi phần cứng EncodingError
+      // 6. Cấu hình MediaRecorder: Ưu tiên chuẩn MP4 (H.264 / AAC) để macOS Finder QuickLook và QuickTime Player hiển thị thumbnail & xem trước ngay lập tức
       const isCanvasCropped = (cropMode === "video" || cropMode === "full" || cropMode === "custom");
       const hasAudioTrack = this.combinedStream.getAudioTracks().length > 0;
       
-      const rawMimeTypes = isCanvasCropped
-        ? (hasAudioTrack
-            ? [
-                "video/webm;codecs=vp9,opus",
-                "video/webm;codecs=vp8,opus",
-                "video/webm;codecs=h264,opus",
-                "video/webm",
-                "video/mp4;codecs=avc1,mp4a.40.2",
-                "video/mp4;codecs=avc1",
-                "video/mp4",
-              ]
-            : [
-                "video/webm;codecs=vp9",
-                "video/webm;codecs=vp8",
-                "video/webm;codecs=h264",
-                "video/webm",
-                "video/mp4;codecs=avc1",
-                "video/mp4",
-              ])
-        : (hasAudioTrack
-            ? [
-                "video/mp4;codecs=avc1,mp4a.40.2",
-                "video/mp4;codecs=avc1",
-                "video/mp4",
-                "video/webm;codecs=vp9,opus",
-                "video/webm;codecs=vp8,opus",
-                "video/webm;codecs=h264,opus",
-                "video/webm",
-              ]
-            : [
-                "video/mp4;codecs=avc1",
-                "video/mp4",
-                "video/webm;codecs=vp9",
-                "video/webm;codecs=vp8",
-                "video/webm;codecs=h264",
-                "video/webm",
-              ]);
+      const rawMimeTypes = hasAudioTrack
+        ? [
+            "video/mp4;codecs=avc1,mp4a.40.2",
+            "video/mp4;codecs=avc1",
+            "video/mp4",
+            "video/webm;codecs=vp9,opus",
+            "video/webm;codecs=vp8,opus",
+            "video/webm;codecs=h264,opus",
+            "video/webm",
+          ]
+        : [
+            "video/mp4;codecs=avc1",
+            "video/mp4",
+            "video/webm;codecs=vp9",
+            "video/webm;codecs=vp8",
+            "video/webm;codecs=h264",
+            "video/webm",
+          ];
 
       const mimeTypes = rawMimeTypes.filter((mime) => {
         try {
@@ -296,6 +279,7 @@ export class ScreenRecorderService {
 
       // 7. Khởi tạo ghi trực tiếp xuống ổ đĩa (Direct-to-Disk Streaming) nếu đã có thư mục lưu
       this.activeWritable = null;
+      this.activeFileHandle = null;
       this.activeFileName = "";
       this.activeFolderName = "";
       this.isDirectlySaved = false;
@@ -311,11 +295,13 @@ export class ScreenRecorderService {
           if (permission === "granted" || permission === undefined) {
             const now = new Date();
             const dateStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}_${now.getHours().toString().padStart(2, "0")}${now.getMinutes().toString().padStart(2, "0")}`;
-            const ext = isCanvasCropped ? ".webm" : (primaryMimeType.includes("mp4") ? ".mp4" : ".webm");
+            const isMp4 = (mimeTypes[0] && mimeTypes[0].includes("mp4")) || primaryMimeType.includes("mp4");
+            const ext = isMp4 ? ".mp4" : ".webm";
             const cleanTitle = sanitizeFileName(options.lessonTitle || "BaiHoc");
             const targetName = `${cleanTitle}_${dateStr}${ext}`;
 
             const fileHandle = await dirHandle.getFileHandle(targetName, { create: true });
+            this.activeFileHandle = fileHandle;
             this.activeWritable = await (fileHandle as any).createWritable();
             this.activeFileName = targetName;
             this.activeFolderName = dirHandle.name;
@@ -325,6 +311,7 @@ export class ScreenRecorderService {
       } catch (streamInitErr) {
         console.warn("[ScreenRecorder] Direct-to-Disk init failed (falling back to RAM chunks):", streamInitErr);
         this.activeWritable = null;
+        this.activeFileHandle = null;
         this.isDirectlySaved = false;
       }
 
@@ -526,6 +513,9 @@ export class ScreenRecorderService {
       this.stopTimer();
       this.stopMeter();
 
+      // Tính tổng thời lượng ghi hình chính xác (mili-giây)
+      const totalDurationMs = this.accumulatedTime + (this.startTime > 0 ? (Date.now() - this.startTime) : 0);
+
       let isResolved = false;
       const mimeType = this.mediaRecorder?.mimeType || "video/mp4";
 
@@ -540,6 +530,10 @@ export class ScreenRecorderService {
           try {
             if (totalBytes > 0) {
               await this.activeWritable.close();
+              // Sau khi đóng stream ghi, nếu là file MP4, vá duration trực tiếp vào fileHandle trên đĩa
+              if (this.activeFileHandle && totalDurationMs > 0) {
+                await patchFileHandleDuration(this.activeFileHandle, totalDurationMs);
+              }
             } else {
               // Nếu không có dữ liệu, hủy file để không tạo file rỗng 0 bytes
               await this.activeWritable.abort();
@@ -549,11 +543,22 @@ export class ScreenRecorderService {
             console.warn("[ScreenRecorder] Error finalizing activeWritable:", closeErr);
           }
           this.activeWritable = null;
+          this.activeFileHandle = null;
         }
 
-        const finalBlob = totalBytes > 0 
+        let finalBlob: Blob | null = totalBytes > 0 
           ? new Blob(this.recordedChunks, { type: mimeType }) 
           : null;
+
+        // Vá duration vào finalBlob cho luồng xem trước & tải về (Download)
+        if (finalBlob && totalDurationMs > 0) {
+          try {
+            finalBlob = await fixMp4Duration(finalBlob, totalDurationMs);
+          } catch (fixErr) {
+            console.warn("[ScreenRecorder] fixMp4Duration error:", fixErr);
+          }
+        }
+
         this.cleanup();
         this.setState("idle");
         resolve(finalBlob);
@@ -599,46 +604,15 @@ export class ScreenRecorderService {
     }
 
     const cleanSuggested = suggestedFileName || `HocToeic_Lesson_${new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)}`;
-    const finalMp4Name = cleanSuggested.endsWith(".mp4") 
-      ? cleanSuggested 
-      : `${cleanSuggested.replace(/\.[^/.]+$/, "")}.mp4`;
+    const isMp4 = blob.type.includes("mp4") || cleanSuggested.endsWith(".mp4");
+    const finalFileName = isMp4 
+      ? (cleanSuggested.endsWith(".mp4") ? cleanSuggested : `${cleanSuggested.replace(/\.[^/.]+$/, "")}.mp4`)
+      : (cleanSuggested.endsWith(".webm") ? cleanSuggested : `${cleanSuggested.replace(/\.[^/.]+$/, "")}.webm`);
 
     const blobUrl = URL.createObjectURL(blob);
     const sizeInMB = (blob.size / (1024 * 1024)).toFixed(1) + " MB";
 
-    // 1. Tự động chuyển đổi sang chuẩn MP4 (H.264 / AAC) với FastStart bằng FFmpeg Server
-    try {
-      const formData = new FormData();
-      formData.append("file", blob, finalMp4Name);
-      formData.append("fileName", finalMp4Name);
-      if (this.activeFolderName) {
-        formData.append("folderName", this.activeFolderName);
-      }
-
-      const res = await fetch("/api/admin/convert-recording", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.success) {
-          return {
-            success: true,
-            savedVia: "directory",
-            folderName: data.folderName || "Movies",
-            fileName: data.fileName || finalMp4Name,
-            fileSize: data.fileSize || sizeInMB,
-            blob,
-            blobUrl,
-          };
-        }
-      }
-    } catch (apiErr) {
-      console.warn("[ScreenRecorder] Server-side FFmpeg MP4 convert failed, falling back to client save:", apiErr);
-    }
-
-    // 2. Fallback: Nếu không dùng được API FFmpeg server, lưu trực tiếp qua File System Access
+    // 1. Lưu trực tiếp qua File System Access (Zero-server, không hỏi lại quyền nếu đã cấp)
     try {
       const dirHandle = await getSavedDirectoryHandle();
       if (dirHandle) {
@@ -649,7 +623,7 @@ export class ScreenRecorderService {
         }
 
         if (permission === "granted" || permission === undefined) {
-          const fileHandle = await dirHandle.getFileHandle(finalMp4Name, { create: true });
+          const fileHandle = await dirHandle.getFileHandle(finalFileName, { create: true });
           const writable = await (fileHandle as any).createWritable();
           await writable.write(blob);
           await writable.close();
@@ -658,7 +632,7 @@ export class ScreenRecorderService {
             success: true,
             savedVia: "directory",
             folderName: dirHandle.name,
-            fileName: finalMp4Name,
+            fileName: finalFileName,
             fileSize: sizeInMB,
             blob,
             blobUrl,
@@ -669,13 +643,13 @@ export class ScreenRecorderService {
       console.warn("[ScreenRecorder] File System Access auto-save failed, falling back to download:", fsErr);
     }
 
-    // 3. Fallback cuối cùng: Tải về trình duyệt tự động vào Downloads
+    // 2. Fallback cuối cùng: Tải về trình duyệt tự động vào Downloads
     try {
-      this.downloadBlob(blob, finalMp4Name);
+      this.downloadBlob(blob, finalFileName);
       return {
         success: true,
         savedVia: "download",
-        fileName: finalMp4Name,
+        fileName: finalFileName,
         fileSize: sizeInMB,
         blob,
         blobUrl,
@@ -684,7 +658,7 @@ export class ScreenRecorderService {
       return {
         success: false,
         savedVia: "download",
-        fileName: finalMp4Name,
+        fileName: finalFileName,
         fileSize: sizeInMB,
         blob,
         blobUrl,
