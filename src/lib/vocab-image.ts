@@ -14,7 +14,7 @@ const JUNK_IMAGE_PATTERNS = [
   /chronology/i, /annual/i, /diagram/i, /chart/i, /graph/i, /coat_of_arms/i, /flag/i,
   /solid/i, /texture/i, /microscopy/i, /monochrome/i, /abstract/i, /pattern/i, /surface/i, /background/i,
   /stamps/i, /manuscript/i, /paper/i, /letter/i, /seal/i, /coin/i, /receipt/i, /signboard/i, /stone/i,
-  /not_included/i, /not\s+included/i, /batteries_not/i, /editathon/i, /conference/i
+  /not_included/i, /not\s+included/i, /batteries_not/i, /editathon/i, /conference/i, /_types\./i, /housing_ownership/i
 ];
 
 function isJunkImage(url?: string | null, title?: string | null): boolean {
@@ -25,10 +25,15 @@ function isJunkImage(url?: string | null, title?: string | null): boolean {
 
 // Directional & abstract concept enhancers
 const CONCEPT_ENHANCERS: Record<string, string[]> = {
+  owner: ["store owner", "shop owner", "business owner"],
   eastern: ["eastern", "eastern europe", "east compass"],
   western: ["western", "western europe", "west compass"],
   northern: ["northern", "northern europe", "north compass"],
   southern: ["southern", "southern europe", "south compass"],
+  director: ["managing director", "company director"],
+  manager: ["store manager", "office manager"],
+  employee: ["office worker", "company employee"],
+  supervisor: ["workplace supervisor", "site supervisor"],
 };
 
 // In-memory cache for ultra-fast response on repeat queries
@@ -37,7 +42,7 @@ interface CacheEntry {
   timestamp: number;
 }
 const serverImageCache = new Map<string, CacheEntry>();
-const CACHE_TTL_MS = 1000 * 60 * 60 * 24; // 24 hours
+const CACHE_TTL_MS = 1000 * 60 * 60 * 6; // 6 hours
 const MAX_CACHE_SIZE = 5000;
 
 /**
@@ -115,7 +120,7 @@ function findAdjacentPhrase(word: string, example?: string): string | null {
 async function searchWikipediaArticle(query: string): Promise<string[]> {
   const images: string[] = [];
   try {
-    const url = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrlimit=6&prop=pageimages&pithumbsize=500&format=json`;
+    const url = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrlimit=8&prop=pageimages&pithumbsize=500&format=json`;
     const res = await fetch(url, {
       headers: { "User-Agent": "WebtoeicApp/1.0 (contact@hoctoeic.com)" },
       signal: AbortSignal.timeout(2000),
@@ -141,7 +146,7 @@ async function searchWikimediaFiltered(query: string): Promise<string[]> {
   const images: string[] = [];
   try {
     const searchQuery = `${query} filetype:bitmap`;
-    const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(searchQuery)}&gsrlimit=8&prop=imageinfo&iiprop=url|thumburl&iiurlwidth=500&format=json`;
+    const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(searchQuery)}&gsrlimit=12&prop=imageinfo&iiprop=url|thumburl&iiurlwidth=500&format=json`;
     const res = await fetch(url, {
       headers: { "User-Agent": "WebtoeicApp/1.0 (contact@hoctoeic.com)" },
       signal: AbortSignal.timeout(2000),
@@ -198,22 +203,35 @@ export async function getVocabImage(
     searchQueries.push(adjacentPhrase);
   }
 
-  // 3. Execute all searches IN PARALLEL for maximum speed (< 1-1.5s total)
-  const searchPromises: Promise<string[]>[] = [];
-  for (const q of searchQueries.slice(0, 3)) {
-    searchPromises.push(searchWikipediaArticle(q));
-    searchPromises.push(searchWikimediaFiltered(q));
-  }
-
-  const results = await Promise.allSettled(searchPromises);
+  // 3. Fast-First-Match: Execute top query first for instant response
   const collectedImages: string[] = [];
+  const addImages = (imgs: string[]) => {
+    for (const img of imgs) {
+      if (img && !collectedImages.includes(img)) {
+        collectedImages.push(img);
+      }
+    }
+  };
 
-  for (const res of results) {
-    if (res.status === 'fulfilled' && Array.isArray(res.value)) {
-      for (const img of res.value) {
-        if (img && !collectedImages.includes(img)) {
-          collectedImages.push(img);
-        }
+  const topQuery = searchQueries[0] || cleanWord;
+  const [topWiki, topCommons] = await Promise.all([
+    searchWikipediaArticle(topQuery),
+    searchWikimediaFiltered(topQuery)
+  ]);
+  addImages(topWiki);
+  addImages(topCommons);
+
+  // If top query has fewer than 5 images, continue to fetch secondary queries in parallel
+  if (collectedImages.length < 5 && searchQueries.length > 1) {
+    const secondaryPromises: Promise<string[]>[] = [];
+    for (const q of searchQueries.slice(1, 3)) {
+      secondaryPromises.push(searchWikipediaArticle(q));
+      secondaryPromises.push(searchWikimediaFiltered(q));
+    }
+    const secondaryResults = await Promise.allSettled(secondaryPromises);
+    for (const res of secondaryResults) {
+      if (res.status === 'fulfilled' && Array.isArray(res.value)) {
+        addImages(res.value);
       }
     }
   }
@@ -231,4 +249,3 @@ export async function getVocabImage(
 
   return resultData;
 }
-
