@@ -122,6 +122,105 @@ const normalizeExamplesList = (rawExamples: any, singleEn?: any, singleVi?: any)
   return result;
 };
 
+export const getPosBadge = (pos?: string) => {
+  if (!pos) return null;
+  const p = pos.toLowerCase().trim().replace(/[_\-]+/g, ' ');
+  let short = p;
+  let full = pos;
+
+  if (p.includes('phrasal verb') || p === 'phr v' || p === 'phrv') {
+    short = 'phr v';
+    full = 'Phrasal Verb (Cụm động từ)';
+  } else if (p === 'noun' || p === 'n') {
+    short = 'n';
+    full = 'Noun (Danh từ)';
+  } else if (p === 'verb' || p === 'v') {
+    short = 'v';
+    full = 'Verb (Động từ)';
+  } else if (p.includes('adjective') || p === 'adj' || p === 'a') {
+    short = 'adj';
+    full = 'Adjective (Tính từ)';
+  } else if (p.includes('adverb') || p === 'adv') {
+    short = 'adv';
+    full = 'Adverb (Trạng từ)';
+  } else if (p.includes('preposition') || p === 'prep') {
+    short = 'prep';
+    full = 'Preposition (Giới từ)';
+  } else if (p.includes('conjunction') || p === 'conj') {
+    short = 'conj';
+    full = 'Conjunction (Liên từ)';
+  } else if (p.includes('pronoun') || p === 'pron') {
+    short = 'pron';
+    full = 'Pronoun (Đại từ)';
+  } else if (p.includes('idiom') || p === 'idm') {
+    short = 'idm';
+    full = 'Idiom (Thành ngữ)';
+  } else if (p.includes('collocation') || p === 'colloc' || p === 'coll') {
+    short = 'colloc';
+    full = 'Collocation (Cụm từ kết hợp)';
+  } else if (p.includes('phrase') || p === 'phr') {
+    short = 'phrase';
+    full = 'Phrase (Cụm từ)';
+  }
+
+  return { short, full };
+};
+
+export const getRegisterBadge = (reg?: string) => {
+  if (!reg) return null;
+  const r = reg.toLowerCase().trim();
+  let short = r;
+  let full = reg;
+
+  if (r.includes('informal') || r === 'inf') {
+    short = 'inf';
+    full = 'Informal (Thân mật)';
+  } else if (r.includes('formal') || r === 'form') {
+    short = 'form';
+    full = 'Formal (Trang trọng)';
+  } else if (r.includes('casual') || r === 'cas') {
+    short = 'cas';
+    full = 'Casual (Tự nhiên/Thông dụng)';
+  } else if (r.includes('slang')) {
+    short = 'slang';
+    full = 'Slang (Tiếng lóng)';
+  } else if (r.includes('neutral') || r === 'neu') {
+    short = 'neu';
+    full = 'Neutral (Trung tính)';
+  }
+
+  return { short, full };
+};
+
+export const getSfTypeBadge = (type?: string) => {
+  if (!type) return { short: 'REL', full: 'Related' };
+  const t = type.toLowerCase().trim().replace(/[_\-]+/g, ' ');
+  let short = type.toUpperCase();
+  let full = type;
+
+  if (t.includes('synonym') || t === 'syn') {
+    short = 'SYN';
+    full = 'Synonym (Từ đồng nghĩa)';
+  } else if (t.includes('antonym') || t === 'ant') {
+    short = 'ANT';
+    full = 'Antonym (Từ trái nghĩa)';
+  } else if (t.includes('related') || t === 'rel') {
+    short = 'REL';
+    full = 'Related Phrase (Cụm liên quan)';
+  } else if (t.includes('slang')) {
+    short = 'SLANG';
+    full = 'Slang (Tiếng lóng)';
+  } else if (t.includes('idiom') || t === 'idm') {
+    short = 'IDM';
+    full = 'Idiom (Thành ngữ)';
+  } else if (t.includes('collocation') || t === 'colloc' || t === 'coll') {
+    short = 'COLL';
+    full = 'Collocation (Cụm từ kết hợp)';
+  }
+
+  return { short, full };
+};
+
 export const isItemFromOriginal = (item: FlattenedExpansionItem, subText?: string): boolean => {
   if (item.source === 'paraphrase') return false;
   if (item.source === 'original') return true;
@@ -1483,6 +1582,303 @@ export const generateMovieExpansionPopupStyles = () => `
     font-weight: 700;
     margin-right: 4px;
   }
+
+  /* TTS Audio Buttons */
+  .btn-tts {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+  .btn-tts:hover {
+    background: #f1f5f9;
+    color: #f59e0b;
+    transform: scale(1.1);
+  }
+  .btn-tts-sm {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 1px 3px;
+    border-radius: 4px;
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    transition: all 0.15s ease;
+    user-select: none;
+    margin-left: 4px;
+    opacity: 0.75;
+  }
+  .btn-tts-sm:hover {
+    opacity: 1;
+    background: #f1f5f9;
+    color: #f59e0b;
+    transform: scale(1.15);
+  }
+  .btn-tts-xs {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 1px 2px;
+    border-radius: 3px;
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    transition: all 0.15s ease;
+    user-select: none;
+    margin-right: 2px;
+  }
+  .btn-tts-xs:hover {
+    color: #f59e0b;
+    transform: scale(1.15);
+  }
+  .speaking-pulse {
+    color: #d97706 !important;
+    animation: ttsPulse 0.8s infinite alternate ease-in-out;
+  }
+  @keyframes ttsPulse {
+    0% { transform: scale(1); filter: drop-shadow(0 0 1px #f59e0b); }
+    100% { transform: scale(1.25); filter: drop-shadow(0 0 6px #f59e0b); }
+  }
+
+  /* YouGlish Buttons */
+  .btn-youglish {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    transition: all 0.15s ease;
+    user-select: none;
+    vertical-align: middle;
+  }
+  .btn-youglish:hover {
+    background: #fee2e2;
+    border-color: #f87171;
+    color: #b91c1c;
+    transform: scale(1.05);
+  }
+  .btn-youglish-xs {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.15s ease;
+    user-select: none;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+  .btn-youglish-xs:hover {
+    background: #fee2e2;
+    border-color: #f87171;
+    transform: scale(1.1);
+  }
+
+  .syn-items-inline, .ant-items-inline {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .syn-item-chip, .ant-item-chip {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 1px 5px;
+    border-radius: 5px;
+  }
+
+  /* YouGlish Modal Overlay inside popup */
+  .youglish-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(4px);
+    z-index: 999999;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+  }
+  .youglish-modal-overlay.active {
+    display: flex;
+  }
+  .youglish-modal-card {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 680px;
+    height: 90vh;
+    max-height: 520px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.6);
+  }
+  .youglish-modal-header {
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .youglish-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #f8fafc;
+    font-size: 13px;
+    overflow: hidden;
+  }
+  .youglish-logo {
+    font-weight: 800;
+    color: #f87171;
+    font-size: 11px;
+    text-transform: uppercase;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  .youglish-word {
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+  }
+  .youglish-ipa {
+    font-family: monospace;
+    color: #c4b5fd;
+    font-size: 12px;
+  }
+  .btn-open-yg-web {
+    background: #334155;
+    border: 1px solid #475569;
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.15s;
+  }
+  .btn-open-yg-web:hover {
+    background: #475569;
+    color: #ffffff;
+  }
+  .youglish-close-btn {
+    background: #334155;
+    border: 1px solid #475569;
+    color: #f8fafc;
+    font-size: 13px;
+    font-weight: 700;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .youglish-close-btn:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+  }
+  .youglish-widget-wrap {
+    flex: 1;
+    background: #ffffff;
+    min-height: 380px;
+    max-height: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 8px;
+  }
+  .youglish-modal-footer {
+    background: #1e293b;
+    border-top: 1px solid #334155;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .youglish-accent-group {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .btn-accent {
+    background: #334155;
+    border: 1px solid #475569;
+    color: #cbd5e1;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-accent:hover {
+    background: #475569;
+    color: #ffffff;
+  }
+  .btn-accent.active {
+    background: #dc2626;
+    border-color: #ef4444;
+    color: #ffffff;
+  }
+  .btn-close-footer {
+    background: #334155;
+    border: 1px solid #475569;
+    color: #f8fafc;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-close-footer:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+  }
 `;
 
 export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): string => {
@@ -1764,26 +2160,33 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
           ? [{ text: sub.expansion.paraphrase }]
           : [];
 
+      const posInfo = isVocab ? getPosBadge(currentItem.part_of_speech) : null;
+      const regInfo = isVocab ? getRegisterBadge(currentItem.register) : null;
+
       return `
         <div class="header-sentences-box">
-          <div class="original-sub-text">"${escapeHtml(sub.text || '')}"</div>
+          <div class="original-sub-text">
+            <span>"${escapeHtml(sub.text || '')}"</span>
+            <button type="button" class="btn-tts-sm" title="Nghe câu gốc" data-speak-text="${encodeURIComponent((sub.text || '').replace(/<[^>]*>/g, '').trim())}">🔊</button>
+          </div>
           ${sub.vietnamese ? `<div class="original-sub-vi">${escapeHtml(sub.vietnamese)}</div>` : ''}
           ${paraphraseList.length > 0 ? `
             <div class="paraphrase-table">
               ${paraphraseList.map((pItem, pIdx) => {
                 const pMethod = getShortMethodLabel(pItem.method, pIdx);
                 const pHtml = renderParaphraseHtml(pItem.text || '');
+                const rawParaText = (pItem.text || '').replace(/<[^>]*>/g, '').trim();
                 return `
-                  <div class="paraphrase-line">
+                  <div class="paraphrase-line" style="cursor: pointer;" title="Nhấp để nghe phát âm" data-speak-text="${encodeURIComponent(rawParaText)}">
                     <span class="paraphrase-badge">${escapeHtml(pMethod)}</span>
                     <span class="paraphrase-val">"${pHtml}"</span>
+                    <button type="button" class="btn-tts-sm" title="Nghe câu diễn giải" data-speak-text="${encodeURIComponent(rawParaText)}">🔊</button>
                   </div>
                 `;
               }).join('')}
             </div>
           ` : ''}
         </div>
-
 
         <div class="card">
           <div class="card-header-actions">
@@ -1793,10 +2196,12 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
 
           ${isVocab ? `
             <div class="main-word-row">
+              <button type="button" class="btn-tts" title="Phát âm '${escapeHtml(currentItem.word || '')}'" data-speak-text="${encodeURIComponent(currentItem.word || '')}">🔊</button>
               <span class="main-word-text">${escapeHtml(currentItem.word || '')}</span>
               ${currentItem.ipa ? `<span class="word-ipa">${escapeHtml(currentItem.ipa)}</span>` : ''}
-              ${currentItem.part_of_speech ? `<span class="badge-pos">${escapeHtml(currentItem.part_of_speech)}</span>` : ''}
-              ${currentItem.register ? `<span class="badge-register">${escapeHtml(currentItem.register)}</span>` : ''}
+              <button type="button" class="btn-youglish" title="Xem '${escapeHtml(currentItem.word || '')}' trên YouGlish" data-youglish-word="${encodeURIComponent(currentItem.word || '')}" data-youglish-ipa="${encodeURIComponent(currentItem.ipa || '')}" data-youglish-meaning="${encodeURIComponent(currentItem.meaning || '')}">🎬</button>
+              ${posInfo ? `<span class="badge-pos" title="${escapeHtml(posInfo.full)}">${escapeHtml(posInfo.short)}</span>` : ''}
+              ${regInfo ? `<span class="badge-register" title="${escapeHtml(regInfo.full)}">${escapeHtml(regInfo.short)}</span>` : ''}
             </div>
 
             ${currentItem.meaning ? `
@@ -1807,13 +2212,29 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
               ${currentItem.synonyms ? `
                 <div class="synonyms-box">
                   <span class="synonyms-label">🔗 Đồng nghĩa:</span>
-                  <span class="synonyms-text">${escapeHtml(currentItem.synonyms)}</span>
+                  <div class="syn-items-inline">
+                    ${currentItem.synonyms.split(',').map(s => s.trim()).filter(Boolean).map(synWord => `
+                      <span class="syn-item-chip">
+                        <button type="button" class="btn-tts-xs" title="Phát âm '${escapeHtml(synWord)}'" data-speak-text="${encodeURIComponent(synWord)}">🔊</button>
+                        <span class="synonyms-text">${escapeHtml(synWord)}</span>
+                        <button type="button" class="btn-youglish-xs" title="Xem '${escapeHtml(synWord)}' trên YouGlish" data-youglish-word="${encodeURIComponent(synWord)}">🎬</button>
+                      </span>
+                    `).join('')}
+                  </div>
                 </div>
               ` : ''}
               ${currentItem.antonyms ? `
                 <div class="antonyms-box">
                   <span class="antonyms-label">⚡ Trái nghĩa:</span>
-                  <span class="antonyms-text">${escapeHtml(currentItem.antonyms)}</span>
+                  <div class="ant-items-inline">
+                    ${currentItem.antonyms.split(',').map(s => s.trim()).filter(Boolean).map(antWord => `
+                      <span class="syn-item-chip">
+                        <button type="button" class="btn-tts-xs" title="Phát âm '${escapeHtml(antWord)}'" data-speak-text="${encodeURIComponent(antWord)}">🔊</button>
+                        <span class="antonyms-text">${escapeHtml(antWord)}</span>
+                        <button type="button" class="btn-youglish-xs" title="Xem '${escapeHtml(antWord)}' trên YouGlish" data-youglish-word="${encodeURIComponent(antWord)}">🎬</button>
+                      </span>
+                    `).join('')}
+                  </div>
                 </div>
               ` : ''}
             </div>
@@ -1830,12 +2251,17 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
 
           ${currentItem.examples && currentItem.examples.length > 0 ? `
             <div class="example-list">
-              ${currentItem.examples.map((ex, exIdx) => `
+              ${currentItem.examples.map((ex, exIdx) => {
+                const rawEn = (ex.en || '').replace(/<[^>]*>/g, '').trim();
+                return `
                 <div class="example-item">
-                  <div class="ex-en">${exIdx + 1}. ${renderMarkupText(ex.en || '')}</div>
+                  <div class="ex-en" style="cursor: pointer;" title="Nhấp để nghe đọc câu ví dụ này" data-speak-text="${encodeURIComponent(rawEn)}">
+                    <span>${exIdx + 1}. ${renderMarkupText(ex.en || '')}</span>
+                    <button type="button" class="btn-tts-sm" title="Phát âm câu ví dụ" data-speak-text="${encodeURIComponent(rawEn)}">🔊</button>
+                  </div>
                   <div class="ex-vi">${escapeHtml(ex.vi || '')}</div>
                 </div>
-              `).join('')}
+              `;}).join('')}
             </div>
           ` : ''}
 
@@ -1849,16 +2275,24 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
                 ${currentItem.semantic_field_expansion.map(sf => {
                   const typeLower = (sf.type || 'related phrase').toLowerCase();
                   const typeClass = typeLower.includes('slang') ? 'tag-slang' : typeLower.includes('idiom') ? 'tag-idiom' : typeLower.includes('synonym') ? 'tag-synonym' : 'tag-related';
+                  const sfBadge = getSfTypeBadge(sf.type);
+                  const rawExpr = (sf.expression || '').replace(/<[^>]*>/g, '').trim();
+                  const rawExEn = (sf.example_en || '').replace(/<[^>]*>/g, '').trim();
                   return `
                     <div class="semantic-item">
                       <div class="semantic-item-top">
-                        <span class="semantic-type-tag ${typeClass}">${escapeHtml(sf.type || 'related')}</span>
+                        <span class="semantic-type-tag ${typeClass}" title="${escapeHtml(sfBadge.full)}">${escapeHtml(sfBadge.short)}</span>
+                        <button type="button" class="btn-tts-xs" title="Phát âm '${escapeHtml(rawExpr)}'" data-speak-text="${encodeURIComponent(rawExpr)}">🔊</button>
                         <span class="semantic-expr">${escapeHtml(sf.expression || '')}</span>
+                        <button type="button" class="btn-youglish-xs" title="Xem '${escapeHtml(rawExpr)}' trên YouGlish" data-youglish-word="${encodeURIComponent(rawExpr)}" data-youglish-meaning="${encodeURIComponent(sf.meaning || '')}">🎬</button>
                         ${sf.meaning ? `<span class="semantic-meaning">— ${escapeHtml(sf.meaning)}</span>` : ''}
                       </div>
                       ${sf.example_en ? `
                         <div class="semantic-example">
-                          <div class="semantic-ex-en">💬 ${renderMarkupText(sf.example_en)}</div>
+                          <div class="semantic-ex-en" style="cursor: pointer;" title="Nhấp để nghe đọc câu ví dụ này" data-speak-text="${encodeURIComponent(rawExEn)}">
+                            <span>💬 ${renderMarkupText(sf.example_en)}</span>
+                            <button type="button" class="btn-tts-sm" title="Phát âm câu ví dụ" data-speak-text="${encodeURIComponent(rawExEn)}">🔊</button>
+                          </div>
                           ${sf.example_vi ? `<div class="semantic-ex-vi">${escapeHtml(sf.example_vi)}</div>` : ''}
                         </div>
                       ` : ''}
@@ -1973,19 +2407,90 @@ export const updateMovieExpansionPopupDom = (
       targetWin.__hasExpansionGlobalListeners = true;
 
       targetWin.addEventListener('click', (e: MouseEvent) => {
+        const target = e.target as HTMLElement | null;
+        if (!target) return;
+
+        // 1. Check for TTS Speak trigger
+        const speakEl = target.closest('[data-speak-text]') as HTMLElement | null;
+        if (speakEl) {
+          e.stopPropagation();
+          const encoded = speakEl.getAttribute('data-speak-text') || '';
+          try {
+            const text = decodeURIComponent(encoded);
+            const targetBtn = speakEl.classList.contains('btn-tts') || speakEl.classList.contains('btn-tts-sm') || speakEl.classList.contains('btn-tts-xs')
+              ? speakEl
+              : (speakEl.querySelector('.btn-tts-sm, .btn-tts, .btn-tts-xs') as HTMLElement | null) || speakEl;
+            if (typeof targetWin.speakText === 'function') {
+              targetWin.speakText(text, targetBtn);
+            }
+          } catch (err) {
+            console.error('[Popup TTS] decode error:', err);
+          }
+          return;
+        }
+
+        // 2. Check for YouGlish trigger
+        const ygEl = target.closest('[data-youglish-word]') as HTMLElement | null;
+        if (ygEl) {
+          e.stopPropagation();
+          try {
+            const word = decodeURIComponent(ygEl.getAttribute('data-youglish-word') || '');
+            const ipa = decodeURIComponent(ygEl.getAttribute('data-youglish-ipa') || '');
+            const meaning = decodeURIComponent(ygEl.getAttribute('data-youglish-meaning') || '');
+            if (typeof targetWin.openYouGlish === 'function') {
+              targetWin.openYouGlish(word, ipa, meaning);
+            }
+          } catch (err) {
+            console.error('[Popup YouGlish] decode error:', err);
+          }
+          return;
+        }
+
+        // 3. Check for YouGlish Accent switch button
+        const ygAccentBtn = target.closest('[data-youglish-accent]') as HTMLElement | null;
+        if (ygAccentBtn) {
+          e.stopPropagation();
+          const accent = ygAccentBtn.getAttribute('data-youglish-accent') || 'all';
+          const encodedWord = ygAccentBtn.getAttribute('data-accent-word') || '';
+          if (typeof targetWin.setYouGlishAccent === 'function') {
+            targetWin.setYouGlishAccent(encodedWord, accent, ygAccentBtn);
+          }
+          return;
+        }
+
+        // 4. Check for YouGlish Modal close
+        const ygCloseBtn = target.closest('.youglish-close-btn, .btn-close-footer') as HTMLElement | null;
+        if (ygCloseBtn || target.id === 'popupYouGlishModal') {
+          e.stopPropagation();
+          if (typeof targetWin.closeYouGlish === 'function') {
+            targetWin.closeYouGlish();
+          }
+          return;
+        }
+
+        // 5. Help popover toggle
         const helpBtn = targetDoc.getElementById('helpBtn');
         const helpPopover = targetDoc.getElementById('helpPopover');
-        if (!helpBtn || !helpPopover) return;
-
-        if (e.target && (e.target === helpBtn || helpBtn.contains(e.target as Node))) {
-          e.stopPropagation();
-          helpPopover.classList.toggle('active');
-        } else if (!helpPopover.contains(e.target as Node)) {
-          helpPopover.classList.remove('active');
+        if (helpBtn && helpPopover) {
+          if (target === helpBtn || helpBtn.contains(target as Node)) {
+            e.stopPropagation();
+            helpPopover.classList.toggle('active');
+          } else if (!helpPopover.contains(target as Node)) {
+            helpPopover.classList.remove('active');
+          }
         }
       });
 
       targetWin.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          const youglishModal = targetDoc.getElementById('popupYouGlishModal');
+          if (youglishModal && youglishModal.classList.contains('active')) {
+            e.preventDefault();
+            if (typeof targetWin.closeYouGlish === 'function') targetWin.closeYouGlish();
+            return;
+          }
+        }
+
         // Ctrl+S / Cmd+S in form to trigger save
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
           e.preventDefault();
@@ -2033,6 +2538,190 @@ export const updateMovieExpansionPopupDom = (
   }
 
   // 4. Update function references on targetWin for button clicks
+  targetWin.speakText = (text: string, btnEl?: HTMLElement) => {
+    if (!text) return;
+    const clean = text
+      .replace(/<[^>]*>/g, '')
+      .replace(/\[[\/\w\s=-]+\]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (!clean) return;
+
+    if (targetWin.__currentTtsAudio) {
+      try { 
+        targetWin.__currentTtsAudio.pause();
+        targetWin.__currentTtsAudio = null;
+      } catch(e) {}
+    }
+
+    if (btnEl) btnEl.classList.add('speaking-pulse');
+
+    const audio = new targetWin.Audio(`/api/tts?text=${encodeURIComponent(clean)}&type=us`);
+    targetWin.__currentTtsAudio = audio;
+
+    const cleanup = () => {
+      if (btnEl) btnEl.classList.remove('speaking-pulse');
+      if (targetWin.__currentTtsAudio === audio) {
+        targetWin.__currentTtsAudio = null;
+      }
+    };
+
+    audio.onended = cleanup;
+    audio.onerror = cleanup;
+    audio.onpause = cleanup;
+
+    audio.play().catch(() => {
+      cleanup();
+    });
+  };
+
+const ensureYouGlishScript = (doc: Document, win: any): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (win.YG && win.YG.Widget) {
+      resolve();
+      return;
+    }
+    const existing = doc.getElementById('youglish-widget-script');
+    if (existing) {
+      if (win.YG && win.YG.Widget) {
+        resolve();
+      } else {
+        existing.addEventListener('load', () => resolve());
+        existing.addEventListener('error', reject);
+      }
+      return;
+    }
+    const script = doc.createElement('script');
+    script.id = 'youglish-widget-script';
+    script.src = 'https://youglish.com/public/emb/widget.js';
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = reject;
+    doc.head.appendChild(script);
+  });
+};
+
+  targetWin.openYouGlish = (word: string, ipa?: string, meaning?: string) => {
+    if (!word) return;
+    const cleanWord = word.replace(/<[^>]*>/g, '').replace(/[()\[\]]/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!cleanWord) return;
+
+    let modal = targetDoc.getElementById('popupYouGlishModal');
+    if (!modal) {
+      modal = targetDoc.createElement('div');
+      modal.id = 'popupYouGlishModal';
+      modal.className = 'youglish-modal-overlay';
+      targetDoc.body.appendChild(modal);
+    }
+
+    modal.innerHTML = `
+      <div class="youglish-modal-card">
+        <div class="youglish-modal-header">
+          <div class="youglish-modal-title">
+            <span class="youglish-logo">🎬 YouGlish</span>
+            <strong class="youglish-word">${escapeHtml(cleanWord)}</strong>
+            ${ipa ? `<span class="youglish-ipa">${escapeHtml(ipa)}</span>` : ''}
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <a 
+              href="https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english/all/cptc=1" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="btn-open-yg-web"
+              title="Mở trên trang web YouGlish.com"
+            >↗ YouGlish.com</a>
+            <button type="button" class="youglish-close-btn" title="Đóng [ESC]">✕</button>
+          </div>
+        </div>
+        <div class="youglish-widget-wrap">
+          <div id="popupYgWidgetContainer" style="width: 100%; display: flex; justify-content: center;">
+            <div style="padding: 2.5rem; text-align: center; color: #64748b; font-size: 13px;">
+              <div class="speaking-pulse" style="display: inline-block; font-size: 24px; margin-bottom: 8px;">🎬</div>
+              <div>Đang tải video YouGlish cho "<strong>${escapeHtml(cleanWord)}</strong>"...</div>
+            </div>
+          </div>
+        </div>
+        <div class="youglish-modal-footer">
+          <div class="youglish-accent-group">
+            <button type="button" class="btn-accent active" data-youglish-accent="all" data-accent-word="${encodeURIComponent(cleanWord)}">🌐 Tất cả</button>
+            <button type="button" class="btn-accent" data-youglish-accent="us" data-accent-word="${encodeURIComponent(cleanWord)}">🇺🇸 US (Mỹ)</button>
+            <button type="button" class="btn-accent" data-youglish-accent="uk" data-accent-word="${encodeURIComponent(cleanWord)}">🇬🇧 UK (Anh)</button>
+            <button type="button" class="btn-accent" data-youglish-accent="aus" data-accent-word="${encodeURIComponent(cleanWord)}">🇦🇺 AUS (Úc)</button>
+          </div>
+          <button type="button" class="btn-close-footer">Đóng ✕</button>
+        </div>
+      </div>
+    `;
+    modal.classList.add('active');
+
+    // Clean up previous widget
+    if (targetWin.__currentYgWidget && typeof targetWin.__currentYgWidget.pause === 'function') {
+      try { targetWin.__currentYgWidget.pause(); } catch(e) {}
+    }
+    targetWin.__currentYgWidget = null;
+    targetWin.__currentYgWord = cleanWord;
+
+    ensureYouGlishScript(targetDoc, targetWin).then(() => {
+      const widgetContainer = targetDoc.getElementById('popupYgWidgetContainer');
+      if (!widgetContainer) return;
+      const widgetInnerId = `yg-widget-${Date.now()}`;
+      widgetContainer.innerHTML = `<div id="${widgetInnerId}"></div>`;
+
+      const calcWidth = Math.min(580, (targetWin.innerWidth || 600) - 48);
+      if (targetWin.YG && targetWin.YG.Widget) {
+        const widget = new targetWin.YG.Widget(widgetInnerId, {
+          width: calcWidth,
+          components: 255,
+          autoStart: 1,
+          backgroundColor: "#ffffff",
+          markerColor: "#fde047",
+          captionColor: "#1e293b",
+          captionSize: 24,
+          events: {
+            onError: (event: any) => console.warn('[YouGlish popup] error:', event)
+          }
+        });
+        targetWin.__currentYgWidget = widget;
+        widget.fetch(cleanWord, 'english', undefined);
+      }
+    }).catch((err) => {
+      console.error('Failed to load YouGlish widget script:', err);
+      const widgetContainer = targetDoc.getElementById('popupYgWidgetContainer');
+      if (widgetContainer) {
+        widgetContainer.innerHTML = `
+          <div style="padding: 2rem; text-align: center; color: #64748b;">
+            <p style="font-weight: bold; margin-bottom: 0.5rem; color: #e11d48;">Không thể tải video nhúng trực tiếp</p>
+            <a href="https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english/all/cptc=1" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-weight: 700; font-size: 0.875rem;">
+              Bấm vào đây để mở xem trên YouGlish.com &rarr;
+            </a>
+          </div>
+        `;
+      }
+    });
+  };
+
+  targetWin.closeYouGlish = () => {
+    if (targetWin.__currentYgWidget && typeof targetWin.__currentYgWidget.pause === 'function') {
+      try { targetWin.__currentYgWidget.pause(); } catch(e) {}
+    }
+    targetWin.__currentYgWidget = null;
+    const modal = targetDoc.getElementById('popupYouGlishModal');
+    if (modal) {
+      modal.classList.remove('active');
+      modal.innerHTML = '';
+    }
+  };
+
+  targetWin.setYouGlishAccent = (encodedWord: string, accent: string, btn?: HTMLElement) => {
+    const cleanWord = (encodedWord ? decodeURIComponent(encodedWord) : '') || targetWin.__currentYgWord;
+    if (targetWin.__currentYgWidget && typeof targetWin.__currentYgWidget.fetch === 'function' && cleanWord) {
+      targetWin.__currentYgWidget.fetch(cleanWord, 'english', accent === 'all' ? undefined : accent);
+    }
+    const btns = targetDoc.querySelectorAll('.btn-accent');
+    btns.forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+
   targetWin.enterEditMode = () => callbacks.onSetEditMode(true, null, false);
   targetWin.cancelEditMode = () => callbacks.onSetEditMode(false, null, false);
   targetWin.toggleJsonMode = () => {
