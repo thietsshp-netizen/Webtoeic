@@ -1813,47 +1813,49 @@ function HomeContent() {
                   )}
 
                   {dashTab === "vocab" && (
-                    <div className="space-y-6 sm:space-y-12">
-                      <div className="bg-white border border-slate-100 rounded-2xl sm:rounded-[3rem] shadow-[0_10px_40px_rgba(0,0,0,0.02)] p-4 sm:p-10 animate-in fade-in zoom-in duration-500">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 mb-5 sm:mb-10">
-                          <div>
-                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 opacity-70">NGÀY 0</div>
-                            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2 sm:gap-3 flex-wrap">
-                              <span id="vocab-title-target">Sổ tay từ vựng</span>
-                              <button
-                                onClick={() => {
-                                  setShowVocabGuide(true);
-                                  setHasClosedVocabGuide(false);
-                                }}
-                                className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg sm:rounded-xl font-bold text-[8px] sm:text-[10px] uppercase tracking-wider transition-all shadow-sm"
-                                title="Xem cơ chế 5 rổ từ vựng Leitner"
-                              >
-                                <HelpCircle size={10} />
-                                Cơ chế 5 rổ từ vựng
-                              </button>
-
-                              <button
-                                onClick={() => {
-                                  startVocabTour();
-                                }}
-                                id="vocab-guide-btn"
-                                className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg sm:rounded-xl font-bold text-[8px] sm:text-[10px] uppercase tracking-wider transition-all shadow-sm"
-                                title="Khởi động Tour hướng dẫn"
-                              >
-                                <Compass size={10} className="animate-pulse" />
-                                Hướng dẫn nhanh
-                              </button>
+                    <div className="space-y-3 sm:space-y-6">
+                      <div className="bg-white border border-slate-100 rounded-2xl sm:rounded-[3rem] shadow-[0_10px_40px_rgba(0,0,0,0.02)] p-2.5 sm:p-8 animate-in fade-in zoom-in duration-500">
+                        {/* Header Row 1: Title, Guides, Filter Scope */}
+                        <div className="flex items-center justify-between gap-2 mb-2 sm:mb-4">
+                          <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+                            <span className="text-[9px] sm:text-xs text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-md font-black uppercase tracking-wider flex-shrink-0">
+                              NGÀY 0
+                            </span>
+                            <h2 className="text-xs sm:text-lg font-black text-slate-800 truncate" id="vocab-title-target">
+                              Sổ tay từ vựng
                             </h2>
+                            <button
+                              onClick={() => {
+                                setShowVocabGuide(true);
+                                setHasClosedVocabGuide(false);
+                              }}
+                              className="inline-flex items-center gap-1 px-1.5 py-0.5 sm:px-2 sm:py-0.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg font-bold text-[8px] sm:text-[10px] uppercase tracking-wider transition-all shadow-sm flex-shrink-0"
+                              title="Xem cơ chế 5 rổ từ vựng Leitner"
+                            >
+                              <HelpCircle size={10} />
+                              <span className="hidden sm:inline">Cơ chế 5 rổ</span>
+                            </button>
+                            <button
+                              onClick={() => {
+                                startVocabTour();
+                              }}
+                              id="vocab-guide-btn"
+                              className="inline-flex items-center gap-1 px-1.5 py-0.5 sm:px-2 sm:py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg font-bold text-[8px] sm:text-[10px] uppercase tracking-wider transition-all shadow-sm flex-shrink-0"
+                              title="Khởi động Tour hướng dẫn"
+                            >
+                              <Compass size={10} className="animate-pulse" />
+                              <span className="hidden sm:inline">Hướng dẫn nhanh</span>
+                            </button>
                           </div>
 
-                          {/* Filter Tabs (Like Course Player) */}
-                          <div id="vocab-filters-target" className="flex gap-0.5 sm:gap-1 bg-slate-50 p-0.5 sm:p-1 rounded-xl sm:rounded-2xl border border-slate-100 overflow-x-auto scrollbar-hide whitespace-nowrap">
+                          {/* Filter Tabs (Compact like Course Player) */}
+                          <div id="vocab-filters-target" className="flex items-center bg-slate-100 rounded-lg sm:rounded-xl p-0.5 border border-slate-200/50 flex-shrink-0">
                             <button
                               id="vocab-filter-all-btn"
                               onClick={() => setVocabFilter("all")}
                               className={clsx(
-                                "px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all",
-                                vocabFilter === "all" ? "bg-white shadow-sm text-blue-600" : "text-slate-400 hover:text-slate-500"
+                                "px-1.5 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-black transition-all",
+                                vocabFilter === "all" ? "bg-white shadow-sm text-blue-600" : "text-slate-500 hover:text-slate-700"
                               )}
                             >
                               TẤT CẢ ({deckFilteredVocab.length})
@@ -1862,18 +1864,19 @@ function HomeContent() {
                               id="vocab-filter-unlearned-btn"
                               onClick={() => setVocabFilter("unlearned")}
                               className={clsx(
-                                "px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all",
-                                vocabFilter === "unlearned" ? "bg-white shadow-sm text-rose-500" : "text-slate-400 hover:text-slate-500"
+                                "px-1.5 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-black transition-all flex items-center gap-1",
+                                vocabFilter === "unlearned" ? "bg-white shadow-sm text-rose-500" : "text-slate-500 hover:text-slate-700"
                               )}
                             >
+                              <BookOpen size={9} className={vocabFilter === "unlearned" ? "text-rose-500" : "text-slate-400"} fill={vocabFilter === "unlearned" ? "currentColor" : "none"} />
                               CHƯA THUỘC ({deckFilteredVocab.filter(v => v.isUnlearned).length})
                             </button>
                             <button
                               id="vocab-filter-review-btn"
                               onClick={() => setVocabFilter("review")}
                               className={clsx(
-                                "px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest transition-all",
-                                vocabFilter === "review" ? "bg-white shadow-sm text-amber-500" : "text-slate-400 hover:text-slate-500"
+                                "hidden md:inline-block px-1.5 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-black transition-all",
+                                vocabFilter === "review" ? "bg-white shadow-sm text-amber-500" : "text-slate-500 hover:text-slate-700"
                               )}
                             >
                               CẦN ÔN TẬP ({deckFilteredVocab.filter(v => !v.nextReviewDate || new Date(v.nextReviewDate) <= new Date()).length})
@@ -1881,8 +1884,8 @@ function HomeContent() {
                           </div>
                         </div>
 
-                        {/* Sub-navigation for Vocab Modes (Horizontal scrollable style) */}
-                        <div className="flex gap-1 overflow-x-auto scrollbar-hide bg-slate-50/80 p-1.5 rounded-2xl border border-slate-100/50 mb-5 sm:mb-12 whitespace-nowrap items-center">
+                        {/* Row 2: Sub-navigation for Vocab Modes (Horizontal scrollable style) */}
+                        <div className="flex gap-1 overflow-x-auto scrollbar-hide items-center py-0.5 mb-2 sm:mb-4">
                           {/* Nút Thư viện & Chọn bộ thẻ gộp làm một */}
                           <select
                             value={selectedDeckId || ""}
@@ -1898,15 +1901,15 @@ function HomeContent() {
                               }
                             }}
                             className={clsx(
-                              "text-[10px] font-black uppercase tracking-widest px-5 py-2.5 rounded-xl border-none outline-none cursor-pointer transition-all duration-300 appearance-none bg-no-repeat pr-8",
+                              "text-[10px] sm:text-xs font-black uppercase tracking-wider px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-lg sm:rounded-xl border-none outline-none cursor-pointer transition-all duration-300 appearance-none bg-no-repeat pr-6 sm:pr-7 flex-shrink-0",
                               vocabMode === "library"
-                                ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
-                                : "text-slate-400 hover:text-slate-700 hover:bg-white bg-slate-100/80"
+                                ? "bg-blue-600 text-white shadow-md shadow-blue-200"
+                                : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 bg-slate-100"
                             )}
                             style={{
                               backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='${vocabMode === "library" ? "%23ffffff" : "%2364748b"}' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E")`,
-                              backgroundPosition: 'right 0.5rem center',
-                              backgroundSize: '1.25em 1.25em'
+                              backgroundPosition: 'right 0.35rem center',
+                              backgroundSize: '1.1em 1.1em'
                             }}
                           >
                             <option value="" className="text-slate-800 bg-white">📚 Bộ từ vựng tổng ({myVocab.length})</option>
@@ -1919,7 +1922,7 @@ function HomeContent() {
                           </select>
 
                           {/* Dải 4 trò chơi còn lại */}
-                          <div id="vocab-games-target" className="flex gap-1 whitespace-nowrap items-center">
+                          <div id="vocab-games-target" className="flex gap-1 whitespace-nowrap items-center flex-shrink-0">
                             {[
                               { id: "scramble", label: "Xếp chữ", icon: Shuffle },
                               { id: "fill", label: "Điền từ", icon: PenLine },
@@ -1933,13 +1936,13 @@ function HomeContent() {
                                   key={mode.id}
                                   onClick={() => setVocabMode(mode.id)}
                                   className={clsx(
-                                    "flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap",
+                                    "flex items-center gap-1 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black whitespace-nowrap transition-all flex-shrink-0",
                                     isActive
-                                      ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
-                                      : "text-slate-400 hover:text-slate-700 hover:bg-white"
+                                      ? "bg-blue-600 text-white shadow-md shadow-blue-200"
+                                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                                   )}
                                 >
-                                  <Icon size={14} fill={isActive ? "currentColor" : "none"} />
+                                  <Icon size={12} fill={isActive ? "currentColor" : "none"} />
                                   {mode.label}
                                 </button>
                               );
@@ -1963,28 +1966,28 @@ function HomeContent() {
                               ) : (
                                 <div className="w-full">
                                   {/* Mode Switcher Bar (Từng thẻ vs Toàn bộ) */}
-                                  <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+                                  <div className="flex items-center justify-between gap-2 mb-2 sm:mb-4">
                                     <div className="flex bg-slate-100/90 p-0.5 rounded-lg border border-slate-200/60">
                                       <button
                                         onClick={() => setDashViewMode("single")}
-                                        className={`flex items-center gap-1 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-md text-[10px] sm:text-xs font-black transition-all ${
+                                        className={`flex items-center gap-1 px-2 py-0.5 sm:px-3.5 sm:py-1.5 rounded-md text-[9px] sm:text-xs font-black transition-all ${
                                           dashViewMode === "single"
                                             ? "bg-white text-blue-600 shadow-sm"
                                             : "text-slate-500 hover:text-slate-800"
                                         }`}
                                       >
-                                        <Layers size={12} />
+                                        <Layers size={11} />
                                         Từng thẻ
                                       </button>
                                       <button
                                         onClick={() => setDashViewMode("all")}
-                                        className={`flex items-center gap-1 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-md text-[10px] sm:text-xs font-black transition-all ${
+                                        className={`flex items-center gap-1 px-2 py-0.5 sm:px-3.5 sm:py-1.5 rounded-md text-[9px] sm:text-xs font-black transition-all ${
                                           dashViewMode === "all"
                                             ? "bg-white text-blue-600 shadow-sm"
                                             : "text-slate-500 hover:text-slate-800"
                                         }`}
                                       >
-                                        <LayoutGrid size={12} />
+                                        <LayoutGrid size={11} />
                                         Toàn bộ ({filteredVocab.length})
                                       </button>
                                     </div>
@@ -1994,14 +1997,14 @@ function HomeContent() {
                                       <button
                                         onClick={() => setGlobalFlip(prev => prev === "back" ? "front" : "back")}
                                         id="vocab-global-flip-target"
-                                        className="px-2.5 py-1 sm:px-3.5 sm:py-1.5 bg-white border border-slate-200 text-slate-700 font-bold text-[10px] sm:text-xs rounded-lg hover:bg-slate-50 transition-all shadow-sm flex items-center gap-1.5"
+                                        className="px-2 py-0.5 sm:px-3.5 sm:py-1.5 bg-white border border-slate-200 text-slate-700 font-bold text-[9px] sm:text-xs rounded-lg hover:bg-slate-50 transition-all shadow-sm flex items-center gap-1"
                                       >
-                                        <RotateCcw size={11} className="text-blue-500" />
+                                        <RotateCcw size={10} className="text-blue-500" />
                                         {globalFlip === "back" ? "Mặt trước" : "Lật mặt sau"}
                                       </button>
                                     ) : (
-                                      <div className="flex items-center gap-1.5">
-                                        <span className="bg-blue-50 text-blue-600 text-[10px] sm:text-xs px-2.5 py-1 rounded-lg border border-blue-100 font-black tracking-wide">
+                                      <div className="flex items-center gap-1">
+                                        <span className="bg-blue-50 text-blue-600 text-[9px] sm:text-xs px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-blue-100 font-black tracking-wide">
                                           Thẻ {safeDashCardIndex + 1} / {filteredVocab.length}
                                         </span>
                                       </div>
@@ -2011,12 +2014,12 @@ function HomeContent() {
                                   {dashViewMode === "single" ? (
                                     /* Single Card View */
                                     <div
-                                      className="max-w-xl mx-auto flex flex-col items-center w-full px-1 sm:px-0"
+                                      className="max-w-xl mx-auto flex flex-col items-center w-full px-0"
                                       onTouchStart={handleDashTouchStart}
                                       onTouchEnd={handleDashTouchEnd}
                                     >
                                       {/* Progress Bar */}
-                                      <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden mb-2.5 sm:mb-3 border border-slate-200/50">
+                                      <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden mb-2 sm:mb-3 border border-slate-200/50">
                                         <div
                                           className="bg-blue-600 h-full rounded-full transition-all duration-300 ease-out"
                                           style={{ width: `${((safeDashCardIndex + 1) / Math.max(1, filteredVocab.length)) * 100}%` }}
@@ -2039,11 +2042,11 @@ function HomeContent() {
                                       </div>
 
                                       {/* Navigation Controls */}
-                                      <div className="flex items-center justify-between w-full mt-3.5 sm:mt-5 gap-2 sm:gap-3">
+                                      <div className="flex items-center justify-between w-full mt-2.5 sm:mt-5 gap-2 sm:gap-3">
                                         <button
                                           onClick={() => setDashCardIndex(prev => Math.max(0, prev - 1))}
                                           disabled={safeDashCardIndex === 0}
-                                          className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-6 py-2.5 sm:py-3.5 bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-700 font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                                          className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-6 py-2 sm:py-3.5 bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-700 font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none active:scale-95"
                                           title="Thẻ trước (phím ←)"
                                         >
                                           <ChevronLeft size={16} />
@@ -2052,7 +2055,7 @@ function HomeContent() {
 
                                         <button
                                           onClick={() => setDashFlipTrigger(prev => prev + 1)}
-                                          className="flex-[1.3] sm:flex-1 flex items-center justify-center gap-1.5 px-4 sm:px-6 py-2.5 sm:py-3.5 bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-sm transition-all active:scale-95"
+                                          className="flex-[1.3] sm:flex-1 flex items-center justify-center gap-1.5 px-3 sm:px-6 py-2 sm:py-3.5 bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-sm transition-all active:scale-95"
                                           title="Lật thẻ (phím Space)"
                                         >
                                           <RotateCcw size={14} />
@@ -2062,7 +2065,7 @@ function HomeContent() {
                                         <button
                                           onClick={() => setDashCardIndex(prev => Math.min(filteredVocab.length - 1, prev + 1))}
                                           disabled={safeDashCardIndex === filteredVocab.length - 1}
-                                          className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-6 py-2.5 sm:py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-md shadow-blue-200 transition-all disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                                          className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-6 py-2 sm:py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-md shadow-blue-200 transition-all disabled:opacity-30 disabled:pointer-events-none active:scale-95"
                                           title="Thẻ tiếp theo (phím →)"
                                         >
                                           <span>Tiếp</span>
@@ -2072,7 +2075,7 @@ function HomeContent() {
                                     </div>
                                   ) : (
                                     /* All Cards Grid View */
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                                       {filteredVocab.map((vocab, idx) => (
                                         <DashVocabCard
                                           key={vocab.id}
@@ -2360,6 +2363,10 @@ function getWordFontSize(word: string): string {
   return "text-3xl break-words";
 }
 
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, "");
+}
+
 function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpenYouGlish }: any) {
   const [flipped, setFlipped] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -2416,27 +2423,27 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
 
   return (
     <div
-      className={`relative h-[480px] cursor-pointer group/card ${index === 0 ? "vocab-card-first" : ""}`}
+      className={`relative h-[390px] xs:h-[430px] sm:h-[480px] w-full cursor-pointer group/card select-none ${index === 0 ? "vocab-card-first" : ""}`}
       style={{ perspective: "1000px" }}
       onClick={() => { setFlipped(!flipped); speak(vocab.word); }}
     >
       {/* Stationary BookOpen toggle (Unlearned status) - Left */}
-      <div className="absolute top-3 left-3 z-[60]" onClick={(e) => e.stopPropagation()}>
+      <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 z-[60]" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={toggleUnlearned}
           className={`p-1.5 rounded-lg transition-all vocab-unlearned-toggle-btn ${vocab.isUnlearned ? "text-rose-500 bg-rose-50 scale-105 shadow-sm ring-1 ring-rose-100" : "text-slate-200 hover:text-rose-400 hover:bg-slate-50"}`}
         >
-          <BookOpen size={16} fill={vocab.isUnlearned ? "currentColor" : "none"} />
+          <BookOpen size={15} fill={vocab.isUnlearned ? "currentColor" : "none"} />
         </button>
       </div>
 
       {/* Stationary Star/Deck toggle - Right */}
-      <div className="absolute top-3 right-3 z-[60]" onClick={(e) => e.stopPropagation()}>
+      <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 z-[60]" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={() => setShowDeckSelector(!showDeckSelector)}
           className={`p-1.5 rounded-lg transition-all text-amber-400 bg-amber-50 scale-105 shadow-sm ring-1 ring-amber-100 vocab-star-toggle-btn`}
         >
-          <Star size={16} fill="currentColor" />
+          <Star size={15} fill="currentColor" />
         </button>
         <AnimatePresence>
           {showDeckSelector && (
@@ -2480,19 +2487,19 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
         style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "rotateY(0)" }}
       >
         {/* Front */}
-        <div className="absolute inset-0 bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-100 p-8 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all overflow-hidden">
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-slate-50 rounded-full text-[8px] text-slate-400 font-black tracking-widest border border-slate-100 shadow-sm">
+        <div className="absolute inset-0 bg-white rounded-3xl sm:rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-100 p-4 sm:p-8 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all overflow-hidden">
+          <div className="absolute top-2.5 sm:top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-slate-50 rounded-full text-[8px] text-slate-400 font-black tracking-widest border border-slate-100 shadow-sm">
             #{index + 1}
           </div>
 
-          <div className="mt-4 sm:mt-6 mb-1 flex flex-col items-center justify-center text-center">
-            <div className={`font-black text-blue-600 mb-0.5 flex items-center justify-center gap-2 sm:gap-3 flex-wrap ${getWordFontSize(vocab.word)}`}>
+          <div className="mt-2 sm:mt-5 mb-1 flex flex-col items-center justify-center text-center">
+            <div className={`font-black text-blue-600 mb-0.5 flex items-center justify-center gap-1.5 sm:gap-3 flex-wrap ${getWordFontSize(vocab.word)}`}>
               <span>{vocab.word}</span>
               <button onClick={(e) => { e.stopPropagation(); speak(vocab.word); }} className="p-1 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0" title="Nghe phát âm">
-                <Volume2 size={20} className="text-blue-400 hover:text-blue-600" />
+                <Volume2 size={18} className="text-blue-400 hover:text-blue-600 sm:w-5 sm:h-5" />
               </button>
             </div>
-            <div className="text-orange-400 font-bold italic text-xs sm:text-sm mb-1.5 text-center">
+            <div className="text-orange-400 font-bold italic text-xs sm:text-sm mb-1 text-center">
               /{vocab.ipa?.replace(/\//g, '')}/
             </div>
           </div>
@@ -2537,14 +2544,26 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
             </div>
           )}
 
-          <div className="flex-1 overflow-y-auto pr-1 text-left scrollbar-hide">
+          <div className="flex-1 overflow-y-auto pr-1 text-left scrollbar-hide py-1">
             {vocab.example ? (
-              <div 
-                className="text-slate-600 text-[15px] leading-relaxed font-medium break-words"
-                dangerouslySetInnerHTML={{ __html: vocab.example }}
-              />
+              <div className="flex items-start gap-2 bg-slate-50/60 p-2.5 sm:p-3 rounded-2xl border border-slate-100">
+                <div 
+                  className="text-slate-600 text-xs sm:text-[14px] leading-relaxed font-medium break-words flex-1"
+                  dangerouslySetInnerHTML={{ __html: vocab.example }}
+                />
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    speak(stripHtml(vocab.example));
+                  }}
+                  className="p-1 hover:bg-blue-50 rounded-lg text-blue-400 hover:text-blue-600 transition-colors flex-shrink-0"
+                  title="Nghe đọc câu ví dụ"
+                >
+                  <Volume2 size={16} />
+                </button>
+              </div>
             ) : (
-              <div className="text-slate-600 text-[15px] leading-relaxed font-medium break-words">---</div>
+              <div className="text-slate-400 text-xs sm:text-sm text-center py-2">---</div>
             )}
           </div>
 
@@ -2583,18 +2602,18 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
 
         {/* Back */}
         <div
-          className="absolute inset-0 bg-indigo-50 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-4 border-indigo-200 p-8 flex flex-col text-left overflow-hidden"
+          className="absolute inset-0 bg-indigo-50 rounded-3xl sm:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-4 border-indigo-200 p-4 sm:p-8 flex flex-col text-left overflow-hidden"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-white/80 rounded-full text-[8px] text-slate-400 font-black tracking-widest border border-blue-100/50 shadow-sm">
+          <div className="absolute top-2.5 sm:top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-white/80 rounded-full text-[8px] text-slate-400 font-black tracking-widest border border-blue-100/50 shadow-sm">
             #{index + 1}
           </div>
 
-          <div className="mt-4 sm:mt-6 mb-1.5 flex flex-col items-center justify-center text-center">
-            <div className={`font-black text-blue-600 mb-0.5 flex items-center justify-center gap-2 sm:gap-3 flex-wrap ${getWordFontSize(vocab.word)}`}>
+          <div className="mt-2 sm:mt-5 mb-1 flex flex-col items-center justify-center text-center">
+            <div className={`font-black text-blue-600 mb-0.5 flex items-center justify-center gap-1.5 sm:gap-3 flex-wrap ${getWordFontSize(vocab.word)}`}>
               <span>{vocab.word}</span>
               <button onClick={(e) => { e.stopPropagation(); speak(vocab.word); }} className="p-1 hover:bg-indigo-100/60 rounded-lg transition-colors flex-shrink-0" title="Nghe phát âm">
-                <Volume2 size={20} className="text-blue-400 hover:text-blue-600" />
+                <Volume2 size={18} className="text-blue-400 hover:text-blue-600 sm:w-5 sm:h-5" />
               </button>
             </div>
             <div className="text-red-500 font-black text-sm sm:text-base tracking-tight leading-tight break-words text-center">{limitMeanings(vocab.definition || vocab.translation)}</div>
@@ -2643,14 +2662,26 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
           <div className="space-y-4 text-[15px] flex-1 overflow-y-auto pr-2 scrollbar-hide">
             <div className="flex flex-col gap-2">
               {vocab.example && (
-                <div 
-                  className="text-slate-700 leading-relaxed font-medium bg-white/40 p-4 rounded-2xl border border-white/60 shadow-sm break-words"
-                  dangerouslySetInnerHTML={{ __html: vocab.example }}
-                />
+                <div className="flex items-start justify-between gap-2 bg-white/40 p-2.5 sm:p-3 rounded-2xl border border-white/60 shadow-sm">
+                  <div 
+                    className="text-slate-700 leading-relaxed font-medium break-words flex-1 text-xs sm:text-[13px]"
+                    dangerouslySetInnerHTML={{ __html: vocab.example }}
+                  />
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      speak(stripHtml(vocab.example));
+                    }}
+                    className="p-1 hover:bg-white rounded-lg text-blue-400 hover:text-blue-600 transition-colors flex-shrink-0"
+                    title="Nghe đọc câu ví dụ"
+                  >
+                    <Volume2 size={15} />
+                  </button>
+                </div>
               )}
               {vocab.exampleTranslation && (
                 <div 
-                  className="text-slate-500 italic leading-relaxed pl-4 border-l-2 border-blue-200 py-1 bg-slate-50/50 rounded-r-xl pr-3 break-words"
+                  className="text-slate-500 italic leading-relaxed pl-3 border-l-2 border-blue-200 py-1 bg-slate-50/50 rounded-r-xl pr-3 text-xs sm:text-[13px] break-words"
                   dangerouslySetInnerHTML={{ __html: vocab.exampleTranslation }}
                 />
               )}
