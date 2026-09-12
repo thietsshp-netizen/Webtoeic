@@ -120,6 +120,20 @@ export default function FeatureVideoShowcase() {
   // Touch swipe support
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
+  const playlistScrollRef = useRef<HTMLDivElement>(null);
+
+  // Tự động cuộn tab video đang chọn vào giữa màn hình khi chuyển video
+  useEffect(() => {
+    if (!playlistScrollRef.current) return;
+    const activeEl = playlistScrollRef.current.querySelector<HTMLElement>(`[data-video-idx="${activeIndex}"]`);
+    if (activeEl) {
+      activeEl.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+  }, [activeIndex]);
 
   // Fetch danh sách video từ API
   useEffect(() => {
@@ -366,11 +380,11 @@ export default function FeatureVideoShowcase() {
       </div>
 
       {/* Single-Column Showcase Card */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] p-1.5 sm:p-6 md:p-8 border border-slate-200/80 shadow-[0_20px_50px_rgba(15,23,42,0.06)] flex flex-col gap-3 sm:gap-6">
+      <div className="bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] p-1.5 sm:p-6 md:p-8 border border-slate-200/80 shadow-[0_20px_50px_rgba(15,23,42,0.06)] flex flex-col gap-3 sm:gap-6 text-left">
 
         {/* 1. Main Cinema Video Player */}
         <div
-          className="relative aspect-video rounded-xl sm:rounded-[2rem] md:rounded-[2.25rem] overflow-hidden bg-slate-950 border border-slate-900 sm:border-4 shadow-2xl group select-none flex-shrink-0 w-full"
+          className="relative aspect-video rounded-xl sm:rounded-2xl md:rounded-[1.75rem] overflow-hidden bg-slate-900 border border-slate-200/90 shadow-md sm:shadow-xl group select-none flex-shrink-0 w-full"
           onMouseEnter={() => triggerControlsTemporarily()}
           onMouseMove={() => triggerControlsTemporarily()}
           onMouseLeave={() => {
@@ -391,7 +405,7 @@ export default function FeatureVideoShowcase() {
             playsInline
             preload="auto"
             crossOrigin="anonymous"
-            className="w-full h-full object-contain cursor-pointer"
+            className="w-full h-full object-cover cursor-pointer"
             onClick={togglePlay}
             onTimeUpdate={() => {
               if (videoRef.current) {
@@ -436,7 +450,7 @@ export default function FeatureVideoShowcase() {
                       className="absolute -inset-3 sm:-inset-4 rounded-full blur-xl opacity-75 group-hover/btn:opacity-100 transition duration-500"
                       style={{ backgroundColor: currentTheme.glow }}
                     />
-                    <div className="relative w-12 h-12 sm:w-20 sm:h-20 bg-white text-slate-900 rounded-full flex items-center justify-center shadow-2xl transform group-hover/btn:scale-110 active:scale-95 transition-all duration-300">
+                    <div className="relative w-12 h-12 sm:w-18 sm:h-18 bg-white text-slate-900 rounded-full flex items-center justify-center shadow-xl transform group-hover/btn:scale-110 active:scale-95 transition-all duration-300">
                       <Play size={20} className="ml-0.5 sm:ml-1 fill-slate-900 text-slate-900 sm:w-6 sm:h-6" />
                     </div>
                   </div>
@@ -447,7 +461,7 @@ export default function FeatureVideoShowcase() {
 
           {/* Top Bar Header on Video */}
           <div
-            className={`absolute top-0 left-0 right-0 p-2 sm:p-4 bg-gradient-to-b from-black/70 via-black/20 to-transparent flex items-center justify-between text-white pointer-events-none transition-opacity duration-300 ${
+            className={`absolute top-0 left-0 right-0 p-2 sm:p-3.5 bg-gradient-to-b from-black/60 via-black/15 to-transparent flex items-center justify-between text-white pointer-events-none transition-opacity duration-300 ${
               showControls || !isPlaying ? "opacity-100" : "opacity-0"
             }`}
           >
@@ -464,7 +478,7 @@ export default function FeatureVideoShowcase() {
 
           {/* Custom Control Bar (Bottom) - Sleek, Thin & Auto-hiding */}
           <div
-            className={`absolute bottom-0 left-0 right-0 pt-6 pb-1 sm:pb-3 px-2 sm:px-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-opacity duration-300 ${
+            className={`absolute bottom-0 left-0 right-0 pt-6 pb-1.5 sm:pb-2.5 px-2 sm:px-3.5 bg-gradient-to-t from-black/75 via-black/35 to-transparent transition-opacity duration-300 ${
               showControls || !isPlaying ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
             }`}
           >
@@ -549,21 +563,45 @@ export default function FeatureVideoShowcase() {
           </div>
         </div>
 
-        {/* 2. Compact Navigation Bar (Placed DIRECTLY under video) */}
-        <div className="flex items-center justify-between gap-2 p-2 sm:p-3 bg-slate-50/90 rounded-2xl sm:rounded-[1.75rem] border border-slate-100">
+        {/* 2. Feature Playlist / Horizontal Scroll Rail (Thước ngang) */}
+        <div className="bg-slate-900/5 backdrop-blur-md rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 border border-slate-200/80 shadow-inner">
+          {/* Header Row: Label & Count on left, Quick Prev / Next on right */}
+          <div className="flex items-center justify-between gap-2 mb-2 px-1">
+            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping shrink-0" />
+              <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-700 truncate">
+                Chọn video tính năng <span className="text-slate-400 font-normal">({videos.length})</span>:
+              </span>
+            </div>
 
-          {/* Nút Video Trước */}
-          <button
-            onClick={() => handleSelectVideo((activeIndex - 1 + videos.length) % videos.length)}
-            className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-white text-slate-700 hover:text-blue-600 rounded-xl text-xs sm:text-sm font-bold shadow-sm hover:shadow transition-all active:scale-95 flex-shrink-0"
+            {/* Quick Prev / Next navigation buttons */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                onClick={() => handleSelectVideo((activeIndex - 1 + videos.length) % videos.length)}
+                className="flex items-center gap-1 px-2.5 sm:px-3 py-1 bg-white hover:bg-slate-100 text-slate-700 hover:text-blue-600 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold border border-slate-200 shadow-sm transition-all active:scale-95"
+                title="Xem video trước"
+              >
+                <ChevronLeft size={14} />
+                <span className="hidden sm:inline">Trước</span>
+              </button>
+
+              <button
+                onClick={() => handleSelectVideo((activeIndex + 1) % videos.length)}
+                className="flex items-center gap-1 px-2.5 sm:px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold shadow-sm shadow-blue-500/20 transition-all active:scale-95"
+                title="Xem video kế tiếp"
+              >
+                <span className="hidden sm:inline">Tiếp</span>
+                <ChevronRight size={14} />
+              </button>
+            </div>
+          </div>
+
+          {/* Horizontal Scroll Rail / Thước ngang vuốt mượt mà trên mobile & desktop */}
+          <div
+            ref={playlistScrollRef}
+            className="flex items-stretch gap-2 sm:gap-2.5 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory py-1 px-0.5 touch-pan-x"
+            style={{ WebkitOverflowScrolling: "touch" }}
           >
-            <ChevronLeft size={16} />
-            <span className="hidden sm:inline">Video trước</span>
-            <span className="sm:hidden">Trước</span>
-          </button>
-
-          {/* Quick Select Buttons / Pills */}
-          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1 px-1">
             {videos.map((vid, idx) => {
               const isActive = idx === activeIndex;
               const cardTheme = COLOR_MAP[vid.color || "blue"] || COLOR_MAP.blue;
@@ -571,67 +609,128 @@ export default function FeatureVideoShowcase() {
               return (
                 <button
                   key={vid.id || idx}
+                  data-video-idx={idx}
                   onClick={() => handleSelectVideo(idx)}
-                  className={`flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap active:scale-95 ${isActive
-                      ? `${cardTheme.bg} text-white shadow-md shadow-blue-500/20`
-                      : "bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/60"
-                    }`}
+                  className={`group relative flex items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl text-left transition-all duration-200 active:scale-[0.98] shrink-0 snap-start min-w-[185px] sm:min-w-[210px] md:min-w-[225px] ${
+                    isActive
+                      ? `bg-white text-slate-900 shadow-md shadow-blue-500/10 border-2 ${cardTheme.border} ring-2 ring-blue-500/20`
+                      : "bg-white/80 hover:bg-white text-slate-600 hover:text-slate-900 border border-slate-200/80 hover:border-slate-300 shadow-xs"
+                  }`}
                 >
-                  <span className="flex-shrink-0">{getIconForIndex(vid.order)}</span>
-                  <span className="hidden md:inline">{getShortTitleForIndex(vid.order)}</span>
-                  <span className="md:hidden">#{vid.order}</span>
+                  {/* Order / Icon Badge */}
+                  <div
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 ${
+                      isActive
+                        ? `${cardTheme.bg} text-white shadow-xs`
+                        : "bg-slate-100 text-slate-500 group-hover:bg-slate-200"
+                    }`}
+                  >
+                    {getIconForIndex(vid.order)}
+                  </div>
+
+                  {/* Text Content */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className={`text-[9px] sm:text-[10px] font-black tracking-wider uppercase ${
+                        isActive ? cardTheme.text : "text-slate-400"
+                      }`}>
+                        Video 0{vid.order}
+                      </span>
+                      {isActive && (
+                        <span className="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-black uppercase text-red-500 bg-red-50 px-1 py-0.2 rounded border border-red-200 shrink-0">
+                          <span className="w-1 h-1 rounded-full bg-red-500 animate-pulse" />
+                          Đang phát
+                        </span>
+                      )}
+                    </div>
+                    <div className={`text-xs font-bold truncate mt-0.5 ${
+                      isActive ? "text-slate-900" : "text-slate-700"
+                    }`}>
+                      {getShortTitleForIndex(vid.order)}
+                    </div>
+                  </div>
                 </button>
               );
             })}
           </div>
-
-          {/* Nút Video Tiếp */}
-          <button
-            onClick={() => handleSelectVideo((activeIndex + 1) % videos.length)}
-            className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-blue-500/20 transition-all active:scale-95 flex-shrink-0"
-          >
-            <span className="hidden sm:inline">Video tiếp</span>
-            <span className="sm:hidden">Tiếp</span>
-            <ChevronRight size={16} />
-          </button>
         </div>
 
         {/* 3. Detailed Feature Information Card */}
-        <div className="bg-slate-50/90 rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 border border-slate-100">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-2 sm:mb-3">
-            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${currentTheme.badgeBg}`}>
-              {currentVideo?.badge}
-            </span>
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-              Video {currentVideo?.order} / {videos.length} • Vuốt trên video để chuyển nhanh
-            </span>
-          </div>
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 bg-gradient-to-br from-white via-slate-50/70 to-blue-50/20 border border-slate-200/90 shadow-sm text-left">
+          {/* Subtle Ambient Accent Glow at corner */}
+          <div
+            className="absolute -right-16 -top-16 w-48 h-48 rounded-full blur-3xl opacity-30 pointer-events-none transition-colors duration-700"
+            style={{ backgroundColor: currentTheme.glow }}
+          />
 
-          <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight leading-snug mb-1.5">
-            {currentVideo?.title}
-          </h3>
-
-          {currentVideo?.subtitle && (
-            <p className="text-xs sm:text-sm font-bold text-slate-600 mb-3 sm:mb-4 italic">
-              {currentVideo.subtitle}
-            </p>
-          )}
-
-          <p className="text-slate-600 text-xs sm:text-sm md:text-base leading-relaxed mb-5 font-medium">
-            {currentVideo?.description}
-          </p>
-
-          {/* Highlights Bullet List */}
-          {currentVideo?.highlights && currentVideo.highlights.length > 0 && (
-            <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-3.5 pt-4 border-t border-slate-200/70">
-              {currentVideo.highlights.map((item, idx) => (
-                <div key={idx} className="flex items-start gap-2 sm:gap-2.5 text-xs sm:text-sm font-semibold text-slate-700">
-                  <CheckCircle2 size={16} className={`flex-shrink-0 mt-0.5 ${currentTheme.text}`} />
-                  <span>{item}</span>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentVideo?.id || activeIndex}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="relative z-10 text-left"
+            >
+              {/* Badge & Step Info */}
+              <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 mb-3">
+                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-wider border shadow-xs ${currentTheme.badgeBg}`}>
+                  <Sparkles size={13} className="shrink-0" />
+                  <span>{currentVideo?.badge}</span>
                 </div>
-              ))}
-            </div>
-          )}
+                <div className="text-[11px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="text-slate-600 font-extrabold">Tính năng {currentVideo?.order} / {videos.length}</span>
+                  <span>•</span>
+                  <span>{currentVideo?.category}</span>
+                </div>
+              </div>
+
+              {/* Main Title */}
+              <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight leading-snug mb-2 text-left">
+                {currentVideo?.title}
+              </h3>
+
+              {/* Subtitle */}
+              {currentVideo?.subtitle && (
+                <p className="text-xs sm:text-sm font-bold text-blue-700 bg-blue-50/90 border border-blue-100/90 inline-block px-3 py-1 rounded-lg mb-3.5 text-left">
+                  {currentVideo.subtitle}
+                </p>
+              )}
+
+              {/* Full Description */}
+              <p className="text-slate-600 text-xs sm:text-sm md:text-base leading-relaxed mb-6 font-medium max-w-4xl text-left">
+                {currentVideo?.description}
+              </p>
+
+              {/* Highlights Checklist - Clearly designed as non-clickable Specs / Checklist */}
+              {currentVideo?.highlights && currentVideo.highlights.length > 0 && (
+                <div className="pt-4 border-t border-slate-200/80 text-left">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                      <Sparkles size={14} className={currentTheme.text} />
+                      Đặc quyền & Điểm nổi bật trong tính năng:
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                    {currentVideo.highlights.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-3 p-3 sm:p-3.5 rounded-xl bg-white/90 border border-slate-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.03)] select-text text-left"
+                      >
+                        <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${currentTheme.badgeBg}`}>
+                          <CheckCircle2 size={15} className={currentTheme.text} />
+                        </div>
+                        <span className="text-xs sm:text-sm font-semibold text-slate-700 leading-snug text-left flex-1">
+                          {item}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
         </div>
 
       </div>
