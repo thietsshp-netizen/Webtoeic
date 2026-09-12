@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import "mobile-drag-drop/default.css";
-import { Star, Volume2, RotateCcw, ChevronRight, ChevronLeft, BookOpen, Shuffle, PenLine, Link2, Lightbulb, Replace, Layers, HelpCircle, Compass, Filter, LayoutGrid } from "lucide-react";
+import { Star, Volume2, RotateCcw, ChevronRight, ChevronLeft, BookOpen, Shuffle, PenLine, Link2, Lightbulb, Replace, Layers, HelpCircle, Compass, Filter, LayoutGrid, Video } from "lucide-react";
 import confetti from "canvas-confetti";
 import { AnimatePresence } from "framer-motion";
 import VocabDeckSelector from "./VocabDeckSelector";
 import VocabGuideModal from "@/components/Vocab/VocabGuideModal";
+import YouGlishModal from "./YouGlishModal";
 import { startVocabTour } from "@/components/Toeic/toeicTour";
 import { speakVocab } from "@/lib/vocab-audio";
 
@@ -75,7 +76,8 @@ export function FlashCard({
   onToggleUnlearned,
   index,
   globalFlip,
-  flipTrigger
+  flipTrigger,
+  onOpenYouGlish
 }: {
   word: VocabWord;
   isInNotebook: boolean;
@@ -88,6 +90,7 @@ export function FlashCard({
   index: number;
   globalFlip: "front" | "back" | null;
   flipTrigger?: number;
+  onOpenYouGlish?: (word: VocabWord) => void;
 }) {
   const [flipped, setFlipped] = useState(false);
   const [showDeckSelector, setShowDeckSelector] = useState(false);
@@ -169,15 +172,43 @@ export function FlashCard({
             </div>
           </div>
 
-          {/* Front Image */}
+          {/* Front Image & Video Button */}
           {word.image && (
-            <div className="mb-2.5 rounded-2xl overflow-hidden border border-slate-100 bg-slate-50/70 p-1.5 flex items-center justify-center h-28 sm:h-38 flex-shrink-0">
-              <img
-                src={word.image}
-                alt={word.word}
-                loading="lazy"
-                className="w-full h-full object-contain rounded-xl"
-              />
+            <div className="mb-2 flex flex-col items-center flex-shrink-0">
+              <div className="w-full rounded-2xl overflow-hidden border border-slate-100 bg-slate-50/70 p-1 flex items-center justify-center h-24 sm:h-34">
+                <img
+                  src={word.image}
+                  alt={word.word}
+                  loading="lazy"
+                  className="w-full h-full object-contain rounded-xl"
+                />
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenYouGlish?.(word);
+                }}
+                className="mt-1.5 inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 bg-red-50 hover:bg-red-100/90 text-red-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all border border-red-100/80 shadow-sm active:scale-95 group/btn"
+                title="Xem video người bản xứ phát âm từ này trong thực tế"
+              >
+                <Video size={12} className="text-red-500 group-hover/btn:scale-110 transition-transform" />
+                <span>Video thực tế</span>
+              </button>
+            </div>
+          )}
+          {!word.image && (
+            <div className="mb-2 flex justify-center flex-shrink-0">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenYouGlish?.(word);
+                }}
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all border border-red-100/80 shadow-sm active:scale-95"
+                title="Xem video người bản xứ phát âm từ này trong thực tế"
+              >
+                <Video size={12} className="text-red-500" />
+                <span>Video thực tế</span>
+              </button>
             </div>
           )}
           
@@ -233,15 +264,43 @@ export function FlashCard({
             <div className="text-red-500 font-black text-sm sm:text-base tracking-tight leading-tight break-words text-center">{limitMeanings(word.mean)}</div>
           </div>
 
-          {/* Back Image */}
+          {/* Back Image & Video Button */}
           {word.image && (
-            <div className="mb-2.5 rounded-2xl overflow-hidden border border-indigo-100/80 bg-white/80 p-1.5 flex items-center justify-center h-28 sm:h-36 flex-shrink-0 shadow-sm">
-              <img
-                src={word.image}
-                alt={word.word}
-                loading="lazy"
-                className="w-full h-full object-contain rounded-xl"
-              />
+            <div className="mb-2 flex flex-col items-center flex-shrink-0">
+              <div className="w-full rounded-2xl overflow-hidden border border-indigo-100/80 bg-white/80 p-1 flex items-center justify-center h-24 sm:h-32 shadow-sm">
+                <img
+                  src={word.image}
+                  alt={word.word}
+                  loading="lazy"
+                  className="w-full h-full object-contain rounded-xl"
+                />
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenYouGlish?.(word);
+                }}
+                className="mt-1.5 inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 bg-white/90 hover:bg-white text-red-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all border border-red-100/80 shadow-sm active:scale-95 group/btn"
+                title="Xem video người bản xứ phát âm từ này trong thực tế"
+              >
+                <Video size={12} className="text-red-500 group-hover/btn:scale-110 transition-transform" />
+                <span>Video thực tế</span>
+              </button>
+            </div>
+          )}
+          {!word.image && (
+            <div className="mb-2 flex justify-center flex-shrink-0">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenYouGlish?.(word);
+                }}
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 bg-white/90 hover:bg-white text-red-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all border border-red-100/80 shadow-sm active:scale-95"
+                title="Xem video người bản xứ phát âm từ này trong thực tế"
+              >
+                <Video size={12} className="text-red-500" />
+                <span>Video thực tế</span>
+              </button>
             </div>
           )}
 
@@ -1126,6 +1185,7 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
   const [loading, setLoading] = useState(true);
   const [globalFlip, setGlobalFlip] = useState<"front" | "back" | null>(null);
   const [hasMounted, setHasMounted] = useState(false);
+  const [youglishWord, setYouglishWord] = useState<VocabWord | null>(null);
 
   // Deck states
   const [decks, setDecks] = useState<any[]>([]);
@@ -1624,6 +1684,7 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
                       onToggleUnlearned={() => toggleUnlearned(activeWords[safeCardIndex])}
                       globalFlip={null}
                       flipTrigger={flipTrigger}
+                      onOpenYouGlish={(w) => setYouglishWord(w)}
                     />
                   )}
                 </div>
@@ -1682,6 +1743,7 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
                         onUnstar={() => handleUnstar(word)}
                         onToggleUnlearned={() => toggleUnlearned(word)}
                         globalFlip={globalFlip}
+                        onOpenYouGlish={(w) => setYouglishWord(w)}
                       />
                     </div>
                   );
@@ -1720,6 +1782,15 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
           scrollbar-width: none;
         }
       `}</style>
+
+      {/* YouGlish Native Pronunciation Video Modal */}
+      <YouGlishModal
+        isOpen={!!youglishWord}
+        onClose={() => setYouglishWord(null)}
+        word={youglishWord?.word || ""}
+        ipa={youglishWord?.ipa}
+        mean={youglishWord?.mean}
+      />
     </div>
   );
 }
