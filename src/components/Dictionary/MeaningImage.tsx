@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ImageIcon } from 'lucide-react';
+import { ImageIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface MeaningImageProps {
   word: string;
@@ -9,11 +9,12 @@ interface MeaningImageProps {
   example?: string;
   initialImage?: string | null;
   onImageLoaded?: (imageUrl: string) => void;
+  onImageChange?: (imageUrl: string) => void;
   className?: string;
 }
 
 // Client-side cache to prevent duplicate network requests across tabs/re-renders
-const clientImageCache = new Map<string, string | null>();
+const clientImageCache = new Map<string, string[]>();
 
 export default function MeaningImage({
   word,
@@ -21,15 +22,17 @@ export default function MeaningImage({
   example = '',
   initialImage = null,
   onImageLoaded,
+  onImageChange,
   className = '',
 }: MeaningImageProps) {
   const cacheKey = `${word.toLowerCase().trim()}:::${(example || definition).toLowerCase().trim()}`;
   
-  const [imageUrl, setImageUrl] = useState<string | null>(() => {
-    if (initialImage) return initialImage;
-    if (clientImageCache.has(cacheKey)) return clientImageCache.get(cacheKey) || null;
-    return null;
+  const [images, setImages] = useState<string[]>(() => {
+    if (initialImage) return [initialImage];
+    if (clientImageCache.has(cacheKey)) return clientImageCache.get(cacheKey) || [];
+    return [];
   });
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState<boolean>(() => {
     if (initialImage || clientImageCache.has(cacheKey)) return false;
     return true;
@@ -37,6 +40,8 @@ export default function MeaningImage({
   const [imgLoaded, setImgLoaded] = useState(false);
   const [zoomPreview, setZoomPreview] = useState(false);
   const isMountedRef = useRef(true);
+
+  const activeImageUrl = images[currentIndex] || null;
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -47,18 +52,21 @@ export default function MeaningImage({
 
   useEffect(() => {
     if (initialImage) {
-      setImageUrl(initialImage);
+      setImages([initialImage]);
+      setCurrentIndex(0);
       setLoading(false);
-      clientImageCache.set(cacheKey, initialImage);
+      clientImageCache.set(cacheKey, [initialImage]);
       return;
     }
 
     if (clientImageCache.has(cacheKey)) {
-      const cached = clientImageCache.get(cacheKey) || null;
-      setImageUrl(cached);
+      const cached = clientImageCache.get(cacheKey) || [];
+      setImages(cached);
+      setCurrentIndex(0);
       setLoading(false);
-      if (cached && onImageLoaded) {
-        onImageLoaded(cached);
+      if (cached.length > 0) {
+        onImageLoaded?.(cached[0]);
+        onImageChange?.(cached[0]);
       }
       return;
     }
@@ -78,21 +86,25 @@ export default function MeaningImage({
         if (!res.ok) throw new Error('Image fetch failed');
         
         const data = await res.json();
-        const foundUrl = data?.image || null;
+        const foundImages: string[] = Array.isArray(data?.images) && data.images.length > 0 
+          ? data.images 
+          : (data?.image ? [data.image] : []);
 
-        clientImageCache.set(cacheKey, foundUrl);
+        clientImageCache.set(cacheKey, foundImages);
 
         if (active && isMountedRef.current) {
-          setImageUrl(foundUrl);
+          setImages(foundImages);
+          setCurrentIndex(0);
           setLoading(false);
-          if (foundUrl && onImageLoaded) {
-            onImageLoaded(foundUrl);
+          if (foundImages.length > 0) {
+            onImageLoaded?.(foundImages[0]);
+            onImageChange?.(foundImages[0]);
           }
         }
       } catch (err) {
-        clientImageCache.set(cacheKey, null);
+        clientImageCache.set(cacheKey, []);
         if (active && isMountedRef.current) {
-          setImageUrl(null);
+          setImages([]);
           setLoading(false);
         }
       }
@@ -105,6 +117,26 @@ export default function MeaningImage({
     };
   }, [word, definition, example, initialImage, cacheKey]);
 
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (images.length <= 1) return;
+    const nextIdx = (currentIndex + 1) % images.length;
+    setCurrentIndex(nextIdx);
+    setImgLoaded(false);
+    onImageLoaded?.(images[nextIdx]);
+    onImageChange?.(images[nextIdx]);
+  };
+
+  const handlePrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (images.length <= 1) return;
+    const prevIdx = (currentIndex - 1 + images.length) % images.length;
+    setCurrentIndex(prevIdx);
+    setImgLoaded(false);
+    onImageLoaded?.(images[prevIdx]);
+    onImageChange?.(images[prevIdx]);
+  };
+
   // If loading, show a neat compact skeleton placeholder
   if (loading) {
     return (
@@ -116,7 +148,7 @@ export default function MeaningImage({
   }
 
   // If no image found or error, do not render anything to avoid layout clutter
-  if (!imageUrl) {
+  if (!activeImageUrl) {
     return null;
   }
 
@@ -134,20 +166,53 @@ export default function MeaningImage({
             </div>
           )}
           <img
-            src={imageUrl}
+            src={activeImageUrl}
             alt={word}
             loading="lazy"
             referrerPolicy="no-referrer"
             crossOrigin="anonymous"
             onLoad={() => setImgLoaded(true)}
             onError={() => {
-              clientImageCache.set(cacheKey, null);
-              setImageUrl(null);
+              // Remove bad image from list if possible
+              const updated = images.filter((_, idx) => idx !== currentIndex);
+              setImages(updated);
+              setCurrentIndex(0);
             }}
-            className={`w-full h-full object-cover group-hover/mimg:scale-108 transition-all duration-300 ${
+            className={`w-full h-full object-cover group-hover/mimg:scale-105 transition-all duration-300 ${
               imgLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
             }`}
           />
+
+          {/* Navigation Arrows for Multiple Images */}
+          {images.length > 1 && (
+            <>
+              {/* Prev Button */}
+              <button
+                type="button"
+                onClick={handlePrev}
+                className="absolute left-1 top-1/2 -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center shadow-md backdrop-blur-xs transition-all opacity-80 group-hover/mimg:opacity-100 hover:scale-110 z-10"
+                title="Ảnh trước"
+              >
+                <ChevronLeft size={13} />
+              </button>
+
+              {/* Next Button */}
+              <button
+                type="button"
+                onClick={handleNext}
+                className="absolute right-1 top-1/2 -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center shadow-md backdrop-blur-xs transition-all opacity-80 group-hover/mimg:opacity-100 hover:scale-110 z-10"
+                title="Đổi sang ảnh khác"
+              >
+                <ChevronRight size={13} />
+              </button>
+
+              {/* Counter Badge */}
+              <div className="absolute top-1 right-1 bg-black/60 backdrop-blur-xs text-white text-[9px] font-bold px-1.5 py-0.2 rounded-md shadow-xs pointer-events-none z-10">
+                {currentIndex + 1}/{images.length}
+              </div>
+            </>
+          )}
+
           {/* Subtle Tag Overlay */}
           <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-1 pt-2 flex items-center justify-between opacity-0 group-hover/mimg:opacity-100 transition-opacity">
             <span className="text-[8px] font-bold text-white tracking-wider uppercase px-1">Ảnh minh họa</span>
@@ -169,7 +234,12 @@ export default function MeaningImage({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-full flex items-center justify-between px-3 py-1.5 border-b border-slate-100 dark:border-slate-800">
-              <span className="text-xs font-bold text-slate-700 dark:text-slate-200 capitalize">{word}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-200 capitalize">{word}</span>
+                {images.length > 1 && (
+                  <span className="text-[10px] text-slate-400 font-semibold">({currentIndex + 1}/{images.length})</span>
+                )}
+              </div>
               <button 
                 onClick={() => setZoomPreview(false)}
                 className="text-xs font-bold text-slate-400 hover:text-slate-700 dark:hover:text-white px-2 py-0.5 rounded-lg"
@@ -177,9 +247,31 @@ export default function MeaningImage({
                 ✕
               </button>
             </div>
-            <div className="p-2 flex items-center justify-center max-h-[70vh]">
+
+            <div className="relative p-2 flex items-center justify-center max-h-[70vh] w-full">
+              {images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={handlePrev}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center shadow-lg backdrop-blur-md transition-all z-20"
+                    title="Ảnh trước"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center shadow-lg backdrop-blur-md transition-all z-20"
+                    title="Ảnh tiếp"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+                </>
+              )}
+
               <img
-                src={imageUrl}
+                src={activeImageUrl}
                 alt={word}
                 referrerPolicy="no-referrer"
                 crossOrigin="anonymous"

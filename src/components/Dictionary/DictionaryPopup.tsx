@@ -705,6 +705,9 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
                           onImageLoaded={(url) => {
                             m.image = url;
                           }}
+                          onImageChange={(url) => {
+                            m.image = url;
+                          }}
                         />
                       </div>
                     </section>

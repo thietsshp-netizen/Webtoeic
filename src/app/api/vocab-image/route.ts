@@ -14,10 +14,10 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Missing word parameter" }, { status: 400 });
     }
 
-    const { imageUrl, keyword } = await getVocabImage(word, example, definition);
+    const { imageUrl, images, keyword } = await getVocabImage(word, example, definition);
 
     return NextResponse.json(
-      { image: imageUrl, imageUrl, keyword },
+      { image: imageUrl, imageUrl, images: images || [], keyword },
       {
         headers: {
           "Cache-Control": "public, max-age=604800, s-maxage=604800, stale-while-revalidate=86400"
