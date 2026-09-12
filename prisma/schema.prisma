@@ -353,6 +353,7 @@ model UserVocabulary {
   lastReviewedAt     DateTime?
   nextReviewDate     DateTime  @default(now())
   srsBox             Int       @default(1)
+  image              String?
   user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   deckId             String?
   deck               VocabDeck? @relation(fields: [deckId], references: [id], onDelete: SetNull)

@@ -67,7 +67,7 @@ export async function POST(request: Request) {
     const { 
       word, partOfSpeech, definition, translation, ipa, 
       example, exampleTranslation, action,
-      synonyms, antonyms, collocations, wordFamily, deckId
+      synonyms, antonyms, collocations, wordFamily, deckId, image
     } = body;
 
     if (!word || !definition) {
@@ -116,6 +116,7 @@ export async function POST(request: Request) {
             userId, word, definition,
             ipa, example, exampleTranslation,
             synonyms, antonyms, collocations, wordFamily,
+            image: image || null,
             isStarred: false,
             isUnlearned: true,
             deckId: (deckId && deckId !== 'uncategorized') ? deckId : null
@@ -143,13 +144,16 @@ export async function POST(request: Request) {
     }
 
     if (existing) {
-      // If saving and already exists, update flags and potentially update the deckId
+      // If saving and already exists, update flags and potentially update the deckId / image
       const updateData: any = { 
         isStarred: true,
         isUnlearned: true // Reset to unlearned when re-starred
       };
       if (deckId !== undefined) {
         updateData.deckId = (deckId && deckId !== 'uncategorized') ? deckId : null;
+      }
+      if (image !== undefined && image) {
+        updateData.image = image;
       }
       const updated = await (prisma as any).userVocabulary.update({
         where: { id: existing.id },
@@ -173,6 +177,7 @@ export async function POST(request: Request) {
         antonyms,
         collocations,
         wordFamily,
+        image: image || null,
         isStarred: true,
         isUnlearned: true, // Default to true when newly starred
         deckId: (deckId && deckId !== 'uncategorized') ? deckId : null

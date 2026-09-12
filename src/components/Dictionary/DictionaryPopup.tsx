@@ -9,6 +9,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import VocabDeckSelector from '../Vocab/VocabDeckSelector';
 import { speakVocab } from '@/lib/vocab-audio';
+import MeaningImage from './MeaningImage';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -25,6 +26,7 @@ interface DictionaryData {
       ipa: string;
       example: string;
       translation: string;
+      image?: string;
       synonyms: Array<{ word: string; meaning: string }>;
       antonyms: Array<{ word: string; meaning: string }>;
       word_family?: Array<{ word: string; meaning: string }>;
@@ -170,10 +172,12 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
     if (!data) return;
 
     const wordKey = data.word.toLowerCase().trim();
-    const isStarred = userVocabs.some(v =>
+    const matchingExisting = userVocabs.find(v =>
       v.word.toLowerCase().trim() === wordKey &&
-      v.definition.trim() === meaning.definition.trim()
+      v.definition.trim().toLowerCase() === meaning.definition.trim().toLowerCase()
     );
+    const isStarred = !!matchingExisting;
+    const meaningImg = meaning.image || matchingExisting?.image || null;
 
     // Optimistic UI update
     if (isStarred) {
@@ -185,7 +189,8 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
         partOfSpeech: meaning.part_of_speech,
         translation: meaning.definition, // Use definition as primary translation if needed
         example: meaning.example,
-        exampleTranslation: meaning.translation
+        exampleTranslation: meaning.translation,
+        image: meaningImg
       }]);
     }
 
@@ -213,6 +218,7 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
       ipa: meaning.ipa || (data.data as any)?.phonetic || (data.data?.meanings?.[0]?.ipa) || '',
       example: meaning.example,
       exampleTranslation: meaning.translation || meaning.translation_example || meaning.exampleTranslation,
+      image: meaningImg,
       // Synonyms/Antonyms are specific to this meaning
       synonyms: Array.isArray(meaning.synonyms) 
         ? meaning.synonyms.map((s: any) => typeof s === 'object' ? `${s.word} (${s.meaning})` : s).join(', ') 
@@ -296,6 +302,7 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
       ipa: meaning.ipa || (data.data as any)?.phonetic || (data.data?.meanings?.[0]?.ipa) || '',
       example: meaning.example,
       exampleTranslation: meaning.translation || meaning.translation_example || meaning.exampleTranslation,
+      image: meaning.image || existingVocab?.image || null,
       synonyms: Array.isArray(meaning.synonyms) 
         ? meaning.synonyms.map((s: any) => typeof s === 'object' ? `${s.word} (${s.meaning})` : s).join(', ') 
          : '',
@@ -671,20 +678,35 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
                         </div>
                       </div>
 
-                      <div className="flex gap-2">
-                        <span className="text-slate-300 font-black text-xs mt-0.5">{idx + 1}.</span>
-                        <p className="text-sm text-slate-800 font-bold leading-relaxed">{m.definition}</p>
-                      </div>
-
-                      {m.example && (
-                        <div className="ml-5 pl-3 border-l border-blue-100 py-0.5 space-y-1">
-                          <div className="flex items-start gap-1.5">
-                            <button onClick={() => speak(m.example)} className="mt-1 text-blue-300 hover:text-blue-500"><Volume2 size={10} /></button>
-                            <p className="text-slate-500 italic font-medium leading-relaxed text-[12px]">"{highlightText(m.example, data.word)}"</p>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0 space-y-2">
+                          <div className="flex gap-2">
+                            <span className="text-slate-300 font-black text-xs mt-0.5 shrink-0">{idx + 1}.</span>
+                            <p className="text-sm text-slate-800 font-bold leading-relaxed">{m.definition}</p>
                           </div>
-                          <p className="text-slate-400 text-[10px] ml-4">→ {m.translation}</p>
+
+                          {m.example && (
+                            <div className="ml-5 pl-3 border-l border-blue-100 py-0.5 space-y-1">
+                              <div className="flex items-start gap-1.5">
+                                <button onClick={() => speak(m.example)} className="mt-1 text-blue-300 hover:text-blue-500 shrink-0"><Volume2 size={10} /></button>
+                                <p className="text-slate-500 italic font-medium leading-relaxed text-[12px]">"{highlightText(m.example, data.word)}"</p>
+                              </div>
+                              <p className="text-slate-400 text-[10px] ml-4">→ {m.translation}</p>
+                            </div>
+                          )}
                         </div>
-                      )}
+
+                        {/* Meaning Image */}
+                        <MeaningImage
+                          word={data.word}
+                          definition={m.definition}
+                          example={m.example}
+                          initialImage={matchingVocab?.image || m.image}
+                          onImageLoaded={(url) => {
+                            m.image = url;
+                          }}
+                        />
+                      </div>
                     </section>
                   );
                 })
