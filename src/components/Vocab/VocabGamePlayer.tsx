@@ -8,6 +8,7 @@ import { AnimatePresence } from "framer-motion";
 import VocabDeckSelector from "./VocabDeckSelector";
 import VocabGuideModal from "@/components/Vocab/VocabGuideModal";
 import YouGlishModal from "./YouGlishModal";
+import VocabCardImage from "./VocabCardImage";
 import { startVocabTour } from "@/components/Toeic/toeicTour";
 import { speakVocab } from "@/lib/vocab-audio";
 
@@ -173,44 +174,19 @@ export function FlashCard({
           </div>
 
           {/* Front Image & Video Button */}
-          {word.image && (
-            <div className="mb-2 flex flex-col items-center flex-shrink-0">
-              <div className="w-full rounded-2xl overflow-hidden border border-slate-100 bg-slate-50/70 p-1 flex items-center justify-center h-24 sm:h-34">
-                <img
-                  src={word.image}
-                  alt={word.word}
-                  loading="lazy"
-                  className="w-full h-full object-contain rounded-xl"
-                />
-              </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onOpenYouGlish?.(word);
-                }}
-                className="mt-1.5 inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 bg-red-50 hover:bg-red-100/90 text-red-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all border border-red-100/80 shadow-sm active:scale-95 group/btn"
-                title="Xem video người bản xứ phát âm từ này trong thực tế"
-              >
-                <Video size={12} className="text-red-500 group-hover/btn:scale-110 transition-transform" />
-                <span>Video thực tế</span>
-              </button>
-            </div>
-          )}
-          {!word.image && (
-            <div className="mb-2 flex justify-center flex-shrink-0">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onOpenYouGlish?.(word);
-                }}
-                className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all border border-red-100/80 shadow-sm active:scale-95"
-                title="Xem video người bản xứ phát âm từ này trong thực tế"
-              >
-                <Video size={12} className="text-red-500" />
-                <span>Video thực tế</span>
-              </button>
-            </div>
-          )}
+          <VocabCardImage 
+            vocab={{
+              word: word.word,
+              image: word.image,
+              example: word.ex,
+              definition: word.mean,
+              id: word.id || word.dbId
+            }} 
+            onOpenYouGlish={onOpenYouGlish} 
+            onImageResolved={(url) => {
+              word.image = url;
+            }}
+          />
           
           <div className="flex-1 overflow-y-auto scrollbar-hide py-1">
             <div className="flex items-start gap-2 bg-slate-50/60 p-2.5 sm:p-3.5 rounded-2xl border border-slate-100">
@@ -265,44 +241,20 @@ export function FlashCard({
           </div>
 
           {/* Back Image & Video Button */}
-          {word.image && (
-            <div className="mb-2 flex flex-col items-center flex-shrink-0">
-              <div className="w-full rounded-2xl overflow-hidden border border-indigo-100/80 bg-white/80 p-1 flex items-center justify-center h-24 sm:h-32 shadow-sm">
-                <img
-                  src={word.image}
-                  alt={word.word}
-                  loading="lazy"
-                  className="w-full h-full object-contain rounded-xl"
-                />
-              </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onOpenYouGlish?.(word);
-                }}
-                className="mt-1.5 inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 bg-white/90 hover:bg-white text-red-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all border border-red-100/80 shadow-sm active:scale-95 group/btn"
-                title="Xem video người bản xứ phát âm từ này trong thực tế"
-              >
-                <Video size={12} className="text-red-500 group-hover/btn:scale-110 transition-transform" />
-                <span>Video thực tế</span>
-              </button>
-            </div>
-          )}
-          {!word.image && (
-            <div className="mb-2 flex justify-center flex-shrink-0">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onOpenYouGlish?.(word);
-                }}
-                className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 bg-white/90 hover:bg-white text-red-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all border border-red-100/80 shadow-sm active:scale-95"
-                title="Xem video người bản xứ phát âm từ này trong thực tế"
-              >
-                <Video size={12} className="text-red-500" />
-                <span>Video thực tế</span>
-              </button>
-            </div>
-          )}
+          <VocabCardImage 
+            vocab={{
+              word: word.word,
+              image: word.image,
+              example: word.ex,
+              definition: word.mean,
+              id: word.id || word.dbId
+            }} 
+            onOpenYouGlish={onOpenYouGlish} 
+            isBack={true} 
+            onImageResolved={(url) => {
+              word.image = url;
+            }}
+          />
 
           <div className="space-y-2.5 text-xs sm:text-sm flex-1 overflow-y-auto pr-1 scrollbar-hide">
             <div className="flex flex-col gap-1.5">

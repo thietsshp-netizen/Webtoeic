@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
+import { getVocabImage } from "@/lib/vocab-image";
 
 // GET: Fetch user's saved vocabulary
 export async function GET(req: Request) {
@@ -84,10 +85,18 @@ export async function POST(request: Request) {
 
     if (action === 'update-deck') {
       if (existing) {
+        let finalImage = image || existing.image;
+        if (!finalImage) {
+          try {
+            const imgRes = await getVocabImage(word, existing.example || example, existing.definition || definition);
+            finalImage = imgRes.imageUrl;
+          } catch {}
+        }
         const updated = await (prisma as any).userVocabulary.update({
           where: { id: existing.id },
           data: {
-            deckId: (deckId && deckId !== 'uncategorized') ? deckId : null
+            deckId: (deckId && deckId !== 'uncategorized') ? deckId : null,
+            ...(finalImage ? { image: finalImage } : {})
           },
           include: { deck: true }
         });
@@ -110,13 +119,20 @@ export async function POST(request: Request) {
         }
         return NextResponse.json({ ...updated, deck: updated.deck });
       } else {
+        let finalImage = image || null;
+        if (!finalImage) {
+          try {
+            const imgRes = await getVocabImage(word, example, definition);
+            finalImage = imgRes.imageUrl;
+          } catch {}
+        }
         // Create new record just for unlearned
         const created = await (prisma as any).userVocabulary.create({
           data: {
             userId, word, definition,
             ipa, example, exampleTranslation,
             synonyms, antonyms, collocations, wordFamily,
-            image: image || null,
+            image: finalImage || null,
             isStarred: false,
             isUnlearned: true,
             deckId: (deckId && deckId !== 'uncategorized') ? deckId : null
@@ -144,7 +160,13 @@ export async function POST(request: Request) {
     }
 
     if (existing) {
-      // If saving and already exists, update flags and potentially update the deckId / image
+      let finalImage = image || existing.image;
+      if (!finalImage) {
+        try {
+          const imgRes = await getVocabImage(word, existing.example || example, existing.definition || definition);
+          finalImage = imgRes.imageUrl;
+        } catch {}
+      }
       const updateData: any = { 
         isStarred: true,
         isUnlearned: true // Reset to unlearned when re-starred
@@ -152,8 +174,8 @@ export async function POST(request: Request) {
       if (deckId !== undefined) {
         updateData.deckId = (deckId && deckId !== 'uncategorized') ? deckId : null;
       }
-      if (image !== undefined && image) {
-        updateData.image = image;
+      if (finalImage) {
+        updateData.image = finalImage;
       }
       const updated = await (prisma as any).userVocabulary.update({
         where: { id: existing.id },
@@ -161,6 +183,14 @@ export async function POST(request: Request) {
         include: { deck: true }
       });
       return NextResponse.json({ ...updated, deck: updated.deck });
+    }
+
+    let finalImage = image || null;
+    if (!finalImage) {
+      try {
+        const imgRes = await getVocabImage(word, example, definition);
+        finalImage = imgRes.imageUrl;
+      } catch {}
     }
 
     const newVocab = await (prisma as any).userVocabulary.create({
@@ -177,7 +207,7 @@ export async function POST(request: Request) {
         antonyms,
         collocations,
         wordFamily,
-        image: image || null,
+        image: finalImage || null,
         isStarred: true,
         isUnlearned: true, // Default to true when newly starred
         deckId: (deckId && deckId !== 'uncategorized') ? deckId : null
