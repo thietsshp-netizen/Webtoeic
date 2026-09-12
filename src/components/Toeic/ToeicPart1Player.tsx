@@ -3450,16 +3450,7 @@ export default function ToeicPart1Player({
                                     {incorrectRationale?.suggested_question && (
                                       <div className="mt-2.5 pt-2.5 border-t border-red-200/50 italic opacity-80">
                                         <p className="font-medium text-[11px] mb-1.5">{incorrectRationale.context_intro || "Câu này sẽ ĐÚNG nếu nội dung ảnh là:"}</p>
-                                        <div className="flex items-center gap-1">
-                                          • <strong className="font-bold text-slate-900 tracking-wide"><AutoBoldEnglish text={incorrectRationale.suggested_question.en} /></strong>
-                                          <button
-                                            onClick={(e) => { e.stopPropagation(); speak(incorrectRationale.suggested_question.en); }}
-                                            className="inline-flex items-center justify-center p-1 rounded-md text-red-400 hover:bg-red-100 hover:text-red-600 transition-all align-middle"
-                                            title="Nghe phát âm"
-                                          >
-                                            <Volume2 size={12} />
-                                          </button>
-                                        </div>
+                                        <p>• <strong className="font-bold text-slate-900 tracking-wide"><AutoBoldEnglish text={incorrectRationale.suggested_question.en} /></strong></p>
                                         <p>→ {incorrectRationale.suggested_question.vi}</p>
                                       </div>
                                     )}

@@ -1,0 +1,1455 @@
+[
+  {
+    "start": 2.34,
+    "end": 4.47,
+    "text": "Stocks and bonds are moving higher....",
+    "ipa": "",
+    "vietnamese": "Cổ phiếu và trái phiếu đang tiếp tục tăng giá....",
+    "note": "*'move higher': tăng giá (trên thị trường chứng khoán)"
+  },
+  {
+    "start": 4.63,
+    "end": 7.13,
+    "text": "Why are we watching the Business Channel?",
+    "ipa": "",
+    "vietnamese": "Sao chúng ta lại xem Kênh Kinh tế thế này?",
+    "note": ""
+  },
+  {
+    "start": 7.3,
+    "end": 11.26,
+    "text": "Because the other day I saw there was a stock with my initials, MEG, on it.",
+    "ipa": "",
+    "vietnamese": "Tại hôm nọ tớ thấy có một cổ phiếu trùng tên viết tắt của tớ, M-E-G.",
+    "note": "*'initials': các chữ cái đầu của tên viết tắt (Monica E. Geller)"
+  },
+  {
+    "start": 11.43,
+    "end": 14.43,
+    "text": "Sometimes it takes two or three hours before it comes up again.",
+    "ipa": "",
+    "vietnamese": "Thỉnh thoảng phải mất hai, ba tiếng nó mới hiện lại trên màn hình.",
+    "note": "*'come up': xuất hiện, hiện lên"
+  },
+  {
+    "start": 14.6,
+    "end": 17.35,
+    "text": "But when it does, it's exciting.",
+    "ipa": "",
+    "vietnamese": "Nhưng mỗi lần hiện lên là thích lắm luôn.",
+    "note": ""
+  },
+  {
+    "start": 17.52,
+    "end": 21.06,
+    "text": "Hmm, okay, honey, you really need a job.",
+    "ipa": "",
+    "vietnamese": "Thôi nào em yêu, em thực sự phải tìm việc làm rồi đấy.",
+    "note": "*'honey': em yêu / cậu yêu (xưng hô thân mật)"
+  },
+  {
+    "start": 21.23,
+    "end": 22.31,
+    "text": "[CHANDLER CHUCKLES]",
+    "ipa": "",
+    "vietnamese": "[CHANDLER CƯỜI MỈM]",
+    "note": ""
+  },
+  {
+    "start": 22.48,
+    "end": 25.36,
+    "text": "Dad says he knows someone you can call for an interview.",
+    "ipa": "",
+    "vietnamese": "Bố bảo bố quen một người mà em có thể gọi để xin phỏng vấn.",
+    "note": ""
+  },
+  {
+    "start": 25.53,
+    "end": 29.24,
+    "text": "Right there! That's the third sign today. Right there.",
+    "ipa": "",
+    "vietnamese": "Đấy thấy chưa! Đấy là điềm báo thứ ba trong ngày hôm nay rồi đấy.",
+    "note": "*'sign': điềm báo, tín hiệu vũ trụ"
+  },
+  {
+    "start": 30.32,
+    "end": 33.7,
+    "text": "On behalf of everyone, I'd just like to say, \"Huh?\"",
+    "ipa": "",
+    "vietnamese": "Thay mặt toàn thể mọi người ở đây, tớ xin có ý kiến: \"Hả?\"",
+    "note": "*'on behalf of': thay mặt cho"
+  },
+  {
+    "start": 34.28,
+    "end": 37.66,
+    "text": "No, you just said \"dad.\" And everywhere I go today...",
+    "ipa": "",
+    "vietnamese": "Không, cậu vừa nhắc đến chữ \"bố\". Mà hôm nay đi đâu tớ cũng...",
+    "note": ""
+  },
+  {
+    "start": 37.83,
+    "end": 40.46,
+    "text": "...I keep getting signs telling me to go see my father.",
+    "ipa": "",
+    "vietnamese": "...thấy những điềm báo nhắc tớ đi gặp bố mình.",
+    "note": ""
+  },
+  {
+    "start": 40.67,
+    "end": 43.88,
+    "text": "Like when I was walking over here and I passed a buffet.",
+    "ipa": "",
+    "vietnamese": "Như lúc tớ đi bộ sang đây, tớ đi ngang qua một quán buffet.",
+    "note": ""
+  },
+  {
+    "start": 45.88,
+    "end": 47.34,
+    "text": "Which is my father's last name.",
+    "ipa": "",
+    "vietnamese": "Đó chính là họ của bố tớ.",
+    "note": "*'buffet': phát âm gần giống Buffay (họ của Phoebe)"
+  },
+  {
+    "start": 47.55,
+    "end": 49.26,
+    "text": "ALL [IN UNISON]: Ah.",
+    "ipa": "",
+    "vietnamese": "TẤT CẢ [ĐỒNG THANH]: À.",
+    "note": "*'in unison': đồng thanh"
+  },
+  {
+    "start": 49.42,
+    "end": 51.21,
+    "text": "And they were serving franks...",
+    "ipa": "",
+    "vietnamese": "Và họ đang bán xúc xích frankfurter...",
+    "note": "*'franks': xúc xích Đức (Frankfurter), đồng âm với tên Frank"
+  },
+  {
+    "start": 51.38,
+    "end": 53.92,
+    "text": "...which is his first name, minus the \"s\" at the end.",
+    "ipa": "",
+    "vietnamese": "...chính là tên của ông ấy, bỏ chữ \"s\" ở cuối đi.",
+    "note": ""
+  },
+  {
+    "start": 54.1,
+    "end": 55.68,
+    "text": "RACHEL: Yes. ROSS: All right.",
+    "ipa": "",
+    "vietnamese": "RACHEL: Đúng rồi. ROSS: Được rồi.",
+    "note": ""
+  },
+  {
+    "start": 55.85,
+    "end": 59.69,
+    "text": "And there was a rotisserie with a spinning chicken.",
+    "ipa": "",
+    "vietnamese": "Rồi lại có một cái lò quay với con gà đang xoay tròn.",
+    "note": "*'rotisserie': lò quay thịt"
+  },
+  {
+    "start": 59.85,
+    "end": 62.48,
+    "text": "His Indian name?",
+    "ipa": "",
+    "vietnamese": "Tên da đỏ của ông ấy hả?",
+    "note": "*'Indian name': tên theo phong cách thổ dân da đỏ (thường dựa theo hình ảnh thiên nhiên)"
+  },
+  {
+    "start": 62.69,
+    "end": 67.15,
+    "text": "No. Because I chickened out the last time...",
+    "ipa": "",
+    "vietnamese": "Không. Vì lần trước tớ đã nhát gan rút lui...",
+    "note": "*'chicken out': chùn bước, nhát gan không dám làm"
+  },
+  {
+    "start": 67.86,
+    "end": 71.36,
+    "text": "...when I tried to meet him. So coincidences? I don't think so.",
+    "ipa": "",
+    "vietnamese": "...khi định tìm gặp ông ấy. Nên trùng hợp ư? Tớ không nghĩ vậy đâu.",
+    "note": ""
+  },
+  {
+    "start": 71.57,
+    "end": 73.86,
+    "text": "-Very freaky. -Eerie.",
+    "ipa": "",
+    "vietnamese": "- Kỳ quái thật đấy. - Lạ kỳ ghê.",
+    "note": "*'freaky': kỳ quái, quái dị; *'eerie': kì quái, đáng sợ"
+  },
+  {
+    "start": 74.07,
+    "end": 75.78,
+    "text": "Who wants the last hamburger?",
+    "ipa": "",
+    "vietnamese": "Ai muốn ăn cái hamburger cuối cùng nào?",
+    "note": ""
+  },
+  {
+    "start": 75.95,
+    "end": 78.12,
+    "text": "That's it. Now I have to go see him, ha, ha.",
+    "ipa": "",
+    "vietnamese": "Chuẩn luôn. Bây giờ tớ bắt buộc phải đi gặp ông ấy rồi, haha.",
+    "note": ""
+  },
+  {
+    "start": 78.33,
+    "end": 79.41,
+    "text": "Why?",
+    "ipa": "",
+    "vietnamese": "Tại sao?",
+    "note": ""
+  },
+  {
+    "start": 79.58,
+    "end": 82.83,
+    "text": "Hamburger? McDonald's?",
+    "ipa": "",
+    "vietnamese": "Hamburger? McDonald's?",
+    "note": ""
+  },
+  {
+    "start": 83.0,
+    "end": 85.92,
+    "text": "Old McDonald had a farm. My dad is a pharmacist.",
+    "ipa": "",
+    "vietnamese": "Old McDonald có một trang trại. Bố tớ là dược sĩ!",
+    "note": "*'Old McDonald Had a Farm': bài hát thiếu nhi nổi tiếng; *'pharmacist': dược sĩ (chơi chữ đồng âm với farm)"
+  },
+  {
+    "start": 86.09,
+    "end": 87.84,
+    "text": "ROSS: Ah.",
+    "ipa": "",
+    "vietnamese": "ROSS: À.",
+    "note": ""
+  },
+  {
+    "start": 135.18,
+    "end": 136.43,
+    "text": "Man, I am so beat.",
+    "ipa": "",
+    "vietnamese": "Trời ơi, tớ mệt kiệt sức rồi.",
+    "note": "*'beat': mệt kiệt sức, kiệt lực"
+  },
+  {
+    "start": 136.59,
+    "end": 138.17,
+    "text": "Oh, yeah.",
+    "ipa": "",
+    "vietnamese": "Ừ, công nhận.",
+    "note": ""
+  },
+  {
+    "start": 138.35,
+    "end": 140.64,
+    "text": "You wanna forget racquetball and hang out?",
+    "ipa": "",
+    "vietnamese": "Cậu có muốn nghỉ chơi bóng vợt rồi đi cà phê tụ tập không?",
+    "note": "*'hang out': đi chơi, tụ tập"
+  },
+  {
+    "start": 140.81,
+    "end": 142.39,
+    "text": "Yeah, all right.",
+    "ipa": "",
+    "vietnamese": "Ừ, nhất trí.",
+    "note": ""
+  },
+  {
+    "start": 145.44,
+    "end": 148.82,
+    "text": "-Hey, you're in our seats. -Oh, sorry, we didn't know.",
+    "ipa": "",
+    "vietnamese": "-Này, hai người đang ngồi vào chỗ của bọn tớ đấy. -Ồ xin lỗi, bọn tớ không biết.",
+    "note": ""
+  },
+  {
+    "start": 148.98,
+    "end": 150.65,
+    "text": "Hey, we were sitting there.",
+    "ipa": "",
+    "vietnamese": "Này, chỗ đó bọn tớ vừa ngồi mà.",
+    "note": ""
+  },
+  {
+    "start": 150.86,
+    "end": 153.99,
+    "text": "Okay. There is one more way to say it.",
+    "ipa": "",
+    "vietnamese": "Được rồi. Vẫn còn một cách nữa để diễn đạt câu đó đấy.",
+    "note": ""
+  },
+  {
+    "start": 154.15,
+    "end": 155.86,
+    "text": "-Who knows it? Ha, ha. -Ha, ha.",
+    "ipa": "",
+    "vietnamese": "-Ai biết là câu gì nào? Haha. -Haha.",
+    "note": ""
+  },
+  {
+    "start": 157.37,
+    "end": 162.08,
+    "text": "-Is that supposed to be funny? -Actually, I was going for colorful.",
+    "ipa": "",
+    "vietnamese": "-Mày tưởng thế là hài hước lắm đấy à? -Thực ra tớ đang cố pha chút sinh động thôi.",
+    "note": "*'go for': hướng tới, cố đạt tới cái gì"
+  },
+  {
+    "start": 162.25,
+    "end": 164.0,
+    "text": "-What's with this guy? -What's with you?",
+    "ipa": "",
+    "vietnamese": "-Thằng này bị làm sao thế nhỉ? -Mày bị làm sao?",
+    "note": "*'what's with...': có vấn đề gì/bị sao với ai"
+  },
+  {
+    "start": 164.21,
+    "end": 166.75,
+    "text": "Uh, nothing. Nothing's with him.",
+    "ipa": "",
+    "vietnamese": "Ơ, không có gì. Cậu ấy chẳng làm sao cả.",
+    "note": ""
+  },
+  {
+    "start": 166.92,
+    "end": 168.38,
+    "text": "Enjoy your coffee.",
+    "ipa": "",
+    "vietnamese": "Chúc hai cậu uống cà phê vui vẻ.",
+    "note": ""
+  },
+  {
+    "start": 175.34,
+    "end": 177.01,
+    "text": "What just happened?",
+    "ipa": "",
+    "vietnamese": "Chuyện gì vừa xảy ra thế?",
+    "note": ""
+  },
+  {
+    "start": 178.39,
+    "end": 181.85,
+    "text": "I just took your hat. See, I can be funny too.",
+    "ipa": "",
+    "vietnamese": "Tao vừa lấy cái mũ của mày đấy. Thấy chưa, tao cũng biết đùa đấy chứ.",
+    "note": ""
+  },
+  {
+    "start": 182.02,
+    "end": 185.11,
+    "text": "My joke is that I took your hat.",
+    "ipa": "",
+    "vietnamese": "Trò đùa của tao là tao đã chộp mất cái mũ của mày.",
+    "note": ""
+  },
+  {
+    "start": 185.27,
+    "end": 187.65,
+    "text": "That is funny.",
+    "ipa": "",
+    "vietnamese": "Buồn cười thật đấy.",
+    "note": ""
+  },
+  {
+    "start": 188.4,
+    "end": 189.65,
+    "text": "Can I have it back?",
+    "ipa": "",
+    "vietnamese": "Cho tớ xin lại được không?",
+    "note": ""
+  },
+  {
+    "start": 189.86,
+    "end": 190.99,
+    "text": "No.",
+    "ipa": "",
+    "vietnamese": "Không.",
+    "note": ""
+  },
+  {
+    "start": 192.9,
+    "end": 194.15,
+    "text": "-No? -No.",
+    "ipa": "",
+    "vietnamese": "-Không ư? -Không.",
+    "note": ""
+  },
+  {
+    "start": 194.36,
+    "end": 196.78,
+    "text": "Okay. Okay.",
+    "ipa": "",
+    "vietnamese": "Được rồi, được rồi.",
+    "note": ""
+  },
+  {
+    "start": 196.95,
+    "end": 198.03,
+    "text": "[CHUCKLES]",
+    "ipa": "",
+    "vietnamese": "[CƯỜI CƯỢI]",
+    "note": ""
+  },
+  {
+    "start": 198.2,
+    "end": 200.87,
+    "text": "You know what? I think you're very funny.",
+    "ipa": "",
+    "vietnamese": "Cậu biết gì không? Tớ thấy cậu hài hước phết đấy.",
+    "note": ""
+  },
+  {
+    "start": 201.03,
+    "end": 203.95,
+    "text": "Kudos on that hat joke. Ha, ha.",
+    "ipa": "",
+    "vietnamese": "Khen cho trò đùa chiếc mũ nhé. Haha.",
+    "note": "*'kudos on': lời khen ngợi, chúc mừng cho việc gì"
+  },
+  {
+    "start": 205.91,
+    "end": 209.0,
+    "text": "But come on, guys, just give him back the hat.",
+    "ipa": "",
+    "vietnamese": "Nhưng thôi nào các cậu, trả lại cái mũ cho cậu ấy đi.",
+    "note": "*'come on': thôi nào"
+  },
+  {
+    "start": 209.5,
+    "end": 211.46,
+    "text": "Why should we?",
+    "ipa": "",
+    "vietnamese": "Sao bọn tao phải trả?",
+    "note": ""
+  },
+  {
+    "start": 211.63,
+    "end": 213.88,
+    "text": "Because it's a special hat.",
+    "ipa": "",
+    "vietnamese": "Vì đó là một chiếc mũ rất đặc biệt.",
+    "note": ""
+  },
+  {
+    "start": 214.76,
+    "end": 217.6,
+    "text": "He bought it because he was feeling down one day.",
+    "ipa": "",
+    "vietnamese": "Cậu ấy mua nó vì có một hôm cảm thấy buồn chán.",
+    "note": "*'feel down': cảm thấy buồn bã, chán nản"
+  },
+  {
+    "start": 217.76,
+    "end": 219.14,
+    "text": "So he got the hat...",
+    "ipa": "",
+    "vietnamese": "Nên mới mua cái mũ này...",
+    "note": ""
+  },
+  {
+    "start": 219.3,
+    "end": 221.47,
+    "text": "...to cheer himself up, you know?",
+    "ipa": "",
+    "vietnamese": "...để tự làm mình vui lên, hiểu không?",
+    "note": "*'cheer up': làm ai đó vui lên"
+  },
+  {
+    "start": 221.64,
+    "end": 225.56,
+    "text": "-Now, Chandler-- -Stop talking. Stop talking now.",
+    "ipa": "",
+    "vietnamese": "-Này Chandler-- -Bớt nói lại. Bớt nói ngay lập tức.",
+    "note": ""
+  },
+  {
+    "start": 227.27,
+    "end": 229.65,
+    "text": "Let me get this straight. You're stealing my hat?",
+    "ipa": "",
+    "vietnamese": "Để tớ nói rõ luôn nhé. Các cậu tính cướp trắng cái mũ của tớ đấy à?",
+    "note": "*'let me get this straight': nói cho rõ ràng/rành mạch"
+  },
+  {
+    "start": 229.81,
+    "end": 230.89,
+    "text": "You got a problem?",
+    "ipa": "",
+    "vietnamese": "Mày có ý kiến gì không?",
+    "note": "*'you got a problem?': mày muốn gây sự à?"
+  },
+  {
+    "start": 231.06,
+    "end": 233.77,
+    "text": "I just want to make sure we're on the same page.",
+    "ipa": "",
+    "vietnamese": "Tớ chỉ muốn đảm bảo là chúng ta cùng hiểu rõ vấn đề thôi.",
+    "note": "*'on the same page': có cùng thấu hiểu/quan điểm"
+  },
+  {
+    "start": 236.78,
+    "end": 238.49,
+    "text": "How'd the interview go?",
+    "ipa": "",
+    "vietnamese": "Buổi phỏng vấn thế nào rồi?",
+    "note": ""
+  },
+  {
+    "start": 238.7,
+    "end": 239.99,
+    "text": "It bit.",
+    "ipa": "",
+    "vietnamese": "Như hạch ấy.",
+    "note": "*'it bit' (hoặc 'it bites'): rất dở, tệ hại"
+  },
+  {
+    "start": 241.24,
+    "end": 243.32,
+    "text": "It was a '50s theme restaurant.",
+    "ipa": "",
+    "vietnamese": "Đó là một nhà hàng phong cách thập niên 50.",
+    "note": ""
+  },
+  {
+    "start": 243.49,
+    "end": 247.08,
+    "text": "I'd have to cook in a costume and dance on the counter.",
+    "ipa": "",
+    "vietnamese": "Tớ sẽ phải mặc hóa trang nấu ăn rồi nhảy múa trên quầy.",
+    "note": ""
+  },
+  {
+    "start": 247.25,
+    "end": 249.58,
+    "text": "I was a sous-chef at Cafe des Artistes.",
+    "ipa": "",
+    "vietnamese": "Tớ từng làm bếp phó ở nhà hàng Cafe des Artistes cơ đấy.",
+    "note": "*'sous-chef': bếp phó"
+  },
+  {
+    "start": 249.75,
+    "end": 254.3,
+    "text": "How can I take a job where I have to make Laverne-and-Curly Fries?",
+    "ipa": "",
+    "vietnamese": "Sao tớ có thể nhận công việc mà phải chiên món khoai tây Laverne-và-Curly cơ chứ?",
+    "note": "*'Laverne-and-Curly Fries': trò chơi chữ kết hợp phim sitcom 'Laverne & Shirley' và 'curly fries' (khoai tây chiên xoắn)"
+  },
+  {
+    "start": 254.92,
+    "end": 256.8,
+    "text": "-Don't do it. -How can I not do it?",
+    "ipa": "",
+    "vietnamese": "-Thế thì đừng làm. -Thế làm sao mà không làm cho được?",
+    "note": ""
+  },
+  {
+    "start": 256.97,
+    "end": 258.8,
+    "text": "I have $127 in the bank.",
+    "ipa": "",
+    "vietnamese": "Tớ còn đúng 127 đô trong ngân hàng thôi.",
+    "note": ""
+  },
+  {
+    "start": 258.97,
+    "end": 262.01,
+    "text": "Monica, relax. Go get a beer.",
+    "ipa": "",
+    "vietnamese": "Monica, bình tĩnh đi. Đi lấy chai bia đi.",
+    "note": ""
+  },
+  {
+    "start": 263.68,
+    "end": 265.14,
+    "text": "Who said it was for you?",
+    "ipa": "",
+    "vietnamese": "Ai bảo lấy cho cậu đâu?",
+    "note": ""
+  },
+  {
+    "start": 270.98,
+    "end": 272.77,
+    "text": "BOTH [IN UNISON]: Hi.",
+    "ipa": "",
+    "vietnamese": "CẢ HAI [ĐỒNG THANH]: Chào.",
+    "note": ""
+  },
+  {
+    "start": 273.86,
+    "end": 275.15,
+    "text": "What's the matter?",
+    "ipa": "",
+    "vietnamese": "Có chuyện gì thế?",
+    "note": "*'what's the matter?': có chuyện gì vậy?"
+  },
+  {
+    "start": 275.32,
+    "end": 278.53,
+    "text": "Some mean guys at the coffeehouse took my hat.",
+    "ipa": "",
+    "vietnamese": "Mấy gã xấu tính ở quán cà phê cướp mất cái mũ của tớ rồi.",
+    "note": "*'mean': xấu tính, đểu giả"
+  },
+  {
+    "start": 278.74,
+    "end": 280.45,
+    "text": "-No. -You're kidding.",
+    "ipa": "",
+    "vietnamese": "-Thật á. -Cậu đùa đấy à.",
+    "note": "*'you're kidding': cậu đùa đấy à"
+  },
+  {
+    "start": 280.66,
+    "end": 283.08,
+    "text": "ROSS: It was ridiculous. These guys were bullies.",
+    "ipa": "",
+    "vietnamese": "ROSS: Ngớ ngẩn thật sự. Mấy gã đó đúng là đồ bắt nạt.",
+    "note": "*'bully': kẻ bắt nạt"
+  },
+  {
+    "start": 283.28,
+    "end": 285.2,
+    "text": "Actual bullies.",
+    "ipa": "",
+    "vietnamese": "Bắt nạt đúng nghĩa luôn ấy.",
+    "note": ""
+  },
+  {
+    "start": 285.37,
+    "end": 288.21,
+    "text": "We're grownups. This kind of stuff isn't supposed to happen anymore.",
+    "ipa": "",
+    "vietnamese": "Chúng tớ lớn cả rồi. Những trò này đáng lẽ không nên xảy ra nữa mới đúng.",
+    "note": "*'grownup': người lớn, người đã trưởng thành"
+  },
+  {
+    "start": 288.37,
+    "end": 290.62,
+    "text": "-Oh, hi. -Hi.",
+    "ipa": "",
+    "vietnamese": "-Ồ, chào em. -Chào anh.",
+    "note": ""
+  },
+  {
+    "start": 290.83,
+    "end": 292.25,
+    "text": "CHANDLER: Oh....",
+    "ipa": "",
+    "vietnamese": "CHANDLER: Ồ....",
+    "note": ""
+  },
+  {
+    "start": 292.42,
+    "end": 295.05,
+    "text": "Oh, no, wait a minute. I have no one.",
+    "ipa": "",
+    "vietnamese": "Ồ không, chờ đã. Tớ thì làm gì có ai.",
+    "note": ""
+  },
+  {
+    "start": 298.76,
+    "end": 301.47,
+    "text": "Let's go down there and get your hat back.",
+    "ipa": "",
+    "vietnamese": "Mọi người xuống đó lấy lại mũ cho cậu đi.",
+    "note": ""
+  },
+  {
+    "start": 301.63,
+    "end": 305.84,
+    "text": "Forget it. It's probably stripped and sold for parts by now.",
+    "ipa": "",
+    "vietnamese": "Bỏ đi. Có khi giờ này nó đã bị tháo rời đem bán phụ tùng rồi.",
+    "note": "*'strip for parts': rã xác/tháo gỡ lấy phụ tùng"
+  },
+  {
+    "start": 307.31,
+    "end": 309.89,
+    "text": "-Hey. I went up! -What?",
+    "ipa": "",
+    "vietnamese": "-Này. Tớ tăng điểm rồi! -Cái gì cơ?",
+    "note": "*'go up': tăng giá"
+  },
+  {
+    "start": 310.06,
+    "end": 313.44,
+    "text": "My stock, MEG, it went up two points.",
+    "ipa": "",
+    "vietnamese": "Mã cổ phiếu của tớ, MEG, tăng hẳn 2 điểm rồi.",
+    "note": ""
+  },
+  {
+    "start": 313.6,
+    "end": 317.85,
+    "text": "Do you realize that if I'd invested my $127 in myself yesterday...",
+    "ipa": "",
+    "vietnamese": "Các cậu có nhận ra nếu hôm qua tớ đầu tư 127 đô vào bản thân mình...",
+    "note": ""
+  },
+  {
+    "start": 318.03,
+    "end": 321.74,
+    "text": "...that I'd, like, have a lot more than that today.",
+    "ipa": "",
+    "vietnamese": "...thì hôm nay tớ đã có nhiều tiền hơn thế rất nhiều rồi không.",
+    "note": ""
+  },
+  {
+    "start": 323.07,
+    "end": 324.82,
+    "text": "You know what? I'm gonna do it.",
+    "ipa": "",
+    "vietnamese": "Cậu biết gì không? Tớ sẽ chơi luôn.",
+    "note": ""
+  },
+  {
+    "start": 325.74,
+    "end": 328.03,
+    "text": "-Do what? -Put all my money in me.",
+    "ipa": "",
+    "vietnamese": "-Làm gì cơ? -Tất tay toàn bộ tiền vào chính tớ.",
+    "note": "*'put money in/into': đầu tư tiền vào"
+  },
+  {
+    "start": 328.2,
+    "end": 331.08,
+    "text": "You don't know a thing about the stock market.",
+    "ipa": "",
+    "vietnamese": "Cậu thì biết gì về thị trường chứng khoán đâu.",
+    "note": "*'not know a thing': chẳng biết cái quái gì"
+  },
+  {
+    "start": 331.25,
+    "end": 334.21,
+    "text": "What's to know? Buy, sell. High, low. Bears, bulls.",
+    "ipa": "",
+    "vietnamese": "Có gì mà phải biết? Mua, bán. Giá cao, giá thấp. Thị trường gấu, thị trường bò.",
+    "note": "*'bears, bulls': thị trường giá xuống (bear market) và giá lên (bull market)"
+  },
+  {
+    "start": 334.38,
+    "end": 336.26,
+    "text": "Yes, Manhattan.",
+    "ipa": "",
+    "vietnamese": "Vâng, khu vực Manhattan.",
+    "note": ""
+  },
+  {
+    "start": 336.63,
+    "end": 338.72,
+    "text": "Telephone number to the stock...",
+    "ipa": "",
+    "vietnamese": "Cho xin số điện thoại của...",
+    "note": ""
+  },
+  {
+    "start": 339.3,
+    "end": 341.13,
+    "text": "...selling store.",
+    "ipa": "",
+    "vietnamese": "...cửa hàng bán chứng khoán.",
+    "note": ""
+  },
+  {
+    "start": 347.85,
+    "end": 350.02,
+    "text": "[PHOEBE SHOUTS AND TIRES SQUEAL]",
+    "ipa": "",
+    "vietnamese": "[PHOEBE HÉT LÊN VÀ TIẾNG LỐP XE RÍT]",
+    "note": ""
+  },
+  {
+    "start": 351.6,
+    "end": 354.44,
+    "text": "See? Didn't I tell you these pillows would be a good idea?",
+    "ipa": "",
+    "vietnamese": "Thấy chưa? Tớ đã bảo chuẩn bị mấy cái gối này kiểu gì cũng có ích mà?",
+    "note": ""
+  },
+  {
+    "start": 355.06,
+    "end": 356.89,
+    "text": "Oh, God.",
+    "ipa": "",
+    "vietnamese": "Ôi Chúa ơi.",
+    "note": ""
+  },
+  {
+    "start": 357.07,
+    "end": 358.9,
+    "text": "Here we go.",
+    "ipa": "",
+    "vietnamese": "Đến lúc rồi đây.",
+    "note": "*'here we go': bắt đầu thôi, tới đây rồi"
+  },
+  {
+    "start": 359.07,
+    "end": 362.99,
+    "text": "For the first time in my life, I'm gonna say, \"Hi, birth father!\"",
+    "ipa": "",
+    "vietnamese": "Lần đầu tiên trong đời, tớ sắp được nói: \"Con chào bố ruột!\"",
+    "note": "*'birth father': bố ruột"
+  },
+  {
+    "start": 363.65,
+    "end": 365.82,
+    "text": "-We love you. We're here for you. -Good luck.",
+    "ipa": "",
+    "vietnamese": "-Bọn tớ yêu cậu. Bọn tớ luôn ủng hộ cậu. -Chúc may mắn nhé.",
+    "note": "*'here for you': ở bên cạnh ủng hộ/giúp đỡ cậu"
+  },
+  {
+    "start": 365.99,
+    "end": 367.07,
+    "text": "Thanks.",
+    "ipa": "",
+    "vietnamese": "Cảm ơn nhé.",
+    "note": ""
+  },
+  {
+    "start": 370.95,
+    "end": 372.62,
+    "text": "Hey, Rach, you, uh, want some sandwich?",
+    "ipa": "",
+    "vietnamese": "Này Rach, cậu có muốn ăn chút bánh mì kẹp không?",
+    "note": ""
+  },
+  {
+    "start": 372.79,
+    "end": 375.12,
+    "text": "Oh, what is in that?",
+    "ipa": "",
+    "vietnamese": "Ồ, trong đó có nhân gì đấy?",
+    "note": ""
+  },
+  {
+    "start": 375.29,
+    "end": 377.5,
+    "text": "Olive loaf and ham spread. No mayo.",
+    "ipa": "",
+    "vietnamese": "Thịt nguội ô liu với thịt heo phết. Không cho sốt mayonnaise.",
+    "note": "*'olive loaf': thịt nguội cắt lát kẹp ô liu; *'mayo': viết tắt của mayonnaise"
+  },
+  {
+    "start": 377.67,
+    "end": 380.59,
+    "text": "No, because mayo, that would make it gross.",
+    "ipa": "",
+    "vietnamese": "Ừ, chuẩn đấy, cho mayonnaise vào thì tởm chết.",
+    "note": "*'gross': gớm ghiếc, tởm"
+  },
+  {
+    "start": 380.8,
+    "end": 384.51,
+    "text": "Hey, hey-- No, oh, oh, oh.",
+    "ipa": "",
+    "vietnamese": "Này này-- Không, ôi ôi ôi.",
+    "note": ""
+  },
+  {
+    "start": 384.72,
+    "end": 387.31,
+    "text": "-Run, Phoebe, run. -No, no, doggy, please!",
+    "ipa": "",
+    "vietnamese": "-Chạy đi Phoebe, chạy đi! -Không, cún con ơi làm ơn!",
+    "note": ""
+  },
+  {
+    "start": 387.47,
+    "end": 391.1,
+    "text": "I do so want to love all animals. Please, no. Back off!",
+    "ipa": "",
+    "vietnamese": "Tao rất muốn yêu thương động vật đấy. Làm ơn, đừng. Lùi lại ngay!",
+    "note": "*'back off': lùi lại, tránh ra"
+  },
+  {
+    "start": 391.27,
+    "end": 393.44,
+    "text": "-You got a bone? -Are you kidding?",
+    "ipa": "",
+    "vietnamese": "-Cậu có cục xương nào không? -Cậu đùa đấy à?",
+    "note": ""
+  },
+  {
+    "start": 393.6,
+    "end": 395.73,
+    "text": "Look, kibbles! Bits, oh!",
+    "ipa": "",
+    "vietnamese": "Nhìn này, hạt thức ăn cho chó này! Đồ ăn ngon nè!",
+    "note": "*'kibbles': hạt thức ăn khô cho chó mèo"
+  },
+  {
+    "start": 395.94,
+    "end": 397.02,
+    "text": "[GROWLING]",
+    "ipa": "",
+    "vietnamese": "[GẦM GỪ]",
+    "note": ""
+  },
+  {
+    "start": 397.19,
+    "end": 399.94,
+    "text": "Get the hell off my leg, you yippity piece of crap!",
+    "ipa": "",
+    "vietnamese": "Bỏ cái chân tao ra ngay, cái con chó con lắm chuyện này!",
+    "note": "*'get the hell off': cút/buông ra ngay lập tức; *'piece of crap': đồ bỏ đi/đồ tồi"
+  },
+  {
+    "start": 400.15,
+    "end": 402.4,
+    "text": "[PHOEBE SHOUTING AND DOG BARKING]",
+    "ipa": "",
+    "vietnamese": "[PHOEBE HÉT VÀ CHÓ SỦI]",
+    "note": ""
+  },
+  {
+    "start": 402.61,
+    "end": 404.24,
+    "text": "[PHOEBE GRUNTS THEN GASPS]",
+    "ipa": "",
+    "vietnamese": "[PHOEBE CẰM CỘI RỒI THỞ HỔN HỂN]",
+    "note": ""
+  },
+  {
+    "start": 404.45,
+    "end": 405.74,
+    "text": "Ooh.",
+    "ipa": "",
+    "vietnamese": "Ôi.",
+    "note": ""
+  },
+  {
+    "start": 407.03,
+    "end": 409.45,
+    "text": "Okay. All right. We have a problem.",
+    "ipa": "",
+    "vietnamese": "Thôi xong. Rắc rối rồi đây.",
+    "note": ""
+  },
+  {
+    "start": 410.03,
+    "end": 412.49,
+    "text": "Why don't you take his trampoline?",
+    "ipa": "",
+    "vietnamese": "Thế sao cậu không lấy cái thảm nhún của nó ra đỡ?",
+    "note": "*'trampoline': bạt nhún, thảm nhảy lò xo"
+  },
+  {
+    "start": 413.16,
+    "end": 414.83,
+    "text": "Okay, here, I know what we can do.",
+    "ipa": "",
+    "vietnamese": "Được rồi, tớ biết phải làm gì rồi.",
+    "note": ""
+  },
+  {
+    "start": 415.0,
+    "end": 417.38,
+    "text": "Hey. Hey. Hey, no!",
+    "ipa": "",
+    "vietnamese": "Này. Này. Này, không!",
+    "note": ""
+  },
+  {
+    "start": 417.54,
+    "end": 420.96,
+    "text": "Okay, doggy, get the sandwich! Aah!",
+    "ipa": "",
+    "vietnamese": "Được rồi cún con, ra lấy bánh mì này! Á!",
+    "note": ""
+  },
+  {
+    "start": 421.13,
+    "end": 424.63,
+    "text": "Go get the sandwich! Good doggy. Get the sandwich!",
+    "ipa": "",
+    "vietnamese": "Ra lấy bánh mì đi! Cún ngoan. Lấy bánh mì nào!",
+    "note": ""
+  },
+  {
+    "start": 425.17,
+    "end": 428.92,
+    "text": "The dog will lick himself but he will not touch your sandwich.",
+    "ipa": "",
+    "vietnamese": "Con chó thà tự liếm mình còn hơn thèm chạm vào cái bánh sandwich của cậu.",
+    "note": ""
+  },
+  {
+    "start": 429.1,
+    "end": 430.6,
+    "text": "What does that tell you?",
+    "ipa": "",
+    "vietnamese": "Cậu biết thế nghĩa là gì rồi đấy?",
+    "note": ""
+  },
+  {
+    "start": 431.97,
+    "end": 434.14,
+    "text": "-If he's not gonna eat it, I will. -Are you crazy?",
+    "ipa": "",
+    "vietnamese": "-Nếu nó không ăn thì tớ ăn. -Cậu điên rồi à?",
+    "note": "*'are you crazy?': cậu phát điên à?"
+  },
+  {
+    "start": 434.68,
+    "end": 438.1,
+    "text": "Pheebs, he's just a little dog. Aah!",
+    "ipa": "",
+    "vietnamese": "Pheebs, nó chỉ là một con chó nhỏ thôi mà. Á!",
+    "note": ""
+  },
+  {
+    "start": 438.31,
+    "end": 439.56,
+    "text": "[BARKING]",
+    "ipa": "",
+    "vietnamese": "[TIẾNG CHÓ SỦI]",
+    "note": ""
+  },
+  {
+    "start": 444.36,
+    "end": 445.9,
+    "text": "-Hey. -What?",
+    "ipa": "",
+    "vietnamese": "-Này. -Gì thế?",
+    "note": ""
+  },
+  {
+    "start": 446.07,
+    "end": 448.53,
+    "text": "Do you have to be a Century 21 real-estate agent...",
+    "ipa": "",
+    "vietnamese": "Liệu có nhất thiết phải làm nhân viên bất động sản Century 21...",
+    "note": ""
+  },
+  {
+    "start": 448.7,
+    "end": 451.74,
+    "text": "...to get to wear those cool jackets?",
+    "ipa": "",
+    "vietnamese": "...thì mới được khoác mấy chiếc áo vest ngầu đét đó không?",
+    "note": "*'cool': ngầu, ngầu đét"
+  },
+  {
+    "start": 453.79,
+    "end": 456.58,
+    "text": "Do you say this stuff to girls?",
+    "ipa": "",
+    "vietnamese": "Cậu toàn dùng mấy câu tào lao này để đi tán gái đấy à?",
+    "note": ""
+  },
+  {
+    "start": 459.17,
+    "end": 462.34,
+    "text": "Hey, isn't that the guy who used to wear your hat?",
+    "ipa": "",
+    "vietnamese": "Này, kia không phải là cái gã cướp cái mũ của cậu sao?",
+    "note": ""
+  },
+  {
+    "start": 462.5,
+    "end": 464.33,
+    "text": "And look where they're sitting.",
+    "ipa": "",
+    "vietnamese": "Và nhìn xem bọn chúng đang ngồi chỗ nào kìa.",
+    "note": ""
+  },
+  {
+    "start": 464.51,
+    "end": 466.3,
+    "text": "[CHANDLER SIGHS]",
+    "ipa": "",
+    "vietnamese": "[CHANDLER THỞ DÀI]",
+    "note": ""
+  },
+  {
+    "start": 467.34,
+    "end": 471.72,
+    "text": "You're joking, right? You guys just walked through the door.",
+    "ipa": "",
+    "vietnamese": "Hai người đùa đấy à? Tụi bay vừa mới bước chân qua cửa cơ mà.",
+    "note": ""
+  },
+  {
+    "start": 471.89,
+    "end": 474.18,
+    "text": "-Maybe we didn't make it clear enough. -Yeah.",
+    "ipa": "",
+    "vietnamese": "-Có lẽ lần trước bọn tao nói chưa đủ rõ nhỉ. -Đúng đấy.",
+    "note": "*'make sth clear': giải thích/nói rõ ràng cái gì"
+  },
+  {
+    "start": 474.35,
+    "end": 477.06,
+    "text": "This couch belongs to us.",
+    "ipa": "",
+    "vietnamese": "Cái ghế sofa này là của bọn tao.",
+    "note": ""
+  },
+  {
+    "start": 477.23,
+    "end": 480.77,
+    "text": "I'll tell you what, you call the couch...",
+    "ipa": "",
+    "vietnamese": "Hay là thế này đi, cậu thử gọi cái ghế một tiếng...",
+    "note": "*'I'll tell you what': hay là thế này đi (đưa ra đề xuất)"
+  },
+  {
+    "start": 480.94,
+    "end": 483.28,
+    "text": "...and then we'll call the couch...",
+    "ipa": "",
+    "vietnamese": "...rồi bọn tớ cũng gọi cái ghế...",
+    "note": ""
+  },
+  {
+    "start": 484.94,
+    "end": 486.52,
+    "text": "...and we'll see who it comes to.",
+    "ipa": "",
+    "vietnamese": "...xem nó nghe lời chạy về phía ai nhé.",
+    "note": ""
+  },
+  {
+    "start": 488.15,
+    "end": 491.86,
+    "text": "You know what I keep wondering? Why you two are still sitting here.",
+    "ipa": "",
+    "vietnamese": "Mày có biết tao cứ thắc mắc điều gì không? Là tại sao hai đứa tụi bay vẫn còn ngồi lì ở đây đấy.",
+    "note": ""
+  },
+  {
+    "start": 492.07,
+    "end": 493.82,
+    "text": "All right, that's it.",
+    "ipa": "",
+    "vietnamese": "Được rồi, thế là quá đủ rồi đấy.",
+    "note": "*'that's it': thế là đủ rồi / chịu hết nổi rồi"
+  },
+  {
+    "start": 496.54,
+    "end": 497.62,
+    "text": "Gunther.",
+    "ipa": "",
+    "vietnamese": "Gunther.",
+    "note": ""
+  },
+  {
+    "start": 498.87,
+    "end": 501.0,
+    "text": "These guys are trying to take our seat.",
+    "ipa": "",
+    "vietnamese": "Mấy gã này đang cố tranh chỗ ngồi của bọn tớ.",
+    "note": ""
+  },
+  {
+    "start": 502.79,
+    "end": 505.17,
+    "text": "Fellas, these guys were here first.",
+    "ipa": "",
+    "vietnamese": "Mấy anh bạn, hai người này đến trước mà.",
+    "note": "*'fellas': các anh bạn, mấy gã"
+  },
+  {
+    "start": 505.38,
+    "end": 507.22,
+    "text": "-Oh, sorry, didn't realize. - Ahem.",
+    "ipa": "",
+    "vietnamese": "-Ồ xin lỗi, bọn tớ không biết. - Hèm.",
+    "note": ""
+  },
+  {
+    "start": 507.42,
+    "end": 508.71,
+    "text": "There you go.",
+    "ipa": "",
+    "vietnamese": "Đấy thấy chưa.",
+    "note": "*'there you go': đấy thấy chưa / xong rồi đấy"
+  },
+  {
+    "start": 508.93,
+    "end": 511.18,
+    "text": "Thank you, Gunther.",
+    "ipa": "",
+    "vietnamese": "Cảm ơn Gunther nhé.",
+    "note": ""
+  },
+  {
+    "start": 513.97,
+    "end": 515.8,
+    "text": "We didn't want to have to go and do that.",
+    "ipa": "",
+    "vietnamese": "Bọn tớ cũng đâu muốn phải làm căng tới mức đó đâu.",
+    "note": ""
+  },
+  {
+    "start": 517.1,
+    "end": 519.52,
+    "text": "He told on us?",
+    "ipa": "",
+    "vietnamese": "Nó mách người khác đấy à?",
+    "note": "*'tell on someone': mách quéo, méc người khác về sai phạm của ai"
+  },
+  {
+    "start": 519.77,
+    "end": 520.94,
+    "text": "You told on us?",
+    "ipa": "",
+    "vietnamese": "Mày đi mách lẻo đấy à?",
+    "note": ""
+  },
+  {
+    "start": 521.1,
+    "end": 524.39,
+    "text": "Well, pal, you didn't give me much of a choice.",
+    "ipa": "",
+    "vietnamese": "Thì, này anh bạn, cậu đâu có cho tớ nhiều lựa chọn.",
+    "note": "*'pal': người bạn, anh bạn"
+  },
+  {
+    "start": 525.9,
+    "end": 528.4,
+    "text": "-Don't play with his thing. -I know.",
+    "ipa": "",
+    "vietnamese": "-Đừng có nghịch đồ của người ta. -Tớ biết rồi.",
+    "note": ""
+  },
+  {
+    "start": 530.49,
+    "end": 532.16,
+    "text": "All right.",
+    "ipa": "",
+    "vietnamese": "Được rồi.",
+    "note": ""
+  },
+  {
+    "start": 532.45,
+    "end": 534.87,
+    "text": "Let's take this outside.",
+    "ipa": "",
+    "vietnamese": "Ra ngoài giải quyết.",
+    "note": "*'take sth outside': ra ngoài solo/đánh nhau giải quyết"
+  },
+  {
+    "start": 536.49,
+    "end": 539.74,
+    "text": "\"Let's take this outside\"?",
+    "ipa": "",
+    "vietnamese": "\"Ra ngoài giải quyết\" cơ đấy?",
+    "note": ""
+  },
+  {
+    "start": 539.91,
+    "end": 542.04,
+    "text": "[CHUCKLES]",
+    "ipa": "",
+    "vietnamese": "[CƯỜI CƯỢI]",
+    "note": ""
+  },
+  {
+    "start": 544.71,
+    "end": 549.13,
+    "text": "The guy who's about to kick your ass talks like that.",
+    "ipa": "",
+    "vietnamese": "Cái gã chuẩn bị đá đít mày nói thế đấy.",
+    "note": "*'kick someone's ass': sút mông, đánh cho ai một trận"
+  },
+  {
+    "start": 549.3,
+    "end": 551.68,
+    "text": "-You had to ask. -Yeah.",
+    "ipa": "",
+    "vietnamese": "-Cậu cứ phải hỏi dồn cơ. -Ừ.",
+    "note": ""
+  },
+  {
+    "start": 554.64,
+    "end": 557.06,
+    "text": "Okay, okay, look. See...",
+    "ipa": "",
+    "vietnamese": "Được rồi, nghe này...",
+    "note": ""
+  },
+  {
+    "start": 557.22,
+    "end": 561.35,
+    "text": "...the thing is, we're not gonna fight you guys.",
+    "ipa": "",
+    "vietnamese": "...vấn đề là bọn tớ sẽ không đánh nhau với các cậu đâu.",
+    "note": ""
+  },
+  {
+    "start": 562.52,
+    "end": 563.69,
+    "text": "Here's the deal.",
+    "ipa": "",
+    "vietnamese": "Thỏa thuận thế này nhé.",
+    "note": "*'here's the deal': chốt lại thế này, thỏa thuận là"
+  },
+  {
+    "start": 563.85,
+    "end": 568.85,
+    "text": "You won't have to, so long as you never ever show your faces here again.",
+    "ipa": "",
+    "vietnamese": "Tụi bay khỏi cần phải đánh, miễn là đừng bao giờ vác mặt tới đây nữa.",
+    "note": "*'show one's face': vác mặt đến, xuất hiện"
+  },
+  {
+    "start": 574.12,
+    "end": 577.16,
+    "text": "I think you played the Gunther card too soon.",
+    "ipa": "",
+    "vietnamese": "Tớ nghĩ cậu xài lá bài Gunther hơi sớm rồi đấy.",
+    "note": "*'play a card': tung chiêu, đem bài ra đỡ"
+  },
+  {
+    "start": 583.37,
+    "end": 585.58,
+    "text": "Hey, Pheebs, I think you're good to go.",
+    "ipa": "",
+    "vietnamese": "Này Pheebs, tớ nghĩ cậu sẵn sàng gõ cửa được rồi đấy.",
+    "note": "*'good to go': sẵn sàng thực hiện"
+  },
+  {
+    "start": 585.79,
+    "end": 587.54,
+    "text": "Yeah, I don't know.",
+    "ipa": "",
+    "vietnamese": "Ừm, tớ cũng không biết nữa.",
+    "note": ""
+  },
+  {
+    "start": 589.55,
+    "end": 590.63,
+    "text": "What's the matter?",
+    "ipa": "",
+    "vietnamese": "Sao thế cậu?",
+    "note": ""
+  },
+  {
+    "start": 590.8,
+    "end": 593.3,
+    "text": "I just think that this was a really bad sign.",
+    "ipa": "",
+    "vietnamese": "Tớ chỉ cảm thấy đây là một điềm gở.",
+    "note": ""
+  },
+  {
+    "start": 593.47,
+    "end": 596.97,
+    "text": "Like the beast at the threshold.",
+    "ipa": "",
+    "vietnamese": "Kiểu như quái thú canh giữ ngay ngưỡng cửa ấy.",
+    "note": "*'beast at the threshold': thử thách/quái vật canh gác trước ngưỡng cửa (khái niệm trong thần thoại)"
+  },
+  {
+    "start": 598.43,
+    "end": 603.35,
+    "text": "It's just I have no family left, except for my grandmother.",
+    "ipa": "",
+    "vietnamese": "Chỉ là tớ chẳng còn người thân nào nữa ngoài bà nội.",
+    "note": ""
+  },
+  {
+    "start": 603.52,
+    "end": 606.48,
+    "text": "But let's face it, she's not gonna be around forever.",
+    "ipa": "",
+    "vietnamese": "Nhưng phải đối mặt với thực tế là bà sẽ không ở bên tớ mãi mãi.",
+    "note": "*'let's face it': hãy đối mặt với thực tế; *'around': ở bên cạnh"
+  },
+  {
+    "start": 606.65,
+    "end": 608.11,
+    "text": "Despite what she says.",
+    "ipa": "",
+    "vietnamese": "Dù bà luôn miệng nói thế.",
+    "note": ""
+  },
+  {
+    "start": 609.73,
+    "end": 615.86,
+    "text": "And I have a sister who I've barely spoken to since we shared a womb.",
+    "ipa": "",
+    "vietnamese": "Còn cô chị gái thì tớ chẳng mấy khi nói chuyện từ hồi hai đứa chung một bụng mẹ.",
+    "note": "*'share a womb': chị em song sinh chung một dạ con"
+  },
+  {
+    "start": 616.03,
+    "end": 618.2,
+    "text": "I don't know. This is my real father...",
+    "ipa": "",
+    "vietnamese": "Tớ không biết nữa. Đây là bố đẻ của tớ...",
+    "note": ""
+  },
+  {
+    "start": 618.37,
+    "end": 621.21,
+    "text": "...and I want things to be, like, just right.",
+    "ipa": "",
+    "vietnamese": "...và tớ muốn mọi thứ phải diễn ra thật suôn sẻ, hoàn hảo.",
+    "note": "*'just right': đúng chuẩn, suôn sẻ"
+  },
+  {
+    "start": 621.37,
+    "end": 623.25,
+    "text": "I completely understand.",
+    "ipa": "",
+    "vietnamese": "Tớ hoàn toàn hiểu mà.",
+    "note": ""
+  },
+  {
+    "start": 623.41,
+    "end": 624.99,
+    "text": "Yeah, whatever you need.",
+    "ipa": "",
+    "vietnamese": "Ừ, bọn tớ luôn sẵn sàng vì cậu.",
+    "note": ""
+  },
+  {
+    "start": 626.5,
+    "end": 628.29,
+    "text": "Hey, you want to go home?",
+    "ipa": "",
+    "vietnamese": "Này, cậu muốn về nhà chưa?",
+    "note": ""
+  },
+  {
+    "start": 628.5,
+    "end": 630.79,
+    "text": "Okay, thanks. Sorry again.",
+    "ipa": "",
+    "vietnamese": "Được rồi, cảm ơn hai cậu. Xin lỗi vì bắt hai cậu chờ nhé.",
+    "note": ""
+  },
+  {
+    "start": 631.55,
+    "end": 633.47,
+    "text": "[CAR STARTING]",
+    "ipa": "",
+    "vietnamese": "[XE KHỞI ĐỘNG]",
+    "note": ""
+  },
+  {
+    "start": 636.93,
+    "end": 639.06,
+    "text": "[THUD AND DOG YELPS]",
+    "ipa": "",
+    "vietnamese": "[TIẾNG BỊCH VÀ CHÓ KÊU ẲNG]",
+    "note": ""
+  },
+  {
+    "start": 644.73,
+    "end": 646.44,
+    "text": "[PHOEBE SIGHS]",
+    "ipa": "",
+    "vietnamese": "[PHOEBE THỞ DÀI]",
