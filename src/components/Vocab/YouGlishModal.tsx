@@ -24,19 +24,33 @@ declare global {
 const YouGlishPlayer = React.memo(function YouGlishPlayer({
   word,
   accent,
-  refreshKey
+  refreshKey,
+  isOpen
 }: {
   word: string;
   accent: Accent;
   refreshKey: number;
+  isOpen: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetRef = useRef<any>(null);
+
+  // Pause when modal closes
+  useEffect(() => {
+    if (!isOpen && widgetRef.current && typeof widgetRef.current.pause === "function") {
+      try {
+        widgetRef.current.pause();
+      } catch (e) {}
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     let isMounted = true;
     const container = containerRef.current;
     if (!container || !word) return;
+
+    const cleanWord = word.replace(/<[^>]*>/g, "").replace(/[()\[\]]/g, " ").replace(/\s+/g, " ").trim();
+    if (!cleanWord) return;
 
     const uniqueId = `yg-widget-${Date.now()}`;
     container.innerHTML = `<div id="${uniqueId}"></div>`;
@@ -76,7 +90,7 @@ const YouGlishPlayer = React.memo(function YouGlishPlayer({
           const calcWidth = typeof window !== "undefined" ? Math.min(600, window.innerWidth - 48) : 560;
           const widget = new window.YG.Widget(uniqueId, {
             width: calcWidth,
-            components: 255, // Full components including Subtitles/Captions (bit 8) with yellow highlight, Controls (bit 16), Speed (bit 32)
+            components: 255, // Full components: Video + Captions + All Navigation Buttons (Prev, Next, Replay, -5s) + Speed
             autoStart: 1,
             backgroundColor: "#ffffff",
             markerColor: "#fde047", // Bright yellow highlight for target word
@@ -89,15 +103,15 @@ const YouGlishPlayer = React.memo(function YouGlishPlayer({
             }
           });
           widgetRef.current = widget;
-          widget.fetch(word.trim(), "english", accent === "all" ? undefined : accent);
+          widget.fetch(cleanWord, "english", accent === "all" ? undefined : accent);
         }
       } catch (e) {
         console.error("Failed to load YouGlish widget", e);
         if (isMounted && container) {
           container.innerHTML = `
             <div style="padding: 2rem; text-align: center; color: #64748b;">
-              <p style="font-weight: bold; margin-bottom: 0.5rem;">Không thể tải video YouGlish</p>
-              <a href="https://youglish.com/pronounce/${encodeURIComponent(word)}/english/${accent}/cptc=1" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-size: 0.875rem;">
+              <p style="font-weight: bold; margin-bottom: 0.5rem; color: #e11d48;">Không thể tải video YouGlish</p>
+              <a href="https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english/${accent}/cptc=1" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-size: 0.875rem;">
                 Mở xem trực tiếp trên YouGlish.com &rarr;
               </a>
             </div>
@@ -115,10 +129,6 @@ const YouGlishPlayer = React.memo(function YouGlishPlayer({
           widgetRef.current.pause();
         } catch (e) {}
       }
-      widgetRef.current = null;
-      if (container) {
-        container.innerHTML = "";
-      }
     };
   }, [word, accent, refreshKey]);
 
@@ -133,15 +143,26 @@ const YouGlishPlayer = React.memo(function YouGlishPlayer({
 export default function YouGlishModal({ isOpen, onClose, word, ipa, mean }: YouGlishModalProps) {
   const [accent, setAccent] = useState<Accent>("all");
   const [refreshKey, setRefreshKey] = useState(0);
+  const [hasOpenedEver, setHasOpenedEver] = useState(false);
 
-  if (!isOpen || !word) return null;
+  useEffect(() => {
+    if (isOpen) {
+      setHasOpenedEver(true);
+      setAccent("all");
+    }
+  }, [isOpen]);
+
+  if (!hasOpenedEver && !isOpen) return null;
 
   const accentPath = accent === "all" ? "all" : accent;
-  const youglishExternalUrl = `https://youglish.com/pronounce/${encodeURIComponent(word.trim())}/english/${accentPath}/cptc=1`;
+  const cleanWord = (word || "").replace(/<[^>]*>/g, "").replace(/[()\[\]]/g, " ").replace(/\s+/g, " ").trim();
+  const youglishExternalUrl = `https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english/${accentPath}/cptc=1`;
 
   return (
     <div 
-      className="fixed inset-0 flex items-center justify-center p-2 sm:p-4 animate-in fade-in duration-200"
+      className={`fixed inset-0 flex items-center justify-center p-2 sm:p-4 transition-all duration-200 ${
+        isOpen ? "opacity-100 pointer-events-auto visible" : "opacity-0 pointer-events-none invisible"
+      }`}
       style={{ zIndex: 2147483640 }}
     >
       {/* Backdrop (Clear, no blur, click to close) */}
@@ -164,10 +185,10 @@ export default function YouGlishModal({ isOpen, onClose, word, ipa, mean }: YouG
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                 <h3 className="text-sm sm:text-lg font-black text-slate-800 tracking-tight truncate max-w-[140px] sm:max-w-xs">
-                  {word}
+                  {cleanWord}
                 </h3>
                 <button
-                  onClick={() => speakVocab(word, "us")}
+                  onClick={() => speakVocab(cleanWord, "us")}
                   className="p-1 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors shrink-0"
                   title="Nghe phát âm"
                 >
@@ -266,9 +287,10 @@ export default function YouGlishModal({ isOpen, onClose, word, ipa, mean }: YouG
         {/* Video Area (Isolated YouGlish Widget) */}
         <div className="w-full flex-1 min-h-[300px] sm:min-h-[420px] flex items-center justify-center bg-slate-50 overflow-y-auto no-scrollbar">
           <YouGlishPlayer
-            word={word}
+            word={cleanWord}
             accent={accent}
             refreshKey={refreshKey}
+            isOpen={isOpen}
           />
         </div>
 

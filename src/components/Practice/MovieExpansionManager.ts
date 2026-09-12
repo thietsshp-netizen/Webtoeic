@@ -2619,11 +2619,12 @@ const ensureYouGlishScript = (doc: Document, win: any): Promise<void> => {
         <div class="youglish-modal-header">
           <div class="youglish-modal-title">
             <span class="youglish-logo">🎬 YouGlish</span>
-            <strong class="youglish-word">${escapeHtml(cleanWord)}</strong>
-            ${ipa ? `<span class="youglish-ipa">${escapeHtml(ipa)}</span>` : ''}
+            <strong class="youglish-word" id="popupYgWordTitle">${escapeHtml(cleanWord)}</strong>
+            ${ipa ? `<span class="youglish-ipa" id="popupYgIpaTitle">${escapeHtml(ipa)}</span>` : ''}
           </div>
           <div style="display: flex; align-items: center; gap: 6px;">
             <a 
+              id="popupYgExternalLink"
               href="https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english/all/cptc=1" 
               target="_blank" 
               rel="noopener noreferrer" 
@@ -2652,6 +2653,7 @@ const ensureYouGlishScript = (doc: Document, win: any): Promise<void> => {
         </div>
       </div>
     `;
+
     modal.classList.add('active');
 
     // Clean up previous widget
@@ -2671,7 +2673,7 @@ const ensureYouGlishScript = (doc: Document, win: any): Promise<void> => {
       if (targetWin.YG && targetWin.YG.Widget) {
         const widget = new targetWin.YG.Widget(widgetInnerId, {
           width: calcWidth,
-          components: 255,
+          components: 255, // Full components: Video + Captions + All Navigation Buttons (Prev, Next, Replay, -5s) + Speed
           autoStart: 1,
           backgroundColor: "#ffffff",
           markerColor: "#fde047",
