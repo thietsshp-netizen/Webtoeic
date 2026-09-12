@@ -60,8 +60,7 @@ __pycache__/
 /Part 5/
 /Part 6/
 /Part 7/
-/ToeicVocab/*.apkg
-/ToeicVocab/images/
+/ToeicVocab/
 
 # Temporary / Output files
 output.json
