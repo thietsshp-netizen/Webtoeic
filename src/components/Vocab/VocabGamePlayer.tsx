@@ -214,7 +214,12 @@ function FlashCard({
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
           <div className="mt-5 sm:mt-7 mb-2">
-            <div className={`font-black text-blue-600 mb-1 ${getWordFontSize(word.word)}`}>{word.word}</div>
+            <div className={`font-black text-blue-600 mb-1 flex items-center gap-3 flex-wrap ${getWordFontSize(word.word)}`}>
+              <span>{word.word}</span>
+              <button onClick={(e) => { e.stopPropagation(); speak(word.word); }} className="p-1.5 hover:bg-indigo-100/60 rounded-lg transition-colors flex-shrink-0" title="Nghe phát âm">
+                <Volume2 size={20} className="text-blue-400 hover:text-blue-600" />
+              </button>
+            </div>
             <div className="text-red-500 font-black text-base sm:text-lg tracking-tight leading-tight break-words">{limitMeanings(word.mean)}</div>
           </div>
 
