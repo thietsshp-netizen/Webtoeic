@@ -226,3 +226,14 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700 !important;
   font-size: 0.8125rem !important;
 }
+
+/* ====================================================
+   SCROLLBAR UTILITIES
+   ==================================================== */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}

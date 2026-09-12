@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Play, Pause, RotateCcw, Volume2, Settings, Edit, Check, X, CheckCircle, ChevronLeft, ChevronRight, HelpCircle, Maximize2, Minimize2 } from "lucide-react";
+import { Play, Pause, RotateCcw, Volume2, Video, Settings, Edit, Check, X, CheckCircle, ChevronLeft, ChevronRight, HelpCircle, Maximize2, Minimize2 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
 import { useSession } from "next-auth/react";
 import { showToast } from "@/components/UI/Toast";
+import YouGlishModal from "@/components/Vocab/YouGlishModal";
+import { speakVocab } from "@/lib/vocab-audio";
 import { 
   Subtitle, 
   SubtitleExpansion, 
@@ -601,14 +603,14 @@ const renderHighlightedSubtitle = (
       nodes.push(
         <span
           key={`match-${idx}`}
-          className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded-md transition-all duration-300 align-baseline ${
+          className={`inline-flex items-center gap-0.5 sm:gap-1 mx-0.5 sm:mx-1 px-1 sm:px-1.5 py-0.2 sm:py-0.5 rounded sm:rounded-md transition-all duration-300 align-baseline ${
             isActive
               ? "bg-amber-100 border border-amber-400 text-amber-900 font-extrabold shadow-sm animate-pulse"
               : "bg-amber-50 border border-amber-300 text-amber-900 font-bold"
           }`}
         >
           <span
-            className={`inline-flex items-center justify-center w-3.5 h-3.5 rounded-full text-[9px] font-black shrink-0 select-none ${
+            className={`inline-flex items-center justify-center w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full text-[8px] sm:text-[9px] font-black shrink-0 select-none ${
               isActive ? "bg-amber-500 text-white" : "bg-amber-600 text-white"
             }`}
           >
@@ -621,14 +623,14 @@ const renderHighlightedSubtitle = (
       nodes.push(
         <span
           key={`match-${idx}`}
-          className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded-lg transition-all duration-300 align-baseline ${
+          className={`inline-flex items-center gap-0.5 sm:gap-1 mx-0.5 sm:mx-1 px-1 sm:px-1.5 py-0.2 sm:py-0.5 rounded md:rounded-lg transition-all duration-300 align-baseline ${
             isActive
-              ? "bg-amber-400/30 border-2 border-amber-300 text-amber-200 font-extrabold shadow-[0_0_16px_rgba(251,191,36,0.85)] animate-pulse"
+              ? "bg-amber-400/30 border border-amber-300 text-amber-200 font-extrabold shadow-[0_0_12px_rgba(251,191,36,0.85)] animate-pulse"
               : "bg-amber-950/60 border border-amber-400/50 text-amber-200 font-bold"
           }`}
         >
           <span
-            className={`inline-flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-black shrink-0 select-none shadow-xs ${
+            className={`inline-flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full text-[8.5px] sm:text-[10px] font-black shrink-0 select-none shadow-xs ${
               isActive ? "bg-amber-400 text-slate-950 font-black" : "bg-amber-500 text-white font-bold"
             }`}
           >
@@ -666,6 +668,105 @@ const hexToRgba = (hex: string, alpha: number) => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
+const getPosBadge = (pos?: string) => {
+  if (!pos) return null;
+  const p = pos.toLowerCase().trim().replace(/[_\-]+/g, ' ');
+  let short = p;
+  let full = pos;
+
+  if (p.includes('phrasal verb') || p === 'phr v' || p === 'phrv') {
+    short = 'phr v';
+    full = 'Phrasal Verb (Cụm động từ)';
+  } else if (p === 'noun' || p === 'n') {
+    short = 'n';
+    full = 'Noun (Danh từ)';
+  } else if (p === 'verb' || p === 'v') {
+    short = 'v';
+    full = 'Verb (Động từ)';
+  } else if (p.includes('adjective') || p === 'adj' || p === 'a') {
+    short = 'adj';
+    full = 'Adjective (Tính từ)';
+  } else if (p.includes('adverb') || p === 'adv') {
+    short = 'adv';
+    full = 'Adverb (Trạng từ)';
+  } else if (p.includes('preposition') || p === 'prep') {
+    short = 'prep';
+    full = 'Preposition (Giới từ)';
+  } else if (p.includes('conjunction') || p === 'conj') {
+    short = 'conj';
+    full = 'Conjunction (Liên từ)';
+  } else if (p.includes('pronoun') || p === 'pron') {
+    short = 'pron';
+    full = 'Pronoun (Đại từ)';
+  } else if (p.includes('idiom') || p === 'idm') {
+    short = 'idm';
+    full = 'Idiom (Thành ngữ)';
+  } else if (p.includes('collocation') || p === 'colloc' || p === 'coll') {
+    short = 'colloc';
+    full = 'Collocation (Cụm từ kết hợp)';
+  } else if (p.includes('phrase') || p === 'phr') {
+    short = 'phrase';
+    full = 'Phrase (Cụm từ)';
+  }
+
+  return { short, full };
+};
+
+const getRegisterBadge = (reg?: string) => {
+  if (!reg) return null;
+  const r = reg.toLowerCase().trim();
+  let short = r;
+  let full = reg;
+
+  if (r.includes('informal') || r === 'inf') {
+    short = 'inf';
+    full = 'Informal (Thân mật)';
+  } else if (r.includes('formal') || r === 'form') {
+    short = 'form';
+    full = 'Formal (Trang trọng)';
+  } else if (r.includes('casual') || r === 'cas') {
+    short = 'cas';
+    full = 'Casual (Tự nhiên/Thông dụng)';
+  } else if (r.includes('slang')) {
+    short = 'slang';
+    full = 'Slang (Tiếng lóng)';
+  } else if (r.includes('neutral') || r === 'neu') {
+    short = 'neu';
+    full = 'Neutral (Trung tính)';
+  }
+
+  return { short, full };
+};
+
+const getSfTypeBadge = (type?: string) => {
+  if (!type) return { short: 'REL', full: 'Related' };
+  const t = type.toLowerCase().trim().replace(/[_\-]+/g, ' ');
+  let short = type.toUpperCase();
+  let full = type;
+
+  if (t.includes('synonym') || t === 'syn') {
+    short = 'SYN';
+    full = 'Synonym (Từ đồng nghĩa)';
+  } else if (t.includes('antonym') || t === 'ant') {
+    short = 'ANT';
+    full = 'Antonym (Từ trái nghĩa)';
+  } else if (t.includes('related') || t === 'rel') {
+    short = 'REL';
+    full = 'Related Phrase (Cụm liên quan)';
+  } else if (t.includes('slang')) {
+    short = 'SLANG';
+    full = 'Slang (Tiếng lóng)';
+  } else if (t.includes('idiom') || t === 'idm') {
+    short = 'IDM';
+    full = 'Idiom (Thành ngữ)';
+  } else if (t.includes('collocation') || t === 'colloc' || t === 'coll') {
+    short = 'COLL';
+    full = 'Collocation (Cụm từ kết hợp)';
+  }
+
+  return { short, full };
+};
+
 const renderAutoStudyOverlayContent = (
   items: FlattenedExpansionItem[],
   revealedChars: number,
@@ -679,7 +780,10 @@ const renderAutoStudyOverlayContent = (
   borderWidth: number = 2,
   borderColor: string = "#ffffff",
   borderOpacity: number = 70,
-  isLoopingSub: boolean = false
+  isLoopingSub: boolean = false,
+  onOpenYouGlish?: (word: string, ipa?: string, mean?: string) => void,
+  onSpeakText?: (text: string) => void,
+  speakingText?: string | null
 ) => {
   // Chỉ lấy các mục từ vựng/cụm từ/slang/idiom (bỏ hoàn toàn cấu trúc theo yêu cầu)
   const vocabItems = items.filter(it => it.type === "vocabulary");
@@ -735,6 +839,8 @@ const renderAutoStudyOverlayContent = (
       charOffset = ipaEnd;
 
       const showBadges = !sectionIsTyping || sectionRevealedChars >= ipaEnd;
+      const posInfo = getPosBadge(item.part_of_speech);
+      const regInfo = getRegisterBadge(item.register);
 
       // Meaning slice
       const meaningStart = charOffset;
@@ -749,6 +855,10 @@ const renderAutoStudyOverlayContent = (
         isTypingHeader: boolean;
         items: Array<{
           type: string;
+          rawExpr: string;
+          rawMean: string;
+          rawExEn: string;
+          rawExVi: string;
           showTypeBadge: boolean;
           visibleExpr: string;
           isTypingExpr: boolean;
@@ -762,6 +872,9 @@ const renderAutoStudyOverlayContent = (
       } | null = null;
 
       let fallbackData: {
+        rawSynWord: string;
+        rawExEn: string;
+        rawExVi: string;
         visibleSyn: string;
         isTypingSyn: boolean;
         visibleExEn: string;
@@ -779,6 +892,8 @@ const renderAutoStudyOverlayContent = (
         charOffset = headerEnd;
 
         const sfItems = item.semantic_field_expansion.map(sf => {
+          const rawExpr = sf.expression ? sf.expression.replace(/<[^>]*>/g, '').trim() : "";
+          const rawMean = sf.meaning ? sf.meaning.trim() : "";
           const exprText = sf.expression ? ` ${sf.expression}` : "";
           const meanText = sf.meaning ? ` — ${sf.meaning}` : "";
           const rawExEn = sf.example_en ? sf.example_en.replace(/<[^>]*>/g, '').trim() : "";
@@ -817,6 +932,10 @@ const renderAutoStudyOverlayContent = (
 
           return {
             type: sf.type || "related",
+            rawExpr,
+            rawMean,
+            rawExEn,
+            rawExVi,
             showTypeBadge,
             visibleExpr,
             isTypingExpr,
@@ -837,6 +956,7 @@ const renderAutoStudyOverlayContent = (
         };
       } else {
         // Fallback for legacy vocab or standard structure
+        const rawSynWord = item.synonyms ? item.synonyms.replace(/<[^>]*>/g, '').trim() : (item.antonyms ? item.antonyms.replace(/<[^>]*>/g, '').trim() : "");
         const synText = item.synonyms ? ` Đồng nghĩa: ${item.synonyms}` : (item.antonyms ? ` Trái nghĩa: ${item.antonyms}` : "");
         const primaryEx = item.examples && item.examples.length > 0 ? item.examples[0] : null;
         const rawExEn = primaryEx?.en ? primaryEx.en.replace(/<[^>]*>/g, '').trim() : "";
@@ -866,6 +986,9 @@ const renderAutoStudyOverlayContent = (
         charOffset = exViEnd;
 
         fallbackData = {
+          rawSynWord,
+          rawExEn,
+          rawExVi,
           visibleSyn,
           isTypingSyn,
           visibleExEn,
@@ -876,34 +999,70 @@ const renderAutoStudyOverlayContent = (
       }
 
       return (
-        <div key={itIdx} className={`space-y-1 ${itIdx > 0 ? "pt-1.5 border-t border-white/10" : ""}`}>
-          {/* Row 1: Word/Pattern (White, font-extrabold) + Item Number Badge + IPA + Badges */}
-          <div className="flex flex-wrap items-baseline gap-1 sm:gap-1.5">
-            <span className="inline-flex items-center justify-center w-4.5 h-4.5 sm:w-5 sm:h-5 rounded-full bg-amber-500 text-white text-[10px] sm:text-[11px] font-black shrink-0 shadow-sm mr-0.5">
+        <div key={itIdx} className={`space-y-0.5 sm:space-y-1 ${itIdx > 0 ? "pt-0.5 sm:pt-1.5 border-t border-white/10" : ""}`}>
+          {/* Row 1: Word/Pattern + Item Number Badge + Loa trước từ + IPA + Badges viết tắt + YouGlish */}
+          <div className="flex flex-wrap items-center gap-0.5 sm:gap-1.5 leading-none">
+            <span className="inline-flex items-center justify-center w-3 h-3 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 rounded-full bg-amber-500 text-white text-[7.5px] sm:text-[10px] md:text-[11px] font-black shrink-0 shadow-sm mr-0.5">
               {itemNumber}
             </span>
-            <span className="text-[15px] sm:text-base md:text-[17px] font-extrabold tracking-wide drop-shadow-md text-white">
+
+            {/* Nút TTS phát âm đặt NGAY TRƯỚC từ vựng chính */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onSpeakText?.(titleText);
+              }}
+              className={`p-0.5 rounded text-slate-300 hover:text-amber-300 hover:bg-white/10 transition-all cursor-pointer shrink-0 pointer-events-auto ${speakingText === titleText ? 'text-amber-400 animate-pulse' : ''}`}
+              title={`Phát âm "${titleText}"`}
+            >
+              <Volume2 size={9} className="sm:w-3 sm:h-3 md:w-[13px] md:h-[13px]" />
+            </button>
+
+            <span className="text-[10.5px] sm:text-[13.5px] md:text-[15px] font-extrabold tracking-wide drop-shadow-md text-white">
               {visibleTitle}
-              {isTypingTitle && <span className="inline-block w-1.5 h-4 ml-0.5 animate-pulse align-middle bg-white" />}
+              {isTypingTitle && <span className="inline-block w-1 h-2.5 sm:h-4 ml-0.5 animate-pulse align-middle bg-white" />}
             </span>
 
             {visibleIpa && (
-              <span className="text-xs sm:text-[13px] font-mono font-medium text-violet-300 drop-shadow-xs">
+              <span className="text-[8.5px] sm:text-xs md:text-[13px] font-mono font-medium text-violet-300 drop-shadow-xs">
                 {visibleIpa}
-                {isTypingIpa && <span className="inline-block w-1 h-3.5 bg-violet-300 ml-0.5 animate-pulse align-middle" />}
+                {isTypingIpa && <span className="inline-block w-0.5 h-2 sm:h-3.5 bg-violet-300 ml-0.5 animate-pulse align-middle" />}
               </span>
             )}
 
             {showBadges && (
-              <div className="inline-flex items-center gap-1 ml-0.5">
-                {item.part_of_speech && (
-                  <span className="px-1.5 py-0.5 rounded bg-emerald-950/70 border border-emerald-400/40 text-emerald-300 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider">
-                    {item.part_of_speech}
+              <div className="inline-flex items-center gap-0.5 sm:gap-1 ml-0.5 flex-wrap">
+                {/* Nút YouGlish cho từ vựng chính */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenYouGlish?.(titleText, item.ipa, item.meaning);
+                  }}
+                  className="p-0.2 sm:p-0.5 px-0.5 sm:px-1 rounded bg-red-950/70 hover:bg-red-900 text-red-300 hover:text-white border border-red-400/40 text-[7px] sm:text-[9.5px] font-bold hover:scale-105 active:scale-95 transition-all cursor-pointer select-none shrink-0 pointer-events-auto"
+                  title={`Xem phát âm "${titleText}" trên YouGlish`}
+                >
+                  🎬
+                </button>
+
+                {/* Badge từ loại viết tắt với tooltip */}
+                {posInfo && (
+                  <span 
+                    title={posInfo.full} 
+                    className="px-0.5 sm:px-1 py-0 sm:py-0.2 rounded bg-emerald-950/70 border border-emerald-400/40 text-emerald-300 font-bold text-[6.5px] sm:text-[9px] uppercase tracking-wider cursor-help"
+                  >
+                    {posInfo.short}
                   </span>
                 )}
-                {item.register && (
-                  <span className="px-1.5 py-0.5 rounded bg-purple-950/70 border border-purple-400/40 text-purple-300 font-bold text-[9px] sm:text-[10px] tracking-wider">
-                    {item.register}
+
+                {/* Badge ngữ cảnh viết tắt với tooltip */}
+                {regInfo && (
+                  <span 
+                    title={regInfo.full} 
+                    className="px-0.5 sm:px-1 py-0 sm:py-0.2 rounded bg-purple-950/70 border border-purple-400/40 text-purple-300 font-bold text-[6.5px] sm:text-[9px] tracking-wider cursor-help"
+                  >
+                    {regInfo.short}
                   </span>
                 )}
               </div>
@@ -912,24 +1071,24 @@ const renderAutoStudyOverlayContent = (
 
           {/* Row 2: Vietnamese Meaning (White) */}
           {(visibleMeaning || isTypingMeaning) && (
-            <div className="text-[13px] sm:text-sm font-semibold text-white leading-snug drop-shadow-sm flex items-start gap-1">
-              <span className="text-emerald-400 shrink-0 select-none text-xs">👉</span>
+            <div className="text-[8.5px] sm:text-xs md:text-[13px] font-semibold text-white leading-tight drop-shadow-sm flex items-start gap-0.5 sm:gap-1">
+              <span className="text-emerald-400 shrink-0 select-none text-[8px] sm:text-xs">👉</span>
               <span>
                 {visibleMeaning}
-                {isTypingMeaning && <span className="inline-block w-1.5 h-3.5 bg-white ml-0.5 animate-pulse align-middle" />}
+                {isTypingMeaning && <span className="inline-block w-1 h-2 sm:h-3 bg-white ml-0.5 animate-pulse align-middle" />}
               </span>
             </div>
           )}
 
           {/* Row 3 (Mở rộng): Semantic Field Expansion for Vocab */}
           {sfRenderData && (sfRenderData.visibleHeader || sfRenderData.isTypingHeader || sfRenderData.items.some(it => it.visibleExpr)) && (
-            <div className="pt-1 border-t border-white/10 space-y-0.5">
-              <div className="text-[11px] sm:text-xs font-bold text-amber-300 flex items-center gap-1">
+            <div className="pt-0.5 sm:pt-1 border-t border-white/10 space-y-0.5">
+              <div className="text-[8px] sm:text-[10px] md:text-xs font-bold text-amber-300 flex items-center gap-0.5 sm:gap-1">
                 <span>🌐</span>
                 <span>{sfRenderData.visibleHeader.trim() || "Mở rộng:"}</span>
-                {sfRenderData.isTypingHeader && <span className="inline-block w-1.5 h-3 bg-amber-300 ml-0.5 animate-pulse align-middle" />}
+                {sfRenderData.isTypingHeader && <span className="inline-block w-1 h-2 sm:h-3 bg-amber-300 ml-0.5 animate-pulse align-middle" />}
               </div>
-              <div className="space-y-0.5 pl-1 sm:pl-1.5">
+              <div className="space-y-0.5 pl-0.5 sm:pl-1.5">
                 {sfRenderData.items.map((sfItem, sfIdx) => {
                   if (!sfItem.visibleExpr && !sfItem.isTypingExpr && !sfItem.visibleMean && sectionIsTyping) return null;
                   const typeLower = (sfItem.type || "").toLowerCase();
@@ -940,43 +1099,94 @@ const renderAutoStudyOverlayContent = (
                     : typeLower.includes("synonym")
                     ? "bg-emerald-950/80 border-emerald-400/50 text-emerald-300"
                     : "bg-sky-950/80 border-sky-400/50 text-sky-300";
+                  
+                  const sfBadgeInfo = getSfTypeBadge(sfItem.type);
 
                   return (
                     <div key={sfIdx} className="space-y-0.5">
-                      <div className="flex flex-wrap items-baseline gap-1">
-                        {sfItem.showTypeBadge && sfItem.type && (
-                          <span className={`px-1.5 py-0.5 rounded border font-bold text-[9px] sm:text-[10px] uppercase tracking-wider shrink-0 ${badgeClass}`}>
-                            {sfItem.type}
+                      <div className="flex flex-wrap items-center gap-0.5 sm:gap-1 leading-tight">
+                        {/* Badge loại mở rộng viết tắt với tooltip */}
+                        {sfItem.showTypeBadge && sfBadgeInfo && (
+                          <span 
+                            title={sfBadgeInfo.full} 
+                            className={`px-0.5 sm:px-1 py-0 sm:py-0.2 rounded border font-bold text-[6.5px] sm:text-[8.5px] uppercase tracking-wider shrink-0 cursor-help ${badgeClass}`}
+                          >
+                            {sfBadgeInfo.short}
                           </span>
                         )}
-                        <span className="font-bold text-amber-200 text-[13px] sm:text-sm">
+
+                        {/* Nút TTS phát âm đặt NGAY TRƯỚC từ mở rộng */}
+                        {sfItem.visibleExpr && !sfItem.isTypingExpr && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSpeakText?.(sfItem.rawExpr);
+                            }}
+                            className={`p-0.5 rounded text-slate-300 hover:text-amber-300 hover:bg-white/10 transition-all cursor-pointer shrink-0 pointer-events-auto ${speakingText === sfItem.rawExpr ? 'text-amber-400 animate-pulse' : ''}`}
+                            title={`Phát âm "${sfItem.rawExpr}"`}
+                          >
+                            <Volume2 size={8} className="sm:w-3 sm:h-3" />
+                          </button>
+                        )}
+
+                        <span className="font-bold text-amber-200 text-[8.5px] sm:text-xs md:text-[13px]">
                           {sfItem.visibleExpr}
-                          {sfItem.isTypingExpr && <span className="inline-block w-1 h-3.5 bg-amber-300 ml-0.5 animate-pulse align-middle" />}
+                          {sfItem.isTypingExpr && <span className="inline-block w-0.5 h-2.5 sm:h-3 bg-amber-300 ml-0.5 animate-pulse align-middle" />}
                         </span>
+
+                        {/* Nút YouGlish đặt ngay sau từ mở rộng */}
+                        {sfItem.visibleExpr && !sfItem.isTypingExpr && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onOpenYouGlish?.(sfItem.rawExpr, undefined, sfItem.rawMean);
+                            }}
+                            className="p-0.2 sm:p-0.5 px-0.5 sm:px-1 rounded bg-red-950/70 hover:bg-red-900 text-red-300 hover:text-white border border-red-400/40 text-[7px] font-bold hover:scale-105 active:scale-95 transition-all cursor-pointer select-none shrink-0 pointer-events-auto"
+                            title={`Xem "${sfItem.rawExpr}" trên YouGlish`}
+                          >
+                            🎬
+                          </button>
+                        )}
+
                         {(sfItem.visibleMean || sfItem.isTypingMean) && (
-                          <span className="text-slate-200 text-xs sm:text-[13px] font-medium">
+                          <span className="text-slate-200 text-[8px] sm:text-[11px] md:text-xs font-medium">
                             {sfItem.visibleMean}
-                            {sfItem.isTypingMean && <span className="inline-block w-1 h-3 bg-slate-300 ml-0.5 animate-pulse align-middle" />}
+                            {sfItem.isTypingMean && <span className="inline-block w-0.5 h-2 sm:h-3 bg-slate-300 ml-0.5 animate-pulse align-middle" />}
                           </span>
                         )}
                       </div>
-                      {/* Example in semantic field if present */}
+
+                      {/* Example in semantic field (Hiển thị đầy đủ 100% mọi câu ví dụ & dịch nghĩa) */}
                       {(sfItem.visibleExEn || sfItem.isTypingExEn || sfItem.visibleExVi || sfItem.isTypingExVi) && (
-                        <div className="text-[11px] sm:text-xs leading-tight pl-2.5 pt-0.5 space-y-0.5">
+                        <div className="text-[7.5px] sm:text-[10px] md:text-xs leading-tight pl-1 sm:pl-2.5 pt-0.2 sm:pt-0.5 space-y-0.2 sm:space-y-0.5 pointer-events-none">
                           {(sfItem.visibleExEn || sfItem.isTypingExEn) && (
-                            <div className="flex items-start gap-1 font-mono text-cyan-200">
-                              <span className="text-cyan-400 shrink-0 select-none text-[11px]">💬</span>
+                            <div className="inline-flex items-center flex-wrap gap-0.5 sm:gap-1 font-mono text-cyan-200 p-0.2 sm:p-0.5 rounded select-none pointer-events-none">
+                              <span className="text-cyan-400 shrink-0 select-none text-[7.5px] sm:text-[11px]">💬</span>
                               <span className="italic">
                                 {sfItem.visibleExEn}
-                                {sfItem.isTypingExEn && <span className="inline-block w-1 h-3 bg-cyan-300 ml-0.5 animate-pulse align-middle" />}
+                                {sfItem.isTypingExEn && <span className="inline-block w-0.5 h-2 sm:h-3 bg-cyan-300 ml-0.5 animate-pulse align-middle" />}
                               </span>
+                              {/* Nút Loa đặt NGAY SAU câu tiếng Anh - chỉ bấm riêng nút loa */}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onSpeakText?.(sfItem.rawExEn);
+                                }}
+                                className={`p-0.5 rounded text-cyan-300 hover:text-amber-300 hover:bg-white/10 transition-all cursor-pointer shrink-0 pointer-events-auto ${speakingText === sfItem.rawExEn ? "animate-pulse text-amber-300" : ""}`}
+                                title={`Nghe đọc câu ví dụ: "${sfItem.rawExEn}"`}
+                              >
+                                <Volume2 size={8} className="sm:w-2.5 sm:h-2.5" />
+                              </button>
                             </div>
                           )}
                           {(sfItem.visibleExVi || sfItem.isTypingExVi) && (
-                            <div className="text-slate-300/90 pl-4 text-[10px] sm:text-[11px]">
+                            <div className="text-slate-300/90 pl-2.5 sm:pl-4 text-[7px] sm:text-[9px] md:text-[10.5px] select-none pointer-events-none">
                               <span>
                                 {sfItem.visibleExVi}
-                                {sfItem.isTypingExVi && <span className="inline-block w-1 h-2.5 bg-slate-300 ml-0.5 animate-pulse align-middle" />}
+                                {sfItem.isTypingExVi && <span className="inline-block w-0.5 h-1.5 sm:h-2 bg-slate-300 ml-0.5 animate-pulse align-middle" />}
                               </span>
                             </div>
                           )}
@@ -993,31 +1203,70 @@ const renderAutoStudyOverlayContent = (
           {fallbackData && (
             <>
               {(fallbackData.visibleSyn || fallbackData.isTypingSyn) && (
-                <div className="text-[11.5px] sm:text-[12.5px] font-medium text-amber-200/90 leading-snug pl-3">
-                  <span className="inline-flex items-center gap-1">
+                <div className="text-[8px] sm:text-[11px] md:text-[12px] font-medium text-amber-200/90 leading-tight pl-1 sm:pl-3 flex items-center flex-wrap gap-0.5 sm:gap-1 pointer-events-none">
+                  <span className="inline-flex items-center gap-0.5 sm:gap-1 pointer-events-none">
                     <span>🔗</span>
+                    {/* Loa đặt NGAY TRƯỚC từ đồng nghĩa */}
+                    {fallbackData.rawSynWord && !fallbackData.isTypingSyn && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSpeakText?.(fallbackData.rawSynWord);
+                        }}
+                        className={`p-0.5 rounded text-slate-300 hover:text-amber-300 hover:bg-white/10 transition-all cursor-pointer pointer-events-auto ${speakingText === fallbackData.rawSynWord ? 'text-amber-400 animate-pulse' : ''}`}
+                        title={`Phát âm "${fallbackData.rawSynWord}"`}
+                      >
+                        <Volume2 size={8} className="sm:w-3 sm:h-3" />
+                      </button>
+                    )}
                     <span>{fallbackData.visibleSyn}</span>
-                    {fallbackData.isTypingSyn && <span className="inline-block w-1 h-3 bg-amber-300 ml-0.5 animate-pulse align-middle" />}
+                    {fallbackData.isTypingSyn && <span className="inline-block w-0.5 h-2 sm:h-3 bg-amber-300 ml-0.5 animate-pulse align-middle" />}
                   </span>
+                  {fallbackData.rawSynWord && !fallbackData.isTypingSyn && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenYouGlish?.(fallbackData.rawSynWord);
+                      }}
+                      className="p-0.2 sm:p-0.5 px-0.5 sm:px-1 rounded bg-red-950/70 hover:bg-red-900 text-red-300 hover:text-white border border-red-400/40 text-[7px] font-bold hover:scale-105 active:scale-95 transition-all cursor-pointer select-none ml-0.5 pointer-events-auto"
+                      title={`Xem "${fallbackData.rawSynWord}" trên YouGlish`}
+                    >
+                      🎬
+                    </button>
+                  )}
                 </div>
               )}
 
               {(fallbackData.visibleExEn || fallbackData.isTypingExEn || fallbackData.visibleExVi || fallbackData.isTypingExVi) && (
-                <div className="text-[11px] sm:text-xs leading-tight pl-2.5 pt-0.5 border-t border-white/5 space-y-0.5">
+                <div className="text-[7.5px] sm:text-[10.5px] md:text-xs leading-tight pl-1 sm:pl-2.5 pt-0.2 sm:pt-0.5 border-t border-white/5 space-y-0.2 sm:space-y-0.5 pointer-events-none">
                   {(fallbackData.visibleExEn || fallbackData.isTypingExEn) && (
-                    <div className="flex items-start gap-1 font-mono text-cyan-200">
-                      <span className="text-cyan-400 shrink-0 select-none text-[11px]">💬</span>
+                    <div className="inline-flex items-center flex-wrap gap-0.5 sm:gap-1 font-mono text-cyan-200 p-0.2 sm:p-0.5 rounded select-none pointer-events-none">
+                      <span className="text-cyan-400 shrink-0 select-none text-[7.5px] sm:text-[11px]">💬</span>
                       <span className="italic">
                         {fallbackData.visibleExEn}
-                        {fallbackData.isTypingExEn && <span className="inline-block w-1 h-3 bg-cyan-300 ml-0.5 animate-pulse align-middle" />}
+                        {fallbackData.isTypingExEn && <span className="inline-block w-0.5 h-2 sm:h-3 bg-cyan-300 ml-0.5 animate-pulse align-middle" />}
                       </span>
+                      {/* Loa đặt NGAY SAU câu tiếng Anh - chỉ bấm riêng nút loa */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSpeakText?.(fallbackData.rawExEn);
+                        }}
+                        className={`p-0.5 rounded text-cyan-300 hover:text-amber-300 hover:bg-white/10 transition-all cursor-pointer shrink-0 pointer-events-auto ${speakingText === fallbackData.rawExEn ? "animate-pulse text-amber-300" : ""}`}
+                        title={`Nghe đọc câu ví dụ: "${fallbackData.rawExEn}"`}
+                      >
+                        <Volume2 size={8} className={`sm:w-2.5 sm:h-2.5`} />
+                      </button>
                     </div>
                   )}
                   {(fallbackData.visibleExVi || fallbackData.isTypingExVi) && (
-                    <div className="text-slate-300/90 pl-4 text-[10px] sm:text-[11px]">
+                    <div className="text-slate-300/90 pl-2.5 sm:pl-4 text-[7px] sm:text-[9.5px] md:text-[10.5px] select-none pointer-events-none">
                       <span>
                         {fallbackData.visibleExVi}
-                        {fallbackData.isTypingExVi && <span className="inline-block w-1 h-2.5 bg-slate-300 ml-0.5 animate-pulse align-middle" />}
+                        {fallbackData.isTypingExVi && <span className="inline-block w-0.5 h-1.5 sm:h-2 bg-slate-300 ml-0.5 animate-pulse align-middle" />}
                       </span>
                     </div>
                   )}
@@ -1031,28 +1280,28 @@ const renderAutoStudyOverlayContent = (
   };
 
   const renderHeaderBar = (title: string, icon: string, sectionIsTyping: boolean) => (
-    <div className="flex items-center justify-between border-b border-white/15 pb-0.5 mb-1">
+    <div className="flex items-center justify-between border-b border-white/15 pb-0.5 mb-0.5 sm:mb-1">
       <div className="flex items-center gap-1">
-        <span className="text-xs sm:text-[13px]">{icon}</span>
-        <span className="text-[10px] sm:text-[11px] md:text-xs font-extrabold uppercase tracking-wider text-emerald-300">
+        <span className="text-[10px] sm:text-xs md:text-[13px]">{icon}</span>
+        <span className="text-[9px] sm:text-[10px] md:text-xs font-extrabold uppercase tracking-wider text-emerald-300">
           {title}
         </span>
       </div>
       {isLoopingSub ? (
-        <span className="text-[9.5px] sm:text-[10.5px] font-bold text-amber-300 bg-amber-950/70 px-1.5 py-0.5 rounded-full border border-amber-400/40 flex items-center gap-1 animate-pulse shadow-sm">
-          <span>🔁</span> Lặp vô hạn (Phím L)
+        <span className="text-[8px] sm:text-[9.5px] md:text-[10.5px] font-bold text-amber-300 bg-amber-950/70 px-1 sm:px-1.5 py-0.2 sm:py-0.5 rounded-full border border-amber-400/40 flex items-center gap-0.5 sm:gap-1 animate-pulse shadow-sm">
+          <span>🔁</span> <span className="hidden sm:inline">Lặp vô hạn</span> (L)
         </span>
       ) : phase === "replaying" ? (
-        <span className="text-[9.5px] sm:text-[10.5px] font-bold text-amber-300 bg-amber-950/70 px-1.5 py-0.5 rounded-full border border-amber-400/40 flex items-center gap-1 animate-pulse shadow-sm">
-          <span>🔁</span> Phát lại: {totalLoops - loopsLeft + 1}/{totalLoops}
+        <span className="text-[8px] sm:text-[9.5px] md:text-[10.5px] font-bold text-amber-300 bg-amber-950/70 px-1 sm:px-1.5 py-0.2 sm:py-0.5 rounded-full border border-amber-400/40 flex items-center gap-0.5 sm:gap-1 animate-pulse shadow-sm">
+          <span>🔁</span> {totalLoops - loopsLeft + 1}/{totalLoops}
         </span>
       ) : isPaused ? (
-        <span className="text-[9px] sm:text-[10px] font-bold text-amber-300 bg-amber-900/60 px-1.5 py-0.5 rounded-full border border-amber-400/40 flex items-center gap-1 shadow-sm">
+        <span className="text-[8px] sm:text-[9px] md:text-[10px] font-bold text-amber-300 bg-amber-900/60 px-1 sm:px-1.5 py-0.2 sm:py-0.5 rounded-full border border-amber-400/40 flex items-center gap-0.5 sm:gap-1 shadow-sm">
           <span>⏸️</span> Tạm dừng
         </span>
       ) : (
-        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-emerald-300 bg-emerald-950/70 px-2 py-0.5 rounded-full border border-emerald-400/40 flex items-center gap-1 shadow-sm">
-          <span>⚡</span> TOEIC MR. THIỆT
+        <span className="text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-wider text-emerald-300 bg-emerald-950/70 px-1.5 sm:px-2 py-0.2 sm:py-0.5 rounded-full border border-emerald-400/40 flex items-center gap-0.5 sm:gap-1 shadow-sm">
+          <span>⚡</span> <span className="hidden sm:inline">TOEIC MR. THIỆT</span><span className="sm:hidden">TOEIC</span>
         </span>
       )}
     </div>
@@ -1061,17 +1310,17 @@ const renderAutoStudyOverlayContent = (
   // Layout 1: Chỉ có 1 từ/cụm từ -> Hiển thị 1 khung gọn gàng nằm ở bên TRÁI
   if (vocabItems.length === 1) {
     return (
-      <div className={`w-full max-h-full flex justify-start pointer-events-auto transition-all duration-500 px-1 sm:px-2 ${
+      <div className={`w-full flex justify-start pointer-events-none transition-all duration-500 ${
         displayMode === "instant" 
           ? "animate-auto-study-slide" 
           : "animate-fade-in"
       }`}>
         <div 
-          className="w-full md:w-[44%] lg:w-[41%] rounded-xl p-2 sm:p-2.5 transition-all flex flex-col justify-start max-h-full relative shadow-lg"
+          className="w-full max-w-[90%] sm:max-w-md md:max-w-[44%] lg:max-w-[39%] max-h-[62%] sm:max-h-[72%] overflow-y-auto no-scrollbar rounded-md sm:rounded-xl p-1 sm:p-2.5 transition-all flex flex-col justify-start relative shadow-lg pointer-events-none select-none"
           style={cardBgStyle}
         >
           {renderHeaderBar("TỪ VỰNG ①", "💎", isTyping)}
-          <div className="space-y-1.5">
+          <div className="space-y-0.5 sm:space-y-1.5 pointer-events-none">
             {renderSectionItems(vocabItems, revealedChars, isTyping, 0)}
           </div>
         </div>
@@ -1079,7 +1328,7 @@ const renderAutoStudyOverlayContent = (
     );
   }
 
-  // Layout 2: Có từ 2 từ/cụm từ trở lên -> Chia đều ra 2 cột (Cột 1 gõ trước, Cột 2 gõ sau)
+  // Layout 2: Có từ 2 từ/cụm từ trở lên -> Luôn chia đều ra 2 cột nằm ở 2 bên mép (Trái & Phải)
   const splitIdx = Math.ceil(vocabItems.length / 2);
   const col1Items = vocabItems.slice(0, splitIdx);
   const col2Items = vocabItems.slice(splitIdx);
@@ -1095,13 +1344,13 @@ const renderAutoStudyOverlayContent = (
   // Khi Cột 2 chưa bắt đầu gõ (chỉ áp dụng ở typewriter mode khi chưa tới lượt cột 2)
   if (displayMode !== "instant" && !isCol2Started) {
     return (
-      <div className="w-full max-h-full flex justify-start pointer-events-auto transition-all duration-300 animate-fade-in px-1 sm:px-2">
+      <div className="w-full flex justify-start pointer-events-none transition-all duration-300 animate-fade-in">
         <div 
-          className="w-full md:w-[44%] lg:w-[41%] rounded-xl p-2 sm:p-2.5 transition-all flex flex-col justify-start max-h-full relative shadow-lg"
+          className="w-[48.5%] sm:w-[48%] md:max-w-[46%] lg:max-w-[42%] max-h-[62%] sm:max-h-[72%] overflow-y-auto no-scrollbar rounded-md sm:rounded-xl p-1 sm:p-2.5 transition-all flex flex-col justify-start relative shadow-lg pointer-events-none select-none"
           style={cardBgStyle}
         >
           {renderHeaderBar("TỪ VỰNG ①", "💎", isCol1Typing)}
-          <div className="space-y-1.5">
+          <div className="space-y-0.5 sm:space-y-1.5 pointer-events-none">
             {renderSectionItems(col1Items, col1Revealed, isCol1Typing, 0)}
           </div>
         </div>
@@ -1109,29 +1358,29 @@ const renderAutoStudyOverlayContent = (
     );
   }
 
-  // Khi Cột 2 bắt đầu gõ (hoặc khi phát lại / hoặc ở chế độ instant) -> Mở rộng thành 2 cột thu gọn nằm ở 2 bên mép, để hở khoảng trống ở giữa
+  // Khi Cột 2 bắt đầu gõ (hoặc khi phát lại / hoặc ở chế độ instant) -> 2 cột nằm ở 2 bên mép (Trái & Phải), để hở khoảng trống ở giữa
   return (
-    <div className={`w-full max-h-full flex flex-col md:flex-row justify-between items-start gap-3 md:gap-6 lg:gap-10 pointer-events-auto transition-all duration-500 px-1 sm:px-2 ${
+    <div className={`w-full flex flex-row justify-between items-start gap-1 sm:gap-2 md:gap-4 lg:gap-6 pointer-events-none transition-all duration-500 ${
       displayMode === "instant" ? "animate-auto-study-slide" : ""
     }`}>
       {/* Cột Trái: Từ Vựng Phần 1 (Thu nhỏ, nằm ép sang trái) */}
       <div 
-        className="w-full md:w-[44%] lg:w-[41%] rounded-xl p-2 sm:p-2.5 transition-all flex flex-col justify-start max-h-full relative shadow-lg"
+        className="w-[48.5%] sm:w-[48%] md:max-w-[46%] lg:max-w-[42%] max-h-[62%] sm:max-h-[72%] overflow-y-auto no-scrollbar rounded-md sm:rounded-xl p-1 sm:p-2.5 transition-all flex flex-col justify-start relative shadow-lg pointer-events-none select-none"
         style={cardBgStyle}
       >
         {renderHeaderBar("TỪ VỰNG ①", "💎", isCol1Typing)}
-        <div className="space-y-1.5">
+        <div className="space-y-0.5 sm:space-y-1.5 pointer-events-none">
           {renderSectionItems(col1Items, col1Revealed, isCol1Typing, 0)}
         </div>
       </div>
 
       {/* Cột Phải: Từ Vựng Phần 2 (Thu nhỏ, nằm ép sang phải) */}
       <div 
-        className="w-full md:w-[44%] lg:w-[41%] rounded-xl p-2 sm:p-2.5 transition-all flex flex-col justify-start max-h-full relative shadow-lg"
+        className="w-[48.5%] sm:w-[48%] md:max-w-[46%] lg:max-w-[42%] max-h-[62%] sm:max-h-[72%] overflow-y-auto no-scrollbar rounded-md sm:rounded-xl p-1 sm:p-2.5 transition-all flex flex-col justify-start relative shadow-lg pointer-events-none select-none"
         style={cardBgStyle}
       >
         {renderHeaderBar("TỪ VỰNG ②", "💎", isCol2Typing)}
-        <div className="space-y-1.5">
+        <div className="space-y-0.5 sm:space-y-1.5 pointer-events-none">
           {renderSectionItems(col2Items, col2Revealed, isCol2Typing, col1Items.length)}
         </div>
       </div>
@@ -1166,6 +1415,33 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [showMobileOptions, setShowMobileOptions] = useState<boolean>(false);
 
+  // YouGlish Modal & TTS Audio States
+  const [youglishTarget, setYouglishTarget] = useState<{ word: string; ipa?: string; mean?: string } | null>(null);
+  const [speakingText, setSpeakingText] = useState<string | null>(null);
+
+  const handleSpeak = (text: string) => {
+    const clean = text.replace(/<[^>]*>/g, '').trim();
+    if (!clean) return;
+    setSpeakingText(clean);
+    speakVocab(clean, 'us');
+    setTimeout(() => {
+      setSpeakingText((curr) => (curr === clean ? null : curr));
+    }, 3000);
+  };
+
+  const handleOpenYouGlish = (word: string, ipa?: string, mean?: string) => {
+    if (playerRef.current && typeof playerRef.current.pauseVideo === "function") {
+      try {
+        playerRef.current.pauseVideo();
+        setIsPlaying(false);
+      } catch {}
+    }
+    // Clean target search keyword (e.g. remove parenthesized notes like (someone))
+    let cleanWord = word.replace(/\([^)]*\)/g, '').trim();
+    if (!cleanWord) cleanWord = word.trim();
+    setYouglishTarget({ word: cleanWord, ipa, mean });
+  };
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -1175,51 +1451,87 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Gesture support
+  // Gesture & Touch/Tap support for Video Player
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
-  const lastTapRef = useRef<number>(0);
+  const touchStartTimeRef = useRef<number>(0);
+  const lastTapTimeRef = useRef<number>(0);
+  const singleTapTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const lastTouchTimeRef = useRef<number>(0);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handleVideoTouchStart = (e: React.TouchEvent) => {
+    lastTouchTimeRef.current = Date.now();
     const touch = e.touches[0];
     touchStartX.current = touch.clientX;
     touchStartY.current = touch.clientY;
+    touchStartTimeRef.current = Date.now();
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
+  const handleVideoTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null || touchStartY.current === null) return;
     const touch = e.changedTouches[0];
     const diffX = touch.clientX - touchStartX.current;
     const diffY = touch.clientY - touchStartY.current;
+    const elapsed = Date.now() - touchStartTimeRef.current;
 
-    // Detect horizontal swipe (min 50px diff, and mostly horizontal)
-    if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+    touchStartX.current = null;
+    touchStartY.current = null;
+
+    // 1. Nhận diện thao tác vuốt ngang chuyển câu sub (kéo ngang > 40px và nghiêng ngang)
+    if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY) * 1.1) {
+      if (singleTapTimerRef.current) {
+        clearTimeout(singleTapTimerRef.current);
+        singleTapTimerRef.current = null;
+      }
       if (diffX < 0) {
-        // Swipe Left -> Next
+        // Vuốt sang trái -> Chuyển câu sub kế tiếp
         if (currentIndex < subtitles.length - 1) {
           playSubtitleRow(currentIndex + 1);
         }
       } else {
-        // Swipe Right -> Prev
+        // Vuốt sang phải -> Quay lại câu sub trước
         if (currentIndex > 0) {
           playSubtitleRow(currentIndex - 1);
         }
       }
+      return;
     }
-    touchStartX.current = null;
-    touchStartY.current = null;
+
+    // 2. Nhận diện thao tác Chạm (Tap) - ít di chuyển ngón tay và nhả nhanh < 350ms
+    if (Math.abs(diffX) < 15 && Math.abs(diffY) < 15 && elapsed < 350) {
+      const now = Date.now();
+      if (now - lastTapTimeRef.current < 300) {
+        // Chạm 2 lần liên tiếp (Double Tap) -> Phát lại từ đầu câu sub hiện tại
+        if (singleTapTimerRef.current) {
+          clearTimeout(singleTapTimerRef.current);
+          singleTapTimerRef.current = null;
+        }
+        lastTapTimeRef.current = 0;
+        playSubtitleRow(currentIndex);
+      } else {
+        // Chạm 1 lần (Single Tap) -> Lên lịch chạy togglePlay()
+        lastTapTimeRef.current = now;
+        if (singleTapTimerRef.current) {
+          clearTimeout(singleTapTimerRef.current);
+        }
+        singleTapTimerRef.current = setTimeout(() => {
+          togglePlay();
+          singleTapTimerRef.current = null;
+        }, 280);
+      }
+    }
   };
 
-  const handleDoubleTap = (e: React.TouchEvent) => {
+  const handleVideoClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
-    if (target.closest('button') || target.closest('input') || target.closest('textarea')) return;
+    if (target.closest('button') || target.closest('a') || target.closest('input') || target.closest('textarea')) return;
 
-    const now = Date.now();
-    if (now - lastTapRef.current < 300) {
-      playSubtitleRow(currentIndex);
-      e.preventDefault();
+    // Bỏ qua synthetic click từ thiết bị cảm ứng để tránh toggle 2 lần liên tiếp
+    if (Date.now() - lastTouchTimeRef.current < 600) {
+      return;
     }
-    lastTapRef.current = now;
+
+    togglePlay();
   };
 
   const videoContainerRef = useRef<HTMLDivElement>(null);
@@ -2942,9 +3254,6 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           ref={videoContainerRef}
           tabIndex={-1}
           onMouseLeave={() => videoContainerRef.current?.focus()}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          onTouchStartCapture={handleDoubleTap}
           className={`w-full bg-black relative flex items-center justify-center group/video transition-all outline-none ${
             isFullscreen 
               ? "max-w-none h-full rounded-none border-0 shadow-none" 
@@ -2956,7 +3265,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               ref={videoRef}
               src={directVideoUrl}
               className="w-full h-full object-contain bg-black cursor-pointer"
-              onClick={togglePlay}
+              onClick={handleVideoClick}
+              onTouchStart={handleVideoTouchStart}
+              onTouchEnd={handleVideoTouchEnd}
               onError={(e) => {
                 const vid = e.currentTarget;
                 const errCode = vid.error?.code;
@@ -3116,9 +3427,17 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             </div>
           )}
 
+          {/* Transparent Touch & Click Controller Layer (Bắt thao tác vuốt chuyển câu sub & chạm dừng/phát video) */}
+          <div 
+            className="absolute inset-0 z-20 cursor-pointer select-none"
+            onClick={handleVideoClick}
+            onTouchStart={handleVideoTouchStart}
+            onTouchEnd={handleVideoTouchEnd}
+          />
+
           {/* Minimalist Video Timestamp & Percentage Badge (Góc trái bên dưới) */}
           {duration > 0 && (
-            <div className="absolute bottom-2 left-2 z-30 pointer-events-none select-none px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm border border-white/10 text-[11px] sm:text-xs font-mono font-medium text-white/90 flex items-center gap-1 shadow-md">
+            <div className="absolute bottom-1 left-1 sm:bottom-2 sm:left-2 z-30 pointer-events-none select-none px-1.5 py-0.2 sm:px-2 sm:py-0.5 rounded sm:rounded-md bg-black/60 backdrop-blur-sm border border-white/10 text-[8.5px] sm:text-xs font-mono font-medium text-white/90 flex items-center gap-1 shadow-md leading-none">
               <span>
                 {(() => {
                   const fmt = (sec: number) => {
@@ -3153,7 +3472,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           {isAutoStudyMode && autoStudyPhase !== "idle" && autoStudyItems.length > 0 && (
             <div 
               key={`auto-study-overlay-container-${autoStudyTargetIdxRef.current}`}
-              className="absolute top-2 sm:top-3 md:top-4 left-2 right-2 sm:left-3 sm:right-3 bottom-14 sm:bottom-16 md:bottom-20 z-50 pointer-events-none flex justify-start items-start overflow-hidden"
+              className="absolute top-1.5 sm:top-2 md:top-3 left-1.5 sm:left-3 right-1.5 sm:right-3 z-40 pointer-events-none flex justify-start items-start"
             >
               {renderAutoStudyOverlayContent(
                 autoStudyItems,
@@ -3168,21 +3487,35 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 autoStudyBorderWidth,
                 autoStudyBorderColor,
                 autoStudyBorderOpacity,
-                isLoopingCurrentSub
+                isLoopingCurrentSub,
+                handleOpenYouGlish,
+                handleSpeak,
+                speakingText
               )}
             </div>
           )}
 
           {/* Subtitle Overlay đè lên video */}
           {showSubOnVideo && mode === "listen" && subtitles[currentIndex] && (
-            <div className="absolute bottom-2 sm:bottom-5 md:bottom-10 left-0 right-0 pointer-events-none flex flex-col items-center justify-center px-2 md:px-4 text-center z-50 select-none">
-              <div className="bg-black/60 px-3 py-1.5 md:px-5 md:py-2 rounded-lg md:rounded-xl max-w-[90%] md:max-w-[85%] shadow-lg">
+            <div className={`absolute left-0 right-0 pointer-events-none flex flex-col items-center justify-center px-1 sm:px-2 md:px-4 text-center z-40 select-none ${
+              isAutoStudyMode && autoStudyPhase !== "idle"
+                ? "bottom-0.5 sm:bottom-2 md:bottom-6"
+                : "bottom-1 sm:bottom-3 md:bottom-8"
+            }`}>
+              <div className={`backdrop-blur-sm shadow-md rounded-md sm:rounded-lg md:rounded-xl transition-all ${
+                isAutoStudyMode && autoStudyPhase !== "idle"
+                  ? "bg-black/75 px-2 py-0.5 sm:px-3 sm:py-1 max-w-[96%] md:max-w-[85%]"
+                  : "bg-black/60 px-2.5 py-1 sm:px-4 sm:py-1.5 md:px-5 md:py-2 max-w-[92%] md:max-w-[85%]"
+              }`}>
                 <p 
                   style={{ 
-                    fontSize: `${(isFullscreen ? fontSize * 1.4 : fontSize + 1) * (isMobile ? 0.7 : 1)}px`,
+                    fontSize: `${
+                      (isFullscreen ? fontSize * 1.3 : fontSize) * 
+                      (isMobile ? (isAutoStudyMode && autoStudyPhase !== "idle" ? 0.55 : 0.65) : 1)
+                    }px`,
                     color: '#ffffff'
                   }} 
-                  className="font-extrabold leading-normal drop-shadow-[0_1.5px_2px_rgba(0,0,0,0.9)] md:drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)] text-white"
+                  className="font-extrabold leading-tight drop-shadow-[0_1.5px_2px_rgba(0,0,0,0.9)] md:drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)] text-white"
                 >
                   {renderHighlightedSubtitle(
                     subtitles[currentIndex].text,
@@ -3194,16 +3527,26 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 </p>
                 {showIpa && subtitles[currentIndex].ipa && (
                   <p 
-                    style={{ fontSize: `${(isFullscreen ? (fontSize - 1) * 1.4 : fontSize - 2) * (isMobile ? 0.7 : 1)}px` }} 
-                    className="text-indigo-300 font-mono font-semibold mt-0.5"
+                    style={{ 
+                      fontSize: `${
+                        (isFullscreen ? (fontSize - 1) * 1.3 : fontSize - 2) * 
+                        (isMobile ? (isAutoStudyMode && autoStudyPhase !== "idle" ? 0.45 : 0.55) : 1)
+                      }px` 
+                    }} 
+                    className="text-indigo-300 font-mono font-semibold mt-0.5 leading-tight"
                   >
                     {subtitles[currentIndex].ipa}
                   </p>
                 )}
                 {subtitles[currentIndex].vietnamese && !hideVietsub && (
                   <p 
-                    style={{ fontSize: `${(isFullscreen ? (fontSize - 1) * 1.4 : fontSize - 2) * (isMobile ? 0.7 : 1)}px` }} 
-                    className="text-slate-200 mt-0.5 md:mt-1 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] font-medium"
+                    style={{ 
+                      fontSize: `${
+                        (isFullscreen ? (fontSize - 1) * 1.3 : fontSize - 2) * 
+                        (isMobile ? (isAutoStudyMode && autoStudyPhase !== "idle" ? 0.48 : 0.58) : 1)
+                      }px` 
+                    }} 
+                    className="text-slate-200 mt-0.5 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] font-medium leading-tight"
                   >
                     {subtitles[currentIndex].vietnamese}
                   </p>
@@ -3869,9 +4212,6 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             <div 
               ref={containerRef} 
               onClick={() => videoContainerRef.current?.focus()}
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-              onTouchStartCapture={handleDoubleTap}
               className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin relative webtoeic-scroll-container"
             >
               {subtitles.map((sub, idx) => {
@@ -3883,7 +4223,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     key={idx}
                     ref={isActive ? activeSubRef : null}
                     onClick={() => !isEditing && playSubtitleRow(idx)}
-                    className={`p-2.5 px-3.5 rounded-2xl border transition-all cursor-pointer group ${
+                    className={`p-2.5 px-3.5 rounded-2xl border transition-all cursor-pointer group touch-manipulation select-none active:scale-[0.99] ${
                       isActive
                         ? isLoopingCurrentSub
                           ? "bg-indigo-50/90 border-indigo-300 shadow-md ring-2 ring-indigo-400"
@@ -4148,9 +4488,6 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
                 {/* Dictation Match View */}
                 <div 
-                  onTouchStart={handleTouchStart}
-                  onTouchEnd={handleTouchEnd}
-                  onTouchStartCapture={handleDoubleTap}
                   className="relative w-full min-h-[80px] md:min-h-[100px] bg-slate-50 p-3 md:p-5 rounded-xl md:rounded-2xl border border-slate-200 flex items-start"
                 >
                   {/* Visual Matching Layer */}
@@ -4221,6 +4558,15 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           )}
         </div>
       </div>
+
+      {/* YouGlish Native Pronunciation Video Modal */}
+      <YouGlishModal
+        isOpen={!!youglishTarget}
+        onClose={() => setYouglishTarget(null)}
+        word={youglishTarget?.word || ""}
+        ipa={youglishTarget?.ipa}
+        mean={youglishTarget?.mean}
+      />
     </div>
   );
 }
