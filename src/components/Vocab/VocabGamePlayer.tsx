@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import "mobile-drag-drop/default.css";
-import { Star, Volume2, RotateCcw, ChevronRight, ChevronLeft, BookOpen, Shuffle, PenLine, Link2, Lightbulb, Replace, Layers, HelpCircle, Compass, Filter } from "lucide-react";
+import { Star, Volume2, RotateCcw, ChevronRight, ChevronLeft, BookOpen, Shuffle, PenLine, Link2, Lightbulb, Replace, Layers, HelpCircle, Compass, Filter, LayoutGrid } from "lucide-react";
 import confetti from "canvas-confetti";
 import { AnimatePresence } from "framer-motion";
 import VocabDeckSelector from "./VocabDeckSelector";
@@ -64,7 +64,7 @@ function getWordFontSize(word: string): string {
 }
 
 // ---- FLASHCARD COMPONENT ----
-function FlashCard({
+export function FlashCard({
   word,
   isInNotebook,
   isUnlearned,
@@ -74,7 +74,8 @@ function FlashCard({
   onUnstar,
   onToggleUnlearned,
   index,
-  globalFlip
+  globalFlip,
+  flipTrigger
 }: {
   word: VocabWord;
   isInNotebook: boolean;
@@ -86,6 +87,7 @@ function FlashCard({
   onToggleUnlearned: () => void;
   index: number;
   globalFlip: "front" | "back" | null;
+  flipTrigger?: number;
 }) {
   const [flipped, setFlipped] = useState(false);
   const [showDeckSelector, setShowDeckSelector] = useState(false);
@@ -95,23 +97,30 @@ function FlashCard({
     if (globalFlip === "back") setFlipped(true);
   }, [globalFlip]);
 
+  useEffect(() => {
+    if (flipTrigger !== undefined && flipTrigger > 0) {
+      setFlipped(prev => !prev);
+      speak(word.word);
+    }
+  }, [flipTrigger]);
+
   return (
     <div
-      className="relative h-[480px] sm:h-[540px] cursor-pointer group/card"
+      className="relative w-full h-[470px] sm:h-[620px] cursor-pointer group/card select-none vocab-single-card"
       style={{ perspective: "1000px" }}
       onClick={() => { setFlipped(!flipped); speak(word.word); }}
     >
       {/* Stationary Bookmark Button (Unlearned) - Left */}
       <button
         onClick={(e) => { e.stopPropagation(); onToggleUnlearned(); }}
-        className={`absolute top-3 left-3 p-1.5 rounded-lg transition-all vocab-unlearned-toggle-btn z-[60] ${isUnlearned ? "text-rose-500 bg-rose-50 scale-105 shadow-sm ring-1 ring-rose-100" : "text-slate-200 hover:text-rose-400 hover:bg-slate-50"}`}
+        className={`absolute top-3 left-3 p-1.5 sm:p-2 rounded-xl transition-all vocab-unlearned-toggle-btn z-[60] ${isUnlearned ? "text-rose-500 bg-rose-50 scale-105 shadow-sm ring-1 ring-rose-100" : "text-slate-200 hover:text-rose-400 hover:bg-slate-50"}`}
         title="Đánh dấu chưa thuộc"
       >
         <BookOpen size={16} fill={isUnlearned ? "currentColor" : "none"} />
       </button>
 
       {/* Index number - Center Top */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-slate-50 rounded-full text-[8px] text-slate-400 font-black tracking-widest border border-slate-100 shadow-sm z-[60] pointer-events-none">
+      <div className="absolute top-3.5 sm:top-4 left-1/2 -translate-x-1/2 px-2.5 py-0.5 bg-slate-50 rounded-full text-[9px] text-slate-400 font-black tracking-widest border border-slate-100 shadow-sm z-[60] pointer-events-none">
         #{index + 1}
       </div>
 
@@ -119,7 +128,7 @@ function FlashCard({
       <div className="absolute top-3 right-3 z-[60]" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={() => setShowDeckSelector(!showDeckSelector)}
-          className={`p-1.5 rounded-lg transition-all vocab-star-toggle-btn ${isInNotebook ? "text-amber-400 bg-amber-50 scale-105 shadow-sm ring-1 ring-amber-100" : "text-slate-200 hover:text-amber-300 hover:bg-slate-50"}`}
+          className={`p-1.5 sm:p-2 rounded-xl transition-all vocab-star-toggle-btn ${isInNotebook ? "text-amber-400 bg-amber-50 scale-105 shadow-sm ring-1 ring-amber-100" : "text-slate-200 hover:text-amber-300 hover:bg-slate-50"}`}
           title="Lưu/xoá từ khỏi từ vựng của bạn"
         >
           <Star size={16} fill={isInNotebook ? "currentColor" : "none"} />
@@ -147,22 +156,22 @@ function FlashCard({
         style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "rotateY(0)" }}
       >
         {/* Front */}
-        <div className="absolute inset-0 bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-200 p-5 sm:p-7 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all overflow-hidden">
-          <div className="mt-5 sm:mt-7 mb-1">
-            <div className={`font-black text-blue-600 mb-1 flex items-center gap-3 flex-wrap ${getWordFontSize(word.word)}`}>
+        <div className="absolute inset-0 bg-white rounded-3xl sm:rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.05)] border-2 border-slate-200 p-4 sm:p-6 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all overflow-hidden">
+          <div className="mt-4 sm:mt-6 mb-1 flex flex-col items-center justify-center text-center">
+            <div className={`font-black text-blue-600 mb-0.5 flex items-center justify-center gap-2 sm:gap-3 flex-wrap ${getWordFontSize(word.word)}`}>
               <span>{word.word}</span>
-              <button onClick={(e) => { e.stopPropagation(); speak(word.word); }} className="p-1.5 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0">
+              <button onClick={(e) => { e.stopPropagation(); speak(word.word); }} className="p-1 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0" title="Nghe phát âm">
                 <Volume2 size={20} className="text-blue-400 hover:text-blue-600" />
               </button>
             </div>
-            <div className="text-orange-400 font-bold italic text-sm mb-2">
+            <div className="text-orange-400 font-bold italic text-xs sm:text-sm mb-1.5 text-center">
               /{word.ipa?.replace(/\//g, '')}/
             </div>
           </div>
 
           {/* Front Image */}
           {word.image && (
-            <div className="mb-3 rounded-2xl overflow-hidden border border-slate-100 bg-slate-50/70 p-2 flex items-center justify-center h-36 sm:h-44 flex-shrink-0">
+            <div className="mb-2.5 rounded-2xl overflow-hidden border border-slate-100 bg-slate-50/70 p-1.5 flex items-center justify-center h-28 sm:h-38 flex-shrink-0">
               <img
                 src={word.image}
                 alt={word.word}
@@ -172,15 +181,15 @@ function FlashCard({
             </div>
           )}
           
-          <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide">
-            <div className="flex items-start gap-2">
-              <div className="text-slate-600 text-sm sm:text-[15px] leading-relaxed font-medium break-words flex-1" dangerouslySetInnerHTML={{ __html: word.ex }} />
+          <div className="flex-1 overflow-y-auto scrollbar-hide py-1">
+            <div className="flex items-start gap-2 bg-slate-50/60 p-2.5 sm:p-3.5 rounded-2xl border border-slate-100">
+              <div className="text-slate-600 text-xs sm:text-[14px] leading-relaxed font-medium break-words flex-1" dangerouslySetInnerHTML={{ __html: word.ex }} />
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   speakVocab(stripHtml(word.ex), 'us');
                 }}
-                className="p-1.5 hover:bg-blue-50 rounded-lg text-blue-400 hover:text-blue-600 transition-colors flex-shrink-0"
+                className="p-1 hover:bg-blue-50 rounded-lg text-blue-400 hover:text-blue-600 transition-colors flex-shrink-0"
                 title="Nghe đọc câu ví dụ"
               >
                 <Volume2 size={16} />
@@ -189,9 +198,9 @@ function FlashCard({
           </div>
 
           {word.syns.length > 0 && (
-            <div className="mt-3 pt-3 border-t border-slate-50 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center gap-2 flex-wrap">
+            <div className="mt-2 pt-2 border-t border-slate-100 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center justify-center gap-1.5 flex-wrap">
               <span className="opacity-50 italic lowercase font-bold flex-shrink-0">Hints:</span>
-              <span className="bg-teal-50 px-2 py-0.5 rounded-lg flex gap-2 flex-wrap break-words">
+              <span className="bg-teal-50 px-2 py-0.5 rounded-lg flex gap-1.5 flex-wrap break-words justify-center">
                 {word.syns
                   .filter(s => s && s.toString() !== '[object Object]')
                   .slice(0, 2)
@@ -204,28 +213,29 @@ function FlashCard({
             </div>
           )}
           {/* Deck Name */}
-          <div className="mt-auto pt-3 text-center text-[10px] text-slate-400 font-bold tracking-wide italic">
+          <div className="mt-auto pt-2 text-center text-[10px] text-slate-400 font-bold tracking-wide italic">
             ({currentDeckName || "bộ thẻ tổng"})
           </div>
         </div>
+
         {/* Back */}
         <div
-          className="absolute inset-0 bg-indigo-50 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-4 border-indigo-200 p-5 sm:p-7 flex flex-col overflow-hidden"
+          className="absolute inset-0 bg-indigo-50/95 rounded-3xl sm:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-2 sm:border-4 border-indigo-200 p-4 sm:p-6 flex flex-col backface-hidden transition-all overflow-hidden"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
-          <div className="mt-5 sm:mt-7 mb-2">
-            <div className={`font-black text-blue-600 mb-1 flex items-center gap-3 flex-wrap ${getWordFontSize(word.word)}`}>
+          <div className="mt-4 sm:mt-6 mb-1.5 flex flex-col items-center justify-center text-center">
+            <div className={`font-black text-blue-600 mb-0.5 flex items-center justify-center gap-2 sm:gap-3 flex-wrap ${getWordFontSize(word.word)}`}>
               <span>{word.word}</span>
-              <button onClick={(e) => { e.stopPropagation(); speak(word.word); }} className="p-1.5 hover:bg-indigo-100/60 rounded-lg transition-colors flex-shrink-0" title="Nghe phát âm">
+              <button onClick={(e) => { e.stopPropagation(); speak(word.word); }} className="p-1 hover:bg-indigo-100/60 rounded-lg transition-colors flex-shrink-0" title="Nghe phát âm">
                 <Volume2 size={20} className="text-blue-400 hover:text-blue-600" />
               </button>
             </div>
-            <div className="text-red-500 font-black text-base sm:text-lg tracking-tight leading-tight break-words">{limitMeanings(word.mean)}</div>
+            <div className="text-red-500 font-black text-sm sm:text-base tracking-tight leading-tight break-words text-center">{limitMeanings(word.mean)}</div>
           </div>
 
           {/* Back Image */}
           {word.image && (
-            <div className="mb-3 rounded-2xl overflow-hidden border border-indigo-100/80 bg-white/70 p-2 flex items-center justify-center h-32 sm:h-40 flex-shrink-0 shadow-sm">
+            <div className="mb-2.5 rounded-2xl overflow-hidden border border-indigo-100/80 bg-white/80 p-1.5 flex items-center justify-center h-28 sm:h-36 flex-shrink-0 shadow-sm">
               <img
                 src={word.image}
                 alt={word.word}
@@ -235,48 +245,48 @@ function FlashCard({
             </div>
           )}
 
-          <div className="space-y-4 text-sm sm:text-[15px] flex-1 overflow-y-auto pr-2 scrollbar-hide">
-            <div className="flex flex-col gap-2">
-              <div className="flex items-start justify-between gap-2 bg-white/40 p-3 sm:p-4 rounded-2xl border border-white/60 shadow-sm">
-                <div className="text-slate-700 leading-relaxed font-medium break-words flex-1" dangerouslySetInnerHTML={{ __html: word.ex }} />
+          <div className="space-y-2.5 text-xs sm:text-sm flex-1 overflow-y-auto pr-1 scrollbar-hide">
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-start justify-between gap-2 bg-white/60 p-2.5 sm:p-3 rounded-2xl border border-white/80 shadow-sm">
+                <div className="text-slate-700 leading-relaxed font-medium break-words flex-1 text-xs sm:text-[13px]" dangerouslySetInnerHTML={{ __html: word.ex }} />
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     speakVocab(stripHtml(word.ex), 'us');
                   }}
-                  className="p-1.5 hover:bg-white/80 rounded-lg text-blue-400 hover:text-blue-600 transition-colors flex-shrink-0"
+                  className="p-1 hover:bg-white rounded-lg text-blue-400 hover:text-blue-600 transition-colors flex-shrink-0"
                   title="Nghe đọc câu ví dụ"
                 >
-                  <Volume2 size={16} />
+                  <Volume2 size={15} />
                 </button>
               </div>
               {word.exVi && (
-                <div className="text-slate-500 italic leading-relaxed pl-4 border-l-2 border-blue-200 py-1 bg-slate-50/50 rounded-r-xl pr-3 text-xs sm:text-[13px] break-words" dangerouslySetInnerHTML={{ __html: word.exVi }} />
+                <div className="text-slate-600 italic leading-relaxed pl-3 border-l-2 border-blue-400 py-0.5 bg-white/40 rounded-r-xl pr-2 text-[11px] sm:text-xs break-words" dangerouslySetInnerHTML={{ __html: word.exVi }} />
               )}
             </div>
 
-            <div className="pt-4 space-y-6 border-t border-slate-100 mt-6 pb-4">
+            <div className="pt-2 space-y-3 border-t border-indigo-100/60 mt-2">
               {/* SYNONYMS */}
               {(() => {
                 const raw = word.synonyms?.includes('[object Object]') ? '' : (word.synonyms || (word.syns.length > 0 ? word.syns.filter(s => s && s.toString() !== '[object Object]').map(s => typeof s === 'object' ? (s as any).word : s).join(', ') : ''));
                 if (!raw || raw === '---' || !raw.trim()) return null;
                 return (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-[10px] font-black text-teal-600 uppercase tracking-widest">
-                      <div className="w-5 h-5 rounded-lg bg-teal-50 flex items-center justify-center">
-                        <Link2 size={12} strokeWidth={3} />
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black text-teal-600 uppercase tracking-widest">
+                      <div className="w-4 h-4 rounded-md bg-teal-50 flex items-center justify-center">
+                        <Link2 size={10} strokeWidth={3} />
                       </div>
                       ĐỒNG NGHĨA
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5">
                       {raw.split(',').slice(0, 2).map((s, i) => {
                         const parts = s.trim().split(/(\(.*?\))/);
                         return (
-                          <div key={i} className="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-100/80 shadow-sm text-[12px] font-bold flex items-center gap-1.5">
+                          <div key={i} className="px-2.5 py-1 bg-emerald-50/90 text-emerald-700 rounded-xl border border-emerald-100/80 shadow-sm text-[11px] sm:text-xs font-bold flex items-center gap-1">
                             <span>{parts[0].trim()}</span>
-                            {parts[1] && <span className="text-[10px] opacity-60 font-medium">{parts[1]}</span>}
+                            {parts[1] && <span className="text-[9px] opacity-60 font-medium">{parts[1]}</span>}
                             <button onClick={(e) => { e.stopPropagation(); speak(parts[0].trim()); }} className="hover:text-emerald-900 opacity-60 hover:opacity-100 transition-all ml-0.5">
-                              <Volume2 size={11} />
+                              <Volume2 size={10} />
                             </button>
                           </div>
                         );
@@ -291,22 +301,22 @@ function FlashCard({
                 const raw = word.antonyms;
                 if (!raw || raw === '---' || !raw.trim()) return null;
                 return (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-[10px] font-black text-rose-500 uppercase tracking-widest">
-                      <div className="w-5 h-5 rounded-lg bg-rose-50 flex items-center justify-center">
-                        <Replace size={12} strokeWidth={3} />
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black text-rose-500 uppercase tracking-widest">
+                      <div className="w-4 h-4 rounded-md bg-rose-50 flex items-center justify-center">
+                        <Replace size={10} strokeWidth={3} />
                       </div>
                       TRÁI NGHĨA
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5">
                       {raw.split(',').slice(0, 2).map((s, i) => {
                         const parts = s.trim().split(/(\(.*?\))/);
                         return (
-                          <div key={i} className="px-3 py-1.5 bg-rose-50 text-rose-700 rounded-xl border border-rose-100/80 shadow-sm text-[12px] font-bold flex items-center gap-1.5">
+                          <div key={i} className="px-2.5 py-1 bg-rose-50/90 text-rose-700 rounded-xl border border-rose-100/80 shadow-sm text-[11px] sm:text-xs font-bold flex items-center gap-1">
                             <span>{parts[0].trim()}</span>
-                            {parts[1] && <span className="text-[10px] opacity-60 font-medium">{parts[1]}</span>}
+                            {parts[1] && <span className="text-[9px] opacity-60 font-medium">{parts[1]}</span>}
                             <button onClick={(e) => { e.stopPropagation(); speak(parts[0].trim()); }} className="hover:text-rose-900 opacity-60 hover:opacity-100 transition-all ml-0.5">
-                              <Volume2 size={11} />
+                              <Volume2 size={10} />
                             </button>
                           </div>
                         );
@@ -321,22 +331,22 @@ function FlashCard({
                 const raw = word.collocations;
                 if (!raw || raw === '---' || !raw.trim()) return null;
                 return (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-[10px] font-black text-indigo-500 uppercase tracking-widest">
-                      <div className="w-5 h-5 rounded-lg bg-indigo-50 flex items-center justify-center">
-                        <Layers size={12} strokeWidth={3} />
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black text-indigo-500 uppercase tracking-widest">
+                      <div className="w-4 h-4 rounded-md bg-indigo-50 flex items-center justify-center">
+                        <Layers size={10} strokeWidth={3} />
                       </div>
                       CỤM TỪ ĐI KÈM
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       {raw.split(',').slice(0, 3).map((s, i) => {
                         const parts = s.trim().split(/[:|-]/);
                         return (
-                          <div key={i} className="p-3 bg-slate-50/80 rounded-2xl border border-slate-100/50 flex items-center gap-3 group/item hover:border-indigo-200 transition-all">
-                            <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover/item:scale-150 transition-transform"></div>
-                            <div className="flex flex-col">
-                              <span className="text-[12px] font-black text-slate-800">{parts[0].trim()}</span>
-                              {parts[1] && <span className="text-[10px] text-slate-500 font-medium italic">{parts[1].trim()}</span>}
+                          <div key={i} className="p-2 bg-white/70 rounded-xl border border-indigo-100/50 flex items-center gap-2 group/item hover:border-indigo-200 transition-all">
+                            <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover/item:scale-150 transition-transform flex-shrink-0"></div>
+                            <div className="flex flex-col min-w-0">
+                              <span className="text-[11px] sm:text-xs font-black text-slate-800 truncate">{parts[0].trim()}</span>
+                              {parts[1] && <span className="text-[9px] sm:text-[10px] text-slate-500 font-medium italic truncate">{parts[1].trim()}</span>}
                             </div>
                           </div>
                         );
@@ -348,16 +358,16 @@ function FlashCard({
 
               {/* WORD FAMILY */}
               {word.wordFamily && word.wordFamily !== '---' && (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-[10px] font-black text-orange-500 uppercase tracking-widest">
-                    <div className="w-5 h-5 rounded-lg bg-orange-50 flex items-center justify-center">
-                      <BookOpen size={12} strokeWidth={3} />
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black text-orange-500 uppercase tracking-widest">
+                    <div className="w-4 h-4 rounded-md bg-orange-50 flex items-center justify-center">
+                      <BookOpen size={10} strokeWidth={3} />
                     </div>
                     GIA ĐÌNH TỪ
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5">
                     {word.wordFamily.split(',').slice(0, 4).map((s, i) => (
-                      <div key={i} className="px-3 py-1.5 bg-orange-50/50 text-orange-700 rounded-xl border border-orange-100/50 text-[11px] font-bold italic shadow-sm">
+                      <div key={i} className="px-2.5 py-1 bg-orange-50/70 text-orange-700 rounded-xl border border-orange-100/50 text-[10px] sm:text-[11px] font-bold italic shadow-sm">
                         {s.trim()}
                       </div>
                     ))}
@@ -367,7 +377,7 @@ function FlashCard({
             </div>
           </div>
           {/* Deck Name (Back) */}
-          <div className="mt-auto pt-4 text-center text-[10px] text-slate-400/80 font-bold tracking-wide italic">
+          <div className="mt-auto pt-2 text-center text-[9px] sm:text-[10px] text-slate-400/80 font-bold tracking-wide italic">
             ({currentDeckName || "bộ thẻ tổng"})
           </div>
         </div>
@@ -812,8 +822,14 @@ export function MatchGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSUpd
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-3 sm:p-8">
+    <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
+      <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-3.5 sm:p-8">
+        {/* Instruction Note */}
+        <div className="flex items-center justify-center gap-1.5 text-center text-[11px] sm:text-xs text-slate-500 font-medium mb-3 sm:mb-5 bg-blue-50/60 py-1.5 px-3 rounded-xl border border-blue-100/60">
+          <HelpCircle size={13} className="text-blue-500 flex-shrink-0" />
+          <span>Chạm <b>từ tiếng Việt</b> màu vàng bên dưới rồi chạm vào <b>ô trống</b> tương ứng để ghép từ</span>
+        </div>
+
         <div className="space-y-3 mb-6">
           {set.map(w => (
             <div key={w.id} className="flex items-center gap-2 sm:gap-4">
@@ -1102,6 +1118,9 @@ const TOOLTIPS: Record<string, string> = {
 export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, userId }: VocabGamePlayerProps) {
   const [tab, setTab] = useState<Tab>("library");
   const [filterMode, setFilterMode] = useState<FilterMode>("all");
+  const [flashcardViewMode, setFlashcardViewMode] = useState<"single" | "all">("single");
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [flipTrigger, setFlipTrigger] = useState(0);
   const [notebookIds, setNotebookIds] = useState<Set<string | number>>(new Set());
   const [unlearnedIds, setUnlearnedIds] = useState<Set<string | number>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -1335,6 +1354,53 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
 
   const isEmpty = filterMode === "starred" && activeWords.length === 0;
 
+  const safeCardIndex = Math.min(currentCardIndex, Math.max(0, activeWords.length - 1));
+
+  // Touch swipe support for mobile
+  const touchStartXRef = useRef<number | null>(null);
+
+  const handleCardTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+  };
+
+  const handleCardTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diffX = touchEndX - touchStartXRef.current;
+    touchStartXRef.current = null;
+
+    if (diffX > 50) {
+      // Swipe Right -> Prev
+      setCurrentCardIndex(prev => Math.max(0, prev - 1));
+    } else if (diffX < -50) {
+      // Swipe Left -> Next
+      setCurrentCardIndex(prev => Math.min(activeWords.length - 1, prev + 1));
+    }
+  };
+
+  // Keyboard navigation for single card mode
+  useEffect(() => {
+    if (tab !== "library" || flashcardViewMode !== "single" || activeWords.length === 0) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName)) return;
+
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setCurrentCardIndex(prev => Math.max(0, prev - 1));
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setCurrentCardIndex(prev => Math.min(activeWords.length - 1, prev + 1));
+      } else if (e.key === " " || e.key === "Spacebar") {
+        e.preventDefault();
+        setFlipTrigger(prev => prev + 1);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [tab, flashcardViewMode, activeWords.length]);
+
   const TABS = [
     { id: "library", label: "Flashcard", icon: BookOpen },
     { id: "scramble", label: "Xếp chữ", icon: Shuffle },
@@ -1346,53 +1412,55 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
       {/* Header */}
-      <div className="relative lg:sticky lg:top-0 z-20 bg-white/80 backdrop-blur-lg border-b border-slate-100 shadow-sm">
-        <div className="max-w-5xl mx-auto px-4 py-2 sm:py-4">
-          <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 sm:gap-4 w-full">
-              <div>
-                <div className="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-widest">Ngày {dayNumber}</div>
-                <h1 className="text-base sm:text-xl font-black text-slate-800 flex items-center flex-wrap gap-2">
-                  <span id={hasMounted ? "vocab-title-target" : undefined}>{title}</span>
-                  <button
-                    onClick={() => startVocabTour(true)}
-                    id={hasMounted ? "vocab-guide-btn" : undefined}
-                    className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg font-bold text-[8px] sm:text-[10px] uppercase tracking-wider transition-all shadow-sm"
-                    title="Khởi động Tour hướng dẫn"
-                  >
-                    <Compass size={10} className="animate-pulse" />
-                    Hướng dẫn nhanh
-                  </button>
-                </h1>
-              </div>
+      <div className="relative lg:sticky lg:top-0 z-20 bg-white/90 backdrop-blur-lg border-b border-slate-100 shadow-sm">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 py-1.5 sm:py-3">
+          <div className="flex items-center justify-between gap-2 mb-1.5 sm:mb-2.5">
+            {/* Title & Day badge */}
+            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+              <span className="text-[9px] sm:text-xs text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-md font-black uppercase tracking-wider flex-shrink-0">
+                Ngày {dayNumber}
+              </span>
+              <h1 className="text-xs sm:text-lg font-black text-slate-800 truncate" id={hasMounted ? "vocab-title-target" : undefined}>
+                {title}
+              </h1>
+              <button
+                onClick={() => startVocabTour(true)}
+                id={hasMounted ? "vocab-guide-btn" : undefined}
+                className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg font-bold text-[9px] uppercase tracking-wider transition-all shadow-sm flex-shrink-0"
+                title="Khởi động Tour hướng dẫn"
+              >
+                <Compass size={10} className="animate-pulse" />
+                Hướng dẫn
+              </button>
+            </div>
 
-              <div className="flex items-center gap-2" id={hasMounted ? "vocab-filters-target" : undefined}>
-                <div className="flex items-center bg-slate-100 rounded-xl sm:rounded-2xl p-0.5 sm:p-1 gap-0.5 sm:gap-1 border border-slate-200/50">
-                  <div className="flex items-center gap-1 pl-2 pr-1 text-slate-400 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider select-none">
-                    <Filter size={11} className="text-slate-400" />
-                    <span className="hidden sm:inline">Lọc từ:</span>
-                  </div>
-                  <button
-                    onClick={() => setFilterMode("all")}
-                    id={hasMounted ? "vocab-filter-all-btn" : undefined}
-                    title="Chơi game với tất cả các từ"
-                    className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black transition-all ${filterMode === "all" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
-                  >TẤT CẢ ({data.length})</button>
-                  <button
-                    onClick={() => setFilterMode("starred")}
-                    id={hasMounted ? "vocab-filter-unlearned-btn" : undefined}
-                    title="Chơi game với các từ có nhãn chưa thuộc"
-                    className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black transition-all flex items-center gap-1 ${filterMode === "starred" ? "bg-white text-rose-500 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
-                  >
-                    <BookOpen size={10} className={filterMode === "starred" ? "text-rose-500" : "text-slate-400"} fill={filterMode === "starred" ? "currentColor" : "none"} />
-                    CHƯA THUỘC ({unlearnedCount})
-                  </button>
-                </div>
+            {/* Filter scope */}
+            <div className="flex items-center flex-shrink-0" id={hasMounted ? "vocab-filters-target" : undefined}>
+              <div className="flex items-center bg-slate-100 rounded-lg sm:rounded-xl p-0.5 border border-slate-200/50">
+                <span className="flex items-center pl-1.5 pr-0.5 text-slate-400">
+                  <Filter size={10} className="sm:w-3 sm:h-3" />
+                </span>
+                <button
+                  onClick={() => setFilterMode("all")}
+                  id={hasMounted ? "vocab-filter-all-btn" : undefined}
+                  title="Tất cả các từ"
+                  className={`px-2 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-black transition-all ${filterMode === "all" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                >TẤT CẢ ({data.length})</button>
+                <button
+                  onClick={() => setFilterMode("starred")}
+                  id={hasMounted ? "vocab-filter-unlearned-btn" : undefined}
+                  title="Từ chưa thuộc"
+                  className={`px-2 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-black transition-all flex items-center gap-1 ${filterMode === "starred" ? "bg-white text-rose-500 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                >
+                  <BookOpen size={9} className={filterMode === "starred" ? "text-rose-500" : "text-slate-400"} fill={filterMode === "starred" ? "currentColor" : "none"} />
+                  CHƯA THUỘC ({unlearnedCount})
+                </button>
               </div>
             </div>
           </div>
 
-          <div className="flex gap-1 overflow-x-auto scrollbar-hide items-center">
+          {/* Game / Study Tabs */}
+          <div className="flex gap-1 overflow-x-auto scrollbar-hide items-center py-0.5">
             {(() => {
               const libraryTab = TABS.find(t => t.id === "library");
               if (!libraryTab) return null;
@@ -1414,15 +1482,15 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
                         setTab("library");
                       }
                     }}
-                    className={`text-xs font-black uppercase tracking-widest px-5 py-2.5 rounded-xl border-none outline-none cursor-pointer transition-all duration-300 appearance-none bg-no-repeat pr-8 ${isActive ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 bg-slate-100"}`}
+                    className={`text-[10px] sm:text-xs font-black uppercase tracking-wider px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-lg sm:rounded-xl border-none outline-none cursor-pointer transition-all duration-300 appearance-none bg-no-repeat pr-6 sm:pr-7 ${isActive ? "bg-blue-600 text-white shadow-md shadow-blue-200" : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 bg-slate-100"}`}
                     style={{
                       backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='${isActive ? "%23ffffff" : "%2364748b"}' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E")`,
-                      backgroundPosition: 'right 0.5rem center',
-                      backgroundSize: '1.25em 1.25em'
+                      backgroundPosition: 'right 0.35rem center',
+                      backgroundSize: '1.1em 1.1em'
                     }}
                   >
-                    <option value="" className="text-slate-800 bg-white">📚 Bộ từ vựng tổng ({data.length})</option>
-                    <option value="uncategorized" className="text-slate-800 bg-white">📚 Bộ thẻ tổng (mặc định) ({uncategorizedCount})</option>
+                    <option value="" className="text-slate-800 bg-white">📚 Bộ tổng ({data.length})</option>
+                    <option value="uncategorized" className="text-slate-800 bg-white">📚 Mặc định ({uncategorizedCount})</option>
                     {decks.map(deck => (
                       <option key={deck.id} value={deck.id} className="text-slate-800 bg-white">
                         📚 {deck.name} ({deck.count})
@@ -1438,14 +1506,14 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
                   id={hasMounted ? "vocab-mode-library-btn" : undefined}
                   onClick={() => setTab("library")}
                   title={hasMounted ? TOOLTIPS.library : undefined}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black whitespace-nowrap transition-all ${tab === "library" ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
+                  className={`flex items-center gap-1 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black whitespace-nowrap transition-all flex-shrink-0 ${tab === "library" ? "bg-blue-600 text-white shadow-md shadow-blue-200" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
                 >
-                  <Icon size={13} />{libraryTab.label}
+                  <Icon size={12} />{libraryTab.label}
                 </button>
               );
             })()}
 
-            <div className="flex gap-1" id={hasMounted ? "vocab-games-target" : undefined}>
+            <div className="flex gap-1 flex-shrink-0" id={hasMounted ? "vocab-games-target" : undefined}>
               {TABS.filter(t => t.id !== "library").map(t => {
                 const Icon = t.icon;
                 return (
@@ -1453,9 +1521,9 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
                     key={t.id}
                     onClick={() => setTab(t.id as Tab)}
                     title={hasMounted ? TOOLTIPS[t.id] : undefined}
-                    className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black whitespace-nowrap transition-all ${tab === t.id ? "bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
+                    className={`flex items-center gap-1 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black whitespace-nowrap transition-all flex-shrink-0 ${tab === t.id ? "bg-blue-600 text-white shadow-md shadow-blue-200" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
                   >
-                    <Icon size={13} />{t.label}
+                    <Icon size={12} />{t.label}
                   </button>
                 );
               })}
@@ -1465,7 +1533,7 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
       </div>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="max-w-5xl mx-auto px-2 sm:px-4 pt-2 sm:pt-4 pb-6 sm:pb-8">
         {isEmpty ? (
           <div className="text-center py-20">
             <div className="text-6xl mb-4">⭐</div>
@@ -1473,43 +1541,154 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
             <p className="text-slate-400 text-sm mt-2">Bấm ⭐ vào các từ bạn chưa thuộc ở tab Flashcard.</p>
           </div>
         ) : tab === "library" ? (
-          <>
-            <div className="flex gap-2 mb-6">
-              <button 
-                onClick={() => setGlobalFlip(prev => prev === "back" ? "front" : "back")}
-                id={hasMounted ? "vocab-global-flip-target" : undefined}
-                className="px-6 py-2.5 bg-white border border-slate-200 text-slate-600 font-bold text-[10px] uppercase tracking-widest rounded-xl hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2"
-              >
-                <Layers size={14} className="text-blue-500" />
-                {globalFlip === "back" ? "Hiện mặt trước" : "Hiện mặt sau"}
-              </button>
+          <div className="w-full">
+            {/* Flashcard Mode Switcher Bar (Ultra-Compact) */}
+            <div className="flex items-center justify-between gap-2 mb-2 sm:mb-4">
+              {/* 2 Modes Toggle */}
+              <div className="flex bg-slate-100/90 p-0.5 rounded-lg border border-slate-200/60">
+                <button
+                  onClick={() => setFlashcardViewMode("single")}
+                  className={`flex items-center gap-1 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-md text-[10px] sm:text-xs font-black transition-all ${
+                    flashcardViewMode === "single"
+                      ? "bg-white text-blue-600 shadow-sm"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  <Layers size={12} />
+                  Từng thẻ
+                </button>
+                <button
+                  onClick={() => setFlashcardViewMode("all")}
+                  className={`flex items-center gap-1 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-md text-[10px] sm:text-xs font-black transition-all ${
+                    flashcardViewMode === "all"
+                      ? "bg-white text-blue-600 shadow-sm"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  <LayoutGrid size={12} />
+                  Toàn bộ ({activeWords.length})
+                </button>
+              </div>
+
+              {/* Right: Counter or Flip All */}
+              {flashcardViewMode === "all" ? (
+                <button
+                  onClick={() => setGlobalFlip(prev => prev === "back" ? "front" : "back")}
+                  id={hasMounted ? "vocab-global-flip-target" : undefined}
+                  className="px-2.5 py-1 sm:px-3.5 sm:py-1.5 bg-white border border-slate-200 text-slate-700 font-bold text-[10px] sm:text-xs rounded-lg hover:bg-slate-50 transition-all shadow-sm flex items-center gap-1.5"
+                >
+                  <RotateCcw size={11} className="text-blue-500" />
+                  {globalFlip === "back" ? "Mặt trước" : "Lật mặt sau"}
+                </button>
+              ) : (
+                <div className="flex items-center gap-1.5">
+                  <span className="bg-blue-50 text-blue-600 text-[10px] sm:text-xs px-2.5 py-1 rounded-lg border border-blue-100 font-black tracking-wide">
+                    Thẻ {safeCardIndex + 1} / {activeWords.length}
+                  </span>
+                </div>
+              )}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-              {activeWords.map((word, idx) => {
-                const key = word.word.trim().toLowerCase() + "|" + word.mean.trim().toLowerCase();
-                return (
-                  <div key={word.id} className={idx === 0 ? "vocab-card-first animate-in zoom-in duration-300" : "animate-in zoom-in duration-300"}>
+
+            {flashcardViewMode === "single" ? (
+              /* Single Card View (Default) */
+              <div
+                className="max-w-xl mx-auto flex flex-col items-center w-full px-1 sm:px-0"
+                onTouchStart={handleCardTouchStart}
+                onTouchEnd={handleCardTouchEnd}
+              >
+                {/* Progress Bar */}
+                <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden mb-2.5 sm:mb-3 border border-slate-200/50">
+                  <div
+                    className="bg-blue-600 h-full rounded-full transition-all duration-300 ease-out"
+                    style={{ width: `${((safeCardIndex + 1) / Math.max(1, activeWords.length)) * 100}%` }}
+                  />
+                </div>
+
+                {/* The FlashCard */}
+                <div className="w-full">
+                  {activeWords[safeCardIndex] && (
                     <FlashCard
-                      word={word}
-                      index={idx}
-                      isInNotebook={notebookIds.has(key)}
-                      isUnlearned={unlearnedIds.has(key)}
-                      currentDeckId={userVocabs.find(v => v.word.toLowerCase() === word.word.toLowerCase() && v.definition.trim() === word.mean.trim())?.deckId}
+                      key={activeWords[safeCardIndex].id}
+                      word={activeWords[safeCardIndex]}
+                      index={safeCardIndex}
+                      isInNotebook={notebookIds.has(activeWords[safeCardIndex].word.trim().toLowerCase() + "|" + activeWords[safeCardIndex].mean.trim().toLowerCase())}
+                      isUnlearned={unlearnedIds.has(activeWords[safeCardIndex].word.trim().toLowerCase() + "|" + activeWords[safeCardIndex].mean.trim().toLowerCase())}
+                      currentDeckId={userVocabs.find(v => v.word.toLowerCase() === activeWords[safeCardIndex].word.toLowerCase() && v.definition.trim() === activeWords[safeCardIndex].mean.trim())?.deckId}
                       currentDeckName={(() => {
-                        const deckId = userVocabs.find(v => v.word.toLowerCase() === word.word.toLowerCase() && v.definition.trim() === word.mean.trim())?.deckId;
+                        const deckId = userVocabs.find(v => v.word.toLowerCase() === activeWords[safeCardIndex].word.toLowerCase() && v.definition.trim() === activeWords[safeCardIndex].mean.trim())?.deckId;
                         if (!deckId) return "bộ thẻ tổng";
                         return decks.find(d => d.id === deckId)?.name || "bộ thẻ tổng";
                       })()}
-                      onSelectDeck={(deckId) => handleDeckSelect(word, deckId)}
-                      onUnstar={() => handleUnstar(word)}
-                      onToggleUnlearned={() => toggleUnlearned(word)}
-                      globalFlip={globalFlip}
+                      onSelectDeck={(deckId) => handleDeckSelect(activeWords[safeCardIndex], deckId)}
+                      onUnstar={() => handleUnstar(activeWords[safeCardIndex])}
+                      onToggleUnlearned={() => toggleUnlearned(activeWords[safeCardIndex])}
+                      globalFlip={null}
+                      flipTrigger={flipTrigger}
                     />
-                  </div>
-                );
-              })}
-            </div>
-          </>
+                  )}
+                </div>
+
+                {/* Navigation Controls */}
+                <div className="flex items-center justify-between w-full mt-3.5 sm:mt-5 gap-2 sm:gap-3">
+                  <button
+                    onClick={() => setCurrentCardIndex(prev => Math.max(0, prev - 1))}
+                    disabled={safeCardIndex === 0}
+                    className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-6 py-2.5 sm:py-3.5 bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-700 font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                    title="Thẻ trước (phím ←)"
+                  >
+                    <ChevronLeft size={16} />
+                    <span>Trước</span>
+                  </button>
+
+                  <button
+                    onClick={() => setFlipTrigger(prev => prev + 1)}
+                    className="flex-[1.3] sm:flex-1 flex items-center justify-center gap-1.5 px-4 sm:px-6 py-2.5 sm:py-3.5 bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-sm transition-all active:scale-95"
+                    title="Lật thẻ (phím Space)"
+                  >
+                    <RotateCcw size={14} />
+                    <span>Lật thẻ</span>
+                  </button>
+
+                  <button
+                    onClick={() => setCurrentCardIndex(prev => Math.min(activeWords.length - 1, prev + 1))}
+                    disabled={safeCardIndex === activeWords.length - 1}
+                    className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-6 py-2.5 sm:py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-md shadow-blue-200 transition-all disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                    title="Thẻ tiếp theo (phím →)"
+                  >
+                    <span>Tiếp</span>
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* All Cards Grid View */
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                {activeWords.map((word, idx) => {
+                  const key = word.word.trim().toLowerCase() + "|" + word.mean.trim().toLowerCase();
+                  return (
+                    <div key={word.id} className={idx === 0 ? "vocab-card-first animate-in zoom-in duration-300" : "animate-in zoom-in duration-300"}>
+                      <FlashCard
+                        word={word}
+                        index={idx}
+                        isInNotebook={notebookIds.has(key)}
+                        isUnlearned={unlearnedIds.has(key)}
+                        currentDeckId={userVocabs.find(v => v.word.toLowerCase() === word.word.toLowerCase() && v.definition.trim() === word.mean.trim())?.deckId}
+                        currentDeckName={(() => {
+                          const deckId = userVocabs.find(v => v.word.toLowerCase() === word.word.toLowerCase() && v.definition.trim() === word.mean.trim())?.deckId;
+                          if (!deckId) return "bộ thẻ tổng";
+                          return decks.find(d => d.id === deckId)?.name || "bộ thẻ tổng";
+                        })()}
+                        onSelectDeck={(deckId) => handleDeckSelect(word, deckId)}
+                        onUnstar={() => handleUnstar(word)}
+                        onToggleUnlearned={() => toggleUnlearned(word)}
+                        globalFlip={globalFlip}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         ) : (tab === "scramble" && hasMounted) ? (
           <ScrambleGame words={activeWords} onSRSUpdate={onSRSUpdate} />
         ) : (tab === "fill" && hasMounted) ? (
