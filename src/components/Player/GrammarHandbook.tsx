@@ -7,8 +7,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
 import wordFamiliesDataStatic from "@/data/word_families.json";
-
-const audioCache = new Map<string, string>();
+import { speakVocab } from "@/lib/vocab-audio";
 
 interface SubQuestion {
   q: string;
@@ -2419,51 +2418,8 @@ function WordFamilyPopover({ wordFamilies: initialWordFamilies, position, onClos
     startLineEdit(id, lines.length, "");
   };
 
-  const speak = async (text: string, type: 'uk' | 'us' = 'us') => {
-    if (typeof window === 'undefined') return;
-
-    const fallbackSpeak = (t: string) => {
-      if (!('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(t);
-      const voices = window.speechSynthesis.getVoices();
-      const voice = voices.find(v => {
-        if (type === 'uk') return v.lang === 'en-GB';
-        return v.lang === 'en-US' || v.lang === 'en_US';
-      }) || voices.find(v => v.lang.startsWith('en'));
-      if (voice) utterance.voice = voice;
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
-    };
-
-    const cleanSpeechText = text.replace(/\s*\([^)]*\)/g, '').trim();
-    if (cleanSpeechText.includes(' ')) {
-      fallbackSpeak(cleanSpeechText);
-      return;
-    }
-
-    const cleanWord = cleanSpeechText.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const cacheKey = `${cleanWord}_${type}`;
-
-    if (audioCache.has(cacheKey)) {
-      const cachedUrl = audioCache.get(cacheKey)!;
-      if (cachedUrl === 'tts') {
-        fallbackSpeak(cleanSpeechText);
-      } else {
-        const audio = new Audio(cachedUrl);
-        audio.play().catch(() => fallbackSpeak(cleanSpeechText));
-      }
-      return;
-    }
-
-    try {
-      const audioUrl = `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(cleanWord)}&type=${type === 'uk' ? '1' : '2'}`;
-      audioCache.set(cacheKey, audioUrl);
-      const audio = new Audio(audioUrl);
-      await audio.play();
-    } catch (err) {
-      fallbackSpeak(cleanSpeechText);
-    }
+  const speak = (text: string, type: 'uk' | 'us' = 'us') => {
+    speakVocab(text, type);
   };
 
   const popoverRef = useRef<HTMLDivElement>(null);

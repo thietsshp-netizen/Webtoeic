@@ -9,6 +9,7 @@ import {
   ArrowRight, BookOpen
 } from "lucide-react";
 import { SpeakerWaveIcon } from "@heroicons/react/24/solid";
+import { speakVocab } from "@/lib/vocab-audio";
 
 interface RawExcelRow {
   Book?: string;
@@ -139,17 +140,7 @@ export default function Part5IngestionPage() {
   };
 
   const speak = (text: string, type: 'uk' | 'us' = 'us') => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    const voices = window.speechSynthesis.getVoices();
-    const voice = voices.find(v => {
-      if (type === 'uk') return v.lang === 'en-GB';
-      return v.lang === 'en-US' || v.lang === 'en_US';
-    }) || voices.find(v => v.lang.startsWith('en'));
-    if (voice) utterance.voice = voice;
-    utterance.rate = 0.9;
-    window.speechSynthesis.speak(utterance);
+    speakVocab(text, type);
   };
 
   const isValidData = (val: string | null | undefined) => {

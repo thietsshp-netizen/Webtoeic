@@ -16,6 +16,7 @@ import Link from 'next/link';
 import FlagSelector, { FlagColor } from '../Player/FlagSelector';
 import { startToeicPartTour } from './toeicTour';
 import FloatingVideoExplanationPlayer from '../Player/FloatingVideoExplanationPlayer';
+import { speakVocab } from "@/lib/vocab-audio";
 
 function cleanSpeakerLabels(text: string) {
   if (!text) return "";
@@ -32,13 +33,8 @@ function parseOptionsFromText(text: string) {
   });
 }
 
-const speak = (text: string) => {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'en-US';
-  utterance.rate = 0.9;
-  window.speechSynthesis.speak(utterance);
+const speak = (text: string, type: 'uk' | 'us' = 'us') => {
+  speakVocab(text, type);
 };
 
 const HintPhrase = ({ phrase, isReveal, questionIndex, hintIndex }: { phrase: string, isReveal: boolean, questionIndex: number, hintIndex?: number }) => {

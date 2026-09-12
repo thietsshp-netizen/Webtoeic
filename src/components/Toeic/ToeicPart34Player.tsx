@@ -18,6 +18,7 @@ import Link from 'next/link';
 import FlagSelector, { FlagColor } from '../Player/FlagSelector';
 import { startToeicPartTour } from './toeicTour';
 import FloatingVideoExplanationPlayer from '../Player/FloatingVideoExplanationPlayer';
+import { speakVocab } from "@/lib/vocab-audio";
 
 // --- UTILITIES (ĐỊNH NGHĨA NỘI BỘ ĐỂ TRÁNH LỖI IMPORT) ---
 const formatTime = (seconds: number) => {
@@ -36,10 +37,8 @@ const InteractiveWord = ({ word, isReveal, forceBold = false }: { word: string, 
   const punctuation = match ? match[2] : "";
   const maskedLetters = letters.replace(/[a-zA-Z]/g, '_');
 
-  const speak = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text.replace(/[^a-zA-Z]/g, ''));
-    utterance.lang = 'en-US';
-    window.speechSynthesis.speak(utterance);
+  const speak = (text: string, type: 'uk' | 'us' = 'us') => {
+    speakVocab(text, type);
   };
 
   return (
