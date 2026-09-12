@@ -1,0 +1,79 @@
+const data = [
+  {"id":1,"word":"completely","ipa":"kəmˈplitli","mean":"adv hoàn toàn, trọn vẹn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/completely.png","ex":"Every product in our catalog is <span class='hl-en'>completely</span> guaranteed.","exVi":"Tất cả sản phẩm trong danh mục của chúng tôi đều được bảo hành <span class='hl-vi'>hoàn toàn</span>.","syns":["totally","entirely"]},
+
+  {"id":2,"word":"refuse","ipa":"rɪˈfjuz","mean":"v từ chối","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/refuse.png","ex":"The shipment was <span class='hl-en'>refused</span> by the purchaser due to damage.","exVi":"Lô hàng đã bị người mua <span class='hl-vi'>từ chối</span> vì những hư hại.","syns":["decline","reject"]},
+
+  {"id":3,"word":"temporarily","ipa":"ˌtɛmpəˈrɛrəli","mean":"adv tạm thời, nhất thời","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/temporarily.png","ex":"The popular video game is <span class='hl-en'>temporarily</span> out of stock.","exVi":"Máy chơi game đang được ưa chuộng đó <span class='hl-vi'>tạm thời</span> hết hàng.","syns":["briefly","provisionally"]},
+
+  {"id":4,"word":"dealer","ipa":"ˈdilər","mean":"n người buôn bán, đại lý","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/dealer.png","ex":"Imported vehicles are sold only by licensed car <span class='hl-en'>dealers</span>.","exVi":"Chỉ những <span class='hl-vi'>người bán (đại lý)</span> xe đã được cấp phép mới có thể bán xe nhập khẩu.","syns":["trader","merchant"]},
+
+  {"id":5,"word":"bulk","ipa":"bʌlk","mean":"adj lớn, số lượng nhiều","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/bulk.png","ex":"Many factories offer a modest discount for <span class='hl-en'>bulk</span> orders.","exVi":"Nhiều nhà máy đưa ra mức chiết khấu cho những đơn hàng <span class='hl-vi'>lớn</span>.","syns":["mass","large scale"]},
+
+  {"id":6,"word":"inventory","ipa":"ˌɪnvənˈtɔri","mean":"n hàng tồn kho, sự kiểm kê","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/inventory.png","ex":"The <span class='hl-en'>inventory</span> in the warehouse is checked at regular intervals.","exVi":"Hàng <span class='hl-vi'>tồn (kiểm kê)</span> trong kho được kiểm tra định kỳ.","syns":["stock","supply"]},
+
+  {"id":7,"word":"short","ipa":"ʃɔrt","mean":"adj ngắn; thiếu, không đủ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/short.png","ex":"The plant is running <span class='hl-en'>short</span> on its supply of raw materials.","exVi":"Nhà máy còn <span class='hl-vi'>thiếu (rất ít)</span> nguồn cung nguyên liệu thô.","syns":["lacking","insufficient"]},
+
+  {"id":8,"word":"cost","ipa":"kɑst","mean":"n giá, chi phí; v trị giá","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/cost.png","ex":"Singapore is known for its high <span class='hl-en'>cost</span> of living.","exVi":"Singapore được biết đến là nơi có <span class='hl-vi'>chi phí</span> sinh hoạt cao.","syns":["price","expense"]},
+
+  {"id":9,"word":"selection","ipa":"səˈlɛkʃən","mean":"n sự chọn lựa, danh mục lựa chọn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/selection.png","ex":"Our website boasts a wide <span class='hl-en'>selection</span> of gift items.","exVi":"Trang web của chúng tôi có rất nhiều <span class='hl-vi'>sự lựa chọn</span> về quà tặng.","syns":["choice","range"]},
+
+  {"id":10,"word":"commercial","ipa":"kəˈmɜrʃəl","mean":"adj thuộc thương mại; n quảng cáo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/commercial.png","ex":"Some <span class='hl-en'>commercial</span> products may be subject to import taxes.","exVi":"Một số sản phẩm <span class='hl-vi'>thương mại</span> có thể phải nộp thuế nhập khẩu.","syns":["business-related","profitable"]},
+
+  {"id":11,"word":"order","ipa":"ˈɔrdər","mean":"v đặt hàng; n đơn hàng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/order.png","ex":"InterCore places regular <span class='hl-en'>orders</span> for microchips.","exVi":"InterCore đặt <span class='hl-vi'>đơn hàng</span> định kỳ mua vi mạch.","syns":["purchase","request"]},
+
+  {"id":12,"word":"provide","ipa":"prəˈvaɪd","mean":"v cung cấp, dự phòng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/provide.png","ex":"We <span class='hl-en'>provide</span> customers with detailed product lists by e-mail.","exVi":"Chúng tôi <span class='hl-vi'>cung cấp</span> cho khách hàng danh sách chi tiết qua e-mail.","syns":["supply","furnish"]},
+
+  {"id":13,"word":"contact","ipa":"ˈkɑnˌtækt","mean":"v liên lạc; n người liên hệ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/contact.png","ex":"<span class='hl-en'>Contact</span> the supplier to request express delivery.","exVi":"Hãy <span class='hl-vi'>liên hệ</span> với nhà cung cấp để yêu cầu giao hàng nhanh.","syns":["get in touch","connection"]},
+
+  {"id":14,"word":"invoice","ipa":"ˈɪnvɔɪs","mean":"n hóa đơn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/invoice.png","ex":"The manufacturer sent an <span class='hl-en'>invoice</span> for the production costs.","exVi":"Nhà sản xuất đã gửi <span class='hl-vi'>hóa đơn</span> chi phí sản phẩm.","syns":["bill","statement"]},
+
+  {"id":15,"word":"move","ipa":"muv","mean":"v di chuyển, chuyển trụ sở","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/move.png","ex":"Panther Corporation <span class='hl-en'>moved</span> its Asian headquarters to China.","exVi":"Tập đoàn Panther đã <span class='hl-vi'>chuyển</span> trụ sở châu Á tới Trung Quốc.","syns":["relocate","shift"]},
+
+  {"id":16,"word":"supply","ipa":"səˈplaɪ","mean":"v cung cấp; n vật tư, nguồn cung","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/supply.png","ex":"Office <span class='hl-en'>supplies</span> purchased online will be shipped quickly.","exVi":"<span class='hl-vi'>Vật tư</span> văn phòng đặt mua trên mạng sẽ được giao sớm.","syns":["provide","materials"]},
+
+  {"id":17,"word":"discount","ipa":"dɪˈskaʊnt","mean":"n sự giảm giá, chiết khấu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/discount.png","ex":"Repeat clients are eligible for a 30 percent <span class='hl-en'>discount</span>.","exVi":"Khách mua hàng thường xuyên sẽ được hưởng mức <span class='hl-vi'>chiết khấu</span> 30%.","syns":["reduction","markdown"]},
+
+  {"id":18,"word":"distribute","ipa":"dɪˈstrɪbjut","mean":"v phân phối, phân phát","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/distribute.png","ex":"The goods were <span class='hl-en'>distributed</span> to local businesses.","exVi":"Hàng hóa đã được <span class='hl-vi'>phân phối</span> tới các cơ sở kinh doanh địa phương.","syns":["deliver","disseminate"]},
+
+  {"id":19,"word":"acquisition","ipa":"ˌækwəˈzɪʃən","mean":"n sự mua lại, tiếp nhận","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/acquisition.png","ex":"Companies can grow quickly through the <span class='hl-en'>acquisition</span> of other businesses.","exVi":"Các công ty có thể lớn mạnh nhanh chóng thông qua việc <span class='hl-vi'>thu mua lại</span> doanh nghiệp khác.","syns":["purchase","takeover"]},
+
+  {"id":20,"word":"assure","ipa":"əˈʃʊr","mean":"v đảm bảo, cam đoan","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/assure.png","ex":"RapidFleet <span class='hl-en'>assures</span> customers that all purchases are delivered promptly.","exVi":"RapidFleet <span class='hl-vi'>đảm bảo</span> với khách hàng rằng hàng sẽ được giao nhanh chóng.","syns":["guarantee","convince"]},
+
+  {"id":21,"word":"subject","ipa":"ˈsʌbʤɪkt","mean":"adj dễ bị, phải chịu; v bắt chịu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/subject.png","ex":"Prices are <span class='hl-en'>subject</span> to change without advance notice.","exVi":"Giá cả <span class='hl-vi'>khó tránh khỏi (dễ bị)</span> thay đổi mà không báo trước.","syns":["vulnerable"]},
+
+  {"id":22,"word":"seek","ipa":"sik","mean":"v tìm kiếm, theo đuổi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/seek.png","ex":"Fenway Bank is <span class='hl-en'>seeking</span> a new manager for its branch.","exVi":"Ngân hàng Fenway đang <span class='hl-vi'>tìm</span> một quản lý mới cho chi nhánh.","syns":["search for","look for"]},
+
+  {"id":23,"word":"satisfactory","ipa":"ˌsætəˈsfæktri","mean":"adj vừa lòng, thỏa đáng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/satisfactory.png","ex":"Customers expect <span class='hl-en'>satisfactory</span> responses to their demands.","exVi":"Khách hàng mong nhận được những phản hồi <span class='hl-vi'>thỏa đáng</span>.","syns":["acceptable","adequate"]},
+
+  {"id":24,"word":"confirmation","ipa":"ˌkɑnfərˈmeɪʃən","mean":"n sự xác nhận, thừa nhận","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/confirmation.png","ex":"Please submit written <span class='hl-en'>confirmation</span> of the cancellation.","exVi":"Vui lòng nộp văn bản <span class='hl-vi'>xác nhận</span> việc hủy đăng ký.","syns":["verification","proof"]},
+
+  {"id":25,"word":"unable","ipa":"əˈneɪbəl","mean":"adj không thể, không có khả năng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/unable.png","ex":"The hotel is <span class='hl-en'>unable</span> to take any more reservations.","exVi":"Khách sạn <span class='hl-vi'>không thể</span> tiếp nhận thêm đơn đặt chỗ.","syns":["incapable","powerless"]},
+
+  {"id":26,"word":"payment","ipa":"ˈpeɪmənt","mean":"n việc trả tiền, khoản thanh toán","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/payment.png","ex":"Once <span class='hl-en'>payment</span> has been received, the books will be delivered.","exVi":"Khi <span class='hl-vi'>tiền thanh toán</span> đến nơi, sách sẽ được giao.","syns":["remittance","settlement"]},
+
+  {"id":27,"word":"measure","ipa":"ˈmɛʒər","mean":"n phương sách, biện pháp; v đo đạc","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/measure.png","ex":"The safety <span class='hl-en'>measures</span> are in place to protect factory workers.","exVi":"Các <span class='hl-vi'>biện pháp</span> an toàn đã được thiết lập để bảo vệ công nhân.","syns":["step","action"]},
+
+  {"id":28,"word":"bargain","ipa":"ˈbɑrgən","mean":"n món hời, sự mặc cả","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/bargain.png","ex":"Stores offer many great <span class='hl-en'>bargains</span> at the end of the year.","exVi":"Các cửa hàng đưa ra rất nhiều <span class='hl-vi'>món hời</span> hấp dẫn vào cuối năm.","syns":["deal","good buy"]},
+
+  {"id":29,"word":"stock","ipa":"stɑk","mean":"n kho hàng, cổ phiếu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/stock.png","ex":"This particular model is currently out of <span class='hl-en'>stock</span>.","exVi":"Mẫu này hiện đang hết <span class='hl-vi'>hàng</span>.","syns":["inventory","shares"]},
+
+  {"id":30,"word":"affordability","ipa":"əˌfɔrdəˈbɪləti","mean":"n tính hợp lý về giá cả","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/affordability.png","ex":"Consumers are concerned about the <span class='hl-en'>affordability</span> of groceries.","exVi":"Khách hàng bận tâm về việc giá cả có <span class='hl-vi'>hợp túi tiền</span> hay không.","syns":["economy"]},
+
+  {"id":31,"word":"clientele","ipa":"ˌklaɪənˈtɛl","mean":"n nhóm khách hàng, khách quen","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/clientele.png","ex":"The wealthiest <span class='hl-en'>clientele</span> usually shops in luxury stores.","exVi":"Những <span class='hl-vi'>khách hàng (khách quen)</span> giàu có nhất thường mua sắm ở đây.","syns":["customers","patrons"]},
+
+  {"id":32,"word":"acclaim","ipa":"əˈkleɪm","mean":"n sự ngợi khen, hoan nghênh","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/acclaim.png","ex":"Ms. Song's novel won critical <span class='hl-en'>acclaim</span>.","exVi":"Cuốn tiểu thuyết của bà Song đã được giới phê bình <span class='hl-vi'>khen ngợi</span>.","syns":["praise","applause"]},
+
+  {"id":33,"word":"represent","ipa":"ˌrɛprəˈzɛnt","mean":"v đại diện cho","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/represent.png","ex":"Rounders Properties is looking for an agent to <span class='hl-en'>represent</span> the firm.","exVi":"Rounders Properties đang tìm một người <span class='hl-vi'>đại diện</span> cho công ty.","syns":["stand for","on behalf of"]},
+
+  {"id":34,"word":"rating","ipa":"ˈreɪtɪŋ","mean":"n sự đánh giá, thứ hạng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/rating.png","ex":"The Coolmax air conditioner has the highest efficiency <span class='hl-en'>rating</span>.","exVi":"Điều hòa Coolmax có <span class='hl-vi'>thứ hạng (đánh giá)</span> cao nhất về tiết kiệm năng lượng.","syns":["grade","rank"]},
+
+  {"id":35,"word":"finalize","ipa":"ˈfaɪnəˌlaɪz","mean":"v hoàn thành, thông qua lần cuối","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/finalize.png","ex":"Once Bertram Inc. <span class='hl-en'>finalizes</span> the contract, they will begin manufacturing.","exVi":"Ngay khi Tập đoàn Bertram <span class='hl-vi'>thông qua (hoàn tất)</span> hợp đồng, họ sẽ sản xuất.","syns":["complete","settle"]},
+
+  {"id":36,"word":"market","ipa":"ˈmɑrkət","mean":"n thị trường","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/market.png","ex":"Joyful-Cleanse is the best dish detergent on the <span class='hl-en'>market</span>.","exVi":"Joyful-Cleanse là nước rửa bát tốt nhất trên <span class='hl-vi'>thị trường</span>.","syns":["marketplace","sector"]},
+
+  {"id":37,"word":"retail","ipa":"ˈriˌteɪl","mean":"n sự bán lẻ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/retail.png","ex":"Online shops are more popular than most <span class='hl-en'>retail</span> stores nowadays.","exVi":"Các cửa hàng trực tuyến giờ đây phổ biến hơn các cửa hàng <span class='hl-vi'>bán lẻ</span>.","syns":["direct selling","merchandising"]},
+
+  {"id":38,"word":"commodity","ipa":"kəˈmɑdəti","mean":"n hàng hóa, mặt hàng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/commodity.png","ex":"Export opportunities are opening up in the agricultural <span class='hl-en'>commodities</span> sector.","exVi":"Cơ hội xuất khẩu đang mở rộng trong lĩnh vực <span class='hl-vi'>hàng hóa</span> nông nghiệp.","syns":["product","good"]},
+
+  {"id":39,"word":"quote","ipa":"kwəʊt","mean":"n báo giá","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/quote.png","ex":"The customer requested a price <span class='hl-en'>quote</span> on the merchandise.","exVi":"Khách hàng hỏi <span class='hl-vi'>báo giá</span> của mặt hàng đó.","syns":["estimate","price"]}
+];

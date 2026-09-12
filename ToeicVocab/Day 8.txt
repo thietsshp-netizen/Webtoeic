@@ -1,0 +1,81 @@
+const data = [
+  {"id":1,"word":"advertisement","ipa":"ədˈvɜrtəzmənt","mean":"n quảng cáo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/advertisement.png","ex":"Sales have been propelled by the new <span class='hl-en'>advertisement</span>.","exVi":"Doanh số bán hàng đã được thúc đẩy bởi <span class='hl-vi'>quảng cáo</span> mới này.","syns":["commercial","promotion"]},
+
+  {"id":2,"word":"marginal","ipa":"ˈmɑrʤənəl","mean":"adj không đáng kể","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/marginal.png","ex":"Customers showed only <span class='hl-en'>marginal</span> interest in the new tablet.","exVi":"Khách hàng chỉ tỏ ra quan tâm <span class='hl-vi'>không đáng kể</span>.","syns":["minor","slight"]},
+
+  {"id":3,"word":"customer","ipa":"ˈkʌstəmər","mean":"n khách hàng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/customer.png","ex":"Telephone representatives should prioritize <span class='hl-en'>customers</span>.","exVi":"Nhân viên nên ưu tiên <span class='hl-vi'>khách hàng</span>.","syns":["client","buyer"]},
+
+  {"id":4,"word":"influence","ipa":"ˈɪnfluəns","mean":"v/n ảnh hưởng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/influence.png","ex":"Demand strongly <span class='hl-en'>influences</span> housing prices.","exVi":"Nhu cầu <span class='hl-vi'>ảnh hưởng</span> mạnh đến giá nhà.","syns":["affect","impact"]},
+
+  {"id":5,"word":"instantly","ipa":"ˈɪnstəntli","mean":"adv ngay lập tức","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/instantly.png","ex":"The logo is <span class='hl-en'>instantly</span> recognizable.","exVi":"Logo được nhận ra <span class='hl-vi'>ngay lập tức</span>.","syns":["immediately","promptly"]},
+
+  {"id":6,"word":"creative","ipa":"kriˈeɪtɪv","mean":"adj sáng tạo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/creative.png","ex":"He proposed a <span class='hl-en'>creative</span> solution.","exVi":"Anh ấy đề xuất giải pháp <span class='hl-vi'>sáng tạo</span>.","syns":["innovative","imaginative"]},
+
+  {"id":7,"word":"aggressively","ipa":"əˈgrɛsɪvli","mean":"adv tích cực","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/aggressively.png","ex":"Top salespeople <span class='hl-en'>aggressively</span> seek clients.","exVi":"Nhân viên giỏi tìm khách hàng rất <span class='hl-vi'>tích cực</span>.","syns":["actively"]},
+
+  {"id":8,"word":"aim","ipa":"eɪm","mean":"v/n mục tiêu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/aim.png","ex":"The campaign <span class='hl-en'>aims</span> at teenagers.","exVi":"Chiến dịch <span class='hl-vi'>nhắm tới</span> thanh thiếu niên.","syns":["goal","target"]},
+
+  {"id":9,"word":"strategy","ipa":"ˈstrætəʤi","mean":"n chiến lược","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/strategy.png","ex":"Their expansion <span class='hl-en'>strategy</span> succeeded.","exVi":"Chiến lược mở rộng đã <span class='hl-vi'>thành công</span>.","syns":["plan","approach"]},
+
+  {"id":10,"word":"indicate","ipa":"ˈɪndəˌkeɪt","mean":"v cho thấy","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/indicate.png","ex":"Studies <span class='hl-en'>indicate</span> rising demand.","exVi":"Nghiên cứu <span class='hl-vi'>cho thấy</span> nhu cầu tăng.","syns":["show","suggest"]},
+
+  {"id":11,"word":"attract","ipa":"əˈtrækt","mean":"v thu hút","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/attract.png","ex":"The company hopes to <span class='hl-en'>attract</span> young buyers.","exVi":"Công ty muốn <span class='hl-vi'>thu hút</span> khách trẻ.","syns":["draw","appeal to"]},
+
+  {"id":12,"word":"experience","ipa":"ɪkˈspɪriəns","mean":"n/v trải nghiệm","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/experience.png","ex":"Guests had a pleasant <span class='hl-en'>experience</span>.","exVi":"Khách có <span class='hl-vi'>trải nghiệm</span> thú vị.","syns":["encounter"]},
+
+  {"id":13,"word":"analyze","ipa":"ˈænəˌlaɪz","mean":"v phân tích","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/analyze.png","ex":"Researchers <span class='hl-en'>analyzed</span> the data.","exVi":"Các nhà nghiên cứu đã <span class='hl-vi'>phân tích</span> dữ liệu.","syns":["examine","study"]},
+
+  {"id":14,"word":"introduce","ipa":"ˌɪntrəˈdus","mean":"v giới thiệu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/introduce.png","ex":"The firm <span class='hl-en'>introduced</span> a new product.","exVi":"Công ty đã <span class='hl-vi'>giới thiệu</span> sản phẩm mới.","syns":["present","launch"]},
+
+  {"id":15,"word":"advise","ipa":"ædˈvaɪz","mean":"v tư vấn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/advise.png","ex":"Lawyers <span class='hl-en'>advise</span> clients.","exVi":"Luật sư <span class='hl-vi'>tư vấn</span> khách hàng.","syns":["counsel","recommend"]},
+
+  {"id":16,"word":"subscribe","ipa":"səbˈskraɪb","mean":"v đăng ký","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/subscribe.png","ex":"Thousands <span class='hl-en'>subscribe</span> to the magazine.","exVi":"Hàng nghìn người <span class='hl-vi'>đăng ký</span> tạp chí.","syns":["sign up","enroll"]},
+
+  {"id":17,"word":"absence","ipa":"ˈæbsəns","mean":"n sự vắng mặt","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/absence.png","ex":"His <span class='hl-en'>absence</span> was noticed.","exVi":"Sự <span class='hl-vi'>vắng mặt</span> của anh ấy được chú ý.","syns":["nonattendance","nonattendance"]},
+
+  {"id":18,"word":"means","ipa":"minz","mean":"n phương tiện","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/means.png","ex":"Surveys are one <span class='hl-en'>means</span> of research.","exVi":"Khảo sát là một <span class='hl-vi'>phương tiện</span> nghiên cứu.","syns":["method","way"]},
+
+  {"id":19,"word":"prefer","ipa":"prəˈfɜr","mean":"v thích hơn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/prefer.png","ex":"Customers <span class='hl-en'>prefer</span> this brand.","exVi":"Khách hàng <span class='hl-vi'>thích</span> thương hiệu này.","syns":["favor","like better"]},
+
+  {"id":20,"word":"advantage","ipa":"ædˈvæntɪʤ","mean":"n lợi thế","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/advantage.png","ex":"Low cost is an <span class='hl-en'>advantage</span>.","exVi":"Chi phí thấp là một <span class='hl-vi'>lợi thế</span>.","syns":["benefit","edge"]},
+
+  {"id":21,"word":"forward","ipa":"ˈfɔrwərd","mean":"adv/v chuyển tiếp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/forward.png","ex":"Please <span class='hl-en'>forward</span> the email.","exVi":"Vui lòng <span class='hl-vi'>chuyển tiếp</span> email.","syns":["send","pass on"]},
+
+  {"id":22,"word":"contemporary","ipa":"kənˈtɛmpəˌrɛri","mean":"adj hiện đại","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/contemporary.png","ex":"Design reflects <span class='hl-en'>contemporary</span> trends.","exVi":"Thiết kế phản ánh xu hướng <span class='hl-vi'>hiện đại</span>.","syns":["modern","current"]},
+
+  {"id":23,"word":"discussion","ipa":"dɪˈskʌʃən","mean":"n thảo luận","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/discussion.png","ex":"A <span class='hl-en'>discussion</span> was held.","exVi":"Một cuộc <span class='hl-vi'>thảo luận</span> đã diễn ra.","syns":["debate","talk"]},
+
+  {"id":24,"word":"initial","ipa":"ɪˈnɪʃəl","mean":"adj ban đầu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/initial.png","ex":"<span class='hl-en'>Initial</span> results are positive.","exVi":"Kết quả <span class='hl-vi'>ban đầu</span> tích cực.","syns":["first","preliminary"]},
+
+  {"id":25,"word":"steadily","ipa":"ˈstɛdəli","mean":"adv đều đặn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/steadily.png","ex":"Sales grew <span class='hl-en'>steadily</span>.","exVi":"Doanh số tăng <span class='hl-vi'>đều đặn</span>.","syns":["gradually","consistently"]},
+
+  {"id":26,"word":"necessarily","ipa":"ˌnɛsəˈsɛrəli","mean":"adv nhất thiết","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/necessarily.png","ex":"More work doesn't <span class='hl-en'>necessarily</span> mean success.","exVi":"Làm nhiều không <span class='hl-vi'>nhất thiết</span> thành công.","syns":["essentially"]},
+
+  {"id":27,"word":"resolve","ipa":"riˈzɑlv","mean":"v giải quyết","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/resolve.png","ex":"We must <span class='hl-en'>resolve</span> the issue.","exVi":"Chúng ta phải <span class='hl-vi'>giải quyết</span> vấn đề.","syns":["solve","settle"]},
+
+  {"id":28,"word":"detect","ipa":"dɪˈtɛkt","mean":"v phát hiện","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/detect.png","ex":"Experts <span class='hl-en'>detected</span> a fault.","exVi":"Chuyên gia đã <span class='hl-vi'>phát hiện</span> lỗi.","syns":["discover","identify"]},
+
+  {"id":29,"word":"intensify","ipa":"ɪnˈtɛnsəˌfaɪ","mean":"v tăng cường","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/intensify.png","ex":"They <span class='hl-en'>intensified</span> promotion.","exVi":"Họ đã <span class='hl-vi'>tăng cường</span> quảng bá.","syns":["strengthen","heighten"]},
+
+  {"id":30,"word":"favorably","ipa":"ˈfeɪvərəbli","mean":"adv thuận lợi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/favorably.png","ex":"The product was <span class='hl-en'>favorably</span> received.","exVi":"Sản phẩm được đón nhận <span class='hl-vi'>tích cực</span>.","syns":["positively"]},
+
+  {"id":31,"word":"cover","ipa":"ˈkʌvər","mean":"v bao gồm","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/cover.png","ex":"The fee <span class='hl-en'>covers</span> repairs.","exVi":"Phí đã <span class='hl-vi'>bao gồm</span> sửa chữa.","syns":["include","contain"]},
+
+  {"id":32,"word":"less","ipa":"lɛs","mean":"adj ít hơn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/less.png","ex":"<span class='hl-en'>Less</span> competition raised prices.","exVi":"<span class='hl-vi'>Ít</span> cạnh tranh làm tăng giá.","syns":["fewer","smaller"]},
+
+  {"id":33,"word":"majority","ipa":"məˈʤɔrəti","mean":"n đa số","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/majority.png","ex":"The <span class='hl-en'>majority</span> agreed.","exVi":"<span class='hl-vi'>Đa số</span> đồng ý.","syns":["most"]},
+
+  {"id":34,"word":"adopt","ipa":"əˈdɑpt","mean":"v áp dụng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/adopt.png","ex":"The firm <span class='hl-en'>adopted</span> a new policy.","exVi":"Công ty đã <span class='hl-vi'>áp dụng</span> chính sách mới.","syns":["implement","embrace"]},
+
+  {"id":35,"word":"largely","ipa":"ˈlɑrʤli","mean":"adv phần lớn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/largely.png","ex":"Reaction was <span class='hl-en'>largely</span> positive.","exVi":"Phản ứng <span class='hl-vi'>phần lớn</span> tích cực.","syns":["mostly","mainly"]},
+
+  {"id":36,"word":"disregard","ipa":"ˌdɪsrɪˈgɑrd","mean":"v phớt lờ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/disregard.png","ex":"Do not <span class='hl-en'>disregard</span> feedback.","exVi":"Đừng <span class='hl-vi'>phớt lờ</span> phản hồi.","syns":["ignore","overlook"]},
+
+  {"id":37,"word":"effort","ipa":"ˈɛfərt","mean":"n nỗ lực","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/effort.png","ex":"They made an <span class='hl-en'>effort</span> to improve.","exVi":"Họ đã <span class='hl-vi'>nỗ lực</span> cải thiện.","syns":["attempt","endeavor"]},
+
+  {"id":38,"word":"incentive","ipa":"ɪnˈsɛntɪv","mean":"n khuyến khích","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/incentive.png","ex":"Bonuses are an <span class='hl-en'>incentive</span>.","exVi":"Thưởng là một <span class='hl-vi'>động lực</span>.","syns":["motivation","stimulus"]},
+
+  {"id":39,"word":"need","ipa":"nid","mean":"n/v nhu cầu; cần","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/need.png","ex":"The company is in <span class='hl-en'>need</span> of funds.","exVi":"Công ty đang <span class='hl-vi'>cần</span> vốn.","syns":["requirement","necessity"]},
+
+  {"id":40,"word":"mastermind","ipa":"ˈmæstərˌmaɪnd","mean":"n người đứng sau kế hoạch","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/mastermind.png","ex":"He is the <span class='hl-en'>mastermind</span> behind the design.","exVi":"Ông ấy là <span class='hl-vi'>bộ óc</span> đứng sau thiết kế.","syns":["planner","architect"]}
+];

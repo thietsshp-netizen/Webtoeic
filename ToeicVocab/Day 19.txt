@@ -1,0 +1,81 @@
+const data = [
+  {"id":1,"word":"decline","ipa":"dɪˈklaɪn","mean":"n Sự giảm; v từ chối","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/decline.png","ex":"The sharp <span class='hl-en'>decline</span> in the number of buyers has lowered profits.","exVi":"Số người mua <span class='hl-vi'>giảm</span> mạnh đã làm giảm lợi nhuận năm nay.","syns":["decrease","reduction"]},
+
+  {"id":2,"word":"markedly","ipa":"ˈmɑrkədli","mean":"adv rõ ràng, rõ rệt","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/markedly.png","ex":"Corporate profits continue to increase <span class='hl-en'>markedly</span>.","exVi":"Lợi nhuận của công ty tiếp tục tăng lên <span class='hl-vi'>rõ rệt</span>.","syns":["clearly","noticeably"]},
+
+  {"id":3,"word":"increase","ipa":"ˈɪnˌkris","mean":"n sự tăng; v gia tăng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/increase.png","ex":"The number of delivery requests has <span class='hl-en'>increased</span> significantly.","exVi":"Số lượng yêu cầu giao sản phẩm đã <span class='hl-vi'>tăng</span> đáng kể.","syns":["growth","rise"]},
+
+  {"id":4,"word":"revenue","ipa":"ˈrɛvəˌnu","mean":"n thu nhập, doanh thu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/revenue.png","ex":"The company's <span class='hl-en'>revenue</span> was boosted by higher album sales.","exVi":"<span class='hl-vi'>Doanh thu</span> của công ty được nâng lên nhờ doanh số bán album cao hơn.","syns":["income","earnings"]},
+
+  {"id":5,"word":"projection","ipa":"prəˈʤɛkʃən","mean":"n sự dự đoán, kế hoạch","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/projection.png","ex":"This month's income <span class='hl-en'>projections</span> are higher than last month's.","exVi":"<span class='hl-vi'>Dự đoán</span> doanh thu tháng này cao hơn tháng trước.","syns":["estimate","forecast"]},
+
+  {"id":6,"word":"substantial","ipa":"səbˈstænʧəl","mean":"adj lớn, quan trọng, giá trị","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/substantial.png","ex":"The company made <span class='hl-en'>substantial</span> investments in several emerging markets.","exVi":"Công ty đã tiến hành những phi vụ đầu tư <span class='hl-vi'>lớn</span> vào các thị trường mới nổi.","syns":["significant","considerable"]},
+
+  {"id":7,"word":"anticipate","ipa":"ænˈtɪsəˌpeɪt","mean":"v đoán trước, lường trước","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/anticipate.png","ex":"We <span class='hl-en'>anticipate</span> a 40 percent increase in sales next year.","exVi":"Chúng tôi <span class='hl-vi'>dự đoán</span> doanh số sẽ tăng 40% trong năm tới.","syns":["expect","predict"]},
+
+  {"id":8,"word":"significantly","ipa":"sɪgˈnɪfɪkəntli","mean":"adv đáng kể, quan trọng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/significantly.png","ex":"The layoffs will reduce expenses <span class='hl-en'>significantly</span>.","exVi":"Việc cắt giảm nhân công sẽ giảm đáng kể <span class='hl-vi'>chi phí</span>.","syns":["substantially","markedly"]},
+
+  {"id":9,"word":"estimate","ipa":"ˈɛstəmət","mean":"v/n ước lượng, sự ước tính","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/estimate.png","ex":"The laptops were <span class='hl-en'>estimated</span> to bring in over $50 million.","exVi":"Máy tính xách tay được <span class='hl-vi'>ước tính</span> sẽ mang lại hơn 50 triệu đô-la.","syns":["evaluate","judge"]},
+
+  {"id":10,"word":"shift","ipa":"ʃɪft","mean":"v chuyển, thay đổi; n ca làm việc","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/shift.png","ex":"The firm <span class='hl-en'>shifted</span> some capital into its newest investment project.","exVi":"Công ty đã <span class='hl-vi'>chuyển</span> một ít vốn vào dự án đầu tư mới nhất.","syns":["move","transfer"]},
+
+  {"id":11,"word":"fee","ipa":"fi","mean":"n lệ phí, tiền thù lao","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/fee.png","ex":"The merchant may charge a small <span class='hl-en'>fee</span> to process payments.","exVi":"Người bán có thể sẽ tính một khoản <span class='hl-vi'>phí</span> nhỏ để xử lý thanh toán.","syns":["toll","fare"]},
+
+  {"id":12,"word":"production","ipa":"prəˈdʌkʃən","mean":"n sự sản xuất, sản lượng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/production.png","ex":"<span class='hl-en'>Production</span> will rise drastically with a third shift.","exVi":"<span class='hl-vi'>Sản lượng</span> sẽ tăng mạnh với việc thêm ca làm việc thứ ba.","syns":["manufacturing","output"]},
+
+  {"id":13,"word":"sale","ipa":"seɪl","mean":"n doanh số; sự bán giảm giá","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/sale.png","ex":"Domestic <span class='hl-en'>sales</span> have recently begun to drop.","exVi":"<span class='hl-vi'>Doanh số</span> trong nước gần đây đã bắt đầu giảm.","syns":["revenue","turnover"]},
+
+  {"id":14,"word":"impressive","ipa":"ɪmˈprɛsɪv","mean":"adj đầy ấn tượng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/impressive.png","ex":"NeuWear made <span class='hl-en'>impressive</span> gains in the sportswear market.","exVi":"NeuWear đã đạt được lợi nhuận <span class='hl-vi'>ấn tượng</span> ở thị trường đồ thể thao.","syns":["remarkable","extraordinary"]},
+
+  {"id":15,"word":"representative","ipa":"ˌrɛprəˈzɛntətɪv","mean":"n người đại diện","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/representative.png","ex":"The sales <span class='hl-en'>representative</span> developed an impressive client base.","exVi":"<span class='hl-vi'>Nhân viên đại diện</span> bán hàng đã phát triển cơ sở khách hàng ấn tượng.","syns":["delegate"]},
+
+  {"id":16,"word":"recent","ipa":"ˈrisənt","mean":"adj gần đây, mới nhất","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/recent.png","ex":"Costs are reflected in the supplier’s most <span class='hl-en'>recent</span> price quote.","exVi":"Chi phí được thể hiện trên báo giá <span class='hl-vi'>gần đây nhất</span> của nhà cung cấp.","syns":["latest","current"]},
+
+  {"id":17,"word":"exceed","ipa":"ɪkˈsid","mean":"v vượt quá, trội hơn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/exceed.png","ex":"The new restaurant's profits <span class='hl-en'>exceeded</span> initial projections.","exVi":"Lợi nhuận của nhà hàng đã <span class='hl-vi'>vượt qua</span> cả dự đoán ban đầu.","syns":["surpass","outperform"]},
+
+  {"id":18,"word":"improvement","ipa":"ɪmˈpruvmənt","mean":"n sự cải thiện, cải tiến","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/improvement.png","ex":"The <span class='hl-en'>improvements</span> to the chair designs led to increased sales.","exVi":"Những <span class='hl-vi'>cải tiến</span> trong thiết kế đã dẫn tới việc tăng doanh số.","syns":["advancement","enhancement"]},
+
+  {"id":19,"word":"employer","ipa":"ɛmˈplɔɪər","mean":"n chủ, người sử dụng lao động","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/employer.png","ex":"The largest <span class='hl-en'>employer</span> in the city is the automotive factory.","exVi":"<span class='hl-vi'>Người sử dụng lao động</span> lớn nhất thành phố là nhà máy ô tô.","syns":["boss","owner"]},
+
+  {"id":20,"word":"regular","ipa":"ˈrɛgjələr","mean":"adj thường kỳ, đều đặn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/regular.png","ex":"<span class='hl-en'>Regular</span> assessments of profitability occur through the year.","exVi":"Các đánh giá <span class='hl-vi'>thường kỳ</span> về lợi nhuận được thực hiện suốt năm.","syns":["steady","consistent"]},
+
+  {"id":21,"word":"summarize","ipa":"ˈsʌməˌraɪz","mean":"v tóm tắt, tổng kết","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/summarize.png","ex":"EquityCorp <span class='hl-en'>summarized</span> its operations in the annual report.","exVi":"Equitycorp đã <span class='hl-vi'>tóm tắt</span> hoạt động kinh doanh trong báo cáo thường niên.","syns":["outline","abridge"]},
+
+  {"id":22,"word":"typically","ipa":"ˈtɪpɪkli","mean":"adv điển hình, thông thường","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/typically.png","ex":"Cell phones <span class='hl-en'>typically</span> go on sale before new models are released.","exVi":"<span class='hl-vi'>Thông thường</span>, điện thoại sẽ giảm giá trước khi mẫu mới ra mắt.","syns":["usually","normally"]},
+
+  {"id":23,"word":"whole","ipa":"hoʊl","mean":"adj toàn bộ, đầy đủ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/whole.png","ex":"The <span class='hl-en'>whole</span> amount of the loan must be paid in 60 days.","exVi":"<span class='hl-vi'>Toàn bộ</span> khoản nợ phải được trả trong vòng 60 ngày.","syns":["entire","total"]},
+
+  {"id":24,"word":"growth","ipa":"groʊθ","mean":"n sự tăng trưởng, lớn mạnh","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/growth.png","ex":"The company will be unable to maintain its present rate of <span class='hl-en'>growth</span>.","exVi":"Công ty không thể duy trì tốc độ <span class='hl-vi'>tăng trưởng</span> hiện tại.","syns":["development","expansion"]},
+
+  {"id":25,"word":"figure","ipa":"ˈfɪgjər","mean":"n con số, số liệu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/figure.png","ex":"Last quarter's sales <span class='hl-en'>figures</span> need to be sent to the main office.","exVi":"<span class='hl-vi'>Số liệu</span> doanh thu quý trước cần được gửi cho văn phòng chính.","syns":["number","data"]},
+
+  {"id":26,"word":"steady","ipa":"ˈstɛdi","mean":"adj đều đặn, ổn định","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/steady.png","ex":"Furniture sales have seen a <span class='hl-en'>steady</span> rise since March.","exVi":"Doanh thu nội thất đã tăng <span class='hl-vi'>đều đặn</span> từ tháng Ba.","syns":["stable","consistent"]},
+
+  {"id":27,"word":"frequent","ipa":"ˈfrikwənt","mean":"adj thường xuyên","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/frequent.png","ex":"The company adapted despite <span class='hl-en'>frequent</span> market changes.","exVi":"Công ty thích ứng tốt bất chấp những thay đổi <span class='hl-vi'>thường xuyên</span>.","syns":["repeated","constant"]},
+
+  {"id":28,"word":"achieve","ipa":"əˈʧiv","mean":"v đạt được, giành được","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/achieve.png","ex":"The corporation <span class='hl-en'>achieved</span> its sales goals for the year.","exVi":"Công ty đã <span class='hl-vi'>đạt được</span> mục tiêu doanh số năm nay.","syns":["attain","accomplish"]},
+
+  {"id":29,"word":"assumption","ipa":"əˈsʌmpʃən","mean":"n nhận định, giả định","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/assumption.png","ex":"Donco's <span class='hl-en'>assumption</span> that consumers value quality proved correct.","exVi":"<span class='hl-vi'>Nhận định</span> của Donco rằng khách hàng coi trọng chất lượng là đúng.","syns":["belief","supposition"]},
+
+  {"id":30,"word":"share","ipa":"ʃɛr","mean":"v chia sẻ; n cổ phần","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/share.png","ex":"The CEO <span class='hl-en'>shared</span> some excess profits with employees.","exVi":"Giám đốc đã <span class='hl-vi'>chia sẻ</span> phần lãi thặng dư với nhân viên.","syns":["stock","portion"]},
+
+  {"id":31,"word":"encouraging","ipa":"ɛnˈkɜrɪʤɪŋ","mean":"adj mang tính khích lệ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/encouraging.png","ex":"The figures for this quarter were <span class='hl-en'>encouraging</span>.","exVi":"Các số liệu quý này rất <span class='hl-vi'>đáng khích lệ</span>.","syns":["positive","hopeful"]},
+
+  {"id":32,"word":"incur","ipa":"ɪnˈkɜr","mean":"v gánh chịu, mắc phải","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/incur.png","ex":"We have <span class='hl-en'>incurred</span> significant operating losses.","exVi":"Chúng tôi phải <span class='hl-vi'>gánh chịu</span> những thua lỗ đáng kể khi vận hành.","syns":["sustain","experience"]},
+
+  {"id":33,"word":"slightly","ipa":"ˈslaɪtli","mean":"adv hơi, nhẹ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/slightly.png","ex":"Inquiries regarding purchases are expected to decrease <span class='hl-en'>slightly</span>.","exVi":"Nhu cầu tiêu dùng được dự đoán là sẽ giảm <span class='hl-vi'>nhẹ</span>.","syns":["a bit","somewhat"]},
+
+  {"id":34,"word":"profit","ipa":"ˈprɑfət","mean":"n lợi nhuận, tiền lãi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/profit.png","ex":"The <span class='hl-en'>profits</span> from the auction will go to charity.","exVi":"<span class='hl-vi'>Lợi nhuận</span> từ cuộc đấu giá sẽ được dùng làm từ thiện.","syns":["gain","earnings"]},
+
+  {"id":35,"word":"reliant","ipa":"rɪˈlaɪənt","mean":"adj dựa vào, nhờ vào","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/reliant.png","ex":"Much of the business is <span class='hl-en'>reliant</span> on returning customers.","exVi":"Hoạt động kinh doanh phần lớn <span class='hl-vi'>dựa trên</span> khách hàng quen.","syns":["dependent","conditional"]},
+
+  {"id":36,"word":"illustrate","ipa":"ˈɪləˌstreɪt","mean":"v minh họa, làm rõ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/illustrate.png","ex":"The line graph <span class='hl-en'>illustrates</span> the rise in expenses.","exVi":"Biểu đồ đường này <span class='hl-vi'>minh họa</span> mức tăng trong chi tiêu.","syns":["demonstrate","show"]},
+
+  {"id":37,"word":"inaccurate","ipa":"ɪˈnækjərət","mean":"adj không chính xác, sai","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/inaccurate.png","ex":"The calculations in the report were <span class='hl-en'>inaccurate</span>.","exVi":"Các tính toán trong bản báo cáo này <span class='hl-vi'>không chính xác</span>.","syns":["wrong","incorrect"]},
+
+  {"id":38,"word":"percentage","ipa":"pərˈsɛntəʤ","mean":"n tỷ lệ phần trăm","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/percentage.png","ex":"The <span class='hl-en'>percentage</span> of people buying digital music has decreased.","exVi":"<span class='hl-vi'>Tỷ lệ</span> người mua các thiết bị nghe nhạc đã giảm đi.","syns":["proportion","ratio"]},
+
+  {"id":39,"word":"reduce","ipa":"rəˈdus","mean":"v giảm, hạ xuống","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/reduce.png","ex":"Management <span class='hl-en'>reduced</span> the travel budget to cut costs.","exVi":"Ban quản lý đã cắt <span class='hl-vi'>giảm</span> ngân sách đi lại.","syns":["lessen","lower"]},
+
+  {"id":40,"word":"tend","ipa":"tɛnd","mean":"v có xu hướng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/tend.png","ex":"Corporate profits <span class='hl-en'>tend</span> to rise in line with national income.","exVi":"Lợi nhuận doanh nghiệp có <span class='hl-vi'>xu hướng</span> tăng theo thu nhập quốc dân.","syns":["be prone to","incline"]}
+];

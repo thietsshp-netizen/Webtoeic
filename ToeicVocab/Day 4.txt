@@ -1,0 +1,87 @@
+const data = [
+  {"id":1,"word":"lax","ipa":"læks","mean":"lỏng lẻo, thiếu nghiêm túc","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/lax.png","ex":"The staff has been rather <span class='hl-en'>lax</span> in submitting reports.","exVi":"Nhân viên khá <span class='hl-vi'>thiếu nghiêm túc</span> trong việc nộp báo cáo.","syns":["careless","negligent"]},
+
+  {"id":2,"word":"procrastinate","ipa":"prəˈkræstəˌneɪt","mean":"trì hoãn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/procrastinate.png","ex":"If you <span class='hl-en'>procrastinate</span>, you may miss the deadline.","exVi":"Nếu bạn <span class='hl-vi'>trì hoãn</span>, bạn có thể lỡ hạn.","syns":["delay","postpone"]},
+
+  {"id":3,"word":"combined","ipa":"kəmˈbaɪnd","mean":"kết hợp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/combined.png","ex":"They have a <span class='hl-en'>combined</span> experience of 20 years.","exVi":"Họ có <span class='hl-vi'>tổng cộng</span> 20 năm kinh nghiệm.","syns":["collective","joint"]},
+
+  {"id":4,"word":"accomplish","ipa":"əˈkɑmplɪʃ","mean":"hoàn thành","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/accomplish.png","ex":"She worked hard to <span class='hl-en'>accomplish</span> her goals.","exVi":"Cô ấy làm việc chăm chỉ để <span class='hl-vi'>hoàn thành</span> mục tiêu.","syns":["achieve","complete"]},
+
+  {"id":5,"word":"voluntarily","ipa":"ˌvɑlənˈtɛrəli","mean":"tự nguyện","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/voluntarily.png","ex":"He <span class='hl-en'>voluntarily</span> offered to help.","exVi":"Anh ấy <span class='hl-vi'>tự nguyện</span> đề nghị giúp đỡ.","syns":["willingly","freely"]},
+
+  {"id":6,"word":"undertake","ipa":"ˈʌndərˌteɪk","mean":"đảm nhận","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/undertake.png","ex":"The company will <span class='hl-en'>undertake</span> a new project.","exVi":"Công ty sẽ <span class='hl-vi'>đảm nhận</span> dự án mới.","syns":["assume","take on"]},
+
+  {"id":7,"word":"assume","ipa":"əˈsum","mean":"đảm nhận; cho rằng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/assume.png","ex":"She will <span class='hl-en'>assume</span> responsibility for the task.","exVi":"Cô ấy sẽ <span class='hl-vi'>chịu trách nhiệm</span> cho nhiệm vụ.","syns":["undertake","suppose"]},
+
+  {"id":8,"word":"occasionally","ipa":"əˈkeɪʒənəli","mean":"thỉnh thoảng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/occasionally.png","ex":"Employees should <span class='hl-en'>occasionally</span> take breaks.","exVi":"Nhân viên nên <span class='hl-vi'>thỉnh thoảng</span> nghỉ giải lao.","syns":["sometimes","periodically"]},
+
+  {"id":9,"word":"employee","ipa":"ɛmˈplɔɪi","mean":"nhân viên","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/employee.png","ex":"Each <span class='hl-en'>employee</span> must follow the rules.","exVi":"Mỗi <span class='hl-vi'>nhân viên</span> phải tuân thủ quy định.","syns":["worker","staff"]},
+
+  {"id":10,"word":"assist","ipa":"əˈsɪst","mean":"hỗ trợ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/assist.png","ex":"A technician will <span class='hl-en'>assist</span> you.","exVi":"Một kỹ thuật viên sẽ <span class='hl-vi'>hỗ trợ</span> bạn.","syns":["help","aid"]},
+
+  {"id":11,"word":"satisfied","ipa":"ˈsætəˌsfaɪd","mean":"hài lòng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/satisfied.png","ex":"Customers were <span class='hl-en'>satisfied</span> with the service.","exVi":"Khách hàng <span class='hl-vi'>hài lòng</span> với dịch vụ.","syns":["pleased","content"]},
+
+  {"id":12,"word":"manner","ipa":"ˈmænər","mean":"cách thức, thái độ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/manner.png","ex":"I didn’t like his <span class='hl-en'>manner</span> of speaking.","exVi":"Tôi không thích <span class='hl-vi'>cách</span> anh ta nói.","syns":["way","behavior"]},
+
+  {"id":13,"word":"responsible","ipa":"rɪˈspɑnsəbəl","mean":"chịu trách nhiệm","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/responsible.png","ex":"Managers are <span class='hl-en'>responsible</span> for results.","exVi":"Quản lý <span class='hl-vi'>chịu trách nhiệm</span> về kết quả.","syns":["accountable","liable"]},
+
+  {"id":14,"word":"conduct","ipa":"ˈkɑndʌkt","mean":"tiến hành","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/conduct.png","ex":"They will <span class='hl-en'>conduct</span> a survey.","exVi":"Họ sẽ <span class='hl-vi'>tiến hành</span> khảo sát.","syns":["carry out","perform"]},
+
+  {"id":15,"word":"adjust","ipa":"əˈʤʌst","mean":"điều chỉnh","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/adjust.png","ex":"She quickly <span class='hl-en'>adjusted</span> to the new job.","exVi":"Cô ấy nhanh chóng <span class='hl-vi'>thích nghi</span> với công việc mới.","syns":["adapt","modify"]},
+
+  {"id":16,"word":"personnel","ipa":"ˌpɜrsəˈnɛl","mean":"nhân sự","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/personnel.png","ex":"The company hired additional <span class='hl-en'>personnel</span>.","exVi":"Công ty tuyển thêm <span class='hl-vi'>nhân sự</span>.","syns":["staff","workforce"]},
+
+  {"id":17,"word":"agree","ipa":"əˈgri","mean":"đồng ý","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/agree.png","ex":"They <span class='hl-en'>agreed</span> on the proposal.","exVi":"Họ đã <span class='hl-vi'>đồng ý</span> với đề xuất.","syns":["accept","consent"]},
+
+  {"id":18,"word":"supervise","ipa":"ˈsupərˌvaɪz","mean":"giám sát","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/supervise.png","ex":"She will <span class='hl-en'>supervise</span> the project.","exVi":"Cô ấy sẽ <span class='hl-vi'>giám sát</span> dự án.","syns":["oversee","monitor"]},
+
+  {"id":19,"word":"coworker","ipa":"ˈkoʊˈwɜrkər","mean":"đồng nghiệp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/coworker.png","ex":"My <span class='hl-en'>coworkers</span> are very friendly.","exVi":"Các <span class='hl-vi'>đồng nghiệp</span> của tôi rất thân thiện.","syns":["colleague","teammate"]},
+
+  {"id":20,"word":"direct","ipa":"dəˈrɛkt","mean":"chỉ đạo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/direct.png","ex":"The manager will <span class='hl-en'>direct</span> the meeting.","exVi":"Quản lý sẽ <span class='hl-vi'>chỉ đạo</span> cuộc họp.","syns":["guide","lead"]},
+
+  {"id":21,"word":"confidential","ipa":"ˌkɑnfəˈdɛnʃəl","mean":"bí mật","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/confidential.png","ex":"These documents are <span class='hl-en'>confidential</span>.","exVi":"Những tài liệu này là <span class='hl-vi'>bí mật</span>.","syns":["secret","private"]},
+
+  {"id":22,"word":"assign","ipa":"əˈsaɪn","mean":"phân công","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/assign.png","ex":"The manager <span class='hl-en'>assigned</span> tasks to the team.","exVi":"Quản lý đã <span class='hl-vi'>phân công</span> nhiệm vụ.","syns":["allocate","designate"]},
+
+  {"id":23,"word":"leading","ipa":"ˈlidɪŋ","mean":"hàng đầu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/leading.png","ex":"She works for a <span class='hl-en'>leading</span> company.","exVi":"Cô ấy làm việc cho một công ty <span class='hl-vi'>hàng đầu</span>.","syns":["top","premier"]},
+
+  {"id":24,"word":"formal","ipa":"ˈfɔrməl","mean":"trang trọng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/formal.png","ex":"The event requires <span class='hl-en'>formal</span> attire.","exVi":"Sự kiện yêu cầu trang phục <span class='hl-vi'>trang trọng</span>.","syns":["official","ceremonial"]},
+
+  {"id":25,"word":"remove","ipa":"riˈmuv","mean":"loại bỏ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/remove.png","ex":"He was <span class='hl-en'>removed</span> from his position.","exVi":"Ông ấy bị <span class='hl-vi'>cách chức</span>.","syns":["dismiss","eliminate"]},
+
+  {"id":26,"word":"collect","ipa":"kəˈlɛkt","mean":"thu thập","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/collect.png","ex":"They <span class='hl-en'>collect</span> data for research.","exVi":"Họ <span class='hl-vi'>thu thập</span> dữ liệu.","syns":["gather","compile"]},
+
+  {"id":27,"word":"coordinate","ipa":"koʊˈɔrdənət","mean":"điều phối","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/coordinate.png","ex":"She will <span class='hl-en'>coordinate</span> the event.","exVi":"Cô ấy sẽ <span class='hl-vi'>điều phối</span> sự kiện.","syns":["organize","synchronize"]},
+
+  {"id":28,"word":"hardly","ipa":"ˈhɑrdli","mean":"hầu như không","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/hardly.png","ex":"She <span class='hl-en'>hardly</span> ever complains.","exVi":"Cô ấy <span class='hl-vi'>hầu như không</span> phàn nàn.","syns":["rarely","scarcely"]},
+
+  {"id":29,"word":"abstract","ipa":"ˈæbstrækt","mean":"trừu tượng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/abstract.png","ex":"He bought an <span class='hl-en'>abstract</span> painting.","exVi":"Anh ấy mua một bức tranh <span class='hl-vi'>trừu tượng</span>.","syns":["conceptual","nonrealistic"]},
+
+  {"id":30,"word":"directory","ipa":"dəˈrɛktəri","mean":"danh bạ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/directory.png","ex":"Check the company <span class='hl-en'>directory</span>.","exVi":"Hãy kiểm tra <span class='hl-vi'>danh bạ</span> công ty.","syns":["listing","index"]},
+
+  {"id":31,"word":"accountable","ipa":"əˈkaʊntəbəl","mean":"chịu trách nhiệm","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/accountable.png","ex":"Managers are <span class='hl-en'>accountable</span> for results.","exVi":"Quản lý phải <span class='hl-vi'>chịu trách nhiệm</span>.","syns":["responsible","answerable"]},
+
+  {"id":32,"word":"skillfully","ipa":"ˈskɪlfəli","mean":"khéo léo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/skillfully.png","ex":"She <span class='hl-en'>skillfully</span> handled the situation.","exVi":"Cô ấy xử lý tình huống rất <span class='hl-vi'>khéo léo</span>.","syns":["expertly","competently"]},
+
+  {"id":33,"word":"exclusive","ipa":"ɪkˈsklusɪv","mean":"độc quyền","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/exclusive.png","ex":"Members get <span class='hl-en'>exclusive</span> benefits.","exVi":"Thành viên nhận được quyền lợi <span class='hl-vi'>độc quyền</span>.","syns":["private","restricted"]},
+
+  {"id":34,"word":"intention","ipa":"ɪnˈtɛnʧən","mean":"ý định","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/intention.png","ex":"She had no <span class='hl-en'>intention</span> of leaving.","exVi":"Cô ấy không có <span class='hl-vi'>ý định</span> rời đi.","syns":["purpose","plan"]},
+
+  {"id":35,"word":"transform","ipa":"trænˈsfɔrm","mean":"biến đổi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/transform.png","ex":"Technology has <span class='hl-en'>transformed</span> business.","exVi":"Công nghệ đã <span class='hl-vi'>thay đổi</span> kinh doanh.","syns":["change","convert"]},
+
+  {"id":36,"word":"respectful","ipa":"rɪˈspɛktfəl","mean":"tôn trọng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/respectful.png","ex":"Employees must be <span class='hl-en'>respectful</span>.","exVi":"Nhân viên phải <span class='hl-vi'>tôn trọng</span>.","syns":["polite","courteous"]},
+
+  {"id":37,"word":"duplicate","ipa":"ˈdupləkət","mean":"bản sao","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/duplicate.png","ex":"Keep a <span class='hl-en'>duplicate</span> of the contract.","exVi":"Giữ một <span class='hl-vi'>bản sao</span> hợp đồng.","syns":["copy","replica"]},
+
+  {"id":38,"word":"contrary","ipa":"ˈkɑntrɛri","mean":"trái ngược","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/contrary.png","ex":"His actions were <span class='hl-en'>contrary</span> to the rules.","exVi":"Hành động của anh ấy <span class='hl-vi'>trái với</span> quy định.","syns":["opposite","conflicting"]},
+
+  {"id":39,"word":"disturbing","ipa":"dɪˈstɜrbɪŋ","mean":"đáng lo ngại","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/disturbing.png","ex":"The news was <span class='hl-en'>disturbing</span>.","exVi":"Tin tức rất <span class='hl-vi'>đáng lo</span>.","syns":["upsetting","troubling"]},
+
+  {"id":40,"word":"engage","ipa":"ɛnˈgeɪʤ","mean":"tham gia","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/engage.png","ex":"Employees are <span class='hl-en'>engaged</span> in projects.","exVi":"Nhân viên <span class='hl-vi'>tham gia</span> các dự án.","syns":["involve","participate"]},
+
+  {"id":41,"word":"foster","ipa":"ˈfɑstər","mean":"thúc đẩy","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/foster.png","ex":"The program <span class='hl-en'>fosters</span> teamwork.","exVi":"Chương trình <span class='hl-vi'>thúc đẩy</span> tinh thần làm việc nhóm.","syns":["encourage","promote"]},
+
+  {"id":42,"word":"neutrality","ipa":"nuˈtræləti","mean":"sự trung lập","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/neutrality.png","ex":"Managers must maintain <span class='hl-en'>neutrality</span>.","exVi":"Quản lý phải giữ <span class='hl-vi'>tính trung lập</span>.","syns":["impartiality","fairness"]},
+
+  {"id":43,"word":"widely","ipa":"ˈwaɪdli","mean":"rộng rãi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/widely.png","ex":"He is <span class='hl-en'>widely</span> respected.","exVi":"Ông ấy được <span class='hl-vi'>rộng rãi</span> kính trọng.","syns":["broadly","extensively"]}
+];

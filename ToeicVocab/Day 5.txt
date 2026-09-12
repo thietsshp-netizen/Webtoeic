@@ -1,0 +1,81 @@
+const data = [
+  {"id":1,"word":"sophisticated","ipa":"səˈfɪstəˌkeɪtɪd","mean":"adj tinh vi, phức tạp, công phu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/sophisticated.png","ex":"A <span class='hl-en'>sophisticated</span> surveillance system was installed.","exVi":"Một hệ thống giám sát <span class='hl-vi'>tinh vi</span> đã được cài đặt.","syns":["complex","advanced"]},
+
+  {"id":2,"word":"timely","ipa":"ˈtaɪmli","mean":"adj kịp thời","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/timely.png","ex":"The report was completed in a <span class='hl-en'>timely</span> manner.","exVi":"Bản báo cáo đã được hoàn thành <span class='hl-vi'>kịp thời</span>.","syns":["prompt","on time"]},
+
+  {"id":3,"word":"realistically","ipa":"ˌriəˈlɪstɪkli","mean":"adv theo thực tế, thực tế là","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/realistically.png","ex":"We cannot <span class='hl-en'>realistically</span> expect to have the presentation ready on time.","exVi":"<span class='hl-vi'>Thực tế là</span> chúng tôi không thể mong đợi bài thuyết trình đó được hoàn thành kịp thời hạn.","syns":["practically","in reality"]},
+
+  {"id":4,"word":"promptly","ipa":"ˈprɑmptli","mean":"adv nhanh chóng, ngay lập tức","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/promptly.png","ex":"It is company policy to respond <span class='hl-en'>promptly</span> to all inquiries.","exVi":"Chính sách của công ty là phản hồi mọi thắc mắc <span class='hl-vi'>ngay lập tức</span>.","syns":["immediately","instantly"]},
+
+  {"id":5,"word":"accessible","ipa":"ækˈsɛsəbəl","mean":"adj có thể truy cập, tiếp cận được","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/accessible.png","ex":"The 18th floor is only <span class='hl-en'>accessible</span> to executive staff.","exVi":"Chỉ nhân viên hành chính mới được <span class='hl-vi'>sử dụng</span> tầng 18.","syns":["handy","reachable"]},
+
+  {"id":6,"word":"implement","ipa":"ˈɪmpləmənt","mean":"v thi hành, tiến hành","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/implement.png","ex":"Board members voted to <span class='hl-en'>implement</span> an innovative marketing campaign.","exVi":"Hội đồng quản trị đã biểu quyết để <span class='hl-vi'>tiến hành</span> một chiến dịch tiếp thị.","syns":["execute","carry out"]},
+
+  {"id":7,"word":"feedback","ipa":"ˈfidˌbæk","mean":"n phản hồi, ý kiến nhận xét","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/feedback.png","ex":"<span class='hl-en'>Feedback</span> from colleagues can be of great assistance.","exVi":"Ý kiến <span class='hl-vi'>nhận xét</span> từ các đồng nghiệp có thể là một sự trợ giúp rất lớn.","syns":["response","comment"]},
+
+  {"id":8,"word":"outstanding","ipa":"ˌaʊtˈstændɪŋ","mean":"adj nổi bật, xuất sắc; chưa thanh toán","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/outstanding.png","ex":"The director presented an <span class='hl-en'>outstanding</span> business plan.","exVi":"Giám đốc đã trình bày một kế hoạch kinh doanh <span class='hl-vi'>xuất sắc</span>.","syns":["excellent","unpaid"]},
+
+  {"id":9,"word":"inform","ipa":"ɪnˈfɔrm","mean":"v thông báo, báo tin","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/inform.png","ex":"Please <span class='hl-en'>inform</span> the director that the meeting has been canceled.","exVi":"Vui lòng <span class='hl-vi'>báo</span> cho giám đốc biết là cuộc họp đã bị hủy.","syns":["notify","announce"]},
+
+  {"id":10,"word":"replacement","ipa":"rɪˈpleɪsmənt","mean":"n sự thay thế, vật thay thế","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/replacement.png","ex":"We need a <span class='hl-en'>replacement</span> for this broken laptop.","exVi":"Chúng ta cần một vật <span class='hl-vi'>thay thế</span> cho chiếc máy tính xách tay bị hỏng này.","syns":["substitute","proxy"]},
+
+  {"id":11,"word":"announcement","ipa":"əˈnaʊnsmənt","mean":"n thông cáo, thông báo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/announcement.png","ex":"Mr. Dane posted an <span class='hl-en'>announcement</span> about the general meeting.","exVi":"Ông Dane đã đăng một <span class='hl-vi'>thông báo</span> về đại hội cổ đông.","syns":["notice","declaration"]},
+
+  {"id":12,"word":"department","ipa":"dɪˈpɑrtmənt","mean":"n bộ phận, ban","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/department.png","ex":"Report payroll problems to the finance <span class='hl-en'>department</span>.","exVi":"Hãy báo cáo vấn đề tiền lương cho <span class='hl-vi'>bộ phận</span> tài chính.","syns":["division","section"]},
+
+  {"id":13,"word":"permanently","ipa":"ˈpɜrmənəntli","mean":"adv vĩnh viễn, lâu dài","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/permanently.png","ex":"The files have been <span class='hl-en'>permanently</span> deleted and cannot be retrieved.","exVi":"Các tệp tin đã bị xóa <span class='hl-vi'>vĩnh viễn</span> và không thể lấy lại được.","syns":["forever","indefinitely"]},
+
+  {"id":14,"word":"fulfill","ipa":"fʊlˈfɪl","mean":"v hoàn thành, đáp ứng (yêu cầu)","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/fulfill.png","ex":"The final product design <span class='hl-en'>fulfilled</span> the terms of the contract.","exVi":"Thiết kế cuối của sản phẩm đã <span class='hl-vi'>đáp ứng</span> được các điều khoản.","syns":["meet","satisfy"]},
+
+  {"id":15,"word":"outline","ipa":"ˈaʊtˌlaɪn","mean":"n bản thảo, dàn bài","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/outline.png","ex":"Begin making the report by arranging the main ideas in an <span class='hl-en'>outline</span>.","exVi":"Bắt đầu báo cáo bằng việc sắp xếp những ý chính thành một <span class='hl-vi'>dàn bài</span>.","syns":["draft","plan"]},
+
+  {"id":16,"word":"explain","ipa":"ɪkˈspleɪn","mean":"v giải thích, giảng giải","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/explain.png","ex":"The manager <span class='hl-en'>explained</span> the new regulations to everyone.","exVi":"Người quản lý <span class='hl-vi'>giải thích</span> những quy định mới cho mọi người.","syns":["describe","clarify"]},
+
+  {"id":17,"word":"contain","ipa":"kənˈteɪn","mean":"v bao gồm, chứa","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/contain.png","ex":"The filing cabinet <span class='hl-en'>contains</span> copies of all our invoices.","exVi":"Tủ hồ sơ <span class='hl-vi'>chứa</span> bản sao tất cả các hóa đơn.","syns":["include","hold"]},
+
+  {"id":18,"word":"compile","ipa":"kəmˈpaɪl","mean":"v biên soạn, tập hợp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/compile.png","ex":"The assistant <span class='hl-en'>compiled</span> a list of tablet manufacturers.","exVi":"Người trợ lý đã <span class='hl-vi'>tổng hợp</span> một danh sách các nhà sản xuất.","syns":["collect","gather"]},
+
+  {"id":19,"word":"subsequent","ipa":"ˈsʌbsəkwənt","mean":"adj xảy ra sau, đến sau","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/subsequent.png","ex":"Some received separation pay <span class='hl-en'>subsequent</span> to the company's closing.","exVi":"Nhân viên nhận tiền bồi thường <span class='hl-vi'>sau khi</span> công ty bị đóng cửa.","syns":["following","later"]},
+
+  {"id":20,"word":"overview","ipa":"ˈoʊvərˌvju","mean":"n tổng quát, khái quát","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/overview.png","ex":"Scott gave an <span class='hl-en'>overview</span> of the topic before the presentation.","exVi":"Scott đã đưa ra một cái nhìn <span class='hl-vi'>khái quát</span> về chủ đề.","syns":["summary","outline"]},
+
+  {"id":21,"word":"provider","ipa":"prəˈvaɪdər","mean":"n nhà cung cấp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/provider.png","ex":"There are numerous Internet <span class='hl-en'>providers</span> in the city.","exVi":"Có rất nhiều <span class='hl-vi'>nhà cung cấp</span> dịch vụ Internet trong thành phố.","syns":["supplier","vendor"]},
+
+  {"id":22,"word":"matter","ipa":"ˈmætər","mean":"n vấn đề, công việc","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/matter.png","ex":"Please deal with personal <span class='hl-en'>matters</span> outside the office.","exVi":"Vui lòng giải quyết các <span class='hl-vi'>vấn đề</span> cá nhân ở ngoài văn phòng.","syns":["issue","topic"]},
+
+  {"id":23,"word":"expertise","ipa":"ˌɛkspərˈtiz","mean":"n sự thành thạo, kỹ năng chuyên môn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/expertise.png","ex":"This project falls outside the firm's area of <span class='hl-en'>expertise</span>.","exVi":"Loại dự án này nằm ngoài lĩnh vực <span class='hl-vi'>chuyên môn</span> của công ty.","syns":["skill","proficiency"]},
+
+  {"id":24,"word":"demonstrate","ipa":"ˈdɛmənˌstreɪt","mean":"v chứng minh, minh họa, cho thấy","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/demonstrate.png","ex":"Sales figures <span class='hl-en'>demonstrate</span> that the campaign was successful.","exVi":"Các số liệu bán hàng <span class='hl-vi'>chứng minh</span> rằng chiến dịch đã thành công.","syns":["prove","show"]},
+
+  {"id":25,"word":"remainder","ipa":"rɪˈmeɪndər","mean":"n phần còn lại","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/remainder.png","ex":"Audits will continue throughout the <span class='hl-en'>remainder</span> of the month.","exVi":"Việc kiểm toán sẽ tiếp tục trong suốt thời gian <span class='hl-vi'>còn lại</span>.","syns":["rest","balance"]},
+
+  {"id":26,"word":"essential","ipa":"ɪˈsɛnʃəl","mean":"adj cần thiết, thiết yếu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/essential.png","ex":"Perseverance is <span class='hl-en'>essential</span> to success in business.","exVi":"Sự kiên trì rất <span class='hl-vi'>cần thiết</span> để thành công trong kinh doanh.","syns":["necessary","vital"]},
+
+  {"id":27,"word":"divide","ipa":"dɪˈvaɪd","mean":"v chia ra, phân chia","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/divide.png","ex":"Required overtime will be <span class='hl-en'>divided</span> equally among employees.","exVi":"Thời gian làm ngoài giờ sẽ được <span class='hl-vi'>phân chia</span> công bằng.","syns":["split","separate"]},
+
+  {"id":28,"word":"major","ipa":"ˈmeɪʤər","mean":"adj chủ yếu, chủ chốt, trọng đại","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/major.png","ex":"A <span class='hl-en'>major</span> figure in publishing, Ms. Yarrow is influential.","exVi":"Là một nhân vật <span class='hl-vi'>chủ chốt</span>, cô Yarrow có ảnh hưởng rất lớn.","syns":["main","key"]},
+
+  {"id":29,"word":"compliance","ipa":"kəmˈplaɪəns","mean":"n sự tuân thủ (luật pháp, mệnh lệnh)","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/compliance.png","ex":"Officials will inspect the plant's <span class='hl-en'>compliance</span> with guidelines.","exVi":"Các quan chức sẽ giám sát việc <span class='hl-vi'>tuân thủ</span> quy định an toàn.","syns":["adherence","obedience"]},
+
+  {"id":30,"word":"clarify","ipa":"ˈklɛrəˌfaɪ","mean":"v làm rõ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/clarify.png","ex":"The notice <span class='hl-en'>clarified</span> some details of the vacation policy.","exVi":"Thông báo đã <span class='hl-vi'>làm rõ</span> một số chi tiết về chính sách.","syns":["explain","elucidate"]},
+
+  {"id":31,"word":"face","ipa":"feɪs","mean":"v đối mặt, đương đầu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/face.png","ex":"Businesses are <span class='hl-en'>faced</span> with the challenge of foreign competition.","exVi":"Các doanh nghiệp phải <span class='hl-vi'>đối mặt</span> với thách thức cạnh tranh.","syns":["confront","encounter"]},
+
+  {"id":32,"word":"follow","ipa":"ˈfɑloʊ","mean":"v làm theo, theo dõi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/follow.png","ex":"The guests <span class='hl-en'>followed</span> the guide into the hall.","exVi":"Các vị khách đi <span class='hl-vi'>theo</span> chỉ dẫn vào trong sảnh.","syns":["obey","comply with"]},
+
+  {"id":33,"word":"aspect","ipa":"ˈæˌspɛkt","mean":"n khía cạnh","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/aspect.png","ex":"Every <span class='hl-en'>aspect</span> of the problem must be taken into consideration.","exVi":"Mọi <span class='hl-vi'>khía cạnh</span> của vấn đề này đều phải được cân nhắc.","syns":["side","feature"]},
+
+  {"id":34,"word":"apparently","ipa":"əˈɛrəntli","mean":"adv hình như, rõ ràng là","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/apparently.png","ex":"<span class='hl-en'>Apparently</span>, Mr. Jones was not invited to this meeting.","exVi":"<span class='hl-vi'>Hình như</span> ông Jones không được mời tới buổi họp này.","syns":["seemingly","evidently"]},
+
+  {"id":35,"word":"aware","ipa":"əˈwɛr","mean":"adj biết, nhận thức được","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/aware.png","ex":"Workers should be made <span class='hl-en'>aware</span> of safety procedures.","exVi":"Cần cho công nhân <span class='hl-vi'>biết</span> về các quy trình an toàn.","syns":["conscious","informed"]},
+
+  {"id":36,"word":"extended","ipa":"ɪkˈstɛndəd","mean":"adj mở rộng, kéo dài","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/extended.png","ex":"The department works <span class='hl-en'>extended</span> hours on the first week.","exVi":"Bộ phận kế toán phải làm <span class='hl-vi'>thêm giờ</span> vào tuần đầu tiên.","syns":["expanded","prolonged"]},
+
+  {"id":37,"word":"accidentally","ipa":"ˌæksəˈdɛntəli","mean":"adv tình cờ, vô ý","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/accidentally.png","ex":"Alison <span class='hl-en'>accidentally</span> made some errors in the statements.","exVi":"Alison đã <span class='hl-vi'>vô tình</span> mắc một vài sai sót.","syns":["unintentionally","by mistake"]},
+
+  {"id":38,"word":"advisable","ipa":"ədˈfaɪzəbəl","mean":"adj nên làm, thích hợp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/advisable.png","ex":"It is <span class='hl-en'>advisable</span> to update computer equipment regularly.","exVi":"Nâng cấp thiết bị máy tính là việc <span class='hl-vi'>nên làm</span>.","syns":["recommended","prudent"]},
+
+  {"id":39,"word":"concerned","ipa":"kənˈsɜrnd","mean":"adj lo lắng; có liên quan","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/concerned.png","ex":"Management is <span class='hl-en'>concerned</span> about security.","exVi":"Ban quản lý đang <span class='hl-vi'>lo lắng</span> về vấn đề an ninh.","syns":["worried","anxious"]},
+
+  {"id":40,"word":"speak","ipa":"spik","mean":"v nói","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/speak.png","ex":"Mr. Brooke <span class='hl-en'>spoke</span> to his clients about a new venture.","exVi":"Ông Brooke đã <span class='hl-vi'>nói</span> với các khách hàng của mình về dự án mới.","syns":["talk","converse"]}
+];

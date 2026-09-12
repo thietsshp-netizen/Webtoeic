@@ -15,6 +15,7 @@ export interface VocabWord {
   word: string;
   ipa: string;
   mean: string;
+  image?: string;
   ex: string;
   exVi: string;
   syns: string[];
@@ -96,7 +97,7 @@ function FlashCard({
 
   return (
     <div
-      className="relative h-[420px] sm:h-[480px] cursor-pointer group/card"
+      className="relative h-[480px] sm:h-[540px] cursor-pointer group/card"
       style={{ perspective: "1000px" }}
       onClick={() => { setFlipped(!flipped); speak(word.word); }}
     >
@@ -146,25 +147,37 @@ function FlashCard({
         style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "rotateY(0)" }}
       >
         {/* Front */}
-        <div className="absolute inset-0 bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-200 p-5 sm:p-8 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all overflow-hidden">
-          <div className="mt-6 sm:mt-10 mb-2">
-            <div className={`font-black text-blue-600 mb-2 flex items-center gap-3 flex-wrap ${getWordFontSize(word.word)}`}>
+        <div className="absolute inset-0 bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-200 p-5 sm:p-7 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all overflow-hidden">
+          <div className="mt-5 sm:mt-7 mb-1">
+            <div className={`font-black text-blue-600 mb-1 flex items-center gap-3 flex-wrap ${getWordFontSize(word.word)}`}>
               <span>{word.word}</span>
               <button onClick={(e) => { e.stopPropagation(); speak(word.word); }} className="p-1.5 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0">
                 <Volume2 size={20} className="text-blue-400 hover:text-blue-600" />
               </button>
             </div>
-            <div className="text-orange-400 font-bold italic text-sm mb-4">
+            <div className="text-orange-400 font-bold italic text-sm mb-2">
               /{word.ipa?.replace(/\//g, '')}/
             </div>
           </div>
+
+          {/* Front Image */}
+          {word.image && (
+            <div className="mb-3 rounded-2xl overflow-hidden border border-slate-100 bg-slate-50/70 p-2 flex items-center justify-center h-36 sm:h-44 flex-shrink-0">
+              <img
+                src={word.image}
+                alt={word.word}
+                loading="lazy"
+                className="w-full h-full object-contain rounded-xl"
+              />
+            </div>
+          )}
           
           <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide">
             <div className="text-slate-600 text-sm sm:text-[15px] leading-relaxed font-medium break-words" dangerouslySetInnerHTML={{ __html: word.ex }} />
           </div>
 
           {word.syns.length > 0 && (
-            <div className="mt-6 pt-4 border-t border-slate-50 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center gap-2 flex-wrap">
+            <div className="mt-3 pt-3 border-t border-slate-50 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center gap-2 flex-wrap">
               <span className="opacity-50 italic lowercase font-bold flex-shrink-0">Hints:</span>
               <span className="bg-teal-50 px-2 py-0.5 rounded-lg flex gap-2 flex-wrap break-words">
                 {word.syns
@@ -179,19 +192,31 @@ function FlashCard({
             </div>
           )}
           {/* Deck Name */}
-          <div className="mt-auto pt-4 text-center text-[10px] text-slate-400 font-bold tracking-wide italic">
+          <div className="mt-auto pt-3 text-center text-[10px] text-slate-400 font-bold tracking-wide italic">
             ({currentDeckName || "bộ thẻ tổng"})
           </div>
         </div>
         {/* Back */}
         <div
-          className="absolute inset-0 bg-indigo-50 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-4 border-indigo-200 p-5 sm:p-8 flex flex-col overflow-hidden"
+          className="absolute inset-0 bg-indigo-50 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-4 border-indigo-200 p-5 sm:p-7 flex flex-col overflow-hidden"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
-          <div className="mt-6 sm:mt-10 mb-4">
-            <div className={`font-black text-blue-600 mb-2 ${getWordFontSize(word.word)}`}>{word.word}</div>
+          <div className="mt-5 sm:mt-7 mb-2">
+            <div className={`font-black text-blue-600 mb-1 ${getWordFontSize(word.word)}`}>{word.word}</div>
             <div className="text-red-500 font-black text-base sm:text-lg tracking-tight leading-tight break-words">{limitMeanings(word.mean)}</div>
           </div>
+
+          {/* Back Image */}
+          {word.image && (
+            <div className="mb-3 rounded-2xl overflow-hidden border border-indigo-100/80 bg-white/70 p-2 flex items-center justify-center h-32 sm:h-40 flex-shrink-0 shadow-sm">
+              <img
+                src={word.image}
+                alt={word.word}
+                loading="lazy"
+                className="w-full h-full object-contain rounded-xl"
+              />
+            </div>
+          )}
 
           <div className="space-y-4 text-sm sm:text-[15px] flex-1 overflow-y-auto pr-2 scrollbar-hide">
             <div className="flex flex-col gap-2">
@@ -445,6 +470,20 @@ export function ScrambleGame({ words, onSRSUpdate }: { words: VocabWord[], onSRS
           <span className="text-slate-400 text-sm font-medium">/{item.ipa}/</span>
           <span className="text-red-500 font-bold">{limitMeanings(item.mean)}</span>
         </div>
+
+        {item.image && (
+          <div className="mb-4 sm:mb-6 flex justify-center">
+            <div className="h-32 sm:h-40 w-full max-w-xs rounded-2xl overflow-hidden border border-slate-100 bg-slate-50/70 p-2 shadow-sm flex items-center justify-center">
+              <img
+                src={item.image}
+                alt={item.word}
+                loading="lazy"
+                className="w-full h-full object-contain rounded-xl"
+              />
+            </div>
+          </div>
+        )}
+
         <div className="text-2xl sm:text-4xl font-black tracking-[0.3em] text-slate-700 mb-4 sm:mb-8 bg-slate-50 rounded-2xl py-4 sm:py-6">{scrambled}</div>
         
         <div className="flex justify-center mb-4 sm:mb-8">
@@ -650,6 +689,20 @@ export function FillGame({ words, allWords, onSRSUpdate }: { words: VocabWord[];
     >
       <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-5 sm:p-8 text-center">
         <div className="text-xl sm:text-2xl font-black text-red-500 mb-4 sm:mb-6">{limitMeanings(item.mean)}</div>
+
+        {item.image && (
+          <div className="mb-4 sm:mb-6 flex justify-center">
+            <div className="h-32 sm:h-40 w-full max-w-xs rounded-2xl overflow-hidden border border-slate-100 bg-slate-50/70 p-2 shadow-sm flex items-center justify-center">
+              <img
+                src={item.image}
+                alt={item.word}
+                loading="lazy"
+                className="w-full h-full object-contain rounded-xl"
+              />
+            </div>
+          </div>
+        )}
+
         <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 sm:p-6 text-slate-700 text-lg sm:text-xl font-bold italic mb-4 sm:mb-8">
           &ldquo;
           {sentenceParts.map((p, i) => (
@@ -912,7 +965,7 @@ export function SynonymGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSU
       }`}
     >
       <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-5 sm:p-8 text-center">
-        <div className="space-y-2 mb-4 sm:mb-8">
+        <div className="space-y-2 mb-4 sm:mb-6">
           <div className="flex items-center justify-center gap-3">
             <h2 className="text-2xl sm:text-4xl font-black text-blue-600">{item.word}</h2>
             <button onClick={() => speak(item.word)} className="p-2 rounded-xl bg-blue-50 text-blue-500 transition-colors hover:bg-blue-100 group">
@@ -920,6 +973,20 @@ export function SynonymGame({ words, onSRSUpdate }: { words: VocabWord[], onSRSU
             </button>
           </div>
           <div className="text-lg sm:text-xl font-bold text-red-500">{limitMeanings(item.mean)}</div>
+
+          {item.image && (
+            <div className="pt-2 pb-1 flex justify-center">
+              <div className="h-32 sm:h-40 w-full max-w-xs rounded-2xl overflow-hidden border border-slate-100 bg-slate-50/70 p-2 shadow-sm flex items-center justify-center">
+                <img
+                  src={item.image}
+                  alt={item.word}
+                  loading="lazy"
+                  className="w-full h-full object-contain rounded-xl"
+                />
+              </div>
+            </div>
+          )}
+
           <div className="text-slate-400 text-[10px] font-black uppercase tracking-widest pt-2">
             HÃY CLICK CHỌN {synsToFind.length} TỪ ĐỒNG NGHĨA
           </div>

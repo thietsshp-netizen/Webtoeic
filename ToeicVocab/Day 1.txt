@@ -1,0 +1,81 @@
+const data = [
+  {"id":1,"word":"résumé","ipa":"ˈrɛzʊmeɪ","mean":"n sơ yếu lý lịch","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/resume.png","ex":"Fax your <span class='hl-en'>résumé</span> and cover letter to the number above.","exVi":"Hãy gửi <span class='hl-vi'>sơ yếu lý lịch</span> và đơn xin việc qua fax.","syns":["CV","curriculum vitae"]},
+
+  {"id":2,"word":"opening","ipa":"ˈoʊpənɪŋ","mean":"n vị trí trống","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/opening.png","ex":"There are several job <span class='hl-en'>openings</span> right now.","exVi":"Hiện có vài <span class='hl-vi'>vị trí trống</span>.","syns":["vacancy","opportunity"]},
+
+  {"id":3,"word":"applicant","ipa":"ˈæplɪkənt","mean":"n ứng viên","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/applicant.png","ex":"<span class='hl-en'>Applicants</span> must submit a résumé.","exVi":"<span class='hl-vi'>Ứng viên</span> phải nộp CV.","syns":["candidate","job seeker"]},
+
+  {"id":4,"word":"requirement","ipa":"rɪˈkwaɪrmənt","mean":"n yêu cầu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/requirement.png","ex":"A license is a job <span class='hl-en'>requirement</span>.","exVi":"Giấy phép là <span class='hl-vi'>yêu cầu</span> của công việc.","syns":["condition","necessity"]},
+
+  {"id":5,"word":"meet","ipa":"mit","mean":"v đáp ứng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/meet.png","ex":"Applicants must <span class='hl-en'>meet</span> all requirements.","exVi":"Ứng viên phải <span class='hl-vi'>đáp ứng</span> yêu cầu.","syns":["satisfy","fulfill"]},
+
+  {"id":6,"word":"qualified","ipa":"ˈkwɑləˌfaɪd","mean":"adj đủ điều kiện","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/qualified.png","ex":"She is highly <span class='hl-en'>qualified</span>.","exVi":"Cô ấy <span class='hl-vi'>đủ điều kiện</span>.","syns":["competent","capable"]},
+
+  {"id":7,"word":"candidate","ipa":"ˈkændədeɪt","mean":"n ứng cử viên","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/candidate.png","ex":"Five <span class='hl-en'>candidates</span> were selected.","exVi":"Năm <span class='hl-vi'>ứng viên</span> được chọn.","syns":["applicant","job seeker"]},
+
+  {"id":8,"word":"confidence","ipa":"ˈkɑnfədəns","mean":"n sự tự tin","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/confidence.png","ex":"We have <span class='hl-en'>confidence</span> in her.","exVi":"Chúng tôi có <span class='hl-vi'>niềm tin</span> vào cô ấy.","syns":["trust","belief"]},
+
+  {"id":9,"word":"highly","ipa":"ˈhaɪli","mean":"adv rất","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/highly.png","ex":"He is <span class='hl-en'>highly</span> qualified.","exVi":"Anh ấy <span class='hl-vi'>rất</span> phù hợp.","syns":["extremely","very"]},
+
+  {"id":10,"word":"professional","ipa":"prəˈfɛʃənəl","mean":"adj chuyên nghiệp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/professional.png","ex":"She is a <span class='hl-en'>professional</span> photographer.","exVi":"Cô ấy là nhiếp ảnh gia <span class='hl-vi'>chuyên nghiệp</span>.","syns":["skilled","qualified"]},
+
+  {"id":11,"word":"interview","ipa":"ˈɪntərˌvju","mean":"n/v phỏng vấn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/interview.png","ex":"The <span class='hl-en'>interview</span> will be tomorrow.","exVi":"Cuộc <span class='hl-vi'>phỏng vấn</span> diễn ra ngày mai.","syns":[]},
+
+  {"id":12,"word":"hire","ipa":"ˈhaɪər","mean":"v tuyển dụng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/hire.png","ex":"The company plans to <span class='hl-en'>hire</span> new staff.","exVi":"Công ty dự định <span class='hl-vi'>tuyển</span> nhân viên.","syns":["employ","recruit"]},
+
+  {"id":13,"word":"training","ipa":"ˈtreɪnɪŋ","mean":"n đào tạo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/training.png","ex":"New staff receive <span class='hl-en'>training</span>.","exVi":"Nhân viên mới được <span class='hl-vi'>đào tạo</span>.","syns":["instruction","coaching"]},
+
+  {"id":14,"word":"reference","ipa":"ˈrɛfərəns","mean":"n thư giới thiệu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/reference.png","ex":"Provide a <span class='hl-en'>reference</span> letter.","exVi":"Cung cấp <span class='hl-vi'>thư giới thiệu</span>.","syns":["recommendation","referral"]},
+
+  {"id":15,"word":"position","ipa":"pəˈzɪʃən","mean":"n vị trí","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/position.png","ex":"He applied for the <span class='hl-en'>position</span>.","exVi":"Anh ấy ứng tuyển <span class='hl-vi'>vị trí</span>.","syns":["post","job"]},
+
+  {"id":16,"word":"achievement","ipa":"əˈʧivmənt","mean":"n thành tựu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/achievement.png","ex":"List your <span class='hl-en'>achievements</span>.","exVi":"Liệt kê <span class='hl-vi'>thành tựu</span>.","syns":["accomplishment","success"]},
+
+  {"id":17,"word":"impressed","ipa":"ɪmˈprɛst","mean":"adj ấn tượng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/impressed.png","ex":"The manager was <span class='hl-en'>impressed</span>.","exVi":"Quản lý rất <span class='hl-vi'>ấn tượng</span>.","syns":["amazed"]},
+
+  {"id":18,"word":"excellent","ipa":"ˈɛksələnt","mean":"adj xuất sắc","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/excellent.png","ex":"She has <span class='hl-en'>excellent</span> skills.","exVi":"Cô ấy có kỹ năng <span class='hl-vi'>xuất sắc</span>.","syns":["outstanding","superb"]},
+
+  {"id":19,"word":"eligible","ipa":"ˈɛləʤəbəl","mean":"adj đủ điều kiện","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/eligible.png","ex":"Workers are <span class='hl-en'>eligible</span> for benefits.","exVi":"Nhân viên <span class='hl-vi'>đủ điều kiện</span>.","syns":["qualified","entitled"]},
+
+  {"id":20,"word":"identify","ipa":"aɪˈdɛntəˌfaɪ","mean":"v nhận diện","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/identify.png","ex":"Customers can <span class='hl-en'>identify</span> staff easily.","exVi":"Khách hàng dễ <span class='hl-vi'>nhận ra</span> nhân viên.","syns":["recognize","distinguish"]},
+
+  {"id":21,"word":"associate","ipa":"əˈsoʊsiət","mean":"v liên kết","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/associate.png","ex":"He is <span class='hl-en'>associated</span> with the firm.","exVi":"Anh ấy có <span class='hl-vi'>liên kết</span> với công ty.","syns":["connect","link"]},
+
+  {"id":22,"word":"condition","ipa":"kənˈdɪʃən","mean":"n điều kiện","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/condition.png","ex":"Terms and <span class='hl-en'>conditions</span> apply.","exVi":"Áp dụng các <span class='hl-vi'>điều kiện</span>.","syns":["term","requirement"]},
+
+  {"id":23,"word":"employment","ipa":"ɛmˈplɔɪmənt","mean":"n việc làm","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/employment.png","ex":"They announced new <span class='hl-en'>employment</span> opportunities.","exVi":"Họ công bố cơ hội <span class='hl-vi'>việc làm</span>.","syns":["work","occupation"]},
+
+  {"id":24,"word":"lack","ipa":"læk","mean":"v/n thiếu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/lack.png","ex":"He <span class='hl-en'>lacks</span> experience.","exVi":"Anh ấy <span class='hl-vi'>thiếu</span> kinh nghiệm.","syns":["shortage","absence"]},
+
+  {"id":25,"word":"managerial","ipa":"ˌmænɪˈʤɪriəl","mean":"adj thuộc quản lý","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/managerial.png","ex":"She seeks a <span class='hl-en'>managerial</span> role.","exVi":"Cô tìm vị trí <span class='hl-vi'>quản lý</span>.","syns":["administrative","executive"]},
+
+  {"id":26,"word":"diligent","ipa":"ˈdɪlɪʤənt","mean":"adj chăm chỉ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/diligent.png","ex":"He is a <span class='hl-en'>diligent</span> worker.","exVi":"Anh ấy là nhân viên <span class='hl-vi'>chăm chỉ</span>.","syns":["hardworking","industrious"]},
+
+  {"id":27,"word":"familiar","ipa":"fəˈmɪljər","mean":"adj quen thuộc","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/familiar.png","ex":"Become <span class='hl-en'>familiar</span> with the rules.","exVi":"Hãy <span class='hl-vi'>làm quen</span> với quy định.","syns":["accustomed","well-acquainted"]},
+
+  {"id":28,"word":"proficiency","ipa":"prəˈfɪʃənsi","mean":"n sự thành thạo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/proficiency.png","ex":"Proof of language <span class='hl-en'>proficiency</span> is needed.","exVi":"Cần chứng minh <span class='hl-vi'>trình độ</span> ngôn ngữ.","syns":["skill","competence"]},
+
+  {"id":29,"word":"prospective","ipa":"prəˈspɛktɪv","mean":"adj tiềm năng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/prospective.png","ex":"<span class='hl-en'>Prospective</span> employees attended.","exVi":"Nhân viên <span class='hl-vi'>tiềm năng</span> tham dự.","syns":["potential"]},
+
+  {"id":30,"word":"appeal","ipa":"əˈpil","mean":"v hấp dẫn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/appeal.png","ex":"The offer <span class='hl-en'>appealed</span> to staff.","exVi":"Đề nghị <span class='hl-vi'>hấp dẫn</span> nhân viên.","syns":["attract","entice"]},
+
+  {"id":31,"word":"specialize","ipa":"ˈspɛʃəˌlaɪz","mean":"v chuyên về","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/specialize.png","ex":"She <span class='hl-en'>specializes</span> in design.","exVi":"Cô ấy <span class='hl-vi'>chuyên</span> về thiết kế.","syns":["major in","focus on"]},
+
+  {"id":32,"word":"apprehensive","ipa":"ˌæprɪˈhɛnsɪv","mean":"adj lo lắng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/apprehensive.png","ex":"He felt <span class='hl-en'>apprehensive</span> before the interview.","exVi":"Anh ấy <span class='hl-vi'>lo lắng</span> trước phỏng vấn.","syns":["anxious","worried"]},
+
+  {"id":33,"word":"consultant","ipa":"kənˈsʌltənt","mean":"n cố vấn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/consultant.png","ex":"She works as a design <span class='hl-en'>consultant</span>.","exVi":"Cô làm <span class='hl-vi'>cố vấn</span> thiết kế.","syns":["advisor","expert"]},
+
+  {"id":34,"word":"entitle","ipa":"ɛnˈtaɪtəl","mean":"v cho quyền","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/entitle.png","ex":"Employees are <span class='hl-en'>entitled</span> to leave.","exVi":"Nhân viên <span class='hl-vi'>được quyền</span> nghỉ.","syns":["authorize","grant"]},
+
+  {"id":35,"word":"degree","ipa":"dɪˈgri","mean":"n bằng cấp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/degree.png","ex":"A bachelor's <span class='hl-en'>degree</span> is required.","exVi":"Yêu cầu bằng <span class='hl-vi'>cử nhân</span>.","syns":["qualification","diploma"]},
+
+  {"id":36,"word":"payroll","ipa":"ˈpeɪˌroʊl","mean":"n bảng lương","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/payroll.png","ex":"New staff were added to the <span class='hl-en'>payroll</span>.","exVi":"Nhân viên mới được thêm vào <span class='hl-vi'>bảng lương</span>.","syns":["pay list","staff salaries"]},
+
+  {"id":37,"word":"recruit","ipa":"rəˈkrut","mean":"v tuyển dụng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/recruit.png","ex":"The firm <span class='hl-en'>recruits</span> graduates.","exVi":"Công ty <span class='hl-vi'>tuyển</span> sinh viên mới.","syns":["hire","enlist"]},
+
+  {"id":38,"word":"certification","ipa":"ˌsɜrtəfəˈkeɪʃən","mean":"n chứng nhận","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/certification.png","ex":"He obtained accounting <span class='hl-en'>certification</span>.","exVi":"Anh ấy đạt <span class='hl-vi'>chứng chỉ</span> kế toán.","syns":["license","credential"]},
+
+  {"id":39,"word":"occupation","ipa":"ˌɑkjəˈpeɪʃən","mean":"n nghề nghiệp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/occupation.png","ex":"Journalism is his <span class='hl-en'>occupation</span>.","exVi":"Làm báo là <span class='hl-vi'>nghề</span> của anh ấy.","syns":["profession","job"]},
+
+  {"id":40,"word":"wage","ipa":"weɪʤ","mean":"n tiền lương","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/wage.png","ex":"Workers demand higher <span class='hl-en'>wages</span>.","exVi":"Công nhân đòi tăng <span class='hl-vi'>lương</span>.","syns":["salary","pay"]}
+];

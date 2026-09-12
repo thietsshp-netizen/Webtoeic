@@ -1,0 +1,81 @@
+const data = [
+  {"id":1,"word":"complaint","ipa":"kəmˈpleɪnt","mean":"n lời than phiền, lời phàn nàn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/complaint.png","ex":"Customers can register <span class='hl-en'>complaints</span> at the customer service center or online.","exVi":"Khách hàng có thể nộp đơn <span class='hl-vi'>khiếu nại (phàn nàn)</span> tại trung tâm chăm sóc khách hàng.","syns":["criticism"]},
+
+  {"id":2,"word":"deal","ipa":"dil","mean":"n sự thỏa thuận; v giải quyết","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/deal.png","ex":"Fly-Age agency offers good <span class='hl-en'>deals</span> on International flights.","exVi":"Hãng Fly-Age cung cấp các <span class='hl-vi'>gói (thỏa thuận)</span> bay quốc tế rất tốt.","syns":["agreement","address"]},
+
+  {"id":3,"word":"argumentative","ipa":"ˌɑrgjəˈmɛntətɪv","mean":"adj thích tranh cãi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/argumentative.png","ex":"Service personnel must avoid becoming <span class='hl-en'>argumentative</span> with upset customers.","exVi":"Người làm dịch vụ cần tránh thói quen <span class='hl-vi'>tranh cãi</span> với các vị khách bất mãn.","syns":["confrontational","quarrelsome"]},
+
+  {"id":4,"word":"appropriately","ipa":"əˈproʊpriɪtli","mean":"adv thích hợp, thích đáng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/appropriately.png","ex":"Telephone representatives should handle customer complaints <span class='hl-en'>appropriately</span>.","exVi":"Nhân viên tổng đài cần biết cách xử lý phàn nàn của khách <span class='hl-vi'>thích hợp</span>.","syns":["suitably","properly"]},
+
+  {"id":5,"word":"respond","ipa":"rɪˈspɑnd","mean":"v phản hồi, trả lời","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/respond.png","ex":"Sales staff should <span class='hl-en'>respond</span> promptly to questions from customers.","exVi":"Nhân viên bán hàng cần phải kịp thời <span class='hl-vi'>trả lời (phản hồi)</span> các câu hỏi.","syns":["reply","answer"]},
+
+  {"id":6,"word":"infuriate","ipa":"ɪnˈfjʊriˌeɪt","mean":"v làm tức điên lên","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/infuriate.png","ex":"The attendant's incompetence <span class='hl-en'>infuriated</span> the customer.","exVi":"Sự kém cỏi của người phục vụ khiến vị khách <span class='hl-vi'>tức giận (điên lên)</span>.","syns":["enrage","madden"]},
+
+  {"id":7,"word":"courteous","ipa":"ˈkɜrtiəs","mean":"adj lịch sự, nhã nhặn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/courteous.png","ex":"All inquiries must be handled in a <span class='hl-en'>courteous</span> manner.","exVi":"Mọi thắc mắc cần phải được giải đáp bằng một thái độ <span class='hl-vi'>lịch sự</span>.","syns":["polite","civil"]},
+
+  {"id":8,"word":"satisfaction","ipa":"ˌsætəˈsfækʃən","mean":"n sự hài lòng, thỏa mãn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/satisfaction.png","ex":"We hope our assistance was to your <span class='hl-en'>satisfaction</span>.","exVi":"Hy vọng rằng sự trợ giúp của chúng tôi khiến bạn <span class='hl-vi'>hài lòng</span>.","syns":["contentment","pleasure"]},
+
+  {"id":9,"word":"inconvenience","ipa":"ˌɪnkənˈvinjəns","mean":"n sự bất tiện; v làm phiền","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/inconvenience.png","ex":"We apologize for the <span class='hl-en'>inconvenience</span> during construction.","exVi":"Chúng tôi xin lỗi vì những <span class='hl-vi'>bất tiện</span> gây ra trong quá trình xây dựng.","syns":["trouble","disruption"]},
+
+  {"id":10,"word":"complete","ipa":"kəmˈplit","mean":"v hoàn thành; adj trọn vẹn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/complete.png","ex":"The paperwork must be <span class='hl-en'>completed</span> within one month.","exVi":"Giấy tờ cần phải được <span class='hl-vi'>hoàn thành</span> trong vòng một tháng.","syns":["finish","finalize"]},
+
+  {"id":11,"word":"specific","ipa":"spəˈsɪfɪk","mean":"adj cụ thể, đặc thù","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/specific.png","ex":"When seeking help, clients must be very <span class='hl-en'>specific</span> in describing problems.","exVi":"Khách hàng phải mô tả vấn đề thật <span class='hl-vi'>cụ thể</span>.","syns":["detailed","particular"]},
+
+  {"id":12,"word":"return","ipa":"rɪˈtɜrn","mean":"v trả lại, quay về","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/return.png","ex":"Merchandise can be <span class='hl-en'>returned</span> at the counter.","exVi":"Hàng hóa có thể được <span class='hl-vi'>trả lại</span> tại quầy thanh toán.","syns":["send back"]},
+
+  {"id":13,"word":"replace","ipa":"ˌriˈpleɪs","mean":"v thay thế, thay chỗ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/replace.png","ex":"The mechanic <span class='hl-en'>replaced</span> the generator's motor with a new one.","exVi":"Người thợ máy <span class='hl-vi'>thay thế</span> động cơ mới cho máy phát điện.","syns":["exchange","substitute"]},
+
+  {"id":14,"word":"presentation","ipa":"ˌprɛzənˈteɪʃən","mean":"n bài thuyết trình, trình bày","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/presentation.png","ex":"Melissa gave a <span class='hl-en'>presentation</span> about handling difficult clients.","exVi":"Melissa <span class='hl-vi'>thuyết trình</span> về cách xử lý khi gặp khách hàng khó tính.","syns":["lecture","demonstration"]},
+
+  {"id":15,"word":"evaluation","ipa":"ɪˌvæljuˈeɪʃən","mean":"n sự đánh giá, ước lượng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/evaluation.png","ex":"Please fill out the <span class='hl-en'>evaluation</span> form.","exVi":"Vui lòng điền vào phiếu <span class='hl-vi'>đánh giá</span>.","syns":["assessment","appraisal"]},
+
+  {"id":16,"word":"confident","ipa":"ˈkɑnfədənt","mean":"adj tự tin","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/confident.png","ex":"Enthusiasm and a <span class='hl-en'>confident</span> manner are essential for this position.","exVi":"Nhiệt tình và phong thái <span class='hl-vi'>tự tin</span> rất quan trọng cho vị trí này.","syns":["assured","self-reliant"]},
+
+  {"id":17,"word":"cause","ipa":"kɑz","mean":"v gây ra; n nguyên nhân","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/cause.png","ex":"The defect in the lamp was <span class='hl-en'>caused</span> by improper wiring.","exVi":"Trục trặc của chiếc đèn là do (<span class='hl-vi'>gây ra bởi</span>) mắc dây không đúng.","syns":["lead to","reason"]},
+
+  {"id":18,"word":"commentary","ipa":"ˈkɑmənˌtɛri","mean":"n bài bình luận, lời chú thích","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/commentary.png","ex":"Richard added <span class='hl-en'>commentary</span> to the service training film.","exVi":"Richard đã thêm <span class='hl-vi'>chú thích (bình luận)</span> vào đoạn phim đào tạo.","syns":["review"]},
+
+  {"id":19,"word":"notification","ipa":"ˌnoʊtəfəˈkeɪʃən","mean":"n thông báo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/notification.png","ex":"We require written <span class='hl-en'>notification</span> of any order cancellations.","exVi":"Chúng tôi yêu cầu phải có <span class='hl-vi'>thông báo</span> bằng văn bản khi hủy đơn.","syns":["announcement","notice"]},
+
+  {"id":20,"word":"apologize","ipa":"əˈpɑləˌʤaɪz","mean":"v xin lỗi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/apologize.png","ex":"We <span class='hl-en'>apologize</span> for the late delivery service.","exVi":"Chúng tôi rất <span class='hl-vi'>xin lỗi</span> vì việc giao hàng chậm trễ này.","syns":["express regret","say sorry"]},
+
+  {"id":21,"word":"interact","ipa":"ˌɪntəˈrækt","mean":"v tương tác, tác động qua lại","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/interact.png","ex":"When <span class='hl-en'>interacting</span> with shoppers, clerks should be pleasant.","exVi":"Khi <span class='hl-vi'>tương tác</span> với người mua, nhân viên cần có thái độ niềm nở.","syns":["communicate","connect"]},
+
+  {"id":22,"word":"certain","ipa":"ˈsɜrtən","mean":"adj chắc chắn; nhất định","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/certain.png","ex":"Sharon was not <span class='hl-en'>certain</span> where she had bought the blouse.","exVi":"Sharon không <span class='hl-vi'>chắc chắn</span> về nơi mình đã mua chiếc áo.","syns":["sure","positive"]},
+
+  {"id":23,"word":"commitment","ipa":"kəˈmɪtmənt","mean":"n sự cam kết, tận tâm","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/commitment.png","ex":"Brand Bank has a longstanding <span class='hl-en'>commitment</span> to client assistance.","exVi":"Ngân hàng Brand <span class='hl-vi'>cam kết</span> lâu dài về việc hỗ trợ khách hàng.","syns":["promise","dedication"]},
+
+  {"id":24,"word":"applaud","ipa":"əˈplɔd","mean":"v hoan nghênh, tán thưởng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/applaud.png","ex":"The staff <span class='hl-en'>applauded</span> the decision to increase overtime pay.","exVi":"Nhân viên <span class='hl-vi'>hoan nghênh (tán thưởng)</span> việc tăng lương làm ngoài giờ.","syns":["praise","cheer"]},
+
+  {"id":25,"word":"biography","ipa":"baɪˈɑgrəfi","mean":"n tiểu sử, lý lịch","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/biography.png","ex":"A short <span class='hl-en'>biography</span> on the guest speaker was included.","exVi":"Chương trình có một đoạn giới thiệu ngắn về <span class='hl-vi'>lý lịch</span> của diễn giả.","syns":["profile","life story"]},
+
+  {"id":26,"word":"critical","ipa":"ˈkrɪtɪkəl","mean":"adj phê bình; quyết định; nguy cấp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/critical.png","ex":"Many customers were <span class='hl-en'>critical</span> of the new services.","exVi":"Nhiều khách hàng rất hay <span class='hl-vi'>chê bai (phê bình)</span> các dịch vụ mới.","syns":["disapproving","crucial"]},
+
+  {"id":27,"word":"depend on","ipa":"dɪˈpɛnd ɑn","mean":"phr phụ thuộc vào","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/depend%20on.png","ex":"The success of a restaurant <span class='hl-en'>depends on</span> the quality of the food.","exVi":"Thành công của nhà hàng <span class='hl-vi'>phụ thuộc vào</span> chất lượng đồ ăn.","syns":["rely on","hinge on"]},
+
+  {"id":28,"word":"combine","ipa":"ˈkɑmbaɪn","mean":"v kết hợp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/combine.png","ex":"The store sometimes allows customers to <span class='hl-en'>combine</span> offers.","exVi":"Cửa hàng có lúc cho phép khách hàng <span class='hl-vi'>kết hợp</span> các chương trình giảm giá.","syns":["mix","integrate"]},
+
+  {"id":29,"word":"priority","ipa":"praɪˈɔrəti","mean":"n sự ưu tiên","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/priority.png","ex":"<span class='hl-en'>Priority</span> for the service will be provided to early arrivals.","exVi":"Sự <span class='hl-vi'>ưu tiên</span> phục vụ sẽ dành cho những người đến trước.","syns":["precedence","preference"]},
+
+  {"id":30,"word":"observe","ipa":"əbˈzɜrv","mean":"v theo dõi; tuân thủ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/observe.png","ex":"The technicians <span class='hl-en'>observed</span> a demonstration about repairing phones.","exVi":"Các kỹ thuật viên đã <span class='hl-vi'>theo dõi (quan sát)</span> buổi hướng dẫn sửa điện thoại.","syns":["watch","comply"]},
+
+  {"id":31,"word":"defective","ipa":"dɪˈfɛktɪv","mean":"adj có lỗi, thiếu sót","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/defective.png","ex":"The buyer requested a refund for the <span class='hl-en'>defective</span> hair dryer.","exVi":"Khách hàng yêu cầu hoàn tiền cho chiếc máy sấy <span class='hl-vi'>bị lỗi</span>.","syns":["faulty","flawed"]},
+
+  {"id":32,"word":"reflect","ipa":"rəˈflɛkt","mean":"v phản ánh, phản chiếu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/reflect.png","ex":"The statement of purpose <span class='hl-en'>reflects</span> its commitment to quality.","exVi":"Tuyên bố mục đích <span class='hl-vi'>phản ánh</span> cam kết của họ về chất lượng.","syns":["show","mirror"]},
+
+  {"id":33,"word":"attitude","ipa":"ˈætəˌtud","mean":"n thái độ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/attitude.png","ex":"Salespeople with a positive <span class='hl-en'>attitude</span> tend to sell more.","exVi":"Nhân viên bán hàng có <span class='hl-vi'>thái độ</span> tích cực thường bán được nhiều hơn.","syns":["mindset","disposition"]},
+
+  {"id":34,"word":"disappoint","ipa":"ˌdɪsəˈpɔɪnt","mean":"v làm thất vọng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/disappoint.png","ex":"The poor terms of the warranty <span class='hl-en'>disappointed</span> many buyers.","exVi":"Các điều khoản bảo hành không hấp dẫn làm nhiều khách hàng <span class='hl-vi'>thất vọng</span>.","syns":["let down","frustrate"]},
+
+  {"id":35,"word":"inquire","ipa":"ɪnˈkwaɪr","mean":"v hỏi, điều tra","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/inquire.png","ex":"Several people called in to <span class='hl-en'>inquire</span> about the promotions.","exVi":"Vài người đã gọi đến để <span class='hl-vi'>hỏi</span> về những khuyến mãi mới nhất.","syns":["ask","query"]},
+
+  {"id":36,"word":"insert","ipa":"ɪnˈsɜrt","mean":"v chèn vào, đưa vào","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/insert.png","ex":"Read the instructions before <span class='hl-en'>inserting</span> the CD.","exVi":"Vui lòng đọc hướng dẫn trước khi <span class='hl-vi'>cho (chèn)</span> đĩa CD vào máy.","syns":["put in","embed"]},
+
+  {"id":37,"word":"disclose","ipa":"dɪˈskloʊz","mean":"v phơi bày, tiết lộ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/disclose.png","ex":"Customers will be asked to <span class='hl-en'>disclose</span> some personal details.","exVi":"Khách hàng sẽ được yêu cầu <span class='hl-vi'>tiết lộ</span> một số thông tin cá nhân.","syns":["reveal","unveil"]},
+
+  {"id":38,"word":"guarantee","ipa":"ˌgɛrənˈti","mean":"v cam đoan, đảm bảo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/guarantee.png","ex":"Customer satisfaction is <span class='hl-en'>guaranteed</span>.","exVi":"Sự hài lòng của khách hàng được <span class='hl-vi'>đảm bảo</span>.","syns":["assure","warranty"]},
+
+  {"id":39,"word":"politely","ipa":"pəˈlaɪtli","mean":"adv lịch sự, lễ phép","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/politely.png","ex":"Store personnel must always speak to customers <span class='hl-en'>politely</span>.","exVi":"Nhân viên cửa hàng phải luôn ăn nói <span class='hl-vi'>lịch sự</span> với khách hàng.","syns":["courteously","civilly"]},
+
+  {"id":40,"word":"seriously","ipa":"ˈsɪriəsli","mean":"adv nghiêm túc, nghiêm trọng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/seriously.png","ex":"The manager takes customer feedback very <span class='hl-en'>seriously</span>.","exVi":"Viên quản lý tiếp thu <span class='hl-vi'>nghiêm túc</span> phản hồi của khách hàng.","syns":["solemnly","earnest"]}
+];

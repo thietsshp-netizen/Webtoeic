@@ -1,0 +1,81 @@
+const data = [
+  {"id":1,"word":"purchase","ipa":"ˈpɜrʧəs","mean":"v mua","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/purchase.png","ex":"The customer <span class='hl-en'>purchased</span> a laptop.","exVi":"Khách hàng đã <span class='hl-vi'>mua</span> một chiếc laptop.","syns":["buy","acquire"]},
+
+  {"id":2,"word":"installment","ipa":"ɪnˈstɔlmənt","mean":"n sự trả góp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/installment.png","ex":"Buyers can pay in monthly <span class='hl-en'>installments</span>.","exVi":"Người mua có thể trả theo <span class='hl-vi'>trả góp</span> hàng tháng.","syns":[]},
+
+  {"id":3,"word":"affordable","ipa":"əˈfɔrdəbəl","mean":"adj phải chăng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/affordable.png","ex":"The car is <span class='hl-en'>affordable</span> for most families.","exVi":"Chiếc xe có giá <span class='hl-vi'>phải chăng</span>.","syns":["reasonable","low-cost"]},
+
+  {"id":4,"word":"exactly","ipa":"ɪgˈzæktli","mean":"adv chính xác","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/exactly.png","ex":"Tell me <span class='hl-en'>exactly</span> what you need.","exVi":"Hãy nói <span class='hl-vi'>chính xác</span> bạn cần gì.","syns":["precisely","accurately"]},
+
+  {"id":5,"word":"auction","ipa":"ˈɑkʃən","mean":"n cuộc đấu giá","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/auction.png","ex":"The painting was sold at an <span class='hl-en'>auction</span>.","exVi":"Bức tranh được bán tại <span class='hl-vi'>đấu giá</span>.","syns":[]},
+
+  {"id":6,"word":"authentic","ipa":"əˈθɛntɪk","mean":"adj đích thực","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/authentic.png","ex":"They serve <span class='hl-en'>authentic</span> Italian food.","exVi":"Họ phục vụ món Ý <span class='hl-vi'>chính gốc</span>.","syns":["genuine","real"]},
+
+  {"id":7,"word":"charge","ipa":"ʧɑrʤ","mean":"v thu phí","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/charge.png","ex":"The company <span class='hl-en'>charges</span> extra for delivery.","exVi":"Công ty <span class='hl-vi'>tính phí</span> giao hàng.","syns":["bill"]},
+
+  {"id":8,"word":"notice","ipa":"ˈnoʊtəs","mean":"n thông báo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/notice.png","ex":"Prices remain until further <span class='hl-en'>notice</span>.","exVi":"Giá có hiệu lực đến khi có <span class='hl-vi'>thông báo</span> mới.","syns":["announcement","alert"]},
+
+  {"id":9,"word":"experienced","ipa":"ɪkˈspɪriənst","mean":"adj có kinh nghiệm","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/experienced.png","ex":"She is an <span class='hl-en'>experienced</span> salesperson.","exVi":"Cô ấy là nhân viên bán hàng <span class='hl-vi'>giàu kinh nghiệm</span>.","syns":["skilled","seasoned"]},
+
+  {"id":10,"word":"instruction","ipa":"ɪnˈstrʌkʃən","mean":"n hướng dẫn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/instruction.png","ex":"Follow the <span class='hl-en'>instructions</span> carefully.","exVi":"Hãy làm theo <span class='hl-vi'>hướng dẫn</span>.","syns":["direction","guideline"]},
+
+  {"id":11,"word":"expert","ipa":"ˈɛkspərt","mean":"n chuyên gia","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/expert.png","ex":"He is an <span class='hl-en'>expert</span> in marketing.","exVi":"Anh ấy là <span class='hl-vi'>chuyên gia</span> marketing.","syns":["specialist","professional"]},
+
+  {"id":12,"word":"warranty","ipa":"ˈwɔrənti","mean":"n bảo hành","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/warranty.png","ex":"The product comes with a one-year <span class='hl-en'>warranty</span>.","exVi":"Sản phẩm có <span class='hl-vi'>bảo hành</span> 1 năm.","syns":["guarantee","assurance"]},
+
+  {"id":13,"word":"refund","ipa":"ˈriˌfʌnd","mean":"n hoàn tiền","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/refund.png","ex":"You can get a <span class='hl-en'>refund</span> for defects.","exVi":"Bạn có thể nhận <span class='hl-vi'>hoàn tiền</span>.","syns":["repayment","reimbursement"]},
+
+  {"id":14,"word":"subscriber","ipa":"səbˈskraɪbər","mean":"n người đăng ký","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/subscriber.png","ex":"The channel has many <span class='hl-en'>subscribers</span>.","exVi":"Kênh có nhiều <span class='hl-vi'>người đăng ký</span>.","syns":["member","registrant"]},
+
+  {"id":15,"word":"delivery","ipa":"dɪˈlɪvəri","mean":"n giao hàng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/delivery.png","ex":"We guarantee <span class='hl-en'>delivery</span> in three days.","exVi":"Chúng tôi đảm bảo <span class='hl-vi'>giao hàng</span> trong 3 ngày.","syns":["shipment","distribution"]},
+
+  {"id":16,"word":"price","ipa":"praɪs","mean":"n giá","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/price.png","ex":"The <span class='hl-en'>price</span> is reasonable.","exVi":"<span class='hl-vi'>Giá</span> hợp lý.","syns":["cost","charge"]},
+
+  {"id":17,"word":"receipt","ipa":"rɪˈsit","mean":"n biên lai","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/receipt.png","ex":"Keep the <span class='hl-en'>receipt</span> for returns.","exVi":"Giữ <span class='hl-vi'>biên lai</span> để đổi trả.","syns":["invoice","proof of purchase"]},
+
+  {"id":18,"word":"offers","ipa":"ˈɔfərz","mean":"n ưu đãi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/offers.png","ex":"The store has special <span class='hl-en'>offers</span>.","exVi":"Cửa hàng có nhiều <span class='hl-vi'>ưu đãi</span>.","syns":["deals","promotions"]},
+
+  {"id":19,"word":"carefully","ipa":"ˈkɛrfəli","mean":"adv cẩn thận","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/carefully.png","ex":"Read the manual <span class='hl-en'>carefully</span>.","exVi":"Đọc hướng dẫn <span class='hl-vi'>cẩn thận</span>.","syns":["cautiously","attentively"]},
+
+  {"id":20,"word":"benefit","ipa":"ˈbɛnəfɪt","mean":"n lợi ích","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/benefit.png","ex":"Members enjoy many <span class='hl-en'>benefits</span>.","exVi":"Hội viên hưởng nhiều <span class='hl-vi'>lợi ích</span>.","syns":["advantage","perk"]},
+
+  {"id":21,"word":"exclusively","ipa":"ɪkˈsklusɪvli","mean":"adv riêng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/exclusively.png","ex":"This offer is <span class='hl-en'>exclusively</span> for members.","exVi":"Ưu đãi chỉ dành <span class='hl-vi'>riêng</span> cho hội viên.","syns":["solely","only"]},
+
+  {"id":22,"word":"description","ipa":"dɪˈskrɪpʃən","mean":"n mô tả","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/description.png","ex":"Read the product <span class='hl-en'>description</span>.","exVi":"Đọc <span class='hl-vi'>mô tả</span> sản phẩm.","syns":["explanation","detail"]},
+
+  {"id":23,"word":"relatively","ipa":"ˈrɛlətɪvli","mean":"adv tương đối","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/relatively.png","ex":"The policy is <span class='hl-en'>relatively</span> flexible.","exVi":"Chính sách <span class='hl-vi'>tương đối</span> linh hoạt.","syns":["comparatively","fairly"]},
+
+  {"id":24,"word":"spare","ipa":"spɛr","mean":"adj dự phòng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/spare.png","ex":"We keep <span class='hl-en'>spare</span> parts in stock.","exVi":"Chúng tôi giữ phụ tùng <span class='hl-vi'>dự phòng</span>.","syns":["extra","backup"]},
+
+  {"id":25,"word":"preparation","ipa":"ˌprɛpəˈreɪʃən","mean":"n sự chuẩn bị","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/preparation.png","ex":"<span class='hl-en'>Preparations</span> are underway.","exVi":"Công tác <span class='hl-vi'>chuẩn bị</span> đang tiến hành.","syns":["arrangement","planning"]},
+
+  {"id":26,"word":"area","ipa":"ˈɛriə","mean":"n khu vực","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/area.png","ex":"There are many stores in this <span class='hl-en'>area</span>.","exVi":"Có nhiều cửa hàng trong <span class='hl-vi'>khu vực</span> này.","syns":["region","zone"]},
+
+  {"id":27,"word":"clearance","ipa":"ˈklɪrəns","mean":"n xả hàng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/clearance.png","ex":"Winter clothes are on <span class='hl-en'>clearance</span>.","exVi":"Quần áo mùa đông đang <span class='hl-vi'>xả hàng</span>.","syns":["sale","liquidation"]},
+
+  {"id":28,"word":"alter","ipa":"ˈɔltər","mean":"v sửa đổi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/alter.png","ex":"They <span class='hl-en'>altered</span> the design.","exVi":"Họ đã <span class='hl-vi'>sửa đổi</span> thiết kế.","syns":["modify","change"]},
+
+  {"id":29,"word":"apply","ipa":"əˈplaɪ","mean":"v áp dụng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/apply.png","ex":"The cashier <span class='hl-en'>applied</span> the discount.","exVi":"Thu ngân đã <span class='hl-vi'>áp dụng</span> giảm giá.","syns":["use","implement"]},
+
+  {"id":30,"word":"mutually","ipa":"ˈmjuʧuəli","mean":"adv lẫn nhau","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/mutually.png","ex":"They reached a <span class='hl-en'>mutually</span> acceptable price.","exVi":"Họ đạt mức giá <span class='hl-vi'>chấp nhận lẫn nhau</span>.","syns":["jointly","together"]},
+
+  {"id":31,"word":"method","ipa":"ˈmɛθəd","mean":"n phương pháp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/method.png","ex":"Debit cards are a popular payment <span class='hl-en'>method</span>.","exVi":"Thẻ ghi nợ là <span class='hl-vi'>phương pháp</span> thanh toán phổ biến.","syns":["way","approach"]},
+
+  {"id":32,"word":"acceptable","ipa":"ækˈsɛptəbəl","mean":"adj chấp nhận được","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/acceptable.png","ex":"This quality is <span class='hl-en'>acceptable</span>.","exVi":"Chất lượng này <span class='hl-vi'>chấp nhận được</span>.","syns":["satisfactory","adequate"]},
+
+  {"id":33,"word":"desire","ipa":"dɪˈzaɪər","mean":"n mong muốn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/desire.png","ex":"Advertising creates <span class='hl-en'>desire</span>.","exVi":"Quảng cáo tạo <span class='hl-vi'>mong muốn</span>.","syns":["wish","urge"]},
+
+  {"id":34,"word":"redeemable","ipa":"rɪˈdiməbəl","mean":"adj có thể quy đổi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/redeemable.png","ex":"Coupons are <span class='hl-en'>redeemable</span> in store.","exVi":"Phiếu giảm giá có thể <span class='hl-vi'>quy đổi</span>.","syns":["exchangeable","convertible"]},
+
+  {"id":35,"word":"officially","ipa":"əˈfɪʃəli","mean":"adv chính thức","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/officially.png","ex":"The store <span class='hl-en'>officially</span> opens tomorrow.","exVi":"Cửa hàng <span class='hl-vi'>chính thức</span> mở ngày mai.","syns":["formally"]},
+
+  {"id":36,"word":"consumption","ipa":"kənˈsʌmpʃən","mean":"n tiêu thụ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/consumption.png","ex":"Energy <span class='hl-en'>consumption</span> increased.","exVi":"<span class='hl-vi'>Tiêu thụ</span> năng lượng tăng.","syns":["usage","utilization"]},
+
+  {"id":37,"word":"qualify","ipa":"ˈkwɑləˌfaɪ","mean":"v đủ điều kiện","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/qualify.png","ex":"You must earn enough to <span class='hl-en'>qualify</span>.","exVi":"Bạn phải đủ thu nhập để <span class='hl-vi'>đủ điều kiện</span>.","syns":["be eligible","meet requirements"]},
+
+  {"id":38,"word":"fabric","ipa":"ˈfæbrɪk","mean":"n vải","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/fabric.png","ex":"The shirt is made of cotton <span class='hl-en'>fabric</span>.","exVi":"Áo làm từ <span class='hl-vi'>vải</span> cotton.","syns":["cloth","textile"]},
+
+  {"id":39,"word":"valid","ipa":"ˈvæləd","mean":"adj hợp lệ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/valid.png","ex":"A <span class='hl-en'>valid</span> ID is required.","exVi":"Cần giấy tờ <span class='hl-vi'>hợp lệ</span>.","syns":["acceptable","legitimate"]},
+
+  {"id":40,"word":"vendor","ipa":"ˈvɛndər","mean":"n người bán","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/vendor.png","ex":"Street <span class='hl-en'>vendors</span> sell food.","exVi":"Người bán hàng rong <span class='hl-vi'>bán</span> thức ăn.","syns":["seller","merchant"]}
+];

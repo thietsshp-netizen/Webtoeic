@@ -1,0 +1,79 @@
+const data = [
+  {"id":1,"word":"fragile","ipa":"ˈfræʤəl","mean":"adj dễ vỡ, mỏng manh","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/fragile.png","ex":"<span class='hl-en'>Fragile</span> items are wrapped in protective packaging.","exVi":"Những đồ <span class='hl-vi'>dễ vỡ</span> được gói trong bọc bảo vệ.","syns":["breakable","delicate"]},
+
+  {"id":2,"word":"deliver","ipa":"dɪˈlɪvər","mean":"v giao, phát; phát biểu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/deliver.png","ex":"All packages are <span class='hl-en'>delivered</span> by the next morning.","exVi":"Tất cả các kiện hàng sẽ được <span class='hl-vi'>giao</span> vào sáng mai.","syns":["ship","hand over"]},
+
+  {"id":3,"word":"ensure","ipa":"ɛnˈʃʊr","mean":"v bảo đảm, quả quyết","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/ensure.png","ex":"The receptionist called to <span class='hl-en'>ensure</span> the message was delivered.","exVi":"Nhân viên lễ tân gọi điện để <span class='hl-vi'>đảm bảo</span> rằng tin nhắn đã được chuyển.","syns":["guarantee","make sure"]},
+
+  {"id":4,"word":"courier","ipa":"ˈkɜriər","mean":"n người đưa thư, đơn vị chuyển phát","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/courier.png","ex":"The customer will send the package by <span class='hl-en'>courier</span>.","exVi":"Vị khách sẽ gửi kiện hàng đó qua <span class='hl-vi'>công ty vận chuyển</span>.","syns":["messenger","delivery service"]},
+
+  {"id":5,"word":"carton","ipa":"ˈkɑrtən","mean":"n thùng/hộp bìa cứng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/carton.png","ex":"The <span class='hl-en'>carton</span> of goods was shipped by sea.","exVi":"Các <span class='hl-vi'>thùng hàng (bìa cứng)</span> đó đã được vận chuyển bằng đường biển.","syns":["box","cardboard box"]},
+
+  {"id":6,"word":"address","ipa":"ˈæˌdrɛs","mean":"n địa chỉ; v giải quyết","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/address.png","ex":"A solution was found to <span class='hl-en'>address</span> the clients' needs.","exVi":"Một giải pháp được tìm ra để <span class='hl-vi'>giải quyết</span> nhu cầu của khách hàng.","syns":["location","handle"]},
+
+  {"id":7,"word":"shipment","ipa":"ˈʃɪpmənt","mean":"n việc gửi hàng; lô hàng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/shipment.png","ex":"Freightline specializes in the <span class='hl-en'>shipment</span> of food products.","exVi":"Freightline chuyên về <span class='hl-vi'>vận chuyển (gửi hàng)</span> các sản phẩm thực phẩm.","syns":["delivery","consignment"]},
+
+  {"id":8,"word":"particularly","ipa":"ˌpɑrˈtɪkjələrli","mean":"adv đặc biệt, nhất là","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/particularly.png","ex":"The agreement will hurt local business, <span class='hl-en'>particularly</span> farmers.","exVi":"Thỏa thuận sẽ gây tổn hại buôn bán địa phương, <span class='hl-vi'>đặc biệt là</span> với người nông dân.","syns":["especially","specifically"]},
+
+  {"id":9,"word":"adequately","ipa":"ˈædəkwətli","mean":"adv tương xứng, phù hợp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/adequately.png","ex":"The workers ensure that glassware is <span class='hl-en'>adequately</span> wrapped.","exVi":"Các công nhân cam đoan rằng đồ thủy tinh được gói bọc <span class='hl-vi'>phù hợp (thỏa đáng)</span>.","syns":["sufficiently","properly"]},
+
+  {"id":10,"word":"article","ipa":"ˈɑrtəkəl","mean":"n món hàng; bài báo; điều khoản","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/article.png","ex":"There was an <span class='hl-en'>article</span> about tariffs in World Business Magazine.","exVi":"Có một <span class='hl-vi'>bài báo</span> về thuế xuất nhập khẩu trên tạp chí World Business.","syns":["item","report"]},
+
+  {"id":11,"word":"efficient","ipa":"ɪˈfɪʃənt","mean":"adj có hiệu quả, năng suất","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/efficient.png","ex":"Seal-wrap is an <span class='hl-en'>efficient</span> means of packaging.","exVi":"Màng bọc là một phương tiện đóng gói <span class='hl-vi'>hiệu quả</span>.","syns":["effective","productive"]},
+
+  {"id":12,"word":"agency","ipa":"ˈeɪʤənsi","mean":"n đại lý, cơ quan","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/agency.png","ex":"The government hired an <span class='hl-en'>agency</span> to inspect all grain imports.","exVi":"Chính phủ đã thuê một <span class='hl-vi'>cơ quan (hãng)</span> để giám sát lương thực nhập khẩu.","syns":["organization","firm"]},
+
+  {"id":13,"word":"enclose","ipa":"ɪnˈkloʊz","mean":"v gửi kèm; vây quanh","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/enclose.png","ex":"Please find a copy of the invoice <span class='hl-en'>enclosed</span>.","exVi":"Vui lòng tìm bản sao hóa đơn được <span class='hl-vi'>gửi kèm</span>.","syns":["attach","include"]},
+
+  {"id":14,"word":"careful","ipa":"ˈkɛrfəl","mean":"adj cẩn thận, chu đáo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/careful.png","ex":"Dock workers were extra <span class='hl-en'>careful</span> with the crates.","exVi":"Nhân viên ở bến tàu <span class='hl-vi'>cẩn thận</span> hơn với những chiếc thùng hàng.","syns":["cautious","attentive"]},
+
+  {"id":15,"word":"pick up","ipa":"pɪk ʌp","mean":"v đến lấy; đón; nhặt lên","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/pick%20up.png","ex":"Packages can be <span class='hl-en'>picked up</span> from the reception desk.","exVi":"Có thể <span class='hl-vi'>đến lấy</span> các gói hàng ở quầy lễ tân.","syns":["collect","gather"]},
+
+  {"id":16,"word":"carry","ipa":"ˈkæri","mean":"v mang, vác; có bán","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/carry.png","ex":"All delivery drivers are required to <span class='hl-en'>carry</span> identification.","exVi":"Mọi tài xế giao hàng đều buộc phải <span class='hl-vi'>mang theo</span> giấy tờ tùy thân.","syns":["transport","bear"]},
+
+  {"id":17,"word":"attach","ipa":"əˈtæʧ","mean":"v đính kèm, gắn vào","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/attach.png","ex":"Carefully <span class='hl-en'>attach</span> the address label to the package.","exVi":"Hãy dán ( <span class='hl-vi'>gắn</span>) thật cẩn thận nhãn dán địa chỉ lên gói hàng.","syns":["fasten","affix"]},
+
+  {"id":18,"word":"formerly","ipa":"ˈfɔrmərli","mean":"adv trước đây","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/formerly.png","ex":"Mr. Lee was <span class='hl-en'>formerly</span> in charge of the shipping department.","exVi":"Anh Lee <span class='hl-vi'>trước đây</span> từng phụ trách toàn bộ phòng vận tải.","syns":["previously","earlier"]},
+
+  {"id":19,"word":"package","ipa":"ˈpækəʤ","mean":"n gói hàng, kiện hàng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/package.png","ex":"<span class='hl-en'>Packages</span> are delivered daily at 4 P.M.","exVi":"Các <span class='hl-vi'>kiện hàng</span> được giao hằng ngày lúc 4 giờ chiều.","syns":["parcel","box"]},
+
+  {"id":20,"word":"react","ipa":"riˈækt","mean":"v phản ứng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/react.png","ex":"Local businesspeople <span class='hl-en'>reacted</span> negatively to news of regulations.","exVi":"Các doanh nhân địa phương <span class='hl-vi'>phản ứng</span> tiêu cực với thông tin luật mới.","syns":["respond","reply"]},
+
+  {"id":21,"word":"content","ipa":"ˈkɑntɛnt","mean":"n nội dung, đồ đựng bên trong","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/content.png","ex":"Please make sure that the <span class='hl-en'>contents</span> of your package are not damaged.","exVi":"Hãy kiểm tra chắc chắn rằng <span class='hl-vi'>đồ bên trong</span> kiện hàng không bị hỏng.","syns":["inside items"]},
+
+  {"id":22,"word":"convenience","ipa":"kənˈvinjəns","mean":"n sự tiện lợi, thuận tiện","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/convenience.png","ex":"For your <span class='hl-en'>convenience</span>, a tracking number is provided.","exVi":"Để <span class='hl-vi'>thuận tiện</span>, bạn sẽ được cung cấp một mã theo dõi.","syns":["handiness"]},
+
+  {"id":23,"word":"acknowledge","ipa":"ækˈnɑlɪʤ","mean":"v báo xác nhận; công nhận","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/acknowledge.png","ex":"The government <span class='hl-en'>acknowledged</span> the need for reduced tariffs.","exVi":"Chính phủ <span class='hl-vi'>ghi nhận (thừa nhận)</span> nhu cầu giảm thuế.","syns":["admit","confirm"]},
+
+  {"id":24,"word":"caution","ipa":"ˈkɑʃən","mean":"n sự cẩn trọng, lời cảnh cáo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/caution.png","ex":"Please use <span class='hl-en'>caution</span> when unpacking your order.","exVi":"Xin hãy <span class='hl-vi'>cẩn trọng</span> khi mở gói hàng của bạn.","syns":["care","vigilance"]},
+
+  {"id":25,"word":"correspondence","ipa":"ˌkɔrəˈspɑndəns","mean":"n thư từ, trao đổi qua thư","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/correspondence.png","ex":"Please send all <span class='hl-en'>correspondence</span> to this address.","exVi":"Vui lòng gửi tất cả <span class='hl-vi'>thư từ</span> tới địa chỉ này.","syns":["mail","communication"]},
+
+  {"id":26,"word":"separate","ipa":"ˈsɛprət","mean":"v tách rời; adj riêng biệt","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/separate.png","ex":"Liquids must be <span class='hl-en'>separated</span> from other materials.","exVi":"Chất lỏng cần được <span class='hl-vi'>tách riêng</span> khỏi các chất liệu khác.","syns":["disconnect","divide"]},
+
+  {"id":27,"word":"remarkable","ipa":"rɪˈmɑrkəbəl","mean":"adj đáng chú ý, xuất sắc","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/remarkable.png","ex":"Epic Corp underwent a <span class='hl-en'>remarkable</span> transformation.","exVi":"Tập đoàn Epic đã trải qua một sự thay đổi <span class='hl-vi'>đáng kể</span>.","syns":["extraordinary","notable"]},
+
+  {"id":28,"word":"handle","ipa":"ˈhændəl","mean":"v xử lý, giải quyết, cầm nắm","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/handle.png","ex":"The hazardous substances must be <span class='hl-en'>handled</span> with care.","exVi":"Các chất độc hại cần phải được <span class='hl-vi'>xử lý (bưng bê)</span> thận trọng.","syns":["manage","control"]},
+
+  {"id":29,"word":"warehouse","ipa":"ˈwɛrˌhaʊs","mean":"n nhà kho","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/warehouse.png","ex":"Crates go to the <span class='hl-en'>warehouse</span> before being delivered.","exVi":"Các thùng hàng phải tới <span class='hl-vi'>nhà kho</span> trước khi được giao.","syns":["stockroom","depot"]},
+
+  {"id":30,"word":"impose","ipa":"ɪmˈpoʊz","mean":"v đánh (thuế), áp đặt","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/impose.png","ex":"The government plans to <span class='hl-en'>impose</span> taxes on imported steel.","exVi":"Chính phủ dự tính sẽ <span class='hl-vi'>đánh thuế</span> mặt hàng thép nhập khẩu.","syns":["enforce","levy"]},
+
+  {"id":31,"word":"storage","ipa":"ˈstɔrəʤ","mean":"n nhà kho, sự tích trữ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/storage.png","ex":"Unclaimed packages will be placed in <span class='hl-en'>storage</span>.","exVi":"Những kiện hàng không có người nhận sẽ được cất vào <span class='hl-vi'>kho</span>.","syns":["warehousing","keeping"]},
+
+  {"id":32,"word":"detach","ipa":"dɪˈtæʧ","mean":"v gỡ, tháo, tách ra","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/detach.png","ex":"Please <span class='hl-en'>detach</span> and send in the completed form.","exVi":"Vui lòng <span class='hl-vi'>tách (xé)</span> ra và gửi bản đã hoàn thiện.","syns":["separate","disconnect"]},
+
+  {"id":33,"word":"envelope","ipa":"ˈɛnvəˌloʊp","mean":"n phong bì","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/envelope.png","ex":"A return address must be stamped on each <span class='hl-en'>envelope</span>.","exVi":"Cần phải đóng dấu lên địa chỉ phúc đáp trên mỗi <span class='hl-vi'>phong bì</span>.","syns":[]},
+
+  {"id":34,"word":"exclusion","ipa":"ɪkˈskluʒən","mean":"n sự loại trừ, không tính vào","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/exclusion.png","ex":"The <span class='hl-en'>exclusion</span> of shipping fees is offered for large orders.","exVi":"Sự <span class='hl-vi'>loại trừ (miễn)</span> phí vận chuyển áp dụng cho đơn hàng lớn.","syns":["exception"]},
+
+  {"id":35,"word":"recipient","ipa":"rəˈsɪpiənt","mean":"n người nhận","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/recipient.png","ex":"Please enter the <span class='hl-en'>recipient's</span> shipping address below.","exVi":"Vui lòng nhập địa chỉ của <span class='hl-vi'>người nhận</span> vào bên dưới.","syns":["receiver","addressee"]},
+
+  {"id":36,"word":"affix","ipa":"ˈæfɪks","mean":"v dán (tem), đóng (dấu)","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/affix.png","ex":"Please <span class='hl-en'>affix</span> a 50-cent stamp for postage.","exVi":"Vui lòng <span class='hl-vi'>dán</span> tem 50 xu cho kiện hàng này.","syns":["attach","stick"]},
+
+  {"id":37,"word":"incorrect","ipa":"ɪnkəˈrɛkt","mean":"adj không đúng, sai","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/incorrect.png","ex":"<span class='hl-en'>Incorrect</span> mailing information will slow the order process.","exVi":"Thông tin gửi thư <span class='hl-vi'>không đúng</span> sẽ làm chậm quy trình đặt hàng.","syns":["wrong","erroneous"]},
+
+  {"id":38,"word":"oblige","ipa":"əˈblaɪʤ","mean":"v bắt buộc, cưỡng bách","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/oblige.png","ex":"The importers were <span class='hl-en'>obliged</span> to destroy 20,000 boxes of apples.","exVi":"Các hãng nhập khẩu bị <span class='hl-vi'>buộc phải</span> tiêu hủy 20.000 thùng táo.","syns":["compel","force"]},
+
+  {"id":39,"word":"step","ipa":"stɛp","mean":"n bước đi; biện pháp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/step.png","ex":"The importer completed the final <span class='hl-en'>step</span> of customs formalities.","exVi":"Công ty nhập khẩu đã hoàn tất <span class='hl-vi'>bước</span> cuối cùng của thủ tục hải quan.","syns":["stage","procedure"]}
+];

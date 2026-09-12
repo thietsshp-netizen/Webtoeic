@@ -1,0 +1,85 @@
+const data = [
+  {"id":1,"word":"audit","ipa":"ˈɔdɪt","mean":"n việc kiểm tra sổ sách, kiểm toán","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/audit.png","ex":"An internal <span class='hl-en'>audit</span> of financial records will be conducted.","exVi":"Một cuộc <span class='hl-vi'>kiểm toán</span> nội bộ các sổ sách tài chính sẽ được tiến hành.","syns":["inspection","examination"]},
+
+  {"id":2,"word":"accounting","ipa":"əˈkaʊntɪŋ","mean":"n nghiệp vụ kế toán","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/accounting.png","ex":"The <span class='hl-en'>accounting</span> department reports directly to the CEO.","exVi":"Bộ phận <span class='hl-vi'>kế toán</span> báo cáo trực tiếp với giám đốc điều hành.","syns":["bookkeeping","accountancy"]},
+
+  {"id":3,"word":"budget","ipa":"ˈbʌʤɪt","mean":"n ngân sách","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/budget.png","ex":"The center was given an annual operations <span class='hl-en'>budget</span> of $120,000.","exVi":"Trung tâm được cấp <span class='hl-vi'>ngân sách</span> hoạt động hằng năm là 120.000 đô-la.","syns":["funds","allowance"]},
+
+  {"id":4,"word":"financial","ipa":"fəˈnænʃəl","mean":"adj (thuộc) tài chính","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/financial.png","ex":"A consultant’s <span class='hl-en'>financial</span> advice is helpful for major projects.","exVi":"Lời khuyên <span class='hl-vi'>tài chính</span> của vị cố vấn rất hữu ích.","syns":["monetary","fiscal"]},
+
+  {"id":5,"word":"curtail","ipa":"kərˈteɪl","mean":"v cắt bớt, rút ngắn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/curtail.png","ex":"The manager made an effort to <span class='hl-en'>curtail</span> office expenses.","exVi":"Viên quản lý đã rất cố gắng để <span class='hl-vi'>cắt bớt</span> chi phí văn phòng.","syns":["reduce","cut back"]},
+
+  {"id":6,"word":"deficit","ipa":"ˈdɛfəsət","mean":"n sự thâm hụt, số tiền thâm hụt","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/deficit.png","ex":"Reserve funds will be used to make up for the <span class='hl-en'>deficit</span>.","exVi":"Quỹ dự phòng sẽ được dùng để bù vào <span class='hl-vi'>số tiền thâm hụt</span>.","syns":["shortfall","loss"]},
+
+  {"id":7,"word":"recently","ipa":"ˈrisəntli","mean":"adv gần đây","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/recently.png","ex":"Bookkeeping costs have <span class='hl-en'>recently</span> risen considerably.","exVi":"Các chi phí kế toán <span class='hl-vi'>gần đây</span> đã tăng đáng kể.","syns":["lately","newly"]},
+
+  {"id":8,"word":"substantially","ipa":"səbˈstænʃəli","mean":"adv đáng kể, nhìn chung","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/substantially.png","ex":"The marketing team was <span class='hl-en'>substantially</span> expanded.","exVi":"Nhóm marketing đã mở rộng <span class='hl-vi'>đáng kể</span> để đẩy mạnh doanh số.","syns":["significantly","considerably"]},
+
+  {"id":9,"word":"committee","ipa":"kəˈmɪti","mean":"n ủy ban","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/committee.png","ex":"The <span class='hl-en'>committee</span> submitted a report on donations.","exVi":"<span class='hl-vi'>Ủy ban</span> đã nộp bản báo cáo về các khoản quyên góp.","syns":["board","council"]},
+
+  {"id":10,"word":"frequently","ipa":"ˈfrikwəntli","mean":"adv thường xuyên","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/frequently.png","ex":"Clients who <span class='hl-en'>frequently</span> pay on time may receive favorable terms.","exVi":"Khách hàng <span class='hl-vi'>thường xuyên</span> thanh toán đúng hạn có thể được ưu đãi.","syns":["often","regularly"]},
+
+  {"id":11,"word":"capability","ipa":"ˌkeɪpəˈbɪləti","mean":"n khả năng, năng lực","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/capability.png","ex":"The firm has the <span class='hl-en'>capability</span> to advise clients.","exVi":"Công ty có <span class='hl-vi'>khả năng</span> tư vấn cho khách hàng về tài chính.","syns":["ability","capacity"]},
+
+  {"id":12,"word":"proceed","ipa":"prəˈsid","mean":"n tiền thu về, doanh thu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/proceed.png","ex":"All <span class='hl-en'>proceeds</span> from the auction will go to local charities.","exVi":"Tất cả <span class='hl-vi'>số tiền thu từ buổi đấu giá</span> sẽ quyên góp cho từ thiện.","syns":["earnings","revenue"]},
+
+  {"id":13,"word":"reimburse","ipa":"ˌriɪmˈbɜrs","mean":"v hoàn trả, trả lại","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/reimburse.png","ex":"The company will fully <span class='hl-en'>reimburse</span> any travel expenses.","exVi":"Công ty sẽ <span class='hl-vi'>hoàn trả</span> đầy đủ mọi khoản chi phí chuyến đi.","syns":["repay","refund"]},
+
+  {"id":14,"word":"considerably","ipa":"kənˈsɪdərəbli","mean":"adv đáng kể","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/considerably.png","ex":"The new program makes computing taxes <span class='hl-en'>considerably</span> easier.","exVi":"Phần mềm mới khiến việc tính thuế dễ dàng hơn <span class='hl-vi'>đáng kể</span>.","syns":["greatly","substantially"]},
+
+  {"id":15,"word":"adequate","ipa":"ˈædəkwət","mean":"adj đủ, đầy đủ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/adequate.png","ex":"The factory lacks <span class='hl-en'>adequate</span> funds for the new equipment.","exVi":"Nhà máy thiếu kinh phí <span class='hl-vi'>đầy đủ</span> cho việc mua sắm thiết bị mới.","syns":["sufficient","enough"]},
+
+  {"id":16,"word":"total","ipa":"ˈtoʊtəl","mean":"adj tổng, toàn bộ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/total.png","ex":"<span class='hl-en'>Total</span> revenues for the year have yet to be added up.","exVi":"<span class='hl-vi'>Tổng</span> doanh thu của năm vẫn chưa được tính.","syns":["entire","complete"]},
+
+  {"id":17,"word":"allocate","ipa":"ˈæləˌkeɪt","mean":"v phân bổ, chia phần","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/allocate.png","ex":"Funds were <span class='hl-en'>allocated</span> for the charity benefit.","exVi":"Tiền quỹ được <span class='hl-vi'>phân bổ</span> cho trợ cấp từ thiện.","syns":["assign","distribute"]},
+
+  {"id":18,"word":"inspector","ipa":"ɪnˈspɛktər","mean":"n thanh tra viên","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/inspector.png","ex":"The <span class='hl-en'>inspector</span> reviewed all the receipts submitted last year.","exVi":"Viên <span class='hl-vi'>thanh tra</span> đã xem lại tất cả biên lai năm ngoái.","syns":["examiner","auditor"]},
+
+  {"id":19,"word":"preferred","ipa":"prəˈfɜrd","mean":"adj được thích hơn, ưu dùng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/preferred.png","ex":"Our <span class='hl-en'>preferred</span> method of payment is through Pay Safe.","exVi":"Phương thức thanh toán được chúng tôi <span class='hl-vi'>ưa dùng</span> là Pay Safe.","syns":["favored","chosen"]},
+
+  {"id":20,"word":"quarter","ipa":"ˈkwɔrtər","mean":"n quý (3 tháng)","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/quarter.png","ex":"Profits this <span class='hl-en'>quarter</span> are 20 percent higher than the last.","exVi":"Lợi nhuận <span class='hl-vi'>quý</span> này cao hơn quý trước 20%.","syns":["period","three-month period"]},
+
+  {"id":21,"word":"interrupt","ipa":"ˌɪntəˈrʌpt","mean":"v làm gián đoạn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/interrupt.png","ex":"Cash management forced the company to <span class='hl-en'>interrupt</span> payments.","exVi":"Quản lý tiền mặt yếu kém buộc công ty phải <span class='hl-vi'>ngừng (gián đoạn)</span> thanh toán.","syns":["break","stop"]},
+
+  {"id":22,"word":"browse","ipa":"braʊz","mean":"v xem qua, đọc lướt","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/browse.png","ex":"Investors may <span class='hl-en'>browse</span> through the financial statements.","exVi":"Các nhà đầu tư có thể sẽ <span class='hl-vi'>xem qua</span> báo cáo tài chính.","syns":["scan","skim"]},
+
+  {"id":23,"word":"prompt","ipa":"prɑ:mpt","mean":"adj nhanh chóng; v thúc đẩy","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/prompt.png","ex":"The CEO demanded a <span class='hl-en'>prompt</span> response to her questions.","exVi":"Giám đốc yêu cầu phải có câu trả lời <span class='hl-vi'>ngay lập tức (nhanh chóng)</span>.","syns":["immediate","quick"]},
+
+  {"id":24,"word":"deduct","ipa":"dɪˈdʌkt","mean":"v lấy đi, trừ đi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/deduct.png","ex":"Michael <span class='hl-en'>deducted</span> his business expenses from his gross income.","exVi":"Michael <span class='hl-vi'>trừ đi</span> các chi phí công việc trong tổng thu nhập.","syns":["subtract","withdraw"]},
+
+  {"id":25,"word":"measurement","ipa":"ˈmɛʒərmənt","mean":"n sự đo lường, tính toán","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/measurement.png","ex":"Close <span class='hl-en'>measurement</span> of expenses helped spot inefficiency.","exVi":"Việc <span class='hl-vi'>tính toán</span> chặt chẽ chi phí giúp phát hiện sự không hiệu quả.","syns":["calculation","assessment"]},
+
+  {"id":26,"word":"shorten","ipa":"ˈʃɔrtən","mean":"v rút ngắn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/shorten.png","ex":"Tracking expenses online <span class='hl-en'>shortens</span> the calculation time.","exVi":"Theo dõi chi phí online <span class='hl-vi'>rút ngắn</span> thời gian tính toán.","syns":["reduce","curtail"]},
+
+  {"id":27,"word":"amend","ipa":"əˈmɛnd","mean":"v sửa đổi, cải thiện","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/amend.png","ex":"Ms. Ford <span class='hl-en'>amended</span> the budget to account for increased prices.","exVi":"Bà Ford đã <span class='hl-vi'>sửa đổi</span> ngân sách vì giá hàng hóa tăng.","syns":["modify","correct"]},
+
+  {"id":28,"word":"calculate","ipa":"ˈkælkjəˌleɪt","mean":"v tính toán","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/calculate.png","ex":"The contractors <span class='hl-en'>calculated</span> the cost of rebuilding.","exVi":"Các nhà thầu đã <span class='hl-vi'>tính toán</span> chi phí xây dựng.","syns":["compute","estimate"]},
+
+  {"id":29,"word":"exempt","ipa":"ɪgˈzɛmpt","mean":"v được miễn (thuế)","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/exempt.png","ex":"Certain goods are <span class='hl-en'>exempt</span> from import taxes.","exVi":"Một số mặt hàng được <span class='hl-vi'>miễn</span> thuế nhập khẩu.","syns":["free","excluded"]},
+
+  {"id":30,"word":"deficient","ipa":"dɪˈfɪʃənt","mean":"adj thiếu hụt, không đủ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/deficient.png","ex":"Funding for the office renovations is <span class='hl-en'>deficient</span>.","exVi":"Nguồn kinh phí cho việc cải tạo văn phòng là <span class='hl-vi'>không đủ (thiếu hụt)</span>.","syns":["inadequate","lacking"]},
+
+  {"id":31,"word":"compare","ipa":"kəmˈpɛr","mean":"v so sánh","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/compare.png","ex":"This software automatically <span class='hl-en'>compares</span> profits for each year.","exVi":"Phần mềm này tự động <span class='hl-vi'>so sánh</span> lợi nhuận của từng năm.","syns":["contrast","match"]},
+
+  {"id":32,"word":"fortunate","ipa":"ˈfɔrʧənət","mean":"adj may mắn, thuận lợi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/fortunate.png","ex":"Some stockholders were <span class='hl-en'>fortunate</span> to invest in the company early.","exVi":"Một số cổ đông rất <span class='hl-vi'>may mắn</span> đã đầu tư từ sớm.","syns":["lucky","favored"]},
+
+  {"id":33,"word":"expenditure","ipa":"ɪkˈspɛndəʧər","mean":"n phí tổn, số tiền chi đi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/expenditure.png","ex":"This month's sales outweigh <span class='hl-en'>expenditures</span>.","exVi":"Doanh số bán hàng tháng này cao hơn <span class='hl-vi'>chi phí (phí tổn)</span>.","syns":["spending","outlay"]},
+
+  {"id":34,"word":"accurately","ipa":"ˈækjərətli","mean":"adv chính xác","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/accurately.png","ex":"To prevent confusion, record transactions <span class='hl-en'>accurately</span>.","exVi":"Để tránh hiểu lầm, hãy ghi lại giao dịch một cách <span class='hl-vi'>chính xác</span>.","syns":["precisely","correctly"]},
+
+  {"id":35,"word":"worth","ipa":"wɜrθ","mean":"adj đáng giá, bõ công","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/worth.png","ex":"It is <span class='hl-en'>worth</span> the cost to upgrade our machinery.","exVi":"Nâng cấp máy móc rất <span class='hl-vi'>xứng đáng</span> với chi phí đó.","syns":["valuable","deserving"]},
+
+  {"id":36,"word":"excess","ipa":"ˈɛkˌsɛs","mean":"n sự quá mức, dư thừa","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/excess.png","ex":"Spending controls led to an <span class='hl-en'>excess</span> of funds.","exVi":"Kiểm soát chi tiêu đã dẫn tới việc <span class='hl-vi'>dư thừa (thừa)</span> kinh phí.","syns":["surplus","extra"]},
+
+  {"id":37,"word":"fiscal","ipa":"ˈfɪskəl","mean":"adj (thuộc) tài chính, thuế khóa","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/fiscal.png","ex":"Results for the past <span class='hl-en'>fiscal</span> year will be announced in August.","exVi":"Kết quả của năm <span class='hl-vi'>tài chính</span> trước sẽ được công bố vào tháng 8.","syns":["financial","tax-related"]},
+
+  {"id":38,"word":"incidental","ipa":"ˌɪnsɪˈdɛntəl","mean":"adj phụ, thứ yếu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/incidental.png","ex":"Total all <span class='hl-en'>incidental</span> expenses for the journey.","exVi":"Hãy tổng hợp tất cả các khoản <span class='hl-vi'>phụ phí</span> trong chuyến đi.","syns":["secondary","minor"]},
+
+  {"id":39,"word":"inflation","ipa":"ɪnˈfleɪʃən","mean":"n sự lạm phát","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/inflation.png","ex":"A high <span class='hl-en'>inflation</span> rate affected the company's net gains.","exVi":"Tỷ lệ <span class='hl-vi'>lạm phát</span> cao đã ảnh hưởng tới lợi nhuận công ty.","syns":["price increase"]},
+
+  {"id":40,"word":"liable","ipa":"ˈlaɪəbəl","mean":"adj có trách nhiệm pháp lý","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/liable.png","ex":"The guarantor is <span class='hl-en'>liable</span> for any unpaid debts.","exVi":"Người bảo lãnh có <span class='hl-vi'>trách nhiệm</span> với mọi khoản nợ chưa trả.","syns":["responsible","accountable"]},
+
+  {"id":41,"word":"spend","ipa":"spɛnd","mean":"v chi tiêu, sử dụng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/spend.png","ex":"The firm <span class='hl-en'>spent</span> a lot of money on reinventing its products.","exVi":"Công ty đã <span class='hl-vi'>chi</span> rất nhiều tiền vào việc đổi mới sản phẩm.","syns":["expend","consume"]},
+
+  {"id":42,"word":"turnover","ipa":"ˈtɜrˌnoʊvər","mean":"n doanh số, doanh thu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/turnover.png","ex":"The company's <span class='hl-en'>turnover</span> exceeded $2.8 million.","exVi":"<span class='hl-vi'>Doanh thu</span> của công ty đã vượt quá 2,8 triệu đô-la.","syns":["revenue","sales"]}
+];

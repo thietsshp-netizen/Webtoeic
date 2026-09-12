@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../src/lib/prisma';
 import fs from 'fs';
 import path from 'path';
-
-const prisma = new PrismaClient();
 
 const DAY_TITLES: Record<number, string> = {
   1: "Tuyển dụng",
@@ -38,7 +36,7 @@ const DAY_TITLES: Record<number, string> = {
 };
 
 async function main() {
-  const vocabDir = '/Users/thietphamvan/hoctoeic/Webtoeic/ToeicVocab';
+  const vocabDir = path.join(__dirname, '../ToeicVocab');
   const files = fs.readdirSync(vocabDir).filter(f => f.endsWith('.txt'));
 
   console.log(`🔍 Found ${files.length} vocab files.`);

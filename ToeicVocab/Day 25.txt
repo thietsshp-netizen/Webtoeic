@@ -1,0 +1,87 @@
+const data = [
+  {"id":1,"word":"congestion","ipa":"kənˈʤɛsʧən","mean":"n Sự tắc nghẽn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/congestion.png","ex":"Traffic <span class='hl-en'>congestion</span> on the highway is heaviest between 5 P.M. and 7 P.M.","exVi":"Tình trạng <span class='hl-vi'>ùn tác</span> giao thông trên đường cao tốc trầm trọng nhất trong khoảng từ 5 đến 7 giờ tối.","syns":["jam","bottleneck"]},
+
+  {"id":2,"word":"alleviate","ipa":"əˈliviˌeɪt","mean":"v làm dịu, làm giảm bớt","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/alleviate.png","ex":"The new freeway lane <span class='hl-en'>alleviated</span> traffic congestion.","exVi":"Làn đường mới của cao tốc đã làm <span class='hl-vi'>giảm bớt</span> ùn tắc giao thông.","syns":["ease","relieve"]},
+
+  {"id":3,"word":"divert","ipa":"daɪˈvɜrt","mean":"v làm chệch hướng, hướng sang phía khác","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/divert.png","ex":"Traffic was <span class='hl-en'>diverted</span> during construction.","exVi":"Giao thông đã được <span class='hl-vi'>chuyển hướng</span> trong thời gian thi công.","syns":["reroute","redirect"]},
+
+  {"id":4,"word":"detour","ipa":"dɪˈtʊər","mean":"n khúc ngoặt, đường vòng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/detour.png","ex":"The express bus had to take a <span class='hl-en'>detour</span> to avoid heavy traffic.","exVi":"Chiếc xe buýt tốc hành phải đi <span class='hl-vi'>đường vòng</span> để tránh giao thông đông đúc.","syns":["bypass","roundabout way"]},
+
+  {"id":5,"word":"fuel","ipa":"ˈfjuəl","mean":"n nhiên liệu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/fuel.png","ex":"Our car ran out of <span class='hl-en'>fuel</span> on the highway.","exVi":"Xe của chúng tôi bị hết <span class='hl-vi'>xăng</span> trên đường cao tốc.","syns":["gas","petrol"]},
+
+  {"id":6,"word":"malfunction","ipa":"mælˈfʌŋkʃən","mean":"n sự trục trặc, sự cố","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/malfunction.png","ex":"The car's problems stemmed from a brake <span class='hl-en'>malfunction</span>.","exVi":"Những vấn đề của chiếc xe này phát sinh từ <span class='hl-vi'>trục trặc</span> ở phần phanh.","syns":["fault","glitch"]},
+
+  {"id":7,"word":"permit","ipa":"ˈpɜrˌmɪt","mean":"v cho phép; n giấy phép","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/permit.png","ex":"Residents must purchase a parking <span class='hl-en'>permit</span> every year.","exVi":"Cư dân phải mua <span class='hl-vi'>giấy phép đỗ xe</span> hằng năm.","syns":["license","authorization"]},
+
+  {"id":8,"word":"transportation","ipa":"ˌtrænspərˈteɪʃən","mean":"n sự vận tải, phương tiện vận tải","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/transportation.png","ex":"All of the city's major tourist attractions are reachable by public <span class='hl-en'>transportation</span>.","exVi":"Có thể đến các danh lam thắng cảnh bằng <span class='hl-vi'>phương tiện giao thông</span> công cộng.","syns":["transit","transport"]},
+
+  {"id":9,"word":"opportunity","ipa":"ˌɑpərˈtunəti","mean":"n cơ hội, thời cơ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/opportunity.png","ex":"The bus tour provides visitors an <span class='hl-en'>opportunity</span> to explore the city in one day.","exVi":"Chuyến tham quan bằng xe buýt giúp du khách có <span class='hl-vi'>cơ hội</span> khám phá thành phố.","syns":["chance"]},
+
+  {"id":10,"word":"clearly","ipa":"ˈklɪrli","mean":"adv rõ ràng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/clearly.png","ex":"The reporter's use of animated graphics <span class='hl-en'>clearly</span> showed the flow of traffic.","exVi":"Đồ họa của phóng viên đã cho thấy <span class='hl-vi'>rõ</span> luồng giao thông.","syns":["obviously","evidently"]},
+
+  {"id":11,"word":"ongoing","ipa":"ˈɑnˌgoʊɪŋ","mean":"adj liên tục, đang tiếp diễn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/ongoing.png","ex":"<span class='hl-en'>Ongoing</span> roadwork is causing delays through the city center.","exVi":"Việc làm đường <span class='hl-vi'>đang tiếp diễn</span> đang gây cản trở khắp trung tâm thành phố.","syns":["continuous","in progress"]},
+
+  {"id":12,"word":"detailed","ipa":"dɪˈteɪld","mean":"adj chi tiết, cặn kẽ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/detailed.png","ex":"The tourist information counter provides <span class='hl-en'>detailed</span> local maps for visitors.","exVi":"Quầy thông tin du lịch cung cấp bản đồ vùng một cách <span class='hl-vi'>chi tiết</span>.","syns":["thorough","comprehensive"]},
+
+  {"id":13,"word":"alternative","ipa":"ɔlˈtɜrnətɪv","mean":"n sự lựa chọn; adj thay thế","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/alternative.png","ex":"Consider walking to work as a healthy <span class='hl-en'>alternative</span> to driving.","exVi":"Hãy cân nhắc đi bộ đi làm như một <span class='hl-vi'>phương án khác</span> tốt cho sức khỏe.","syns":["option","substitute"]},
+
+  {"id":14,"word":"obtain","ipa":"əb'teɪn","mean":"v đạt được, giành được","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/obtain.png","ex":"Driver's licenses can be <span class='hl-en'>obtained</span> from the Department of Motor Vehicles.","exVi":"Có thể <span class='hl-vi'>lấy được</span> bằng lái xe từ Sở quản lý phương tiện cơ giới.","syns":["get","acquire"]},
+
+  {"id":15,"word":"designated","ipa":"ˈdɛzɪgˌneɪtɪd","mean":"adj được chỉ định, được chọn lựa","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/designated.png","ex":"Parking is restricted to <span class='hl-en'>designated</span> spots.","exVi":"Việc đỗ xe chỉ giới hạn ở những điểm <span class='hl-vi'>được chỉ định</span>.","syns":["specified","assigned"]},
+
+  {"id":16,"word":"intersection","ipa":"ˌɪntərˈsɛkʃən","mean":"n ngã tư, chỗ giao nhau","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/intersection.png","ex":"A traffic light is being installed at the <span class='hl-en'>intersection</span>.","exVi":"Cột đèn giao thông đang được lắp đặt tại <span class='hl-vi'>điểm giao nhau</span>.","syns":["junction","crossroads"]},
+
+  {"id":17,"word":"equip","ipa":"ɪˈkwɪp","mean":"v trang bị","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/equip.png","ex":"Newer cars come <span class='hl-en'>equipped</span> with emergency kits.","exVi":"Những chiếc xe hơi mới hơn được <span class='hl-vi'>trang bị</span> bộ dụng cụ sơ cứu.","syns":["furnish","provide"]},
+
+  {"id":18,"word":"commute","ipa":"kəmˈjut","mean":"v đi lại đều đặn (đi làm)","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/commute.png","ex":"Many workers <span class='hl-en'>commute</span> into the city daily by bus.","exVi":"Nhiều người lao động vào thành phố làm việc <span class='hl-vi'>hằng ngày</span> bằng xe buýt.","syns":["travel","shuttle"]},
+
+  {"id":19,"word":"downtown","ipa":"ˈdaʊnˈtaʊn","mean":"adv ở trung tâm thành phố","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/downtown.png","ex":"It is difficult to find free parking <span class='hl-en'>downtown</span>.","exVi":"Rất khó để có thể tìm được chỗ đỗ xe miễn phí ở <span class='hl-vi'>trung tâm thành phố</span>.","syns":["city center","central"]},
+
+  {"id":20,"word":"automotive","ipa":"ˌɔtəˈmoʊtɪv","mean":"adj thuộc ô tô","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/automotive.png","ex":"<span class='hl-en'>Automotive</span> repair service is offered for free.","exVi":"Dịch vụ sửa chữa <span class='hl-vi'>ô tô</span> được cung cấp miễn phí cho những chiếc xe mới.","syns":["vehicular","motor"]},
+
+  {"id":21,"word":"closure","ipa":"ˈkloʊʒər","mean":"n sự đóng cửa, cấm đường","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/closure.png","ex":"Road <span class='hl-en'>closures</span> occur frequently during the winter.","exVi":"Việc <span class='hl-vi'>cấm đường</span> xảy ra thường xuyên vào mùa đông.","syns":["blockage","shutdown"]},
+
+  {"id":22,"word":"vehicle","ipa":"ˈvihɪkəl","mean":"n xe, xe cộ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/vehicle.png","ex":"All <span class='hl-en'>vehicles</span> must be officially registered upon purchase.","exVi":"Tất cả <span class='hl-vi'>xe cộ</span> đều phải được đăng ký chính chủ ngay khi mua.","syns":["transport","automobile"]},
+
+  {"id":23,"word":"official","ipa":"əˈfɪʃəl","mean":"n viên chức; adj chính thức","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/official.png","ex":"Transportation <span class='hl-en'>officials</span> announced plans to construct a city bypass.","exVi":"Các <span class='hl-vi'>quan chức</span> giao thông đã thông báo kế hoạch xây dựng tuyến đường vòng.","syns":["representative","formal"]},
+
+  {"id":24,"word":"transit","ipa":"ˈtrænzɪt","mean":"n sự vận chuyển","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/transit.png","ex":"The travel card can be used for all public <span class='hl-en'>transit</span>.","exVi":"Thẻ đi lại này có thể sử dụng ở tất cả hệ thống <span class='hl-vi'>giao thông công cộng</span>.","syns":["transportation","passage"]},
+
+  {"id":25,"word":"fare","ipa":"fɛr","mean":"n tiền xe, tiền vé","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/fare.png","ex":"Bus <span class='hl-en'>fares</span> increased in line with gasoline prices.","exVi":"Giá <span class='hl-vi'>vé xe buýt</span> tăng cùng với giá xăng dầu.","syns":["ticket price","charge"]},
+
+  {"id":26,"word":"expense","ipa":"ɪkˈspɛns","mean":"n Chi phí, phí tổn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/expense.png","ex":"Residents agreed that the new highway was worth the <span class='hl-en'>expense</span>.","exVi":"Người dân đồng tình rằng tuyến cao tốc mới rất đáng với <span class='hl-vi'>chi phí</span> bỏ ra.","syns":["cost","expenditure"]},
+
+  {"id":27,"word":"trust","ipa":"trʌst","mean":"n lòng tin; v tin cậy","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/trust.png","ex":"Car owners who earn the <span class='hl-en'>trust</span> of insurers are eligible for discounts.","exVi":"Những chủ xe được bên bảo hiểm <span class='hl-vi'>tín nhiệm</span> sẽ được giảm giá.","syns":["confidence","belief"]},
+
+  {"id":28,"word":"head","ipa":"hɛd","mean":"v hướng về, đi về phía","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/head.png","ex":"The motorcyclists <span class='hl-en'>headed</span> west toward the mountains.","exVi":"Những người đi xe máy <span class='hl-vi'>đi theo hướng</span> tây về phía dãy núi.","syns":["direct","steer"]},
+
+  {"id":29,"word":"drive","ipa":"draɪv","mean":"v lái xe","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/drive.png","ex":"Vehicles with multiple passengers are allowed to <span class='hl-en'>drive</span> in the carpool lane.","exVi":"Các phương tiện được phép <span class='hl-vi'>đi (lái xe)</span> ở làn đường dành cho xe chở nhiều.","syns":["operate","steer"]},
+
+  {"id":30,"word":"fine","ipa":"faɪn","mean":"n tiền phạt","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/fine.png","ex":"Drivers speeding in a school zone are subject to a substantial <span class='hl-en'>fine</span>.","exVi":"Tài xế đi quá tốc độ sẽ phải chịu một khoản <span class='hl-vi'>tiền phạt</span> lớn.","syns":["penalty","ticket"]},
+
+  {"id":31,"word":"pass","ipa":"pæs","mean":"v đi qua, vượt qua","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/pass.png","ex":"For safety reasons, motorists should not <span class='hl-en'>pass</span> other cars on the right.","exVi":"Vì lý do an toàn, người lái xe không được <span class='hl-vi'>vượt</span> bên phải các xe khác.","syns":["overtake","go by"]},
+
+  {"id":32,"word":"securely","ipa":"sɪˈkjʊrli","mean":"adv chắc chắn, an toàn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/securely.png","ex":"Passengers are required to fasten seatbelts <span class='hl-en'>securely</span>.","exVi":"Hành khách được yêu cầu thắt dây an toàn thật <span class='hl-vi'>chắc chắn</span>.","syns":["tightly","firmly"]},
+
+  {"id":33,"word":"prominently","ipa":"ˈpɑmənəntli","mean":"adv dễ thấy, nổi bật","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/prominently.png","ex":"Traffic control signs are <span class='hl-en'>prominently</span> displayed along the highway.","exVi":"Các biển báo giao thông được treo rất <span class='hl-vi'>dễ thấy</span> dọc đường cao tốc.","syns":["noticeably","conspicuously"]},
+
+  {"id":34,"word":"reserved","ipa":"rɪˈzɜrvd","mean":"adj dành riêng, được đặt trước","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/reserved.png","ex":"<span class='hl-en'>Reserved</span> parking for tenants is available at the rear.","exVi":"Khu đỗ xe <span class='hl-vi'>dành riêng</span> cho khách thuê nằm ở phía sau tòa nhà.","syns":["booked","set aside"]},
+
+  {"id":35,"word":"average","ipa":"ˈævərɪʤ","mean":"n số trung bình, mức bình quân","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/average.png","ex":"Compared to last year's <span class='hl-en'>average</span>, road accidents have decreased.","exVi":"So với mức <span class='hl-vi'>trung bình</span> năm ngoái, tai nạn đã giảm đáng kể.","syns":["mean","standard"]},
+
+  {"id":36,"word":"collision","ipa":"kəˈlɪʒən","mean":"n sự va chạm","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/collision.png","ex":"Fortunately, no one was hurt in the four-car <span class='hl-en'>collision</span>.","exVi":"May mắn thay, không ai bị thương trong vụ <span class='hl-vi'>va chạm</span> giữa 4 xe hơi.","syns":["crash","accident"]},
+
+  {"id":37,"word":"tow","ipa":"toʊ","mean":"v kéo, lai dắt","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/tow.png","ex":"All unauthorized vehicles will be <span class='hl-en'>towed</span>.","exVi":"Tất cả các phương tiện trái phép đều sẽ bị <span class='hl-vi'>kéo</span> đi.","syns":["haul","drag"]},
+
+  {"id":38,"word":"reverse","ipa":"rɪˈvɜrs","mean":"adj/n đảo ngược, số lùi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/reverse.png","ex":"Jim accidentally put the truck into <span class='hl-en'>reverse</span> gear.","exVi":"Jim vô tình đưa chiếc xe tải về <span class='hl-vi'>số lùi</span>.","syns":["backward","inverse"]},
+
+  {"id":39,"word":"obstruct","ipa":"əbˈstrʌkt","mean":"v chắn, che khuất, làm tắc","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/obstruct.png","ex":"Passengers must not <span class='hl-en'>obstruct</span> the driver's view.","exVi":"Hành khách không được <span class='hl-vi'>che khuất</span> tầm nhìn của tài xế.","syns":["block","hinder"]},
+
+  {"id":40,"word":"cash","ipa":"kæʃ","mean":"n tiền mặt, v đổi sang tiền mặt","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/cash.png","ex":"The bank refuses to <span class='hl-en'>cash</span> the check without proper identification.","exVi":"Ngân hàng từ chối <span class='hl-vi'>đổi</span> séc thành tiền mặt nếu không có giấy tờ phù hợp.","syns":["money","exchange"]},
+
+  {"id":41,"word":"mortgage","ipa":"ˈmɔrgəʤ","mean":"n khoản thế chấp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/mortgage.png","ex":"Higher <span class='hl-en'>mortgage</span> rates will hurt homeowners.","exVi":"Tỷ lệ <span class='hl-vi'>thế chấp</span> cao hơn sẽ gây tổn hại đến những chủ sở hữu nhà.","syns":[]},
+
+  {"id":42,"word":"payable","ipa":"ˈpeɪəbəl","mean":"adj có thể trả, phải trả","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/payable.png","ex":"Make all checks <span class='hl-en'>payable</span> to Everson Ltd.","exVi":"Hãy thanh toán tất cả séc <span class='hl-vi'>có thể trả</span> cho công ty Everson.","syns":["due","owed"]},
+
+  {"id":43,"word":"personal","ipa":"ˈpɜːrsənl","mean":"adj riêng, cá nhân","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/personal.png","ex":"Jane visited the bank to cash a <span class='hl-en'>personal</span> check.","exVi":"Jane đến ngân hàng để đổi một tờ séc <span class='hl-vi'>cá nhân</span> thành tiền mặt.","syns":["private","individual"]}
+];

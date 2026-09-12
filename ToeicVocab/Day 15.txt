@@ -1,0 +1,79 @@
+const data = [
+  {"id":1,"word":"proposal","ipa":"prəˈpoʊzəl","mean":"n sự đề xuất, lời đề nghị","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/proposal.png","ex":"Ms. Chryssom liked the <span class='hl-en'>proposal</span> so much that she decided to invest immediately.","exVi":"Bà Chryssom thích <span class='hl-vi'>đề xuất</span> đó đến mức bà quyết định đầu tư ngay lập tức.","syns":["suggestion","offer"]},
+
+  {"id":2,"word":"alliance","ipa":"əˈlaɪəns","mean":"n sự liên minh","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/alliance.png","ex":"The corporations formed an <span class='hl-en'>alliance</span> to protect themselves from competitors.","exVi":"Các công ty đã tạo thành một <span class='hl-vi'>liên minh</span> để tự bảo vệ trước đối thủ.","syns":["coalition","partnership"]},
+
+  {"id":3,"word":"stipulation","ipa":"ˌstɪpjəˈleɪʃən","mean":"n điều khoản quy định","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/stipulation.png","ex":"One of the <span class='hl-en'>stipulations</span> was that the goods must be insured.","exVi":"Một trong những <span class='hl-vi'>điều khoản</span> là hàng hóa phải được bảo hiểm.","syns":["condition","requirement"]},
+
+  {"id":4,"word":"term","ipa":"tɜrm","mean":"n điều khoản; thời hạn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/term.png","ex":"We cannot agree to the <span class='hl-en'>terms</span> offered.","exVi":"Chúng tôi không thể đồng ý với các <span class='hl-vi'>điều khoản</span> được đưa ra.","syns":["condition","period"]},
+
+  {"id":5,"word":"compromise","ipa":"ˈkɑmprəˌmaɪz","mean":"n sự thỏa hiệp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/compromise.png","ex":"They finally reached a <span class='hl-en'>compromise</span> after several talks.","exVi":"Họ cuối cùng đã đạt được <span class='hl-vi'>thỏa hiệp</span> sau nhiều cuộc đàm phán.","syns":["settlement","agreement"]},
+
+  {"id":6,"word":"negotiation","ipa":"nɪˌgoʊʃiˈeɪʃən","mean":"n sự đàm phán","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/negotiation.png","ex":"<span class='hl-en'>Negotiations</span> are now in process.","exVi":"Các cuộc <span class='hl-vi'>đàm phán</span> đang được tiến hành.","syns":["discussion","bargaining"]},
+
+  {"id":7,"word":"agreement","ipa":"əˈgrimənt","mean":"n sự đồng ý; thỏa thuận","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/agreement.png","ex":"The <span class='hl-en'>agreement</span> has been signed by both parties.","exVi":"<span class='hl-vi'>Thỏa thuận</span> đã được hai bên ký kết.","syns":["deal","contract"]},
+
+  {"id":8,"word":"review","ipa":"rɪˈvju","mean":"v xem xét","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/review.png","ex":"Please <span class='hl-en'>review</span> all documents carefully.","exVi":"Vui lòng <span class='hl-vi'>xem xét</span> tất cả tài liệu cẩn thận.","syns":["examine","check"]},
+
+  {"id":9,"word":"contract","ipa":"ˈkɑnˌtrækt","mean":"n hợp đồng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/contract.png","ex":"All participants must sign a <span class='hl-en'>contract</span>.","exVi":"Tất cả các bên phải ký <span class='hl-vi'>hợp đồng</span>.","syns":["agreement","deal"]},
+
+  {"id":10,"word":"signature","ipa":"ˈsɪgnəʧər","mean":"n chữ ký","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/signature.png","ex":"The CEO's <span class='hl-en'>signature</span> finalized the deal.","exVi":"<span class='hl-vi'>Chữ ký</span> của CEO đã hoàn tất giao dịch.","syns":["autograph"]},
+
+  {"id":11,"word":"originally","ipa":"əˈrɪʤənəli","mean":"adv ban đầu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/originally.png","ex":"The conditions <span class='hl-en'>originally</span> agreed upon were changed.","exVi":"Các điều khoản <span class='hl-vi'>ban đầu</span> đã được thay đổi.","syns":["initially","at first"]},
+
+  {"id":12,"word":"direction","ipa":"dəˈrɛkʃən","mean":"n phương hướng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/direction.png","ex":"The discussion moved in a different <span class='hl-en'>direction</span>.","exVi":"Cuộc thảo luận chuyển sang <span class='hl-vi'>hướng</span> khác.","syns":["path","course"]},
+
+  {"id":13,"word":"initially","ipa":"ɪˈnɪʃəli","mean":"adv lúc đầu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/initially.png","ex":"Managers <span class='hl-en'>initially</span> thought it would be resolved quickly.","exVi":"Các quản lý <span class='hl-vi'>ban đầu</span> nghĩ rằng sẽ giải quyết nhanh.","syns":["at first","originally"]},
+
+  {"id":14,"word":"expire","ipa":"ɪkˈspaɪr","mean":"v hết hạn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/expire.png","ex":"The lease <span class='hl-en'>expired</span> a few weeks ago.","exVi":"Hợp đồng thuê đã <span class='hl-vi'>hết hạn</span> vài tuần trước.","syns":["end","lapse"]},
+
+  {"id":15,"word":"collaborate","ipa":"kəˈlæbəˌreɪt","mean":"v hợp tác","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/collaborate.png","ex":"The companies <span class='hl-en'>collaborated</span> on the project.","exVi":"Các công ty đã <span class='hl-vi'>hợp tác</span> trong dự án.","syns":["cooperate","work together"]},
+
+  {"id":16,"word":"dedicate","ipa":"ˈdɛdəˌkeɪt","mean":"v cống hiến","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/dedicate.png","ex":"She <span class='hl-en'>dedicates</span> herself to her clients.","exVi":"Cô ấy <span class='hl-vi'>cống hiến</span> cho khách hàng.","syns":["devote","commit"]},
+
+  {"id":17,"word":"revised","ipa":"rɪˈvaɪzd","mean":"adj đã sửa đổi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/revised.png","ex":"The president accepted the <span class='hl-en'>revised</span> proposal.","exVi":"Chủ tịch chấp nhận đề xuất đã <span class='hl-vi'>sửa đổi</span>.","syns":["updated","amended"]},
+
+  {"id":18,"word":"imperative","ipa":"ɪmˈpɛrətɪv","mean":"adj rất quan trọng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/imperative.png","ex":"It is <span class='hl-en'>imperative</span> to honor the agreement.","exVi":"Việc tuân thủ thỏa thuận là <span class='hl-vi'>vô cùng quan trọng</span>.","syns":["essential","crucial"]},
+
+  {"id":19,"word":"cooperatively","ipa":"koʊˈɑprətɪvli","mean":"adv hợp tác","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/cooperatively.png","ex":"They worked <span class='hl-en'>cooperatively</span> on the railway.","exVi":"Họ làm việc <span class='hl-vi'>hợp tác</span> để xây đường sắt.","syns":["jointly","together"]},
+
+  {"id":20,"word":"commission","ipa":"kəˈmɪʃən","mean":"n tiền hoa hồng; v giao nhiệm vụ","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/commission.png","ex":"He works on <span class='hl-en'>commission</span>.","exVi":"Anh ấy làm việc hưởng <span class='hl-vi'>hoa hồng</span>.","syns":["fee","percentage"]},
+
+  {"id":21,"word":"omit","ipa":"oʊˈmɪt","mean":"v bỏ sót","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/omit.png","ex":"She <span class='hl-en'>omitted</span> important details.","exVi":"Cô ấy đã <span class='hl-vi'>bỏ sót</span> chi tiết quan trọng.","syns":["leave out","skip"]},
+
+  {"id":22,"word":"conflict","ipa":"ˈkɑnflɪkt","mean":"n xung đột","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/conflict.png","ex":"There was a <span class='hl-en'>conflict</span> over expansion.","exVi":"Có <span class='hl-vi'>xung đột</span> về việc mở rộng.","syns":["dispute","clash"]},
+
+  {"id":23,"word":"renew","ipa":"rɪˈnu","mean":"v gia hạn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/renew.png","ex":"They <span class='hl-en'>renewed</span> the contract.","exVi":"Họ đã <span class='hl-vi'>gia hạn</span> hợp đồng.","syns":["extend","continue"]},
+
+  {"id":24,"word":"proficient","ipa":"prɑˈfɪʃənt","mean":"adj thành thạo","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/proficient.png","ex":"He is <span class='hl-en'>proficient</span> in several languages.","exVi":"Anh ấy <span class='hl-vi'>thành thạo</span> nhiều ngôn ngữ.","syns":["skilled","competent"]},
+
+  {"id":25,"word":"confidentiality","ipa":"ˌkɑnfəˌdɛnʃiˈæləti","mean":"n sự bảo mật","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/confidentiality.png","ex":"They signed a <span class='hl-en'>confidentiality</span> agreement.","exVi":"Họ ký thỏa thuận <span class='hl-vi'>bảo mật</span>.","syns":["secrecy","privacy"]},
+
+  {"id":26,"word":"dispute","ipa":"dɪˈspjut","mean":"n tranh chấp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/dispute.png","ex":"The <span class='hl-en'>dispute</span> led to court action.","exVi":"Vụ <span class='hl-vi'>tranh chấp</span> dẫn tới kiện tụng.","syns":["argument","conflict"]},
+
+  {"id":27,"word":"objection","ipa":"əbˈʤɛkʃən","mean":"n sự phản đối","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/objection.png","ex":"The deal continued despite objections.","exVi":"Giao dịch vẫn tiếp tục dù có <span class='hl-vi'>phản đối</span>.","syns":["opposition","protest"]},
+
+  {"id":28,"word":"define","ipa":"dɪˈfaɪn","mean":"v xác định","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/define.png","ex":"The contract <span class='hl-en'>defined</span> all roles.","exVi":"Hợp đồng <span class='hl-vi'>xác định</span> vai trò.","syns":["specify","clarify"]},
+
+  {"id":29,"word":"impression","ipa":"ɪmˈprɛʃən","mean":"n ấn tượng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/impression.png","ex":"His presentation made a good <span class='hl-en'>impression</span>.","exVi":"Bài thuyết trình tạo <span class='hl-vi'>ấn tượng</span> tốt.","syns":["impact","effect"]},
+
+  {"id":30,"word":"security","ipa":"sɪˈkjʊrəti","mean":"n an ninh","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/security.png","ex":"<span class='hl-en'>Security</span> is a top priority.","exVi":"<span class='hl-vi'>An ninh</span> là ưu tiên hàng đầu.","syns":["safety","protection"]},
+
+  {"id":31,"word":"option","ipa":"ˈɑpʃən","mean":"n lựa chọn","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/option.png","ex":"You have the <span class='hl-en'>option</span> to withdraw.","exVi":"Bạn có <span class='hl-vi'>quyền lựa chọn</span> rút lui.","syns":["choice","alternative"]},
+
+  {"id":32,"word":"proceed","ipa":"prəˈsid","mean":"v tiến hành","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/proceed.png","ex":"Talks are <span class='hl-en'>proceeding</span> well.","exVi":"Các cuộc đàm phán đang <span class='hl-vi'>tiến triển</span> tốt.","syns":["continue","advance"]},
+
+  {"id":33,"word":"modify","ipa":"ˈmɑdəˌfaɪ","mean":"v sửa đổi","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/modify.png","ex":"They agreed to <span class='hl-en'>modify</span> the clauses.","exVi":"Họ đồng ý <span class='hl-vi'>sửa đổi</span> các điều khoản.","syns":["change","adjust"]},
+
+  {"id":34,"word":"narrow","ipa":"ˈnɛroʊ","mean":"v thu hẹp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/narrow.png","ex":"The list was <span class='hl-en'>narrowed</span> down to three.","exVi":"Danh sách được <span class='hl-vi'>thu hẹp</span> còn ba.","syns":["reduce","limit"]},
+
+  {"id":35,"word":"bid","ipa":"bɪd","mean":"n sự bỏ thầu","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/bid.png","ex":"They put in a <span class='hl-en'>bid</span> for the contract.","exVi":"Họ đã <span class='hl-vi'>bỏ thầu</span> cho hợp đồng.","syns":["offer","tender"]},
+
+  {"id":36,"word":"settle","ipa":"ˈsɛtəl","mean":"v dàn xếp","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/settle.png","ex":"They tried to <span class='hl-en'>settle</span> the case.","exVi":"Họ cố <span class='hl-vi'>dàn xếp</span> vụ việc.","syns":["resolve","solve"]},
+
+  {"id":37,"word":"terminate","ipa":"ˈtɜrməˌneɪt","mean":"v chấm dứt","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/terminate.png","ex":"The company <span class='hl-en'>terminated</span> the agreement.","exVi":"Công ty đã <span class='hl-vi'>chấm dứt</span> hợp đồng.","syns":["end","cancel"]},
+
+  {"id":38,"word":"challenging","ipa":"ˈʧælənʤɪŋ","mean":"adj đầy thách thức","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/challenging.png","ex":"It was a <span class='hl-en'>challenging</span> project.","exVi":"Đó là dự án <span class='hl-vi'>đầy thách thức</span>.","syns":["difficult","demanding"]},
+
+  {"id":39,"word":"foundation","ipa":"faʊnˈdeɪʃən","mean":"n nền tảng","image":"https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/foundation.png","ex":"The proposal became the <span class='hl-en'>foundation</span> of the agreement.","exVi":"Đề xuất trở thành <span class='hl-vi'>nền tảng</span> của thỏa thuận.","syns":["basis","base"]}
+];
