@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Laptop, Tablet, Smartphone, Trash2, ShieldAlert, Clock, Info } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { toast } from "@/components/UI/Toast";
 import { useSession } from "next-auth/react";
 
 interface Device {

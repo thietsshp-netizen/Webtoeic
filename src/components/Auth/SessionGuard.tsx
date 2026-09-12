@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { toast } from "react-hot-toast";
+import { toast } from "@/components/UI/Toast";
 
 export default function SessionGuard() {
   const { data: session, status } = useSession();
