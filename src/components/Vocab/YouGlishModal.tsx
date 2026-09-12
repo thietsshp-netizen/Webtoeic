@@ -76,9 +76,12 @@ const YouGlishPlayer = React.memo(function YouGlishPlayer({
           const calcWidth = typeof window !== "undefined" ? Math.min(600, window.innerWidth - 48) : 560;
           const widget = new window.YG.Widget(uniqueId, {
             width: calcWidth,
-            components: 84, // Controls + Subtitles
+            components: 255, // Full components including Subtitles/Captions (bit 8) with yellow highlight, Controls (bit 16), Speed (bit 32)
             autoStart: 1,
             backgroundColor: "#ffffff",
+            markerColor: "#fde047", // Bright yellow highlight for target word
+            captionColor: "#1e293b",
+            captionSize: 26,
             events: {
               onError: (event: any) => {
                 console.warn("YouGlish error code:", event);
@@ -122,7 +125,7 @@ const YouGlishPlayer = React.memo(function YouGlishPlayer({
   return (
     <div
       ref={containerRef}
-      className="w-full min-h-[380px] sm:min-h-[440px] bg-slate-50 flex items-center justify-center"
+      className="w-full min-h-[420px] sm:min-h-[480px] bg-slate-50 flex items-center justify-center p-1 sm:p-2"
     />
   );
 });
