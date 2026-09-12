@@ -82,7 +82,9 @@ export default function MeaningImage({
           ...(definition ? { definition: definition.trim() } : {}),
         });
 
-        const res = await fetch(`/api/vocab-image?${queryParams.toString()}`);
+        const res = await fetch(`/api/vocab-image?${queryParams.toString()}`, {
+          signal: AbortSignal.timeout(3500)
+        });
         if (!res.ok) throw new Error('Image fetch failed');
         
         const data = await res.json();

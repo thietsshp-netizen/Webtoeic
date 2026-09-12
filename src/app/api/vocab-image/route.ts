@@ -29,3 +29,4 @@ export async function GET(req: Request) {
     return NextResponse.json({ image: null, imageUrl: null, error: error?.message }, { status: 500 });
   }
 }
+
