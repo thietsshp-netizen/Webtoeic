@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import "mobile-drag-drop/default.css";
-import { Star, Volume2, RotateCcw, ChevronRight, ChevronLeft, BookOpen, Shuffle, PenLine, Link2, Lightbulb, Replace, Layers, HelpCircle, Compass } from "lucide-react";
+import { Star, Volume2, RotateCcw, ChevronRight, ChevronLeft, BookOpen, Shuffle, PenLine, Link2, Lightbulb, Replace, Layers, HelpCircle, Compass, Filter } from "lucide-react";
 import confetti from "canvas-confetti";
 import { AnimatePresence } from "framer-motion";
 import VocabDeckSelector from "./VocabDeckSelector";
@@ -1336,7 +1336,7 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
   const isEmpty = filterMode === "starred" && activeWords.length === 0;
 
   const TABS = [
-    { id: "library", label: "Thư viện", icon: BookOpen },
+    { id: "library", label: "Flashcard", icon: BookOpen },
     { id: "scramble", label: "Xếp chữ", icon: Shuffle },
     { id: "fill", label: "Điền từ", icon: PenLine },
     { id: "match", label: "Ghép từ", icon: Link2 },
@@ -1367,7 +1367,11 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
               </div>
 
               <div className="flex items-center gap-2" id={hasMounted ? "vocab-filters-target" : undefined}>
-                <div className="flex bg-slate-100 rounded-xl sm:rounded-2xl p-0.5 sm:p-1 gap-0.5 sm:gap-1">
+                <div className="flex items-center bg-slate-100 rounded-xl sm:rounded-2xl p-0.5 sm:p-1 gap-0.5 sm:gap-1 border border-slate-200/50">
+                  <div className="flex items-center gap-1 pl-2 pr-1 text-slate-400 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider select-none">
+                    <Filter size={11} className="text-slate-400" />
+                    <span className="hidden sm:inline">Lọc từ:</span>
+                  </div>
                   <button
                     onClick={() => setFilterMode("all")}
                     id={hasMounted ? "vocab-filter-all-btn" : undefined}
@@ -1466,7 +1470,7 @@ export default function VocabGamePlayer({ vocabDayId, dayNumber, title, data, us
           <div className="text-center py-20">
             <div className="text-6xl mb-4">⭐</div>
             <h3 className="text-xl font-black text-slate-400">Chưa có từ nào được đánh dấu!</h3>
-            <p className="text-slate-400 text-sm mt-2">Bấm ⭐ vào các từ bạn chưa thuộc ở tab Thư viện.</p>
+            <p className="text-slate-400 text-sm mt-2">Bấm ⭐ vào các từ bạn chưa thuộc ở tab Flashcard.</p>
           </div>
         ) : tab === "library" ? (
           <>

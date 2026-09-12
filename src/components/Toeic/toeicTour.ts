@@ -1026,12 +1026,12 @@ export const startVocabTour = (isCourseMode?: boolean) => {
     });
   }
 
-  // Nút Thư viện
+  // Nút Flashcard
   steps.push({
     element: "#vocab-mode-library-btn",
     popover: {
-      title: "📖 Thư viện từ vựng",
-      description: "Nhấp vô nút thư viện để xem danh sách toàn bộ thẻ từ bên dưới.",
+      title: "🗂️ Flashcard từ vựng",
+      description: "Nhấp vô nút Flashcard để xem danh sách toàn bộ thẻ từ bên dưới.",
       side: "bottom"
     }
   });
