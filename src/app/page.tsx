@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, Suspense } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, Suspense } from "react";
 import { useSession, signOut, signIn } from "next-auth/react";
 import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
@@ -36,6 +36,9 @@ import {
   CheckCircle2,
   Settings,
   ChevronRight,
+  ChevronLeft,
+  LayoutGrid,
+  RotateCcw,
   TrendingUp,
   Eye,
   GraduationCap,
@@ -77,12 +80,14 @@ import {
   XCircle,
   EyeOff,
   Lock,
-  Compass
+  Compass,
+  Video
 } from "lucide-react";
 
 import type { VocabWord } from "@/components/Vocab/VocabGamePlayer";
 import { startVocabTour } from "@/components/Toeic/toeicTour";
 import VocabDeckSelector from "@/components/Vocab/VocabDeckSelector";
+import YouGlishModal from "@/components/Vocab/YouGlishModal";
 
 // Dynamic imports cho các module nặng để tối ưu dung lượng tải ban đầu trên di động
 const PlacementTest = dynamic(() => import("@/components/PlacementTest/PlacementTest"), {
@@ -198,6 +203,7 @@ function HomeContent() {
   const [selectedDeckId, setSelectedDeckId] = useState<string | null>(null);
   const [uncategorizedCount, setUncategorizedCount] = useState(0);
   const [globalFlip, setGlobalFlip] = useState<"front" | "back" | null>(null);
+  const [youglishVocab, setYouglishVocab] = useState<any>(null);
   const [showVocabGuide, setShowVocabGuide] = useState(false);
   const [showReviewGuide, setShowReviewGuide] = useState(false);
   const [hasClosedReviewGuide, setHasClosedReviewGuide] = useState(false);
@@ -208,6 +214,67 @@ function HomeContent() {
     if (selectedDeckId === "uncategorized") return !v.deckId;
     return v.deckId === selectedDeckId;
   });
+
+  const [dashViewMode, setDashViewMode] = useState<"single" | "all">("single");
+  const [dashCardIndex, setDashCardIndex] = useState(0);
+  const [dashFlipTrigger, setDashFlipTrigger] = useState(0);
+  const dashTouchStartX = useRef<number | null>(null);
+
+  const filteredVocab = useMemo(() => {
+    if (vocabFilter === "review") {
+      return deckFilteredVocab.filter(v => !v.nextReviewDate || new Date(v.nextReviewDate) <= new Date());
+    }
+    if (vocabFilter === "unlearned") {
+      return deckFilteredVocab.filter(v => v.isUnlearned);
+    }
+    return deckFilteredVocab;
+  }, [deckFilteredVocab, vocabFilter]);
+
+  const safeDashCardIndex = Math.min(Math.max(0, dashCardIndex), Math.max(0, filteredVocab.length - 1));
+
+  useEffect(() => {
+    setDashCardIndex(0);
+  }, [selectedDeckId, vocabFilter, vocabMode]);
+
+  const handleDashTouchStart = (e: React.TouchEvent) => {
+    dashTouchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleDashTouchEnd = (e: React.TouchEvent) => {
+    if (dashTouchStartX.current === null) return;
+    const diffX = e.changedTouches[0].clientX - dashTouchStartX.current;
+    dashTouchStartX.current = null;
+    if (diffX > 50) {
+      // Swipe Right -> Previous
+      setDashCardIndex(prev => Math.max(0, prev - 1));
+    } else if (diffX < -50) {
+      // Swipe Left -> Next
+      setDashCardIndex(prev => Math.min(filteredVocab.length - 1, prev + 1));
+    }
+  };
+
+  // Keyboard navigation for single card mode in Notebook
+  useEffect(() => {
+    if (activeTab !== "dashboard" || dashTab !== "vocab" || vocabMode !== "library" || dashViewMode !== "single" || filteredVocab.length === 0) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName)) return;
+
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setDashCardIndex(prev => Math.max(0, prev - 1));
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setDashCardIndex(prev => Math.min(filteredVocab.length - 1, prev + 1));
+      } else if (e.key === " " || e.key === "Spacebar") {
+        e.preventDefault();
+        setDashFlipTrigger(prev => prev + 1);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeTab, dashTab, vocabMode, dashViewMode, filteredVocab.length]);
 
   // Dashboard Sidebar States
   const [collapsed, setCollapsed] = useState(false);
@@ -1887,48 +1954,145 @@ function HomeContent() {
                         ) : deckFilteredVocab.length > 0 ? (
                           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                             {vocabMode === "library" && (
-                              <>
-                                <div id="vocab-global-flip-target" className="flex gap-2 mb-8">
-                                  <button
-                                    onClick={() => setGlobalFlip(prev => prev === "back" ? "front" : "back")}
-                                    className="px-6 py-2.5 bg-white border border-slate-200 text-slate-600 font-bold text-[10px] uppercase tracking-widest rounded-xl hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2"
-                                  >
-                                    <Layers size={14} className="text-blue-500" />
-                                    {globalFlip === "back" ? "Hiện mặt trước" : "Hiện mặt sau"}
-                                  </button>
+                              filteredVocab.length === 0 ? (
+                                <div className="text-center py-16 bg-white/50 rounded-3xl border border-slate-100">
+                                  <div className="text-5xl mb-3">⭐</div>
+                                  <h3 className="text-lg font-black text-slate-400">Không có từ nào trong mục này!</h3>
+                                  <p className="text-slate-400 text-xs sm:text-sm mt-1">Chọn bộ lọc khác hoặc gắn sao thêm từ vựng để luyện tập.</p>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                  {(() => {
-                                    const filtered = vocabFilter === "review"
-                                      ? deckFilteredVocab.filter(v => !v.nextReviewDate || new Date(v.nextReviewDate) <= new Date())
-                                      : vocabFilter === "unlearned"
-                                        ? deckFilteredVocab.filter(v => v.isUnlearned)
-                                        : deckFilteredVocab;
+                              ) : (
+                                <div className="w-full">
+                                  {/* Mode Switcher Bar (Từng thẻ vs Toàn bộ) */}
+                                  <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+                                    <div className="flex bg-slate-100/90 p-0.5 rounded-lg border border-slate-200/60">
+                                      <button
+                                        onClick={() => setDashViewMode("single")}
+                                        className={`flex items-center gap-1 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-md text-[10px] sm:text-xs font-black transition-all ${
+                                          dashViewMode === "single"
+                                            ? "bg-white text-blue-600 shadow-sm"
+                                            : "text-slate-500 hover:text-slate-800"
+                                        }`}
+                                      >
+                                        <Layers size={12} />
+                                        Từng thẻ
+                                      </button>
+                                      <button
+                                        onClick={() => setDashViewMode("all")}
+                                        className={`flex items-center gap-1 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-md text-[10px] sm:text-xs font-black transition-all ${
+                                          dashViewMode === "all"
+                                            ? "bg-white text-blue-600 shadow-sm"
+                                            : "text-slate-500 hover:text-slate-800"
+                                        }`}
+                                      >
+                                        <LayoutGrid size={12} />
+                                        Toàn bộ ({filteredVocab.length})
+                                      </button>
+                                    </div>
 
-                                    return filtered.map((vocab, idx) => (
-                                      <DashVocabCard
-                                        key={vocab.id}
-                                        vocab={vocab}
-                                        index={idx}
-                                        onUpdate={fetchVocab}
-                                        globalFlip={globalFlip}
-                                      />
-                                    ));
-                                  })()}
+                                    {/* Right: Counter or Flip All */}
+                                    {dashViewMode === "all" ? (
+                                      <button
+                                        onClick={() => setGlobalFlip(prev => prev === "back" ? "front" : "back")}
+                                        id="vocab-global-flip-target"
+                                        className="px-2.5 py-1 sm:px-3.5 sm:py-1.5 bg-white border border-slate-200 text-slate-700 font-bold text-[10px] sm:text-xs rounded-lg hover:bg-slate-50 transition-all shadow-sm flex items-center gap-1.5"
+                                      >
+                                        <RotateCcw size={11} className="text-blue-500" />
+                                        {globalFlip === "back" ? "Mặt trước" : "Lật mặt sau"}
+                                      </button>
+                                    ) : (
+                                      <div className="flex items-center gap-1.5">
+                                        <span className="bg-blue-50 text-blue-600 text-[10px] sm:text-xs px-2.5 py-1 rounded-lg border border-blue-100 font-black tracking-wide">
+                                          Thẻ {safeDashCardIndex + 1} / {filteredVocab.length}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  {dashViewMode === "single" ? (
+                                    /* Single Card View */
+                                    <div
+                                      className="max-w-xl mx-auto flex flex-col items-center w-full px-1 sm:px-0"
+                                      onTouchStart={handleDashTouchStart}
+                                      onTouchEnd={handleDashTouchEnd}
+                                    >
+                                      {/* Progress Bar */}
+                                      <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden mb-2.5 sm:mb-3 border border-slate-200/50">
+                                        <div
+                                          className="bg-blue-600 h-full rounded-full transition-all duration-300 ease-out"
+                                          style={{ width: `${((safeDashCardIndex + 1) / Math.max(1, filteredVocab.length)) * 100}%` }}
+                                        />
+                                      </div>
+
+                                      {/* The FlashCard */}
+                                      <div className="w-full">
+                                        {filteredVocab[safeDashCardIndex] && (
+                                          <DashVocabCard
+                                            key={filteredVocab[safeDashCardIndex].id}
+                                            vocab={filteredVocab[safeDashCardIndex]}
+                                            index={safeDashCardIndex}
+                                            onUpdate={fetchVocab}
+                                            globalFlip={null}
+                                            flipTrigger={dashFlipTrigger}
+                                            onOpenYouGlish={(v: any) => setYouglishVocab(v)}
+                                          />
+                                        )}
+                                      </div>
+
+                                      {/* Navigation Controls */}
+                                      <div className="flex items-center justify-between w-full mt-3.5 sm:mt-5 gap-2 sm:gap-3">
+                                        <button
+                                          onClick={() => setDashCardIndex(prev => Math.max(0, prev - 1))}
+                                          disabled={safeDashCardIndex === 0}
+                                          className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-6 py-2.5 sm:py-3.5 bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-700 font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                                          title="Thẻ trước (phím ←)"
+                                        >
+                                          <ChevronLeft size={16} />
+                                          <span>Trước</span>
+                                        </button>
+
+                                        <button
+                                          onClick={() => setDashFlipTrigger(prev => prev + 1)}
+                                          className="flex-[1.3] sm:flex-1 flex items-center justify-center gap-1.5 px-4 sm:px-6 py-2.5 sm:py-3.5 bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-sm transition-all active:scale-95"
+                                          title="Lật thẻ (phím Space)"
+                                        >
+                                          <RotateCcw size={14} />
+                                          <span>Lật thẻ</span>
+                                        </button>
+
+                                        <button
+                                          onClick={() => setDashCardIndex(prev => Math.min(filteredVocab.length - 1, prev + 1))}
+                                          disabled={safeDashCardIndex === filteredVocab.length - 1}
+                                          className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-6 py-2.5 sm:py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-md shadow-blue-200 transition-all disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                                          title="Thẻ tiếp theo (phím →)"
+                                        >
+                                          <span>Tiếp</span>
+                                          <ChevronRight size={16} />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    /* All Cards Grid View */
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                      {filteredVocab.map((vocab, idx) => (
+                                        <DashVocabCard
+                                          key={vocab.id}
+                                          vocab={vocab}
+                                          index={idx}
+                                          onUpdate={fetchVocab}
+                                          globalFlip={globalFlip}
+                                          onOpenYouGlish={(v: any) => setYouglishVocab(v)}
+                                        />
+                                      ))}
+                                    </div>
+                                  )}
                                 </div>
-                              </>
+                              )
                             )}
 
                             {vocabMode !== "library" && (
                               <div className="bg-white/50 backdrop-blur-sm border border-slate-100 rounded-3xl sm:rounded-[3rem] p-3 sm:p-8 md:p-16">
                                 {(() => {
-                                  const filteredWords = vocabFilter === "review"
-                                    ? deckFilteredVocab.filter(v => !v.nextReviewDate || new Date(v.nextReviewDate) <= new Date())
-                                    : vocabFilter === "unlearned"
-                                      ? deckFilteredVocab.filter(v => v.isUnlearned)
-                                      : deckFilteredVocab;
-
-                                  const gameWords: VocabWord[] = filteredWords.map(v => ({
+                                  const gameWords: VocabWord[] = filteredVocab.map(v => ({
                                     id: v.id,
                                     word: v.word,
                                     ipa: v.ipa || "",
@@ -2081,6 +2245,15 @@ function HomeContent() {
         <PlacementTest isOpen={showPlacementTest} onClose={() => setShowPlacementTest(false)} />
       )}
       <FloatingMessenger />
+
+      {/* --- YOUGLISH VIDEO MODAL --- */}
+      <YouGlishModal
+        isOpen={!!youglishVocab}
+        onClose={() => setYouglishVocab(null)}
+        word={youglishVocab?.word || ""}
+        ipa={youglishVocab?.ipa}
+        mean={youglishVocab?.definition || youglishVocab?.translation}
+      />
     </div>
   );
 }
@@ -2187,7 +2360,7 @@ function getWordFontSize(word: string): string {
   return "text-3xl break-words";
 }
 
-function DashVocabCard({ vocab, index, onUpdate, globalFlip }: any) {
+function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpenYouGlish }: any) {
   const [flipped, setFlipped] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showDeckSelector, setShowDeckSelector] = useState(false);
@@ -2197,6 +2370,14 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip }: any) {
     if (globalFlip === "front") setFlipped(false);
     if (globalFlip === "back") setFlipped(true);
   }, [globalFlip]);
+
+  // Flip trigger for single card mode
+  useEffect(() => {
+    if (flipTrigger !== undefined && flipTrigger > 0) {
+      setFlipped(prev => !prev);
+      speak(vocab.word);
+    }
+  }, [flipTrigger]);
 
   const speak = (text: string) => {
     speakVocab(text, 'us');
@@ -2304,17 +2485,57 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip }: any) {
             #{index + 1}
           </div>
 
-          <div className="mt-10 mb-2 text-left">
-            <div className={`font-black text-blue-600 mb-2 flex items-center gap-3 flex-wrap ${getWordFontSize(vocab.word)}`}>
+          <div className="mt-4 sm:mt-6 mb-1 flex flex-col items-center justify-center text-center">
+            <div className={`font-black text-blue-600 mb-0.5 flex items-center justify-center gap-2 sm:gap-3 flex-wrap ${getWordFontSize(vocab.word)}`}>
               <span>{vocab.word}</span>
-              <button onClick={(e) => { e.stopPropagation(); speak(vocab.word); }} className="p-1.5 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0">
-                <Volume2 size={20} className="text-blue-400" />
+              <button onClick={(e) => { e.stopPropagation(); speak(vocab.word); }} className="p-1 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0" title="Nghe phát âm">
+                <Volume2 size={20} className="text-blue-400 hover:text-blue-600" />
               </button>
             </div>
-            <div className="text-orange-400 font-bold italic text-sm mb-4">
+            <div className="text-orange-400 font-bold italic text-xs sm:text-sm mb-1.5 text-center">
               /{vocab.ipa?.replace(/\//g, '')}/
             </div>
           </div>
+
+          {/* Front Image & Video Button */}
+          {vocab.image && (
+            <div className="mb-2 flex flex-col items-center flex-shrink-0">
+              <div className="w-full rounded-2xl overflow-hidden border border-slate-100 bg-slate-50/70 p-1 flex items-center justify-center h-24 sm:h-34">
+                <img
+                  src={vocab.image}
+                  alt={vocab.word}
+                  loading="lazy"
+                  className="w-full h-full object-contain rounded-xl"
+                />
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenYouGlish?.(vocab);
+                }}
+                className="mt-1.5 inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 bg-red-50 hover:bg-red-100/90 text-red-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all border border-red-100/80 shadow-sm active:scale-95 group/btn"
+                title="Xem video người bản xứ phát âm từ này trong thực tế"
+              >
+                <Video size={12} className="text-red-500 group-hover/btn:scale-110 transition-transform" />
+                <span>Video thực tế</span>
+              </button>
+            </div>
+          )}
+          {!vocab.image && (
+            <div className="mb-2 flex justify-center flex-shrink-0">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenYouGlish?.(vocab);
+                }}
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all border border-red-100/80 shadow-sm active:scale-95"
+                title="Xem video người bản xứ phát âm từ này trong thực tế"
+              >
+                <Video size={12} className="text-red-500" />
+                <span>Video thực tế</span>
+              </button>
+            </div>
+          )}
 
           <div className="flex-1 overflow-y-auto pr-1 text-left scrollbar-hide">
             {vocab.example ? (
@@ -2369,10 +2590,55 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip }: any) {
             #{index + 1}
           </div>
 
-          <div className="mt-10 mb-4">
-            <div className={`font-black text-blue-600 mb-2 ${getWordFontSize(vocab.word)}`}>{vocab.word}</div>
-            <div className="text-red-500 font-black text-lg tracking-tight leading-tight break-words">{limitMeanings(vocab.translation)}</div>
+          <div className="mt-4 sm:mt-6 mb-1.5 flex flex-col items-center justify-center text-center">
+            <div className={`font-black text-blue-600 mb-0.5 flex items-center justify-center gap-2 sm:gap-3 flex-wrap ${getWordFontSize(vocab.word)}`}>
+              <span>{vocab.word}</span>
+              <button onClick={(e) => { e.stopPropagation(); speak(vocab.word); }} className="p-1 hover:bg-indigo-100/60 rounded-lg transition-colors flex-shrink-0" title="Nghe phát âm">
+                <Volume2 size={20} className="text-blue-400 hover:text-blue-600" />
+              </button>
+            </div>
+            <div className="text-red-500 font-black text-sm sm:text-base tracking-tight leading-tight break-words text-center">{limitMeanings(vocab.definition || vocab.translation)}</div>
           </div>
+
+          {/* Back Image & Video Button */}
+          {vocab.image && (
+            <div className="mb-2 flex flex-col items-center flex-shrink-0">
+              <div className="w-full rounded-2xl overflow-hidden border border-indigo-100/80 bg-white/80 p-1 flex items-center justify-center h-24 sm:h-32 shadow-sm">
+                <img
+                  src={vocab.image}
+                  alt={vocab.word}
+                  loading="lazy"
+                  className="w-full h-full object-contain rounded-xl"
+                />
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenYouGlish?.(vocab);
+                }}
+                className="mt-1.5 inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 bg-white/90 hover:bg-white text-red-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all border border-red-100/80 shadow-sm active:scale-95 group/btn"
+                title="Xem video người bản xứ phát âm từ này trong thực tế"
+              >
+                <Video size={12} className="text-red-500 group-hover/btn:scale-110 transition-transform" />
+                <span>Video thực tế</span>
+              </button>
+            </div>
+          )}
+          {!vocab.image && (
+            <div className="mb-2 flex justify-center flex-shrink-0">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenYouGlish?.(vocab);
+                }}
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 bg-white/90 hover:bg-white text-red-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all border border-red-100/80 shadow-sm active:scale-95"
+                title="Xem video người bản xứ phát âm từ này trong thực tế"
+              >
+                <Video size={12} className="text-red-500" />
+                <span>Video thực tế</span>
+              </button>
+            </div>
+          )}
 
           <div className="space-y-4 text-[15px] flex-1 overflow-y-auto pr-2 scrollbar-hide">
             <div className="flex flex-col gap-2">
