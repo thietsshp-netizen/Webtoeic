@@ -75,14 +75,21 @@ export const speakVocab = async (text: string, type: 'us' | 'uk' = 'us') => {
     });
   };
 
-  // 1. Nếu là câu hoặc cụm từ dài (chứa khoảng trắng): Phát trực tiếp qua API TTS nội bộ
-  if (cleanSpeechText.includes(' ')) {
+  // 1. Nếu là câu hoặc cụm từ dài (chứa khoảng trắng) hoặc từ có dấu đặc biệt (như résumé, café):
+  // Phát trực tiếp qua Neural TTS để đảm bảo phát âm chính xác tuyệt đối ngữ cảnh / từ loại
+  const hasAccents = /[^\u0000-\u007F]/.test(cleanSpeechText);
+  if (cleanSpeechText.includes(' ') || hasAccents) {
     const ttsUrl = `/api/tts?text=${encodeURIComponent(cleanSpeechText)}&type=${type}`;
     await playAudioUrl(ttsUrl);
     return;
   }
 
-  const cleanWord = cleanSpeechText.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const cleanWord = cleanSpeechText
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+
   if (!cleanWord) return;
 
   const cacheKey = `${cleanWord}_${type}`;
@@ -103,7 +110,7 @@ export const speakVocab = async (text: string, type: 'us' | 'uk' = 'us') => {
     `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${cleanWord}.mp3`,
     `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}1.mp3`,
     `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/dict-audio/${folder}/${cleanWord}${legacySuffix}.mp3`,
-    `/api/tts?text=${encodeURIComponent(cleanWord)}&type=${type}`
+    `/api/tts?text=${encodeURIComponent(cleanSpeechText)}&type=${type}`
   ];
 
   // Thử lần lượt các URL (Fast Waterfall): 95% trường hợp URL đầu tiên phát ngay tức thì < 50ms
