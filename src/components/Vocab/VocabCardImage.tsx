@@ -99,8 +99,8 @@ export default function VocabCardImage({
       <div className="mb-2 flex flex-col items-center flex-shrink-0">
         <div className={`w-full rounded-2xl overflow-hidden p-1 flex items-center justify-center ${
           isBack 
-            ? 'border border-indigo-100/80 bg-white/80 h-24 sm:h-32 shadow-sm' 
-            : 'border border-slate-100 bg-slate-50/70 h-24 sm:h-34'
+            ? 'border border-indigo-100/80 bg-white/80 h-28 sm:h-36 shadow-sm' 
+            : 'border border-slate-100 bg-slate-50/70 h-28 sm:h-36'
         }`}>
           <img
             src={imageUrl}

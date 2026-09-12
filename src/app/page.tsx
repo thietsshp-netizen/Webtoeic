@@ -2424,7 +2424,7 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
 
   return (
     <div
-      className={`relative h-[390px] xs:h-[430px] sm:h-[480px] w-full cursor-pointer group/card select-none ${index === 0 ? "vocab-card-first" : ""}`}
+      className={`relative h-[530px] xs:h-[570px] sm:h-[620px] w-full cursor-pointer group/card select-none ${index === 0 ? "vocab-card-first" : ""}`}
       style={{ perspective: "1000px" }}
       onClick={() => { setFlipped(!flipped); speak(vocab.word); }}
     >
@@ -2488,12 +2488,12 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
         style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "rotateY(0)" }}
       >
         {/* Front */}
-        <div className="absolute inset-0 bg-white rounded-3xl sm:rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-100 p-4 sm:p-8 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all overflow-hidden">
+        <div className="absolute inset-0 bg-white rounded-3xl sm:rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-100 p-4 sm:p-6 pb-3 sm:pb-4 flex flex-col backface-hidden group-hover/card:shadow-xl transition-all overflow-hidden">
           <div className="absolute top-2.5 sm:top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-slate-50 rounded-full text-[8px] text-slate-400 font-black tracking-widest border border-slate-100 shadow-sm">
             #{index + 1}
           </div>
 
-          <div className="mt-2 sm:mt-5 mb-1 flex flex-col items-center justify-center text-center">
+          <div className="mt-2 sm:mt-4 mb-1 flex flex-col items-center justify-center text-center">
             <div className={`font-black text-blue-600 mb-0.5 flex items-center justify-center gap-1.5 sm:gap-3 flex-wrap ${getWordFontSize(vocab.word)}`}>
               <span>{vocab.word}</span>
               <button onClick={(e) => { e.stopPropagation(); speak(vocab.word); }} className="p-1 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0" title="Nghe phát âm">
@@ -2538,7 +2538,7 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
           </div>
 
           {vocab.synonyms && (
-            <div className="mt-6 pt-4 border-t border-slate-50 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center gap-2 flex-wrap">
+            <div className="mt-auto pt-3 border-t border-slate-50 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center gap-2 flex-wrap">
               <span className="opacity-50 italic lowercase font-bold">Hints:</span>
               <span className="bg-teal-50 px-2 py-0.5 rounded-lg break-words">
                 {cleanSynonyms(vocab.synonyms)}
@@ -2547,7 +2547,7 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
           )}
 
           {/* SRS Progress Bars */}
-          <div className="mt-6 flex gap-1.5 justify-center vocab-srs-bars">
+          <div className="mt-3 flex gap-1.5 justify-center vocab-srs-bars">
             {[1, 2, 3, 4, 5].map((b) => (
               <div
                 key={b}
@@ -2565,14 +2565,14 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
             ))}
           </div>
           {/* Deck Name */}
-          <div className="mt-2.5 text-center text-[10px] text-slate-400 font-bold tracking-wide italic">
+          <div className="mt-2 text-center text-[10px] text-slate-400 font-bold tracking-wide italic">
             ({vocab.deck?.name || "bộ thẻ tổng"})
           </div>
         </div>
 
         {/* Back */}
         <div
-          className="absolute inset-0 bg-indigo-50 rounded-3xl sm:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-4 border-indigo-200 p-4 sm:p-8 flex flex-col text-left overflow-hidden"
+          className="absolute inset-0 bg-indigo-50 rounded-3xl sm:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border-4 border-indigo-200 p-4 sm:p-6 pb-3 sm:pb-4 flex flex-col text-left overflow-hidden"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
           <div className="absolute top-2.5 sm:top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-white/80 rounded-full text-[8px] text-slate-400 font-black tracking-widest border border-blue-100/50 shadow-sm">
