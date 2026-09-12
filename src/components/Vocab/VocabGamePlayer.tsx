@@ -173,7 +173,19 @@ function FlashCard({
           )}
           
           <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide">
-            <div className="text-slate-600 text-sm sm:text-[15px] leading-relaxed font-medium break-words" dangerouslySetInnerHTML={{ __html: word.ex }} />
+            <div className="flex items-start gap-2">
+              <div className="text-slate-600 text-sm sm:text-[15px] leading-relaxed font-medium break-words flex-1" dangerouslySetInnerHTML={{ __html: word.ex }} />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  speakVocab(stripHtml(word.ex), 'us');
+                }}
+                className="p-1.5 hover:bg-blue-50 rounded-lg text-blue-400 hover:text-blue-600 transition-colors flex-shrink-0"
+                title="Nghe đọc câu ví dụ"
+              >
+                <Volume2 size={16} />
+              </button>
+            </div>
           </div>
 
           {word.syns.length > 0 && (
@@ -220,7 +232,19 @@ function FlashCard({
 
           <div className="space-y-4 text-sm sm:text-[15px] flex-1 overflow-y-auto pr-2 scrollbar-hide">
             <div className="flex flex-col gap-2">
-              <div className="text-slate-700 leading-relaxed font-medium bg-white/40 p-3 sm:p-4 rounded-2xl border border-white/60 shadow-sm break-words" dangerouslySetInnerHTML={{ __html: word.ex }} />
+              <div className="flex items-start justify-between gap-2 bg-white/40 p-3 sm:p-4 rounded-2xl border border-white/60 shadow-sm">
+                <div className="text-slate-700 leading-relaxed font-medium break-words flex-1" dangerouslySetInnerHTML={{ __html: word.ex }} />
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    speakVocab(stripHtml(word.ex), 'us');
+                  }}
+                  className="p-1.5 hover:bg-white/80 rounded-lg text-blue-400 hover:text-blue-600 transition-colors flex-shrink-0"
+                  title="Nghe đọc câu ví dụ"
+                >
+                  <Volume2 size={16} />
+                </button>
+              </div>
               {word.exVi && (
                 <div className="text-slate-500 italic leading-relaxed pl-4 border-l-2 border-blue-200 py-1 bg-slate-50/50 rounded-r-xl pr-3 text-xs sm:text-[13px] break-words" dangerouslySetInnerHTML={{ __html: word.exVi }} />
               )}
