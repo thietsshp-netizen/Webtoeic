@@ -4,12 +4,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, X, ChevronRight, BookOpen, Layers, Hash, List, Star, Link2, Replace } from 'lucide-react';
+import { Volume2, X, ChevronRight, BookOpen, Layers, Hash, List, Star, Link2, Replace, Video } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import VocabDeckSelector from '../Vocab/VocabDeckSelector';
 import { speakVocab } from '@/lib/vocab-audio';
 import MeaningImage from './MeaningImage';
+import YouGlishModal from '../Vocab/YouGlishModal';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -73,6 +74,7 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
   const [userVocabs, setUserVocabs] = useState<any[]>([]);
   const [isStarring, setIsStarring] = useState<string | null>(null);
   const [activeDeckSelector, setActiveDeckSelector] = useState<string | null>(null);
+  const [showYouGlish, setShowYouGlish] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState<{ top?: number; left: number; bottom?: number } | null>(null);
@@ -558,33 +560,47 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
           <div className="flex-1 flex flex-col bg-white overflow-hidden">
             {/* Header - Draggable Area */}
             <div className="px-5 py-3 border-b border-slate-50 flex items-center justify-between bg-white/80 backdrop-blur-md cursor-grab active:cursor-grabbing shrink-0 z-10">
-              <div className="min-w-0 flex-1 flex flex-col justify-center gap-1 pr-4">
-                <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none shrink-0">{data.word}</h2>
+              <div className="min-w-0 flex-1 flex flex-col justify-center gap-1 pr-3">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none shrink-0">{data.word}</h2>
+
+                  {/* Nút loa giọng Anh (UK) */}
+                  <button 
+                    onClick={() => speak(data.word, 'uk')} 
+                    className="px-2 py-1 text-red-500 hover:bg-red-50 active:scale-95 rounded-lg flex items-center gap-1 transition-all border border-red-100/50 hover:border-red-200 shrink-0"
+                    title="Phát âm giọng Anh (UK)"
+                  >
+                    <Volume2 size={13} />
+                    <span className="text-[9px] font-black uppercase tracking-wider">uk</span>
+                  </button>
+
+                  {/* Nút loa giọng Mỹ (US) */}
+                  <button 
+                    onClick={() => speak(data.word, 'us')} 
+                    className="px-2 py-1 text-blue-600 hover:bg-blue-50 active:scale-95 rounded-lg flex items-center gap-1 transition-all border border-blue-100/50 hover:border-blue-200 shrink-0"
+                    title="Phát âm giọng Mỹ (US)"
+                  >
+                    <Volume2 size={13} />
+                    <span className="text-[9px] font-black uppercase tracking-wider">us</span>
+                  </button>
+
+                  {/* Nút YouGlish (Video người bản xứ phát âm) */}
+                  <button
+                    onClick={() => setShowYouGlish(true)}
+                    className="px-2 py-1 text-rose-600 bg-rose-50/80 hover:bg-rose-100 active:scale-95 rounded-lg flex items-center gap-1 transition-all border border-rose-200/60 hover:border-rose-300 shrink-0 shadow-xs"
+                    title="Xem video người bản xứ phát âm thực tế trên YouGlish"
+                  >
+                    <Video size={13} className="text-rose-500" />
+                    <span className="text-[9px] font-black tracking-wider">YouGlish</span>
+                  </button>
+                </div>
+
                 {data.data?.meanings?.[0]?.ipa && (
                   <p className="text-[11px] text-slate-400 font-mono italic truncate">[{data.data.meanings[0].ipa}]</p>
                 )}
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                {/* Nút loa giọng Anh (UK) */}
-                <button 
-                  onClick={() => speak(data.word, 'uk')} 
-                  className="px-2 py-1 text-red-500 hover:bg-red-50 active:scale-95 rounded-lg flex items-center gap-1 transition-all border border-red-100/50 hover:border-red-200"
-                  title="Phát âm giọng Anh (UK)"
-                >
-                  <Volume2 size={13} />
-                  <span className="text-[9px] font-black uppercase tracking-wider">uk</span>
-                </button>
 
-                {/* Nút loa giọng Mỹ (US) */}
-                <button 
-                  onClick={() => speak(data.word, 'us')} 
-                  className="px-2 py-1 text-blue-600 hover:bg-blue-50 active:scale-95 rounded-lg flex items-center gap-1 transition-all border border-blue-100/50 hover:border-blue-200"
-                  title="Phát âm giọng Mỹ (US)"
-                >
-                  <Volume2 size={13} />
-                  <span className="text-[9px] font-black uppercase tracking-wider">us</span>
-                </button>
-
+              <div className="flex items-center shrink-0">
                 <button onClick={onClose} className="p-1.5 hover:bg-red-50 hover:text-red-500 rounded-lg text-slate-300 transition-all"><X size={18} /></button>
               </div>
             </div>
@@ -821,6 +837,15 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
           background: #cbd5e1;
         }
       `}</style>
+
+      {/* YouGlish Native Pronunciation Video Modal */}
+      <YouGlishModal
+        isOpen={showYouGlish}
+        onClose={() => setShowYouGlish(false)}
+        word={data?.word || word}
+        ipa={data?.data?.meanings?.[0]?.ipa}
+        mean={data?.data?.meanings?.[0]?.definition}
+      />
     </div>,
     document.body
   );
