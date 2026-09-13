@@ -72,18 +72,31 @@
   gap: 6px;
   padding: 4px 8px;
   border-radius: 9999px;
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s, transform 0.2s;
+  transition: opacity 0.25s ease, transform 0.2s ease;
   z-index: 30;
 }
 
-.bubbleWrapper:hover .quickToolbar {
+/* Cầu nối tàng hình (Invisible Bridge) ngăn mất hover khi di chuyển chuột từ camera lên thanh công cụ */
+.quickToolbar::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: -20px;
+  right: -20px;
+  height: 20px;
+  background: transparent;
+  pointer-events: auto;
+}
+
+.bubbleWrapper:hover .quickToolbar,
+.quickToolbar:hover {
   opacity: 1;
   pointer-events: auto;
   transform: translateX(-50%) translateY(-2px);
