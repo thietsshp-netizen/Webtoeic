@@ -20,7 +20,7 @@ import {
   Zap,
   FastForward,
 } from "lucide-react";
-import { FeatureVideoItem, getDefaultFeatureVideos } from "@/data/featureVideos";
+import { FeatureVideoItem, getDefaultFeatureVideos, extractYoutubeId } from "@/data/featureVideos";
 
 const COLOR_MAP: Record<
   string,
@@ -397,170 +397,193 @@ export default function FeatureVideoShowcase() {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Video Element */}
-          <video
-            ref={videoRef}
-            src={currentVideo?.videoUrl}
-            poster={currentVideo?.thumbnail || `/images/feature-videos/video-thumb-${currentVideo?.order}.jpg`}
-            playsInline
-            preload="auto"
-            crossOrigin="anonymous"
-            className="w-full h-full object-cover cursor-pointer"
-            onClick={togglePlay}
-            onTimeUpdate={() => {
-              if (videoRef.current) {
-                setCurrentTime(videoRef.current.currentTime);
-              }
-            }}
-            onLoadedMetadata={() => {
-              if (videoRef.current) {
-                setDuration(videoRef.current.duration);
-                videoRef.current.playbackRate = playbackSpeed;
-              }
-            }}
-            onWaiting={() => setIsBuffering(true)}
-            onCanPlay={() => setIsBuffering(false)}
-            onPlaying={() => {
-              setIsBuffering(false);
-              setIsPlaying(true);
-              triggerControlsTemporarily();
-            }}
-            onPause={() => {
-              setIsPlaying(false);
-              setShowControls(true);
-            }}
-            onEnded={handleVideoEnded}
-          />
+          {(() => {
+            const ytId =
+              currentVideo?.youtubeId ||
+              (currentVideo?.videoUrl ? extractYoutubeId(currentVideo.videoUrl) : null);
 
-          {/* Big Center Play / Pause Indicator on Hover / Paused */}
-          <AnimatePresence>
-            {(!isPlaying || isBuffering) && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.85 }}
-                className="absolute inset-0 flex items-center justify-center bg-transparent cursor-pointer"
-                onClick={togglePlay}
-              >
-                {isBuffering ? (
-                  <div className="w-10 sm:w-16 h-10 sm:h-16 border-3 sm:border-4 border-white/30 border-t-white rounded-full animate-spin" />
-                ) : !isPlaying ? (
-                  <div className="relative group/btn">
-                    <div
-                      className="absolute -inset-3 sm:-inset-4 rounded-full blur-xl opacity-75 group-hover/btn:opacity-100 transition duration-500"
-                      style={{ backgroundColor: currentTheme.glow }}
-                    />
-                    <div className="relative w-12 h-12 sm:w-18 sm:h-18 bg-white text-slate-900 rounded-full flex items-center justify-center shadow-xl transform group-hover/btn:scale-110 active:scale-95 transition-all duration-300">
-                      <Play size={20} className="ml-0.5 sm:ml-1 fill-slate-900 text-slate-900 sm:w-6 sm:h-6" />
-                    </div>
-                  </div>
-                ) : null}
-              </motion.div>
-            )}
-          </AnimatePresence>
+            if (ytId) {
+              return (
+                <iframe
+                  key={`yt-${ytId}`}
+                  src={`https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
+                  title={currentVideo?.title || "Video tính năng"}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="w-full h-full border-0"
+                />
+              );
+            }
 
-          {/* Top Bar Header on Video */}
-          <div
-            className={`absolute top-0 left-0 right-0 p-2 sm:p-3.5 bg-gradient-to-b from-black/60 via-black/15 to-transparent flex items-center justify-between text-white pointer-events-none transition-opacity duration-300 ${
-              showControls || !isPlaying ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-200 truncate max-w-[170px] sm:max-w-none">
-                Video #{currentVideo?.order} • {currentVideo?.category}
-              </span>
-            </div>
-            <span className="text-[9px] sm:text-xs font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 bg-white/20 backdrop-blur-md rounded-md sm:rounded-lg text-white">
-              {currentVideo?.badge}
-            </span>
-          </div>
-
-          {/* Custom Control Bar (Bottom) - Sleek, Thin & Auto-hiding */}
-          <div
-            className={`absolute bottom-0 left-0 right-0 pt-6 pb-1.5 sm:pb-2.5 px-2 sm:px-3.5 bg-gradient-to-t from-black/75 via-black/35 to-transparent transition-opacity duration-300 ${
-              showControls || !isPlaying ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-            }`}
-          >
-            {/* Scrubber Progress Bar */}
-            <div className="relative mb-1 sm:mb-2.5 flex items-center group/progress">
-              <input
-                type="range"
-                min={0}
-                max={duration || 100}
-                step={0.1}
-                value={currentTime}
-                onChange={handleSeek}
-                className="w-full h-1 sm:h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:h-2 sm:hover:h-2.5 transition-all"
-              />
-            </div>
-
-            {/* Controls Row */}
-            <div className="flex items-center justify-between text-white text-[10px] sm:text-xs">
-              {/* Left: Play/Pause, Replay, Time */}
-              <div className="flex items-center gap-1 sm:gap-2.5">
-                <button
+            return (
+              <>
+                {/* Video Element */}
+                <video
+                  ref={videoRef}
+                  src={currentVideo?.videoUrl}
+                  poster={currentVideo?.thumbnail || `/images/feature-videos/video-thumb-${currentVideo?.order}.jpg`}
+                  playsInline
+                  preload="auto"
+                  crossOrigin="anonymous"
+                  className="w-full h-full object-cover cursor-pointer"
                   onClick={togglePlay}
-                  className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors"
-                  title={isPlaying ? "Tạm dừng" : "Phát video"}
-                >
-                  {isPlaying ? (
-                    <Pause size={14} className="sm:w-[17px] sm:h-[17px]" />
-                  ) : (
-                    <Play size={14} className="sm:w-[17px] sm:h-[17px] fill-white" />
-                  )}
-                </button>
-
-                <button
-                  onClick={() => {
+                  onTimeUpdate={() => {
                     if (videoRef.current) {
-                      videoRef.current.currentTime = 0;
-                      setCurrentTime(0);
+                      setCurrentTime(videoRef.current.currentTime);
                     }
                   }}
-                  className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-300 hover:text-white"
-                  title="Xem lại từ đầu"
-                >
-                  <RotateCcw size={12} className="sm:w-3.5 sm:h-3.5" />
-                </button>
+                  onLoadedMetadata={() => {
+                    if (videoRef.current) {
+                      setDuration(videoRef.current.duration);
+                      videoRef.current.playbackRate = playbackSpeed;
+                    }
+                  }}
+                  onWaiting={() => setIsBuffering(true)}
+                  onCanPlay={() => setIsBuffering(false)}
+                  onPlaying={() => {
+                    setIsBuffering(false);
+                    setIsPlaying(true);
+                    triggerControlsTemporarily();
+                  }}
+                  onPause={() => {
+                    setIsPlaying(false);
+                    setShowControls(true);
+                  }}
+                  onEnded={handleVideoEnded}
+                />
 
-                <div className="font-mono text-[9px] sm:text-[11px] text-slate-300 select-none">
-                  {formatTime(currentTime)} / {formatTime(duration)}
-                </div>
-              </div>
-
-              {/* Right: Speed, Mute, Fullscreen */}
-              <div className="flex items-center gap-1 sm:gap-2">
-                <button
-                  onClick={handleSpeedChange}
-                  className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-white/10 hover:bg-white/20 rounded-md sm:rounded-lg transition-colors text-[9px] sm:text-[11px] font-bold text-slate-200"
-                  title="Tốc độ phát"
-                >
-                  {playbackSpeed}x
-                </button>
-
-                <button
-                  onClick={toggleMute}
-                  className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-200 hover:text-white"
-                  title={isMuted ? "Bật âm thanh" : "Tắt âm thanh"}
-                >
-                  {isMuted ? (
-                    <VolumeX size={14} className="sm:w-[17px] sm:h-[17px]" />
-                  ) : (
-                    <Volume2 size={14} className="sm:w-[17px] sm:h-[17px]" />
+                {/* Big Center Play / Pause Indicator on Hover / Paused */}
+                <AnimatePresence>
+                  {(!isPlaying || isBuffering) && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.85 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.85 }}
+                      className="absolute inset-0 flex items-center justify-center bg-transparent cursor-pointer"
+                      onClick={togglePlay}
+                    >
+                      {isBuffering ? (
+                        <div className="w-10 sm:w-16 h-10 sm:h-16 border-3 sm:border-4 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : !isPlaying ? (
+                        <div className="relative group/btn">
+                          <div
+                            className="absolute -inset-3 sm:-inset-4 rounded-full blur-xl opacity-75 group-hover/btn:opacity-100 transition duration-500"
+                            style={{ backgroundColor: currentTheme.glow }}
+                          />
+                          <div className="relative w-12 h-12 sm:w-18 sm:h-18 bg-white text-slate-900 rounded-full flex items-center justify-center shadow-xl transform group-hover/btn:scale-110 active:scale-95 transition-all duration-300">
+                            <Play size={20} className="ml-0.5 sm:ml-1 fill-slate-900 text-slate-900 sm:w-6 sm:h-6" />
+                          </div>
+                        </div>
+                      ) : null}
+                    </motion.div>
                   )}
-                </button>
+                </AnimatePresence>
 
-                <button
-                  onClick={handleFullscreen}
-                  className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-200 hover:text-white"
-                  title="Toàn màn hình"
+                {/* Top Bar Header on Video */}
+                <div
+                  className={`absolute top-0 left-0 right-0 p-2 sm:p-3.5 bg-gradient-to-b from-black/60 via-black/15 to-transparent flex items-center justify-between text-white pointer-events-none transition-opacity duration-300 ${
+                    showControls || !isPlaying ? "opacity-100" : "opacity-0"
+                  }`}
                 >
-                  <Maximize2 size={14} className="sm:w-4 sm:h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 animate-pulse" />
+                    <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-200 truncate max-w-[170px] sm:max-w-none">
+                      Video #{currentVideo?.order} • {currentVideo?.category}
+                    </span>
+                  </div>
+                  <span className="text-[9px] sm:text-xs font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 bg-white/20 backdrop-blur-md rounded-md sm:rounded-lg text-white">
+                    {currentVideo?.badge}
+                  </span>
+                </div>
+
+                {/* Custom Control Bar (Bottom) - Sleek, Thin & Auto-hiding */}
+                <div
+                  className={`absolute bottom-0 left-0 right-0 pt-6 pb-1.5 sm:pb-2.5 px-2 sm:px-3.5 bg-gradient-to-t from-black/75 via-black/35 to-transparent transition-opacity duration-300 ${
+                    showControls || !isPlaying ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                  }`}
+                >
+                  {/* Scrubber Progress Bar */}
+                  <div className="relative mb-1 sm:mb-2.5 flex items-center group/progress">
+                    <input
+                      type="range"
+                      min={0}
+                      max={duration || 100}
+                      step={0.1}
+                      value={currentTime}
+                      onChange={handleSeek}
+                      className="w-full h-1 sm:h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:h-2 sm:hover:h-2.5 transition-all"
+                    />
+                  </div>
+
+                  {/* Controls Row */}
+                  <div className="flex items-center justify-between text-white text-[10px] sm:text-xs">
+                    {/* Left: Play/Pause, Replay, Time */}
+                    <div className="flex items-center gap-1 sm:gap-2.5">
+                      <button
+                        onClick={togglePlay}
+                        className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors"
+                        title={isPlaying ? "Tạm dừng" : "Phát video"}
+                      >
+                        {isPlaying ? (
+                          <Pause size={14} className="sm:w-[17px] sm:h-[17px]" />
+                        ) : (
+                          <Play size={14} className="sm:w-[17px] sm:h-[17px] fill-white" />
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          if (videoRef.current) {
+                            videoRef.current.currentTime = 0;
+                            setCurrentTime(0);
+                          }
+                        }}
+                        className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-300 hover:text-white"
+                        title="Xem lại từ đầu"
+                      >
+                        <RotateCcw size={12} className="sm:w-3.5 sm:h-3.5" />
+                      </button>
+
+                      <div className="font-mono text-[9px] sm:text-[11px] text-slate-300 select-none">
+                        {formatTime(currentTime)} / {formatTime(duration)}
+                      </div>
+                    </div>
+
+                    {/* Right: Speed, Mute, Fullscreen */}
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <button
+                        onClick={handleSpeedChange}
+                        className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-white/10 hover:bg-white/20 rounded-md sm:rounded-lg transition-colors text-[9px] sm:text-[11px] font-bold text-slate-200"
+                        title="Tốc độ phát"
+                      >
+                        {playbackSpeed}x
+                      </button>
+
+                      <button
+                        onClick={toggleMute}
+                        className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-200 hover:text-white"
+                        title={isMuted ? "Bật âm thanh" : "Tắt âm thanh"}
+                      >
+                        {isMuted ? (
+                          <VolumeX size={14} className="sm:w-[17px] sm:h-[17px]" />
+                        ) : (
+                          <Volume2 size={14} className="sm:w-[17px] sm:h-[17px]" />
+                        )}
+                      </button>
+
+                      <button
+                        onClick={handleFullscreen}
+                        className="p-1 sm:p-1.5 hover:bg-white/20 rounded-lg transition-colors text-slate-200 hover:text-white"
+                        title="Toàn màn hình"
+                      >
+                        <Maximize2 size={14} className="sm:w-4 sm:h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            );
+          })()}
         </div>
 
         {/* 2. Feature Playlist / Horizontal Scroll Rail (Thước ngang) */}

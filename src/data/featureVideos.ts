@@ -1,8 +1,9 @@
 export interface FeatureVideoItem {
   id: string;
   order: number;
-  fileName: string;
+  fileName?: string;
   videoUrl: string;
+  youtubeId?: string;
   title: string;
   subtitle: string;
   badge: string;
@@ -13,14 +14,19 @@ export interface FeatureVideoItem {
   color?: string; // blue, emerald, purple, amber, rose
 }
 
-export const SUPABASE_STORAGE_BASE =
-  "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Video_web_function";
+export function extractYoutubeId(url: string): string | null {
+  if (!url) return null;
+  const match = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/
+  );
+  return match ? match[1] : null;
+}
 
-// Cấu hình Metadata chi tiết cho từng video tính năng
-// Bạn có thể tùy chỉnh tiêu đề, mô tả, badge, highlights bất kỳ lúc nào tại đây!
+// Cấu hình Metadata chi tiết cho 4 video tính năng YouTube
 export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> = {
   1: {
-    fileName: "1_Chuc_nang_tu_dien_choi gam.mp4",
+    videoUrl: "https://youtu.be/AU7SthFq5VM",
+    youtubeId: "AU7SthFq5VM",
     title: "Chức năng Từ điển thông minh, Gắn sao & Học chơi Game",
     subtitle: "Tra cứu 1-chạm & 4 chế độ Mini-Game luyện trí nhớ đỉnh cao",
     badge: "TƯƠNG TÁC ĐỘT PHÁ",
@@ -33,11 +39,12 @@ export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> 
       "Gắn sao phân loại theo Deck/Bộ thẻ thông minh",
       "4 Mini-Game tương tác kích thích phản xạ nhớ từ vựng sâu",
     ],
-    thumbnail: `${SUPABASE_STORAGE_BASE}/video-thumb-1.jpg`,
+    thumbnail: "https://img.youtube.com/vi/AU7SthFq5VM/maxresdefault.jpg",
     color: "blue",
   },
   2: {
-    fileName: "2_Nghe_tung_cau.mp4",
+    videoUrl: "https://youtu.be/mbDTGhaaeek",
+    youtubeId: "mbDTGhaaeek",
     title: "Chức năng Nghe từng câu & Luyện đoạn chứa Keywords",
     subtitle: "Luyện nghe bắt âm chính xác, bắt trúng từ khóa ăn điểm Part 1 - 4",
     badge: "BÍ QUYẾT LISTENING",
@@ -50,11 +57,12 @@ export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> 
       "Tùy chỉnh tốc độ nghe 0.75x - 1.25x linh hoạt",
       "Hiển thị phụ đề song ngữ và phân tích bẫy nghe thường gặp",
     ],
-    thumbnail: `${SUPABASE_STORAGE_BASE}/video-thumb-2.jpg`,
+    thumbnail: "https://img.youtube.com/vi/mbDTGhaaeek/maxresdefault.jpg",
     color: "emerald",
   },
   3: {
-    fileName: "3_Thong_ke_dang_bai_hay_sai.mp4",
+    videoUrl: "https://youtu.be/zD_P1jEFU3k",
+    youtubeId: "zD_P1jEFU3k",
     title: "Tính năng Thống kê dạng bài hay sai",
     subtitle: "Báo cáo lỗi sai chi tiết, định vị chính xác lỗ hổng kiến thức",
     badge: "PHÂN TÍCH THÔNG MINH",
@@ -67,12 +75,13 @@ export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> 
       "Đề xuất bộ đề và bài tập củng cố đúng trọng tâm",
       "Theo dõi sự tiến bộ rõ rệt qua từng ngày học",
     ],
-    thumbnail: `${SUPABASE_STORAGE_BASE}/video-thumb-3.jpg`,
+    thumbnail: "https://img.youtube.com/vi/zD_P1jEFU3k/maxresdefault.jpg",
     color: "purple",
   },
   4: {
-    fileName: "4_Hay_sai_cau_tu_vung_thi_phai_xem_web_nay.mp4",
-    title: "Hay sai các câu từ vựng - Nhất định phải thử website này",
+    videoUrl: "https://youtu.be/lEMIwgS0rBs",
+    youtubeId: "lEMIwgS0rBs",
+    title: "Hay sai các câu từ vựng - Nhất định phải xem video này",
     subtitle: "Giải pháp đột phá chinh phục câu hỏi từ vựng khó Part 5 & 6",
     badge: "CHIẾN THUẬT PART 5 & 6",
     category: "TỪ VỰNG ĂN ĐIỂM",
@@ -84,15 +93,13 @@ export const FEATURE_VIDEOS_METADATA: Record<number, Partial<FeatureVideoItem>> 
       "Mẹo nhận diện nhanh đáp án đúng trong 5 giây",
       "Thuật toán lặp lại ngắt quãng (SRS) giúp nhớ từ vựng vĩnh viễn",
     ],
-    thumbnail: `${SUPABASE_STORAGE_BASE}/video-thumb-4.jpg`,
+    thumbnail: "https://img.youtube.com/vi/lEMIwgS0rBs/maxresdefault.jpg",
     color: "amber",
   },
 };
 
 /**
- * Trợ giúp trích xuất số thứ tự từ tên file:
- * Ví dụ: "1-chuc-nang-tu-dien.mp4" -> 1
- *        "02 - Nghe tu khoa.mp4" -> 2
+ * Trợ giúp trích xuất số thứ tự từ tên file
  */
 export function extractOrderFromFileName(fileName: string, fallbackIndex: number): number {
   const match = fileName.match(/(?:^|[^\d])(\d+)(?:[^\d]|$)/);
@@ -123,7 +130,6 @@ export function getFeatureVideoMeta(order: number, fileName: string): Partial<Fe
     return FEATURE_VIDEOS_METADATA[order];
   }
 
-  // Fallback tự động cho các video mới upload thêm (5, 6, 7...)
   return {
     title: formatFileNameToTitle(fileName) || `Tính năng đặc biệt số ${order}`,
     subtitle: "Khám phá công cụ hỗ trợ luyện thi TOEIC đột phá",
@@ -141,26 +147,25 @@ export function getFeatureVideoMeta(order: number, fileName: string): Partial<Fe
 }
 
 /**
- * Danh sách video mặc định dự phòng chuẩn xác (đảm bảo luôn có video URL thật)
+ * Danh sách video mặc định chuẩn xác từ 4 link YouTube
  */
 export function getDefaultFeatureVideos(): FeatureVideoItem[] {
   return Object.entries(FEATURE_VIDEOS_METADATA).map(([key, meta]) => {
     const order = parseInt(key, 10);
-    const fileName = meta.fileName || `${order}_video.mp4`;
-    const publicUrl = `${SUPABASE_STORAGE_BASE}/${encodeURIComponent(fileName)}`;
+    const ytId = meta.youtubeId || extractYoutubeId(meta.videoUrl || "") || "";
 
     return {
-      id: `default-video-${order}`,
+      id: `youtube-feature-video-${order}`,
       order: order,
-      fileName: fileName,
-      videoUrl: publicUrl,
+      videoUrl: meta.videoUrl || `https://youtu.be/${ytId}`,
+      youtubeId: ytId,
       title: meta.title || `Tính năng số ${order}`,
       subtitle: meta.subtitle || "",
       badge: meta.badge || `TÍNH NĂNG ${order}`,
       category: meta.category || "TÍNH NĂNG",
       description: meta.description || "",
       highlights: meta.highlights || [],
-      thumbnail: meta.thumbnail,
+      thumbnail: meta.thumbnail || (ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : undefined),
       color: meta.color || "blue",
     };
   });
