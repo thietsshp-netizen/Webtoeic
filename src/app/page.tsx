@@ -329,14 +329,13 @@ function HomeContent() {
 
         const bucket = 'marketing';
 
-        // 1. Quét bảng điểm (hỗ trợ cả bang-diem và Bang-diem)
-        let scoreFolder = 'bang-diem';
-        let { data: scoreData } = await supabase.storage.from(bucket).list(scoreFolder);
-        if (!scoreData || scoreData.length === 0) {
-          scoreFolder = 'Bang-diem';
-          const res = await supabase.storage.from(bucket).list(scoreFolder);
-          scoreData = res.data;
-        }
+        // Lấy danh sách folder thực tế trong bucket marketing để lấy chính xác case-sensitive name
+        const { data: rootItems } = await supabase.storage.from(bucket).list();
+        const scoreFolder = rootItems?.find((x: any) => x.name.toLowerCase() === 'bang-diem')?.name || 'bang-diem';
+        const feedbackFolder = rootItems?.find((x: any) => x.name.toLowerCase() === 'cam-nhan')?.name || 'Cam-nhan';
+
+        // 1. Quét bảng điểm
+        const { data: scoreData } = await supabase.storage.from(bucket).list(scoreFolder);
         if (scoreData && scoreData.length > 0) {
           const sortedScores = scoreData
             .filter((f: any) => f.name && !f.name.startsWith('.') && f.name !== '.emptyKeep')
@@ -348,14 +347,8 @@ function HomeContent() {
           setScoreImages(sortedScores);
         }
 
-        // 2. Quét cảm nhận học viên (hỗ trợ cả Cam-nhan và cam-nhan)
-        let feedbackFolder = 'cam-nhan';
-        let { data: feedbackData } = await supabase.storage.from(bucket).list(feedbackFolder);
-        if (!feedbackData || feedbackData.length === 0) {
-          feedbackFolder = 'Cam-nhan';
-          const res = await supabase.storage.from(bucket).list(feedbackFolder);
-          feedbackData = res.data;
-        }
+        // 2. Quét cảm nhận học viên
+        const { data: feedbackData } = await supabase.storage.from(bucket).list(feedbackFolder);
         if (feedbackData && feedbackData.length > 0) {
           const sortedFeedback = feedbackData
             .filter((f: any) => f.name && !f.name.startsWith('.') && f.name !== '.emptyKeep')
