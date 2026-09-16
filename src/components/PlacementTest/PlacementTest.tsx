@@ -205,11 +205,11 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-100 animate-in fade-in duration-300 font-sans overflow-hidden overscroll-none">
       <div className="w-full h-[100dvh] flex flex-col bg-[#f0f2f5] overflow-hidden">
         {/* --- TOPBAR --- */}
-        <div className="h-14 bg-[#2c3e50] text-white flex items-center justify-between px-6 shadow-md z-50">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center font-bold italic">HT</div>
-              <span className="font-bold tracking-tight uppercase">HocToeic <span className="text-blue-400">Diagnostic</span></span>
+        <div className="h-14 bg-[#2c3e50] text-white flex items-center justify-between px-3 sm:px-6 shadow-md z-50">
+          <div className="flex items-center gap-3 sm:gap-6 min-w-0">
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center font-bold italic text-sm">HT</div>
+              <span className="font-bold tracking-tight uppercase text-xs sm:text-base truncate">HocToeic <span className="text-blue-400">Diagnostic</span></span>
             </div>
             {step === "testing" && currentGroup && (
               <div className="hidden md:flex items-center gap-2 text-sm font-medium text-slate-300">
@@ -219,20 +219,20 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
             )}
           </div>
 
-          <div className="flex items-center gap-4 md:gap-8">
+          <div className="flex items-center gap-2 sm:gap-4 md:gap-8 shrink-0">
             {step === "testing" && (
               <div className={clsx(
-                "flex items-center gap-2 px-4 py-1.5 rounded-full border transition-all duration-500",
+                "flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full border transition-all duration-500",
                 !isReadingStarted ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" :
                   timeLeft < 60 ? "bg-red-500/20 border-red-500 text-red-500 animate-pulse" : "bg-black/20 border-white/10 text-white"
               )}>
-                <Clock size={16} className={!isReadingStarted ? "text-emerald-400" : timeLeft < 60 ? "text-red-500" : "text-blue-400"} />
-                <span className="font-mono text-lg font-bold tabular-nums">
+                <Clock size={14} className={clsx("shrink-0", !isReadingStarted ? "text-emerald-400" : timeLeft < 60 ? "text-red-500" : "text-blue-400")} />
+                <span className="font-mono text-sm sm:text-lg font-bold tabular-nums">
                   {isReadingStarted ? formatTime(timeLeft) : "LISTENING"}
                 </span>
               </div>
             )}
-            <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-lg transition-colors"><X size={24} /></button>
+            <button onClick={onClose} className="p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors"><X size={20} className="sm:w-6 sm:h-6" /></button>
           </div>
         </div>
 
@@ -240,17 +240,17 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
         <div className="flex-1 min-h-0 overflow-hidden relative flex flex-col">
           {showQuestionSheet && <QuestionSheet />}
           {step === "intro" && (
-            <div className="flex-1 flex flex-col items-center justify-center p-6 text-center animate-in zoom-in-95 duration-500">
-              <div className="bg-white p-12 rounded-[2rem] shadow-xl border border-slate-200 max-w-2xl w-full">
-                <div className="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-8 mx-auto">
-                  <LayoutGrid size={40} />
+            <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 text-center animate-in zoom-in-95 duration-500">
+              <div className="bg-white p-5 sm:p-8 md:p-12 rounded-3xl sm:rounded-[2rem] shadow-xl border border-slate-200 max-w-2xl w-full">
+                <div className="w-14 h-14 sm:w-20 sm:h-20 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-5 sm:mb-8 mx-auto">
+                  <LayoutGrid className="w-7 h-7 sm:w-10 sm:h-10" />
                 </div>
-                <h1 className="text-2xl font-black text-slate-800 mb-4 italic">Chào mừng bạn đến với bài test kiểm tra trình độ</h1>
-                <p className="text-slate-500 mb-10 leading-relaxed font-medium italic">
-                  Bài test sẽ diễn ra trong khoảng 22 phút. <br />
+                <h1 className="text-xl sm:text-2xl font-black text-slate-800 mb-3 sm:mb-4 italic">Chào mừng bạn đến với bài test kiểm tra trình độ</h1>
+                <p className="text-slate-500 text-xs sm:text-base mb-6 sm:mb-10 leading-relaxed font-medium italic">
+                  Bài test sẽ diễn ra trong khoảng 22 phút. <br className="hidden sm:inline" />
                   Hãy đảm bảo bạn sẵn sàng để bài kiểm tra không bị gián đoạn nhé.
                 </p>
-                <button onClick={() => setStep("testing")} className="w-full bg-[#2c3e50] text-white py-5 rounded-2xl font-bold text-lg uppercase tracking-widest hover:bg-[#1a252f] transition-all flex items-center justify-center gap-3">Bắt đầu làm bài <ChevronRight size={24} /></button>
+                <button onClick={() => setStep("testing")} className="w-full bg-[#2c3e50] text-white py-3.5 sm:py-5 rounded-2xl font-bold text-sm sm:text-lg uppercase tracking-widest hover:bg-[#1a252f] transition-all flex items-center justify-center gap-2 sm:gap-3">Bắt đầu làm bài <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" /></button>
               </div>
             </div>
           )}
@@ -286,21 +286,21 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
 
                 <div className={clsx(
                   "flex-1 overflow-y-auto scroll-smooth flex flex-col",
-                  isSplitView ? "lg:flex-row" : "items-center justify-center p-6 md:p-10"
+                  isSplitView ? "lg:flex-row" : "items-center justify-center p-3 sm:p-6 md:p-10"
                 )}>
                   {currentGroup && (
                     <div className={clsx(
-                      "relative min-h-[100px] border-r border-slate-200 flex flex-col items-center justify-center p-8 md:p-12",
+                      "relative min-h-[100px] border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col items-center justify-center p-4 sm:p-8 md:p-12",
                       isSplitView ? "lg:w-1/2 lg:h-full lg:sticky lg:top-0" : "max-w-5xl w-full"
                     )}>
                       {currentGroup.audioUrl && (
-                        <div className="absolute top-6 right-6 z-10">
+                        <div className="absolute top-3 right-3 sm:top-6 sm:right-6 z-10">
                           <button
                             onClick={() => { if (audioRef.current && !isTimeUp) { audioRef.current.currentTime = 0; audioRef.current.play(); } }}
-                            className="w-16 h-16 bg-[#2c3e50] text-white rounded-full flex items-center justify-center hover:bg-[#1a252f] transition-all shadow-xl active:scale-90 shrink-0"
+                            className="w-12 h-12 sm:w-16 sm:h-16 bg-[#2c3e50] text-white rounded-full flex items-center justify-center hover:bg-[#1a252f] transition-all shadow-xl active:scale-90 shrink-0"
                             title="Play Audio"
                           >
-                            <Volume2 size={32} />
+                            <Volume2 className="w-6 h-6 sm:w-8 sm:h-8" />
                             <audio
                               ref={audioRef}
                               src={currentGroup.audioUrl}
@@ -312,18 +312,18 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
                       )}
 
                       {currentGroup.imageUrl && (
-                        <div className="bg-white p-2 rounded-xl border-2 border-slate-100 shadow-sm overflow-hidden w-full max-w-2xl mx-auto">
-                          <img src={formatImageUrl(currentGroup.imageUrl)} alt="Exam Stimulus" className="w-full h-auto object-contain max-h-[600px] mx-auto rounded-lg" />
+                        <div className="bg-white p-1.5 sm:p-2 rounded-xl border-2 border-slate-100 shadow-sm overflow-hidden w-full max-w-2xl mx-auto">
+                          <img src={formatImageUrl(currentGroup.imageUrl)} alt="Exam Stimulus" className="w-full h-auto object-contain max-h-[350px] sm:max-h-[600px] mx-auto rounded-lg" />
                         </div>
                       )}
 
                       {currentGroup.passageText && (
                         <div className={clsx(
                           "w-full overflow-hidden",
-                          currentGroup.part === 7 ? "max-w-none" : "bg-white border-2 border-slate-100 p-10 rounded-xl shadow-inner max-w-3xl",
+                          currentGroup.part === 7 ? "max-w-none" : "bg-white border-2 border-slate-100 p-4 sm:p-6 md:p-10 rounded-xl shadow-inner max-w-3xl",
                           currentGroup.part <= 4 && "hidden"
                         )}>
-                          <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: formatPassage(currentGroup.passageText) }} />
+                          <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed font-medium text-xs sm:text-base" dangerouslySetInnerHTML={{ __html: formatPassage(currentGroup.passageText) }} />
                         </div>
                       )}
                     </div>
@@ -331,22 +331,22 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
 
                   {currentGroup && (
                     <div className={clsx(
-                      "flex flex-col p-8 md:p-12 bg-white",
+                      "flex flex-col p-4 sm:p-8 md:p-12 bg-white",
                       isSplitView ? "lg:w-1/2" : "max-w-5xl w-full"
                     )}>
-                      <div className="space-y-6 pb-32">
+                      <div className="space-y-6 pb-20 sm:pb-32">
                         {currentGroup.questions.map((q: any) => (
                           <div key={q.id} className="space-y-3 animate-in slide-in-from-bottom-2 duration-300">
-                            <div className="flex items-start gap-4 border-b border-slate-100 pb-2 relative">
-                              <span className="w-8 h-8 bg-[#e74c3c] text-white rounded flex items-center justify-center font-bold text-xs shadow-sm shrink-0">{q.questionNo}</span>
+                            <div className="flex items-start gap-3 sm:gap-4 border-b border-slate-100 pb-2 relative">
+                              <span className="w-7 h-7 sm:w-8 sm:h-8 bg-[#e74c3c] text-white rounded flex items-center justify-center font-bold text-xs shadow-sm shrink-0">{q.questionNo}</span>
                               <div className="flex-1 flex flex-col gap-1">
-                                <h3 className="font-bold text-slate-800 text-lg md:text-xl italic leading-tight">
+                                <h3 className="font-bold text-slate-800 text-base sm:text-lg md:text-xl italic leading-tight">
                                   {hideOptionText ? "Mark your answer on the answer sheet:" : (q.questionText || "Chọn đáp án đúng nhất:")}
                                 </h3>
                               </div>
                             </div>
 
-                            <div className={clsx("grid gap-0.5", hideOptionText ? "grid-cols-1 w-20 mx-auto md:mx-0" : "grid-cols-1")}>
+                            <div className={clsx("grid gap-1", hideOptionText ? "grid-cols-1 w-20 mx-auto md:mx-0" : "grid-cols-1")}>
                               {['A', 'B', 'C', 'D'].map((opt) => {
                                 const optionText = q[`option${opt}`];
                                 if (!optionText && opt === 'D' && currentGroup.part === 2) return null;
@@ -357,7 +357,7 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
                                     disabled={isTimeUp}
                                     onClick={() => handleAnswer(q.id, opt)}
                                     className={clsx(
-                                      "text-left p-1 rounded-xl transition-all flex items-center gap-3 group border-2 outline-none",
+                                      "text-left p-2 sm:p-2.5 rounded-xl transition-all flex items-center gap-3 group border-2 outline-none min-h-[44px]",
                                       isSelected
                                         ? "bg-blue-50/50 border-blue-600/20 shadow-sm"
                                         : "bg-transparent border-transparent hover:bg-slate-50/50",
@@ -368,7 +368,7 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
                                       "w-7 h-7 rounded-full border-2 flex items-center justify-center font-bold text-xs shrink-0 transition-all",
                                       isSelected ? "bg-[#2c3e50] border-[#2c3e50] text-white shadow-lg" : "bg-white border-slate-300 text-slate-500 group-hover:border-slate-800 group-hover:text-slate-800"
                                     )}>{opt}</div>
-                                    {!hideOptionText && <span className={clsx("font-bold text-sm md:text-base leading-tight transition-colors", isSelected ? "text-slate-900" : "text-slate-600 group-hover:text-slate-900")}>{optionText}</span>}
+                                    {!hideOptionText && <span className={clsx("font-bold text-xs sm:text-sm md:text-base leading-tight transition-colors", isSelected ? "text-slate-900" : "text-slate-600 group-hover:text-slate-900")}>{optionText}</span>}
                                   </button>
                                 );
                               })}
@@ -382,17 +382,17 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
                 </div>
 
                 {/* --- FOOTER --- */}
-                <div className="h-20 bg-slate-50 border-t border-slate-200 flex items-center justify-between px-6 z-30">
-                  <button onClick={() => setShowQuestionSheet(true)} className="flex items-center gap-2 text-slate-500 font-bold text-[10px] uppercase tracking-widest hover:text-slate-900 transition-colors">
-                    <LayoutGrid size={18} />
-                    <span className="hidden md:inline">Xem bảng câu hỏi</span>
+                <div className="h-16 sm:h-20 bg-slate-50 border-t border-slate-200 flex items-center justify-between px-3 sm:px-6 z-30">
+                  <button onClick={() => setShowQuestionSheet(true)} className="flex items-center gap-1.5 sm:gap-2 text-slate-500 font-bold text-[10px] uppercase tracking-widest hover:text-slate-900 transition-colors">
+                    <LayoutGrid size={16} className="sm:w-[18px] sm:h-[18px]" />
+                    <span className="hidden sm:inline">Xem bảng câu hỏi</span>
                   </button>
-                  <div className="flex items-center gap-4">
-                    <button onClick={prevStep} disabled={currentGroupIdx === 0 || isTimeUp} className="px-6 py-2.5 rounded font-bold text-xs uppercase tracking-widest border border-slate-300 text-slate-600 bg-white hover:bg-slate-50 disabled:opacity-30 flex items-center gap-2">
-                      <ChevronLeft size={18} /> Back
+                  <div className="flex items-center gap-2 sm:gap-4">
+                    <button onClick={prevStep} disabled={currentGroupIdx === 0 || isTimeUp} className="px-3 sm:px-6 py-2 sm:py-2.5 rounded font-bold text-[11px] sm:text-xs uppercase tracking-widest border border-slate-300 text-slate-600 bg-white hover:bg-slate-50 disabled:opacity-30 flex items-center gap-1 sm:gap-2">
+                      <ChevronLeft size={16} /> Back
                     </button>
-                    <button onClick={nextStep} disabled={isTimeUp} className={clsx("px-8 py-2.5 rounded font-bold text-xs uppercase tracking-widest transition-all flex items-center gap-2 text-white shadow-md active:scale-95 disabled:opacity-30", currentGroupIdx === totalGroups - 1 ? "bg-emerald-600 hover:bg-emerald-700" : "bg-blue-600 hover:bg-blue-700")}>
-                      {currentGroupIdx === totalGroups - 1 ? <>Finish <Send size={18} /></> : <>Next <ChevronRight size={18} /></>}
+                    <button onClick={nextStep} disabled={isTimeUp} className={clsx("px-4 sm:px-8 py-2 sm:py-2.5 rounded font-bold text-[11px] sm:text-xs uppercase tracking-widest transition-all flex items-center gap-1 sm:gap-2 text-white shadow-md active:scale-95 disabled:opacity-30", currentGroupIdx === totalGroups - 1 ? "bg-emerald-600 hover:bg-emerald-700" : "bg-blue-600 hover:bg-blue-700")}>
+                      {currentGroupIdx === totalGroups - 1 ? <>Finish <Send size={16} /></> : <>Next <ChevronRight size={16} /></>}
                     </button>
                   </div>
                   <div className="hidden md:block text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">
@@ -405,30 +405,30 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
           )}
 
           {step === "result" && (
-            <div className="flex-1 flex flex-col items-center justify-center p-6 text-center animate-in zoom-in-95 duration-500">
-              <div className="bg-white p-12 rounded-[2rem] shadow-xl border border-slate-200 max-w-3xl w-full">
-                <div className="w-20 h-20 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mb-8 mx-auto"><Trophy size={40} /></div>
-                <h1 className="text-3xl font-black text-slate-800 mb-2 uppercase italic">KẾT QUẢ CỦA BẠN</h1>
-                <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mb-10">KẾT QUẢ ĐÁNH GIÁ TRÌNH ĐỘ</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                  <div className="bg-slate-50 p-8 rounded-3xl border border-slate-100 flex flex-col items-center justify-center group">
-                    <div className="text-6xl font-black text-slate-900 mb-2 group-hover:scale-110 transition-transform tabular-nums">{calculateScore().scaledScore}</div>
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Điểm dự kiến (Thang 990)</div>
-                    <div className="mt-4 text-[10px] font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Đúng {calculateScore().correct}/{calculateScore().total} câu</div>
+            <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 text-center animate-in zoom-in-95 duration-500 overflow-y-auto">
+              <div className="bg-white p-5 sm:p-8 md:p-12 rounded-3xl sm:rounded-[2rem] shadow-xl border border-slate-200 max-w-3xl w-full my-auto">
+                <div className="w-14 h-14 sm:w-20 sm:h-20 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mb-4 sm:mb-8 mx-auto"><Trophy className="w-7 h-7 sm:w-10 sm:h-10" /></div>
+                <h1 className="text-xl sm:text-3xl font-black text-slate-800 mb-1 sm:mb-2 uppercase italic">KẾT QUẢ CỦA BẠN</h1>
+                <p className="text-slate-400 font-bold uppercase tracking-widest text-[9px] sm:text-[10px] mb-6 sm:mb-10">KẾT QUẢ ĐÁNH GIÁ TRÌNH ĐỘ</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 mb-6 sm:mb-10">
+                  <div className="bg-slate-50 p-5 sm:p-8 rounded-3xl border border-slate-100 flex flex-col items-center justify-center group">
+                    <div className="text-4xl sm:text-6xl font-black text-slate-900 mb-1 sm:mb-2 group-hover:scale-110 transition-transform tabular-nums">{calculateScore().scaledScore}</div>
+                    <div className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest">Điểm dự kiến (Thang 990)</div>
+                    <div className="mt-3 sm:mt-4 text-[10px] font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Đúng {calculateScore().correct}/{calculateScore().total} câu</div>
                   </div>
-                  <div className="bg-[#2c3e50] p-8 rounded-3xl text-white text-left relative overflow-hidden">
+                  <div className="bg-[#2c3e50] p-5 sm:p-8 rounded-3xl text-white text-left relative overflow-hidden">
                     <div className="absolute -right-4 -bottom-4 opacity-10 rotate-12"><Trophy size={80} /></div>
-                    <div className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-3">LỘ TRÌNH GỢI Ý</div>
-                    <div className="text-xl font-bold mb-2 italic">{getRecommendation(calculateScore().scaledScore).title}</div>
+                    <div className="text-[9px] sm:text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-2 sm:mb-3">LỘ TRÌNH GỢI Ý</div>
+                    <div className="text-lg sm:text-xl font-bold mb-1.5 sm:mb-2 italic">{getRecommendation(calculateScore().scaledScore).title}</div>
                     <p className="text-slate-400 text-xs leading-relaxed italic">{getRecommendation(calculateScore().scaledScore).desc}</p>
                   </div>
                 </div>
-                <div className="flex flex-col gap-3 mt-6">
-                  <div className="flex gap-4">
-                    <button onClick={onClose} className="flex-1 py-4 border-2 border-slate-100 rounded-xl font-bold text-slate-500 hover:bg-slate-50 transition-all uppercase text-[11px] tracking-widest">Thoát</button>
-                    <button onClick={() => { setCurrentGroupIdx(0); setStep("review"); }} className="flex-1 py-4 bg-white border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all uppercase text-[11px] tracking-widest">Xem chi tiết đáp án</button>
+                <div className="flex flex-col gap-2.5 sm:gap-3 mt-4 sm:mt-6">
+                  <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-4">
+                    <button onClick={onClose} className="flex-1 py-3 sm:py-4 border-2 border-slate-100 rounded-xl font-bold text-slate-500 hover:bg-slate-50 transition-all uppercase text-[10px] sm:text-[11px] tracking-widest">Thoát</button>
+                    <button onClick={() => { setCurrentGroupIdx(0); setStep("review"); }} className="flex-1 py-3 sm:py-4 bg-white border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all uppercase text-[10px] sm:text-[11px] tracking-widest">Xem chi tiết đáp án</button>
                   </div>
-                  <button onClick={() => { onClose(); window.location.href = "/courses"; }} className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all uppercase text-[11px] tracking-widest shadow-lg shadow-blue-100">Tham khảo lộ trình học</button>
+                  <button onClick={() => { onClose(); window.location.href = "/courses"; }} className="w-full py-3 sm:py-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all uppercase text-[10px] sm:text-[11px] tracking-widest shadow-lg shadow-blue-100">Tham khảo lộ trình học</button>
                 </div>
               </div>
             </div>
@@ -437,23 +437,23 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
           {step === "review" && (
             <div className="flex-1 min-h-0 flex flex-col overflow-hidden bg-slate-50">
               {/* Header */}
-              <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-                <div className="flex items-center gap-3">
-                  <button onClick={() => { setStep("result"); setCurrentGroupIdx(0); }} className="p-2 hover:bg-slate-100 rounded-lg text-slate-500">
-                    <ChevronLeft size={24} />
+              <div className="bg-white border-b border-slate-200 px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between sticky top-0 z-10">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <button onClick={() => { setStep("result"); setCurrentGroupIdx(0); }} className="p-1.5 sm:p-2 hover:bg-slate-100 rounded-lg text-slate-500">
+                    <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
                   </button>
-                  <h2 className="font-black text-slate-800 uppercase italic">Review: Part {currentGroup.part}</h2>
+                  <h2 className="font-black text-slate-800 text-sm sm:text-base uppercase italic">Review: Part {currentGroup.part}</h2>
                 </div>
-                <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                <div className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest">
                   Question {currentGroup.questions[0].questionNo} - {currentGroup.questions[currentGroup.questions.length - 1].questionNo}
                 </div>
               </div>
 
               {/* Split View Content */}
-              <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-hidden bg-white">
+              <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden bg-white">
                 {/* Left Side: Media & Transcript */}
-                <div className="lg:w-1/2 flex-1 overflow-y-auto border-r border-slate-200 p-8 md:p-12 bg-slate-50/50">
-                  <div className="max-w-3xl mx-auto space-y-8">
+                <div className="lg:w-1/2 overflow-y-auto border-b lg:border-b-0 lg:border-r border-slate-200 p-4 sm:p-6 md:p-12 bg-slate-50/50">
+                  <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8">
                     {currentGroup.audioUrl && (
                       <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
                         <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-600"><Volume2 size={24} /></div>
@@ -515,8 +515,8 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
                 </div>
 
                 {/* Right Side: Questions & Explanations */}
-                <div className="lg:w-1/2 flex-1 overflow-y-auto p-8 md:p-12">
-                  <div className="max-w-3xl mx-auto space-y-10 pb-20">
+                <div className="lg:w-1/2 overflow-y-auto p-4 sm:p-6 md:p-12">
+                  <div className="max-w-3xl mx-auto space-y-8 sm:space-y-10 pb-20">
                     {currentGroup.questions.map((q: any, idx: number) => {
                       const userAnswer = userAnswers[q.id];
 
@@ -809,7 +809,7 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
                                   {/* Giải thích tách rời hoàn toàn */}
                                   {why && (
                                     <div className={clsx(
-                                      "ml-14 text-[12px] leading-relaxed p-4 rounded-2xl border-l-4 bg-white/50 shadow-sm border border-slate-100",
+                                      "ml-2 sm:ml-14 text-[11px] sm:text-[12px] leading-relaxed p-3 sm:p-4 rounded-2xl border-l-4 bg-white/50 shadow-sm border border-slate-100",
                                       isCorrectChoice ? "border-emerald-400 text-emerald-800" : "border-red-300 text-slate-700"
                                     )}>
                                       <div className="flex items-center gap-2 mb-1.5">
@@ -950,36 +950,36 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
               </div>
 
               {/* Navigation Footer for Review */}
-              <div className="h-20 bg-white border-t border-slate-200 flex items-center justify-between px-6 z-30">
+              <div className="h-16 sm:h-20 bg-white border-t border-slate-200 flex items-center justify-between px-3 sm:px-6 z-30">
                 <button
                   onClick={() => { setStep("result"); setCurrentGroupIdx(0); }}
-                  className="px-6 py-2.5 rounded font-bold text-xs uppercase tracking-widest border border-slate-300 text-slate-600 bg-white hover:bg-slate-50 flex items-center gap-2"
+                  className="px-3 sm:px-6 py-2 sm:py-2.5 rounded font-bold text-[10px] sm:text-xs uppercase tracking-widest border border-slate-300 text-slate-600 bg-white hover:bg-slate-50 flex items-center gap-1 sm:gap-2"
                 >
-                  <ChevronLeft size={14} /> Quay lại bảng kết quả
+                  <ChevronLeft size={14} /> <span className="hidden sm:inline">Quay lại kết quả</span><span className="sm:hidden">Kết quả</span>
                 </button>
 
                 <button
                   onClick={() => setShowQuestionSheet(true)}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all font-semibold border border-slate-200 text-xs uppercase tracking-widest"
+                  className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all font-semibold border border-slate-200 text-[10px] sm:text-xs uppercase tracking-widest"
                 >
-                  <LayoutGrid size={18} />
+                  <LayoutGrid size={16} className="sm:w-[18px] sm:h-[18px]" />
                   <span>Bảng câu hỏi</span>
                 </button>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4">
                   <button
                     onClick={() => setCurrentGroupIdx(prev => Math.max(0, prev - 1))}
                     disabled={currentGroupIdx === 0}
-                    className="px-6 py-2.5 rounded font-bold text-xs uppercase tracking-widest border border-slate-300 text-slate-600 bg-white hover:bg-slate-50 disabled:opacity-30"
+                    className="px-3 sm:px-6 py-2 sm:py-2.5 rounded font-bold text-xs uppercase tracking-widest border border-slate-300 text-slate-600 bg-white hover:bg-slate-50 disabled:opacity-30"
                   >
-                    <ChevronLeft size={18} />
+                    <ChevronLeft size={16} className="sm:w-[18px] sm:h-[18px]" />
                   </button>
                   <button
                     onClick={() => setCurrentGroupIdx(prev => Math.min(totalGroups - 1, prev + 1))}
                     disabled={currentGroupIdx === totalGroups - 1}
-                    className="px-6 py-2.5 rounded font-bold text-xs uppercase tracking-widest border border-slate-300 text-slate-600 bg-white hover:bg-slate-50 disabled:opacity-30"
+                    className="px-3 sm:px-6 py-2 sm:py-2.5 rounded font-bold text-xs uppercase tracking-widest border border-slate-300 text-slate-600 bg-white hover:bg-slate-50 disabled:opacity-30"
                   >
-                    <ChevronRight size={18} />
+                    <ChevronRight size={16} className="sm:w-[18px] sm:h-[18px]" />
                   </button>
                 </div>
               </div>
