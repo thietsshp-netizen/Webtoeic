@@ -358,7 +358,7 @@ export default function FeatureVideoShowcase() {
   if (videos.length === 0) return null;
 
   return (
-    <section className="mt-10 sm:mt-16 md:mt-20 mb-8 sm:mb-16 md:mb-20 relative overflow-hidden lg:overflow-visible max-w-5xl mx-auto px-1 sm:px-4">
+    <section className="mb-12 sm:mb-20 md:mb-24 relative overflow-hidden lg:overflow-visible max-w-5xl mx-auto px-1 sm:px-4">
       {/* Background Ambient Glow */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[650px] lg:w-[850px] h-[320px] sm:h-[450px] lg:h-[550px] blur-[110px] sm:blur-[140px] -z-10 rounded-full transition-colors duration-1000 opacity-40 sm:opacity-50 pointer-events-none"

@@ -690,7 +690,7 @@ function HomeContent() {
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 overflow-x-hidden w-full">
 
             {/* Hero Section */}
-            <section className="text-center mb-12 sm:mb-16 relative overflow-hidden px-1">
+            <section className="text-center mb-8 sm:mb-12 md:mb-16 relative overflow-hidden px-1">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[600px] h-[300px] bg-blue-50/50 blur-[120px] -z-10 rounded-full"></div>
 
               <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-emerald-50 text-emerald-600 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-widest mb-6 sm:mb-10 border border-emerald-100 shadow-sm max-w-full">
@@ -706,7 +706,7 @@ function HomeContent() {
                 Hệ thống lớp học tại <span className="text-slate-900 font-bold">hoctoeic</span> được thiết kế tinh gọn, tập trung hoàn toàn vào việc lấy lại gốc tiếng Anh và rèn luyện kỹ năng giải đề thực chiến để đạt mục tiêu trong thời gian ngắn nhất.
               </p>
 
-              <div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-2.5 sm:gap-5 mt-6 sm:mt-8 mb-10 sm:mb-14 px-1 mx-auto w-fit max-w-full">
+              <div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-2.5 sm:gap-5 mt-6 sm:mt-8 mb-6 sm:mb-8 px-1 mx-auto w-fit max-w-full">
                 {/* Nút 1: Xem danh sách lớp học */}
                 <Link
                   href="/courses"
@@ -839,7 +839,7 @@ function HomeContent() {
             {/* Khung Video Giới Thiệu Tính Năng Đặc Biệt */}
             <FeatureVideoShowcase />
 
-            <section className="bg-gradient-to-b from-blue-50/60 via-indigo-50/30 to-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-blue-100/80 shadow-sm mb-10 sm:mb-16 relative overflow-hidden">
+            <section className="bg-gradient-to-b from-blue-50/60 via-indigo-50/30 to-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-blue-100/80 shadow-sm mb-12 sm:mb-20 md:mb-24 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.03),transparent)] pointer-events-none"></div>
 
               <div className="relative z-10 max-w-5xl mx-auto space-y-8 sm:space-y-10">
@@ -891,7 +891,7 @@ function HomeContent() {
               </div>
             </section>
 
-            <section className="bg-slate-50 rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-6 sm:p-10 md:p-14 border border-slate-200/60 relative overflow-hidden mb-10 sm:mb-16">
+            <section className="bg-slate-50 rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-6 sm:p-10 md:p-14 border border-slate-200/60 relative overflow-hidden mb-12 sm:mb-20 md:mb-24">
               <div className="relative z-10">
                 <div className="text-center mb-10 sm:mb-12">
                   <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold uppercase tracking-widest mb-4 border border-emerald-100 shadow-sm">
@@ -909,7 +909,7 @@ function HomeContent() {
               </div>
             </section>
 
-            <section className="bg-gradient-to-b from-emerald-50/50 via-teal-50/20 to-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-emerald-100/80 shadow-sm mb-10 sm:mb-16 relative overflow-hidden">
+            <section className="bg-gradient-to-b from-emerald-50/50 via-teal-50/20 to-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-emerald-100/80 shadow-sm mb-12 sm:mb-20 md:mb-24 relative overflow-hidden">
               <div className="relative z-10 max-w-5xl mx-auto space-y-8 sm:space-y-10">
                 <div className="text-center max-w-3xl mx-auto space-y-3 pb-6 border-b border-emerald-100/60">
                   <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold uppercase tracking-widest border border-emerald-100 shadow-sm">
@@ -930,7 +930,7 @@ function HomeContent() {
               </div>
             </section>
 
-            <section className="bg-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-slate-100 shadow-sm mb-10 sm:mb-16 relative overflow-hidden">
+            <section className="bg-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-slate-100 shadow-sm relative overflow-hidden">
               <div className="relative z-10 max-w-5xl mx-auto space-y-8 sm:space-y-10">
                 {/* 1. Header & Thông tin căn giữa phía trên */}
                 <div className="text-center max-w-3xl mx-auto space-y-4 pb-6 border-b border-slate-100">
