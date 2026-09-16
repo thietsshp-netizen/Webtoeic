@@ -705,20 +705,23 @@ function HomeContent() {
                 Hệ thống lớp học tại <span className="text-slate-900 font-bold">hoctoeic</span> được thiết kế tinh gọn, tập trung hoàn toàn vào việc lấy lại gốc tiếng Anh và rèn luyện kỹ năng giải đề thực chiến để đạt mục tiêu trong thời gian ngắn nhất.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 my-4 px-2 w-full max-w-lg mx-auto sm:max-w-none">
+              <div className="grid grid-cols-2 gap-2 sm:gap-6 my-4 px-1 sm:px-2 w-full max-w-xl mx-auto">
                 {/* Nút 1: Xem danh sách lớp học */}
                 <Link
                   href="/courses"
-                  className="relative group bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white px-6 sm:px-10 py-4 sm:py-5 rounded-[2.5rem] font-black text-xs sm:text-sm uppercase tracking-widest shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer border border-blue-400/30 w-full sm:w-auto"
+                  className="relative group bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white px-2 sm:px-8 py-3.5 sm:py-5 rounded-2xl sm:rounded-[2.5rem] font-black text-[10px] xs:text-xs sm:text-sm uppercase tracking-tight sm:tracking-widest shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 cursor-pointer border border-blue-400/30 w-full"
                 >
-                  <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-in-out pointer-events-none rounded-[2.5rem]" />
+                  <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-in-out pointer-events-none rounded-2xl sm:rounded-[2.5rem]" />
                   
-                  <BookOpen size={18} className="text-blue-100 group-hover:scale-110 transition-transform shrink-0" />
-                  <span className="truncate">Xem danh sách lớp học</span>
-                  <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform text-white shrink-0" />
+                  <BookOpen size={16} className="text-blue-100 group-hover:scale-110 transition-transform shrink-0 hidden xs:inline-block" />
+                  <span className="truncate">
+                    <span className="inline sm:hidden">Xem danh sách lớp</span>
+                    <span className="hidden sm:inline">Xem danh sách lớp học</span>
+                  </span>
+                  <ArrowRight size={15} className="group-hover:translate-x-1.5 transition-transform text-white shrink-0" />
 
-                  <span className="absolute -bottom-2 -right-1 flex items-center justify-center gap-1 px-2 py-0.5 bg-amber-400 text-slate-900 rounded-full shadow-md text-[9px] font-black tracking-tighter animate-bounce group-hover:scale-110 transition-transform select-none z-10">
-                    <MousePointerClick size={12} className="stroke-[2.5]" />
+                  <span className="absolute -bottom-2 -right-1 flex items-center justify-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 bg-amber-400 text-slate-900 rounded-full shadow-md text-[8px] sm:text-[9px] font-black tracking-tighter animate-bounce group-hover:scale-110 transition-transform select-none z-10">
+                    <MousePointerClick size={10} className="stroke-[2.5] sm:w-3 sm:h-3" />
                     <span>CLICK NGAY</span>
                   </span>
                 </Link>
@@ -726,14 +729,17 @@ function HomeContent() {
                 {/* Nút 2: Kiểm tra trình độ miễn phí */}
                 <button
                   onClick={() => setShowPlacementTest(true)}
-                  className="relative group bg-emerald-50/90 hover:bg-emerald-600 text-emerald-700 hover:text-white border-2 border-emerald-500 hover:border-emerald-600 px-6 sm:px-10 py-4 sm:py-5 rounded-[2.5rem] font-black text-xs sm:text-sm uppercase tracking-widest shadow-md shadow-emerald-500/15 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto"
+                  className="relative group bg-emerald-50/90 hover:bg-emerald-600 text-emerald-700 hover:text-white border-2 border-emerald-500 hover:border-emerald-600 px-2 sm:px-8 py-3.5 sm:py-5 rounded-2xl sm:rounded-[2.5rem] font-black text-[10px] xs:text-xs sm:text-sm uppercase tracking-tight sm:tracking-widest shadow-md shadow-emerald-500/15 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 cursor-pointer w-full"
                 >
-                  <Sparkles size={18} className="text-emerald-500 group-hover:text-white group-hover:rotate-12 transition-all shrink-0" />
-                  <span className="truncate">Kiểm tra trình độ miễn phí</span>
-                  <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform shrink-0" />
+                  <Sparkles size={16} className="text-emerald-500 group-hover:text-white group-hover:rotate-12 transition-all shrink-0 hidden xs:inline-block" />
+                  <span className="truncate">
+                    <span className="inline sm:hidden">Test trình độ miễn phí</span>
+                    <span className="hidden sm:inline">Kiểm tra trình độ miễn phí</span>
+                  </span>
+                  <ArrowRight size={15} className="group-hover:translate-x-1.5 transition-transform shrink-0" />
                   
-                  <span className="absolute -bottom-2 -right-1 flex items-center justify-center gap-1 px-2 py-0.5 bg-amber-400 text-slate-900 rounded-full shadow-md text-[9px] font-black tracking-tighter animate-bounce group-hover:scale-110 transition-transform select-none z-10">
-                    <MousePointerClick size={12} className="stroke-[2.5]" />
+                  <span className="absolute -bottom-2 -right-1 flex items-center justify-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 bg-amber-400 text-slate-900 rounded-full shadow-md text-[8px] sm:text-[9px] font-black tracking-tighter animate-bounce group-hover:scale-110 transition-transform select-none z-10">
+                    <MousePointerClick size={10} className="stroke-[2.5] sm:w-3 sm:h-3" />
                     <span>CLICK NGAY</span>
                   </span>
                 </button>
@@ -777,24 +783,24 @@ function HomeContent() {
                   </p>
 
                   {/* Badges thành tích căn giữa */}
-                  <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-                    <div className="flex items-center gap-3 px-4 py-2.5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
-                      <div className="w-9 h-9 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-emerald-200 shrink-0">
-                        <Trophy size={17} />
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-2 max-w-md mx-auto">
+                    <div className="flex items-center justify-center gap-2 sm:gap-3 px-2 sm:px-4 py-2 sm:py-2.5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-emerald-200 shrink-0">
+                        <Trophy size={16} />
                       </div>
-                      <div className="text-left">
-                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Kinh nghiệm</div>
-                        <div className="text-xs sm:text-sm font-bold text-slate-800 uppercase italic leading-none">10+ Năm</div>
+                      <div className="text-left min-w-0">
+                        <div className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1 truncate">Kinh nghiệm</div>
+                        <div className="text-[11px] sm:text-sm font-bold text-slate-800 uppercase italic leading-none truncate">10+ Năm</div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 px-4 py-2.5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
-                      <div className="w-9 h-9 bg-blue-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-blue-200 shrink-0">
-                        <Target size={17} />
+                    <div className="flex items-center justify-center gap-2 sm:gap-3 px-2 sm:px-4 py-2 sm:py-2.5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 bg-blue-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-blue-200 shrink-0">
+                        <Target size={16} />
                       </div>
-                      <div className="text-left">
-                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Phương pháp</div>
-                        <div className="text-xs sm:text-sm font-bold text-slate-800 uppercase italic leading-none">Thực chiến</div>
+                      <div className="text-left min-w-0">
+                        <div className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1 truncate">Phương pháp</div>
+                        <div className="text-[11px] sm:text-sm font-bold text-slate-800 uppercase italic leading-none truncate">Thực chiến</div>
                       </div>
                     </div>
                   </div>
@@ -852,24 +858,24 @@ function HomeContent() {
                   </p>
 
                   {/* Badges thành tích */}
-                  <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-                    <div className="flex items-center gap-3 px-4 py-2.5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
-                      <div className="w-9 h-9 bg-blue-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-blue-200 shrink-0 font-bold text-xs">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-2 max-w-md mx-auto">
+                    <div className="flex items-center justify-center gap-2 sm:gap-3 px-2 sm:px-4 py-2 sm:py-2.5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 bg-blue-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-blue-200 shrink-0 font-bold text-xs">
                         5K+
                       </div>
-                      <div className="text-left">
-                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">TỐT NGHIỆP</div>
-                        <div className="text-xs sm:text-sm font-bold text-slate-800 uppercase italic leading-none">5000+ Học viên</div>
+                      <div className="text-left min-w-0">
+                        <div className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1 truncate">TỐT NGHIỆP</div>
+                        <div className="text-[11px] sm:text-sm font-bold text-slate-800 uppercase italic leading-none truncate">5000+ Học viên</div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 px-4 py-2.5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
-                      <div className="w-9 h-9 bg-amber-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-amber-200 shrink-0 font-bold text-xs">
+                    <div className="flex items-center justify-center gap-2 sm:gap-3 px-2 sm:px-4 py-2 sm:py-2.5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 bg-amber-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-amber-200 shrink-0 font-bold text-xs">
                         ★
                       </div>
-                      <div className="text-left">
-                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">HÀI LÒNG</div>
-                        <div className="text-xs sm:text-sm font-bold text-slate-800 uppercase italic leading-none">4.9 / 5.0</div>
+                      <div className="text-left min-w-0">
+                        <div className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1 truncate">HÀI LÒNG</div>
+                        <div className="text-[11px] sm:text-sm font-bold text-slate-800 uppercase italic leading-none truncate">4.9 / 5.0</div>
                       </div>
                     </div>
                   </div>
