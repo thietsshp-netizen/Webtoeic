@@ -705,16 +705,16 @@ function HomeContent() {
                 Hệ thống lớp học tại <span className="text-slate-900 font-bold">hoctoeic</span> được thiết kế tinh gọn, tập trung hoàn toàn vào việc lấy lại gốc tiếng Anh và rèn luyện kỹ năng giải đề thực chiến để đạt mục tiêu trong thời gian ngắn nhất.
               </p>
 
-              <div className="grid grid-cols-2 gap-2 sm:gap-6 my-4 px-1 sm:px-2 w-full max-w-xl mx-auto">
+              <div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-2.5 sm:gap-5 my-4 px-1 mx-auto w-fit max-w-full">
                 {/* Nút 1: Xem danh sách lớp học */}
                 <Link
                   href="/courses"
-                  className="relative group bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white px-2 sm:px-8 py-3.5 sm:py-5 rounded-2xl sm:rounded-[2.5rem] font-black text-[10px] xs:text-xs sm:text-sm uppercase tracking-tight sm:tracking-widest shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 cursor-pointer border border-blue-400/30 w-full"
+                  className="relative group bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white px-4 sm:px-7 py-3 sm:py-4 rounded-full font-black text-[11px] sm:text-sm uppercase tracking-tight sm:tracking-wider shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer border border-blue-400/30 w-auto"
                 >
-                  <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-in-out pointer-events-none rounded-2xl sm:rounded-[2.5rem]" />
+                  <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-in-out pointer-events-none rounded-full" />
                   
                   <BookOpen size={16} className="text-blue-100 group-hover:scale-110 transition-transform shrink-0 hidden xs:inline-block" />
-                  <span className="truncate">
+                  <span className="whitespace-nowrap">
                     <span className="inline sm:hidden">Xem danh sách lớp</span>
                     <span className="hidden sm:inline">Xem danh sách lớp học</span>
                   </span>
@@ -729,10 +729,10 @@ function HomeContent() {
                 {/* Nút 2: Kiểm tra trình độ miễn phí */}
                 <button
                   onClick={() => setShowPlacementTest(true)}
-                  className="relative group bg-emerald-50/90 hover:bg-emerald-600 text-emerald-700 hover:text-white border-2 border-emerald-500 hover:border-emerald-600 px-2 sm:px-8 py-3.5 sm:py-5 rounded-2xl sm:rounded-[2.5rem] font-black text-[10px] xs:text-xs sm:text-sm uppercase tracking-tight sm:tracking-widest shadow-md shadow-emerald-500/15 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 cursor-pointer w-full"
+                  className="relative group bg-emerald-50/90 hover:bg-emerald-600 text-emerald-700 hover:text-white border-2 border-emerald-500 hover:border-emerald-600 px-4 sm:px-7 py-3 sm:py-4 rounded-full font-black text-[11px] sm:text-sm uppercase tracking-tight sm:tracking-wider shadow-md shadow-emerald-500/15 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer w-auto"
                 >
                   <Sparkles size={16} className="text-emerald-500 group-hover:text-white group-hover:rotate-12 transition-all shrink-0 hidden xs:inline-block" />
-                  <span className="truncate">
+                  <span className="whitespace-nowrap">
                     <span className="inline sm:hidden">Test trình độ miễn phí</span>
                     <span className="hidden sm:inline">Kiểm tra trình độ miễn phí</span>
                   </span>
