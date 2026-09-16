@@ -2692,6 +2692,7 @@ export default function ToeicPart5Player({
     <div
       data-drawing-context={currentQ?.id ? `part5-${currentQ.id}` : undefined}
       className="flex-1 flex flex-col font-sans bg-[#f8fafc] text-slate-900 overflow-hidden select-text relative h-full"
+      style={{ paddingRight: 'clamp(0px, 3.5vw, 72px)' }}
     >
       <div className="flex-1 flex overflow-hidden relative h-full w-full">
         <div id="part5-scroll-container" className="flex-1 flex flex-col min-h-0 overflow-hidden px-[clamp(6px,1.2vw,20px)] py-[clamp(2px,0.5vh,6px)] webtoeic-scroll-container h-full w-full max-w-full">
@@ -3362,7 +3363,7 @@ export default function ToeicPart5Player({
         );
 
         const footerContent = (
-          <div className="relative flex-none h-[clamp(32px,5vh,52px)] bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-[clamp(6px,1.2vw,20px)] pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full">
+          <div className="relative flex-none h-[clamp(32px,5vh,52px)] bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-[clamp(6px,1.2vw,20px)] pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ paddingRight: 'clamp(12px, 3.5vw, 72px)' }}>
             <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => startToeicPartTour(5, true)}

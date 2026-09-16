@@ -1391,7 +1391,7 @@ export default function ToeicPart6Player({
     <div
       suppressHydrationWarning
       className="absolute inset-0 flex flex-col font-sans bg-[#f8fafc] text-slate-800 overflow-hidden select-text"
-      style={{ paddingRight: 'clamp(0px, 2vw, 80px)' }}
+      style={{ paddingRight: 'clamp(8px, 4vw, 76px)' }}
     >
       <div className="flex-none z-[60] bg-[#f8fafc]" style={{ padding: 'clamp(2px,0.4vh,6px) clamp(4px,1vw,12px)' }}>
         <div className="max-w-[1600px] mx-auto bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-between" style={{ padding: 'clamp(3px,0.5vh,8px) clamp(6px,1.2vw,14px)', gap: 'clamp(4px,0.8vw,12px)' }}>
@@ -1992,7 +1992,7 @@ export default function ToeicPart6Player({
         );
 
         const footerContent = (
-          <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ height: 'clamp(26px, 4vh, 42px)', paddingLeft: 'clamp(4px, 1.2vw, 16px)', paddingRight: 'clamp(4px, 1.2vw, 16px)' }}>
+          <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ height: 'clamp(26px, 4vh, 42px)', paddingLeft: 'clamp(4px, 1.2vw, 16px)', paddingRight: 'clamp(8px, 4vw, 76px)' }}>
             <div className="flex items-center pointer-events-auto z-[80] shrink-0" style={{ gap: 'clamp(2px,0.5vw,6px)' }}>
               <button
                 onClick={() => startToeicPartTour(6, true)}
