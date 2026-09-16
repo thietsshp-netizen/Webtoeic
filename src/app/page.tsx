@@ -773,7 +773,7 @@ function HomeContent() {
                     <Zap size={16} fill="currentColor" /> EXPERT INSTRUCTOR
                   </div>
                   
-                  <h2 className="text-3xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight">
+                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight">
                     <span className="block mb-1">Học với chuyên gia</span>
                     <span className="text-blue-600">Mr. Thiệt 990/990</span>
                   </h2>
@@ -816,7 +816,7 @@ function HomeContent() {
             <section className="bg-slate-50 rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-6 sm:p-10 md:p-14 border border-slate-100 relative overflow-hidden mb-10 sm:mb-16">
               <div className="relative z-10">
                 <div className="text-center mb-10 sm:mb-12">
-                  <h2 className="text-4xl font-black text-slate-900 mb-6 uppercase tracking-tighter italic">Các giai đoạn học trọng tâm</h2>
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-6 uppercase tracking-tighter italic">Các giai đoạn học trọng tâm</h2>
                   <div className="w-32 h-2 bg-emerald-500 mx-auto rounded-full"></div>
                 </div>
 
@@ -831,7 +831,7 @@ function HomeContent() {
             <section className="bg-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-slate-100 shadow-sm mb-10 sm:mb-16 relative overflow-hidden">
               <div className="relative z-10 max-w-5xl mx-auto space-y-8 sm:space-y-10">
                 <div className="text-center max-w-3xl mx-auto space-y-3 pb-6 border-b border-slate-100">
-                  <h2 className="text-3xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-3">
+                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-3">
                     Vinh Danh <span className="text-emerald-600">Bảng Vàng</span>
                   </h2>
                   <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
@@ -850,7 +850,7 @@ function HomeContent() {
               <div className="relative z-10 max-w-5xl mx-auto space-y-8 sm:space-y-10">
                 {/* 1. Header & Thông tin căn giữa phía trên */}
                 <div className="text-center max-w-3xl mx-auto space-y-4 pb-6 border-b border-slate-100">
-                  <h2 className="text-3xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-3">
+                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-3">
                     Cảm nhận <span className="text-blue-600">học viên</span>
                   </h2>
                   <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
@@ -895,7 +895,7 @@ function HomeContent() {
           <div className="animate-in fade-in slide-in-from-right-8 duration-700">
             <div className="mb-20 flex flex-col md:flex-row md:items-end justify-between gap-10">
               <div className="space-y-4">
-                <h2 className="text-5xl font-black text-slate-900 tracking-tighter uppercase italic">KHO HỌC LIỆU <span className="text-blue-600">PREMIUM</span></h2>
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tighter uppercase italic">KHO HỌC LIỆU <span className="text-blue-600">PREMIUM</span></h2>
                 <div className="flex items-center gap-4 text-slate-400 font-bold text-xs uppercase tracking-[0.4em]">
                   <div className="w-12 h-1 bg-blue-600 rounded-full"></div> Cập nhật giáo trình mới nhất 2026
                 </div>
@@ -1165,7 +1165,7 @@ function HomeContent() {
                     <div className="space-y-12">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div>
-                          <h2 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Khóa học của bạn</h2>
+                          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Khóa học của bạn</h2>
                           <p className="text-slate-500 font-medium">Tiếp tục hành trình chinh phục TOEIC ngay hôm nay.</p>
                         </div>
                         <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-3xl border border-blue-100">
@@ -1244,7 +1244,7 @@ function HomeContent() {
                   {dashTab === "stats" && (
                     <div className="space-y-12">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                        <h2 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Phân tích kết quả</h2>
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Phân tích kết quả</h2>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1320,7 +1320,7 @@ function HomeContent() {
                   {/* --- TAB 3: LỊCH SỬ LÀM BÀI --- */}
                   {dashTab === "history" && (
                     <div className="space-y-12">
-                      <h2 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Thông tin các đề bạn đã làm</h2>
+                      <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Thông tin các đề bạn đã làm</h2>
                       <p className="text-xs font-bold text-slate-400 italic flex items-center gap-2">
                         <Info size={14} className="text-blue-500" />
                         Lưu ý: Chỉ các đề full (200 câu), đã làm và bấm nút Gửi bài mới được lưu lại lịch sử ở đây
@@ -1424,7 +1424,7 @@ function HomeContent() {
                     <div className="space-y-12">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div className="flex items-center gap-4">
-                          <h2 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Trung tâm ôn tập</h2>
+                          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Trung tâm ôn tập</h2>
                           <button
                             onClick={() => setShowReviewGuide(!showReviewGuide)}
                             className="p-2 rounded-full bg-slate-100 text-slate-400 hover:bg-blue-50 hover:text-blue-500 transition-all shadow-sm"
@@ -1509,7 +1509,7 @@ function HomeContent() {
                   {dashTab === "account" && (
                     <div className="space-y-12">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                        <h2 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Cài đặt tài khoản</h2>
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Cài đặt tài khoản</h2>
                         <button onClick={() => signOut()} className="px-6 py-3 bg-red-50 text-red-600 rounded-2xl font-bold text-xs uppercase border border-red-100 flex items-center gap-2 hover:bg-red-100 transition-all">
                           <LogOut size={16} /> Đăng xuất
                         </button>
@@ -1680,7 +1680,7 @@ function HomeContent() {
                     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div>
-                          <h2 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Điểm danh & Chuyên cần</h2>
+                          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Điểm danh & Chuyên cần</h2>
                           <p className="text-slate-500 font-medium">Theo dõi lịch sử tham gia lớp học của bạn.</p>
                         </div>
                       </div>

@@ -370,7 +370,7 @@ export default function FeatureVideoShowcase() {
         <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 text-blue-600 rounded-full text-[11px] font-bold uppercase tracking-widest mb-4 border border-blue-100 shadow-sm">
           <Sparkles size={16} fill="currentColor" /> WEB LUYỆN THI TOEIC ĐỘC QUYỀN
         </div>
-        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-4">
+        <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-4">
           Khám Phá Các Tính Năng Của Web Luyện Thi TOEIC{" "}
           <span className="text-blue-600">
             Thông Minh Hàng Đầu
