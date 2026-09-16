@@ -768,7 +768,7 @@ function HomeContent() {
 
                   <div className="w-24 h-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 mx-auto rounded-full my-3"></div>
 
-                  <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed italic">
+                  <p className="text-sm sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed italic">
                     &ldquo;Học với người đạt 990 không chỉ là học kiến thức, mà là học phương pháp giải đề tối ưu và tâm thế làm chủ bài thi từ trải nghiệm thực tế.&rdquo;
                   </p>
 
@@ -831,7 +831,7 @@ function HomeContent() {
                     Vinh Danh <span className="text-emerald-600">Bảng Vàng</span>
                   </h2>
                   <div className="w-24 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full mb-3"></div>
-                  <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
+                  <p className="text-sm sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
                     Kết quả thật từ những nỗ lực không ngừng nghỉ của cộng đồng học viên hoctoeic.com.
                   </p>
                 </div>
@@ -853,7 +853,7 @@ function HomeContent() {
                     Cảm nhận <span className="text-blue-600">học viên</span>
                   </h2>
                   <div className="w-24 h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-amber-500 mx-auto rounded-full mb-3"></div>
-                  <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
+                  <p className="text-sm sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
                     Những chia sẻ chân thực nhất về hành trình thay đổi điểm số tại hoctoeic.com.
                   </p>
 

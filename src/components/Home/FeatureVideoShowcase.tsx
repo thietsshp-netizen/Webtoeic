@@ -377,7 +377,7 @@ export default function FeatureVideoShowcase() {
           </span>
         </h2>
         <div className="w-24 h-1.5 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto rounded-full mb-4"></div>
-        <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
+        <p className="text-sm sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
           Xem video giới thiệu các tính năng độc đáo, nổi bật được tích hợp trên web luyện thi TOEIC của Mr. Thiệt.
         </p>
       </div>
