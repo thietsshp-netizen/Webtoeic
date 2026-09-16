@@ -1716,16 +1716,16 @@ export default function ToeicPart34Player({
       ` }} />
 
       {/* 1. HEADER ÂM THANH CỐ ĐỊNH - KHUNG RIÊNG BIỆT PHÍA TRÊN */}
-      <div className="flex-none z-[250] bg-white border-b border-slate-200 shadow-sm">
-        <div className="max-w-[1600px] mx-auto w-full p-2 sm:p-3 px-3 sm:px-6 flex items-center gap-2 sm:gap-6">
+      <div className="flex-none z-[250] bg-white border-b border-slate-200 shadow-xs">
+        <div className="max-w-[1600px] mx-auto w-full p-1 sm:p-2 px-2 sm:px-4 flex items-center gap-1.5 sm:gap-4">
           {/* Play/Pause Button */}
           <div className="relative group shrink-0">
             <button
               id="play-audio-btn"
               onClick={() => wavesurfer.current?.playPause()}
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 active:scale-95 ring-2 sm:ring-4 ring-indigo-50"
+              className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200 active:scale-95 ring-2 ring-indigo-50"
             >
-              {isPlaying ? <PauseIcon className="w-5 h-5 sm:w-6 sm:h-6" /> : <PlayIcon className="w-5 h-5 sm:w-6 sm:h-6 ml-0.5" />}
+              {isPlaying ? <PauseIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <PlayIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-0.5" />}
             </button>
 
             {/* Tooltip on Hover */}
@@ -1734,15 +1734,16 @@ export default function ToeicPart34Player({
               <div className="absolute -top-1 left-5 w-2 h-2 bg-slate-900 rotate-45"></div>
             </div>
           </div>
-          <div className="flex-1 h-10 sm:h-14 relative bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-100 overflow-hidden shadow-inner px-2 sm:px-6">
-            <div id="waveform-audio-container" ref={waveformRef} className="absolute inset-x-2 sm:inset-x-6 inset-y-0 cursor-pointer" />
+          <div className="flex-1 relative bg-slate-50 rounded-lg sm:rounded-xl border border-slate-100 overflow-hidden shadow-inner px-1.5 sm:px-4" style={{ height: 'clamp(20px, 3vh, 32px)' }}>
+            <div id="waveform-audio-container" ref={waveformRef} className="absolute inset-x-1.5 sm:inset-x-4 inset-y-0 cursor-pointer" />
           </div>
-          <div className="flex items-center gap-1 sm:gap-2 border-l border-slate-100 px-2 sm:px-6 h-10 sm:h-12 flex-shrink-0">
+          <div className="flex items-center gap-0.5 sm:gap-1.5 border-l border-slate-100 px-1 sm:px-4 shrink-0">
             {[0.5, 0.75, 1, 1.2].map(speed => (
               <button
                 key={speed}
                 onClick={() => { setPlaybackRate(speed); wavesurfer.current?.setPlaybackRate(speed); }}
-                className={`w-8 sm:w-10 h-7 sm:h-8 rounded-lg text-[9px] sm:text-[10px] font-black transition-all ${playbackRate === speed ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-100'}`}
+                className={`rounded-lg font-black transition-all ${playbackRate === speed ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-400 hover:bg-slate-100'}`}
+                style={{ fontSize: 'clamp(8px, 1.4vh, 10px)', padding: 'clamp(1px, 0.2vh, 3px) clamp(3px, 0.6vw, 6px)' }}
               >
                 {speed}x
               </button>
@@ -1791,19 +1792,20 @@ export default function ToeicPart34Player({
               className="flex-1 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-300 block"
               onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
             >
-              <div className="sticky top-0 bg-white/90 backdrop-blur-sm z-10 px-2.5 sm:px-4 py-1.5 sm:py-2.5 border-b border-slate-100 mb-2 sm:mb-4 flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="sticky top-0 bg-white/90 backdrop-blur-sm z-10 px-2 sm:px-3 py-1 sm:py-1.5 border-b border-slate-100 mb-1 sm:mb-2 flex items-center justify-between gap-1.5">
+                <div className="flex items-center gap-1.5">
                   <div className="w-1 sm:w-1.5 h-3 sm:h-4 bg-indigo-600 rounded-full"></div>
-                  <span className="text-[9.5px] sm:text-[11px] font-black text-slate-500 uppercase tracking-wider sm:tracking-widest">Transcript & Translation</span>
+                  <span className="font-black text-slate-500 uppercase tracking-wider" style={{ fontSize: 'clamp(8.5px, 1.6vh, 11px)' }}>Transcript & Translation</span>
                 </div>
                 {/* Eye icon: hiện/ẩn đáp án & transcript */}
                 <button
                   id="reveal-btn"
                   onClick={() => setRevealMode(!revealMode)}
-                  className={`w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-lg border transition-all ${revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'}`}
+                  className={`flex items-center justify-center rounded-lg border transition-all ${revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-xs' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'}`}
+                  style={{ width: 'clamp(20px, 2.5vh, 26px)', height: 'clamp(20px, 2.5vh, 26px)' }}
                   title={`${revealMode ? 'Ẩn lời giải' : 'Hiện lời giải'} (Phím tắt: ctrl/cmd + shift + s)`}
                 >
-                  <span className="text-[11px] sm:text-xs leading-none">👁️</span>
+                  <span className="text-[10px] sm:text-xs leading-none">👁️</span>
                 </button>
               </div>
 
@@ -2475,7 +2477,7 @@ export default function ToeicPart34Player({
       {/* BOTTOM NAVIGATION BAR */}
       {(() => {
         const navContent = (
-          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full p-1 sm:p-1.5 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-1 sm:gap-4">
+          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full p-0.5 sm:p-1 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-1 sm:gap-4">
             <div className="relative group">
               <button
                 onClick={() => {
@@ -2486,7 +2488,8 @@ export default function ToeicPart34Player({
                   }
                 }}
                 disabled={currentIndex === 0 && !onPrevPart}
-                className="px-3 sm:px-8 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-400 uppercase tracking-widest"
+                className="rounded-full font-bold transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-400 uppercase tracking-widest"
+                style={{ padding: 'clamp(2px,0.4vh,6px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
               >
                 {currentIndex === 0 && onPrevPart ? 'Về part trước' : 'Lùi'}
               </button>
@@ -2496,7 +2499,7 @@ export default function ToeicPart34Player({
               </div>
             </div>
 
-            <div className="px-2 sm:px-8 font-black text-slate-600 text-xs sm:text-sm border-x border-slate-100 whitespace-nowrap">
+            <div className="font-black text-slate-600 border-x border-slate-100 whitespace-nowrap" style={{ padding: 'clamp(2px,0.4vh,6px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(9.5px, 1.8vh, 13px)' }}>
               {isFullTest ? (
                 <>
                   {currentGroup?.questions?.[0]?.questionNo || (globalOffset + currentIndex + 1)} <span className="mx-0.5 text-slate-300">/</span> {globalTotal || 200}
@@ -2513,25 +2516,28 @@ export default function ToeicPart34Player({
                 <div className="relative group">
                   <button
                     onClick={onNextPart}
-                    className="px-3 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-emerald-600 text-white shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-1 sm:gap-2 whitespace-nowrap"
+                    className="rounded-full font-bold transition-all bg-emerald-600 text-white shadow-md hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-1 whitespace-nowrap"
+                    style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
                   >
-                    <span>Tiếp Part {targetPart === 3 ? '4' : '5'}</span> <ChevronRightIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span>Tiếp Part {targetPart === 3 ? '4' : '5'}</span> <ChevronRightIcon className="w-3.5 h-3.5" />
                   </button>
                 </div>
-              ) : !isSubmittedInternal && (
+              ) : !isSubmittedInternal ? (
                 <button
                   onClick={handleFinishTest}
                   disabled={isSubmitting}
-                  className="px-3 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
                 >
                   {isSubmitting ? '...' : 'Nộp bài'}
                 </button>
-              )
+              ) : null
             ) : (
               <div className="relative group">
                 <button
                   onClick={() => setCurrentIndex(prev => Math.min(data.length - 1, prev + 1))}
-                  className="px-4 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
                 >
                   Tiếp
                 </button>

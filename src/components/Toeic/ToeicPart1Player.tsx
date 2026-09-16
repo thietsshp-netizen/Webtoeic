@@ -1827,6 +1827,7 @@ export default function ToeicPart1Player({
   const [playingSegmentLabel, setPlayingSegmentLabel] = useState<string | null>(null);
   const [hoveredHotspotIndex, setHoveredHotspotIndex] = useState<number | null>(null);
   const [selectedHotspotIndex, setSelectedHotspotIndex] = useState<number | null>(null);
+  const [imgAspectRatio, setImgAspectRatio] = useState<number | null>(null);
 
   // User Vocabulary sync state
   const [savedVocabs, setSavedVocabs] = useState<Set<string>>(new Set());
@@ -2900,23 +2901,23 @@ export default function ToeicPart1Player({
         <div className="flex-1 relative flex flex-col overflow-hidden">
           <div className="flex-1 flex flex-col min-h-0 overflow-hidden px-2 sm:px-4 pt-2 sm:pt-4 pb-16 scrollbar-thin">
 
-            <div className="flex flex-wrap justify-between items-center bg-white px-3 py-1.5 rounded-xl shadow-sm border border-slate-100 mb-2 gap-2 shrink-0">
-              <div className="flex items-center gap-2">
-                <button id="dictation-mode-btn" onClick={() => setMode(mode === 'dictation' ? 'practice' : 'dictation')} className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold border-2 transition ${mode === 'dictation' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-[0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-200 text-slate-500 hover:border-slate-300'}`}>✏️ Chép chính tả</button>
-                <button id="hint-mode-btn" onClick={() => setIsHintMode(!isHintMode)} className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold border-2 transition ${isHintMode ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-[0_0_15px_rgba(99,102,241,0.3)]' : 'border-slate-200 text-slate-400 hover:bg-slate-50 hover:text-slate-500 hover:border-slate-300'}`}>💡 Gợi Ý</button>
+            <div className="flex flex-wrap justify-between items-center bg-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-xl shadow-sm border border-slate-100 mb-1 sm:mb-2 gap-1.5 shrink-0">
+              <div className="flex items-center gap-1.5">
+                <button id="dictation-mode-btn" onClick={() => setMode(mode === 'dictation' ? 'practice' : 'dictation')} className={`rounded-lg font-bold border-2 transition ${mode === 'dictation' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-[0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-200 text-slate-500 hover:border-slate-300'}`} style={{ fontSize: 'clamp(8.5px, 1.6vh, 12px)', padding: 'clamp(2px,0.3vh,4px) clamp(6px,1vw,12px)' }}>✏️ Chép chính tả</button>
+                <button id="hint-mode-btn" onClick={() => setIsHintMode(!isHintMode)} className={`rounded-lg font-bold border-2 transition ${isHintMode ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-[0_0_15px_rgba(99,102,241,0.3)]' : 'border-slate-200 text-slate-400 hover:bg-slate-50 hover:text-slate-500 hover:border-slate-300'}`} style={{ fontSize: 'clamp(8.5px, 1.6vh, 12px)', padding: 'clamp(2px,0.3vh,4px) clamp(6px,1vw,12px)' }}>💡 Gợi Ý</button>
               </div>
             </div>
 
-            <div className="max-w-4xl w-full mx-auto mb-2 sm:mb-4 relative z-[250] shrink-0">
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 px-3 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-3">
+            <div className="max-w-4xl w-full mx-auto mb-1 sm:mb-2 relative z-[250] shrink-0">
+              <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 px-2 sm:px-3 py-1 sm:py-1.5 flex items-center gap-1.5 sm:gap-3">
                 {/* Play/Pause Button */}
                 <div className="relative group shrink-0 pl-0.5">
                   <button
                     id="play-audio-btn"
                     onClick={() => wavesurfer.current?.playPause()}
-                    className="w-8 h-8 sm:w-9 sm:h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-lg shadow-indigo-100 transition-all active:scale-95 ring-4 ring-indigo-50"
+                    className="w-7 h-7 sm:w-8 sm:h-8 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-md shadow-indigo-100 transition-all active:scale-95 ring-2 ring-indigo-50"
                   >
-                    {isPlaying ? <PauseIcon className="w-4 h-4" /> : <PlayIcon className="w-4 h-4 pl-0.5" />}
+                    {isPlaying ? <PauseIcon className="w-3.5 h-3.5" /> : <PlayIcon className="w-3.5 h-3.5 pl-0.5" />}
                   </button>
 
                   {/* Tooltip on Hover */}
@@ -2927,17 +2928,18 @@ export default function ToeicPart1Player({
                 </div>
 
                 {/* Waveform Container */}
-                <div className="flex-1 overflow-hidden rounded-lg" style={{ height: 32 }}>
+                <div className="flex-1 overflow-hidden rounded-lg" style={{ height: 'clamp(20px, 3vh, 32px)' }}>
                   <div id="waveform-audio-container" ref={waveformRef} className="w-full h-full cursor-crosshair" />
                 </div>
 
                 {/* Speed Controls */}
-                <div className="flex bg-white rounded-lg shadow-sm border border-slate-200 p-0.5 shrink-0">
+                <div className="flex bg-white rounded-lg shadow-xs border border-slate-200 p-0.5 shrink-0">
                   {[0.5, 0.75, 1, 1.25, 1.5].map(speed => (
                     <button
                       key={speed}
                       onClick={() => changeSpeed(speed)}
-                      className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-black transition-all ${playbackRate === speed ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600'}`}
+                      className={`rounded-md font-black transition-all ${playbackRate === speed ? 'bg-indigo-600 text-white shadow-xs shadow-indigo-200' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600'}`}
+                      style={{ fontSize: 'clamp(8px, 1.4vh, 10px)', padding: 'clamp(1px, 0.2vh, 3px) clamp(3px, 0.6vw, 6px)' }}
                     >
                       {speed}x
                     </button>
@@ -2947,12 +2949,31 @@ export default function ToeicPart1Player({
             </div>
 
             <div className="flex-1 min-h-0 flex flex-col lg:grid lg:grid-cols-2 gap-2 sm:gap-3 lg:gap-6 mb-2 max-w-full overflow-hidden">
-              <div className="h-[32vh] sm:h-[42vh] lg:h-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-2 relative shrink-0 lg:shrink flex justify-center items-center overflow-hidden z-[300]">
-                <div className="rounded-xl overflow-hidden bg-slate-50 flex justify-center items-center relative w-full h-full">
+              <div className="h-[42vh] landscape:h-[75vh] sm:h-[48vh] lg:h-auto lg:max-h-[55vh] bg-white rounded-2xl shadow-sm border border-slate-200 p-1.5 sm:p-2 relative shrink-0 lg:shrink flex justify-center items-center overflow-hidden z-[300]">
+                <div className="rounded-xl overflow-hidden bg-slate-50 flex justify-center items-center relative w-full h-full p-1 sm:p-2">
                   {currentGroup.imageUrl ? (
-                    <div className="relative w-full h-full flex justify-center items-center">
-                      <div className="relative max-w-full max-h-full flex justify-center items-center">
-                        <img src={currentGroup.imageUrl} alt={`Câu ${currentIndex + 1}`} className="max-w-full max-h-full w-auto h-auto object-contain select-none block" draggable="false" />
+                    <div className="relative w-full h-full flex justify-center items-center overflow-hidden">
+                      {/* Container khít tuyệt đối với tỉ lệ tự nhiên của ảnh, không bao giờ vượt quá maxWidth/maxHeight */}
+                      <div
+                        className="relative flex justify-center items-center shrink-0"
+                        style={{
+                          maxWidth: '100%',
+                          maxHeight: '100%',
+                          aspectRatio: imgAspectRatio ? `${imgAspectRatio}` : undefined
+                        }}
+                      >
+                        <img
+                          src={currentGroup.imageUrl}
+                          alt={`Câu ${currentIndex + 1}`}
+                          onLoad={(e) => {
+                            const target = e.currentTarget;
+                            if (target.naturalWidth && target.naturalHeight) {
+                              setImgAspectRatio(target.naturalWidth / target.naturalHeight);
+                            }
+                          }}
+                          className="w-full h-full object-contain select-none block rounded-lg shadow-xs"
+                          draggable="false"
+                        />
 
                         {/* Floating Save Status Toast */}
                         {saveStatus && (
@@ -2965,7 +2986,7 @@ export default function ToeicPart1Player({
                           </div>
                         )}
 
-                        {/* Hotspots Layer */}
+                        {/* Hotspots Layer - Phủ chính xác 1-1 khớp tuyệt đối vào khung ảnh */}
                         {localHotspots.length > 0 && (
                           <div ref={hotspotsContainerRef} className="absolute inset-0 pointer-events-none select-none z-20">
                           {/* Lớp phủ click trong suốt để khi click ra ngoài các chấm số sẽ tắt bubble */}
@@ -3035,7 +3056,7 @@ export default function ToeicPart1Player({
                                     // Click lại chấm số đang chọn để tắt bubble, hoặc chọn số mới
                                     setSelectedHotspotIndex(isSelected ? null : hidx);
                                   }}
-                                  className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center rounded-full border border-white shadow-md shrink-0 pointer-events-auto cursor-pointer transition-all duration-300 ${draggingIndex === hidx ? '' : 'transition-all duration-300'
+                                  className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center rounded-full border border-white shadow-md shrink-0 pointer-events-auto cursor-pointer transition-all duration-300 before:absolute before:-inset-3 sm:before:-inset-3.5 before:content-[''] before:rounded-full ${draggingIndex === hidx ? '' : 'transition-all duration-300'
                                     } ${isHovered
                                       ? 'w-4 h-4 bg-amber-400/20 text-amber-400 border-amber-400/40 scale-110 shadow-lg font-black'
                                       : isSelected
@@ -3612,12 +3633,13 @@ export default function ToeicPart1Player({
       {/* BOTTOM NAVIGATION BAR */}
       {(() => {
         const navContent = (
-          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full p-1 sm:p-1.5 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-1 sm:gap-4">
+          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full p-0.5 sm:p-1 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-1 sm:gap-4">
             <div className="relative group">
               <button
                 onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
                 disabled={currentIndex === 0}
-                className="px-3 sm:px-8 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-400 uppercase tracking-widest"
+                className="rounded-full font-bold transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-400 uppercase tracking-widest"
+                style={{ padding: 'clamp(2px,0.4vh,6px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
               >
                 Lùi
               </button>
@@ -3627,7 +3649,7 @@ export default function ToeicPart1Player({
               </div>
             </div>
 
-            <div className="px-2 sm:px-8 font-black text-slate-600 text-xs sm:text-sm border-x border-slate-100 whitespace-nowrap">
+            <div className="font-black text-slate-600 border-x border-slate-100 whitespace-nowrap" style={{ padding: 'clamp(2px,0.4vh,6px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(9.5px, 1.8vh, 13px)' }}>
               {isFullTest ? (
                 <>
                   {globalOffset + currentIndex + 1} <span className="mx-0.5 text-slate-300">/</span> {globalTotal || 200}
@@ -3644,16 +3666,18 @@ export default function ToeicPart1Player({
                 <div className="relative group">
                   <button
                     onClick={onNextPart}
-                    className="px-3 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-emerald-600 text-white shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-1 sm:gap-2 whitespace-nowrap"
+                    className="rounded-full font-bold transition-all bg-emerald-600 text-white shadow-md hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-1 whitespace-nowrap"
+                    style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
                   >
-                    <span>Tiếp Part 2</span> <ChevronRightIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span>Tiếp Part 2</span> <ChevronRightIcon className="w-3.5 h-3.5" />
                   </button>
                 </div>
               ) : !isSubmitted ? (
                 <button
                   onClick={handleFinishTest}
                   disabled={isSubmitting}
-                  className="px-3 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
                 >
                   {isSubmitting ? '...' : 'Nộp bài'}
                 </button>
@@ -3662,7 +3686,8 @@ export default function ToeicPart1Player({
               <div className="relative group">
                 <button
                   onClick={() => setCurrentIndex(prev => Math.min(data.length - 1, prev + 1))}
-                  className="px-4 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
                 >
                   Tiếp
                 </button>
@@ -3672,7 +3697,7 @@ export default function ToeicPart1Player({
         );
 
         const footerContent = (
-          <div className="relative flex-none h-14 sm:h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-6 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full">
+          <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-6 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ height: 'clamp(38px, 5.5vh, 52px)' }}>
             <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => startToeicPartTour(1, true)}
