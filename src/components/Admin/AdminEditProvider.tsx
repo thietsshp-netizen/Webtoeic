@@ -31,28 +31,51 @@ export function AdminEditProvider({ children }: { children: React.ReactNode }) {
     <AdminEditContext.Provider value={{ isAdminMode, setIsAdminMode, canEdit }}>
       {children}
       
-      {/* Floating Admin Toggle Button */}
+      {/* Floating Admin Toggle Button - Dynamically scalable per screen size */}
       {canEdit && (
-        <div className="fixed bottom-16 sm:bottom-20 right-4 sm:right-6 z-[9999] flex flex-col items-end gap-3 pointer-events-none">
+        <div 
+          className="fixed z-[9999] flex flex-col items-end gap-3 pointer-events-none"
+          style={{
+            bottom: 'clamp(52px, 7.5vh, 80px)',
+            right: 'clamp(10px, 1.8vw, 24px)'
+          }}
+        >
           <button
             onClick={() => setIsAdminMode(!isAdminMode)}
-            className={`group pointer-events-auto w-14 h-14 rounded-2xl shadow-2xl flex items-center justify-center transition-all duration-500 transform hover:scale-110 active:scale-95 ${
+            style={{
+              width: 'clamp(30px, 3.8vw, 44px)',
+              height: 'clamp(30px, 3.8vw, 44px)'
+            }}
+            className={`group pointer-events-auto rounded-xl sm:rounded-2xl shadow-xl flex items-center justify-center transition-all duration-300 transform hover:scale-105 active:scale-95 ${
               isAdminMode 
-                ? "bg-indigo-600 text-white ring-4 ring-indigo-100" 
-                : "bg-white text-slate-400 border border-slate-100 hover:text-indigo-600"
+                ? "bg-indigo-600 text-white ring-2 sm:ring-4 ring-indigo-100" 
+                : "bg-white/90 backdrop-blur-xs text-slate-500 border border-slate-200/80 hover:text-indigo-600 hover:bg-white"
             }`}
           >
-            {isAdminMode ? <Eye size={24} /> : <Edit3 size={24} />}
+            {isAdminMode ? (
+              <Eye style={{ width: 'clamp(14px, 1.8vw, 20px)', height: 'clamp(14px, 1.8vw, 20px)' }} />
+            ) : (
+              <Edit3 style={{ width: 'clamp(14px, 1.8vw, 20px)', height: 'clamp(14px, 1.8vw, 20px)' }} />
+            )}
             
             {/* Badge Indicator */}
-            <div className={`absolute -top-1 -right-1 w-5 h-5 rounded-full border-2 border-white flex items-center justify-center shadow-sm ${
-               isAdminMode ? "bg-emerald-500" : "bg-slate-200"
+            <div 
+              style={{
+                width: 'clamp(12px, 1.4vw, 16px)',
+                height: 'clamp(12px, 1.4vw, 16px)'
+              }}
+              className={`absolute -top-1 -right-1 rounded-full border border-white flex items-center justify-center shadow-xs ${
+               isAdminMode ? "bg-emerald-500" : "bg-slate-300"
             }`}>
-               {isAdminMode ? <Edit3 size={10} className="text-white" /> : <Lock size={10} className="text-slate-400" />}
+               {isAdminMode ? (
+                 <Edit3 style={{ width: 'clamp(7px, 0.9vw, 9px)', height: 'clamp(7px, 0.9vw, 9px)' }} className="text-white" />
+               ) : (
+                 <Lock style={{ width: 'clamp(7px, 0.9vw, 9px)', height: 'clamp(7px, 0.9vw, 9px)' }} className="text-slate-600" />
+               )}
             </div>
 
             {/* Custom Premium Tooltip */}
-            <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 border border-white/10 translate-x-2 group-hover:translate-x-0 flex items-center gap-2">
+            <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1 bg-slate-900 text-white text-[9px] sm:text-[10px] font-black uppercase tracking-widest rounded-full shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 border border-white/10 translate-x-2 group-hover:translate-x-0 flex items-center gap-1.5 whitespace-nowrap">
               {isAdminMode && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
               <span>{isAdminMode ? "Live Editing Active" : "Bật chế độ chỉnh sửa"}</span>
             </div>
