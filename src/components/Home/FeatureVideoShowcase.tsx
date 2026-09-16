@@ -711,6 +711,21 @@ export default function FeatureVideoShowcase() {
         </AnimatePresence>
 
       </div>
+
+      {/* 4 Con số thống kê thành tích */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mt-10 sm:mt-14 border-t border-slate-200/60 pt-8 sm:pt-10 px-2">
+        {[
+          { val: "2000+", label: "Học viên tham gia" },
+          { val: "95%", label: "Tỉ lệ đạt mục tiêu" },
+          { val: "13000+", label: "Bài tập thực hành" },
+          { val: "24/7", label: "Hỗ trợ học tập" }
+        ].map((stat, i) => (
+          <div key={i} className="text-center">
+            <div className="text-3xl sm:text-4xl font-black text-slate-900 mb-1">{stat.val}</div>
+            <div className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-widest">{stat.label}</div>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

@@ -745,23 +745,10 @@ function HomeContent() {
                 </button>
               </div>
 
-              {/* Khung Video Giới Thiệu Tính Năng Đặc Biệt */}
-              <FeatureVideoShowcase />
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mt-12 sm:mt-16 border-t border-slate-100 pt-10 sm:pt-12">
-                {[
-                  { val: "2000+", label: "Học viên tham gia" },
-                  { val: "95%", label: "Tỉ lệ đạt mục tiêu" },
-                  { val: "13000+", label: "Bài tập thực hành" },
-                  { val: "24/7", label: "Hỗ trợ học tập" }
-                ].map((stat, i) => (
-                  <div key={i} className="text-center">
-                    <div className="text-4xl font-bold text-slate-900 mb-1">{stat.val}</div>
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
             </section>
+
+            {/* Khung Video Giới Thiệu Tính Năng Đặc Biệt */}
+            <FeatureVideoShowcase />
 
             <section className="bg-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-slate-100 shadow-sm mb-10 sm:mb-16 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.03),transparent)] pointer-events-none"></div>
