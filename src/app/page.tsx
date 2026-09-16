@@ -705,7 +705,7 @@ function HomeContent() {
                 Hệ thống lớp học tại <span className="text-slate-900 font-bold">hoctoeic</span> được thiết kế tinh gọn, tập trung hoàn toàn vào việc lấy lại gốc tiếng Anh và rèn luyện kỹ năng giải đề thực chiến để đạt mục tiêu trong thời gian ngắn nhất.
               </p>
 
-              <div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-2.5 sm:gap-5 my-4 px-1 mx-auto w-fit max-w-full">
+              <div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-2.5 sm:gap-5 mt-6 sm:mt-8 mb-10 sm:mb-14 px-1 mx-auto w-fit max-w-full">
                 {/* Nút 1: Xem danh sách lớp học */}
                 <Link
                   href="/courses"
