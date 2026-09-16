@@ -151,7 +151,7 @@ export default async function LessonDetailPage({
             )}
           </div>
           <div className="shrink-0">
-            <h2 id="learn-lesson-title" data-lesson-title={lesson.title} className="text-[clamp(10px,1.5vh,14px)] font-bold text-slate-800 tracking-tight flex items-center gap-1 max-w-[120px] xs:max-w-[160px] sm:max-w-none truncate sm:whitespace-normal">
+            <h2 id="learn-lesson-title" data-lesson-title={lesson.title} className="text-[clamp(9px,1.2vh,14px)] font-bold text-slate-800 tracking-tight flex items-center gap-1 max-w-[70px] xs:max-w-[120px] sm:max-w-none truncate sm:whitespace-normal">
               {lesson.title}
             </h2>
           </div>
