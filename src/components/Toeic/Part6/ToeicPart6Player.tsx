@@ -1329,17 +1329,19 @@ export default function ToeicPart6Player({
   return (
     <div
       suppressHydrationWarning
-      className="absolute inset-0 flex flex-col font-sans bg-[#f8fafc] text-slate-800 overflow-hidden pr-20 select-text"
+      className="absolute inset-0 flex flex-col font-sans bg-[#f8fafc] text-slate-800 overflow-hidden select-text"
+      style={{ paddingRight: 'clamp(0px, 2vw, 80px)' }}
     >
-      <div className="flex-none p-3 px-4 z-[60] bg-[#f8fafc]">
-        <div className="max-w-[1600px] mx-auto bg-white rounded-2xl shadow-lg border border-slate-100 p-2 px-4 flex items-center justify-between gap-4">
-          <div className="text-sm font-bold text-slate-700">Part 6: Text Completion</div>
-          <div className="flex items-center gap-2">
+      <div className="flex-none z-[60] bg-[#f8fafc]" style={{ padding: 'clamp(4px,0.8vh,12px) clamp(6px,1.2vw,16px)' }}>
+        <div className="max-w-[1600px] mx-auto bg-white rounded-xl shadow-lg border border-slate-100 flex items-center justify-between" style={{ padding: 'clamp(4px,0.7vh,10px) clamp(8px,1.5vw,16px)', gap: 'clamp(6px,1.2vw,16px)' }}>
+          <div className="font-bold text-slate-700" style={{ fontSize: 'clamp(10px,1.6vh,14px)' }}>Part 6: Text Completion</div>
+          <div className="flex items-center" style={{ gap: 'clamp(4px,0.8vw,8px)' }}>
             {(isAdminMode || canEdit) && (
               <button
                 onClick={() => updatePart6Popup(currentIndex)}
                 title="Mở popup đáp án & giải thích (Phím tắt: , hoặc .)"
-                className="px-3 py-1.5 rounded-lg text-[10px] font-bold border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-all flex items-center gap-1"
+                className="rounded-lg font-bold border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-all flex items-center gap-1"
+                style={{ padding: 'clamp(2px,0.5vh,6px) clamp(6px,1vw,12px)', fontSize: 'clamp(8px,1.3vh,11px)' }}
               >
                 <span>👁️ POPUP ĐÁP ÁN</span>
               </button>
@@ -1348,7 +1350,8 @@ export default function ToeicPart6Player({
               id="reveal-btn"
               onClick={() => setShowExplainGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }))}
               title="Ẩn/Hiện lời giải (Phím tắt: ctrl/cmd + shift + s)"
-              className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${isCurrentRevealed ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-white text-slate-600 border-slate-200'}`}
+              className={`rounded-lg font-bold border transition-all ${isCurrentRevealed ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-white text-slate-600 border-slate-200'}`}
+              style={{ padding: 'clamp(2px,0.5vh,6px) clamp(6px,1vw,12px)', fontSize: 'clamp(8px,1.3vh,11px)' }}
             >
               {isCurrentRevealed ? "ẨN LỜI GIẢI" : "HIỆN LỜI GIẢI"}
             </button>
@@ -1358,21 +1361,22 @@ export default function ToeicPart6Player({
 
       <div className="max-w-[1600px] mx-auto w-full flex-1 flex overflow-hidden relative">
         {/* CENTER CONTENT: SPLIT PANES */}
-        <div ref={mainContainerRef} className="flex-1 min-h-0 flex overflow-hidden pb-4 relative">
+        <div ref={mainContainerRef} className="flex-1 min-h-0 flex overflow-hidden relative" style={{ paddingBottom: 'clamp(4px,0.8vh,16px)' }}>
           <div
             id="left-split-col"
             className="flex flex-col min-h-0 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden relative flex-none"
             style={{ width: `${vSplitWidth}%`, flexShrink: 0 }}
           >
             <div className="flex-1 flex flex-col min-h-0">
-              <div className="p-4 bg-slate-50/50 border-b flex items-center justify-between sticky top-0 z-10">
-                <span className="font-bold text-slate-500 text-[10px] tracking-widest uppercase">Text Passage</span>
-                <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded italic">Bật Hiện đáp án và rê chuột vào câu để xem bản dịch</span>
+              <div className="bg-slate-50/50 border-b flex items-center justify-between sticky top-0 z-10" style={{ padding: 'clamp(4px,0.8vh,12px) clamp(8px,1.5vw,16px)' }}>
+                <span className="font-bold text-slate-500 tracking-widest uppercase" style={{ fontSize: 'clamp(8px,1.3vh,11px)' }}>Text Passage</span>
+                <span className="bg-blue-50 text-blue-600 rounded italic hidden sm:block landscape:block" style={{ fontSize: 'clamp(7px,1.1vh,10px)', padding: 'clamp(1px,0.3vh,4px) clamp(4px,0.8vw,8px)' }}>Bật Hiện đáp án và rê chuột vào câu để xem bản dịch</span>
               </div>
               <div
                 id="part6-passage-container"
                 ref={passageScrollRef}
-                className="flex-1 overflow-y-auto p-8 lg:p-12 pb-[35vh] lg:pb-[35vh] scrollbar-thin webtoeic-scroll-container"
+                className="flex-1 overflow-y-auto scrollbar-thin webtoeic-scroll-container"
+                style={{ padding: 'clamp(12px,2.5vh,32px) clamp(10px,2vw,48px)', paddingBottom: 'clamp(24px,8vh,120px)' }}
                 onMouseMove={(e) => {
                   const x = e.clientX;
                   const y = e.clientY;
@@ -1383,7 +1387,7 @@ export default function ToeicPart6Player({
                   }
                 }}
               >
-                <div className="mb-6 text-slate-800 text-xl px-2 italic font-medium border-l-4 border-blue-200 pl-4">
+                <div className="mb-4 text-slate-800 italic font-medium border-l-4 border-blue-200 pl-3" style={{ fontSize: 'clamp(11px,2vh,18px)' }}>
                   {(() => {
                     const qNos = (data[currentIndex]?.questions || [])
                       .map((q: any) => parseInt(q.questionNo))
@@ -1470,15 +1474,16 @@ export default function ToeicPart6Player({
             <div
               onMouseDown={handleMouseDown}
               onTouchStart={handleTouchStart}
-              className={`absolute top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white border-2 shadow-xl flex items-center justify-center transition-all cursor-col-resize ${isResizingV ? 'border-indigo-500 scale-110 shadow-indigo-200' : 'border-slate-200 group-hover:border-indigo-400 group-hover:scale-105'}`}
+              className={`absolute top-1/2 -translate-y-1/2 rounded-full bg-white border-2 shadow-xl flex items-center justify-center transition-all cursor-col-resize ${isResizingV ? 'border-indigo-500 scale-110 shadow-indigo-200' : 'border-slate-200 group-hover:border-indigo-400 group-hover:scale-105'}`}
+              style={{ width: 'clamp(28px,4vh,40px)', height: 'clamp(28px,4vh,40px)' }}
             >
-              <ChevronsLeftRight className={`w-5 h-5 ${isResizingV ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-600'}`} />
+              <ChevronsLeftRight className={`${isResizingV ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-600'}`} style={{ width: 'clamp(14px,2.2vh,20px)', height: 'clamp(14px,2.2vh,20px)' }} />
             </div>
           </div>
 
           {/* RIGHT: QUESTIONS COLUMN */}
-          <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative pl-4">
-            <div id="part6-questions-container" ref={questionsScrollRef} className="flex-1 overflow-y-auto pr-3 scrollbar-thin space-y-4 pb-[35vh] webtoeic-scroll-container">
+          <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative" style={{ paddingLeft: 'clamp(6px,1vw,16px)' }}>
+            <div id="part6-questions-container" ref={questionsScrollRef} className="flex-1 overflow-y-auto scrollbar-thin space-y-[clamp(6px,1.2vh,16px)] webtoeic-scroll-container" style={{ paddingRight: 'clamp(4px,0.8vw,12px)', paddingBottom: 'clamp(24px,8vh,120px)' }}>
               {questions.map((q: any) => {
                 const qKey = q.id || `${currentGroup.id}_${q.questionNo}`;
                 const isSelectedAny = !!answers[qKey];
@@ -1491,12 +1496,13 @@ export default function ToeicPart6Player({
                     key={q.id || qKey}
                     id={`question-${q.questionNo}`}
                     ref={el => { if (el) questionRefs.current.set(q.id || qKey, el); else questionRefs.current.delete(q.id || qKey); }}
-                    className={`p-4 rounded-[24px] border transition-all duration-300 mb-4 ${isSelectedAny ? 'border-indigo-200 bg-indigo-50/20 shadow-lg shadow-indigo-500/5' : 'bg-white border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30_rgb(0,0,0,0.08)]'}`}
+                    className={`border transition-all duration-300 ${isSelectedAny ? 'border-indigo-200 bg-indigo-50/20 shadow-lg shadow-indigo-500/5' : 'bg-white border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30_rgb(0,0,0,0.08)]'}`}
+                    style={{ padding: 'clamp(8px,1.5vh,16px)', borderRadius: 'clamp(12px,2.5vh,24px)', marginBottom: 'clamp(6px,1.2vh,16px)' }}
                   >
-                    <div className="flex items-start gap-6 mb-4">
+                    <div className="flex items-start" style={{ gap: 'clamp(8px,1.5vh,24px)', marginBottom: 'clamp(6px,1.2vh,16px)' }}>
                       {/* Left Column: Number + Flag */}
-                      <div className="flex flex-col items-center gap-4 shrink-0 pt-0.5">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-[14px] shadow-sm border ${isCurrentRevealed ? hBg + ' ' + hText + ' ' + hBorder : 'bg-indigo-50 text-indigo-600 border-indigo-100'}`}>
+                      <div className="flex flex-col items-center shrink-0 pt-0.5" style={{ gap: 'clamp(6px,1vh,16px)' }}>
+                        <div className={`rounded-xl flex items-center justify-center font-black shadow-sm border ${isCurrentRevealed ? hBg + ' ' + hText + ' ' + hBorder : 'bg-indigo-50 text-indigo-600 border-indigo-100'}`} style={{ width: 'clamp(26px,4vh,40px)', height: 'clamp(26px,4vh,40px)', fontSize: 'clamp(10px,1.6vh,14px)' }}>
                           {q.questionNo}
                         </div>
                         <FlagSelector
@@ -1546,10 +1552,11 @@ export default function ToeicPart6Player({
 
                             return (
                               <div key={opt}>
-                                <div className={`group w-full flex items-center py-0.5 px-2 rounded-xl border text-left transition-all relative cursor-default select-text gap-2 ${optClass}`}>
+                                <div className={`group w-full flex items-center rounded-xl border text-left transition-all relative cursor-default select-text ${optClass}`} style={{ padding: 'clamp(2px,0.5vh,4px) clamp(6px,1vw,8px)', gap: 'clamp(4px,0.8vw,8px)' }}>
                                   <span
                                     onClick={() => !(isReviewMode || isSubmittedInternal) && handleSelect(qKey, opt)}
-                                    className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[12px] font-black border transition-all duration-300 ${!(isReviewMode || isSubmittedInternal) ? 'cursor-pointer hover:scale-110 active:scale-95' : 'cursor-default'} ${letterClass}`}
+                                    className={`rounded-full flex-shrink-0 flex items-center justify-center font-black border transition-all duration-300 ${!(isReviewMode || isSubmittedInternal) ? 'cursor-pointer hover:scale-110 active:scale-95' : 'cursor-default'} ${letterClass}`}
+                                    style={{ width: 'clamp(18px,3vh,24px)', height: 'clamp(18px,3vh,24px)', fontSize: 'clamp(9px,1.4vh,12px)' }}
                                   >
                                     {opt}
                                   </span>
@@ -1560,10 +1567,10 @@ export default function ToeicPart6Player({
                                       field={`option${opt}`}
                                       value={optText}
                                     >
-                                      <span className={`text-[15px] font-bold ${uiState === "CORRECT" ? 'text-emerald-900' : uiState === "SELECTED" ? 'text-blue-900' : 'text-slate-900'} leading-snug`}>{optText}</span>
+                                      <span className={`font-bold ${uiState === "CORRECT" ? 'text-emerald-900' : uiState === "SELECTED" ? 'text-blue-900' : 'text-slate-900'} leading-snug`} style={{ fontSize: 'clamp(11px,1.9vh,15px)' }}>{optText}</span>
                                     </AdminInlineEditor>
                                     {isTranslationRevealed && (q.metadata as any)?.options_vn?.[opt] && (
-                                      <div className="text-[14px] text-slate-500 font-medium italic mt-0.5 leading-tight">
+                                      <div className="text-slate-500 font-medium italic mt-0.5 leading-tight" style={{ fontSize: 'clamp(9px,1.5vh,13px)' }}>
                                         <AdminInlineEditor
                                           target="question"
                                           id={q.id}
@@ -1833,7 +1840,7 @@ export default function ToeicPart6Player({
       {/* BOTTOM NAVIGATION BAR */}
       {(() => {
         const navContent = (
-          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full p-1 sm:p-1.5 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-1 sm:gap-4">
+          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto" style={{ padding: 'clamp(2px,0.4vh,6px) clamp(2px,0.4vw,6px)', gap: 'clamp(2px,0.5vw,16px)' }}>
             <div className="relative group">
               <button
                 onClick={() => {
@@ -1844,7 +1851,8 @@ export default function ToeicPart6Player({
                   }
                 }}
                 disabled={currentIndex === 0 && !onPrevPart}
-                className="px-3 sm:px-8 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-400 uppercase tracking-widest"
+                className="rounded-full font-bold transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-400 uppercase tracking-widest"
+                style={{ padding: 'clamp(2px,0.5vh,10px) clamp(8px,1.5vw,32px)', fontSize: 'clamp(8px,1.4vh,13px)' }}
               >
                 {currentIndex === 0 && onPrevPart ? 'Về part trước' : 'Lùi'}
               </button>
@@ -1854,7 +1862,7 @@ export default function ToeicPart6Player({
               </div>
             </div>
 
-            <div className="px-2 sm:px-8 font-black text-slate-600 text-xs sm:text-sm border-x border-slate-100 whitespace-nowrap">
+            <div className="font-black text-slate-600 border-x border-slate-100 whitespace-nowrap text-center" style={{ padding: 'clamp(2px,0.5vh,10px) clamp(6px,1.2vw,32px)', fontSize: 'clamp(9px,1.5vh,14px)' }}>
               {isFullTest ? (
                 <>
                   {currentGroup?.questions?.[0]?.questionNo || (globalOffset + currentIndex + 1)} <span className="mx-0.5 text-slate-300">/</span> {globalTotal || 200}
@@ -1871,16 +1879,18 @@ export default function ToeicPart6Player({
                 <div className="relative group">
                   <button
                     onClick={onNextPart}
-                    className="px-3 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-emerald-600 text-white shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-1 sm:gap-2 whitespace-nowrap"
+                    className="rounded-full font-bold transition-all bg-emerald-600 text-white shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center whitespace-nowrap"
+                    style={{ padding: 'clamp(2px,0.5vh,10px) clamp(10px,2vw,40px)', fontSize: 'clamp(8px,1.4vh,13px)', gap: 'clamp(4px,0.6vw,8px)' }}
                   >
-                    <span>Tiếp Part 7</span> <ChevronRightIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span>Tiếp Part 7</span> <ChevronRightIcon style={{ width: 'clamp(10px,1.8vh,16px)', height: 'clamp(10px,1.8vh,16px)' }} />
                   </button>
                 </div>
               ) : !isSubmittedInternal && (
                 <button
                   onClick={handleFinishTest}
                   disabled={isSubmitting}
-                  className="px-3 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  style={{ padding: 'clamp(2px,0.5vh,10px) clamp(10px,2vw,40px)', fontSize: 'clamp(8px,1.4vh,13px)' }}
                 >
                   {isSubmitting ? '...' : 'Nộp bài'}
                 </button>
@@ -1889,7 +1899,8 @@ export default function ToeicPart6Player({
               <div className="relative group">
                 <button
                   onClick={() => setCurrentIndex(prev => Math.min(data.length - 1, prev + 1))}
-                  className="px-4 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  style={{ padding: 'clamp(2px,0.5vh,10px) clamp(10px,2vw,40px)', fontSize: 'clamp(8px,1.4vh,13px)' }}
                 >
                   Tiếp
                 </button>
@@ -1899,36 +1910,39 @@ export default function ToeicPart6Player({
         );
 
         const footerContent = (
-          <div className="relative flex-none h-14 sm:h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-6 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full">
-            <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
+          <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ height: 'clamp(36px,6vh,56px)', padding: '0 clamp(6px,1.2vw,24px)' }}>
+            <div className="flex items-center pointer-events-auto z-[80] shrink-0" style={{ gap: 'clamp(4px,0.6vw,8px)' }}>
               <button
                 onClick={() => startToeicPartTour(6, true)}
-                className="p-1.5 sm:px-3 sm:py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1.5 pointer-events-auto"
+                className="bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold uppercase tracking-wider transition-all shadow-xs flex items-center pointer-events-auto"
+                style={{ padding: 'clamp(3px,0.6vh,6px) clamp(6px,1vw,12px)', fontSize: 'clamp(8px,1.2vh,11px)', gap: 'clamp(3px,0.5vw,6px)' }}
                 title="Khởi động Tour hướng dẫn nhanh"
               >
-                <HelpCircle size={15} className="animate-pulse shrink-0" />
-                <span className="hidden sm:inline">Hướng dẫn</span>
+                <HelpCircle style={{ width: 'clamp(11px,1.8vh,15px)', height: 'clamp(11px,1.8vh,15px)' }} className="animate-pulse shrink-0" />
+                <span className="hidden sm:inline landscape:inline">Hướng dẫn</span>
               </button>
               {videoExplanation && videoExplanation.videoUrl && (
                 <button
                   onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
-                  className="p-1.5 sm:px-3 sm:py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1.5 border border-[#05b169]/20"
+                  className="bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold uppercase tracking-wider transition-all shadow-xs flex items-center border border-[#05b169]/20"
+                  style={{ padding: 'clamp(3px,0.6vh,6px) clamp(6px,1vw,12px)', fontSize: 'clamp(8px,1.2vh,11px)', gap: 'clamp(3px,0.5vw,6px)' }}
                   title="Xem video chữa đề / giải thích"
                 >
-                  🎬 <span className="hidden sm:inline">{(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video" : "Xem video"}</span>
+                  🎬 <span className="hidden sm:inline landscape:inline">{(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video" : "Xem video"}</span>
                 </button>
               )}
             </div>
             <div className="flex-1 flex justify-center px-1">
               {navContent}
             </div>
-            <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
+            <div className="flex items-center pointer-events-auto z-[80] shrink-0" style={{ gap: 'clamp(4px,0.6vw,8px)' }}>
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent('toeic-toggle-sidebar'))}
-                className="px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full sm:rounded-xl font-extrabold text-[10px] sm:text-[11px] uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1 sm:gap-1.5 active:scale-95 border border-indigo-400/30 whitespace-nowrap"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-extrabold uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center active:scale-95 border border-indigo-400/30 whitespace-nowrap"
+                style={{ padding: 'clamp(3px,0.6vh,8px) clamp(8px,1.2vw,14px)', fontSize: 'clamp(8px,1.2vh,11px)', gap: 'clamp(3px,0.5vw,6px)' }}
                 title="Mở Bảng câu hỏi"
               >
-                <LayoutDashboard size={14} className="shrink-0" />
+                <LayoutDashboard style={{ width: 'clamp(11px,1.8vh,14px)', height: 'clamp(11px,1.8vh,14px)' }} className="shrink-0" />
                 <span>BẢNG CÂU</span>
               </button>
             </div>
