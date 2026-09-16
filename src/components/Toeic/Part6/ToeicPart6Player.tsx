@@ -131,7 +131,7 @@ const SentenceItem = React.memo(({
       if (p.type === 'blank') {
         if (!revealMode) {
           return (
-            <span key={i} className="inline items-center font-bold text-slate-500 bg-slate-50 px-2.5 py-0.5 rounded border border-slate-200 mx-1 text-xs shadow-sm">
+            <span key={i} className="inline items-center font-bold text-slate-500 bg-slate-50 rounded border border-slate-200 mx-1 shadow-sm" style={{ padding: 'clamp(1px,0.3vh,3px) clamp(6px,1.2vh,10px)', fontSize: 'clamp(10px,1.7vh,13px)' }}>
               --- {p.qId} ---
             </span>
           );
@@ -1425,7 +1425,7 @@ export default function ToeicPart6Player({
                     );
                   })()}
                 </div>
-                <div className="bg-white p-2">
+                <div className="bg-white p-2" style={{ fontSize: 'clamp(12px,2vh,18px)', lineHeight: '1.8' }}>
                   {paragraphs.map((par, pIdx) => (
                     <div key={pIdx} className={`${getParagraphStyle(par, paragraphs[pIdx + 1])} last:mb-0`}>
                       {par.map((s: any, sIdx: number) => {
@@ -1910,7 +1910,7 @@ export default function ToeicPart6Player({
         );
 
         const footerContent = (
-          <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ height: 'clamp(36px,6vh,56px)', padding: '0 clamp(6px,1.2vw,24px)' }}>
+          <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ height: 'clamp(36px,6vh,56px)', paddingLeft: 'clamp(6px,1.2vw,24px)', paddingRight: 'clamp(12px,2.5vw,32px)' }}>
             <div className="flex items-center pointer-events-auto z-[80] shrink-0" style={{ gap: 'clamp(4px,0.6vw,8px)' }}>
               <button
                 onClick={() => startToeicPartTour(6, true)}
