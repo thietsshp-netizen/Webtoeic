@@ -498,7 +498,26 @@ export default function ToeicPart6Player({
 
   const [vSplitWidth, setVSplitWidth] = useState(55);
   const [isResizingV, setIsResizingV] = useState(false);
+  const [hSplitHeight, setHSplitHeight] = useState(45); // portrait: % height for passage pane
+  const [isResizingH, setIsResizingH] = useState(false);
+  const [isLandscape, setIsLandscape] = useState(true);
+  const isHDragging = useRef(false);
   const { isAdminMode, canEdit } = useAdminEdit();
+
+  // Detect landscape/portrait
+  useEffect(() => {
+    const check = () => {
+      const landscape = window.innerWidth > window.innerHeight;
+      setIsLandscape(landscape);
+    };
+    check();
+    window.addEventListener('resize', check);
+    window.addEventListener('orientationchange', check);
+    return () => {
+      window.removeEventListener('resize', check);
+      window.removeEventListener('orientationchange', check);
+    };
+  }, []);
 
   const pipWindowRef = useRef<any>(null);
   const popupRef = useRef<Window | null>(null);
@@ -1048,6 +1067,37 @@ export default function ToeicPart6Player({
     };
   }, []);
 
+  // HORIZONTAL RESIZE (portrait mode)
+  useEffect(() => {
+    const handleMouseMoveH = (e: MouseEvent) => {
+      if (!isHDragging.current || !mainContainerRef.current) return;
+      const rect = mainContainerRef.current.getBoundingClientRect();
+      const pct = ((e.clientY - rect.top) / rect.height) * 100;
+      if (pct > 15 && pct < 85) setHSplitHeight(pct);
+    };
+    const handleTouchMoveH = (e: TouchEvent) => {
+      if (!isHDragging.current || e.touches.length === 0 || !mainContainerRef.current) return;
+      const rect = mainContainerRef.current.getBoundingClientRect();
+      const pct = ((e.touches[0].clientY - rect.top) / rect.height) * 100;
+      if (pct > 15 && pct < 85) setHSplitHeight(pct);
+    };
+    const handleUpH = () => {
+      isHDragging.current = false;
+      setIsResizingH(false);
+      document.body.style.cursor = 'default';
+    };
+    window.addEventListener('mousemove', handleMouseMoveH);
+    window.addEventListener('mouseup', handleUpH);
+    window.addEventListener('touchmove', handleTouchMoveH, { passive: false });
+    window.addEventListener('touchend', handleUpH);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMoveH);
+      window.removeEventListener('mouseup', handleUpH);
+      window.removeEventListener('touchmove', handleTouchMoveH);
+      window.removeEventListener('touchend', handleUpH);
+    };
+  }, []);
+
   const handleMouseDown = () => {
     isDragging.current = true;
     setIsResizingV(true);
@@ -1057,6 +1107,17 @@ export default function ToeicPart6Player({
   const handleTouchStart = () => {
     isDragging.current = true;
     setIsResizingV(true);
+  };
+
+  const handleMouseDownH = () => {
+    isHDragging.current = true;
+    setIsResizingH(true);
+    document.body.style.cursor = 'row-resize';
+  };
+
+  const handleTouchStartH = () => {
+    isHDragging.current = true;
+    setIsResizingH(true);
   };
 
   const handleSelect = (questionId: string, option: string) => {
@@ -1361,11 +1422,14 @@ export default function ToeicPart6Player({
 
       <div className="max-w-[1600px] mx-auto w-full flex-1 flex overflow-hidden relative">
         {/* CENTER CONTENT: SPLIT PANES */}
-        <div ref={mainContainerRef} className="flex-1 min-h-0 flex overflow-hidden relative" style={{ paddingBottom: 'clamp(4px,0.8vh,16px)' }}>
+        <div ref={mainContainerRef} className={`flex-1 min-h-0 flex overflow-hidden relative ${isLandscape ? 'flex-row' : 'flex-col'}`} style={{ paddingBottom: isLandscape ? 'clamp(4px,0.8vh,16px)' : '0' }}>
           <div
             id="left-split-col"
-            className="flex flex-col min-h-0 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden relative flex-none"
-            style={{ width: `${vSplitWidth}%`, flexShrink: 0 }}
+            className="flex flex-col min-h-0 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden relative"
+            style={isLandscape
+              ? { width: `${vSplitWidth}%`, flexShrink: 0 }
+              : { height: `${hSplitHeight}%`, flexShrink: 0, marginBottom: 0 }
+            }
           >
             <div className="flex-1 flex flex-col min-h-0">
               <div className="bg-slate-50/50 border-b flex items-center justify-between sticky top-0 z-10" style={{ padding: 'clamp(4px,0.8vh,12px) clamp(8px,1.5vw,16px)' }}>
@@ -1463,26 +1527,41 @@ export default function ToeicPart6Player({
             />
           )}
 
-          {/* VERTICAL DIVIDER */}
-          <div
-            className="group relative w-2 hover:w-4 flex items-center justify-center transition-all z-30"
-          >
-            {/* The Line */}
-            <div className={`w-[2px] h-full transition-colors ${isResizingV ? 'bg-indigo-500' : 'bg-slate-200 group-hover:bg-indigo-400'}`}></div>
-
-            {/* The Handle */}
-            <div
-              onMouseDown={handleMouseDown}
-              onTouchStart={handleTouchStart}
-              className={`absolute top-1/2 -translate-y-1/2 rounded-full bg-white border-2 shadow-xl flex items-center justify-center transition-all cursor-col-resize ${isResizingV ? 'border-indigo-500 scale-110 shadow-indigo-200' : 'border-slate-200 group-hover:border-indigo-400 group-hover:scale-105'}`}
-              style={{ width: 'clamp(28px,4vh,40px)', height: 'clamp(28px,4vh,40px)' }}
-            >
-              <ChevronsLeftRight className={`${isResizingV ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-600'}`} style={{ width: 'clamp(14px,2.2vh,20px)', height: 'clamp(14px,2.2vh,20px)' }} />
+          {/* DIVIDER: vertical (landscape) or horizontal (portrait) */}
+          {isLandscape ? (
+            <div className="group relative w-2 hover:w-4 flex items-center justify-center transition-all z-30">
+              <div className={`w-[2px] h-full transition-colors ${isResizingV ? 'bg-indigo-500' : 'bg-slate-200 group-hover:bg-indigo-400'}`}></div>
+              <div
+                onMouseDown={handleMouseDown}
+                onTouchStart={handleTouchStart}
+                className={`absolute top-1/2 -translate-y-1/2 rounded-full bg-white border-2 shadow-xl flex items-center justify-center transition-all cursor-col-resize ${isResizingV ? 'border-indigo-500 scale-110 shadow-indigo-200' : 'border-slate-200 group-hover:border-indigo-400 group-hover:scale-105'}`}
+                style={{ width: 'clamp(28px,4vh,40px)', height: 'clamp(28px,4vh,40px)' }}
+              >
+                <ChevronsLeftRight className={`${isResizingV ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-600'}`} style={{ width: 'clamp(14px,2.2vh,20px)', height: 'clamp(14px,2.2vh,20px)' }} />
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="group relative flex-none flex flex-col items-center justify-center z-30 transition-all" style={{ height: 'clamp(14px,2.5vh,20px)' }}>
+              <div className={`h-[2px] w-full transition-colors ${isResizingH ? 'bg-indigo-500' : 'bg-slate-200 group-hover:bg-indigo-400'}`}></div>
+              <div
+                onMouseDown={handleMouseDownH}
+                onTouchStart={handleTouchStartH}
+                className={`absolute left-1/2 -translate-x-1/2 rounded-full bg-white border-2 shadow-xl flex items-center justify-center transition-all cursor-row-resize touch-none ${isResizingH ? 'border-indigo-500 scale-110 shadow-indigo-200' : 'border-slate-200 group-hover:border-indigo-400 group-hover:scale-105'}`}
+                style={{ width: 'clamp(40px,8vw,60px)', height: 'clamp(20px,3vh,28px)' }}
+              >
+                <GripHorizontal className={`${isResizingH ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-600'}`} style={{ width: 'clamp(16px,3vw,24px)', height: 'clamp(10px,1.8vh,16px)' }} />
+              </div>
+            </div>
+          )}
 
-          {/* RIGHT: QUESTIONS COLUMN */}
-          <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative" style={{ paddingLeft: 'clamp(6px,1vw,16px)' }}>
+          {/* QUESTIONS COLUMN */}
+          <div
+            className="flex flex-col min-h-0 overflow-hidden relative"
+            style={isLandscape
+              ? { flex: 1, paddingLeft: 'clamp(6px,1vw,16px)' }
+              : { flex: 1, paddingTop: 'clamp(4px,0.8vh,8px)', paddingBottom: 'clamp(4px,0.8vh,16px)' }
+            }
+          >
             <div id="part6-questions-container" ref={questionsScrollRef} className="flex-1 overflow-y-auto scrollbar-thin space-y-[clamp(6px,1.2vh,16px)] webtoeic-scroll-container" style={{ paddingRight: 'clamp(4px,0.8vw,12px)', paddingBottom: 'clamp(24px,8vh,120px)' }}>
               {questions.map((q: any) => {
                 const qKey = q.id || `${currentGroup.id}_${q.questionNo}`;
