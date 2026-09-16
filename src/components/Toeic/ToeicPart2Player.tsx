@@ -2177,32 +2177,32 @@ export default function ToeicPart2Player({
   }
 
   return (
-    <div className="absolute inset-0 flex flex-col font-sans bg-[#f8fafc] text-slate-800 overflow-hidden pr-20">
+    <div className="absolute inset-0 flex flex-col font-sans bg-[#f8fafc] text-slate-800 overflow-hidden pr-0 lg:pr-20">
       <div className="flex-1 flex overflow-hidden relative">
         {/* Questions Column Wrapper */}
         <div className="flex-1 relative flex flex-col overflow-visible">
-          <div className="flex-1 overflow-y-auto px-4 pt-6 pb-20 scrollbar-thin">
-            <div className="flex flex-wrap justify-between items-center bg-white px-3 py-1.5 rounded-xl shadow-sm border border-slate-100 mb-2 gap-2">
+          <div className="flex-1 overflow-y-auto px-2 sm:px-4 pt-2 sm:pt-4 pb-16 scrollbar-thin">
+            <div className="flex flex-wrap justify-between items-center bg-white px-2.5 py-1.5 rounded-xl shadow-sm border border-slate-100 mb-2 gap-2">
               <div className="flex items-center gap-2">
-                <button id="dictation-mode-btn" onClick={() => setMode(mode === 'dictation' ? 'practice' : 'dictation')} className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition ${mode === 'dictation' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-[0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-200 text-slate-500 hover:border-slate-300'}`}>✏️ Chế độ Chép chính tả</button>
+                <button id="dictation-mode-btn" onClick={() => setMode(mode === 'dictation' ? 'practice' : 'dictation')} className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold border-2 transition ${mode === 'dictation' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-[0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-200 text-slate-500 hover:border-slate-300'}`}>✏️ Chép chính tả</button>
                 <button
                   id="hint-mode-btn"
                   onClick={() => setIsHintMode(!isHintMode)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition flex items-center gap-2 ${isHintMode ? 'border-amber-500 bg-amber-50 text-amber-700 shadow-[0_0_15px_rgba(245,158,11,0.3)]' : 'border-slate-200 text-slate-500 hover:border-amber-300 hover:text-amber-600'}`}
+                  className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold border-2 transition flex items-center gap-1.5 ${isHintMode ? 'border-amber-500 bg-amber-50 text-amber-700 shadow-[0_0_15px_rgba(245,158,11,0.3)]' : 'border-slate-200 text-slate-500 hover:border-amber-300 hover:text-amber-600'}`}
                 >
                   {isHintMode ? "✨ Tắt Chế độ Gợi ý" : "💡 Chế độ Gợi ý"}
                 </button>
               </div>
             </div>
 
-            <div className="max-w-4xl mx-auto mb-4 relative z-[250]">
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 px-3 py-2 flex items-center gap-3">
+            <div className="max-w-4xl mx-auto mb-2 sm:mb-4 relative z-[250]">
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 px-2.5 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-3">
                 {/* Play/Pause Button */}
-                <div className="relative group shrink-0">
+                <div className="relative group shrink-0 pl-0.5">
                   <button
                     id="play-audio-btn"
                     onClick={() => wavesurfer.current?.playPause()}
-                    className="w-9 h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-lg shadow-indigo-100 transition-all active:scale-95 ring-4 ring-indigo-50"
+                    className="w-8 h-8 sm:w-9 sm:h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-lg shadow-indigo-100 transition-all active:scale-95 ring-4 ring-indigo-50"
                   >
                     {isPlaying ? <PauseIcon className="w-4 h-4" /> : <PlayIcon className="w-4 h-4 pl-0.5" />}
                   </button>
@@ -2215,14 +2215,14 @@ export default function ToeicPart2Player({
                 </div>
 
                 {/* Waveform Container */}
-                <div className="flex-1 overflow-hidden rounded-lg" style={{ height: 36 }}>
+                <div className="flex-1 overflow-hidden rounded-lg" style={{ height: 32 }}>
                   <div id="waveform-audio-container" ref={waveformRef} className="w-full h-full cursor-crosshair" />
                 </div>
 
                 {/* Speed Controls */}
                 <div className="flex bg-slate-50 rounded-lg border border-slate-200 p-0.5 shrink-0">
                   {[0.5, 0.75, 1, 1.25, 1.5].map(speed => (
-                    <button key={speed} onClick={() => changeSpeed(speed)} className={`px-2 py-1 rounded-md text-[10px] font-black transition-all ${playbackRate === speed ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-slate-400 hover:bg-white hover:text-indigo-600'}`}>
+                    <button key={speed} onClick={() => changeSpeed(speed)} className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-black transition-all ${playbackRate === speed ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-slate-400 hover:bg-white hover:text-indigo-600'}`}>
                       {speed}x
                     </button>
                   ))}
@@ -2230,7 +2230,7 @@ export default function ToeicPart2Player({
               </div>
             </div>
 
-            <div className="max-w-4xl mx-auto pb-10">
+            <div className="max-w-4xl mx-auto pb-6 sm:pb-10">
               <div className="flex flex-col gap-2.5 py-2 justify-center w-full tour-question-options-target">
                 <div className={`border p-3.5 rounded-2xl mb-1 transition-all overflow-visible ${mode === 'dictation' ? 'border-pink-200 bg-pink-50/30' : 'border-blue-100 bg-blue-50/30'}`}>
                   <div className="flex items-center gap-2 mb-2">
@@ -2568,143 +2568,152 @@ export default function ToeicPart2Player({
         {/* INTEGRATED SIDEBAR COLUMN - Hide if Full Test (Parent has its own) */}
         {/* 3. Bảng điều hướng câu hỏi (Bên phải) - Hover để mở rộng */}
         {!isFullTest && mounted && createPortal(
-          <div
-            className={`questions-sidebar-portal
-              fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
-            ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}
-          `}
-            onMouseEnter={() => setIsSidebarHovered(true)}
-            onMouseLeave={() => setIsSidebarHovered(false)}
-            onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
-          >
-            <div className={`p-4 border-b border-white/10 flex items-center shrink-0 ${isSidebarHovered ? 'h-auto' : 'h-16 justify-center'}`}>
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 text-blue-600 rounded-xl shrink-0">
-                  <LayoutDashboard size={18} />
-                </div>
-                {isSidebarHovered && (
-                  <div className="animate-in fade-in zoom-in duration-300 whitespace-nowrap overflow-hidden">
-                    <h3 className="font-black text-white mb-0.5">BẢNG CÂU HỎI</h3>
-                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Click để di chuyển nhanh</p>
+          <>
+            {isSidebarHovered && (
+              <div
+                className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[998] lg:hidden animate-in fade-in"
+                onClick={() => setIsSidebarHovered(false)}
+              />
+            )}
+            <div
+              className={`questions-sidebar-portal
+                fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
+              ${isSidebarHovered ? "w-72 sm:w-80 bg-slate-900/95 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}
+            `}
+              onMouseEnter={() => setIsSidebarHovered(true)}
+              onMouseLeave={() => setIsSidebarHovered(false)}
+              onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
+            >
+              <div className={`p-4 border-b border-white/10 flex items-center shrink-0 ${isSidebarHovered ? 'h-auto' : 'h-16 justify-center'}`}>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-100 text-blue-600 rounded-xl shrink-0">
+                    <LayoutDashboard size={18} />
                   </div>
-                )}
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
-              {isSidebarHovered ? (
-                <div className="grid grid-cols-4 gap-2 animate-in fade-in duration-500">
-                  {data.map((group, idx) => {
-                    const q = group.questions[0];
-                    const qKey = q.id || `${group.id}_${q.questionNo}`;
-                    const isDone = !!answers[qKey];
-                    const isCurr = idx === currentIndex;
-                    const isFlaged = flags[qKey];
-                    const showResult = isSubmitted || isReviewMode;
-                    const resultCorrect = showResult && answers[qKey] === q.correctAnswer;
-
-                    let btnClass = "";
-                    if (showResult) {
-                      if (!answers[q.id]) btnClass = "bg-slate-800 text-slate-500 border border-slate-700";
-                      else if (resultCorrect) btnClass = "bg-emerald-500 text-white shadow-sm ring-1 ring-emerald-400";
-                      else btnClass = "bg-red-500 text-white shadow-sm ring-1 ring-red-400";
-                    } else {
-                      btnClass = isDone
-                        ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20'
-                        : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700';
-                    }
-
-                    return (
-                      <button
-                        key={idx}
-                        onClick={() => setCurrentIndex(idx)}
-                        className={`h-10 rounded-xl font-bold text-[11px] transition-all flex items-center justify-center relative 
-                            ${isCurr ? 'ring-2 ring-white z-20 scale-110 shadow-lg' : ''} 
-                            ${btnClass}`}
-                      >
-                        {idx + 1}
-                        {isFlaged && (
-                          <div className="absolute top-1 right-1 group/flag">
-                            <Flag size={10} className="text-red-500 fill-red-500 shadow-sm" />
-                            {flagNotes[qKey] && (
-                              <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover/flag:opacity-100 transition-all duration-200 pointer-events-none z-[1000]">
-                                <div className="bg-slate-900/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl border border-white/10 w-48 text-left">
-                                  <div className="flex items-center gap-1.5 mb-1.5">
-                                    <PenLine size={10} className="text-blue-400" />
-                                    <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Ghi chú</span>
-                                  </div>
-                                  <p className="text-[10px] leading-relaxed font-medium line-clamp-4 italic text-slate-100">
-                                    "{flagNotes[qKey]}"
-                                  </p>
-                                  <div className="absolute -bottom-1 right-2 w-2 h-2 bg-slate-900 rotate-45 border-r border-b border-white/10" />
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center gap-6 py-4 animate-in fade-in duration-300">
-                  <div className="flex flex-col items-center gap-1">
-                    <div className="text-[10px] font-black text-blue-500">{Math.round((Object.keys(answers).length / data.length) * 100)}%</div>
-                    <div className="w-1 h-12 bg-slate-200 rounded-full overflow-hidden flex flex-col justify-end">
-                      <div className="bg-blue-500 w-full transition-all duration-500" style={{ height: `${(Object.keys(answers).length / data.length) * 100}%` }}></div>
+                  {isSidebarHovered && (
+                    <div className="animate-in fade-in zoom-in duration-300 whitespace-nowrap overflow-hidden">
+                      <h3 className="font-black text-white mb-0.5">BẢNG CÂU HỎI</h3>
+                      <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Click để di chuyển nhanh</p>
                     </div>
-                  </div>
+                  )}
+                </div>
+              </div>
 
-                  <div className="flex flex-col gap-3">
-                    {data.slice(0, 10).map((g, idx) => {
-                      const isDone = !!answers[g.questions[0].id];
+              <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
+                {isSidebarHovered ? (
+                  <div className="grid grid-cols-4 gap-2 animate-in fade-in duration-500">
+                    {data.map((group, idx) => {
+                      const q = group.questions[0];
+                      const qKey = q.id || `${group.id}_${q.questionNo}`;
+                      const isDone = !!answers[qKey];
+                      const isCurr = idx === currentIndex;
+                      const isFlaged = flags[qKey];
+                      const showResult = isSubmitted || isReviewMode;
+                      const resultCorrect = showResult && answers[qKey] === q.correctAnswer;
+
+                      let btnClass = "";
+                      if (showResult) {
+                        if (!answers[q.id]) btnClass = "bg-slate-800 text-slate-500 border border-slate-700";
+                        else if (resultCorrect) btnClass = "bg-emerald-500 text-white shadow-sm ring-1 ring-emerald-400";
+                        else btnClass = "bg-red-500 text-white shadow-sm ring-1 ring-red-400";
+                      } else {
+                        btnClass = isDone
+                          ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20'
+                          : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700';
+                      }
+
                       return (
-                        <div key={idx} className={`w-1.5 h-1.5 rounded-full ${isDone ? 'bg-blue-500' : 'bg-slate-300'}`}></div>
+                        <button
+                          key={idx}
+                          onClick={() => setCurrentIndex(idx)}
+                          className={`h-10 rounded-xl font-bold text-[11px] transition-all flex items-center justify-center relative 
+                              ${isCurr ? 'ring-2 ring-white z-20 scale-110 shadow-lg' : ''} 
+                              ${btnClass}`}
+                        >
+                          {idx + 1}
+                          {isFlaged && (
+                            <div className="absolute top-1 right-1 group/flag">
+                              <Flag size={10} className="text-red-500 fill-red-500 shadow-sm" />
+                              {flagNotes[qKey] && (
+                                <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover/flag:opacity-100 transition-all duration-200 pointer-events-none z-[1000]">
+                                  <div className="bg-slate-900/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl border border-white/10 w-48 text-left">
+                                    <div className="flex items-center gap-1.5 mb-1.5">
+                                      <PenLine size={10} className="text-blue-400" />
+                                      <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Ghi chú</span>
+                                    </div>
+                                    <p className="text-[10px] leading-relaxed font-medium line-clamp-4 italic text-slate-100">
+                                      "{flagNotes[qKey]}"
+                                    </p>
+                                    <div className="absolute -bottom-1 right-2 w-2 h-2 bg-slate-900 rotate-45 border-r border-b border-white/10" />
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </button>
                       );
                     })}
                   </div>
-                </div>
-              )}
-            </div>
-
-            <div className={`p-4 border-t border-white/10 bg-black/20 shrink-0 ${!isSidebarHovered && 'flex justify-center'}`}>
-              {isSidebarHovered ? (
-                !isSubmitted ? (
-                  <button
-                    onClick={handleFinishTest}
-                    disabled={isSubmitting}
-                    className="w-full py-3.5 rounded-2xl bg-blue-600 text-white font-bold text-[13px] shadow-lg shadow-blue-900/30 hover:bg-blue-700 transition-all active:scale-95 disabled:opacity-50 uppercase tracking-wider flex items-center justify-center gap-2"
-                  >
-                    <Send size={16} /> {isSubmitting ? 'ĐANG NỘP...' : 'NỘP BÀI NGAY'}
-                  </button>
                 ) : (
-                  <div className="flex flex-col gap-3">
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="bg-emerald-500/10 rounded-xl p-2 border border-emerald-500/20 text-center">
-                        <div className="text-[14px] font-black text-emerald-400">{testScore.correct}</div>
-                        <div className="text-[8px] font-bold text-emerald-500/60 uppercase">Đúng</div>
-                      </div>
-                      <div className="bg-red-500/10 rounded-xl p-2 border border-red-500/20 text-center">
-                        <div className="text-[14px] font-black text-red-400">{testScore.incorrect}</div>
-                        <div className="text-[8px] font-bold text-red-500/60 uppercase">Sai</div>
+                  <div className="flex flex-col items-center gap-6 py-4 animate-in fade-in duration-300">
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="text-[10px] font-black text-blue-500">{Math.round((Object.keys(answers).length / data.length) * 100)}%</div>
+                      <div className="w-1 h-12 bg-slate-200 rounded-full overflow-hidden flex flex-col justify-end">
+                        <div className="bg-blue-500 w-full transition-all duration-500" style={{ height: `${(Object.keys(answers).length / data.length) * 100}%` }}></div>
                       </div>
                     </div>
-                    <button
-                      onClick={handleRetake}
-                      className="w-full py-3 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 font-bold text-xs shadow-sm hover:bg-slate-700 transition active:scale-95 uppercase tracking-wide"
-                    >
-                      🔄 Làm lại bài
-                    </button>
+
+                    <div className="flex flex-col gap-3">
+                      {data.slice(0, 10).map((g, idx) => {
+                        const isDone = !!answers[g.questions[0].id];
+                        return (
+                          <div key={idx} className={`w-1.5 h-1.5 rounded-full ${isDone ? 'bg-blue-500' : 'bg-slate-300'}`}></div>
+                        );
+                      })}
+                    </div>
                   </div>
-                )
-              ) : (
-                <button onClick={handleFinishTest} className="p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-900/20">
-                  <Send size={16} />
-                </button>
-              )}
+                )}
+              </div>
+
+              <div className={`p-4 border-t border-white/10 bg-black/20 shrink-0 ${!isSidebarHovered && 'flex justify-center'}`}>
+                {isSidebarHovered ? (
+                  !isSubmitted ? (
+                    <button
+                      onClick={handleFinishTest}
+                      disabled={isSubmitting}
+                      className="w-full py-3.5 rounded-2xl bg-blue-600 text-white font-bold text-[13px] shadow-lg shadow-blue-900/30 hover:bg-blue-700 transition-all active:scale-95 disabled:opacity-50 uppercase tracking-wider flex items-center justify-center gap-2"
+                    >
+                      <Send size={16} /> {isSubmitting ? 'ĐANG NỘP...' : 'NỘP BÀI NGAY'}
+                    </button>
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="bg-emerald-500/10 rounded-xl p-2 border border-emerald-500/20 text-center">
+                          <div className="text-[14px] font-black text-emerald-400">{testScore.correct}</div>
+                          <div className="text-[8px] font-bold text-emerald-500/60 uppercase">Đúng</div>
+                        </div>
+                        <div className="bg-red-500/10 rounded-xl p-2 border border-red-500/20 text-center">
+                          <div className="text-[14px] font-black text-red-400">{testScore.incorrect}</div>
+                          <div className="text-[8px] font-bold text-red-500/60 uppercase">Sai</div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={handleRetake}
+                        className="w-full py-3 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 font-bold text-xs shadow-sm hover:bg-slate-700 transition active:scale-95 uppercase tracking-wide"
+                      >
+                        🔄 Làm lại bài
+                      </button>
+                    </div>
+                  )
+                ) : (
+                  <button onClick={handleFinishTest} className="p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-900/20">
+                    <Send size={16} />
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-          , document.body)}
+          </>,
+          document.body
+        )}
       </div>
 
       {/* BOTTOM NAVIGATION BAR */}
