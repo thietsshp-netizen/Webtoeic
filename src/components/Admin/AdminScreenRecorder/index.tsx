@@ -131,6 +131,27 @@ export const AdminScreenRecorder: React.FC = () => {
   const [previewVideoUrl, setPreviewVideoUrl] = useState<string | null>(null);
   const [fatalErrorModal, setFatalErrorModal] = useState<string | null>(null);
 
+  // Phát sự kiện đồng bộ trạng thái recorder ra toàn hệ thống
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("webtoeic-toggle-global-recorder-state", { detail: { active: isOpenPanel || recorderState !== "idle" } }));
+  }, [isOpenPanel, recorderState]);
+
+  // Lắng nghe sự kiện mở/tắt từ Admin Toolbar
+  useEffect(() => {
+    const handleToggleRecorder = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail && typeof customEvent.detail.active === "boolean") {
+        setIsOpenPanel(customEvent.detail.active);
+      } else {
+        setIsOpenPanel((prev) => !prev);
+      }
+    };
+    window.addEventListener("webtoeic-toggle-global-recorder", handleToggleRecorder);
+    return () => {
+      window.removeEventListener("webtoeic-toggle-global-recorder", handleToggleRecorder);
+    };
+  }, []);
+
   // Vị trí thanh điều khiển khi đang quay (Mặc định ở Header, có thể kéo thả tùy ý)
   const [barPos, setBarPos] = useState<{ x: number; y: number } | null>(null);
   const isDraggingBar = useRef(false);
@@ -557,28 +578,6 @@ export const AdminScreenRecorder: React.FC = () => {
         isPreviewing={isOpenPanel}
         onOpenSettings={() => { setIsOpenPanel(true); setActiveTab("camera"); }} 
       />
-
-      {/* 1. Nút máy quay trên thanh Header (cạnh nút điểm danh) */}
-      {recorderState === "idle" && (
-        <button
-          onClick={(e) => {
-            setIsOpenPanel(!isOpenPanel);
-            e.currentTarget.blur();
-          }}
-          style={{
-            position: "fixed",
-            top: isLearnPage ? "9px" : "14px",
-            right: isLearnPage ? "262px" : "108px",
-            zIndex: 1000000005,
-          }}
-          className={`${styles.headerTriggerBtn} ${isOpenPanel ? styles.headerTriggerBtnActive : ""}`}
-          title="Quay video bài giảng (Admin Only)"
-        >
-          <Video size={18} />
-          {savedCompactResult && <div className={styles.greenSavedDot} />}
-          <span className={styles.btnTooltip}>Quay video</span>
-        </button>
-      )}
 
       {/* 2. Bảng cài đặt & Quản lý video (Settings Dropdown) */}
       {isOpenPanel && recorderState === "idle" && (

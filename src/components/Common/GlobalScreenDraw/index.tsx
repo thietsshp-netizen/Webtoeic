@@ -21,11 +21,15 @@ export const GlobalScreenDraw: React.FC = () => {
     window.dispatchEvent(new CustomEvent("webtoeic-toggle-global-draw-state", { detail: { active: isActive } }));
   }, [isActive]);
 
-  // Lắng nghe sự kiện đồng bộ từ nút Pencil trong trang bài giảng (Learn layout)
+  // Lắng nghe sự kiện đồng bộ từ nút Pencil trong trang bài giảng hoặc Admin Toolbar
   useEffect(() => {
     const handleToggleDraw = (e: Event) => {
       const customEvent = e as CustomEvent;
-      setIsActive(customEvent.detail.active);
+      if (customEvent.detail && typeof customEvent.detail.active === "boolean") {
+        setIsActive(customEvent.detail.active);
+      } else {
+        setIsActive((prev) => !prev);
+      }
     };
     window.addEventListener("webtoeic-toggle-global-draw", handleToggleDraw);
     return () => {
@@ -41,16 +45,6 @@ export const GlobalScreenDraw: React.FC = () => {
 
   return (
     <>
-      {!isLearnPage && (
-        <button
-          onClick={() => setIsActive(!isActive)}
-          className={`${styles.floatingBtn} ${isActive ? styles.floatingBtnActive : ""}`}
-          title={isActive ? "Tắt bảng vẽ viết nháp (Ctrl+Shift+B)" : "Bật bảng vẽ viết nháp toàn website (Ctrl+Shift+B)"}
-        >
-          {isActive ? <X size={18} /> : <Pencil size={18} />}
-        </button>
-      )}
-
       {/* Lớp phủ Canvas vẽ viết Glassmorphism toàn hệ thống */}
       <ScreenDrawOverlay isActive={isActive} setIsActive={setIsActive} />
     </>

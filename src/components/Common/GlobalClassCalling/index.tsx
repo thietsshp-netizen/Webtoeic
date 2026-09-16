@@ -23,6 +23,27 @@ export const GlobalClassCalling: React.FC = () => {
   const [suggestedNextStudentId, setSuggestedNextStudentId] = useState<string | null>(null);
   const lastLocalUpdate = useRef<number>(0);
 
+  // Phát sự kiện đồng bộ trạng thái điểm danh ra toàn hệ thống
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("webtoeic-toggle-global-calling-state", { detail: { active: isOpen } }));
+  }, [isOpen]);
+
+  // Lắng nghe sự kiện mở/tắt từ Admin Toolbar
+  useEffect(() => {
+    const handleToggleCalling = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail && typeof customEvent.detail.active === "boolean") {
+        setIsOpen(customEvent.detail.active);
+      } else {
+        setIsOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("webtoeic-toggle-global-calling", handleToggleCalling);
+    return () => {
+      window.removeEventListener("webtoeic-toggle-global-calling", handleToggleCalling);
+    };
+  }, []);
+
   // Cập nhật học viên gợi ý tiếp theo một cách nhất quán (chỉ thay đổi khi gợi ý cũ không còn hợp lệ)
   useEffect(() => {
     if (presentStudents.length === 0) {
@@ -507,42 +528,7 @@ export const GlobalClassCalling: React.FC = () => {
 
   return (
     <>
-      {/* Nút kích hoạt nổi ở góc trên bên phải, cạnh nút Draw */}
-      <button
-        onClick={(e) => {
-          setIsOpen(!isOpen);
-          e.currentTarget.blur();
-        }}
-        style={{
-          position: "fixed",
-          top: isLearnPage ? "9px" : "14px",
-          right: isLearnPage ? "216px" : "62px",
-          zIndex: 1000000005,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "38px",
-          height: "38px",
-          borderRadius: "9999px",
-          border: "1px solid rgba(255, 255, 255, 0.15)",
-          background: isOpen ? "rgba(37, 99, 235, 0.95)" : "rgba(15, 23, 42, 0.85)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          color: isOpen ? "#ffffff" : "rgba(255, 255, 255, 0.8)",
-          cursor: "pointer",
-          boxShadow: isOpen 
-            ? "0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 0 15px rgba(37, 99, 235, 0.4)" 
-            : "0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3)",
-          transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-          userSelect: "none"
-        }}
-        title={isOpen ? "Ẩn bảng điểm danh & gọi học viên" : "Bật bảng điểm danh & gọi học viên phát biểu"}
-        className="hover:scale-105 active:scale-95 hover:text-white"
-      >
-        {isOpen ? <X size={18} /> : <CalendarCheck size={18} />}
-      </button>
-
-      {/* Widget gọi tên nổi (Chỉ hiển thị khi bấm nút kích hoạt) */}
+      {/* Widget gọi tên nổi (Chỉ hiển thị khi bấm nút kích hoạt từ Admin Toolbar) */}
       {isOpen && (
         <div
           ref={widgetRef}
