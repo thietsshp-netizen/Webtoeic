@@ -406,7 +406,7 @@ export default function FeatureVideoShowcase() {
               return (
                 <iframe
                   key={`yt-${ytId}`}
-                  src={`https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
+                  src={`https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&vq=hd1080`}
                   title={currentVideo?.title || "Video tính năng"}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
