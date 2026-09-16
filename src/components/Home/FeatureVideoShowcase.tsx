@@ -698,9 +698,9 @@ export default function FeatureVideoShowcase() {
                 {currentVideo.highlights.map((item, idx) => (
                   <div
                     key={idx}
-                    className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white border border-slate-200/80 text-left shadow-2xs"
+                    className="flex items-center sm:items-start justify-center sm:justify-start gap-2.5 p-2.5 rounded-xl bg-white border border-slate-200/80 text-center sm:text-left shadow-2xs"
                   >
-                    <CheckCircle2 size={15} className="text-emerald-500 shrink-0 mt-0.5" />
+                    <CheckCircle2 size={15} className="text-emerald-500 shrink-0 sm:mt-0.5" />
                     <span className="text-xs sm:text-[13px] font-semibold text-slate-700 leading-snug">
                       {item}
                     </span>
