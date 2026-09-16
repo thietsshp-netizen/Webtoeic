@@ -211,20 +211,20 @@ export default function TeacherCertificateShowcase() {
                 e.stopPropagation();
                 handleSelect((activeIdx - 1 + CERTIFICATES.length) % CERTIFICATES.length);
               }}
-              className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900/70 hover:bg-blue-600 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 shadow-xl border border-slate-700 cursor-pointer"
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/30 hover:bg-blue-600 text-white/90 hover:text-white flex items-center justify-center backdrop-blur-sm transition-all active:scale-95 shadow-lg border border-white/20 hover:border-white/40 cursor-pointer"
               title="Xem bằng trước (Mũi tên trái)"
             >
-              <ChevronLeft size={26} />
+              <ChevronLeft size={20} />
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 handleSelect((activeIdx + 1) % CERTIFICATES.length);
               }}
-              className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900/70 hover:bg-blue-600 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 shadow-xl border border-slate-700 cursor-pointer"
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/30 hover:bg-blue-600 text-white/90 hover:text-white flex items-center justify-center backdrop-blur-sm transition-all active:scale-95 shadow-lg border border-white/20 hover:border-white/40 cursor-pointer"
               title="Xem bằng tiếp theo (Mũi tên phải)"
             >
-              <ChevronRight size={26} />
+              <ChevronRight size={20} />
             </button>
           </div>
         </div>

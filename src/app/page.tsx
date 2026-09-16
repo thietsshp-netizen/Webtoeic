@@ -628,25 +628,25 @@ function HomeContent() {
   if (!mounted) return <HomeSkeleton />;
 
   return (
-    <div className="min-h-screen bg-[#fcfdfe] font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-[#fcfdfe] font-sans selection:bg-blue-100 selection:text-blue-900 overflow-x-hidden w-full">
 
       {/* --- TOP NAVBAR --- */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-            <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200 group-hover:rotate-6 transition-transform">
-              <GraduationCap className="text-white" size={24} />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200 group-hover:rotate-6 transition-transform">
+              <GraduationCap className="text-white" size={20} />
             </div>
-            <span className="text-xl font-bold text-slate-900 tracking-tight hidden sm:block">
+            <span className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight hidden sm:block">
               hoctoeic
               <span className="text-blue-600 block text-[10px] uppercase tracking-[0.3em] font-bold -mt-1">E-LEARNING SYSTEM</span>
             </span>
           </Link>
 
-          <div className="flex items-center bg-slate-100/50 p-1.5 rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-[290px] sm:max-w-none">
-            <TabBtn href="/?tab=intro" id="intro" active={activeTab} label="GIỚI THIỆU" icon={<Star size={16} />} />
-            <TabBtn href="/courses" id="courses" active={activeTab} label="KHÓA HỌC" icon={<BookOpen size={16} />} />
-            <TabBtn href="/?tab=dashboard" id="dashboard" active={activeTab} label="DASHBOARD" icon={<Layout size={16} />} color="blue" />
+          <div className="flex items-center bg-slate-100/50 p-1 sm:p-1.5 rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-[220px] xs:max-w-[270px] sm:max-w-none">
+            <TabBtn href="/?tab=intro" id="intro" active={activeTab} label="GIỚI THIỆU" icon={<Star size={14} />} />
+            <TabBtn href="/courses" id="courses" active={activeTab} label="KHÓA HỌC" icon={<BookOpen size={14} />} />
+            <TabBtn href="/?tab=dashboard" id="dashboard" active={activeTab} label="DASHBOARD" icon={<Layout size={14} />} color="blue" />
           </div>
 
           <div className="hidden md:flex items-center gap-4">
@@ -682,59 +682,56 @@ function HomeContent() {
       </nav>
 
       {/* --- MAIN CONTENT AREA --- */}
-      <main className={clsx("min-h-screen", activeTab === "dashboard" && status === "authenticated" ? "bg-slate-50/30 pt-20" : "pt-32 pb-40 px-6 sm:px-12 max-w-7xl mx-auto")}>
+      <main className={clsx("min-h-screen overflow-x-hidden w-full max-w-full", activeTab === "dashboard" && status === "authenticated" ? "bg-slate-50/30 pt-20" : "pt-24 sm:pt-32 pb-20 sm:pb-40 px-3 sm:px-6 md:px-12 max-w-7xl mx-auto")}>
 
         {/* --- TAB 1: GIỚI THIỆU --- */}
         {activeTab === "intro" && (
-          <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 overflow-x-hidden w-full">
 
             {/* Hero Section */}
-            <section className="text-center mb-12 sm:mb-16 relative">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-50/50 blur-[120px] -z-10 rounded-full"></div>
+            <section className="text-center mb-12 sm:mb-16 relative overflow-hidden px-1">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[600px] h-[300px] bg-blue-50/50 blur-[120px] -z-10 rounded-full"></div>
 
-              <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold uppercase tracking-widest mb-10 border border-emerald-100 shadow-sm">
-                <Award size={16} fill="currentColor" /> HỌC THẬT - THI THẬT - KẾT QUẢ THẬT
+              <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-emerald-50 text-emerald-600 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-widest mb-6 sm:mb-10 border border-emerald-100 shadow-sm max-w-full">
+                <Award size={16} fill="currentColor" className="shrink-0" /> <span className="truncate">HỌC THẬT - THI THẬT - KẾT QUẢ THẬT</span>
               </div>
 
-              <h1 className="text-6xl md:text-8xl font-black text-slate-900 leading-[0.9] tracking-[-0.05em] mb-12 italic uppercase">
+              <h1 className="text-3xl sm:text-6xl md:text-8xl font-black text-slate-900 leading-[1.05] sm:leading-[0.9] tracking-[-0.03em] sm:tracking-[-0.05em] mb-6 sm:mb-12 italic uppercase">
                 LỘ TRÌNH TOEIC <br />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 animate-gradient-x underline decoration-emerald-100 decoration-8 underline-offset-8">CÁ NHÂN HÓA</span>
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 animate-gradient-x underline decoration-emerald-100 decoration-4 sm:decoration-8 underline-offset-4 sm:underline-offset-8">CÁ NHÂN HÓA</span>
               </h1>
 
-              <p className="text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed mb-14">
+              <p className="text-sm sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed mb-8 sm:mb-14 px-2">
                 Hệ thống lớp học tại <span className="text-slate-900 font-bold">hoctoeic</span> được thiết kế tinh gọn, tập trung hoàn toàn vào việc lấy lại gốc tiếng Anh và rèn luyện kỹ năng giải đề thực chiến để đạt mục tiêu trong thời gian ngắn nhất.
               </p>
 
-              <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 my-4">
-                {/* Nút 1: Xem danh sách lớp học (Gradient 3D + Icon + Shine + Click ngay badge) */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 my-4 px-2 w-full max-w-lg mx-auto sm:max-w-none">
+                {/* Nút 1: Xem danh sách lớp học */}
                 <Link
                   href="/courses"
-                  className="relative group bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white px-8 sm:px-10 py-4.5 sm:py-5 rounded-[2.5rem] font-black text-xs sm:text-sm uppercase tracking-widest shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer border border-blue-400/30"
+                  className="relative group bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white px-6 sm:px-10 py-4 sm:py-5 rounded-[2.5rem] font-black text-xs sm:text-sm uppercase tracking-widest shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer border border-blue-400/30 w-full sm:w-auto"
                 >
-                  {/* Sheen/Shine Light Effect */}
                   <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-in-out pointer-events-none rounded-[2.5rem]" />
                   
                   <BookOpen size={18} className="text-blue-100 group-hover:scale-110 transition-transform shrink-0" />
-                  <span>Xem danh sách lớp học</span>
+                  <span className="truncate">Xem danh sách lớp học</span>
                   <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform text-white shrink-0" />
 
-                  {/* Micro Badge: Animated Hand Pointer Click Indicator */}
                   <span className="absolute -bottom-2 -right-1 flex items-center justify-center gap-1 px-2 py-0.5 bg-amber-400 text-slate-900 rounded-full shadow-md text-[9px] font-black tracking-tighter animate-bounce group-hover:scale-110 transition-transform select-none z-10">
                     <MousePointerClick size={12} className="stroke-[2.5]" />
                     <span>CLICK NGAY</span>
                   </span>
                 </Link>
 
-                {/* Nút 2: Kiểm tra trình độ miễn phí (Outlined Emerald + Hand Click Pointer Animation + ArrowRight) */}
+                {/* Nút 2: Kiểm tra trình độ miễn phí */}
                 <button
                   onClick={() => setShowPlacementTest(true)}
-                  className="relative group bg-emerald-50/90 hover:bg-emerald-600 text-emerald-700 hover:text-white border-2 border-emerald-500 hover:border-emerald-600 px-8 sm:px-10 py-4.5 sm:py-5 rounded-[2.5rem] font-black text-xs sm:text-sm uppercase tracking-widest shadow-md shadow-emerald-500/15 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer"
+                  className="relative group bg-emerald-50/90 hover:bg-emerald-600 text-emerald-700 hover:text-white border-2 border-emerald-500 hover:border-emerald-600 px-6 sm:px-10 py-4 sm:py-5 rounded-[2.5rem] font-black text-xs sm:text-sm uppercase tracking-widest shadow-md shadow-emerald-500/15 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto"
                 >
                   <Sparkles size={18} className="text-emerald-500 group-hover:text-white group-hover:rotate-12 transition-all shrink-0" />
-                  <span>Kiểm tra trình độ miễn phí</span>
+                  <span className="truncate">Kiểm tra trình độ miễn phí</span>
                   <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform shrink-0" />
                   
-                  {/* Micro Badge: Animated Hand Pointer Click Indicator */}
                   <span className="absolute -bottom-2 -right-1 flex items-center justify-center gap-1 px-2 py-0.5 bg-amber-400 text-slate-900 rounded-full shadow-md text-[9px] font-black tracking-tighter animate-bounce group-hover:scale-110 transition-transform select-none z-10">
                     <MousePointerClick size={12} className="stroke-[2.5]" />
                     <span>CLICK NGAY</span>

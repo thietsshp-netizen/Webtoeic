@@ -420,13 +420,9 @@ export default function FeatureVideoShowcase() {
                       alt={currentVideo?.title || "Video tính năng"}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/30 group-hover/poster:bg-black/20 transition-colors flex flex-col items-center justify-center gap-3">
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600/90 text-white flex items-center justify-center backdrop-blur-md shadow-2xl group-hover/poster:scale-110 group-hover/poster:bg-blue-600 transition-all duration-300">
-                        <Play size={30} className="fill-white ml-1" />
-                      </div>
-                      <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-xs font-bold border border-white/20 shadow-lg">
-                        <Sparkles size={14} className="text-amber-400 fill-amber-400" />
-                        <span>Bấm để xem video tính năng</span>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-11 sm:w-18 sm:h-12 bg-[#ff0000] hover:bg-red-700 text-white rounded-2xl flex items-center justify-center shadow-2xl group-hover/poster:scale-110 transition-all duration-300">
+                        <Play size={24} className="fill-white text-white ml-0.5" />
                       </div>
                     </div>
                   </div>
