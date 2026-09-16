@@ -51,14 +51,16 @@ const PassageHTMLRenderer = memo(({
   evidenceMap,
   reviewMode,
   vocabHighlights,
-  isAdminMode
+  isAdminMode,
+  fontSizeOffset = 0
 }: {
   html: string,
   onSentenceHover?: (sid: string | null, e?: any, rect?: any) => void,
   evidenceMap?: Record<string, { colors: string[], qNos: number[] }>,
   reviewMode: boolean,
   vocabHighlights?: { word: string, sids: string[] }[],
-  isAdminMode: boolean
+  isAdminMode: boolean,
+  fontSizeOffset?: number
 }) => {
   const renderedHtml = useMemo(() => {
     if (!vocabHighlights || !vocabHighlights.length) return html;
@@ -243,6 +245,25 @@ const PassageHTMLRenderer = memo(({
           outline: 2px solid rgba(99, 102, 241, 0.65) !important;
           border-radius: 4px !important;
           padding: 1px 4px !important;
+        }
+        /* Tự động dãn cỡ chữ to rõ, chuẩn đọc sách trên máy tính & chống bị font-size nhỏ ghi đè */
+        .toeic-passage-content,
+        .toeic-passage-content p,
+        .toeic-passage-content span,
+        .toeic-passage-content div,
+        .toeic-passage-content td,
+        .toeic-passage-content li,
+        .toeic-passage-content a,
+        .toeic-passage-content b,
+        .toeic-passage-content strong {
+          font-size: calc(clamp(16px, 1.25vw, 20px) + ${fontSizeOffset}px) !important;
+          line-height: 1.75 !important;
+        }
+        .toeic-passage-content h1,
+        .toeic-passage-content h2,
+        .toeic-passage-content h3 {
+          font-size: calc(clamp(19px, 1.5vw, 24px) + ${fontSizeOffset}px) !important;
+          line-height: 1.4 !important;
         }
         /* Thu gọn khoảng cách các đoạn văn */
         .toeic-passage-content p {
@@ -1201,6 +1222,7 @@ export default function ToeicPart7Player({
   const [isResizingSplit, setIsResizingSplit] = useState(false);
   const isResizingSplitRef = useRef(false);
   const passageScrollRefBottom = useRef<HTMLDivElement>(null);
+  const [passageFontSizeOffset, setPassageFontSizeOffset] = useState(0);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const questionsScrollRef = useRef<HTMLDivElement>(null);
@@ -1950,7 +1972,7 @@ export default function ToeicPart7Player({
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-black tracking-[0.2em] text-slate-300 uppercase" style={{ fontSize: 'clamp(8px, 1.8vw, 10px)' }}>PASSAGE {idx + 1}</span>
-                      <div className="h-px w-12 bg-slate-100" />
+                      <div className="h-px w-8 bg-slate-100" />
                       <AdminInlineEditor
                         target="group"
                         id={currentGroup.id}
@@ -1960,41 +1982,71 @@ export default function ToeicPart7Player({
                         <span className="px-2 py-0.5 bg-slate-50 text-slate-400 font-bold rounded-full uppercase border border-slate-100" style={{ fontSize: 'clamp(7.5px, 1.6vw, 9.5px)' }}>{p.type || "Reading"}</span>
                       </AdminInlineEditor>
                     </div>
-                    {isAdminMode && (
-                      <div className="flex gap-1.5">
-                        <AdminInlineEditor
-                          target="group"
-                          id={currentGroup.id}
-                          field="passageText"
-                          value={currentGroup.passageText || ""}
-                          multiline
+
+                    {/* Font size zoom controls A- / A+ */}
+                    <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-0.5 bg-slate-100/80 p-0.5 rounded-lg border border-slate-200/60 shrink-0 shadow-2xs">
+                        <button
+                          type="button"
+                          onClick={() => setPassageFontSizeOffset(prev => Math.max(prev - 2, -6))}
+                          className="w-5 h-5 flex items-center justify-center rounded text-[10px] font-black text-slate-600 hover:bg-white hover:text-indigo-600 transition-all active:scale-95 cursor-pointer"
+                          title="Thu nhỏ chữ bài đọc (A-)"
                         >
-                          <button className="flex items-center gap-1 px-2 py-0.5 bg-slate-50 hover:bg-indigo-600 hover:text-white text-slate-400 rounded-lg text-[9px] font-black transition-all uppercase tracking-wider border border-slate-100">
-                            <Edit2 size={10} /> Sửa HTML
-                          </button>
-                        </AdminInlineEditor>
+                          A-
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPassageFontSizeOffset(0)}
+                          className="px-1.5 h-5 flex items-center justify-center rounded text-[9px] font-extrabold text-slate-400 hover:bg-white hover:text-indigo-600 transition-all cursor-pointer"
+                          title="Đặt lại cỡ chữ mặc định"
+                        >
+                          {100 + passageFontSizeOffset * 10}%
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPassageFontSizeOffset(prev => Math.min(prev + 2, 10))}
+                          className="w-5 h-5 flex items-center justify-center rounded text-[10px] font-black text-slate-600 hover:bg-white hover:text-indigo-600 transition-all active:scale-95 cursor-pointer"
+                          title="Phóng to chữ bài đọc (A+)"
+                        >
+                          A+
+                        </button>
                       </div>
-                    )}
+                      {isAdminMode && (
+                        <div className="flex gap-1.5 ml-1">
+                          <AdminInlineEditor
+                            target="group"
+                            id={currentGroup.id}
+                            field="passageText"
+                            value={currentGroup.passageText || ""}
+                            multiline
+                          >
+                            <button className="flex items-center gap-1 px-2 py-0.5 bg-slate-50 hover:bg-indigo-600 hover:text-white text-slate-400 rounded-lg text-[9px] font-black transition-all uppercase tracking-wider border border-slate-100">
+                              <Edit2 size={10} /> Sửa HTML
+                            </button>
+                          </AdminInlineEditor>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="part7-passage-content" style={{ fontSize: 'clamp(10.5px, 1.5vh, 15px)', lineHeight: '1.6' }}>
+                  <div className="part7-passage-content">
                     <style>{`
                       .part7-passage-content h1, .part7-passage-content h2, .part7-passage-content h3 {
-                        font-size: clamp(12.5px, 1.8vh, 17.5px) !important;
-                        line-height: 1.3 !important;
+                        font-size: calc(clamp(18px, 1.5vw, 24px) + ${passageFontSizeOffset}px) !important;
+                        line-height: 1.35 !important;
                         margin-top: 0.5em !important;
                         margin-bottom: 0.5em !important;
                       }
                       .part7-passage-content p, .part7-passage-content div, .part7-passage-content span, .part7-passage-content td, .part7-passage-content th, .part7-passage-content li, .part7-passage-content a, .part7-passage-content b, .part7-passage-content strong {
-                        font-size: clamp(10.5px, 1.5vh, 14.5px) !important;
-                        line-height: 1.5 !important;
+                        font-size: calc(clamp(16px, 1.25vw, 20px) + ${passageFontSizeOffset}px) !important;
+                        line-height: 1.7 !important;
                       }
                       .part7-passage-content img, .part7-passage-content table {
                         max-width: 100% !important;
                         height: auto !important;
                       }
                       .part7-explanation-content * {
-                        font-size: clamp(9.5px, 1.35vh, 12.5px) !important;
-                        line-height: 1.45 !important;
+                        font-size: clamp(12px, 1.35vh, 14px) !important;
+                        line-height: 1.5 !important;
                       }
                     `}</style>
                     <PassageHTMLRenderer
@@ -2004,6 +2056,7 @@ export default function ToeicPart7Player({
                       reviewMode={isRevealed}
                       vocabHighlights={vocabHighlights}
                       isAdminMode={isAdminMode}
+                      fontSizeOffset={passageFontSizeOffset}
                     />
                   </div>
                 </div>
@@ -2047,7 +2100,7 @@ export default function ToeicPart7Player({
                         <span className="px-2 py-0.5 bg-slate-50 text-slate-400 font-bold rounded-full uppercase border border-slate-100" style={{ fontSize: 'clamp(7.5px, 1.6vw, 9.5px)' }}>{p.type || "Reading"}</span>
                       </div>
                     </div>
-                    <div className="part7-passage-content" style={{ fontSize: 'clamp(10.5px, 1.5vh, 15px)', lineHeight: '1.6' }}>
+                    <div className="part7-passage-content">
                       <PassageHTMLRenderer
                         html={p.html_content}
                         onSentenceHover={handleSentenceHover}
@@ -2055,6 +2108,7 @@ export default function ToeicPart7Player({
                         reviewMode={isRevealed}
                         vocabHighlights={vocabHighlights}
                         isAdminMode={false}
+                        fontSizeOffset={passageFontSizeOffset}
                       />
                     </div>
                   </div>
