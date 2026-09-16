@@ -1,43 +1,50 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Trophy, ChevronLeft, ChevronRight, Award } from "lucide-react";
+import { ChevronLeft, ChevronRight, Award, ZoomIn, X, ShieldCheck } from "lucide-react";
 
 const CERTIFICATES = [
   {
     id: "cert-2023",
     year: "2023",
     score: "990/990",
-    badge: "CERTIFICATE: 2023",
-    badgeColor: "bg-emerald-600",
+    listening: "495",
+    reading: "495",
+    title: "Chứng chỉ TOEIC 990/990 - Năm 2023",
+    date: "03/03/2023",
+    badge: "Official ETS 2023",
+    accentColor: "from-blue-600 to-indigo-600",
     url: "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/marketing/teacher-info/teacher2.webp",
-    alt: "Chứng chỉ TOEIC 990/990 Mr. Thiệt - Năm 2023",
+    alt: "Chứng chỉ TOEIC 990/990 Phạm Văn Thiệt - Năm 2023",
   },
   {
     id: "cert-2018",
     year: "2018",
     score: "990/990",
-    badge: "CERTIFICATE: 2018",
-    badgeColor: "bg-blue-600",
+    listening: "495",
+    reading: "495",
+    title: "Chứng chỉ TOEIC 990/990 - Năm 2018",
+    date: "2018",
+    badge: "Official ETS 2018",
+    accentColor: "from-emerald-600 to-teal-600",
     url: "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/marketing/teacher-info/teacher1.webp",
-    alt: "Chứng chỉ TOEIC 990/990 Mr. Thiệt - Năm 2018",
+    alt: "Chứng chỉ TOEIC 990/990 Phạm Văn Thiệt - Năm 2018",
   },
 ];
 
 export default function TeacherCertificateShowcase() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Touch Swipe support without blocking vertical page scroll
-  const touchStartX = useRef<number | null>(null);
-  const touchEndX = useRef<number | null>(null);
+  const currentCert = CERTIFICATES[activeIdx];
 
   const resetTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setActiveIdx((prev) => (prev + 1) % CERTIFICATES.length);
-    }, 4500);
+    }, 6000);
   }, []);
 
   useEffect(() => {
@@ -52,132 +59,177 @@ export default function TeacherCertificateShowcase() {
     resetTimer();
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.targetTouches[0].clientX;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.targetTouches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    if (!touchStartX.current || !touchEndX.current) return;
-    const diffX = touchStartX.current - touchEndX.current;
-    if (diffX > 40) {
-      // Swipe left -> Next
-      setActiveIdx((prev) => (prev + 1) % CERTIFICATES.length);
-      resetTimer();
-    } else if (diffX < -40) {
-      // Swipe right -> Prev
-      setActiveIdx((prev) => (prev - 1 + CERTIFICATES.length) % CERTIFICATES.length);
-      resetTimer();
-    }
-    touchStartX.current = null;
-    touchEndX.current = null;
-  };
+  // Close modal on ESC & Arrow keys
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isZoomOpen) return;
+      if (e.key === "Escape") setIsZoomOpen(false);
+      if (e.key === "ArrowLeft") handleSelect((activeIdx - 1 + CERTIFICATES.length) % CERTIFICATES.length);
+      if (e.key === "ArrowRight") handleSelect((activeIdx + 1) % CERTIFICATES.length);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isZoomOpen, activeIdx]);
 
   return (
-    <div
-      className="relative group select-none touch-pan-y"
-      onMouseEnter={() => {
-        if (timerRef.current) clearInterval(timerRef.current);
-      }}
-      onMouseLeave={() => resetTimer()}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* Ambient Glow */}
-      <div className="absolute -inset-2 sm:-inset-4 bg-yellow-400/15 rounded-[2rem] sm:rounded-[3rem] blur-2xl group-hover:opacity-100 transition duration-1000 pointer-events-none" />
+    <div className="w-full space-y-4 select-none">
+      {/* Main Certificate Frame (Khung viền vàng kim bo tròn chuẩn mẫu) */}
+      <div
+        className="relative group max-w-4xl mx-auto rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden border-2 border-amber-400 bg-white p-1.5 sm:p-2.5 shadow-sm cursor-zoom-in"
+        onClick={() => setIsZoomOpen(true)}
+        onMouseEnter={() => {
+          if (timerRef.current) clearInterval(timerRef.current);
+        }}
+        onMouseLeave={() => resetTimer()}
+      >
+        <div className="relative w-full aspect-[1.95/1] bg-white rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center overflow-hidden">
+          {CERTIFICATES.map((cert, idx) => {
+            const isCurrent = idx === activeIdx;
+            const isLoaded = loadedImages[idx];
 
-      {/* Main Cinema Box */}
-      <div className="relative w-full aspect-video rounded-2xl sm:rounded-[2.5rem] overflow-hidden border-2 sm:border-4 border-white shadow-2xl bg-slate-100 flex items-center justify-center">
-        {CERTIFICATES.map((cert, idx) => {
-          const isCurrent = idx === activeIdx;
-          const isLoaded = loadedImages[idx];
-
-          return (
-            <div
-              key={cert.id}
-              className={`absolute inset-0 w-full h-full p-2 sm:p-4 md:p-6 flex items-center justify-center transition-opacity duration-700 ${
-                isCurrent ? "opacity-100 z-10 pointer-events-auto" : "opacity-0 z-0 pointer-events-none"
-              }`}
-            >
-              {/* Image Loading Skeleton / Placeholder */}
-              {!isLoaded && (
-                <div className="absolute inset-2 sm:inset-6 bg-slate-200 animate-pulse rounded-xl sm:rounded-2xl flex items-center justify-center">
-                  <div className="flex items-center gap-2 text-slate-400 text-xs font-semibold">
-                    <Award size={18} className="animate-spin text-blue-500" />
-                    <span>Đang tải chứng chỉ TOEIC 990...</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Certificate Image */}
-              <img
-                src={cert.url}
-                alt={cert.alt}
-                loading="eager"
-                decoding="async"
-                onLoad={() => setLoadedImages((prev) => ({ ...prev, [idx]: true }))}
-                className={`w-full h-full object-contain transition-transform duration-700 group-hover:scale-105 ${
-                  isLoaded ? "opacity-100" : "opacity-0"
-                }`}
-              />
-
-              {/* Badge Year on Image */}
+            return (
               <div
-                className={`absolute bottom-3 left-3 sm:bottom-4 sm:left-6 ${cert.badgeColor} text-white text-[9px] sm:text-[10px] font-bold px-3 py-1 sm:px-4 sm:py-1.5 rounded-full shadow-lg border border-white/20 z-10 flex items-center gap-1.5`}
+                key={cert.id}
+                className={`absolute inset-0 w-full h-full p-1 sm:p-2.5 flex items-center justify-center transition-all duration-700 ${
+                  isCurrent ? "opacity-100 scale-100 z-10 pointer-events-auto" : "opacity-0 scale-98 z-0 pointer-events-none"
+                }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-                {cert.badge}
+                {/* Loading skeleton */}
+                {!isLoaded && (
+                  <div className="absolute inset-2 bg-slate-200 animate-pulse rounded-2xl flex items-center justify-center">
+                    <div className="flex items-center gap-2 text-slate-400 text-xs font-semibold">
+                      <Award size={20} className="animate-spin text-blue-500" />
+                      <span>Đang tải chứng chỉ gốc {cert.year}...</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Real Certificate Image */}
+                <img
+                  src={cert.url}
+                  alt={cert.alt}
+                  loading="eager"
+                  decoding="async"
+                  onLoad={() => setLoadedImages((prev) => ({ ...prev, [idx]: true }))}
+                  className={`w-full h-full object-contain rounded-xl sm:rounded-2xl transition-transform duration-500 group-hover:scale-[1.015] shadow-sm ${
+                    isLoaded ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+              </div>
+            );
+          })}
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSelect((activeIdx - 1 + CERTIFICATES.length) % CERTIFICATES.length);
+            }}
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/50 text-white hover:bg-black/75 flex items-center justify-center backdrop-blur-md transition-all active:scale-95 shadow-lg cursor-pointer"
+            title="Xem bằng trước"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSelect((activeIdx + 1) % CERTIFICATES.length);
+            }}
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/50 text-white hover:bg-black/75 flex items-center justify-center backdrop-blur-md transition-all active:scale-95 shadow-lg cursor-pointer"
+            title="Xem bằng tiếp theo"
+          >
+            <ChevronRight size={20} />
+          </button>
+
+          {/* Hover Hint Overlay (Nền trong suốt không che chữ) */}
+          <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none z-20">
+            <span className="px-3.5 py-1.5 bg-black/30 backdrop-blur-md text-white/95 text-xs font-bold rounded-full border border-white/20 shadow-md flex items-center gap-1.5">
+              <ZoomIn size={14} /> Click để phóng to toàn màn hình
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Fullscreen Zoom Lightbox Modal */}
+      {isZoomOpen && (
+        <div
+          className="fixed inset-0 z-[9999] bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200"
+          onClick={() => setIsZoomOpen(false)}
+        >
+          {/* Top Bar of Modal */}
+          <div
+            className="w-full max-w-5xl flex items-center justify-between text-white pb-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-2 sm:gap-3">
+              <ShieldCheck size={20} className="text-emerald-400" />
+              <div>
+                <h3 className="text-sm sm:text-base font-bold text-white">{currentCert.title}</h3>
+                <p className="text-[10px] sm:text-xs text-slate-400">Khảo thí bởi IIG Vietnam • Đại diện ETS Hoa Kỳ</p>
               </div>
             </div>
-          );
-        })}
 
-        {/* Trophy Floating Icon */}
-        <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 bg-yellow-400 text-white w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center border-2 sm:border-4 border-white shadow-xl rotate-12 group-hover:rotate-0 transition-all duration-500">
-          <Trophy size={18} className="sm:w-6 sm:h-6" fill="currentColor" />
-        </div>
+            <div className="flex items-center gap-2">
+              <div className="flex bg-slate-800 rounded-lg p-0.5 border border-slate-700">
+                {CERTIFICATES.map((c, i) => (
+                  <button
+                    key={c.id}
+                    onClick={() => handleSelect(i)}
+                    className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all cursor-pointer ${
+                      i === activeIdx ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    {c.year}
+                  </button>
+                ))}
+              </div>
 
-        {/* Prev / Next Arrows on Hover */}
-        <button
-          onClick={() => handleSelect((activeIdx - 1 + CERTIFICATES.length) % CERTIFICATES.length)}
-          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/40 text-white hover:bg-black/60 hidden sm:flex items-center justify-center backdrop-blur-sm transition-all active:scale-95"
-          title="Bằng trước đó"
-        >
-          <ChevronLeft size={18} />
-        </button>
-        <button
-          onClick={() => handleSelect((activeIdx + 1) % CERTIFICATES.length)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/40 text-white hover:bg-black/60 hidden sm:flex items-center justify-center backdrop-blur-sm transition-all active:scale-95"
-          title="Bằng tiếp theo"
-        >
-          <ChevronRight size={18} />
-        </button>
-      </div>
+              <button
+                onClick={() => setIsZoomOpen(false)}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors ml-2 cursor-pointer"
+                title="Đóng (ESC)"
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </div>
 
-      {/* Pagination Indicator Pills under image */}
-      <div className="mt-3 flex items-center justify-center gap-2">
-        {CERTIFICATES.map((cert, idx) => {
-          const isCurrent = idx === activeIdx;
-          return (
+          {/* High Resolution Image Container */}
+          <div
+            className="relative max-w-5xl max-h-[85vh] w-full bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex items-center justify-center p-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={currentCert.url}
+              alt={currentCert.alt}
+              className="max-w-full max-h-[80vh] object-contain rounded-xl"
+            />
+
+            {/* Navigation Arrows inside Fullscreen Lightbox Modal */}
             <button
-              key={cert.id}
-              onClick={() => handleSelect(idx)}
-              className={`flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-bold transition-all active:scale-95 ${
-                isCurrent
-                  ? "bg-slate-900 text-white shadow-md scale-105"
-                  : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleSelect((activeIdx - 1 + CERTIFICATES.length) % CERTIFICATES.length);
+              }}
+              className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900/70 hover:bg-blue-600 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 shadow-xl border border-slate-700 cursor-pointer"
+              title="Xem bằng trước (Mũi tên trái)"
             >
-              <span className={`w-2 h-2 rounded-full ${isCurrent ? "bg-emerald-400" : "bg-slate-400"}`} />
-              <span>Năm {cert.year}</span>
+              <ChevronLeft size={26} />
             </button>
-          );
-        })}
-      </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleSelect((activeIdx + 1) % CERTIFICATES.length);
+              }}
+              className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900/70 hover:bg-blue-600 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 shadow-xl border border-slate-700 cursor-pointer"
+              title="Xem bằng tiếp theo (Mũi tên phải)"
+            >
+              <ChevronRight size={26} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

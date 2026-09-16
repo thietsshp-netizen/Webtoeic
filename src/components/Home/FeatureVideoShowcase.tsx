@@ -19,6 +19,7 @@ import {
   BarChart3,
   Zap,
   FastForward,
+  Loader2,
 } from "lucide-react";
 import { FeatureVideoItem, getDefaultFeatureVideos, extractYoutubeId } from "@/data/featureVideos";
 
@@ -102,6 +103,7 @@ export default function FeatureVideoShowcase() {
   const [loading, setLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hasStartedPlayback, setHasStartedPlayback] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
@@ -201,6 +203,7 @@ export default function FeatureVideoShowcase() {
   // Chuyển video và TỰ ĐỘNG PHÁT NGAY LẬP TỨC
   const handleSelectVideo = useCallback(
     (index: number) => {
+      setHasStartedPlayback(true);
       if (index === activeIndex) {
         togglePlay();
         return;
@@ -364,27 +367,26 @@ export default function FeatureVideoShowcase() {
 
       {/* Section Header */}
       <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-10 px-2">
-        <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-blue-50 via-indigo-50 to-emerald-50 text-blue-700 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-widest mb-3 sm:mb-4 border border-blue-100/70 shadow-sm">
-          <Sparkles size={13} className="text-blue-600 flex-shrink-0" />
-          <span>WEB LUYỆN THI TOEIC ĐỘC QUYỀN</span>
+        <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 text-blue-600 rounded-full text-[11px] font-bold uppercase tracking-widest mb-4 border border-blue-100 shadow-sm">
+          <Sparkles size={16} fill="currentColor" /> WEB LUYỆN THI TOEIC ĐỘC QUYỀN
         </div>
-        <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-snug sm:leading-normal uppercase italic mb-3 sm:mb-4">
+        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-4">
           Khám Phá Các Tính Năng Của Web Luyện Thi TOEIC{" "}
-          <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-teal-600 pt-2.5 pb-2 pl-1 pr-6 leading-normal">
+          <span className="text-blue-600">
             Thông Minh Hàng Đầu
           </span>
         </h2>
-        <p className="text-slate-500 font-medium text-xs sm:text-sm md:text-base leading-relaxed px-2">
-          Xem video giới thiệu các tính năng độc đáo, nổi bật được tích hợp trên web luyện thi Toeic của Mr. Thiệt.
+        <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
+          Xem video giới thiệu các tính năng độc đáo, nổi bật được tích hợp trên web luyện thi TOEIC của Mr. Thiệt.
         </p>
       </div>
 
       {/* Single-Column Showcase Card */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] p-1.5 sm:p-6 md:p-8 border border-slate-200/80 shadow-[0_20px_50px_rgba(15,23,42,0.06)] flex flex-col gap-3 sm:gap-6 text-left">
+      <div className="bg-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-3 sm:p-6 md:p-8 border border-slate-100 shadow-sm flex flex-col gap-3 sm:gap-5 text-left">
 
-        {/* 1. Main Cinema Video Player */}
+        {/* 1. Main Cinema Video Player (Khung viền vàng kim ôm sát 100% video) */}
         <div
-          className="relative aspect-video rounded-xl sm:rounded-2xl md:rounded-[1.75rem] overflow-hidden bg-slate-900 border border-slate-200/90 shadow-md sm:shadow-xl group select-none flex-shrink-0 w-full"
+          className="relative aspect-[16/10] w-full rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden bg-slate-950 border-2 border-amber-400 shadow-sm group select-none flex-shrink-0"
           onMouseEnter={() => triggerControlsTemporarily()}
           onMouseMove={() => triggerControlsTemporarily()}
           onMouseLeave={() => {
@@ -403,14 +405,42 @@ export default function FeatureVideoShowcase() {
               (currentVideo?.videoUrl ? extractYoutubeId(currentVideo.videoUrl) : null);
 
             if (ytId) {
+              if (!hasStartedPlayback) {
+                const posterUrl =
+                  currentVideo?.thumbnail ||
+                  `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+
+                return (
+                  <div
+                    className="relative w-full h-full cursor-pointer group/poster bg-slate-950"
+                    onClick={() => setHasStartedPlayback(true)}
+                  >
+                    <img
+                      src={posterUrl}
+                      alt={currentVideo?.title || "Video tính năng"}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/30 group-hover/poster:bg-black/20 transition-colors flex flex-col items-center justify-center gap-3">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600/90 text-white flex items-center justify-center backdrop-blur-md shadow-2xl group-hover/poster:scale-110 group-hover/poster:bg-blue-600 transition-all duration-300">
+                        <Play size={30} className="fill-white ml-1" />
+                      </div>
+                      <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-xs font-bold border border-white/20 shadow-lg">
+                        <Sparkles size={14} className="text-amber-400 fill-amber-400" />
+                        <span>Bấm để xem video tính năng</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
               return (
                 <iframe
                   key={`yt-${ytId}`}
-                  src={`https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&vq=hd1080`}
+                  src={`https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&vq=hd1080&hd=1`}
                   title={currentVideo?.title || "Video tính năng"}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
-                  className="w-full h-full border-0"
+                  className="w-full h-full border-0 block"
                 />
               );
             }
@@ -445,58 +475,32 @@ export default function FeatureVideoShowcase() {
                     setIsPlaying(true);
                     triggerControlsTemporarily();
                   }}
-                  onPause={() => {
+                  onPause={() => setIsPlaying(false)}
+                  onEnded={() => {
                     setIsPlaying(false);
                     setShowControls(true);
                   }}
-                  onEnded={handleVideoEnded}
                 />
 
-                {/* Big Center Play / Pause Indicator on Hover / Paused */}
-                <AnimatePresence>
-                  {(!isPlaying || isBuffering) && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.85 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.85 }}
-                      className="absolute inset-0 flex items-center justify-center bg-transparent cursor-pointer"
-                      onClick={togglePlay}
-                    >
-                      {isBuffering ? (
-                        <div className="w-10 sm:w-16 h-10 sm:h-16 border-3 sm:border-4 border-white/30 border-t-white rounded-full animate-spin" />
-                      ) : !isPlaying ? (
-                        <div className="relative group/btn">
-                          <div
-                            className="absolute -inset-3 sm:-inset-4 rounded-full blur-xl opacity-75 group-hover/btn:opacity-100 transition duration-500"
-                            style={{ backgroundColor: currentTheme.glow }}
-                          />
-                          <div className="relative w-12 h-12 sm:w-18 sm:h-18 bg-white text-slate-900 rounded-full flex items-center justify-center shadow-xl transform group-hover/btn:scale-110 active:scale-95 transition-all duration-300">
-                            <Play size={20} className="ml-0.5 sm:ml-1 fill-slate-900 text-slate-900 sm:w-6 sm:h-6" />
-                          </div>
-                        </div>
-                      ) : null}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {/* Big Center Play Button Overlay */}
+                {!isPlaying && (
+                  <button
+                    onClick={togglePlay}
+                    className="absolute inset-0 m-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600/90 text-white flex items-center justify-center backdrop-blur-md shadow-2xl hover:scale-110 hover:bg-blue-600 transition-all duration-300 group/btn"
+                    title="Phát video"
+                  >
+                    <Play size={30} className="fill-white ml-1 group-hover/btn:scale-105 transition-transform" />
+                  </button>
+                )}
 
-                {/* Top Bar Header on Video */}
-                <div
-                  className={`absolute top-0 left-0 right-0 p-2 sm:p-3.5 bg-gradient-to-b from-black/60 via-black/15 to-transparent flex items-center justify-between text-white pointer-events-none transition-opacity duration-300 ${
-                    showControls || !isPlaying ? "opacity-100" : "opacity-0"
-                  }`}
-                >
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 animate-pulse" />
-                    <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-200 truncate max-w-[170px] sm:max-w-none">
-                      Video #{currentVideo?.order} • {currentVideo?.category}
-                    </span>
+                {/* Buffering Spinner */}
+                {isBuffering && (
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
+                    <Loader2 size={36} className="text-white animate-spin" />
                   </div>
-                  <span className="text-[9px] sm:text-xs font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 bg-white/20 backdrop-blur-md rounded-md sm:rounded-lg text-white">
-                    {currentVideo?.badge}
-                  </span>
-                </div>
+                )}
 
-                {/* Custom Control Bar (Bottom) - Sleek, Thin & Auto-hiding */}
+                {/* Custom Cinema Control Bar */}
                 <div
                   className={`absolute bottom-0 left-0 right-0 pt-6 pb-1.5 sm:pb-2.5 px-2 sm:px-3.5 bg-gradient-to-t from-black/75 via-black/35 to-transparent transition-opacity duration-300 ${
                     showControls || !isPlaying ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
@@ -586,9 +590,8 @@ export default function FeatureVideoShowcase() {
           })()}
         </div>
 
-        {/* 2. Feature Playlist / Horizontal Scroll Rail (Thước ngang) */}
-        <div className="bg-slate-900/5 backdrop-blur-md rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 border border-slate-200/80 shadow-inner">
-          {/* Header Row: Label & Count on left, Quick Prev / Next on right */}
+        {/* 2. Feature Playlist / Horizontal Scroll Rail (Thước chọn video) */}
+        <div className="bg-slate-50/80 rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 border border-slate-200/80">
           <div className="flex items-center justify-between gap-2 mb-2 px-1">
             <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
               <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping shrink-0" />
@@ -619,7 +622,7 @@ export default function FeatureVideoShowcase() {
             </div>
           </div>
 
-          {/* Horizontal Scroll Rail / Thước ngang vuốt mượt mà trên mobile & desktop */}
+          {/* Horizontal Scroll Rail */}
           <div
             ref={playlistScrollRef}
             className="flex items-stretch gap-2 sm:gap-2.5 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory py-1 px-0.5 touch-pan-x"
@@ -640,7 +643,6 @@ export default function FeatureVideoShowcase() {
                       : "bg-white/80 hover:bg-white text-slate-600 hover:text-slate-900 border border-slate-200/80 hover:border-slate-300 shadow-xs"
                   }`}
                 >
-                  {/* Order / Icon Badge */}
                   <div
                     className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 ${
                       isActive
@@ -651,7 +653,6 @@ export default function FeatureVideoShowcase() {
                     {getIconForIndex(vid.order)}
                   </div>
 
-                  {/* Text Content */}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-1">
                       <span className={`text-[9px] sm:text-[10px] font-black tracking-wider uppercase ${
@@ -678,83 +679,40 @@ export default function FeatureVideoShowcase() {
           </div>
         </div>
 
-        {/* 3. Detailed Feature Information Card */}
-        <div className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 bg-gradient-to-br from-white via-slate-50/70 to-blue-50/20 border border-slate-200/90 shadow-sm text-left">
-          {/* Subtle Ambient Accent Glow at corner */}
-          <div
-            className="absolute -right-16 -top-16 w-48 h-48 rounded-full blur-3xl opacity-30 pointer-events-none transition-colors duration-700"
-            style={{ backgroundColor: currentTheme.glow }}
-          />
+        {/* 3. Điểm nhấn tính năng video đang xem (Gợi ý 2: Tinh gọn, rõ ràng, không cuộn) */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentVideo?.id || activeIndex}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-left"
+          >
+            <div className="flex items-center justify-center gap-2 mb-2.5 text-center">
+              <Sparkles size={14} className="text-amber-500 fill-amber-500 shrink-0" />
+              <span className="text-xs sm:text-sm font-black text-slate-800 uppercase tracking-tight">
+                Tóm tắt điểm nhấn trong video {currentVideo?.order}
+              </span>
+            </div>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentVideo?.id || activeIndex}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="relative z-10 text-left"
-            >
-              {/* Badge & Step Info */}
-              <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 mb-3">
-                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-wider border shadow-xs ${currentTheme.badgeBg}`}>
-                  <Sparkles size={13} className="shrink-0" />
-                  <span>{currentVideo?.badge}</span>
-                </div>
-                <div className="text-[11px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <span className="text-slate-600 font-extrabold">Tính năng {currentVideo?.order} / {videos.length}</span>
-                  <span>•</span>
-                  <span>{currentVideo?.category}</span>
-                </div>
-              </div>
-
-              {/* Main Title */}
-              <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight leading-snug mb-2 text-left">
-                {currentVideo?.title}
-              </h3>
-
-              {/* Subtitle */}
-              {currentVideo?.subtitle && (
-                <p className="text-xs sm:text-sm font-bold text-blue-700 bg-blue-50/90 border border-blue-100/90 inline-block px-3 py-1 rounded-lg mb-3.5 text-left">
-                  {currentVideo.subtitle}
-                </p>
-              )}
-
-              {/* Full Description */}
-              <p className="text-slate-600 text-xs sm:text-sm md:text-base leading-relaxed mb-6 font-medium max-w-4xl text-left">
-                {currentVideo?.description}
-              </p>
-
-              {/* Highlights Checklist - Clearly designed as non-clickable Specs / Checklist */}
-              {currentVideo?.highlights && currentVideo.highlights.length > 0 && (
-                <div className="pt-4 border-t border-slate-200/80 text-left">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                      <Sparkles size={14} className={currentTheme.text} />
-                      Đặc quyền & Điểm nổi bật trong tính năng:
+            {currentVideo?.highlights && currentVideo.highlights.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+                {currentVideo.highlights.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white border border-slate-200/80 text-left shadow-2xs"
+                  >
+                    <CheckCircle2 size={15} className="text-emerald-500 shrink-0 mt-0.5" />
+                    <span className="text-xs sm:text-[13px] font-semibold text-slate-700 leading-snug">
+                      {item}
                     </span>
                   </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-                    {currentVideo.highlights.map((item, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center gap-3 p-3 sm:p-3.5 rounded-xl bg-white/90 border border-slate-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.03)] select-text text-left"
-                      >
-                        <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${currentTheme.badgeBg}`}>
-                          <CheckCircle2 size={15} className={currentTheme.text} />
-                        </div>
-                        <span className="text-xs sm:text-sm font-semibold text-slate-700 leading-snug text-left flex-1">
-                          {item}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
 
       </div>
     </section>

@@ -26,6 +26,11 @@ interface PlacementTestProps {
   onClose: () => void;
 }
 
+const formatImageUrl = (url?: string) => {
+  if (!url) return "";
+  return url.replace(/\.(jpg|jpeg|png)$/i, ".webp");
+};
+
 export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
   const [step, setStep] = useState<"intro" | "testing" | "result" | "review">("intro");
   const [currentGroupIdx, setCurrentGroupIdx] = useState(0);
@@ -308,7 +313,7 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
 
                       {currentGroup.imageUrl && (
                         <div className="bg-white p-2 rounded-xl border-2 border-slate-100 shadow-sm overflow-hidden w-full max-w-2xl mx-auto">
-                          <img src={currentGroup.imageUrl} alt="Exam Stimulus" className="w-full h-auto object-contain max-h-[600px] mx-auto rounded-lg" />
+                          <img src={formatImageUrl(currentGroup.imageUrl)} alt="Exam Stimulus" className="w-full h-auto object-contain max-h-[600px] mx-auto rounded-lg" />
                         </div>
                       )}
 
@@ -459,7 +464,7 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
                     {/* Stimulus Image - Always show if present, but only once */}
                     {currentGroup.imageUrl && (
                       <div className="bg-white p-2 rounded-xl border-2 border-slate-100 shadow-sm overflow-hidden mb-6">
-                        <img src={currentGroup.imageUrl} alt="Review Stimulus" className="w-full h-auto object-contain max-h-[500px] mx-auto rounded-lg" />
+                        <img src={formatImageUrl(currentGroup.imageUrl)} alt="Review Stimulus" className="w-full h-auto object-contain max-h-[500px] mx-auto rounded-lg" />
                       </div>
                     )}
 

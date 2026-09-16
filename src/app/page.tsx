@@ -10,6 +10,8 @@ import dynamic from "next/dynamic";
 import CourseCard from "@/components/Course/CourseCard";
 import FeatureVideoShowcase from "@/components/Home/FeatureVideoShowcase";
 import TeacherCertificateShowcase from "@/components/Home/TeacherCertificateShowcase";
+import StudentScoreShowcase from "@/components/Home/StudentScoreShowcase";
+import StudentFeedbackShowcase from "@/components/Home/StudentFeedbackShowcase";
 import HomeSkeleton from "@/components/Home/HomeSkeleton";
 import { speakVocab } from "@/lib/vocab-audio";
 import { motion, AnimatePresence } from "framer-motion";
@@ -53,6 +55,8 @@ import {
   Award,
   Users,
   Zap,
+  Sparkles,
+  MousePointerClick,
   Mic,
   MicOff,
   Target,
@@ -685,7 +689,7 @@ function HomeContent() {
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
 
             {/* Hero Section */}
-            <section className="text-center mb-32 relative">
+            <section className="text-center mb-12 sm:mb-16 relative">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-50/50 blur-[120px] -z-10 rounded-full"></div>
 
               <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold uppercase tracking-widest mb-10 border border-emerald-100 shadow-sm">
@@ -701,25 +705,47 @@ function HomeContent() {
                 Hệ thống lớp học tại <span className="text-slate-900 font-bold">hoctoeic</span> được thiết kế tinh gọn, tập trung hoàn toàn vào việc lấy lại gốc tiếng Anh và rèn luyện kỹ năng giải đề thực chiến để đạt mục tiêu trong thời gian ngắn nhất.
               </p>
 
-              <div className="flex flex-wrap items-center justify-center gap-6">
+              <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 my-4">
+                {/* Nút 1: Xem danh sách lớp học (Gradient 3D + Icon + Shine + Click ngay badge) */}
                 <Link
                   href="/courses"
-                  className="group bg-blue-600 text-white px-12 py-6 rounded-[2.5rem] font-bold text-sm uppercase tracking-widest shadow-[0_20px_50px_rgba(37,99,235,0.3)] hover:bg-blue-700 hover:-translate-y-1.5 transition-all duration-300 flex items-center gap-3"
+                  className="relative group bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white px-8 sm:px-10 py-4.5 sm:py-5 rounded-[2.5rem] font-black text-xs sm:text-sm uppercase tracking-widest shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer border border-blue-400/30"
                 >
-                  Xem danh sách lớp học <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
+                  {/* Sheen/Shine Light Effect */}
+                  <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-in-out pointer-events-none rounded-[2.5rem]" />
+                  
+                  <BookOpen size={18} className="text-blue-100 group-hover:scale-110 transition-transform shrink-0" />
+                  <span>Xem danh sách lớp học</span>
+                  <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform text-white shrink-0" />
+
+                  {/* Micro Badge: Animated Hand Pointer Click Indicator */}
+                  <span className="absolute -bottom-2 -right-1 flex items-center justify-center gap-1 px-2 py-0.5 bg-amber-400 text-slate-900 rounded-full shadow-md text-[9px] font-black tracking-tighter animate-bounce group-hover:scale-110 transition-transform select-none z-10">
+                    <MousePointerClick size={12} className="stroke-[2.5]" />
+                    <span>CLICK NGAY</span>
+                  </span>
                 </Link>
+
+                {/* Nút 2: Kiểm tra trình độ miễn phí (Outlined Emerald + Hand Click Pointer Animation + ArrowRight) */}
                 <button
                   onClick={() => setShowPlacementTest(true)}
-                  className="bg-white text-slate-600 border-2 border-slate-100 px-12 py-6 rounded-[2.5rem] font-bold text-sm uppercase tracking-widest hover:bg-slate-50 hover:border-slate-300 transition-all"
+                  className="relative group bg-emerald-50/90 hover:bg-emerald-600 text-emerald-700 hover:text-white border-2 border-emerald-500 hover:border-emerald-600 px-8 sm:px-10 py-4.5 sm:py-5 rounded-[2.5rem] font-black text-xs sm:text-sm uppercase tracking-widest shadow-md shadow-emerald-500/15 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer"
                 >
-                  Kiểm tra trình độ miễn phí
+                  <Sparkles size={18} className="text-emerald-500 group-hover:text-white group-hover:rotate-12 transition-all shrink-0" />
+                  <span>Kiểm tra trình độ miễn phí</span>
+                  <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform shrink-0" />
+                  
+                  {/* Micro Badge: Animated Hand Pointer Click Indicator */}
+                  <span className="absolute -bottom-2 -right-1 flex items-center justify-center gap-1 px-2 py-0.5 bg-amber-400 text-slate-900 rounded-full shadow-md text-[9px] font-black tracking-tighter animate-bounce group-hover:scale-110 transition-transform select-none z-10">
+                    <MousePointerClick size={12} className="stroke-[2.5]" />
+                    <span>CLICK NGAY</span>
+                  </span>
                 </button>
               </div>
 
               {/* Khung Video Giới Thiệu Tính Năng Đặc Biệt */}
               <FeatureVideoShowcase />
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 border-t border-slate-100 pt-16">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mt-12 sm:mt-16 border-t border-slate-100 pt-10 sm:pt-12">
                 {[
                   { val: "2000+", label: "Học viên tham gia" },
                   { val: "95%", label: "Tỉ lệ đạt mục tiêu" },
@@ -734,55 +760,59 @@ function HomeContent() {
               </div>
             </section>
 
-            <section className="bg-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-4 sm:p-8 md:p-20 border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] mb-16 sm:mb-24 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.02),transparent)] pointer-events-none"></div>
+            <section className="bg-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-slate-100 shadow-sm mb-10 sm:mb-16 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.03),transparent)] pointer-events-none"></div>
 
-              <div className="relative z-10 grid lg:grid-cols-10 gap-6 sm:gap-8 md:gap-16 items-center">
-                <div className="lg:col-span-6 w-full">
-                  <TeacherCertificateShowcase />
+              <div className="relative z-10 max-w-5xl mx-auto space-y-8 sm:space-y-10">
+                {/* 1. Header & Giới thiệu căn giữa */}
+                <div className="text-center max-w-3xl mx-auto space-y-4 pb-6 border-b border-slate-100">
+                  <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 text-blue-600 rounded-full text-[11px] font-bold uppercase tracking-widest border border-blue-100 shadow-sm">
+                    <Zap size={16} fill="currentColor" /> EXPERT INSTRUCTOR
+                  </div>
+                  
+                  <h2 className="text-3xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight">
+                    <span className="block mb-1">Học với chuyên gia</span>
+                    <span className="text-blue-600">Mr. Thiệt 990/990</span>
+                  </h2>
+
+                  <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed italic">
+                    &ldquo;Học với người đạt 990 không chỉ là học kiến thức, mà là học phương pháp giải đề tối ưu và tâm thế làm chủ bài thi từ trải nghiệm thực tế.&rdquo;
+                  </p>
+
+                  {/* Badges thành tích căn giữa */}
+                  <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                    <div className="flex items-center gap-3 px-4 py-2.5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
+                      <div className="w-9 h-9 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-emerald-200 shrink-0">
+                        <Trophy size={17} />
+                      </div>
+                      <div className="text-left">
+                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Kinh nghiệm</div>
+                        <div className="text-xs sm:text-sm font-bold text-slate-800 uppercase italic leading-none">10+ Năm</div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 px-4 py-2.5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
+                      <div className="w-9 h-9 bg-blue-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-blue-200 shrink-0">
+                        <Target size={17} />
+                      </div>
+                      <div className="text-left">
+                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Phương pháp</div>
+                        <div className="text-xs sm:text-sm font-bold text-slate-800 uppercase italic leading-none">Thực chiến</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="lg:col-span-4 space-y-6 sm:space-y-8">
-                  <div className="space-y-3 sm:space-y-4">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-[10px] font-bold uppercase tracking-widest border border-blue-100">
-                      <Zap size={14} fill="currentColor" /> EXPERT INSTRUCTOR
-                    </div>
-                    <h2 className="font-bold text-slate-900 leading-tight uppercase italic tracking-normal">
-                      <span className="text-xl md:text-2xl block mb-1">Học với chuyên gia</span>
-                      <span className="text-3xl md:text-5xl text-blue-600">Mr. Thiệt 990/990</span>
-                    </h2>
-                    <p className="text-slate-500 font-medium leading-relaxed italic text-sm sm:text-base border-l-4 border-emerald-500 pl-4">
-                      "Học với người đạt 990 không chỉ là học kiến thức, mà là học phương pháp giải đề tối ưu và tâm thế làm chủ bài thi từ trải nghiệm thực tế."
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 sm:gap-4">
-                    <div className="flex items-center gap-4 p-4 sm:p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-300">
-                      <div className="w-11 h-11 sm:w-12 sm:h-12 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200 flex-shrink-0">
-                        <Trophy size={20} className="sm:w-[22px] sm:h-[22px]" />
-                      </div>
-                      <div>
-                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Kinh nghiệm</div>
-                        <div className="text-xs sm:text-sm font-bold text-slate-700 uppercase italic leading-none">10+ Năm đào tạo</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4 p-4 sm:p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-300">
-                      <div className="w-11 h-11 sm:w-12 sm:h-12 bg-blue-500 text-white rounded-xl flex items-center justify-center shadow-lg shadow-blue-200 flex-shrink-0">
-                        <Target size={20} className="sm:w-[22px] sm:h-[22px]" />
-                      </div>
-                      <div>
-                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Phương pháp</div>
-                        <div className="text-xs sm:text-sm font-bold text-slate-700 uppercase italic leading-none">Giải đề thực chiến</div>
-                      </div>
-                    </div>
-                  </div>
+                {/* 2. Khung ảnh chứng chỉ mở rộng toàn bộ chiều ngang bên dưới */}
+                <div className="w-full">
+                  <TeacherCertificateShowcase />
                 </div>
               </div>
             </section>
 
-            <section className="bg-slate-50 rounded-[4rem] p-12 md:p-24 border border-slate-100 relative overflow-hidden mb-32">
+            <section className="bg-slate-50 rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-6 sm:p-10 md:p-14 border border-slate-100 relative overflow-hidden mb-10 sm:mb-16">
               <div className="relative z-10">
-                <div className="text-center mb-20">
+                <div className="text-center mb-10 sm:mb-12">
                   <h2 className="text-4xl font-black text-slate-900 mb-6 uppercase tracking-tighter italic">Các giai đoạn học trọng tâm</h2>
                   <div className="w-32 h-2 bg-emerald-500 mx-auto rounded-full"></div>
                 </div>
@@ -795,69 +825,62 @@ function HomeContent() {
               </div>
             </section>
 
-            <section className="bg-white rounded-[3rem] md:rounded-[4rem] p-8 md:p-20 border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.04)] mb-32 relative overflow-hidden">
-              <div className="relative z-10">
-                <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 uppercase tracking-tighter italic">Vinh Danh <span className="text-emerald-600">Bảng Vàng</span></h2>
-                  <p className="text-slate-500 max-w-2xl mx-auto font-medium text-sm md:text-lg">Kết quả thật từ những nỗ lực không ngừng nghỉ của cộng đồng học viên hoctoeic.</p>
-                  <div className="w-24 h-2 bg-emerald-500 mx-auto rounded-full mt-8"></div>
+            <section className="bg-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-slate-100 shadow-sm mb-10 sm:mb-16 relative overflow-hidden">
+              <div className="relative z-10 max-w-5xl mx-auto space-y-8 sm:space-y-10">
+                <div className="text-center max-w-3xl mx-auto space-y-3 pb-6 border-b border-slate-100">
+                  <h2 className="text-3xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-3">
+                    Vinh Danh <span className="text-emerald-600">Bảng Vàng</span>
+                  </h2>
+                  <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
+                    Kết quả thật từ những nỗ lực không ngừng nghỉ của cộng đồng học viên hoctoeic.com.
+                  </p>
+                  <div className="w-24 h-1.5 bg-emerald-500 mx-auto rounded-full mt-4"></div>
                 </div>
 
-                <div className="relative group px-0 md:px-10">
-                  {scoreImages.length > 0 ? (
-                    <Swiper modules={[Navigation, Pagination, Autoplay]} spaceBetween={25} slidesPerView={1} breakpoints={{ 640: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }} pagination={{ clickable: true, dynamicBullets: true }} navigation={true} autoplay={{ delay: 4000 }} className="pb-20 scorecard-swiper">
-                      {scoreImages.map((img) => (
-                        <SwiperSlide key={img.id}>
-                          <div className="bg-white rounded-[2.5rem] p-2 md:p-3 shadow-[0_20px_40px_rgba(0,0,0,0.08)] border border-slate-100 h-full hover:shadow-emerald-200/50 hover:-translate-y-3 transition-all duration-500 group/card relative">
-                            <div className="aspect-[3/4] w-full overflow-hidden rounded-[2rem] bg-slate-50 flex items-center justify-center relative">
-                              <img src={img.url} alt="Bảng điểm" className="max-w-full max-h-full object-contain group-hover/card:scale-110 transition-transform duration-1000" />
-                            </div>
-                            <div className="absolute -top-3 -right-3 bg-gradient-to-br from-yellow-400 to-orange-500 text-white w-12 h-12 rounded-2xl flex items-center justify-center border-4 border-white shadow-xl rotate-12 group-hover/card:rotate-0 transition-all duration-500">
-                              <Trophy size={22} fill="currentColor" />
-                            </div>
-                          </div>
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                      {[1, 2, 3].map(i => <div key={i} className="aspect-[3/4] bg-slate-100 animate-pulse rounded-[3rem]"></div>)}
-                    </div>
-                  )}
+                <div className="w-full">
+                  <StudentScoreShowcase images={scoreImages} />
                 </div>
               </div>
             </section>
 
-            <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-50 border border-blue-100 rounded-[3rem] md:rounded-[4rem] p-6 md:p-24 relative overflow-hidden mb-32">
-              <div className="relative z-10 flex flex-col lg:grid lg:grid-cols-5 gap-10 md:gap-20 items-center">
-                <div className="lg:col-span-2 space-y-6 md:space-y-8 text-center lg:text-left">
-                  <h2 className="text-3xl md:text-5xl font-black leading-[1.1] uppercase tracking-tighter italic text-blue-700">Cảm nhận <br className="hidden md:block" /> học viên</h2>
-                  <p className="text-slate-500 text-sm md:text-lg font-medium max-w-md mx-auto lg:mx-0">Những chia sẻ chân thực nhất về hành trình thay đổi điểm số tại hoctoeic.</p>
-                  <div className="grid grid-cols-2 gap-4 md:gap-6 pt-2">
-                    <div className="bg-white p-4 md:p-6 rounded-2xl border border-blue-100 shadow-sm">
-                      <div className="text-[8px] md:text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-1">TỐT NGHIỆP</div>
-                      <div className="text-xl md:text-3xl font-bold text-slate-900">5000+</div>
+            <section className="bg-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-slate-100 shadow-sm mb-10 sm:mb-16 relative overflow-hidden">
+              <div className="relative z-10 max-w-5xl mx-auto space-y-8 sm:space-y-10">
+                {/* 1. Header & Thông tin căn giữa phía trên */}
+                <div className="text-center max-w-3xl mx-auto space-y-4 pb-6 border-b border-slate-100">
+                  <h2 className="text-3xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-3">
+                    Cảm nhận <span className="text-blue-600">học viên</span>
+                  </h2>
+                  <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
+                    Những chia sẻ chân thực nhất về hành trình thay đổi điểm số tại hoctoeic.com.
+                  </p>
+
+                  {/* Badges thành tích */}
+                  <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                    <div className="flex items-center gap-3 px-4 py-2.5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
+                      <div className="w-9 h-9 bg-blue-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-blue-200 shrink-0 font-bold text-xs">
+                        5K+
+                      </div>
+                      <div className="text-left">
+                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">TỐT NGHIỆP</div>
+                        <div className="text-xs sm:text-sm font-bold text-slate-800 uppercase italic leading-none">5000+ Học viên</div>
+                      </div>
                     </div>
-                    <div className="bg-white p-4 md:p-6 rounded-2xl border border-blue-100 shadow-sm">
-                      <div className="text-[8px] md:text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-1">HÀI LÒNG</div>
-                      <div className="text-xl md:text-3xl font-bold text-slate-900">4.9/5</div>
+
+                    <div className="flex items-center gap-3 px-4 py-2.5 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
+                      <div className="w-9 h-9 bg-amber-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-amber-200 shrink-0 font-bold text-xs">
+                        ★
+                      </div>
+                      <div className="text-left">
+                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">HÀI LÒNG</div>
+                        <div className="text-xs sm:text-sm font-bold text-slate-800 uppercase italic leading-none">4.9 / 5.0</div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="lg:col-span-3 w-full min-w-0">
-                  {feedbackImages.length > 0 ? (
-                    <Swiper modules={[Pagination, Autoplay]} spaceBetween={25} slidesPerView={1} pagination={{ clickable: true }} autoplay={{ delay: 5000 }} className="testimonial-swiper">
-                      {feedbackImages.map((img) => (
-                        <SwiperSlide key={img.id}>
-                          <div className="bg-white p-1.5 md:p-3 rounded-[1.5rem] md:rounded-[3rem] shadow-2xl overflow-hidden border-2 md:border-8 border-slate-800 group">
-                            <img src={img.url} alt="Feedback" className="w-full h-auto object-contain rounded-[1rem] md:rounded-[2rem] group-hover:scale-[1.02] transition-transform duration-1000" />
-                          </div>
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  ) : (
-                    <div className="aspect-[16/10] bg-slate-800 animate-pulse rounded-[2rem] md:rounded-[3rem]"></div>
-                  )}
+
+                {/* 2. Khung ảnh mở rộng bên dưới */}
+                <div className="w-full">
+                  <StudentFeedbackShowcase images={feedbackImages} />
                 </div>
               </div>
             </section>
