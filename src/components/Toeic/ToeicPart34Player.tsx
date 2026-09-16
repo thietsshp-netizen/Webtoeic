@@ -1035,7 +1035,7 @@ export default function ToeicPart34Player({
       container: waveformRef.current,
       waveColor: "#cbd5e1",
       progressColor: "#2563eb",
-      height: 48,
+      height: "auto",
       barWidth: 2,
       cursorWidth: 1,
       normalize: true,
@@ -1734,7 +1734,7 @@ export default function ToeicPart34Player({
               <div className="absolute -top-1 left-5 w-2 h-2 bg-slate-900 rotate-45"></div>
             </div>
           </div>
-          <div className="flex-1 relative bg-slate-50 rounded-lg sm:rounded-xl border border-slate-100 overflow-hidden shadow-inner px-1.5 sm:px-4" style={{ height: 'clamp(20px, 3vh, 32px)' }}>
+          <div className="flex-1 relative bg-slate-50 rounded-lg sm:rounded-xl border border-slate-100 overflow-hidden shadow-inner px-1.5 sm:px-4" style={{ height: 'clamp(32px, 4.5vh, 48px)' }}>
             <div id="waveform-audio-container" ref={waveformRef} className="absolute inset-x-1.5 sm:inset-x-4 inset-y-0 cursor-pointer" />
           </div>
           <div className="flex items-center gap-0.5 sm:gap-1.5 border-l border-slate-100 px-1 sm:px-4 shrink-0">

@@ -1415,10 +1415,7 @@ export default function ToeicPart2Player({
         const keyLower = typeof key === 'string' ? key.toLowerCase() : '';
         if (key === ',' || key === '.' || key === '[' || keyLower === 'ư' || key === ']' || keyLower === 'ơ') {
           lastVocabHotkeyTime.current = Date.now();
-          const isNext = key === '.' || key === ']' || keyLower === 'ơ';
-          const nextIdx = isNext ? Math.min(data.length - 1, currentIndex + 1) : Math.max(0, currentIndex - 1);
-          setCurrentIndex(nextIdx);
-          updateCloudPopup(nextIdx, 0);
+          updateCloudPopup(currentIndex, 0);
         } else {
           latestHandleKeyDownRef.current?.(e.data);
         }
@@ -1928,7 +1925,7 @@ export default function ToeicPart2Player({
     const wsRegions = RegionsPlugin.create(); regionsPlugin.current = wsRegions;
     const ws = WaveSurfer.create({
       container: waveformRef.current, waveColor: '#cbd5e1', progressColor: '#3b82f6', cursorColor: '#1d4ed8',
-      barWidth: 2, barGap: 2, barRadius: 2, height: 36, plugins: [wsRegions], fetchParams: { cache: "default" }
+      barWidth: 2, barGap: 2, barRadius: 2, height: 'auto', plugins: [wsRegions], fetchParams: { cache: "default" }
     });
     ws.load(currentGroup.audioUrl).catch(() => { }); wavesurfer.current = ws;
     ws.on('play', () => setIsPlaying(true)); ws.on('pause', () => setIsPlaying(false));
@@ -2130,10 +2127,7 @@ export default function ToeicPart2Player({
       )) {
         lastVocabHotkeyTime.current = Date.now();
         e.preventDefault?.();
-        const isNext = key === '.' || key === ']' || keyLower === 'ơ';
-        const nextIdx = isNext ? Math.min(data.length - 1, currentIndex + 1) : Math.max(0, currentIndex - 1);
-        setCurrentIndex(nextIdx);
-        updateCloudPopup(nextIdx, 0);
+        updateCloudPopup(currentIndex, 0);
       }
  
       // CTRL/CMD + SHIFT + S: Toggle Solution
@@ -2244,7 +2238,7 @@ export default function ToeicPart2Player({
                 </div>
 
                 {/* Waveform Container */}
-                <div className="flex-1 overflow-hidden rounded-lg" style={{ height: 32 }}>
+                <div className="flex-1 overflow-hidden rounded-lg" style={{ height: 'clamp(32px, 4.5vh, 48px)' }}>
                   <div id="waveform-audio-container" ref={waveformRef} className="w-full h-full cursor-crosshair" />
                 </div>
 
