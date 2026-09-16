@@ -40,3 +40,9 @@
   color: #ffffff;
   box-shadow: 0 0 18px rgba(239, 68, 68, 0.6);
 }
+
+@media (max-width: 767px) {
+  .floatingBtn {
+    display: none !important;
+  }
+}

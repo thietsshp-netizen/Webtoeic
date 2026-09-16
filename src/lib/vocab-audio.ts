@@ -82,7 +82,7 @@ export const speakVocab = async (text: string, type: 'us' | 'uk' = 'us') => {
   }
 
   // 2. Phát trực tiếp qua API Neural TTS
-  const ttsUrl = `/api/tts?text=${encodeURIComponent(cleanSpeechText)}&type=${type}`;
+  const ttsUrl = `/api/tts?text=${encodeURIComponent(cleanSpeechText)}&type=${type}&v=2`;
   const played = await playAudioUrl(ttsUrl);
   if (played) {
     audioCache.set(cacheKey, ttsUrl);

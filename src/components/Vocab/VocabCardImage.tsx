@@ -12,6 +12,31 @@ interface VocabCardImageProps {
 
 const clientCardImageCache = new Map<string, string | null>();
 
+function getInitialVocabImage(vocab: any): string | null {
+  if (!vocab) return null;
+  const wordLower = (vocab.word || '').toLowerCase().trim();
+  const defLower = (vocab.definition || vocab.translation || '').toLowerCase().trim();
+  const exLower = (vocab.example || '').toLowerCase().trim();
+
+  // Explicit check for résumé / CV vocabulary course image in Supabase storage
+  const isResumeCv = wordLower === 'résumé' || wordLower === 'resumé' || 
+    (wordLower === 'resume' && (defLower.includes('sơ yếu lý lịch') || defLower.includes('cv') || exLower.includes('cover letter') || exLower.includes('cv')));
+
+  if (isResumeCv) {
+    return 'https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/resume_cv.webp';
+  }
+
+  const rawImg = vocab.image;
+  if (rawImg) {
+    if (rawImg.startsWith('http://') || rawImg.startsWith('https://') || rawImg.startsWith('/') || rawImg.startsWith('data:')) {
+      return rawImg;
+    }
+    return `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/${rawImg}`;
+  }
+
+  return null;
+}
+
 export default function VocabCardImage({
   vocab,
   onOpenYouGlish,
@@ -21,16 +46,18 @@ export default function VocabCardImage({
   const cacheKey = `${vocab.word?.toLowerCase().trim()}:::${(vocab.example || vocab.definition || '').toLowerCase().trim()}`;
   
   const [imageUrl, setImageUrl] = useState<string | null>(() => {
-    if (vocab.image) return vocab.image;
+    const resolved = getInitialVocabImage(vocab);
+    if (resolved) return resolved;
     if (clientCardImageCache.has(cacheKey)) return clientCardImageCache.get(cacheKey) || null;
     return null;
   });
   const [imgLoaded, setImgLoaded] = useState(false);
 
   useEffect(() => {
-    if (vocab.image) {
-      setImageUrl(vocab.image);
-      clientCardImageCache.set(cacheKey, vocab.image);
+    const resolved = getInitialVocabImage(vocab);
+    if (resolved) {
+      setImageUrl(resolved);
+      clientCardImageCache.set(cacheKey, resolved);
       return;
     }
 
@@ -96,8 +123,8 @@ export default function VocabCardImage({
 
   if (imageUrl) {
     return (
-      <div className="mb-2 flex flex-col items-center flex-shrink-0">
-        <div className={`w-full rounded-2xl overflow-hidden p-1 flex items-center justify-center ${
+      <div className="mb-2 flex flex-col items-center flex-shrink-0 w-full">
+        <div className={`max-w-full w-fit rounded-2xl overflow-hidden p-1 flex items-center justify-center mx-auto ${
           isBack 
             ? 'border border-indigo-100/80 bg-white/80 h-28 sm:h-36 shadow-sm' 
             : 'border border-slate-100 bg-slate-50/70 h-28 sm:h-36'
@@ -113,7 +140,7 @@ export default function VocabCardImage({
               clientCardImageCache.set(cacheKey, null);
               setImageUrl(null);
             }}
-            className={`w-full h-full object-contain rounded-xl transition-opacity duration-300 ${
+            className={`w-auto h-full max-w-full object-contain rounded-xl transition-opacity duration-300 ${
               imgLoaded ? 'opacity-100' : 'opacity-0'
             }`}
           />

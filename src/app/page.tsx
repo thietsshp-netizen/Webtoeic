@@ -2552,13 +2552,9 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
             }}
           />
 
-          <div className="flex-1 overflow-y-auto pr-1 text-left scrollbar-hide py-1">
+          <div className="flex-1 overflow-y-auto pr-1 text-center scrollbar-hide py-1">
             {vocab.example ? (
-              <div className="flex items-start gap-2 bg-slate-50/60 p-2.5 sm:p-3 rounded-2xl border border-slate-100">
-                <div 
-                  className="text-slate-600 text-xs sm:text-[14px] leading-relaxed font-medium break-words flex-1"
-                  dangerouslySetInnerHTML={{ __html: vocab.example }}
-                />
+              <div className="flex items-center justify-center gap-2 bg-slate-50/60 p-2.5 sm:p-3 rounded-2xl border border-slate-100 text-center">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -2569,6 +2565,10 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
                 >
                   <Volume2 size={16} />
                 </button>
+                <div 
+                  className="text-slate-600 text-xs sm:text-[14px] leading-relaxed font-medium break-words text-center"
+                  dangerouslySetInnerHTML={{ __html: vocab.example }}
+                />
               </div>
             ) : (
               <div className="text-slate-400 text-xs sm:text-sm text-center py-2">---</div>
@@ -2576,9 +2576,9 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
           </div>
 
           {vocab.synonyms && (
-            <div className="mt-auto pt-3 border-t border-slate-50 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center gap-2 flex-wrap">
-              <span className="opacity-50 italic lowercase font-bold">Hints:</span>
-              <span className="bg-teal-50 px-2 py-0.5 rounded-lg break-words">
+            <div className="mt-auto pt-3 border-t border-slate-50 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center justify-center gap-2 flex-wrap text-center">
+              <span className="opacity-50 italic lowercase font-bold flex-shrink-0">Hints:</span>
+              <span className="bg-teal-50 px-2 py-0.5 rounded-lg break-words text-center">
                 {cleanSynonyms(vocab.synonyms)}
               </span>
             </div>
@@ -2637,14 +2637,10 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
             }}
           />
 
-          <div className="space-y-4 text-[15px] flex-1 overflow-y-auto pr-2 scrollbar-hide">
-            <div className="flex flex-col gap-2">
+          <div className="space-y-4 text-[15px] flex-1 overflow-y-auto pr-2 scrollbar-hide text-center">
+            <div className="flex flex-col gap-2 items-center">
               {vocab.example && (
-                <div className="flex items-start justify-between gap-2 bg-white/40 p-2.5 sm:p-3 rounded-2xl border border-white/60 shadow-sm">
-                  <div 
-                    className="text-slate-700 leading-relaxed font-medium break-words flex-1 text-xs sm:text-[13px]"
-                    dangerouslySetInnerHTML={{ __html: vocab.example }}
-                  />
+                <div className="flex items-center justify-center gap-2 bg-white/40 p-2.5 sm:p-3 rounded-2xl border border-white/60 shadow-sm w-full text-center">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -2655,11 +2651,15 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
                   >
                     <Volume2 size={15} />
                   </button>
+                  <div 
+                    className="text-slate-700 leading-relaxed font-medium break-words text-xs sm:text-[13px] text-center"
+                    dangerouslySetInnerHTML={{ __html: vocab.example }}
+                  />
                 </div>
               )}
               {vocab.exampleTranslation && (
                 <div 
-                  className="text-slate-500 italic leading-relaxed pl-3 border-l-2 border-blue-200 py-1 bg-slate-50/50 rounded-r-xl pr-3 text-xs sm:text-[13px] break-words"
+                  className="text-slate-500 italic leading-relaxed py-1 px-3 bg-slate-50/50 rounded-xl text-xs sm:text-[13px] break-words text-center w-full"
                   dangerouslySetInnerHTML={{ __html: vocab.exampleTranslation }}
                 />
               )}
@@ -2667,16 +2667,16 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
 
             {/* Additional Info if available */}
             {(vocab.synonyms || vocab.antonyms || vocab.collocations || vocab.wordFamily) && (
-              <div className="pt-6 space-y-6 border-t border-slate-100 mt-6 pb-4">
+              <div className="pt-6 space-y-6 border-t border-slate-100 mt-6 pb-4 text-center">
                 {vocab.synonyms && (
-                  <div className="space-y-3">
-                    <div className="text-[10px] font-black text-teal-600 uppercase tracking-widest flex items-center gap-2">
+                  <div className="space-y-3 text-center">
+                    <div className="text-[10px] font-black text-teal-600 uppercase tracking-widest flex items-center justify-center gap-2 text-center">
                       <div className="w-5 h-5 rounded-lg bg-teal-50 flex items-center justify-center">
                         <Link2 size={12} />
                       </div>
                       ĐỒNG NGHĨA
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap justify-center gap-2">
                       {vocab.synonyms
                         .split(',')
                         .map((s: string) => s.trim())
@@ -2699,14 +2699,14 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
                 )}
 
                 {vocab.antonyms && (
-                  <div className="space-y-3">
-                    <div className="text-[10px] font-black text-rose-500 uppercase tracking-widest flex items-center gap-2">
+                  <div className="space-y-3 text-center">
+                    <div className="text-[10px] font-black text-rose-500 uppercase tracking-widest flex items-center justify-center gap-2 text-center">
                       <div className="w-5 h-5 rounded-lg bg-rose-50 flex items-center justify-center">
                         <Replace size={12} />
                       </div>
                       TRÁI NGHĨA
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap justify-center gap-2">
                       {vocab.antonyms
                         .split(',')
                         .map((s: string) => s.trim())
@@ -2729,8 +2729,8 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
                 )}
 
                 {vocab.collocations && (
-                  <div className="space-y-3">
-                    <div className="text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2">
+                  <div className="space-y-3 text-center">
+                    <div className="text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center justify-center gap-2 text-center">
                       <div className="w-5 h-5 rounded-lg bg-indigo-50 flex items-center justify-center">
                         <Layers size={12} />
                       </div>
@@ -2743,9 +2743,9 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
                         .map((s: string, i: number) => {
                           const parts = s.trim().split(/[:|-]/);
                           return (
-                            <div key={i} className="p-3 bg-slate-50/80 rounded-2xl border border-slate-100 flex items-center gap-3 group/item hover:border-indigo-200 transition-all">
+                            <div key={i} className="p-3 bg-slate-50/80 rounded-2xl border border-slate-100 flex items-center justify-center gap-3 group/item hover:border-indigo-200 transition-all text-center">
                               <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover/item:scale-150 transition-transform"></div>
-                              <div className="flex flex-col">
+                              <div className="flex flex-col text-center">
                                 <span className="text-[13px] font-black text-slate-800">{parts[0].trim()}</span>
                                 {parts[1] && <span className="text-[11px] text-slate-500 font-medium italic">{parts[1].trim()}</span>}
                               </div>
@@ -2757,14 +2757,14 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
                 )}
 
                 {vocab.wordFamily && (
-                  <div className="space-y-3">
-                    <div className="text-[10px] font-black text-orange-600 uppercase tracking-widest flex items-center gap-2">
+                  <div className="space-y-3 text-center">
+                    <div className="text-[10px] font-black text-orange-600 uppercase tracking-widest flex items-center justify-center gap-2 text-center">
                       <div className="w-5 h-5 rounded-lg bg-orange-50 flex items-center justify-center">
                         <BookOpen size={12} />
                       </div>
                       GIA ĐÌNH TỪ
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap justify-center gap-2">
                       {vocab.wordFamily
                         .split(',')
                         .slice(0, 4)

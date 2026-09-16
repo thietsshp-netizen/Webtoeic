@@ -47,6 +47,38 @@ async function fallbackGoogleTts(text: string, type: string): Promise<ArrayBuffe
   return response.arrayBuffer();
 }
 
+// Custom text normalization map for words where TTS engines mispronounce (e.g. heteronyms or accented words)
+function normalizeTextForTts(text: string): string {
+  if (!text) return text;
+  let normalized = text;
+
+  // 1. Accented forms containing é (résumé, résumés, resumé, resumés) - ALWAYS CV noun
+  normalized = normalized.replace(/(?:r[eé]sumé|résum[eé])s/gi, 'rez-oo-mays');
+  normalized = normalized.replace(/(?:r[eé]sumé|résum[eé])/gi, 'rez-oo-may');
+
+  // 2. Standalone unaccented word 'resume' or 'resumes' (e.g. single flashcard word)
+  if (/^\s*resumes?\s*$/i.test(text.trim())) {
+    normalized = normalized
+      .replace(/^resumes$/i, 'rez-oo-mays')
+      .replace(/^resume$/i, 'rez-oo-may');
+  }
+
+  // 3. Sentences containing unaccented 'resume' / 'resumes' in CV contexts
+  const cvContextPrefixRegex = /\b(a|an|the|your|his|her|my|our|their|its|submit|submits|submitted|submitting|send|sends|sent|fax|faxes|faxed|attach|attaches|attached|update|updates|updated|draft|drafts|drafted|online|job|applicant|applicants|candidate|candidates|employment)\s+(resumes?)\b/gi;
+  normalized = normalized.replace(cvContextPrefixRegex, (match, prefix, word) => {
+    const replacement = word.toLowerCase().endsWith('s') ? 'rez-oo-mays' : 'rez-oo-may';
+    return `${prefix} ${replacement}`;
+  });
+
+  const cvContextSuffixRegex = /\b(resumes?)\s+(and|or|to|for|with|is|was|are|were|contained|attached|enclosed|submitted|required)\b/gi;
+  normalized = normalized.replace(cvContextSuffixRegex, (match, word, suffix) => {
+    const replacement = word.toLowerCase().endsWith('s') ? 'rez-oo-mays' : 'rez-oo-may';
+    return `${replacement} ${suffix}`;
+  });
+
+  return normalized;
+}
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -58,7 +90,10 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Missing text parameter' }, { status: 400 });
     }
 
-    const cacheKey = `${type}_${cleanText}`;
+    const voice = type === 'uk' ? 'en-GB-SoniaNeural' : 'en-US-JennyNeural';
+    const ttsText = normalizeTextForTts(cleanText);
+
+    const cacheKey = `${type}_${ttsText}`;
     if (ttsCache.has(cacheKey)) {
       const cached = ttsCache.get(cacheKey)!;
       return new Response(new Uint8Array(cached), {
@@ -71,10 +106,8 @@ export async function GET(request: Request) {
       });
     }
 
-    const voice = type === 'uk' ? 'en-GB-SoniaNeural' : 'en-US-JennyNeural';
-
     try {
-      const audioBuffer = await generateEdgeTtsAudio(cleanText, voice);
+      const audioBuffer = await generateEdgeTtsAudio(ttsText, voice);
       
       // Limit in-memory cache size to ~1,000 items
       if (ttsCache.size > 1000) {
@@ -93,7 +126,7 @@ export async function GET(request: Request) {
       });
     } catch (edgeError) {
       console.warn('[TTS API] Edge TTS failed, using Google TTS fallback:', edgeError);
-      const googleBuffer = await fallbackGoogleTts(cleanText, type);
+      const googleBuffer = await fallbackGoogleTts(ttsText, type);
       return new Response(googleBuffer, {
         status: 200,
         headers: {

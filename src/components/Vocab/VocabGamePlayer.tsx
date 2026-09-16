@@ -189,8 +189,7 @@ export function FlashCard({
           />
           
           <div className="flex-1 overflow-y-auto scrollbar-hide py-1">
-            <div className="flex items-start gap-2 bg-slate-50/60 p-2.5 sm:p-3.5 rounded-2xl border border-slate-100">
-              <div className="text-slate-600 text-xs sm:text-[14px] leading-relaxed font-medium break-words flex-1" dangerouslySetInnerHTML={{ __html: word.ex }} />
+            <div className="flex items-center justify-center gap-2 bg-slate-50/60 p-2.5 sm:p-3.5 rounded-2xl border border-slate-100 text-center">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -199,15 +198,16 @@ export function FlashCard({
                 className="p-1 hover:bg-blue-50 rounded-lg text-blue-400 hover:text-blue-600 transition-colors flex-shrink-0"
                 title="Nghe đọc câu ví dụ"
               >
-                <Volume2 size={16} />
+                <Volume2 size={18} />
               </button>
+              <div className="text-slate-700 text-sm sm:text-base leading-relaxed font-semibold break-words text-center" dangerouslySetInnerHTML={{ __html: word.ex }} />
             </div>
           </div>
 
           {word.syns.length > 0 && (
-            <div className="mt-2 pt-2 border-t border-slate-100 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center justify-center gap-1.5 flex-wrap">
+            <div className="mt-2 pt-2 border-t border-slate-100 text-[10px] text-teal-600 font-black uppercase tracking-[0.1em] flex items-center justify-center gap-1.5 flex-wrap text-center">
               <span className="opacity-50 italic lowercase font-bold flex-shrink-0">Hints:</span>
-              <span className="bg-teal-50 px-2 py-0.5 rounded-lg flex gap-1.5 flex-wrap break-words justify-center">
+              <span className="bg-teal-50 px-2 py-0.5 rounded-lg flex gap-1.5 flex-wrap break-words justify-center text-center">
                 {word.syns
                   .filter(s => s && s.toString() !== '[object Object]')
                   .slice(0, 2)
@@ -237,6 +237,11 @@ export function FlashCard({
                 <Volume2 size={20} className="text-blue-400 hover:text-blue-600" />
               </button>
             </div>
+            {word.ipa && (
+              <div className="text-orange-400 font-bold italic text-xs sm:text-sm mb-1 text-center">
+                /{word.ipa.replace(/\//g, '')}/
+              </div>
+            )}
             <div className="text-red-500 font-black text-sm sm:text-base tracking-tight leading-tight break-words text-center">{limitMeanings(word.mean)}</div>
           </div>
 
@@ -256,10 +261,9 @@ export function FlashCard({
             }}
           />
 
-          <div className="space-y-2.5 text-xs sm:text-sm flex-1 overflow-y-auto pr-1 scrollbar-hide">
-            <div className="flex flex-col gap-1.5">
-              <div className="flex items-start justify-between gap-2 bg-white/60 p-2.5 sm:p-3 rounded-2xl border border-white/80 shadow-sm">
-                <div className="text-slate-700 leading-relaxed font-medium break-words flex-1 text-xs sm:text-[13px]" dangerouslySetInnerHTML={{ __html: word.ex }} />
+          <div className="space-y-2.5 text-xs sm:text-sm flex-1 overflow-y-auto pr-1 scrollbar-hide text-center">
+            <div className="flex flex-col gap-1.5 items-center">
+              <div className="flex items-center justify-center gap-2 bg-white/60 p-2.5 sm:p-3 rounded-2xl border border-white/80 shadow-sm text-center w-full">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -268,28 +272,29 @@ export function FlashCard({
                   className="p-1 hover:bg-white rounded-lg text-blue-400 hover:text-blue-600 transition-colors flex-shrink-0"
                   title="Nghe đọc câu ví dụ"
                 >
-                  <Volume2 size={15} />
+                  <Volume2 size={16} />
                 </button>
+                <div className="text-slate-800 leading-relaxed font-semibold break-words text-sm sm:text-[15px] text-center" dangerouslySetInnerHTML={{ __html: word.ex }} />
               </div>
               {word.exVi && (
-                <div className="text-slate-600 italic leading-relaxed pl-3 border-l-2 border-blue-400 py-0.5 bg-white/40 rounded-r-xl pr-2 text-[11px] sm:text-xs break-words" dangerouslySetInnerHTML={{ __html: word.exVi }} />
+                <div className="text-slate-600 italic leading-relaxed py-1 px-3 bg-white/40 rounded-xl text-xs sm:text-sm font-medium break-words text-center w-full" dangerouslySetInnerHTML={{ __html: word.exVi }} />
               )}
             </div>
 
-            <div className="pt-2 space-y-3 border-t border-indigo-100/60 mt-2">
+            <div className="pt-2 space-y-3 border-t border-indigo-100/60 mt-2 text-center">
               {/* SYNONYMS */}
               {(() => {
                 const raw = word.synonyms?.includes('[object Object]') ? '' : (word.synonyms || (word.syns.length > 0 ? word.syns.filter(s => s && s.toString() !== '[object Object]').map(s => typeof s === 'object' ? (s as any).word : s).join(', ') : ''));
                 if (!raw || raw === '---' || !raw.trim()) return null;
                 return (
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black text-teal-600 uppercase tracking-widest">
+                  <div className="space-y-1.5 text-center">
+                    <div className="flex items-center justify-center gap-1.5 text-[9px] sm:text-[10px] font-black text-teal-600 uppercase tracking-widest text-center">
                       <div className="w-4 h-4 rounded-md bg-teal-50 flex items-center justify-center">
                         <Link2 size={10} strokeWidth={3} />
                       </div>
                       ĐỒNG NGHĨA
                     </div>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap justify-center gap-1.5">
                       {raw.split(',').slice(0, 2).map((s, i) => {
                         const parts = s.trim().split(/(\(.*?\))/);
                         return (
@@ -312,14 +317,14 @@ export function FlashCard({
                 const raw = word.antonyms;
                 if (!raw || raw === '---' || !raw.trim()) return null;
                 return (
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black text-rose-500 uppercase tracking-widest">
+                  <div className="space-y-1.5 text-center">
+                    <div className="flex items-center justify-center gap-1.5 text-[9px] sm:text-[10px] font-black text-rose-500 uppercase tracking-widest text-center">
                       <div className="w-4 h-4 rounded-md bg-rose-50 flex items-center justify-center">
                         <Replace size={10} strokeWidth={3} />
                       </div>
                       TRÁI NGHĨA
                     </div>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap justify-center gap-1.5">
                       {raw.split(',').slice(0, 2).map((s, i) => {
                         const parts = s.trim().split(/(\(.*?\))/);
                         return (
@@ -342,13 +347,14 @@ export function FlashCard({
                 const raw = word.collocations;
                 if (!raw || raw === '---' || !raw.trim()) return null;
                 return (
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black text-indigo-500 uppercase tracking-widest">
+                  <div className="space-y-1.5 text-center">
+                    <div className="flex items-center justify-center gap-1.5 text-[9px] sm:text-[10px] font-black text-indigo-500 uppercase tracking-widest text-center">
                       <div className="w-4 h-4 rounded-md bg-indigo-50 flex items-center justify-center">
                         <Layers size={10} strokeWidth={3} />
                       </div>
                       CỤM TỪ ĐI KÈM
                     </div>
+                    <div className="flex flex-wrap justify-center gap-1.5">              </div>
                     <div className="space-y-1">
                       {raw.split(',').slice(0, 3).map((s, i) => {
                         const parts = s.trim().split(/[:|-]/);

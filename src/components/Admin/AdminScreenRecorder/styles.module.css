@@ -37,6 +37,12 @@
   box-shadow: 0 15px 25px -5px rgba(239, 68, 68, 0.4) !important;
 }
 
+@media (max-width: 767px) {
+  .headerTriggerBtn {
+    display: none !important;
+  }
+}
+
 /* Tooltip hiển thị khi hover vào nút máy quay */
 .btnTooltip {
   position: absolute;

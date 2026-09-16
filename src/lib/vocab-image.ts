@@ -9,11 +9,11 @@ const STOPWORDS = new Set([
 ]);
 
 const JUNK_IMAGE_PATTERNS = [
-  /\.pdf/i, /\.djvu/i, /\.tif/i, /\.svg/i, /document/i, /scan/i, /page/i, /report/i, /text/i,
+  /\.pdf$/i, /\.djvu$/i, /\.tif$/i, /\.svg$/i, /scan/i,
   /plaque/i, /tablet/i, /memorial/i, /inscription/i, /tombstone/i, /engraving/i, /marker/i,
   /chronology/i, /annual/i, /diagram/i, /chart/i, /graph/i, /coat_of_arms/i, /flag/i,
   /solid/i, /texture/i, /microscopy/i, /monochrome/i, /abstract/i, /pattern/i, /surface/i, /background/i,
-  /stamps/i, /manuscript/i, /paper/i, /letter/i, /seal/i, /coin/i, /receipt/i, /signboard/i, /stone/i,
+  /stamps/i, /seal/i, /coin/i, /receipt/i, /signboard/i, /stone/i,
   /not_included/i, /not\s+included/i, /batteries_not/i, /editathon/i, /conference/i, /_types\./i, /housing_ownership/i
 ];
 
@@ -25,6 +25,9 @@ function isJunkImage(url?: string | null, title?: string | null): boolean {
 
 // Directional & abstract concept enhancers
 const CONCEPT_ENHANCERS: Record<string, string[]> = {
+  résumé: ["résumé curriculum vitae", "curriculum vitae", "resume cv"],
+  resumé: ["résumé curriculum vitae", "curriculum vitae", "resume cv"],
+  resume: ["resume curriculum vitae", "curriculum vitae", "resume cv"],
   owner: ["store owner", "shop owner", "business owner"],
   eastern: ["eastern", "eastern europe", "east compass"],
   western: ["western", "western europe", "west compass"],
