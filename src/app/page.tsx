@@ -2114,7 +2114,7 @@ function HomeContent() {
                                     </div>
                                   ) : (
                                     /* All Cards Grid View */
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-5xl mx-auto">
                                       {filteredVocab.map((vocab, idx) => (
                                         <DashVocabCard
                                           key={vocab.id}
@@ -2624,6 +2624,11 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
                 <Volume2 size={18} className="text-blue-400 hover:text-blue-600 sm:w-5 sm:h-5" />
               </button>
             </div>
+            {vocab.ipa && (
+              <div className="text-orange-400 font-bold italic text-xs sm:text-sm mb-1 text-center">
+                /{vocab.ipa.replace(/\//g, '')}/
+              </div>
+            )}
             <div className="text-red-500 font-black text-sm sm:text-base tracking-tight leading-tight break-words text-center">{limitMeanings(vocab.definition || vocab.translation)}</div>
           </div>
 
