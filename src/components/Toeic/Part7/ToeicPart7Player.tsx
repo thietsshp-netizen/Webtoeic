@@ -338,6 +338,7 @@ interface ToeicPart7PlayerProps {
   onVideoQuestionSync?: (questionNo: number) => void;
   onToggleVideo?: () => void;
   videoOpen?: boolean;
+  onToggleSidebar?: () => void;
 }
 
 export default function ToeicPart7Player({
@@ -364,7 +365,8 @@ export default function ToeicPart7Player({
   videoExplanation: videoExplanationRaw,
   onVideoQuestionSync,
   onToggleVideo,
-  videoOpen
+  videoOpen,
+  onToggleSidebar
 }: ToeicPart7PlayerProps) {
   // Chuẩn hóa videoExplanation thành dạng vừa là Mảng vừa là Đối tượng đơn để tương thích ngược 100%
   const videoExplanation = (() => {
@@ -2596,7 +2598,10 @@ export default function ToeicPart7Player({
 
                 <div className="flex items-center pointer-events-auto z-[80] shrink-0" style={{ gap: 'clamp(2px,0.5vw,6px)' }}>
                   <button
-                    onClick={() => setIsSidebarHovered(prev => !prev)}
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent('toeic-toggle-sidebar'));
+                      if (onToggleSidebar) onToggleSidebar();
+                    }}
                     className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-extrabold uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center active:scale-95 border border-indigo-400/30 whitespace-nowrap"
                     style={{ padding: 'clamp(2px,0.3vh,4px) clamp(5px,1.2vw,10px)', fontSize: 'clamp(7px, 2vw, 10px)', gap: 'clamp(2px,0.4vw,4px)' }}
                     title="Mở Bảng câu hỏi"
@@ -2640,7 +2645,10 @@ export default function ToeicPart7Player({
 
             <div className="flex items-center pointer-events-auto z-[80] shrink-0" style={{ gap: 'clamp(2px,0.5vw,6px)' }}>
               <button
-                onClick={() => setIsSidebarHovered(prev => !prev)}
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent('toeic-toggle-sidebar'));
+                  if (onToggleSidebar) onToggleSidebar();
+                }}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-extrabold uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center active:scale-95 border border-indigo-400/30 whitespace-nowrap"
                 style={{ padding: 'clamp(2px,0.3vh,4px) clamp(5px,1.2vw,10px)', fontSize: 'clamp(7px, 2vw, 10px)', gap: 'clamp(2px,0.4vw,4px)' }}
                 title="Mở Bảng câu hỏi"

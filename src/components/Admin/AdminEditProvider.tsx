@@ -33,7 +33,7 @@ export function AdminEditProvider({ children }: { children: React.ReactNode }) {
       
       {/* Floating Admin Toggle Button */}
       {canEdit && (
-        <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end gap-3 pointer-events-none">
+        <div className="fixed bottom-16 sm:bottom-20 right-4 sm:right-6 z-[9999] flex flex-col items-end gap-3 pointer-events-none">
           <button
             onClick={() => setIsAdminMode(!isAdminMode)}
             className={`group pointer-events-auto w-14 h-14 rounded-2xl shadow-2xl flex items-center justify-center transition-all duration-500 transform hover:scale-110 active:scale-95 ${
