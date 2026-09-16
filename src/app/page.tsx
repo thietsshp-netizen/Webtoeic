@@ -632,7 +632,7 @@ function HomeContent() {
 
       {/* --- TOP NAVBAR --- */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2">
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200 group-hover:rotate-6 transition-transform">
               <GraduationCap className="text-white" size={20} />
@@ -643,7 +643,7 @@ function HomeContent() {
             </span>
           </Link>
 
-          <div className="flex items-center bg-slate-100/50 p-1 sm:p-1.5 rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-[220px] xs:max-w-[270px] sm:max-w-none">
+          <div className="flex items-center bg-slate-100/50 p-1 sm:p-1.5 rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-[calc(100vw-110px)] sm:max-w-none mx-auto sm:mx-0 mr-10 sm:mr-0">
             <TabBtn href="/?tab=intro" id="intro" active={activeTab} label="GIỚI THIỆU" icon={<Star size={14} />} />
             <TabBtn href="/courses" id="courses" active={activeTab} label="KHÓA HỌC" icon={<BookOpen size={14} />} />
             <TabBtn href="/?tab=dashboard" id="dashboard" active={activeTab} label="DASHBOARD" icon={<Layout size={14} />} color="blue" />
