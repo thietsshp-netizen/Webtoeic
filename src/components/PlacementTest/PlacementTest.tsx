@@ -375,7 +375,14 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
                               </div>
                             </div>
 
-                            <div className={clsx("grid gap-0.5 sm:gap-1", hideOptionText ? "grid-cols-1 w-20 mx-auto md:mx-0" : "grid-cols-1")}>
+                            <div className={clsx(
+                              "grid gap-2 sm:gap-2.5",
+                              currentGroup.part === 1
+                                ? "grid-cols-2 max-w-sm mx-auto"
+                                : hideOptionText
+                                ? "grid-cols-1 w-20 mx-auto md:mx-0"
+                                : "grid-cols-1"
+                            )}>
                               {['A', 'B', 'C', 'D'].map((opt) => {
                                 const optionText = q[`option${opt}`];
                                 if (!optionText && opt === 'D' && currentGroup.part === 2) return null;
@@ -386,18 +393,44 @@ export default function PlacementTest({ isOpen, onClose }: PlacementTestProps) {
                                     disabled={isTimeUp}
                                     onClick={() => handleAnswer(q.id, opt)}
                                     className={clsx(
-                                      "text-left px-2 sm:px-3 py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl transition-all flex items-center gap-2.5 sm:gap-3 group border-2 outline-none min-h-[38px] sm:min-h-[44px]",
+                                      "text-left px-2.5 sm:px-3 py-1.5 sm:py-2.5 rounded-xl transition-all flex items-center gap-2 group border-2 outline-none min-h-[40px] sm:min-h-[44px]",
                                       isSelected
-                                        ? "bg-blue-50/50 border-blue-600/20 shadow-sm"
-                                        : "bg-transparent border-transparent hover:bg-slate-50/50",
-                                      hideOptionText ? "justify-center" : ""
+                                        ? "bg-blue-50/90 border-blue-600 shadow-sm ring-2 ring-blue-500/10"
+                                        : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/80",
+                                      currentGroup.part === 1 ? "w-full justify-between" : hideOptionText ? "justify-center" : ""
                                     )}
                                   >
-                                    <div className={clsx(
-                                      "w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 flex items-center justify-center font-bold text-[11px] sm:text-xs shrink-0 transition-all",
-                                      isSelected ? "bg-[#2c3e50] border-[#2c3e50] text-white shadow-lg" : "bg-white border-slate-300 text-slate-500 group-hover:border-slate-800 group-hover:text-slate-800"
-                                    )}>{opt}</div>
-                                    {!hideOptionText && <span className={clsx("font-bold text-xs sm:text-sm md:text-base leading-tight transition-colors", isSelected ? "text-slate-900" : "text-slate-600 group-hover:text-slate-900")}>{optionText}</span>}
+                                    <div className="flex items-center gap-2">
+                                      <div className={clsx(
+                                        "w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 flex items-center justify-center font-bold text-[11px] sm:text-xs shrink-0 transition-all",
+                                        isSelected ? "bg-[#2c3e50] border-[#2c3e50] text-white shadow-sm" : "bg-white border-slate-300 text-slate-500 group-hover:border-slate-800"
+                                      )}>{opt}</div>
+                                      {!hideOptionText && <span className={clsx("font-bold text-xs sm:text-sm md:text-base leading-tight transition-colors", isSelected ? "text-slate-900" : "text-slate-600 group-hover:text-slate-900")}>{optionText}</span>}
+                                      {currentGroup.part === 1 && (
+                                        <span className={clsx("font-bold text-xs sm:text-sm", isSelected ? "text-blue-900" : "text-slate-700")}>
+                                          Đáp án {opt}
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    {currentGroup.part === 1 && (
+                                      <div
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (audioRef.current && !isTimeUp) {
+                                            audioRef.current.currentTime = 0;
+                                            audioRef.current.play();
+                                          }
+                                        }}
+                                        className={clsx(
+                                          "w-7 h-7 rounded-full flex items-center justify-center transition-all cursor-pointer shrink-0",
+                                          isSelected ? "bg-blue-600 text-white shadow-sm" : "bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800"
+                                        )}
+                                        title={`Nghe đáp án ${opt}`}
+                                      >
+                                        <Volume2 size={13} />
+                                      </div>
+                                    )}
                                   </button>
                                 );
                               })}

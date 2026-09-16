@@ -173,6 +173,14 @@ export default function ToeicFullTestPlayer({
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    const handleToggleSidebar = () => {
+      setIsSidebarHovered(prev => !prev);
+    };
+    window.addEventListener("toeic-toggle-sidebar", handleToggleSidebar);
+    return () => window.removeEventListener("toeic-toggle-sidebar", handleToggleSidebar);
+  }, []);
+
 
   // Đồng hồ đếm ngược
   useEffect(() => {
@@ -753,10 +761,10 @@ export default function ToeicFullTestPlayer({
 
       {/* Portal for Timer in Top Header */}
       {mounted && document.getElementById("header-extra-portal") && createPortal(
-        <div id="full-test-part-timer-target" className="flex items-center gap-3 bg-slate-50/50 px-4 py-2 rounded-2xl border border-slate-200/50 backdrop-blur-md">
+        <div id="full-test-part-timer-target" className="flex items-center gap-1.5 sm:gap-3 bg-slate-50/50 px-2 sm:px-4 py-1 sm:py-2 rounded-2xl border border-slate-200/50 backdrop-blur-md max-w-full overflow-x-auto scrollbar-none">
           {/* Part tabs */}
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider whitespace-nowrap">CHỌN PART:</span>
+          <div className="flex items-center gap-1 shrink-0">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider whitespace-nowrap hidden sm:inline">CHỌN PART:</span>
             {[1, 2, 3, 4, 5, 6, 7].map(p => (
               <button
                 key={p}
@@ -913,9 +921,9 @@ export default function ToeicFullTestPlayer({
       <div className="flex flex-1 overflow-hidden relative">
         <div id="bottom-nav-portal-target" className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none xl:absolute xl:bottom-0 xl:left-0 xl:right-0"></div>
 
-        <div ref={mainScrollRef} className="flex-1 overflow-y-auto custom-scrollbar p-6">
-          <div className="max-w-[1400px] mx-auto pb-20">
-            <div className="relative w-full min-h-[calc(100vh-250px)] bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+        <div ref={mainScrollRef} className="flex-1 overflow-y-auto custom-scrollbar p-0 sm:p-4 lg:p-6">
+          <div className="max-w-[1400px] mx-auto pb-16 sm:pb-20 h-full">
+            <div className="relative w-full h-[calc(100vh-120px)] sm:min-h-[calc(100vh-250px)] sm:h-auto bg-white rounded-none sm:rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
               {activePart === 1 && (
                 <ToeicPart1Player
                   key="part1"
@@ -1065,15 +1073,24 @@ export default function ToeicFullTestPlayer({
         </div>
 
         {mounted && createPortal(
-          <div
-            className={`questions-sidebar-portal
-              fixed right-0 top-14 bottom-0 z-[999] ${disableSidebarTransition ? "" : "transition-all duration-300 ease-out"} border-l border-white/10 shadow-2xl flex flex-col
-            ${isSidebarHovered ? "w-80 bg-slate-900/70 backdrop-blur-xl" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer"}
-          `}
-            onMouseEnter={() => setIsSidebarHovered(true)}
-            onMouseLeave={() => setIsSidebarHovered(false)}
-            onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
-          >
+          <>
+            {/* Backdrop cho mobile khi bật BẢNG CÂU HỎI */}
+            {isSidebarHovered && (
+              <div
+                className="lg:hidden fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-[998]"
+                onClick={() => setIsSidebarHovered(false)}
+              />
+            )}
+
+            <div
+              className={`questions-sidebar-portal
+                fixed right-0 top-14 bottom-0 z-[999] ${disableSidebarTransition ? "" : "transition-all duration-300 ease-out"} border-l border-white/10 shadow-2xl flex flex-col
+              ${isSidebarHovered ? "w-80 bg-slate-900/95 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}
+            `}
+              onMouseEnter={() => setIsSidebarHovered(true)}
+              onMouseLeave={() => setIsSidebarHovered(false)}
+              onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
+            >
             <div className={`p-4 border-b border-white/10 flex items-center shrink-0 ${isSidebarHovered ? 'h-auto' : 'h-16 justify-center'}`}>
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-100 text-blue-600 rounded-xl shrink-0">
@@ -1115,6 +1132,7 @@ export default function ToeicFullTestPlayer({
                           if (activePart !== q.part) setActivePart(q.part);
                           setActiveQuestionNo(q.questionNo);
                           setJumpTo({ id: String(q.questionNo), ts: Date.now() });
+                          setIsSidebarHovered(false);
                         }}
                         className={`
                         aspect-square rounded-xl text-[13px] font-black transition-all flex items-center justify-center relative
@@ -1198,9 +1216,10 @@ export default function ToeicFullTestPlayer({
                 </div>
               )}
             </div>
-          </div>,
-          document.body
-        )}
+          </div>
+        </>,
+        document.body
+      )}
       </div>
 
       {showResults && (

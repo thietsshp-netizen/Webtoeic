@@ -139,21 +139,21 @@ export default async function LessonDetailPage({
       {/* HEADER BÀI HỌC (LUÔN HIỂN THỊ) */}
       <div id="lesson-sub-header" className={`py-3 pl-3 md:py-6 md:pl-6 bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${
         ["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC", "IELTS_READING"].includes(lesson.contentType as string)
-          ? "pr-16 md:pr-24"
+          ? "pr-2 sm:pr-6 md:pr-24"
           : "pr-3 md:pr-6"
       }`}>
-        <div className="flex items-center gap-2 md:gap-4">
-          <div className="w-10 h-10 bg-blue-600 rounded-2xl items-center justify-center text-white shadow-lg shadow-blue-600/20 hidden sm:flex">
+        <div className="flex items-center gap-2 md:gap-4 max-w-full overflow-hidden flex-1">
+          <div className="w-10 h-10 bg-blue-600 rounded-2xl items-center justify-center text-white shadow-lg shadow-blue-600/20 hidden sm:flex shrink-0">
             {lesson.contentType === "VIDEO" ? <PlayCircle size={24} /> : <FileText size={24} />}
           </div>
-          <div>
-            <h2 id="learn-lesson-title" data-lesson-title={lesson.title} className="text-xs md:text-sm font-bold text-slate-800 tracking-tight flex items-center gap-2 max-w-[150px] xs:max-w-[200px] sm:max-w-none truncate sm:whitespace-normal">
+          <div className="shrink-0">
+            <h2 id="learn-lesson-title" data-lesson-title={lesson.title} className="text-xs md:text-sm font-bold text-slate-800 tracking-tight flex items-center gap-2 max-w-[100px] xs:max-w-[140px] sm:max-w-none truncate sm:whitespace-normal">
               {lesson.title}
             </h2>
           </div>
 
           {/* Portal for extra content in header (like TOEIC timer) */}
-          <div id="header-extra-portal" className="flex-1 flex justify-center"></div>
+          <div id="header-extra-portal" className="flex-1 flex justify-center max-w-full overflow-x-auto scrollbar-none"></div>
         </div>
 
         <div id="tour-lesson-nav-target" className="flex gap-1 md:gap-1.5">

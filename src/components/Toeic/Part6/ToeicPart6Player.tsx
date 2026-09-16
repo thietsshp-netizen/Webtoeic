@@ -358,14 +358,20 @@ export default function ToeicPart6Player({
   const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  // Lắng nghe sự kiện từ Tour để tự động mở bung Sidebar làm ví dụ
   useEffect(() => {
     const handleTourSidebar = (e: Event) => {
       const customEvent = e as CustomEvent;
       setIsSidebarHovered(customEvent.detail.open);
     };
+    const handleToggleSidebar = () => {
+      setIsSidebarHovered(prev => !prev);
+    };
     window.addEventListener("toeic-tour-sidebar", handleTourSidebar);
-    return () => window.removeEventListener("toeic-tour-sidebar", handleTourSidebar);
+    window.addEventListener("toeic-toggle-sidebar", handleToggleSidebar);
+    return () => {
+      window.removeEventListener("toeic-tour-sidebar", handleTourSidebar);
+      window.removeEventListener("toeic-toggle-sidebar", handleToggleSidebar);
+    };
   }, []);
 
   // Refs
@@ -1671,7 +1677,7 @@ export default function ToeicPart6Player({
           <div
             className={`questions-sidebar-portal
               fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
-            ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer"}
+            ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}
           `}
             onMouseEnter={() => setIsSidebarHovered(true)}
             onMouseLeave={() => setIsSidebarHovered(false)}
@@ -1827,7 +1833,7 @@ export default function ToeicPart6Player({
       {/* BOTTOM NAVIGATION BAR */}
       {(() => {
         const navContent = (
-          <div id="toeic-navigation-container" className="flex items-center bg-slate-50/80 rounded-xl p-1 border border-slate-200/50 shadow-sm pointer-events-auto">
+          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full p-1 sm:p-1.5 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-1 sm:gap-4">
             <div className="relative group">
               <button
                 onClick={() => {
@@ -1838,24 +1844,24 @@ export default function ToeicPart6Player({
                   }
                 }}
                 disabled={currentIndex === 0 && !onPrevPart}
-                className="px-6 py-2 rounded-lg font-bold text-[13px] transition-all disabled:opacity-30 hover:bg-white text-slate-600 uppercase tracking-wider"
+                className="px-3 sm:px-8 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-400 uppercase tracking-widest"
               >
                 {currentIndex === 0 && onPrevPart ? 'Về part trước' : 'Lùi'}
               </button>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
+              <div className="hidden sm:block absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
                 Phím tắt: Mũi tên trái
                 <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
               </div>
             </div>
 
-            <div className="px-6 font-mono font-bold text-slate-600 text-sm border-x border-slate-200/50">
+            <div className="px-2 sm:px-8 font-black text-slate-600 text-xs sm:text-sm border-x border-slate-100 whitespace-nowrap">
               {isFullTest ? (
                 <>
-                  {currentGroup?.questions?.[0]?.questionNo || (globalOffset + currentIndex + 1)} <span className="mx-1 text-slate-300">/</span> {globalTotal || 200}
+                  {currentGroup?.questions?.[0]?.questionNo || (globalOffset + currentIndex + 1)} <span className="mx-0.5 text-slate-300">/</span> {globalTotal || 200}
                 </>
               ) : (
                 <>
-                  {currentIndex + 1} / {data.length}
+                  {currentIndex + 1} <span className="mx-0.5 text-slate-300">/</span> {data.length}
                 </>
               )}
             </div>
@@ -1865,20 +1871,16 @@ export default function ToeicPart6Player({
                 <div className="relative group">
                   <button
                     onClick={onNextPart}
-                    className="px-10 py-3 rounded-full font-bold text-[13px] transition-all bg-emerald-600 text-white shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-2"
+                    className="px-3 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-emerald-600 text-white shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-1 sm:gap-2 whitespace-nowrap"
                   >
-                    Tiếp sang Part 7 <ChevronRightIcon className="w-4 h-4" />
+                    <span>Tiếp Part 7</span> <ChevronRightIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </button>
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
-                    Phím tắt: Mũi tên phải
-                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
-                  </div>
                 </div>
               ) : !isSubmittedInternal && (
                 <button
                   onClick={handleFinishTest}
                   disabled={isSubmitting}
-                  className="px-10 py-2.5 rounded-2xl font-bold text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.25)] hover:bg-indigo-700 active:scale-95 ml-1 uppercase tracking-wider"
+                  className="px-3 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
                 >
                   {isSubmitting ? '...' : 'Nộp bài'}
                 </button>
@@ -1887,71 +1889,60 @@ export default function ToeicPart6Player({
               <div className="relative group">
                 <button
                   onClick={() => setCurrentIndex(prev => Math.min(data.length - 1, prev + 1))}
-                  className="px-8 py-2 rounded-lg font-bold text-[13px] transition-all bg-blue-600 text-white shadow-md hover:bg-blue-700 active:scale-95 ml-1 uppercase tracking-wider"
+                  className="px-4 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
                 >
                   Tiếp
                 </button>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
-                  Phím tắt: Mũi tên phải
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
-                </div>
               </div>
             )}
           </div>
         );
 
-        if (mounted && typeof document !== "undefined" && document.getElementById("bottom-nav-portal-target")) {
-          return createPortal(
-            <div className="relative flex-none h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-              <div className="absolute left-4 flex gap-2 pointer-events-auto z-[80]">
-                <button
-                  onClick={() => startToeicPartTour(6, true)}
-                  className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
-                  title="Khởi động Tour hướng dẫn nhanh"
-                >
-                  <HelpCircle size={13} className="animate-pulse" />
-                  Hướng dẫn nhanh
-                </button>
-                {videoExplanation && videoExplanation.videoUrl && (
-                  <button
-                    onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
-                    className="px-3 py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 border border-[#05b169]/20"
-                    title="Xem video chữa đề / giải thích"
-                  >
-                    🎬 {(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}
-                  </button>
-                )}
-              </div>
-              {navContent}
-            </div>,
-            document.getElementById("bottom-nav-portal-target")!
-          );
-        }
-
-        return (
-          <div className="relative flex-none h-16 bg-white border-t border-slate-200 z-[70] flex items-center justify-center">
-            <div className="absolute left-4 flex gap-2 pointer-events-auto z-[80]">
+        const footerContent = (
+          <div className="relative flex-none h-14 sm:h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-6 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full">
+            <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => startToeicPartTour(6, true)}
-                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+                className="p-1.5 sm:px-3 sm:py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1.5 pointer-events-auto"
                 title="Khởi động Tour hướng dẫn nhanh"
               >
-                <HelpCircle size={13} className="animate-pulse" />
-                Hướng dẫn nhanh
+                <HelpCircle size={15} className="animate-pulse shrink-0" />
+                <span className="hidden sm:inline">Hướng dẫn</span>
               </button>
               {videoExplanation && videoExplanation.videoUrl && (
                 <button
                   onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
-                  className="px-3 py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 border border-[#05b169]/20 animate-pulse"
+                  className="p-1.5 sm:px-3 sm:py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1.5 border border-[#05b169]/20"
                   title="Xem video chữa đề / giải thích"
                 >
-                  🎬 {(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}
+                  🎬 <span className="hidden sm:inline">{(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video" : "Xem video"}</span>
                 </button>
               )}
             </div>
-            {navContent}
+            <div className="flex-1 flex justify-center px-1">
+              {navContent}
+            </div>
+            <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('toeic-toggle-sidebar'))}
+                className="px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full sm:rounded-xl font-extrabold text-[10px] sm:text-[11px] uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1 sm:gap-1.5 active:scale-95 border border-indigo-400/30 whitespace-nowrap"
+                title="Mở Bảng câu hỏi"
+              >
+                <LayoutDashboard size={14} className="shrink-0" />
+                <span>BẢNG CÂU</span>
+              </button>
+            </div>
           </div>
         );
+
+        if (mounted && typeof document !== "undefined" && document.getElementById("bottom-nav-portal-target")) {
+          return createPortal(
+            footerContent,
+            document.getElementById("bottom-nav-portal-target")!
+          );
+        }
+
+        return footerContent;
       })()}
 
       {!onToggleVideo && showVideo && videoExplanation && videoExplanation.videoUrl && (

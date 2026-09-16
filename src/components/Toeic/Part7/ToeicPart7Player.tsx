@@ -1071,6 +1071,10 @@ export default function ToeicPart7Player({
       setIsSidebarHovered(customEvent.detail.open);
     };
 
+    const handleToggleSidebar = () => {
+      setIsSidebarHovered(prev => !prev);
+    };
+
     const handleEvidenceMode = (e: Event) => {
       const customEvent = e as CustomEvent;
       if (customEvent.detail.open) {
@@ -1085,10 +1089,12 @@ export default function ToeicPart7Player({
     };
 
     window.addEventListener("toeic-tour-sidebar", handleTourSidebar);
+    window.addEventListener("toeic-toggle-sidebar", handleToggleSidebar);
     window.addEventListener("toeic-tour-evidence-mode", handleEvidenceMode);
     
     return () => {
       window.removeEventListener("toeic-tour-sidebar", handleTourSidebar);
+      window.removeEventListener("toeic-toggle-sidebar", handleToggleSidebar);
       window.removeEventListener("toeic-tour-evidence-mode", handleEvidenceMode);
     };
   }, [currentIndex, data]);

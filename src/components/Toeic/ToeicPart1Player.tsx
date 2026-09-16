@@ -2222,8 +2222,15 @@ export default function ToeicPart1Player({
       const customEvent = e as CustomEvent;
       setIsSidebarHovered(customEvent.detail.open);
     };
+    const handleToggleSidebar = () => {
+      setIsSidebarHovered(prev => !prev);
+    };
     window.addEventListener("toeic-tour-sidebar", handleTourSidebar);
-    return () => window.removeEventListener("toeic-tour-sidebar", handleTourSidebar);
+    window.addEventListener("toeic-toggle-sidebar", handleToggleSidebar);
+    return () => {
+      window.removeEventListener("toeic-tour-sidebar", handleTourSidebar);
+      window.removeEventListener("toeic-toggle-sidebar", handleToggleSidebar);
+    };
   }, []);
   const playingSegmentRef = useRef<{ label: string, end: number } | null>(null);
 
@@ -2888,28 +2895,26 @@ export default function ToeicPart1Player({
 
 
   return (
-    <div className="absolute inset-0 flex flex-col font-sans bg-[#f8fafc] text-slate-800 overflow-hidden pr-20">
+    <div className="absolute inset-0 flex flex-col font-sans bg-[#f8fafc] text-slate-800 overflow-hidden pr-0 lg:pr-20">
       <div className="flex-1 flex overflow-hidden relative">
         <div className="flex-1 relative flex flex-col overflow-hidden">
-          <div className="flex-1 overflow-y-auto px-4 pt-6 pb-20 scrollbar-thin">
+          <div className="flex-1 flex flex-col min-h-0 overflow-hidden px-2 sm:px-4 pt-2 sm:pt-4 pb-16 scrollbar-thin">
 
-
-
-            <div className="flex flex-wrap justify-between items-center bg-white px-3 py-1.5 rounded-xl shadow-sm border border-slate-100 mb-2 gap-2">
+            <div className="flex flex-wrap justify-between items-center bg-white px-3 py-1.5 rounded-xl shadow-sm border border-slate-100 mb-2 gap-2 shrink-0">
               <div className="flex items-center gap-2">
-                <button id="dictation-mode-btn" onClick={() => setMode(mode === 'dictation' ? 'practice' : 'dictation')} className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition ${mode === 'dictation' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-[0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-200 text-slate-500 hover:border-slate-300'}`}>✏️ Chế độ Chép chính tả</button>
-                <button id="hint-mode-btn" onClick={() => setIsHintMode(!isHintMode)} className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition ${isHintMode ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-[0_0_15px_rgba(99,102,241,0.3)]' : 'border-slate-200 text-slate-400 hover:bg-slate-50 hover:text-slate-500 hover:border-slate-300'}`}>💡 Chế Độ Gợi Ý</button>
+                <button id="dictation-mode-btn" onClick={() => setMode(mode === 'dictation' ? 'practice' : 'dictation')} className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold border-2 transition ${mode === 'dictation' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-[0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-200 text-slate-500 hover:border-slate-300'}`}>✏️ Chép chính tả</button>
+                <button id="hint-mode-btn" onClick={() => setIsHintMode(!isHintMode)} className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold border-2 transition ${isHintMode ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-[0_0_15px_rgba(99,102,241,0.3)]' : 'border-slate-200 text-slate-400 hover:bg-slate-50 hover:text-slate-500 hover:border-slate-300'}`}>💡 Gợi Ý</button>
               </div>
             </div>
 
-            <div className="max-w-4xl mx-auto mb-4 relative z-[250]">
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 px-3 py-2 flex items-center gap-3">
+            <div className="max-w-4xl w-full mx-auto mb-2 sm:mb-4 relative z-[250] shrink-0">
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 px-3 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-3">
                 {/* Play/Pause Button */}
                 <div className="relative group shrink-0 pl-0.5">
                   <button
                     id="play-audio-btn"
                     onClick={() => wavesurfer.current?.playPause()}
-                    className="w-9 h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-lg shadow-indigo-100 transition-all active:scale-95 ring-4 ring-indigo-50"
+                    className="w-8 h-8 sm:w-9 sm:h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-lg shadow-indigo-100 transition-all active:scale-95 ring-4 ring-indigo-50"
                   >
                     {isPlaying ? <PauseIcon className="w-4 h-4" /> : <PlayIcon className="w-4 h-4 pl-0.5" />}
                   </button>
@@ -2922,17 +2927,17 @@ export default function ToeicPart1Player({
                 </div>
 
                 {/* Waveform Container */}
-                <div className="flex-1 overflow-hidden rounded-lg" style={{ height: 36 }}>
+                <div className="flex-1 overflow-hidden rounded-lg" style={{ height: 32 }}>
                   <div id="waveform-audio-container" ref={waveformRef} className="w-full h-full cursor-crosshair" />
                 </div>
 
                 {/* Speed Controls */}
-                <div className="flex bg-white rounded-lg shadow-sm border border-slate-200 p-0.5 shrink-0 mr-0.5">
+                <div className="flex bg-white rounded-lg shadow-sm border border-slate-200 p-0.5 shrink-0">
                   {[0.5, 0.75, 1, 1.25, 1.5].map(speed => (
                     <button
                       key={speed}
                       onClick={() => changeSpeed(speed)}
-                      className={`px-2 py-1 rounded-md text-[10px] font-black transition-all ${playbackRate === speed ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600'}`}
+                      className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-black transition-all ${playbackRate === speed ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600'}`}
                     >
                       {speed}x
                     </button>
@@ -2941,27 +2946,28 @@ export default function ToeicPart1Player({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-4 items-center max-w-full">
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-2 relative h-fit flex-shrink-0 z-[300]">
-                <div className="rounded-xl overflow-visible bg-slate-50 flex justify-center items-center relative">
+            <div className="flex-1 min-h-0 flex flex-col lg:grid lg:grid-cols-2 gap-2 sm:gap-3 lg:gap-6 mb-2 max-w-full overflow-hidden">
+              <div className="h-[32vh] sm:h-[42vh] lg:h-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-2 relative shrink-0 lg:shrink flex justify-center items-center overflow-hidden z-[300]">
+                <div className="rounded-xl overflow-hidden bg-slate-50 flex justify-center items-center relative w-full h-full">
                   {currentGroup.imageUrl ? (
-                    <div className="relative w-full max-h-[600px] flex justify-center items-center">
-                      <img src={currentGroup.imageUrl} alt={`Câu ${currentIndex + 1}`} className="w-full max-h-[600px] object-contain select-none" draggable="false" />
+                    <div className="relative w-full h-full flex justify-center items-center">
+                      <div className="relative max-w-full max-h-full flex justify-center items-center">
+                        <img src={currentGroup.imageUrl} alt={`Câu ${currentIndex + 1}`} className="max-w-full max-h-full w-auto h-auto object-contain select-none block" draggable="false" />
 
-                      {/* Floating Save Status Toast */}
-                      {saveStatus && (
-                        <div className={`absolute top-4 left-1/2 -translate-x-1/2 z-[9999] px-4 py-2 rounded-xl shadow-xl backdrop-blur-md border flex items-center gap-2 text-xs font-bold transition-all duration-300 animate-in fade-in slide-in-from-top-4 ${saveStatus.type === 'success'
-                            ? 'bg-emerald-950/90 border-emerald-500/30 text-emerald-300 shadow-emerald-950/20'
-                            : 'bg-red-950/90 border-red-500/30 text-red-300 shadow-red-950/20'
-                          }`}>
-                          <span className="text-sm">{saveStatus.type === 'success' ? '✅' : '⚠️'}</span>
-                          <span>{saveStatus.message}</span>
-                        </div>
-                      )}
+                        {/* Floating Save Status Toast */}
+                        {saveStatus && (
+                          <div className={`absolute top-4 left-1/2 -translate-x-1/2 z-[9999] px-4 py-2 rounded-xl shadow-xl backdrop-blur-md border flex items-center gap-2 text-xs font-bold transition-all duration-300 animate-in fade-in slide-in-from-top-4 ${saveStatus.type === 'success'
+                              ? 'bg-emerald-950/90 border-emerald-500/30 text-emerald-300 shadow-emerald-950/20'
+                              : 'bg-red-950/90 border-red-500/30 text-red-300 shadow-red-950/20'
+                            }`}>
+                            <span className="text-sm">{saveStatus.type === 'success' ? '✅' : '⚠️'}</span>
+                            <span>{saveStatus.message}</span>
+                          </div>
+                        )}
 
-                      {/* Hotspots Layer */}
-                      {localHotspots.length > 0 && (
-                        <div ref={hotspotsContainerRef} className="absolute inset-0 pointer-events-none select-none z-20">
+                        {/* Hotspots Layer */}
+                        {localHotspots.length > 0 && (
+                          <div ref={hotspotsContainerRef} className="absolute inset-0 pointer-events-none select-none z-20">
                           {/* Lớp phủ click trong suốt để khi click ra ngoài các chấm số sẽ tắt bubble */}
                           {selectedHotspotIndex !== null && (
                             <div
@@ -2970,258 +2976,7 @@ export default function ToeicPart1Player({
                             />
                           )}
 
-                          {/* SVG vẽ đường chỉ nối động từ số ra bubble bên ngoài ảnh ở lề bên phải */}
-                          {(() => {
-                            const activeIdx = hoveredHotspotIndex !== null ? hoveredHotspotIndex : selectedHotspotIndex;
-                            if (activeIdx === null || !localHotspots[activeIdx]) return null;
 
-                            const activeHs = localHotspots[activeIdx];
-                            const startX = `${activeHs.x}%`;
-                            const startY = `${activeHs.y}%`;
-                            const endX = "103%";
-                            const endY = `${activeHs.y}%`;
-
-                            return (
-                              <>
-                                <svg className="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible">
-                                  <g className="animate-in fade-in duration-300">
-                                    <line
-                                      x1={startX}
-                                      y1={startY}
-                                      x2={endX}
-                                      y2={endY}
-                                      stroke={hoveredHotspotIndex !== null ? "#f59e0b" : "#ef4444"}
-                                      strokeWidth="1.5"
-                                      strokeDasharray="4 3"
-                                      className="animate-[dash_10s_linear_infinite]"
-                                    />
-                                    <circle
-                                      cx={endX}
-                                      cy={endY}
-                                      r="3"
-                                      fill={hoveredHotspotIndex !== null ? "#f59e0b" : "#ef4444"}
-                                    />
-                                  </g>
-                                </svg>
-
-                                <div
-                                  className={`absolute left-[105%] w-max max-w-[460px] z-[99999] transition-all duration-200 ease-out animate-in fade-in zoom-in-95 pointer-events-auto ${activeHs.y < 20 ? "translate-y-0" : activeHs.y > 80 ? "translate-y-0" : "-translate-y-1/2"
-                                    }`}
-                                  style={activeHs.y < 20 ? { top: "5px" } : activeHs.y > 80 ? { bottom: "5px" } : { top: `${activeHs.y}%` }}
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <div className={`bg-slate-950/95 border p-4 rounded-2xl shadow-2xl backdrop-blur-md text-left relative ring-1 select-text ${hoveredHotspotIndex !== null
-                                      ? 'border-amber-500/50 ring-amber-500/20'
-                                      : 'border-emerald-500/50 ring-emerald-500/20'
-                                    }`}>
-                                    {isAdminMode ? (
-                                      <div className="space-y-2.5 text-slate-200 min-w-[280px]">
-                                        <div className="flex items-center justify-between border-b border-slate-800 pb-1.5">
-                                          <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest">
-                                            ✏️ SỬA HOTSPOT #{activeIdx + 1}
-                                          </span>
-                                          <button
-                                            onClick={() => setSelectedHotspotIndex(null)}
-                                            className="text-slate-400 hover:text-white"
-                                          >
-                                            <XMarkIcon className="w-3.5 h-3.5" />
-                                          </button>
-                                        </div>
-
-                                        <div className="bg-slate-900 border border-slate-800/80 rounded-xl p-2.5 flex justify-between items-center text-[10px]">
-                                          <div>
-                                            <span className="text-slate-450 block text-[8px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">Tọa độ gốc</span>
-                                            <code className="text-indigo-300 font-black bg-indigo-950/60 border border-indigo-900/30 px-1.5 py-0.5 rounded">
-                                              X: {((currentGroup.metadata as any)?.hotspots?.[activeIdx]?.x ?? 0).toFixed(1)}%, Y: {((currentGroup.metadata as any)?.hotspots?.[activeIdx]?.y ?? 0).toFixed(1)}%
-                                            </code>
-                                          </div>
-                                          <div className="text-right">
-                                            <span className="text-slate-450 block text-[8px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">Tọa độ mới</span>
-                                            <code className="text-amber-300 font-black bg-amber-950/60 border border-amber-900/30 px-1.5 py-0.5 rounded animate-pulse">
-                                              X: {activeHs.x?.toFixed(1)}%, Y: {activeHs.y?.toFixed(1)}%
-                                            </code>
-                                          </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-2 gap-2">
-                                          <div>
-                                            <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Từ vựng (EN)</label>
-                                            <input
-                                              type="text"
-                                              className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500"
-                                              value={activeHs.en || ""}
-                                              onChange={(e) => handleUpdateActiveHsField("en", e.target.value)}
-                                            />
-                                          </div>
-                                          <div>
-                                            <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Phiên âm (IPA)</label>
-                                            <input
-                                              type="text"
-                                              className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500"
-                                              value={activeHs.ipa || ""}
-                                              onChange={(e) => handleUpdateActiveHsField("ipa", e.target.value)}
-                                            />
-                                          </div>
-                                        </div>
-
-                                        <div>
-                                          <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Nghĩa tiếng Việt</label>
-                                          <input
-                                            type="text"
-                                            className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500"
-                                            value={activeHs.vi || ""}
-                                            onChange={(e) => handleUpdateActiveHsField("vi", e.target.value)}
-                                          />
-                                        </div>
-
-                                        <div>
-                                          <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Ví dụ (Example)</label>
-                                          <textarea
-                                            className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500 min-h-[45px] resize-y"
-                                            value={activeHs.example || ""}
-                                            onChange={(e) => handleUpdateActiveHsField("example", e.target.value)}
-                                          />
-                                        </div>
-
-                                        <div>
-                                          <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Dịch câu ví dụ</label>
-                                          <textarea
-                                            className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500 min-h-[35px] resize-y"
-                                            value={activeHs.example_vi || ""}
-                                            onChange={(e) => handleUpdateActiveHsField("example_vi", e.target.value)}
-                                          />
-                                        </div>
-
-                                        <div>
-                                          <label className="block text-[8px] font-bold text-slate-400 mb-0.5 uppercase">Từ đồng nghĩa (Synonyms)</label>
-                                          <input
-                                            type="text"
-                                            placeholder="word (ipa), word2 (ipa2)"
-                                            className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-500"
-                                            value={synonymsInputVal}
-                                            onChange={(e) => {
-                                              const raw = e.target.value;
-                                              setSynonymsInputVal(raw);
-                                              const parsed = raw.split(',').map(item => {
-                                                const clean = item.trim();
-                                                if (!clean) return null;
-                                                const match = clean.match(/^(.*?)\s*[\(\[](.*?)[\)\]]$/);
-                                                if (match) {
-                                                  return { word: match[1].trim(), ipa: match[2].trim() };
-                                                }
-                                                return { word: clean, ipa: "" };
-                                              }).filter(Boolean);
-                                              handleUpdateActiveHsField("synonyms", parsed);
-                                            }}
-                                          />
-                                        </div>
-
-                                        <div className="flex justify-between items-center pt-2 border-t border-slate-900 gap-2">
-                                          <button
-                                            type="button"
-                                            onClick={handleDeleteHotspot}
-                                            disabled={saveLoading}
-                                            className="bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-black text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-xl shadow-lg shadow-red-500/15 active:scale-95 transition-all cursor-pointer"
-                                          >
-                                            Xóa Hotspot
-                                          </button>
-                                          <button
-                                            type="button"
-                                            onClick={handleSaveHotspotsData}
-                                            disabled={saveLoading}
-                                            className="bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-xl shadow-lg shadow-amber-500/25 active:scale-95 transition-all cursor-pointer"
-                                          >
-                                            {saveLoading ? 'Đang lưu...' : 'Lưu thông tin'}
-                                          </button>
-                                        </div>
-                                      </div>
-                                    ) : (
-                                      <>
-                                        {hoveredHotspotIndex === null && selectedHotspotIndex !== null && (
-                                          <button
-                                            onClick={() => setSelectedHotspotIndex(null)}
-                                            className="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors p-1 hover:bg-slate-800 rounded-lg cursor-pointer animate-in fade-in"
-                                            title="Tắt bubble giải thích"
-                                          >
-                                            <XMarkIcon className="w-3.5 h-3.5" />
-                                          </button>
-                                        )}
-
-                                        <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-800 pb-2 mb-2 pr-6 text-base">
-                                          <span className={`text-slate-950 text-[11px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 ${hoveredHotspotIndex !== null ? 'bg-amber-500' : 'bg-red-500'
-                                            }`}>{activeIdx + 1}</span>
-
-                                          <span
-                                            onClick={() => {
-                                              speak(activeHs.en, 'us');
-                                            }}
-                                            className="font-black text-white text-[15px] hover:text-yellow-400 hover:underline cursor-pointer transition-colors"
-                                          >
-                                            {activeHs.en}
-                                          </span>
-
-                                          <button
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              speak(activeHs.en, 'us');
-                                            }}
-                                            className="p-1 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-indigo-400 transition-all cursor-pointer flex items-center justify-center shrink-0"
-                                            title="Phát âm từ này"
-                                          >
-                                            <Volume2 size={15} />
-                                          </button>
-
-                                          {/* Star button to save word */}
-                                          {userId && hoveredHotspotIndex === null && (
-                                            <button
-                                              onClick={() => toggleStarHotspotWord(activeHs)}
-                                              disabled={starLoadingWord === activeHs.en.trim().toLowerCase()}
-                                              className={`p-1 rounded-lg transition-all cursor-pointer ${savedVocabs.has(activeHs.en.trim().toLowerCase())
-                                                  ? "text-yellow-500 bg-yellow-500/10"
-                                                  : "text-slate-500 hover:bg-slate-800 hover:text-yellow-500"
-                                                }`}
-                                              title={savedVocabs.has(activeHs.en.trim().toLowerCase()) ? "Bỏ lưu từ" : "Lưu từ vào sổ tay"}
-                                            >
-                                              <Star size={14} fill={savedVocabs.has(activeHs.en.trim().toLowerCase()) ? "currentColor" : "none"} className={starLoadingWord === activeHs.en.trim().toLowerCase() ? "animate-pulse" : ""} />
-                                            </button>
-                                          )}
-
-                                          {activeHs.ipa && <span className="text-[11px] text-slate-400 font-mono">[{activeHs.ipa}]</span>}
-                                          <span className="text-indigo-400 font-bold ml-1 text-[15px]">— {activeHs.vi}</span>
-                                        </div>
-
-                                        {activeHs.example && (
-                                          <div className="mt-2 text-[12.5px] text-slate-200 space-y-1.5">
-                                            <p className="italic leading-relaxed text-slate-200">
-                                              "{renderInteractiveText(activeHs.example, activeHs.en)}"
-                                            </p>
-                                            {activeHs.example_vi && <p className="text-slate-350 mt-1 leading-snug text-[12px]">{activeHs.example_vi}</p>}
-                                          </div>
-                                        )}
-
-                                        {activeHs.synonyms && activeHs.synonyms.length > 0 && (
-                                          <div className="mt-3 pt-2.5 border-t border-slate-800/60 text-[12px] select-text flex flex-wrap items-center gap-2">
-                                            <span className="text-slate-400 font-bold">Synonyms:</span>
-                                            {activeHs.synonyms.map((s: any, sIdx: number) => (
-                                              <div
-                                                key={sIdx}
-                                                className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-lg text-emerald-400 font-bold cursor-pointer hover:bg-emerald-500/20 transition-all select-text"
-                                                onClick={() => speak(s.word, 'us')}
-                                              >
-                                                <Volume2 size={12} className="text-emerald-400 shrink-0" />
-                                                <span>{s.word}</span>
-                                                {s.ipa && <span className="text-emerald-500/60 font-mono text-[9.5px] font-normal ml-0.5">[{s.ipa}]</span>}
-                                              </div>
-                                            ))}
-                                          </div>
-                                        )}
-                                      </>
-                                    )}
-                                  </div>
-                                </div>
-                              </>
-                            );
-                          })()}
 
                           {localHotspots.map((hs, hidx) => {
                             const isHovered = hoveredHotspotIndex === hidx;
@@ -3299,12 +3054,13 @@ export default function ToeicPart1Player({
                         </div>
                       )}
                     </div>
-                  ) : (
+                  </div>
+                ) : (
                     <div className="text-slate-400 font-bold py-20">Image Missing</div>
                   )}
                 </div>
               </div>
-              <div className="flex flex-col gap-1.5 py-1 justify-center w-full max-w-full overflow-visible tour-question-options-target">
+              <div className="flex-1 min-h-0 overflow-y-auto bg-white lg:bg-transparent rounded-2xl p-2.5 sm:p-4 pb-12 border lg:border-0 border-slate-200 shadow-sm lg:shadow-none flex flex-col gap-1.5 w-full max-w-full tour-question-options-target">
                 {/* Số câu — hiển thị ngay trên các phương án */}
                 <div className="flex items-center gap-2 mb-1 pl-1">
                   <div className="bg-blue-600 text-white font-bold text-base rounded-lg px-3 py-1 shadow-md leading-none">{questionData?.questionNo}</div>
@@ -3329,6 +3085,225 @@ export default function ToeicPart1Player({
                   </button>
                   {mode === 'dictation' && <div className="text-xs font-bold text-pink-600 uppercase tracking-widest border-l-2 border-pink-500 pl-2">Thử thách điền từ: Gõ thay thế các dấu chấm</div>}
                 </div>
+
+                {/* Khung nội dung chi tiết Hotspot được chọn (Box 2) - hiển thị trong phần đáp án bên dưới */}
+                {(() => {
+                  const activeIdx = hoveredHotspotIndex !== null ? hoveredHotspotIndex : selectedHotspotIndex;
+                  if (activeIdx === null || !localHotspots[activeIdx]) return null;
+
+                  const activeHs = localHotspots[activeIdx];
+
+                  return (
+                    <div
+                      className="bg-slate-950/70 border border-slate-800/80 p-3 rounded-xl sm:rounded-2xl shadow-xl backdrop-blur-md text-left relative ring-1 ring-slate-800/50 select-text mb-2.5 transition-all animate-in fade-in slide-in-from-top-2"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {isAdminMode ? (
+                        <div className="space-y-2 text-slate-200 min-w-[260px] max-h-[70vh] overflow-y-auto pr-1 scrollbar-thin">
+                          <div className="flex items-center justify-between border-b border-slate-800 pb-1.5">
+                            <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest">
+                              ✏️ SỬA HOTSPOT #{activeIdx + 1}
+                            </span>
+                            <button
+                              onClick={() => setSelectedHotspotIndex(null)}
+                              className="text-slate-400 hover:text-white"
+                            >
+                              <XMarkIcon className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+
+                          <div className="bg-slate-900/90 border border-slate-800/80 rounded-xl p-2 flex justify-between items-center text-[9px]">
+                            <div>
+                              <span className="text-slate-400 block text-[7.5px] font-bold uppercase tracking-wider mb-0.5">Tọa độ gốc</span>
+                              <code className="text-indigo-300 font-black bg-indigo-950/60 border border-indigo-900/30 px-1 py-0.5 rounded">
+                                X: {((currentGroup.metadata as any)?.hotspots?.[activeIdx]?.x ?? 0).toFixed(1)}%, Y: {((currentGroup.metadata as any)?.hotspots?.[activeIdx]?.y ?? 0).toFixed(1)}%
+                              </code>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-slate-400 block text-[7.5px] font-bold uppercase tracking-wider mb-0.5">Tọa độ mới</span>
+                              <code className="text-amber-300 font-black bg-amber-950/60 border border-amber-900/30 px-1 py-0.5 rounded animate-pulse">
+                                X: {activeHs.x?.toFixed(1)}%, Y: {activeHs.y?.toFixed(1)}%
+                              </code>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-1.5">
+                            <div>
+                              <label className="block text-[7.5px] font-bold text-slate-400 mb-0.5 uppercase">Từ vựng (EN)</label>
+                              <input
+                                type="text"
+                                className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500"
+                                value={activeHs.en || ""}
+                                onChange={(e) => handleUpdateActiveHsField("en", e.target.value)}
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[7.5px] font-bold text-slate-400 mb-0.5 uppercase">Phiên âm (IPA)</label>
+                              <input
+                                type="text"
+                                className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500"
+                                value={activeHs.ipa || ""}
+                                onChange={(e) => handleUpdateActiveHsField("ipa", e.target.value)}
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-[7.5px] font-bold text-slate-400 mb-0.5 uppercase">Nghĩa tiếng Việt</label>
+                            <input
+                              type="text"
+                              className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500"
+                              value={activeHs.vi || ""}
+                              onChange={(e) => handleUpdateActiveHsField("vi", e.target.value)}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[7.5px] font-bold text-slate-400 mb-0.5 uppercase">Ví dụ (Example)</label>
+                            <textarea
+                              className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500 min-h-[36px] resize-y"
+                              value={activeHs.example || ""}
+                              onChange={(e) => handleUpdateActiveHsField("example", e.target.value)}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[7.5px] font-bold text-slate-400 mb-0.5 uppercase">Dịch câu ví dụ</label>
+                            <textarea
+                              className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500 min-h-[30px] resize-y"
+                              value={activeHs.example_vi || ""}
+                              onChange={(e) => handleUpdateActiveHsField("example_vi", e.target.value)}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[7.5px] font-bold text-slate-400 mb-0.5 uppercase">Từ đồng nghĩa (Synonyms)</label>
+                            <input
+                              type="text"
+                              placeholder="word (ipa), word2 (ipa2)"
+                              className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-0.5 text-[10px] text-white focus:outline-none focus:border-amber-500"
+                              value={synonymsInputVal}
+                              onChange={(e) => {
+                                const raw = e.target.value;
+                                setSynonymsInputVal(raw);
+                                const parsed = raw.split(',').map(item => {
+                                  const clean = item.trim();
+                                  if (!clean) return null;
+                                  const match = clean.match(/^(.*?)\s*[\(\[](.*?)[\)\]]$/);
+                                  if (match) {
+                                    return { word: match[1].trim(), ipa: match[2].trim() };
+                                  }
+                                  return { word: clean, ipa: "" };
+                                }).filter(Boolean);
+                                handleUpdateActiveHsField("synonyms", parsed);
+                              }}
+                            />
+                          </div>
+
+                          <div className="flex justify-between items-center pt-1.5 border-t border-slate-800 gap-2">
+                            <button
+                              type="button"
+                              onClick={handleDeleteHotspot}
+                              disabled={saveLoading}
+                              className="bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-black text-[9px] uppercase tracking-wider px-2.5 py-1 rounded-lg shadow-lg shadow-red-500/15 active:scale-95 transition-all cursor-pointer"
+                            >
+                              Xóa Hotspot
+                            </button>
+                            <button
+                              type="button"
+                              onClick={handleSaveHotspotsData}
+                              disabled={saveLoading}
+                              className="bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black text-[9px] uppercase tracking-wider px-2.5 py-1 rounded-lg shadow-lg shadow-amber-500/25 active:scale-95 transition-all cursor-pointer"
+                            >
+                              {saveLoading ? 'Đang lưu...' : 'Lưu thông tin'}
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          {hoveredHotspotIndex === null && selectedHotspotIndex !== null && (
+                            <button
+                              onClick={() => setSelectedHotspotIndex(null)}
+                              className="absolute top-2 right-2 text-slate-400 hover:text-white transition-colors p-1 hover:bg-slate-800 rounded-lg cursor-pointer animate-in fade-in"
+                              title="Tắt bubble giải thích"
+                            >
+                              <XMarkIcon className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+
+                          <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-800/80 pb-1.5 mb-1.5 pr-5 text-xs sm:text-sm">
+                            <span className={`text-slate-950 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${hoveredHotspotIndex !== null ? 'bg-amber-500' : 'bg-red-500'
+                              }`}>{activeIdx + 1}</span>
+
+                            <span
+                              onClick={() => {
+                                speak(activeHs.en, 'us');
+                              }}
+                              className="font-black text-white text-xs sm:text-sm hover:text-yellow-400 hover:underline cursor-pointer transition-colors"
+                            >
+                              {activeHs.en}
+                            </span>
+
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                speak(activeHs.en, 'us');
+                              }}
+                              className="p-0.5 rounded-md text-slate-400 hover:bg-slate-800 hover:text-indigo-400 transition-all cursor-pointer flex items-center justify-center shrink-0"
+                              title="Phát âm từ này"
+                            >
+                              <Volume2 size={13} />
+                            </button>
+
+                            {/* Star button to save word */}
+                            {userId && hoveredHotspotIndex === null && (
+                              <button
+                                onClick={() => toggleStarHotspotWord(activeHs)}
+                                disabled={starLoadingWord === activeHs.en.trim().toLowerCase()}
+                                className={`p-0.5 rounded-md transition-all cursor-pointer ${savedVocabs.has(activeHs.en.trim().toLowerCase())
+                                    ? "text-yellow-500 bg-yellow-500/10"
+                                    : "text-slate-500 hover:bg-slate-800 hover:text-yellow-500"
+                                  }`}
+                                title={savedVocabs.has(activeHs.en.trim().toLowerCase()) ? "Bỏ lưu từ" : "Lưu từ vào sổ tay"}
+                              >
+                                <Star size={13} fill={savedVocabs.has(activeHs.en.trim().toLowerCase()) ? "currentColor" : "none"} className={starLoadingWord === activeHs.en.trim().toLowerCase() ? "animate-pulse" : ""} />
+                              </button>
+                            )}
+
+                            {activeHs.ipa && <span className="text-[10px] sm:text-[11px] text-slate-400 font-mono">[{activeHs.ipa}]</span>}
+                            <span className="text-indigo-400 font-bold ml-0.5 text-xs sm:text-sm">— {activeHs.vi}</span>
+                          </div>
+
+                          {activeHs.example && (
+                            <div className="mt-1 text-[11px] sm:text-xs text-slate-200 space-y-1">
+                              <p className="italic leading-relaxed text-slate-200">
+                                "{renderInteractiveText(activeHs.example, activeHs.en)}"
+                              </p>
+                              {activeHs.example_vi && <p className="text-slate-350 leading-snug text-[10px] sm:text-[11px]">{activeHs.example_vi}</p>}
+                            </div>
+                          )}
+
+                          {activeHs.synonyms && activeHs.synonyms.length > 0 && (
+                            <div className="mt-1.5 pt-1.5 border-t border-slate-800/60 text-[10px] sm:text-[11px] select-text flex flex-wrap items-center gap-1.5">
+                              <span className="text-slate-400 font-bold">Synonyms:</span>
+                              {activeHs.synonyms.map((s: any, sIdx: number) => (
+                                <div
+                                  key={sIdx}
+                                  className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-md text-emerald-400 font-bold cursor-pointer hover:bg-emerald-500/20 transition-all select-text text-[10px] sm:text-[11px]"
+                                  onClick={() => speak(s.word, 'us')}
+                                >
+                                  <Volume2 size={11} className="text-emerald-400 shrink-0" />
+                                  <span>{s.word}</span>
+                                  {s.ipa && <span className="text-emerald-500/60 font-mono text-[8.5px] font-normal ml-0.5">[{s.ipa}]</span>}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  );
+                })()}
                 {['A', 'B', 'C', 'D'].map(opt => {
                   const engPartFromParsed = engParts.find(p => p.label === opt);
                   const targetEngText = engPartFromParsed?.text || (questionData as any)[`option${opt}`] || "";
@@ -3503,15 +3478,24 @@ export default function ToeicPart1Player({
 
         {/* 3. Bảng điều hướng câu hỏi (Bên phải) - Hover để mở rộng */}
         {!isFullTest && mounted && createPortal(
-          <div
-            className={`questions-sidebar-portal
-              fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
-            ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer"}
-          `}
-            onMouseEnter={() => setIsSidebarHovered(true)}
-            onMouseLeave={() => setIsSidebarHovered(false)}
-            onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
-          >
+          <>
+            {/* Backdrop cho mobile khi bật bảng câu hỏi */}
+            {isSidebarHovered && (
+              <div
+                className="lg:hidden fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-[998]"
+                onClick={() => setIsSidebarHovered(false)}
+              />
+            )}
+
+            <div
+              className={`questions-sidebar-portal
+                fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
+              ${isSidebarHovered ? "w-72 bg-slate-900/95 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}
+            `}
+              onMouseEnter={() => setIsSidebarHovered(true)}
+              onMouseLeave={() => setIsSidebarHovered(false)}
+              onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
+            >
             <div className={`p-4 border-b border-white/10 flex items-center shrink-0 ${isSidebarHovered ? 'h-auto' : 'h-16 justify-center'}`}>
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-100 text-blue-600 rounded-xl shrink-0">
@@ -3621,35 +3605,36 @@ export default function ToeicPart1Player({
               )}
             </div>
           </div>
-          , document.body)}
+        </>,
+        document.body)}
       </div>
 
       {/* BOTTOM NAVIGATION BAR */}
       {(() => {
         const navContent = (
-          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full p-1.5 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] min-w-[320px] justify-between pointer-events-auto">
+          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full p-1 sm:p-1.5 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-1 sm:gap-4">
             <div className="relative group">
               <button
                 onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
                 disabled={currentIndex === 0}
-                className="px-8 py-3 rounded-full font-bold text-[13px] transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-400 uppercase tracking-widest"
+                className="px-3 sm:px-8 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-400 uppercase tracking-widest"
               >
                 Lùi
               </button>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
+              <div className="hidden sm:block absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
                 Phím tắt: Mũi tên trái
                 <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
               </div>
             </div>
 
-            <div className="px-8 font-black text-slate-600 text-sm border-x border-slate-100">
+            <div className="px-2 sm:px-8 font-black text-slate-600 text-xs sm:text-sm border-x border-slate-100 whitespace-nowrap">
               {isFullTest ? (
                 <>
-                  {globalOffset + currentIndex + 1} <span className="mx-1 text-slate-300">/</span> {globalTotal || 200}
+                  {globalOffset + currentIndex + 1} <span className="mx-0.5 text-slate-300">/</span> {globalTotal || 200}
                 </>
               ) : (
                 <>
-                  {currentIndex + 1} <span className="mx-1 text-slate-300">/</span> {data.length}
+                  {currentIndex + 1} <span className="mx-0.5 text-slate-300">/</span> {data.length}
                 </>
               )}
             </div>
@@ -3659,20 +3644,16 @@ export default function ToeicPart1Player({
                 <div className="relative group">
                   <button
                     onClick={onNextPart}
-                    className="px-10 py-3 rounded-full font-bold text-[13px] transition-all bg-emerald-600 text-white shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-2"
+                    className="px-3 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-emerald-600 text-white shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-1 sm:gap-2 whitespace-nowrap"
                   >
-                    Tiếp sang Part 2 <ChevronRightIcon className="w-4 h-4" />
+                    <span>Tiếp Part 2</span> <ChevronRightIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </button>
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
-                    Phím tắt: Mũi tên phải
-                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
-                  </div>
                 </div>
               ) : !isSubmitted ? (
                 <button
                   onClick={handleFinishTest}
                   disabled={isSubmitting}
-                  className="px-10 py-3 rounded-full font-bold text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  className="px-3 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
                 >
                   {isSubmitting ? '...' : 'Nộp bài'}
                 </button>
@@ -3681,71 +3662,60 @@ export default function ToeicPart1Player({
               <div className="relative group">
                 <button
                   onClick={() => setCurrentIndex(prev => Math.min(data.length - 1, prev + 1))}
-                  className="px-10 py-3 rounded-full font-bold text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  className="px-4 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
                 >
                   Tiếp
                 </button>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
-                  Phím tắt: Mũi tên phải
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
-                </div>
               </div>
             )}
           </div>
         );
 
-        if (mounted && typeof document !== "undefined" && document.getElementById("bottom-nav-portal-target")) {
-          return createPortal(
-            <div className="relative flex-none h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pb-2 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-              <div className="absolute left-4 flex gap-2 pointer-events-auto z-[80]">
-                <button
-                  onClick={() => startToeicPartTour(1, true)}
-                  className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
-                  title="Khởi động Tour hướng dẫn nhanh"
-                >
-                  <HelpCircle size={13} className="animate-pulse" />
-                  Hướng dẫn nhanh
-                </button>
-                {videoExplanation && videoExplanation.videoUrl && (
-                  <button
-                    onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
-                    className="px-3 py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 border border-[#05b169]/20"
-                    title="Xem video chữa đề / giải thích"
-                  >
-                    🎬 {(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}
-                  </button>
-                )}
-              </div>
-              {navContent}
-            </div>,
-            document.getElementById("bottom-nav-portal-target")!
-          );
-        }
-
-        return (
-          <div className="relative flex-none h-20 bg-white/80 backdrop-blur-md border-t border-slate-100 z-[70] flex items-center justify-center pb-2">
-            <div className="absolute left-4 flex gap-2 pointer-events-auto z-[80]">
+        const footerContent = (
+          <div className="relative flex-none h-14 sm:h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-6 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full">
+            <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => startToeicPartTour(1, true)}
-                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+                className="p-1.5 sm:px-3 sm:py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1.5 pointer-events-auto"
                 title="Khởi động Tour hướng dẫn nhanh"
               >
-                <HelpCircle size={13} className="animate-pulse" />
-                Hướng dẫn nhanh
+                <HelpCircle size={15} className="animate-pulse shrink-0" />
+                <span className="hidden sm:inline">Hướng dẫn</span>
               </button>
               {videoExplanation && videoExplanation.videoUrl && (
                 <button
                   onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
-                  className="px-3 py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 border border-[#05b169]/20 animate-pulse"
+                  className="p-1.5 sm:px-3 sm:py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1.5 border border-[#05b169]/20"
                   title="Xem video chữa đề / giải thích"
                 >
-                  🎬 {(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}
+                  🎬 <span className="hidden sm:inline">{(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video" : "Xem video"}</span>
                 </button>
               )}
             </div>
-            {navContent}
+            <div className="flex-1 flex justify-center px-1">
+              {navContent}
+            </div>
+            <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('toeic-toggle-sidebar'))}
+                className="px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full sm:rounded-xl font-extrabold text-[10px] sm:text-[11px] uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1 sm:gap-1.5 active:scale-95 border border-indigo-400/30 whitespace-nowrap"
+                title="Mở Bảng câu hỏi"
+              >
+                <LayoutDashboard size={14} className="shrink-0" />
+                <span>BẢNG CÂU</span>
+              </button>
+            </div>
           </div>
         );
+
+        if (mounted && typeof document !== "undefined" && document.getElementById("bottom-nav-portal-target")) {
+          return createPortal(
+            footerContent,
+            document.getElementById("bottom-nav-portal-target")!
+          );
+        }
+
+        return footerContent;
       })()}
 
       {!onToggleVideo && showVideo && videoExplanation && videoExplanation.videoUrl && (
