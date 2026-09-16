@@ -624,6 +624,8 @@ export default function ToeicPart2Player({
     }).join('');
   };
 
+  const { isAdminMode, canEdit } = useAdminEdit();
+
   const updateCloudPopup = async (index: number, targetCloudIndex: number) => {
     if (!isAdminMode && !canEdit) return;
     const group = data[index];
@@ -693,9 +695,9 @@ export default function ToeicPart2Player({
       const text = engP.find((p: any) => p.label === opt)?.text || (qData as any)[`option${opt}`] || "";
       const viText = richData?.options?.find((o: any) => o.label === opt)?.vi || vieParts.find((p: any) => p.label === opt)?.text || "";
       const isCorrect = correctAnswer === opt;
-      const color = isCorrect ? '#dc2626' : '#1e293b';
-      const fontWeight = isCorrect ? 'bold' : 'normal';
-      const viSpan = viText ? ` <span style="color: #94a3b8; font-weight: normal; font-size: 13px;">(${escapeHtml(viText)})</span>` : '';
+      const color = isCorrect ? '#059669' : '#334155';
+      const fontWeight = isCorrect ? '800' : 'normal';
+      const viSpan = viText ? ` <span style="color: #64748b; font-style: italic; font-size: 13px;">(${escapeHtml(viText)})</span>` : '';
       
       const incorrectRationale = !isCorrect ? richData?.explanation?.incorrect?.find((i: any) => i.label === opt) : null;
       let suggestedHtml = '';
@@ -713,22 +715,28 @@ export default function ToeicPart2Player({
       }
 
       return `
-        <div style="margin-bottom: 8px;">
+        <div style="margin-bottom: 8px; ${isCorrect ? 'background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 8px; padding: 6px 10px;' : ''}">
           <div style="font-size: 14px; color: ${color}; font-weight: ${fontWeight};">
-            <strong>${opt}.</strong> ${escapeHtml(text)}${viSpan}
+            <strong style="color: ${isCorrect ? '#059669' : '#475569'};">${opt}.</strong> ${escapeHtml(text)}${viSpan}
           </div>
           ${suggestedHtml}
         </div>
       `;
     }).join('');
+
+    const currentQNo = qData.questionNo || (index + 7);
+    const activeBadgeLabel = `${currentQNo}_${correctAnswer}`;
  
-    const width = 440;
-    const height = 600;
+    const width = 480;
+    const height = 620;
  
     const popupHtml = `
       <div class="middle-scroll-container">
         <div class="options-container" style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-          <div style="font-weight: 800; font-size: 15px; margin-bottom: 10px; color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">Đáp án Câu ${qData.questionNo || ''}</div>
+          <div style="font-weight: 800; font-size: 15px; margin-bottom: 10px; color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+            <span>Đáp án Câu ${qData.questionNo || ''}</span>
+            <span style="font-size: 12px; font-weight: 800; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 2px 8px; border-radius: 6px;">Đáp án: <strong>${correctAnswer}</strong></span>
+          </div>
           <div style="font-weight: bold; font-size: 14px; color: #0f172a; margin-bottom: 10px; line-height: 1.5;">
             ${escapeHtml(questionText)}${questionViSpan}
           </div>
@@ -754,41 +762,53 @@ export default function ToeicPart2Player({
             ${formatValueToHtml(fam.originalValue, fam.key, fam.type)}
           </div>
         </div>
-        ` : `
-        <div style="text-align: center; color: #64748b; font-size: 13px; padding: 20px;">
-          Không tìm thấy từ vựng khớp trong câu này.
-        </div>
-        `}
+        ` : ''}
       </div>
 
-      ${matchedFamilies.length > 0 ? `
-        <div class="footer-bar">
-          <div class="footer-items-list">
-            ${matchedFamilies.map((item, idx) => {
-              const isCurrent = idx === activeIdx;
-              const isRoot = item.type === 'root';
-              const label = item.matchedWord || item.key;
-              return `
-                <button 
-                  type="button" 
-                  class="footer-pill ${isRoot ? 'pill-structure' : 'pill-vocab'} ${isCurrent ? 'pill-active' : ''}" 
-                  onclick="if (window.selectCloudIndex) { window.selectCloudIndex(${idx}); } else if (window.opener) { window.opener.postMessage({ type: 'SELECT_CLOUD_INDEX', index: ${idx} }, '*'); }"
-                  title="${escapeHtml(item.key)}"
-                >
-                  <span class="pill-dot">${isRoot ? '▲' : '●'}</span>
-                  <span class="pill-text">${escapeHtml(label)}</span>
-                </button>
-              `;
-            }).join('')}
+      <div class="footer-bar">
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 12.5px; font-weight: 800; color: #475569;">Đáp án nhanh:</span>
+            <span 
+              class="answer-key-pill" 
+              style="
+                background: #fef2f2;
+                color: #dc2626;
+                border: 1px dashed #fca5a5;
+                font-weight: 900;
+                font-size: 13.5px;
+                padding: 2px 10px;
+                border-radius: 6px;
+              "
+            >
+              ${escapeHtml(activeBadgeLabel)}
+            </span>
           </div>
-          ${matchedFamilies.length > 1 ? `
-            <div class="footer-nav-btns">
-              <button type="button" class="btn-footer-nav" title="Mục trước (,)" onclick="if (window.cycleCloud) { window.cycleCloud(','); } else if (window.opener) { window.opener.postMessage({ type: 'CYCLE_CLOUD', key: ',' }, '*'); }">◄</button>
-              <button type="button" class="btn-footer-nav" title="Mục sau (.)" onclick="if (window.cycleCloud) { window.cycleCloud('.'); } else if (window.opener) { window.opener.postMessage({ type: 'CYCLE_CLOUD', key: '.' }, '*'); }">►</button>
-            </div>
-          ` : ''}
+          <span style="font-size: 11.5px; color: #64748b; font-weight: 700;">Câu ${currentQNo} (${index + 1}/${data.length})</span>
         </div>
-      ` : ''}
+        ${matchedFamilies.length > 0 ? `
+          <div style="border-top: 1px dashed #e2e8f0; padding-top: 4px; margin-top: 4px; display: flex; align-items: center; justify-content: space-between; width: 100%;">
+            <div class="footer-items-list" style="display: flex; align-items: center; flex-wrap: wrap; gap: 5px; flex: 1; overflow-y: auto; max-height: 38px;">
+              ${matchedFamilies.map((item, idx) => {
+                const isCurrent = idx === activeIdx;
+                const isRoot = item.type === 'root';
+                const label = item.matchedWord || item.key;
+                return `
+                  <button 
+                    type="button" 
+                    class="footer-pill ${isRoot ? 'pill-structure' : 'pill-vocab'} ${isCurrent ? 'pill-active' : ''}" 
+                    onclick="if (window.selectCloudIndex) { window.selectCloudIndex(${idx}); } else if (window.opener) { window.opener.postMessage({ type: 'SELECT_CLOUD_INDEX', index: ${idx} }, '*'); }"
+                    title="${escapeHtml(item.key)}"
+                  >
+                    <span class="pill-dot">${isRoot ? '▲' : '●'}</span>
+                    <span class="pill-text">${escapeHtml(label)}</span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        ` : ''}
+      </div>
     `;
 
     const hasPiP = typeof window !== 'undefined' && 'documentPictureInPicture' in window;
@@ -1381,17 +1401,34 @@ export default function ToeicPart2Player({
 
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
-      if (e.data && e.data.type === 'TOEIC_HOTKEY') {
-        latestHandleKeyDownRef.current?.(e.data);
-      }
-      if (e.data && e.data.type === 'SELECT_CLOUD_INDEX') {
+      if (!isAdminMode && !canEdit) return;
+      if (!e.data) return;
+      if (e.data.type === 'SELECT_PART2_QUESTION') {
+        lastVocabHotkeyTime.current = Date.now();
+        const qIdx = typeof e.data.index === 'number' ? e.data.index : 0;
+        if (qIdx >= 0 && qIdx < data.length) {
+          setCurrentIndex(qIdx);
+          updateCloudPopup(qIdx, 0);
+        }
+      } else if (e.data.type === 'TOEIC_HOTKEY') {
+        const key = e.data.key;
+        const keyLower = typeof key === 'string' ? key.toLowerCase() : '';
+        if (key === ',' || key === '.' || key === '[' || keyLower === 'ư' || key === ']' || keyLower === 'ơ') {
+          lastVocabHotkeyTime.current = Date.now();
+          const isNext = key === '.' || key === ']' || keyLower === 'ơ';
+          const nextIdx = isNext ? Math.min(data.length - 1, currentIndex + 1) : Math.max(0, currentIndex - 1);
+          setCurrentIndex(nextIdx);
+          updateCloudPopup(nextIdx, 0);
+        } else {
+          latestHandleKeyDownRef.current?.(e.data);
+        }
+      } else if (e.data.type === 'SELECT_CLOUD_INDEX') {
         lastVocabHotkeyTime.current = Date.now();
         const targetIdx = e.data.index;
         if (typeof targetIdx === 'number') {
           updateCloudPopup(currentIndex, targetIdx);
         }
-      }
-      if (e.data && e.data.type === 'CYCLE_CLOUD') {
+      } else if (e.data.type === 'CYCLE_CLOUD') {
         lastVocabHotkeyTime.current = Date.now();
         const matchedFamilies = getMatchedFamiliesForQuestion(currentIndex);
         if (matchedFamilies.length > 0) {
@@ -1408,9 +1445,8 @@ export default function ToeicPart2Player({
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [currentIndex, selectedCloudIndex, wordFamiliesData]);
+  }, [currentIndex, selectedCloudIndex, wordFamiliesData, data, isAdminMode, canEdit]);
 
-  const { isAdminMode, canEdit } = useAdminEdit();
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-slate-400 gap-3">
@@ -2094,17 +2130,10 @@ export default function ToeicPart2Player({
       )) {
         lastVocabHotkeyTime.current = Date.now();
         e.preventDefault?.();
-        const matchedFamilies = getMatchedFamiliesForQuestion(currentIndex);
-        let nextIdx = 0;
-        if (matchedFamilies.length > 0) {
-          const isNext = key === '.' || key === ']' || keyLower === 'ơ';
-          if (isNext) {
-            nextIdx = selectedCloudIndex === -1 ? 0 : (selectedCloudIndex + 1) % matchedFamilies.length;
-          } else {
-            nextIdx = selectedCloudIndex === -1 ? matchedFamilies.length - 1 : (selectedCloudIndex - 1 + matchedFamilies.length) % matchedFamilies.length;
-          }
-        }
-        updateCloudPopup(currentIndex, nextIdx);
+        const isNext = key === '.' || key === ']' || keyLower === 'ơ';
+        const nextIdx = isNext ? Math.min(data.length - 1, currentIndex + 1) : Math.max(0, currentIndex - 1);
+        setCurrentIndex(nextIdx);
+        updateCloudPopup(nextIdx, 0);
       }
  
       // CTRL/CMD + SHIFT + S: Toggle Solution
