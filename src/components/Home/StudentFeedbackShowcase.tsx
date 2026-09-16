@@ -68,14 +68,14 @@ export default function StudentFeedbackShowcase({ images }: StudentFeedbackShowc
     <div className="w-full space-y-4 select-none">
       {/* Main Showcase Frame (Khung viền vàng kim bo tròn chuẩn mẫu) */}
       <div
-        className="relative group max-w-xl sm:max-w-2xl mx-auto rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden border-2 border-amber-400 bg-white p-1.5 sm:p-2.5 shadow-sm cursor-zoom-in"
+        className="relative group max-w-md sm:max-w-lg mx-auto rounded-[1.8rem] sm:rounded-[2.2rem] overflow-hidden border-2 border-amber-400 bg-white p-1 sm:p-1.5 shadow-sm cursor-zoom-in"
         onClick={() => setIsZoomOpen(true)}
         onMouseEnter={() => {
           if (timerRef.current) clearInterval(timerRef.current);
         }}
         onMouseLeave={() => resetTimer()}
       >
-        <div className="relative w-full aspect-square bg-white rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center overflow-hidden">
+        <div className="relative w-full aspect-[0.84/1] bg-white rounded-[1.4rem] sm:rounded-[1.8rem] flex items-center justify-center overflow-hidden">
           {images.map((img, idx) => {
             const isCurrent = idx === activeIdx;
             const isLoaded = loadedImages[idx];
@@ -83,7 +83,7 @@ export default function StudentFeedbackShowcase({ images }: StudentFeedbackShowc
             return (
               <div
                 key={img.id || idx}
-                className={`absolute inset-0 w-full h-full p-1 sm:p-2.5 flex items-center justify-center transition-all duration-700 ${
+                className={`absolute inset-0 w-full h-full p-0.5 sm:p-1 flex items-center justify-center transition-all duration-700 ${
                   isCurrent ? "opacity-100 scale-100 z-10 pointer-events-auto" : "opacity-0 scale-98 z-0 pointer-events-none"
                 }`}
               >
@@ -104,7 +104,7 @@ export default function StudentFeedbackShowcase({ images }: StudentFeedbackShowc
                   loading={idx === 0 ? "eager" : "lazy"}
                   decoding="async"
                   onLoad={() => setLoadedImages((prev) => ({ ...prev, [idx]: true }))}
-                  className={`w-full h-full object-contain rounded-xl sm:rounded-2xl transition-transform duration-500 group-hover:scale-[1.015] shadow-sm ${
+                  className={`w-full h-full object-contain rounded-lg sm:rounded-xl transition-transform duration-500 group-hover:scale-[1.015] shadow-sm ${
                     isLoaded ? "opacity-100" : "opacity-0"
                   }`}
                 />
