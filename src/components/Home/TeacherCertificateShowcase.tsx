@@ -10,7 +10,7 @@ const CERTIFICATES = [
     score: "990/990",
     badge: "CERTIFICATE: 2023",
     badgeColor: "bg-emerald-600",
-    url: "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/marketing/teacher-info/teacher2.jpg",
+    url: "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/marketing/teacher-info/teacher2.webp",
     alt: "Chứng chỉ TOEIC 990/990 Mr. Thiệt - Năm 2023",
   },
   {
@@ -19,7 +19,7 @@ const CERTIFICATES = [
     score: "990/990",
     badge: "CERTIFICATE: 2018",
     badgeColor: "bg-blue-600",
-    url: "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/marketing/teacher-info/teacher1.jpg",
+    url: "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/marketing/teacher-info/teacher1.webp",
     alt: "Chứng chỉ TOEIC 990/990 Mr. Thiệt - Năm 2018",
   },
 ];

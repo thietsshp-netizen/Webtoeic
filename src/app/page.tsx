@@ -328,23 +328,42 @@ function HomeContent() {
         const supabase = createClient(supabaseUrl, supabaseKey);
 
         const bucket = 'marketing';
-        const baseUrl = `${supabaseUrl}/storage/v1/object/public/${bucket}`;
 
-        const { data: scoreData } = await supabase.storage.from(bucket).list('bang-diem');
-        if (scoreData) {
+        // 1. Quét bảng điểm (hỗ trợ cả bang-diem và Bang-diem)
+        let scoreFolder = 'bang-diem';
+        let { data: scoreData } = await supabase.storage.from(bucket).list(scoreFolder);
+        if (!scoreData || scoreData.length === 0) {
+          scoreFolder = 'Bang-diem';
+          const res = await supabase.storage.from(bucket).list(scoreFolder);
+          scoreData = res.data;
+        }
+        if (scoreData && scoreData.length > 0) {
           const sortedScores = scoreData
-            .filter((f: any) => f.name !== '.emptyKeep')
-            .sort((a: any, b: any) => a.name.localeCompare(b.name))
-            .map((f: any) => ({ id: f.id, url: `${baseUrl}/bang-diem/${f.name}` }));
+            .filter((f: any) => f.name && !f.name.startsWith('.') && f.name !== '.emptyKeep')
+            .sort((a: any, b: any) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }))
+            .map((f: any) => ({
+              id: f.id || f.name,
+              url: supabase.storage.from(bucket).getPublicUrl(`${scoreFolder}/${f.name}`).data.publicUrl
+            }));
           setScoreImages(sortedScores);
         }
 
-        const { data: feedbackData } = await supabase.storage.from(bucket).list('cam-nhan');
-        if (feedbackData) {
+        // 2. Quét cảm nhận học viên (hỗ trợ cả Cam-nhan và cam-nhan)
+        let feedbackFolder = 'cam-nhan';
+        let { data: feedbackData } = await supabase.storage.from(bucket).list(feedbackFolder);
+        if (!feedbackData || feedbackData.length === 0) {
+          feedbackFolder = 'Cam-nhan';
+          const res = await supabase.storage.from(bucket).list(feedbackFolder);
+          feedbackData = res.data;
+        }
+        if (feedbackData && feedbackData.length > 0) {
           const sortedFeedback = feedbackData
-            .filter((f: any) => f.name !== '.emptyKeep')
-            .sort((a: any, b: any) => a.name.localeCompare(b.name))
-            .map((f: any) => ({ id: f.id, url: `${baseUrl}/cam-nhan/${f.name}` }));
+            .filter((f: any) => f.name && !f.name.startsWith('.') && f.name !== '.emptyKeep')
+            .sort((a: any, b: any) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }))
+            .map((f: any) => ({
+              id: f.id || f.name,
+              url: supabase.storage.from(bucket).getPublicUrl(`${feedbackFolder}/${f.name}`).data.publicUrl
+            }));
           setFeedbackImages(sortedFeedback);
         }
       } catch (error) {
