@@ -982,6 +982,14 @@ export default function ToeicPart34Player({
 
   const [vSplitWidth, setVSplitWidth] = useState(55); // % chiều rộng khung trái (Vertical)
   const [isResizingV, setIsResizingV] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(true);
+
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
 
 
 
@@ -1688,8 +1696,10 @@ export default function ToeicPart34Player({
     );
   }
 
+  const hasImage = !!(currentGroup.image || currentGroup.imageUrl);
+
   return (
-    <div className="absolute inset-0 flex flex-col font-sans bg-[#f8fafc] text-slate-800 overflow-hidden pr-20 select-text">
+    <div className="absolute inset-0 flex flex-col font-sans bg-[#f8fafc] text-slate-800 overflow-hidden pr-0 lg:pr-20 select-text">
       <style dangerouslySetInnerHTML={{
         __html: `
         .p34-sentence-hover {
@@ -1707,15 +1717,15 @@ export default function ToeicPart34Player({
 
       {/* 1. HEADER ÂM THANH CỐ ĐỊNH - KHUNG RIÊNG BIỆT PHÍA TRÊN */}
       <div className="flex-none z-[250] bg-white border-b border-slate-200 shadow-sm">
-        <div className="max-w-[1600px] mx-auto w-full p-3 px-6 flex items-center gap-6">
+        <div className="max-w-[1600px] mx-auto w-full p-2 sm:p-3 px-3 sm:px-6 flex items-center gap-2 sm:gap-6">
           {/* Play/Pause Button */}
           <div className="relative group shrink-0">
             <button
               id="play-audio-btn"
               onClick={() => wavesurfer.current?.playPause()}
-              className="w-12 h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 active:scale-95 ring-4 ring-indigo-50"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 active:scale-95 ring-2 sm:ring-4 ring-indigo-50"
             >
-              {isPlaying ? <PauseIcon className="w-6 h-6" /> : <PlayIcon className="w-6 h-6 ml-0.5" />}
+              {isPlaying ? <PauseIcon className="w-5 h-5 sm:w-6 sm:h-6" /> : <PlayIcon className="w-5 h-5 sm:w-6 sm:h-6 ml-0.5" />}
             </button>
 
             {/* Tooltip on Hover */}
@@ -1724,15 +1734,15 @@ export default function ToeicPart34Player({
               <div className="absolute -top-1 left-5 w-2 h-2 bg-slate-900 rotate-45"></div>
             </div>
           </div>
-          <div className="flex-1 h-14 relative bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden shadow-inner px-6">
-            <div id="waveform-audio-container" ref={waveformRef} className="absolute inset-x-6 inset-y-0 cursor-pointer" />
+          <div className="flex-1 h-10 sm:h-14 relative bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-100 overflow-hidden shadow-inner px-2 sm:px-6">
+            <div id="waveform-audio-container" ref={waveformRef} className="absolute inset-x-2 sm:inset-x-6 inset-y-0 cursor-pointer" />
           </div>
-          <div className="flex items-center gap-2 border-l border-r border-slate-100 px-6 h-12 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 border-l border-slate-100 px-2 sm:px-6 h-10 sm:h-12 flex-shrink-0">
             {[0.5, 0.75, 1, 1.2].map(speed => (
               <button
                 key={speed}
                 onClick={() => { setPlaybackRate(speed); wavesurfer.current?.setPlaybackRate(speed); }}
-                className={`w-10 h-8 rounded-lg text-[10px] font-black transition-all ${playbackRate === speed ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-100'}`}
+                className={`w-8 sm:w-10 h-7 sm:h-8 rounded-lg text-[9px] sm:text-[10px] font-black transition-all ${playbackRate === speed ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-100'}`}
               >
                 {speed}x
               </button>
@@ -1742,23 +1752,31 @@ export default function ToeicPart34Player({
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto w-full flex-1 flex flex-col px-4 relative overflow-hidden">
+      <div className="max-w-[1600px] mx-auto w-full flex-1 flex flex-col px-2 sm:px-4 relative overflow-hidden">
 
 
-        {/* 3. THÂN TRÌNH PHÁT: HAI CỘT CUỘN ĐỘC LẬP */}
-        <div ref={mainContainerRef} className="flex-1 flex overflow-hidden pb-4 relative gap-4 mt-4">
+        {/* 3. THÂN TRÌNH PHÁT: HAI CỘT CUỘN ĐỘC LẬP (Top / Bottom on Mobile, Left / Right on Desktop) */}
+        <div ref={mainContainerRef} className="flex-1 flex flex-col lg:flex-row overflow-hidden pb-2 sm:pb-4 relative gap-2 sm:gap-4 mt-2 sm:mt-4">
 
-          {/* CỘT TRÁI: HÌNH CỐ ĐỊNH + TRANSCRIPT CUỘN */}
+          {/* CỘT TRÁI (TOP ON MOBILE): HÌNH CỐ ĐỊNH + TRANSCRIPT CUỘN */}
           <div
             id="left-split-col"
             ref={containerRef}
-            className="flex flex-col bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden relative flex-none"
-            style={{ width: `${vSplitWidth}%`, flexShrink: 0 }}
+            className={`bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-slate-100 overflow-hidden relative flex-none flex flex-col ${
+              !revealMode && !hasImage ? 'h-auto max-h-[60px] lg:h-full lg:max-h-none w-full lg:w-auto' : ''
+            } ${
+              !revealMode && hasImage ? 'h-auto max-h-[180px] sm:max-h-[220px] lg:h-full lg:max-h-none w-full lg:w-auto' : ''
+            } ${
+              revealMode && !hasImage ? 'h-[35vh] max-h-[280px] sm:max-h-[350px] lg:h-full lg:max-h-none w-full lg:w-auto' : ''
+            } ${
+              revealMode && hasImage ? 'h-[38vh] max-h-[300px] sm:max-h-[380px] lg:h-full lg:max-h-none w-full lg:w-auto' : ''
+            }`}
+            style={isDesktop ? { width: `${vSplitWidth}%`, flexShrink: 0 } : undefined}
           >
             {/* Picture (if any) */}
-            {(currentGroup.image || currentGroup.imageUrl) && (
-              <div className="flex-none p-2 max-h-[300px]">
-                <div className="h-full min-h-[150px] bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center border border-slate-100 shadow-inner">
+            {hasImage && (
+              <div className="flex-none p-2 max-h-[120px] sm:max-h-[160px] lg:max-h-[300px]">
+                <div className="h-full min-h-[80px] sm:min-h-[120px] bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center border border-slate-100 shadow-inner">
                   <img
                     src={currentGroup.image || currentGroup.imageUrl}
                     alt="Part 3/4"
@@ -1770,26 +1788,28 @@ export default function ToeicPart34Player({
 
             <div
               ref={transcriptScrollRef}
-              className="flex-1 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-300"
+              className="flex-1 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-300 block"
               onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
             >
-              <div className="sticky top-0 bg-white/90 backdrop-blur-sm z-10 px-4 py-3 border-b border-slate-100 mb-4 flex items-center gap-2">
-                <div className="w-1.5 h-4 bg-indigo-600 rounded-full"></div>
-                <span className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Transcript & Translation</span>
+              <div className="sticky top-0 bg-white/90 backdrop-blur-sm z-10 px-2.5 sm:px-4 py-1.5 sm:py-2.5 border-b border-slate-100 mb-2 sm:mb-4 flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <div className="w-1 sm:w-1.5 h-3 sm:h-4 bg-indigo-600 rounded-full"></div>
+                  <span className="text-[9.5px] sm:text-[11px] font-black text-slate-500 uppercase tracking-wider sm:tracking-widest">Transcript & Translation</span>
+                </div>
                 {/* Eye icon: hiện/ẩn đáp án & transcript */}
                 <button
                   id="reveal-btn"
                   onClick={() => setRevealMode(!revealMode)}
-                  className={`w-7 h-7 ml-1 flex items-center justify-center rounded-lg border-2 transition-all ${revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'}`}
+                  className={`w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-lg border transition-all ${revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'}`}
                   title={`${revealMode ? 'Ẩn lời giải' : 'Hiện lời giải'} (Phím tắt: ctrl/cmd + shift + s)`}
                 >
-                  <span className="text-xs leading-none">👁️</span>
+                  <span className="text-[11px] sm:text-xs leading-none">👁️</span>
                 </button>
               </div>
 
               {parsedTranscript ? (
                 (revealMode || revealPartialMode) ? (
-                  <div className="space-y-2 px-2 pb-[35vh]">
+                  <div className="space-y-2 px-2 pb-12 sm:pb-20">
                     {(() => {
                       // Group sentences by turn (consecutive sentences with same speaker or continuation)
                       const turns: any[] = [];
@@ -1952,9 +1972,9 @@ export default function ToeicPart34Player({
             )}
           </div>
 
-          {/* VERTICAL DIVIDER */}
+          {/* VERTICAL DIVIDER (DESKTOP ONLY) */}
           <div
-            className="group relative w-2 hover:w-4 flex items-center justify-center transition-all z-30"
+            className="hidden lg:flex group relative w-2 hover:w-4 items-center justify-center transition-all z-30"
           >
             {/* The Line */}
             <div className={`w-[2px] h-full transition-colors ${isResizingV ? 'bg-indigo-500' : 'bg-slate-200 group-hover:bg-indigo-400'}`}></div>
@@ -1969,12 +1989,13 @@ export default function ToeicPart34Player({
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative pl-4">
+          {/* CỘT PHẢI (BOTTOM ON MOBILE): CÂU HỎI VÀ ĐÁP ÁN */}
+          <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative pl-0 lg:pl-4 w-full">
             <div
               ref={questionsScrollRef}
-              className="flex-1 overflow-y-auto pr-3 pl-4 scrollbar-thin scrollbar-thumb-slate-300"
+              className="flex-1 overflow-y-auto pr-1 sm:pr-3 pl-1 sm:pl-4 scrollbar-thin scrollbar-thumb-slate-300"
             >
-              <div className="space-y-4 pt-2 pb-[35vh] w-full">
+              <div className="space-y-4 pt-2 pb-16 sm:pb-24 w-full">
                 {questions.map((q: any) => {
                   const qKey = q.id || `${currentGroup.id}_${q.questionNo}`;
                   const isSelectedAny = !!answers[qKey];
@@ -2008,11 +2029,56 @@ export default function ToeicPart34Player({
                   const qVi = qRichData?.question?.vi || qRichData?.vi;
 
                   return (
-                    <div key={qKey} id={`question-${q.questionNo}`} className="group/qrow w-full mb-4">
-                      <div className={`p-4 rounded-[24px] border transition-all duration-300 ${isSelectedAny ? 'border-indigo-200 bg-indigo-50/20 shadow-lg shadow-indigo-500/5' : 'bg-white border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]'}`}>
-                        <div className="flex items-start gap-4">
-                          {/* Left Column: Number + Speaker + Flag */}
-                          <div className="flex flex-col items-center gap-4 shrink-0 pt-0.5">
+                    <div key={qKey} id={`question-${q.questionNo}`} className="group/qrow w-full mb-3 sm:mb-4">
+                      <div className={`p-3 sm:p-4 rounded-2xl sm:rounded-[24px] border transition-all duration-300 ${isSelectedAny ? 'border-indigo-200 bg-indigo-50/20 shadow-lg shadow-indigo-500/5' : 'bg-white border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]'}`}>
+                        {/* 1. MOBILE ONLY HEADER ROW (< lg) */}
+                        <div className="flex lg:hidden items-center justify-between gap-2 mb-2 pb-2 border-b border-slate-100">
+                          <div className="flex items-center gap-2">
+                            {/* Question Badge */}
+                            {(() => {
+                              const styles = getQuestionStyles(q.questionNo);
+                              return (
+                                <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center font-black text-[11px] sm:text-[12px] shadow-sm transition-all duration-300 ${styles.sup} border border-current/10 shrink-0`}>
+                                  {q.questionNo}
+                                </div>
+                              );
+                            })()}
+
+                            {/* Evidence Audio button */}
+                            {(() => {
+                              const qIdx = questions.indexOf(q);
+                              const qLabel = `q${qIdx + 1}`;
+                              return (
+                                <button
+                                  onClick={() => playEvidence(qIdx)}
+                                  className={`play-evidence-btn h-7 px-2.5 sm:h-8 sm:px-3 flex items-center gap-1 rounded-xl border transition-all duration-300 text-[10px] sm:text-xs font-bold shrink-0 ${playingSegmentLabel === qLabel ? 'border-indigo-600 bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'border-slate-100 text-slate-500 hover:border-indigo-300 hover:text-indigo-600 bg-slate-50/50'}`}
+                                  title={`Audio gợi ý (Phím tắt: phím số ${qIdx + 1})`}
+                                >
+                                  <Volume2 size={13} />
+                                  <span className="hidden xs:inline">Audio gợi ý</span>
+                                </button>
+                              );
+                            })()}
+                          </div>
+
+                          {/* Flag & Note Selector */}
+                          <div className="flex items-center gap-1 shrink-0">
+                            <FlagSelector
+                              isFlagged={!!flags[q.id || `${currentGroup.id}_${q.questionNo}`]}
+                              flagColor={flags[q.id || `${currentGroup.id}_${q.questionNo}`] || 'RED'}
+                              flagNote={flagNotes[q.id || `${currentGroup.id}_${q.questionNo}`]}
+                              onToggle={(color, note) => handleUpdateFlag(qKey, color, note)}
+                              onUnflag={(deleteNote) => handleUpdateFlag(qKey, null, undefined, deleteNote)}
+                              compact={true}
+                              layout="horizontal"
+                            />
+                          </div>
+                        </div>
+
+                        {/* 2. CARD CONTENT CONTAINER (Flex items-start gap-4 on Desktop) */}
+                        <div className="flex items-start gap-0 lg:gap-4">
+                          {/* DESKTOP ONLY LEFT COLUMN (>= lg) */}
+                          <div className="hidden lg:flex flex-col items-center gap-4 shrink-0 pt-0.5">
                             {(() => {
                               const styles = getQuestionStyles(q.questionNo);
                               return (
@@ -2047,112 +2113,112 @@ export default function ToeicPart34Player({
                             />
                           </div>
 
-                          {/* Right Column: Question + Answers */}
+                          {/* Question Content & Answers */}
                           <div className="flex-1 min-w-0">
-                            <div className="mb-3 pt-0">
-                              <h4 className="font-bold text-slate-900 text-[17px] leading-tight">
+                          <div className="mb-2 sm:mb-3 pt-0">
+                            <h4 className="font-bold text-slate-900 text-[14px] sm:text-[17px] leading-snug sm:leading-tight">
+                              <AdminInlineEditor
+                                target="question"
+                                id={q.id}
+                                field="questionText"
+                                value={q.questionText}
+                              >
+                                <FormattedText text={q.questionText} revealed={true} questions={questions} qNo={null} sharedKeywordsMap={sharedKeywordsMap} />
+                              </AdminInlineEditor>
+                            </h4>
+
+                            {/* Dịch câu hỏi (Vi) */}
+                            {(revealMode || revealPartialMode) && qVi && (
+                              <div className="text-[12.5px] sm:text-[15px] text-slate-500 italic mt-1 sm:mt-2 font-medium leading-relaxed">
                                 <AdminInlineEditor
                                   target="question"
                                   id={q.id}
-                                  field="questionText"
-                                  value={q.questionText}
+                                  field="metadata.explanation_vn.vi"
+                                  value={qVi}
+                                  multiline
                                 >
-                                  <FormattedText text={q.questionText} revealed={true} questions={questions} qNo={null} sharedKeywordsMap={sharedKeywordsMap} />
+                                  <FormattedText text={qVi} revealed={true} questions={questions} qNo={q.questionNo} />
                                 </AdminInlineEditor>
-                              </h4>
+                              </div>
+                            )}
+                          </div>
 
-                              {/* Dịch câu hỏi (Vi) */}
-                              {(revealMode || revealPartialMode) && qVi && (
-                                <div className="text-[15px] text-slate-500 italic mt-2 font-medium leading-relaxed">
-                                  <AdminInlineEditor
-                                    target="question"
-                                    id={q.id}
-                                    field="metadata.explanation_vn.vi"
-                                    value={qVi}
-                                    multiline
-                                  >
-                                    <FormattedText text={qVi} revealed={true} questions={questions} qNo={q.questionNo} />
-                                  </AdminInlineEditor>
-                                </div>
-                              )}
-                            </div>
+                          {/* Answers */}
+                          <div className="space-y-1 sm:space-y-1.5">
+                            {['A', 'B', 'C', 'D'].map(opt => {
+                              const qKey = q.id || `${currentGroup.id}_${q.questionNo}`;
+                              const isSelected = answers[qKey] === opt;
+                              const isCorrect = q.correctAnswer === opt;
 
-                            {/* Answers */}
-                            <div className="space-y-1.5">
-                              {['A', 'B', 'C', 'D'].map(opt => {
-                                const qKey = q.id || `${currentGroup.id}_${q.questionNo}`;
-                                const isSelected = answers[qKey] === opt;
-                                const isCorrect = q.correctAnswer === opt;
+                              const styles = getQuestionStyles(q.questionNo);
+                              let btnClass = "border-slate-100 bg-white hover:border-slate-200 hover:bg-slate-50/50 text-slate-700 shadow-sm";
+                              if (revealMode) {
+                                if (isCorrect) {
+                                  btnClass = "border-emerald-500 bg-emerald-50 text-emerald-900 shadow-md shadow-emerald-500/10";
+                                }
+                                else if (isSelected) btnClass = "border-red-500 bg-red-50 text-red-900 shadow-md shadow-red-500/10";
+                                else btnClass = "border-slate-300 bg-white shadow-sm";
+                              } else if (isSelected) {
+                                btnClass = "border-blue-500 bg-blue-50/50 text-blue-900 shadow-md shadow-blue-500/5";
+                              }
 
-                                const styles = getQuestionStyles(q.questionNo);
-                                let btnClass = "border-slate-100 bg-white hover:border-slate-200 hover:bg-slate-50/50 text-slate-700 shadow-sm";
-                                if (revealMode) {
-                                  if (isCorrect) {
-                                    btnClass = "border-emerald-500 bg-emerald-50 text-emerald-900 shadow-md shadow-emerald-500/10";
+                              let optionVi = "";
+                              if (revealMode || revealPartialMode) {
+                                try {
+                                  const meta = q.metadata as any;
+                                  if (meta?.explanation_vn?.options_vn?.[opt]) {
+                                    optionVi = meta.explanation_vn.options_vn[opt];
+                                  } else {
+                                    const expl = typeof q.explanation === 'string' ? JSON.parse(q.explanation) : q.explanation;
+                                    optionVi = (expl.options_vn && expl.options_vn[opt]) || expl[`option${opt}Vi`] || (expl.options && expl.options.find((o: any) => o.label === opt)?.vi) || "";
                                   }
-                                  else if (isSelected) btnClass = "border-red-500 bg-red-50 text-red-900 shadow-md shadow-red-500/10";
-                                  else btnClass = "border-slate-300 bg-white shadow-sm";
-                                } else if (isSelected) {
-                                  btnClass = "border-blue-500 bg-blue-50/50 text-blue-900 shadow-md shadow-blue-500/5";
-                                }
+                                } catch (e) { }
+                              }
+                              const engOption = (q as any)[`option${opt}`] || "";
 
-                                let optionVi = "";
-                                if (revealMode || revealPartialMode) {
-                                  try {
-                                    const meta = q.metadata as any;
-                                    if (meta?.explanation_vn?.options_vn?.[opt]) {
-                                      optionVi = meta.explanation_vn.options_vn[opt];
-                                    } else {
-                                      const expl = typeof q.explanation === 'string' ? JSON.parse(q.explanation) : q.explanation;
-                                      optionVi = (expl.options_vn && expl.options_vn[opt]) || expl[`option${opt}Vi`] || (expl.options && expl.options.find((o: any) => o.label === opt)?.vi) || "";
-                                    }
-                                  } catch (e) { }
-                                }
-                                const engOption = (q as any)[`option${opt}`] || "";
-
-                                return (
-                                  <div key={opt} className="space-y-0.5">
+                              return (
+                                <div key={opt} className="space-y-0.5">
+                                  <div
+                                    className={`w-full py-1 sm:py-1.5 px-2 sm:px-3 rounded-xl border text-left text-[13.5px] sm:text-[16px] font-semibold transition-all duration-300 relative overflow-hidden flex items-center gap-2 cursor-default select-text ${btnClass} ${!revealMode && !isSelected ? 'hover:bg-slate-50' : ''}`}
+                                    role="presentation"
+                                  >
                                     <div
-                                      className={`w-full py-0.5 px-2 rounded-xl border text-left text-[16px] font-semibold transition-all duration-300 relative overflow-hidden flex items-center gap-2 cursor-default select-text ${btnClass} ${!revealMode && !isSelected ? 'hover:bg-slate-50' : ''}`}
-                                      role="presentation"
+                                      onClick={() => {
+                                        const qKey = q.id || `${currentGroup.id}_${q.questionNo}`;
+                                        !revealMode && handleSelect(qKey, opt);
+                                      }}
+                                      className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[11px] sm:text-[12px] font-black border transition-all duration-300 cursor-pointer shrink-0 group/opt ${revealMode
+                                        ? (isCorrect ? 'bg-emerald-500 text-white border-emerald-600 shadow-sm shadow-emerald-500/20' : isSelected ? 'bg-red-500 text-white border-red-600 shadow-sm shadow-red-500/20' : 'bg-slate-50 text-slate-400 border-slate-200')
+                                        : isSelected ? 'bg-blue-600 text-white border-blue-700 scale-105 shadow-sm shadow-blue-200' : 'bg-white text-slate-400 border-slate-200 hover:border-indigo-500 hover:scale-110'
+                                        }`}
                                     >
-                                      <div
-                                        onClick={() => {
-                                          const qKey = q.id || `${currentGroup.id}_${q.questionNo}`;
-                                          !revealMode && handleSelect(qKey, opt);
-                                        }}
-                                        className={`w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-black border transition-all duration-300 cursor-pointer group/opt ${revealMode
-                                          ? (isCorrect ? 'bg-emerald-500 text-white border-emerald-600 shadow-sm shadow-emerald-500/20' : isSelected ? 'bg-red-500 text-white border-red-600 shadow-sm shadow-red-500/20' : 'bg-slate-50 text-slate-400 border-slate-200')
-                                          : isSelected ? 'bg-blue-600 text-white border-blue-700 scale-105 shadow-sm shadow-blue-200' : 'bg-white text-slate-400 border-slate-200 hover:border-indigo-500 hover:scale-110'
-                                          }`}
-                                      >
-                                        {opt}
+                                      {opt}
+                                    </div>
+                                    <div className="flex flex-col flex-1 pl-0.5 min-w-0">
+                                      <div className={revealMode && isCorrect ? 'text-emerald-900 font-bold' : isSelected && !revealMode ? 'text-blue-900 font-bold' : 'text-slate-900 font-bold'}>
+                                        <AdminInlineEditor
+                                          target="question"
+                                          id={q.id}
+                                          field={`option${opt}`}
+                                          value={engOption}
+                                        >
+                                          <FormattedText text={engOption} revealed={true} questions={questions} qNo={isCorrect && revealMode ? q.questionNo : null} sharedKeywordsMap={sharedKeywordsMap} />
+                                        </AdminInlineEditor>
                                       </div>
-                                      <div className="flex flex-col flex-1 pl-1">
-                                        <div className={revealMode && isCorrect ? 'text-emerald-900 font-bold' : isSelected && !revealMode ? 'text-blue-900 font-bold' : 'text-slate-900 font-bold'}>
+                                      {optionVi && optionVi.trim() !== engOption.trim() && (
+                                        <div className={`text-[12px] sm:text-[14px] italic mt-0.5 font-medium ${isCorrect && revealMode ? 'text-emerald-700/80' : 'text-slate-500'}`}>
                                           <AdminInlineEditor
                                             target="question"
                                             id={q.id}
-                                            field={`option${opt}`}
-                                            value={engOption}
+                                            field={`metadata.explanation_vn.options_vn.${opt}`}
+                                            value={optionVi}
                                           >
-                                            <FormattedText text={engOption} revealed={true} questions={questions} qNo={isCorrect && revealMode ? q.questionNo : null} sharedKeywordsMap={sharedKeywordsMap} />
+                                            <FormattedText text={optionVi} revealed={true} questions={questions} qNo={isCorrect && revealMode ? q.questionNo : null} sharedKeywordsMap={sharedKeywordsMap} />
                                           </AdminInlineEditor>
                                         </div>
-                                        {optionVi && optionVi.trim() !== engOption.trim() && (
-                                          <div className={`text-[14px] italic mt-0.5 font-medium ${isCorrect && revealMode ? 'text-emerald-700/80' : 'text-slate-500'}`}>
-                                            <AdminInlineEditor
-                                              target="question"
-                                              id={q.id}
-                                              field={`metadata.explanation_vn.options_vn.${opt}`}
-                                              value={optionVi}
-                                            >
-                                              <FormattedText text={optionVi} revealed={true} questions={questions} qNo={isCorrect && revealMode ? q.questionNo : null} sharedKeywordsMap={sharedKeywordsMap} />
-                                            </AdminInlineEditor>
-                                          </div>
-                                        )}
-                                      </div>
+                                      )}
                                     </div>
+                                  </div>
 
                                     {revealMode && (
                                       <div className="ml-12 pl-4 pr-2 py-0.5 animate-in fade-in slide-in-from-top-1 duration-300">
@@ -2245,15 +2311,22 @@ export default function ToeicPart34Player({
 
           {/* 3. Bảng điều hướng câu hỏi (Bên phải) - Hover để mở rộng */}
           {!isFullTest && mounted && createPortal(
-            <div
-              className={`questions-sidebar-portal
-                fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
-              ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}
-            `}
-              onMouseEnter={() => setIsSidebarHovered(true)}
-              onMouseLeave={() => setIsSidebarHovered(false)}
-              onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
-            >
+            <>
+              {isSidebarHovered && (
+                <div
+                  className="fixed inset-0 bg-slate-900/50 z-[998] lg:hidden animate-in fade-in duration-200"
+                  onClick={() => setIsSidebarHovered(false)}
+                />
+              )}
+              <div
+                className={`questions-sidebar-portal
+                  fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
+                ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}
+              `}
+                onMouseEnter={() => setIsSidebarHovered(true)}
+                onMouseLeave={() => setIsSidebarHovered(false)}
+                onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
+              >
               <div className={`p-4 border-b border-white/10 flex items-center shrink-0 ${isSidebarHovered ? 'h-auto' : 'h-16 justify-center'}`}>
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-blue-100 text-blue-600 rounded-xl shrink-0">
@@ -2395,7 +2468,8 @@ export default function ToeicPart34Player({
                 )}
               </div>
             </div>
-            , document.body)}
+          </>
+          , document.body)}
         </div>
       </div>
       {/* BOTTOM NAVIGATION BAR */}
