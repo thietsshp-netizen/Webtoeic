@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback, memo } from "react";
 import { createPortal } from "react-dom";
 import { InformationCircleIcon, CheckCircleIcon, ClockIcon, TrophyIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { Send, ChevronLeft, ChevronRight, Play, Pause, Volume2, HelpCircle, CheckCircle2, XCircle, Info, Lightbulb, Flag, GripVertical, Check, X, LayoutDashboard, Edit2, ChevronsLeftRight, PanelTopClose, ChevronsUpDown, PenLine } from "lucide-react";
+import { Send, ChevronLeft, ChevronRight, Play, Pause, Volume2, HelpCircle, CheckCircle2, XCircle, Info, Lightbulb, Flag, GripVertical, GripHorizontal, Check, X, LayoutDashboard, Edit2, ChevronsLeftRight, PanelTopClose, ChevronsUpDown, PenLine } from "lucide-react";
 import { AdminInlineEditor } from "@/components/Admin/AdminInlineEditor";
 import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
 import confetti from 'canvas-confetti';
@@ -1298,8 +1298,40 @@ export default function ToeicPart7Player({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentIndex, data.length, isFullTest, onPrevPart, onNextPart, isAdminMode, canEdit, currentGroup.id]);
 
-  const [leftWidth, setLeftWidth] = useState(45);
+  const [isLandscape, setIsLandscape] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= window.innerHeight;
+    }
+    return true;
+  });
+  const isLandscapeRef = useRef(isLandscape);
+  const [vSplitWidth, setVSplitWidth] = useState(45);
+  const [hSplitHeight, setHSplitHeight] = useState(45);
+  const [isResizingV, setIsResizingV] = useState(false);
+  const [isResizingH, setIsResizingH] = useState(false);
+  const mainContainerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
+
+  useEffect(() => {
+    isLandscapeRef.current = isLandscape;
+  }, [isLandscape]);
+
+  useEffect(() => {
+    const checkOrientation = () => {
+      if (typeof window !== 'undefined') {
+        const landscape = window.innerWidth >= window.innerHeight;
+        setIsLandscape(landscape);
+        isLandscapeRef.current = landscape;
+      }
+    };
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+    return () => {
+      window.removeEventListener('resize', checkOrientation);
+      window.removeEventListener('orientationchange', checkOrientation);
+    };
+  }, []);
 
   const fullEvidenceMap = useMemo(() => {
     const map: Record<string, { colors: string[], qNos: number[] }> = {};
@@ -1525,9 +1557,15 @@ export default function ToeicPart7Player({
     }
   }, [translationMap, isRevealed, isAdminMode]);
 
-  // DRAG HANDLERS
+  // DRAG HANDLERS FOR SPLIT RESIZERS
   const handleMouseDown = () => { isDragging.current = true; setIsResizing(true); document.body.style.cursor = 'col-resize'; };
   const handleTouchStart = () => { isDragging.current = true; setIsResizing(true); };
+  const handleMouseDownV = () => { isDragging.current = true; setIsResizingV(true); setIsResizing(true); document.body.style.cursor = 'col-resize'; };
+  const handleTouchStartV = () => { isDragging.current = true; setIsResizingV(true); setIsResizing(true); };
+
+  const handleMouseDownH = () => { isDragging.current = true; setIsResizingH(true); document.body.style.cursor = 'row-resize'; };
+  const handleTouchStartH = () => { isDragging.current = true; setIsResizingH(true); };
+
   const handleToggleFlag = async (questionId: string, color: FlagColor | null, note?: string) => {
     // Tìm câu hỏi thực tế để lấy dbId
     let targetDbId = questionId;
@@ -1562,8 +1600,18 @@ export default function ToeicPart7Player({
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (isDragging.current) {
-        const percentage = (e.clientX / window.innerWidth) * 100;
-        if (percentage > 20 && percentage < 80) setLeftWidth(percentage);
+        if (mainContainerRef.current) {
+          const rect = mainContainerRef.current.getBoundingClientRect();
+          if (isLandscapeRef.current) {
+            const xOffset = e.clientX - rect.left;
+            const percentage = (xOffset / rect.width) * 100;
+            if (percentage > 15 && percentage < 85) setVSplitWidth(percentage);
+          } else {
+            const yOffset = e.clientY - rect.top;
+            const percentage = (yOffset / rect.height) * 100;
+            if (percentage > 15 && percentage < 85) setHSplitHeight(percentage);
+          }
+        }
       }
       if (isResizingSplitRef.current) {
         const container = passageScrollRef.current?.parentElement;
@@ -1579,8 +1627,18 @@ export default function ToeicPart7Player({
       if (e.touches.length === 0) return;
       const touch = e.touches[0];
       if (isDragging.current) {
-        const percentage = (touch.clientX / window.innerWidth) * 100;
-        if (percentage > 20 && percentage < 80) setLeftWidth(percentage);
+        if (mainContainerRef.current) {
+          const rect = mainContainerRef.current.getBoundingClientRect();
+          if (isLandscapeRef.current) {
+            const xOffset = touch.clientX - rect.left;
+            const percentage = (xOffset / rect.width) * 100;
+            if (percentage > 15 && percentage < 85) setVSplitWidth(percentage);
+          } else {
+            const yOffset = touch.clientY - rect.top;
+            const percentage = (yOffset / rect.height) * 100;
+            if (percentage > 15 && percentage < 85) setHSplitHeight(percentage);
+          }
+        }
       }
       if (isResizingSplitRef.current) {
         const container = passageScrollRef.current?.parentElement;
@@ -1595,6 +1653,8 @@ export default function ToeicPart7Player({
     const handleMouseUp = () => {
       isDragging.current = false;
       setIsResizing(false);
+      setIsResizingV(false);
+      setIsResizingH(false);
       isResizingSplitRef.current = false;
       setIsResizingSplit(false);
       document.body.style.cursor = 'default';
@@ -1602,6 +1662,8 @@ export default function ToeicPart7Player({
     const handleTouchEnd = () => {
       isDragging.current = false;
       setIsResizing(false);
+      setIsResizingV(false);
+      setIsResizingH(false);
       isResizingSplitRef.current = false;
       setIsResizingSplit(false);
     };
@@ -1725,54 +1787,60 @@ export default function ToeicPart7Player({
   const answeredCount = Object.keys(answers).length;
 
   return (
-    <div className="absolute inset-0 flex flex-col font-sans bg-[#f8fafc] text-slate-800 overflow-hidden pr-20">
+    <div className="absolute inset-0 flex flex-col font-sans bg-[#f8fafc] text-slate-800 overflow-hidden" style={{ paddingRight: 'clamp(8px, 4vw, 76px)' }}>
       {/* HEADER */}
-      <div className="h-14 border-b border-slate-200 flex items-center justify-between px-8 bg-white shrink-0 z-20 w-full">
-        <div className="flex flex-col">
-          <h1 className="font-black text-slate-800 text-[12px] uppercase tracking-widest">
+      <div className="border-b border-slate-200 flex items-center justify-between px-2 sm:px-6 bg-white shrink-0 z-20 w-full" style={{ height: 'clamp(32px, 5vh, 44px)', gap: 'clamp(4px,0.8vw,12px)' }}>
+        <div className="flex flex-col truncate">
+          <h1 className="font-black text-slate-800 uppercase tracking-widest truncate" style={{ fontSize: 'clamp(8px, 1.8vh, 11.5px)' }}>
             {groupMetadata.intro_text || "Reading Comprehension"}
           </h1>
           {isRevealed && groupMetadata.intro_text_vn && (
-            <p className="text-[10px] text-slate-400 font-medium italic -mt-0.5">{groupMetadata.intro_text_vn}</p>
+            <p className="text-slate-400 font-medium italic -mt-0.5 truncate" style={{ fontSize: 'clamp(7px, 1.5vh, 9.5px)' }}>{groupMetadata.intro_text_vn}</p>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center shrink-0" style={{ gap: 'clamp(3px,0.6vw,8px)' }}>
           {(isAdminMode || canEdit) && (
             <button
               onClick={() => updatePart7Popup(currentIndex)}
               title="Mở popup đáp án & giải thích (Phím tắt: , hoặc .)"
-              className="px-3 py-1.5 rounded-lg text-[10px] font-bold border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-all flex items-center gap-1"
+              className="rounded-lg font-bold border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-all flex items-center"
+              style={{ padding: 'clamp(2px,0.3vh,4px) clamp(4px,0.8vw,8px)', fontSize: 'clamp(7px, 1.7vh, 10px)', gap: 'clamp(2px,0.4vw,4px)' }}
             >
-              <span>👁️ POPUP ĐÁP ÁN</span>
+              <span>👁️ <span className="portrait:hidden">POPUP ĐÁP ÁN</span><span className="hidden portrait:inline">POPUP</span></span>
             </button>
           )}
           <button
             id="split-view-btn"
             onClick={() => setIsSplitView(prev => !prev)}
             title="Chia ngang đoạn văn"
-            className={`flex items-center justify-center p-2 rounded-xl transition-all ${isSplitView ? 'bg-indigo-100 text-indigo-600 shadow-sm border border-indigo-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+            className={`flex items-center justify-center rounded-lg transition-all ${isSplitView ? 'bg-indigo-100 text-indigo-600 shadow-xs border border-indigo-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+            style={{ padding: 'clamp(2px,0.3vh,4px) clamp(4px,0.8vw,8px)' }}
           >
-            <PanelTopClose className="w-4 h-4" />
+            <PanelTopClose style={{ width: 'clamp(10px, 2vh, 14px)', height: 'clamp(10px, 2vh, 14px)' }} />
           </button>
           <button
             id="reveal-btn"
             onClick={() => setShowExplainGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }))}
             title="Ẩn/Hiện lời giải (Phím tắt: ctrl/cmd + shift + s)"
-            className={`flex items-center gap-2 px-5 py-2 rounded-xl font-black text-[11px] uppercase tracking-widest transition-all ${showExplainGroups[currentGroup.id] ? 'bg-slate-800 text-white shadow-lg' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+            className={`flex items-center rounded-lg font-bold transition-all ${showExplainGroups[currentGroup.id] ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-white text-slate-600 border border-slate-200'}`}
+            style={{ padding: 'clamp(2px,0.3vh,4px) clamp(4px,0.8vw,8px)', fontSize: 'clamp(7px, 1.7vh, 10px)', gap: 'clamp(2px,0.4vw,4px)' }}
           >
-            <InformationCircleIcon className="w-4 h-4" />
-            {showExplainGroups[currentGroup.id] ? 'Ẩn lời giải' : 'Hiện lời giải'}
+            <InformationCircleIcon style={{ width: 'clamp(10px, 2vh, 14px)', height: 'clamp(10px, 2vh, 14px)' }} />
+            {showExplainGroups[currentGroup.id] ? 'ẨN LỜI GIẢI' : 'HIỆN LỜI GIẢI'}
           </button>
         </div>
       </div>
 
       {/* MAIN WORK AREA */}
-      <div className="flex-1 flex overflow-hidden relative w-full">
-        {/* COLUMN 1: PASSAGES */}
+      <div ref={mainContainerRef} className={`flex-1 min-h-0 flex overflow-hidden relative w-full ${isLandscape ? 'flex-row' : 'flex-col'}`}>
+        {/* COLUMN/ROW 1: PASSAGES */}
         <div
           id="toeic-passage-container-target"
-          className="border-r border-slate-100 bg-white flex flex-col flex-none relative"
-          style={{ width: `${leftWidth}%`, flexShrink: 0 }}
+          className="bg-white flex flex-col border-slate-100 overflow-hidden relative"
+          style={isLandscape
+            ? { width: `${vSplitWidth}%`, flexShrink: 0, borderRightWidth: '1px' }
+            : { height: `${hSplitHeight}%`, flexShrink: 0, borderBottomWidth: '1px' }
+          }
         >
           {/* TOP OR SINGLE PASSAGE PANE */}
           <div
@@ -1781,24 +1849,24 @@ export default function ToeicPart7Player({
             className="overflow-y-auto scrollbar-thin select-text webtoeic-scroll-container"
             style={{ height: isSplitView ? `${splitHeight}%` : '100%', flex: isSplitView ? 'none' : '1' }}
           >
-            <div className="p-10 space-y-16 pb-[35vh]">
+            <div className="space-y-6 pb-[20vh]" style={{ padding: 'clamp(8px,1.5vw,24px)' }}>
               {passages.map((p: any, idx: number) => (
                 <div key={idx} className="relative animate-in fade-in duration-700">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <span className="text-[10px] font-black tracking-[0.3em] text-slate-200 uppercase">PASSAGE {idx + 1}</span>
-                      <div className="h-px w-20 bg-slate-50" />
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-black tracking-[0.2em] text-slate-300 uppercase" style={{ fontSize: 'clamp(8px, 1.8vw, 10px)' }}>PASSAGE {idx + 1}</span>
+                      <div className="h-px w-12 bg-slate-100" />
                       <AdminInlineEditor
                         target="group"
                         id={currentGroup.id}
                         field="type"
                         value={p.type || ""}
                       >
-                        <span className="px-3 py-1 bg-slate-50 text-slate-400 text-[9px] font-black rounded-full uppercase border border-slate-100">{p.type || "Reading"}</span>
+                        <span className="px-2 py-0.5 bg-slate-50 text-slate-400 font-bold rounded-full uppercase border border-slate-100" style={{ fontSize: 'clamp(7.5px, 1.6vw, 9.5px)' }}>{p.type || "Reading"}</span>
                       </AdminInlineEditor>
                     </div>
                     {isAdminMode && (
-                      <div className="flex gap-2">
+                      <div className="flex gap-1.5">
                         <AdminInlineEditor
                           target="group"
                           id={currentGroup.id}
@@ -1806,21 +1874,43 @@ export default function ToeicPart7Player({
                           value={currentGroup.passageText || ""}
                           multiline
                         >
-                          <button className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-indigo-600 hover:text-white text-slate-400 rounded-lg text-[10px] font-black transition-all uppercase tracking-wider shadow-sm border border-slate-100">
-                            <Edit2 size={12} /> Sửa nguồn (HTML)
+                          <button className="flex items-center gap-1 px-2 py-0.5 bg-slate-50 hover:bg-indigo-600 hover:text-white text-slate-400 rounded-lg text-[9px] font-black transition-all uppercase tracking-wider border border-slate-100">
+                            <Edit2 size={10} /> Sửa HTML
                           </button>
                         </AdminInlineEditor>
                       </div>
                     )}
                   </div>
-                  <PassageHTMLRenderer
-                    html={p.html_content}
-                    onSentenceHover={handleSentenceHover}
-                    evidenceMap={combinedEvidenceMap}
-                    reviewMode={isRevealed}
-                    vocabHighlights={vocabHighlights}
-                    isAdminMode={isAdminMode}
-                  />
+                  <div className="part7-passage-content" style={{ fontSize: 'clamp(10.5px, 1.5vh, 15px)', lineHeight: '1.6' }}>
+                    <style>{`
+                      .part7-passage-content h1, .part7-passage-content h2, .part7-passage-content h3 {
+                        font-size: clamp(12.5px, 1.8vh, 17.5px) !important;
+                        line-height: 1.3 !important;
+                        margin-top: 0.5em !important;
+                        margin-bottom: 0.5em !important;
+                      }
+                      .part7-passage-content p, .part7-passage-content div, .part7-passage-content span, .part7-passage-content td, .part7-passage-content th, .part7-passage-content li, .part7-passage-content a, .part7-passage-content b, .part7-passage-content strong {
+                        font-size: clamp(10.5px, 1.5vh, 14.5px) !important;
+                        line-height: 1.5 !important;
+                      }
+                      .part7-passage-content img, .part7-passage-content table {
+                        max-width: 100% !important;
+                        height: auto !important;
+                      }
+                      .part7-explanation-content * {
+                        font-size: clamp(9.5px, 1.35vh, 12.5px) !important;
+                        line-height: 1.45 !important;
+                      }
+                    `}</style>
+                    <PassageHTMLRenderer
+                      html={p.html_content}
+                      onSentenceHover={handleSentenceHover}
+                      evidenceMap={combinedEvidenceMap}
+                      reviewMode={isRevealed}
+                      vocabHighlights={vocabHighlights}
+                      isAdminMode={isAdminMode}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -1852,24 +1942,26 @@ export default function ToeicPart7Player({
               ref={passageScrollRefBottom}
               className="overflow-y-auto scrollbar-thin select-text flex-1 webtoeic-scroll-container"
             >
-              <div className="p-10 space-y-16 pb-[35vh]">
+              <div className="space-y-6 pb-[20vh]" style={{ padding: 'clamp(8px,1.5vw,24px)' }}>
                 {passages.map((p: any, idx: number) => (
                   <div key={`bottom-${idx}`} className="relative animate-in fade-in duration-700">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-black tracking-[0.3em] text-slate-200 uppercase">PASSAGE {idx + 1}</span>
-                        <div className="h-px w-20 bg-slate-50" />
-                        <span className="px-3 py-1 bg-slate-50 text-slate-400 text-[9px] font-black rounded-full uppercase border border-slate-100">{p.type || "Reading"}</span>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-black tracking-[0.2em] text-slate-300 uppercase" style={{ fontSize: 'clamp(8px, 1.8vw, 10px)' }}>PASSAGE {idx + 1}</span>
+                        <div className="h-px w-12 bg-slate-100" />
+                        <span className="px-2 py-0.5 bg-slate-50 text-slate-400 font-bold rounded-full uppercase border border-slate-100" style={{ fontSize: 'clamp(7.5px, 1.6vw, 9.5px)' }}>{p.type || "Reading"}</span>
                       </div>
                     </div>
-                    <PassageHTMLRenderer
-                      html={p.html_content}
-                      onSentenceHover={handleSentenceHover}
-                      evidenceMap={combinedEvidenceMap}
-                      reviewMode={isRevealed}
-                      vocabHighlights={vocabHighlights}
-                      isAdminMode={false} // Disable admin edit in bottom pane to prevent duplicate editors
-                    />
+                    <div className="part7-passage-content" style={{ fontSize: 'clamp(10.5px, 1.5vh, 15px)', lineHeight: '1.6' }}>
+                      <PassageHTMLRenderer
+                        html={p.html_content}
+                        onSentenceHover={handleSentenceHover}
+                        evidenceMap={combinedEvidenceMap}
+                        reviewMode={isRevealed}
+                        vocabHighlights={vocabHighlights}
+                        isAdminMode={false}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1877,55 +1969,71 @@ export default function ToeicPart7Player({
           )}
         </div>
 
-        {/* RESIZER BAR */}
-        <div
-          className="group relative w-2 hover:w-4 flex items-center justify-center transition-all z-30"
-        >
-          <div className={`w-[2px] h-full transition-colors ${isResizing ? 'bg-indigo-500' : 'bg-slate-200 group-hover:bg-indigo-400'}`}></div>
-          <div
-            onMouseDown={handleMouseDown}
-            onTouchStart={handleTouchStart}
-            className={`absolute top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white border-2 shadow-xl flex items-center justify-center transition-all cursor-col-resize ${isResizing ? 'border-indigo-500 scale-110 shadow-indigo-200' : 'border-slate-200 group-hover:border-indigo-400 group-hover:scale-105'}`}
-          >
-            <ChevronsLeftRight className={`w-5 h-5 ${isResizing ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-600'}`} />
+        {/* DIVIDER: VERTICAL (LANDSCAPE) OR HORIZONTAL (PORTRAIT) */}
+        {isLandscape ? (
+          <div className="group relative w-2 hover:w-4 flex items-center justify-center transition-all z-30 flex-none">
+            <div className={`w-[2px] h-full transition-colors ${isResizingV ? 'bg-indigo-500' : 'bg-slate-200 group-hover:bg-indigo-400'}`}></div>
+            <div
+              onMouseDown={handleMouseDownV}
+              onTouchStart={handleTouchStartV}
+              className={`absolute top-1/2 -translate-y-1/2 rounded-full bg-white border-2 shadow-xl flex items-center justify-center transition-all cursor-col-resize touch-none ${isResizingV ? 'border-indigo-500 scale-110 shadow-indigo-200' : 'border-slate-200 group-hover:border-indigo-400 group-hover:scale-105'}`}
+              style={{ width: 'clamp(28px,4vh,40px)', height: 'clamp(28px,4vh,40px)' }}
+            >
+              <ChevronsLeftRight className={`${isResizingV ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-600'}`} style={{ width: 'clamp(14px,2.2vh,20px)', height: 'clamp(14px,2.2vh,20px)' }} />
+            </div>
           </div>
-        </div>
-        {/* COLUMN 2: QUESTIONS (Full width expansion) */}
-        <div className="flex-1 min-h-0 relative flex flex-col min-w-[400px]">
+        ) : (
+          <div className="group relative flex-none flex flex-col items-center justify-center z-30 transition-all" style={{ height: 'clamp(14px,2.5vh,20px)' }}>
+            <div className={`h-[2px] w-full transition-colors ${isResizingH ? 'bg-indigo-500' : 'bg-slate-200 group-hover:bg-indigo-400'}`}></div>
+            <div
+              onMouseDown={handleMouseDownH}
+              onTouchStart={handleTouchStartH}
+              className={`absolute left-1/2 -translate-x-1/2 rounded-full bg-white border-2 shadow-xl flex items-center justify-center transition-all cursor-row-resize touch-none ${isResizingH ? 'border-indigo-500 scale-110 shadow-indigo-200' : 'border-slate-200 group-hover:border-indigo-400 group-hover:scale-105'}`}
+              style={{ width: 'clamp(40px,8vw,60px)', height: 'clamp(20px,3vh,28px)' }}
+            >
+              <GripHorizontal className={`${isResizingH ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-600'}`} style={{ width: 'clamp(16px,3vw,24px)', height: 'clamp(10px,1.8vh,16px)' }} />
+            </div>
+          </div>
+        )}
+
+        {/* COLUMN 2: QUESTIONS */}
+        <div className="flex-1 min-h-0 relative flex flex-col overflow-hidden">
           <div id="part7-questions-container" ref={questionsScrollRef} className="flex-1 overflow-y-auto bg-white scrollbar-thin select-text webtoeic-scroll-container">
-            <div className="p-10 space-y-6 pb-[35vh] w-full">
+            <div className="space-y-4 pb-[20vh] w-full" style={{ padding: 'clamp(8px,1.5vw,24px)' }}>
               {questions.map((q: any, qIdx: number) => {
                 const colors = ['yellow', 'cyan', 'emerald', 'magenta', 'orange'];
                 const cColors = getEvidenceColor(colors[qIdx % colors.length]);
                 const qKey = getQuestionKey(q);
-                const userAns = answers[qKey];
-
-                const isTarget = q.isTarget;
 
                 return (
                   <div
                     key={`${q.id || qKey}-${qIdx}`}
                     id={`question-${q.questionNo}`}
-                    className="relative group/q animate-in slide-in-from-bottom-4 duration-500 rounded-[32px] transition-all p-4 border-2 border-transparent hover:bg-white hover:border-slate-100 hover:shadow-xl hover:shadow-slate-200/50"
+                    className="relative group/q animate-in slide-in-from-bottom-4 duration-500 rounded-2xl transition-all border border-slate-100 hover:shadow-lg"
+                    style={{ padding: 'clamp(8px,1.5vh,16px)' }}
                   >
-                    <div className="flex items-start gap-4">
-                      {/* Left Column: Small Number + Tools */}
-                      <div className="flex flex-col items-center gap-4 shrink-0 pt-1 w-12">
-                        <div className={`w-10 h-10 rounded-xl ${cColors.bg} flex items-center justify-center shrink-0 font-black text-sm ${cColors.text} shadow-sm border ${cColors.border}`}>
+                    <div className="flex items-start" style={{ gap: 'clamp(6px,1.2vw,16px)' }}>
+                      {/* Left Column: Question Number + Tools */}
+                      <div className="flex flex-col items-center gap-2 shrink-0 pt-0.5">
+                        <div
+                          className={`rounded-xl ${cColors.bg} flex items-center justify-center font-black ${cColors.text} shadow-xs border ${cColors.border}`}
+                          style={{ width: 'clamp(26px,4vh,38px)', height: 'clamp(26px,4vh,38px)', fontSize: 'clamp(10px,1.6vh,14px)' }}
+                        >
                           {q.questionNo}
                         </div>
 
                         {mounted && (
-                          <div className="flex flex-col items-center gap-3">
+                          <div className="flex flex-col items-center gap-2">
                             <button
                               onClick={() => handleToggleHint(qKey, q)}
-                              className={`hint-active-lightbulb p-2 rounded-xl transition-all duration-300 ${hintsActive[qKey]
-                                ? "bg-yellow-400 text-white shadow-lg shadow-yellow-200"
+                              className={`hint-active-lightbulb rounded-lg transition-all duration-300 ${hintsActive[qKey]
+                                ? "bg-yellow-400 text-white shadow-md shadow-yellow-200"
                                 : "bg-white text-slate-300 border border-slate-100 hover:text-yellow-500 hover:border-yellow-200"
                                 }`}
+                              style={{ padding: 'clamp(3px,0.5vh,6px)' }}
                               title="Xem câu gợi ý trong đoạn văn"
                             >
-                              <Lightbulb size={18} fill={hintsActive[qKey] ? "currentColor" : "none"} />
+                              <Lightbulb style={{ width: 'clamp(12px,2vh,16px)', height: 'clamp(12px,2vh,16px)' }} fill={hintsActive[qKey] ? "currentColor" : "none"} />
                             </button>
                             <FlagSelector
                               isFlagged={!!flags[q.id]}
@@ -1942,7 +2050,7 @@ export default function ToeicPart7Player({
 
                       {/* Right Column: Question Content + Options */}
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-[17px] font-bold text-slate-900 leading-snug">
+                        <h3 className="font-bold text-slate-900 leading-snug" style={{ fontSize: 'clamp(11px,1.6vh,16px)', marginBottom: 'clamp(6px,1.2vh,12px)' }}>
                           <AdminInlineEditor
                             target="question"
                             id={q.id}
@@ -1964,7 +2072,7 @@ export default function ToeicPart7Player({
 
                                 return (
                                   <div className="space-y-4">
-                                    <div className="leading-relaxed text-[17px] font-bold text-slate-900">
+                                    <div className="leading-relaxed font-bold text-slate-900" style={{ fontSize: 'clamp(11px, 1.6vh, 15px)' }}>
                                       {parts.map((part: string, i: number) => {
                                         const posMatch = part.match(/^\[([1-4])\]$/);
                                         if (posMatch) {
@@ -1983,7 +2091,7 @@ export default function ToeicPart7Player({
                                           return (
                                             <span key={i} className="contents">
                                               {targetMatch[1]}
-                                              <div className="w-full mt-4 mb-2 p-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl text-[16px] font-bold text-slate-800 italic leading-relaxed">
+                                              <div className="w-full mt-4 mb-2 p-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl font-bold text-slate-800 italic leading-relaxed" style={{ fontSize: 'clamp(10px, 1.45vh, 14px)' }}>
                                                 "{targetMatch[2]}"
                                               </div>
                                               {targetMatch[3]}
@@ -2018,13 +2126,13 @@ export default function ToeicPart7Player({
                           </AdminInlineEditor>
                         </h3>
                         {isRevealed && q.questionText_vn && (
-                          <div className="mt-2">
+                          <div className="mt-2" style={{ fontSize: 'clamp(10px, 1.4vh, 13.5px)' }}>
                             <AdminInlineEditor
                               target="question"
                               id={q.id}
                               field="questionText_vn"
                               value={q.questionText_vn}
-                              className="text-[16px] text-slate-500 font-medium italic animate-in fade-in duration-500"
+                              className="text-slate-500 font-medium italic animate-in fade-in duration-500"
                             >
                               {q.questionText_vn}
                             </AdminInlineEditor>
@@ -2076,7 +2184,7 @@ export default function ToeicPart7Player({
                           {['A', 'B', 'C', 'D'].map((label) => {
                             const optText = q.options?.[label];
                             if (!optText) return null;
-                            const isSelected = userAns === label;
+                            const isSelected = answers[getQuestionKey(q)] === label;
                             const isCorrectLabel = q.correctAnswer === label;
 
                             let uiState = "UNSELECTED";
@@ -2105,11 +2213,11 @@ export default function ToeicPart7Player({
                                     {label}
                                   </div>
                                   <div className="flex-1 min-w-0 py-0.5">
-                                    <div className={`text-[15px] font-bold leading-snug ${uiState === "CORRECT" ? 'text-emerald-900' : uiState === "SELECTED" ? 'text-indigo-900' : 'text-slate-900'}`}>
+                                    <div className={`font-bold leading-snug ${uiState === "CORRECT" ? 'text-emerald-900' : uiState === "SELECTED" ? 'text-indigo-900' : 'text-slate-900'}`} style={{ fontSize: 'clamp(10px, 1.45vh, 14px)' }}>
                                       <AdminInlineEditor target="question" id={q.id} field={`option${label}`} value={optText}>{optText}</AdminInlineEditor>
                                     </div>
                                     {isTranslationRevealed && q.options_vn?.[label] && (
-                                      <div className="mt-0.5 text-[14px] text-slate-500 font-medium italic">{q.options_vn[label]}</div>
+                                      <div className="mt-0.5 text-slate-500 font-medium italic" style={{ fontSize: 'clamp(9px, 1.35vh, 12px)' }}>{q.options_vn[label]}</div>
                                     )}
                                   </div>
                                   {isRevealed && isCorrectLabel && <Check className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-500" />}
@@ -2117,12 +2225,12 @@ export default function ToeicPart7Player({
                                 </div>
 
                                 {isRevealed && !isCorrectLabel && wrongExpl && (
-                                  <div className="ml-10 p-3 bg-red-50/50 border-l-4 border-red-200 rounded-r-xl text-[13px] text-red-600 font-bold italic">
+                                  <div className="ml-2 sm:ml-8 p-2 sm:p-3 bg-red-50/50 border-l-4 border-red-200 rounded-r-xl text-red-600 font-bold italic part7-explanation-content" style={{ fontSize: 'clamp(9.5px, 1.35vh, 12.5px)' }}>
                                     <div dangerouslySetInnerHTML={{ __html: formatExplanation(wrongExpl) }} />
                                   </div>
                                 )}
                                 {isRevealed && isCorrectLabel && (q.explanation?.why_correct || q.metadata?.explanation?.why_correct || (typeof q.explanation === 'string' ? q.explanation : '') || q.why_correct) && (
-                                  <div className="ml-10 p-3 bg-emerald-50/50 border-l-4 border-emerald-400 rounded-r-xl text-[14px] text-emerald-700 font-bold italic">
+                                  <div className="ml-2 sm:ml-8 p-2 sm:p-3 bg-emerald-50/50 border-l-4 border-emerald-400 rounded-r-xl text-emerald-700 font-bold italic part7-explanation-content" style={{ fontSize: 'clamp(9.5px, 1.35vh, 12.5px)' }}>
                                     <div dangerouslySetInnerHTML={{ __html: formatExplanation(q.explanation?.why_correct || q.metadata?.explanation?.why_correct || (typeof q.explanation === 'string' ? q.explanation : '') || q.why_correct) }} />
                                   </div>
                                 )}
@@ -2284,7 +2392,7 @@ export default function ToeicPart7Player({
       {/* BOTTOM NAVIGATION BAR (PORTAL HOẶC CỐ ĐỊNH TÙY NGỮ CẢNH) */}
       {(() => {
         const navContent = (
-          <div id="toeic-navigation-container" className="flex items-center bg-slate-50/80 rounded-xl p-1 border border-slate-200/50 shadow-sm pointer-events-auto">
+          <div id="toeic-navigation-container" className="flex items-center bg-slate-50/80 rounded-xl p-0.5 sm:p-1 border border-slate-200/50 shadow-sm pointer-events-auto">
             <div className="relative group">
               <button
                 onClick={() => {
@@ -2295,7 +2403,8 @@ export default function ToeicPart7Player({
                   }
                 }}
                 disabled={currentIndex === 0 && !onPrevPart}
-                className="px-6 py-2 rounded-lg font-bold text-[13px] transition-all disabled:opacity-30 hover:bg-white text-slate-600 uppercase tracking-wider"
+                className="rounded-lg font-bold transition-all disabled:opacity-30 hover:bg-white text-slate-600 uppercase tracking-wider"
+                style={{ padding: 'clamp(2px,0.4vh,6px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
               >
                 {currentIndex === 0 && onPrevPart ? 'Về part trước' : 'Lùi'}
               </button>
@@ -2305,7 +2414,7 @@ export default function ToeicPart7Player({
               </div>
             </div>
 
-            <div className="px-6 font-mono font-bold text-slate-600 text-sm border-x border-slate-200/50">
+            <div className="font-mono font-bold text-slate-600 border-x border-slate-200/50" style={{ padding: 'clamp(2px,0.4vh,6px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(9.5px, 1.8vh, 13px)' }}>
               {isFullTest ? (
                 <>
                   {currentGroup?.questions?.[0]?.questionNo || (globalOffset + currentIndex + 1)} <span className="mx-1 text-slate-300">/</span> {globalTotal || 200}
@@ -2325,9 +2434,10 @@ export default function ToeicPart7Player({
                       const btn = document.getElementById('full-test-submit-btn');
                       if (btn) btn.click();
                     }}
-                    className="px-10 py-2.5 rounded-2xl font-bold text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.25)] hover:bg-indigo-700 active:scale-95 ml-1 uppercase tracking-wider flex items-center gap-2"
+                    className="rounded-xl font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 ml-1 uppercase tracking-wider flex items-center gap-1.5"
+                    style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
                   >
-                    Hoàn thành & Nộp bài <Send size={14} />
+                    Hoàn thành & Nộp bài <Send size={12} />
                   </button>
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
                     Phím tắt: Mũi tên phải
@@ -2338,7 +2448,8 @@ export default function ToeicPart7Player({
                 <button
                   onClick={handleFinishTest}
                   disabled={isSubmitting}
-                  className="px-10 py-2.5 rounded-2xl font-bold text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.25)] hover:bg-indigo-700 active:scale-95 ml-1 uppercase tracking-wider"
+                  className="rounded-xl font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 ml-1 uppercase tracking-wider"
+                  style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
                 >
                   {isSubmitting ? '...' : 'Nộp bài'}
                 </button>
@@ -2347,7 +2458,8 @@ export default function ToeicPart7Player({
               <div className="relative group">
                 <button
                   onClick={() => setCurrentIndex(prev => Math.min(data.length - 1, prev + 1))}
-                  className="px-8 py-2 rounded-lg font-bold text-[13px] transition-all bg-blue-600 text-white shadow-md hover:bg-blue-700 active:scale-95 ml-1 uppercase tracking-wider"
+                  className="rounded-lg font-bold transition-all bg-blue-600 text-white shadow-md hover:bg-blue-700 active:scale-95 ml-1 uppercase tracking-wider"
+                  style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
                 >
                   Tiếp
                 </button>
@@ -2364,27 +2476,43 @@ export default function ToeicPart7Player({
           const target = document.getElementById("bottom-nav-portal-target");
           if (target) {
             return createPortal(
-              <div className="relative flex-none h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-center pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-                <div className="absolute left-4 flex gap-2 pointer-events-auto z-[80]">
+              <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-4 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]" style={{ height: 'clamp(38px, 5.5vh, 56px)' }}>
+                <div className="flex items-center gap-1.5 pointer-events-auto z-[80] shrink-0">
                   <button
                     onClick={() => startToeicPartTour(7, true)}
-                    className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+                    className="hidden md:flex px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm items-center gap-1 pointer-events-auto"
                     title="Khởi động Tour hướng dẫn nhanh"
                   >
-                    <HelpCircle size={13} className="animate-pulse" />
-                    Hướng dẫn nhanh
+                    <HelpCircle size={12} className="animate-pulse" />
+                    <span className="hidden lg:inline">Hướng dẫn nhanh</span>
                   </button>
                   {videoExplanation && videoExplanation.videoUrl && (
                     <button
                       onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
-                      className="px-3 py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 border border-[#05b169]/20"
+                      className="px-2 py-1 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[9px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1 border border-[#05b169]/20"
                       title="Xem video chữa đề / giải thích"
                     >
-                      🎬 {(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}
+                      🎬 <span className="hidden sm:inline">{(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}</span>
                     </button>
                   )}
                 </div>
-                {navContent}
+
+                <div className="flex-1 flex justify-center px-1">
+                  {navContent}
+                </div>
+
+                <div className="flex items-center pointer-events-auto z-[80] shrink-0" style={{ gap: 'clamp(2px,0.5vw,6px)' }}>
+                  <button
+                    onClick={() => setIsSidebarHovered(prev => !prev)}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-extrabold uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center active:scale-95 border border-indigo-400/30 whitespace-nowrap"
+                    style={{ padding: 'clamp(2px,0.3vh,4px) clamp(5px,1.2vw,10px)', fontSize: 'clamp(7px, 2vw, 10px)', gap: 'clamp(2px,0.4vw,4px)' }}
+                    title="Mở Bảng câu hỏi"
+                  >
+                    <LayoutDashboard className="shrink-0" style={{ width: 'clamp(8.5px, 2.4vw, 12px)', height: 'clamp(8.5px, 2.4vw, 12px)' }} />
+                    <span className="portrait:hidden sm:inline">BẢNG CÂU HỎI</span>
+                    <span className="hidden portrait:inline">BẢNG CÂU</span>
+                  </button>
+                </div>
               </div>,
               target
             );
@@ -2392,27 +2520,43 @@ export default function ToeicPart7Player({
         }
 
         return (
-          <div className="relative flex-none h-16 bg-white border-t border-slate-200 z-[70] flex items-center justify-center">
-            <div className="absolute left-4 flex gap-2 pointer-events-auto z-[80]">
+          <div className="relative flex-none bg-white border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-4 pointer-events-auto" style={{ height: 'clamp(38px, 5.5vh, 56px)' }}>
+            <div className="flex items-center gap-1.5 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => startToeicPartTour(7, true)}
-                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 pointer-events-auto"
+                className="hidden md:flex px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm items-center gap-1 pointer-events-auto"
                 title="Khởi động Tour hướng dẫn nhanh"
               >
-                <HelpCircle size={13} className="animate-pulse" />
-                Hướng dẫn nhanh
+                <HelpCircle size={12} className="animate-pulse" />
+                <span className="hidden lg:inline">Hướng dẫn nhanh</span>
               </button>
               {videoExplanation && videoExplanation.videoUrl && (
                 <button
                   onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
-                  className="px-3 py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 border border-[#05b169]/20 animate-pulse"
+                  className="px-2 py-1 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[9px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1 border border-[#05b169]/20"
                   title="Xem video chữa đề / giải thích"
                 >
-                  🎬 {(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}
+                  🎬 <span className="hidden sm:inline">{(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}</span>
                 </button>
               )}
             </div>
-            {navContent}
+
+            <div className="flex-1 flex justify-center px-1">
+              {navContent}
+            </div>
+
+            <div className="flex items-center pointer-events-auto z-[80] shrink-0" style={{ gap: 'clamp(2px,0.5vw,6px)' }}>
+              <button
+                onClick={() => setIsSidebarHovered(prev => !prev)}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-extrabold uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center active:scale-95 border border-indigo-400/30 whitespace-nowrap"
+                style={{ padding: 'clamp(2px,0.3vh,4px) clamp(5px,1.2vw,10px)', fontSize: 'clamp(7px, 2vw, 10px)', gap: 'clamp(2px,0.4vw,4px)' }}
+                title="Mở Bảng câu hỏi"
+              >
+                <LayoutDashboard className="shrink-0" style={{ width: 'clamp(8.5px, 2.4vw, 12px)', height: 'clamp(8.5px, 2.4vw, 12px)' }} />
+                <span className="portrait:hidden sm:inline">BẢNG CÂU HỎI</span>
+                <span className="hidden portrait:inline">BẢNG CÂU</span>
+              </button>
+            </div>
           </div>
         );
       })()}
