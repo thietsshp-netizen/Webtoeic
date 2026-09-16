@@ -523,14 +523,25 @@ export default function ToeicPart6Player({
   const popupRef = useRef<Window | null>(null);
   const lastVocabHotkeyTime = useRef<number>(0);
   const latestHandleKeyDownRef = useRef<(e: any) => void>(() => {});
+  const [popupQIndex, setPopupQIndex] = useState<number>(0);
+  const popupQIndexRef = useRef<number>(0);
+  popupQIndexRef.current = popupQIndex;
 
-  const updatePart6Popup = async (index: number) => {
+  useEffect(() => {
+    setPopupQIndex(0);
+  }, [currentIndex]);
+
+  const updatePart6Popup = async (index: number, qIdxParam?: number) => {
     if (!isAdminMode && !canEdit) return;
     const group = data[index];
     if (!group) return;
 
     const groupQuestions = group.questions || [];
     if (groupQuestions.length === 0) return;
+
+    const targetQIdx = typeof qIdxParam === 'number'
+      ? Math.max(0, Math.min(qIdxParam, groupQuestions.length - 1))
+      : Math.max(0, Math.min(popupQIndexRef.current, groupQuestions.length - 1));
 
     const escapeHtml = (unsafe: string) => {
       return (unsafe || '')
@@ -563,71 +574,96 @@ export default function ToeicPart6Player({
       }).join('');
     };
 
-    const questionsHtml = groupQuestions.map((q: any) => {
-      const qNo = q.questionNo || '';
-      const qText = q.questionText || '';
-      const correctOpt = (q.correctAnswer || '').toUpperCase();
-      const meta = q.metadata as any;
-      let whyCorrect = "";
-      let parsedExpl: any = {};
-      try { parsedExpl = JSON.parse(q.explanation || "{}"); } catch {}
+    const q = groupQuestions[targetQIdx];
+    const qNo = q.questionNo || '';
+    const qText = q.questionText || '';
+    const correctOpt = (q.correctAnswer || '').toUpperCase();
+    const meta = q.metadata as any;
+    let whyCorrect = "";
+    let parsedExpl: any = {};
+    try { parsedExpl = JSON.parse(q.explanation || "{}"); } catch {}
 
-      if (meta?.explanation_vn) {
-        const ev = meta.explanation_vn;
-        whyCorrect = ev.why_correct || ev.why || "";
-      }
-      if (!whyCorrect) {
-        whyCorrect = parsedExpl?.why_correct || parsedExpl?.why || (typeof q.explanation === 'string' && !q.explanation.startsWith('{') ? q.explanation : "");
-      }
+    if (meta?.explanation_vn) {
+      const ev = meta.explanation_vn;
+      whyCorrect = ev.why_correct || ev.why || "";
+    }
+    if (!whyCorrect) {
+      whyCorrect = parsedExpl?.why_correct || parsedExpl?.why || (typeof q.explanation === 'string' && !q.explanation.startsWith('{') ? q.explanation : "");
+    }
 
-      const optionsHtml = ['A', 'B', 'C', 'D'].map(opt => {
-        const optText = q[`option${opt}`] || "";
-        if (!optText) return '';
-        const isCorrect = correctOpt === opt;
-        const optVn = (q.metadata as any)?.options_vn?.[opt] || (q.metadata as any)?.explanation_vn?.options_vn?.[opt] || "";
-        const viSpan = optVn ? ` <span style="color: #64748b; font-style: italic; font-size: 12.5px;">(${escapeHtml(optVn)})</span>` : '';
-        return `
-          <div style="font-size: 13px; line-height: 1.45; padding: 5px 8px; border-radius: 6px; margin-bottom: 3px; ${isCorrect ? 'background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; font-weight: bold;' : 'color: #334155;'}">
-            <strong style="display: inline-block; width: 18px; color: ${isCorrect ? '#059669' : '#64748b'};">${opt}.</strong> ${escapeHtml(optText)}${viSpan}
-          </div>
-        `;
-      }).join('');
-
+    const optionsHtml = ['A', 'B', 'C', 'D'].map(opt => {
+      const optText = q[`option${opt}`] || "";
+      if (!optText) return '';
+      const isCorrect = correctOpt === opt;
+      const optVn = (q.metadata as any)?.options_vn?.[opt] || (q.metadata as any)?.explanation_vn?.options_vn?.[opt] || "";
+      const viSpan = optVn ? ` <span style="color: #64748b; font-style: italic; font-size: 12.5px;">(${escapeHtml(optVn)})</span>` : '';
       return `
-        <div class="question-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px;">
-            <div style="font-weight: 800; font-size: 14px; color: #1e293b; display: flex; align-items: center; gap: 6px;">
-              <span style="background: #4f46e5; color: #ffffff; font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 6px;">Câu ${qNo}</span>
-              ${qText ? `<span style="font-weight: 600;">${escapeHtml(qText)}</span>` : ''}
-            </div>
-            <div style="font-size: 12px; font-weight: 800; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 2px 8px; border-radius: 6px;">
-              Đáp án: <strong>${correctOpt}</strong>
-            </div>
-          </div>
-          
-          <div style="margin-bottom: 10px;">
-            ${optionsHtml}
-          </div>
-
-          ${whyCorrect ? `
-            <div style="background: #f8fafc; border-left: 3px solid #6366f1; border-radius: 4px; padding: 8px 10px; font-size: 12.5px; line-height: 1.5; color: #334155;">
-              <div style="color: #4338ca; font-weight: 800; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">
-                💡 Vì sao đúng:
-              </div>
-              <div style="line-height: 1.55;">
-                ${formatExplanationToHtml(whyCorrect)}
-              </div>
-            </div>
-          ` : ''}
+        <div style="font-size: 13px; line-height: 1.45; padding: 6px 10px; border-radius: 6px; margin-bottom: 4px; ${isCorrect ? 'background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; font-weight: bold;' : 'color: #334155;'}">
+          <strong style="display: inline-block; width: 18px; color: ${isCorrect ? '#059669' : '#64748b'};">${opt}.</strong> ${escapeHtml(optText)}${viSpan}
         </div>
       `;
     }).join('');
 
+    const questionHtml = `
+      <div class="question-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px;">
+          <div style="font-weight: 800; font-size: 14px; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+            <span style="background: #4f46e5; color: #ffffff; font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 6px;">Câu ${qNo}</span>
+            ${qText ? `<span style="font-weight: 600;">${escapeHtml(qText)}</span>` : ''}
+          </div>
+          <div style="font-size: 12px; font-weight: 800; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 2px 8px; border-radius: 6px;">
+            Đáp án: <strong>${correctOpt}</strong>
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 10px;">
+          ${optionsHtml}
+        </div>
+
+        ${whyCorrect ? `
+          <div style="background: #f8fafc; border-left: 3px solid #6366f1; border-radius: 4px; padding: 8px 10px; font-size: 12.5px; line-height: 1.5; color: #334155;">
+            <div style="color: #4338ca; font-weight: 800; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">
+              💡 Vì sao đúng:
+            </div>
+            <div style="line-height: 1.55;">
+              ${formatExplanationToHtml(whyCorrect)}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
     const minQ = groupQuestions[0]?.questionNo || '';
     const maxQ = groupQuestions[groupQuestions.length - 1]?.questionNo || '';
-    const answerKeyText = groupQuestions.map((q: any) => `${q.questionNo}_${(q.correctAnswer || '').toUpperCase()}`).join(', ');
 
-    const width = 500;
+    const navButtonsHtml = groupQuestions.map((gq: any, i: number) => {
+      const isSelected = i === targetQIdx;
+      const qNum = gq.questionNo || (i + 1);
+      const correct = (gq.correctAnswer || '').toUpperCase();
+      const label = `${qNum}_${correct}`;
+      return `
+        <button 
+          data-qindex="${i}" 
+          class="q-nav-btn ${isSelected ? 'active' : ''}"
+          style="
+            background: ${isSelected ? '#dc2626' : '#fef2f2'};
+            color: ${isSelected ? '#ffffff' : '#dc2626'};
+            border: ${isSelected ? '1.5px solid #991b1b' : '1px dashed #fca5a5'};
+            font-weight: 900;
+            font-size: 13.5px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: ${isSelected ? '0 2px 5px rgba(220, 38, 38, 0.4)' : 'none'};
+          "
+        >
+          ${escapeHtml(label)}
+        </button>
+      `;
+    }).join('');
+
+    const width = 520;
     const height = 620;
 
     const popupHtml = `
@@ -636,14 +672,16 @@ export default function ToeicPart6Player({
           <div class="title">Đáp án & Giải thích Part 6</div>
           <div style="font-size: 11.5px; color: #64748b; margin-top: 3px;">Nhóm câu hỏi: ${minQ} - ${maxQ} (Đoạn ${index + 1} / ${data.length})</div>
         </div>
-        <div class="pagination-badge">${index + 1} / ${data.length}</div>
+        <div class="pagination-badge">Câu ${targetQIdx + 1} / ${groupQuestions.length}</div>
       </div>
       <div class="middle-scroll-container">
-        ${questionsHtml}
+        ${questionHtml}
       </div>
       <div class="footer-bar">
-        <span>Đáp án nhanh:</span>
-        <span class="answer-key-pill">${answerKeyText}</span>
+        <span style="font-size: 12.5px; font-weight: 700; color: #475569; flex-shrink: 0;">Đáp án nhanh:</span>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          ${navButtonsHtml}
+        </div>
       </div>
     `;
 
@@ -723,6 +761,7 @@ export default function ToeicPart6Player({
               font-size: 12.5px;
               color: #475569;
               flex-shrink: 0;
+              gap: 8px;
             }
             .answer-key-pill {
               color: #dc2626;
@@ -732,11 +771,28 @@ export default function ToeicPart6Player({
               padding: 2px 10px;
               border-radius: 6px;
               border: 1px dashed #fca5a5;
+              flex-shrink: 0;
+            }
+            .q-nav-btn:hover {
+              filter: brightness(0.95);
             }
           `;
           pipWindow.document.head.appendChild(style);
 
           const mainWindow = window;
+          pipWindow.document.addEventListener('click', (e: MouseEvent) => {
+            const btn = (e.target as HTMLElement)?.closest('[data-qindex]');
+            if (btn) {
+              const qIdxStr = btn.getAttribute('data-qindex');
+              if (qIdxStr !== null) {
+                const qIdx = parseInt(qIdxStr, 10);
+                if (!isNaN(qIdx)) {
+                  mainWindow.postMessage({ type: 'TOEIC_POPUP_SELECT_Q', qIndex: qIdx }, '*');
+                }
+              }
+            }
+          });
+
           pipWindow.document.addEventListener('keydown', (e: KeyboardEvent) => {
             const keyLower = e.key ? e.key.toLowerCase() : '';
             const isTargetKey = 
@@ -841,6 +897,7 @@ export default function ToeicPart6Player({
                 font-size: 12.5px;
                 color: #475569;
                 flex-shrink: 0;
+                gap: 8px;
               }
               .answer-key-pill {
                 color: #dc2626;
@@ -850,12 +907,28 @@ export default function ToeicPart6Player({
                 padding: 2px 10px;
                 border-radius: 6px;
                 border: 1px dashed #fca5a5;
+                flex-shrink: 0;
+              }
+              .q-nav-btn:hover {
+                filter: brightness(0.95);
               }
             </style>
           </head>
           <body>
             ${popupHtml}
             <script>
+              document.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-qindex]');
+                if (btn) {
+                  const qIdxStr = btn.getAttribute('data-qindex');
+                  if (qIdxStr !== null) {
+                    const qIdx = parseInt(qIdxStr, 10);
+                    if (!isNaN(qIdx) && window.opener) {
+                      window.opener.postMessage({ type: 'TOEIC_POPUP_SELECT_Q', qIndex: qIdx }, '*');
+                    }
+                  }
+                }
+              });
               document.addEventListener('keydown', (e) => {
                 const keyLower = e.key ? e.key.toLowerCase() : '';
                 const isTargetKey = 
@@ -900,13 +973,34 @@ export default function ToeicPart6Player({
 
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
-      if (e.data && e.data.type === 'TOEIC_HOTKEY') {
-        latestHandleKeyDownRef.current?.(e.data);
+      if (!isAdminMode && !canEdit) return;
+      if (!e.data) return;
+      if (e.data.type === 'TOEIC_HOTKEY') {
+        const key = e.data.key;
+        const keyLower = typeof key === 'string' ? key.toLowerCase() : '';
+        if (key === ',' || key === '[' || keyLower === 'ư') {
+          const curQIndex = popupQIndexRef.current;
+          const newQIdx = Math.max(0, curQIndex - 1);
+          setPopupQIndex(newQIdx);
+          updatePart6Popup(currentIndex, newQIdx);
+        } else if (key === '.' || key === ']' || keyLower === 'ơ') {
+          const curQIndex = popupQIndexRef.current;
+          const maxQIndex = (data[currentIndex]?.questions?.length || 1) - 1;
+          const newQIdx = Math.min(maxQIndex, curQIndex + 1);
+          setPopupQIndex(newQIdx);
+          updatePart6Popup(currentIndex, newQIdx);
+        } else {
+          latestHandleKeyDownRef.current?.(e.data);
+        }
+      } else if (e.data.type === 'TOEIC_POPUP_SELECT_Q') {
+        const qIdx = typeof e.data.qIndex === 'number' ? e.data.qIndex : 0;
+        setPopupQIndex(qIdx);
+        updatePart6Popup(currentIndex, qIdx);
       }
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, []);
+  }, [currentIndex, data, isAdminMode, canEdit]);
 
   useEffect(() => {
     const isPopupActive = (popupRef.current && !popupRef.current.closed) || (pipWindowRef.current && !pipWindowRef.current.closed);
@@ -1011,7 +1105,16 @@ export default function ToeicPart6Player({
       )) {
         lastVocabHotkeyTime.current = Date.now();
         e.preventDefault?.();
-        updatePart6Popup(currentIndex);
+        const curQIndex = popupQIndexRef.current;
+        const maxQIndex = (data[currentIndex]?.questions?.length || 1) - 1;
+        let newQIdx = curQIndex;
+        if (key === ',' || key === '[' || keyLower === 'ư') {
+          newQIdx = Math.max(0, curQIndex - 1);
+        } else {
+          newQIdx = Math.min(maxQIndex, curQIndex + 1);
+        }
+        setPopupQIndex(newQIdx);
+        updatePart6Popup(currentIndex, newQIdx);
       }
 
       // CTRL/CMD + SHIFT + S: Toggle Solution
@@ -1397,16 +1500,6 @@ export default function ToeicPart6Player({
         <div className="max-w-[1600px] mx-auto bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-between" style={{ padding: 'clamp(3px,0.5vh,8px) clamp(6px,1.2vw,14px)', gap: 'clamp(4px,0.8vw,12px)' }}>
           <div className="font-bold text-slate-700 truncate" style={{ fontSize: 'clamp(8.5px, 2.4vw, 13px)' }}>Part 6: Text Completion</div>
           <div className="flex items-center shrink-0" style={{ gap: 'clamp(3px,0.6vw,8px)' }}>
-            {(isAdminMode || canEdit) && (
-              <button
-                onClick={() => updatePart6Popup(currentIndex)}
-                title="Mở popup đáp án & giải thích (Phím tắt: , hoặc .)"
-                className="rounded-lg font-bold border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-all flex items-center"
-                style={{ padding: 'clamp(2px,0.3vh,4px) clamp(5px,1.2vw,10px)', fontSize: 'clamp(7.5px, 2.2vw, 10.5px)', gap: 'clamp(2px,0.4vw,4px)' }}
-              >
-                <span>👁️ <span className="portrait:hidden">POPUP ĐÁP ÁN</span><span className="hidden portrait:inline">POPUP</span></span>
-              </button>
-            )}
             <button
               id="reveal-btn"
               onClick={() => setShowExplainGroups(prev => ({ ...prev, [currentGroup.id]: !prev[currentGroup.id] }))}

@@ -555,6 +555,13 @@ export default function ToeicPart7Player({
   const popupRef = useRef<Window | null>(null);
   const lastVocabHotkeyTime = useRef<number>(0);
   const latestHandleKeyDownRef = useRef<(e: any) => void>(() => {});
+  const [popupQIndex, setPopupQIndex] = useState<number>(0);
+  const popupQIndexRef = useRef<number>(0);
+  popupQIndexRef.current = popupQIndex;
+
+  useEffect(() => {
+    setPopupQIndex(0);
+  }, [currentIndex]);
 
   const currentGroup = data[currentIndex] || { questions: [], passages: [], groupMetadata: {} };
   const passages = currentGroup.passages || [];
@@ -636,7 +643,7 @@ export default function ToeicPart7Player({
     return { text: foundText, translation: foundTranslation };
   };
 
-  const updatePart7Popup = async (index: number) => {
+  const updatePart7Popup = async (index: number, qIdxParam?: number) => {
     if (!isAdminMode && !canEdit) return;
     const group = data[index];
     if (!group) return;
@@ -644,6 +651,10 @@ export default function ToeicPart7Player({
     const groupQuestions = group.questions || [];
     if (groupQuestions.length === 0) return;
     const groupPassages = group.passages || [];
+
+    const targetQIdx = typeof qIdxParam === 'number'
+      ? Math.max(0, Math.min(qIdxParam, groupQuestions.length - 1))
+      : Math.max(0, Math.min(popupQIndexRef.current, groupQuestions.length - 1));
 
     const escapeHtml = (unsafe: string) => {
       return (unsafe || '')
@@ -676,98 +687,123 @@ export default function ToeicPart7Player({
       }).join('');
     };
 
-    const questionsHtml = groupQuestions.map((q: any) => {
-      const qNo = q.questionNo || '';
-      const qText = q.questionText || '';
-      const qTextVn = q.questionText_vn || '';
-      const correctOpt = (q.correctAnswer || '').toUpperCase();
-      const meta = q.metadata as any;
-      let whyCorrect = "";
-      let parsedExpl: any = {};
-      try {
-        if (typeof q.explanation === 'string' && q.explanation.trim().startsWith('{')) {
-          parsedExpl = JSON.parse(q.explanation);
-        } else if (typeof q.explanation === 'object') {
-          parsedExpl = q.explanation || {};
-        }
-      } catch {}
-
-      if (meta?.explanation_vn) {
-        const ev = meta.explanation_vn;
-        whyCorrect = ev.why_correct || ev.why || "";
+    const q = groupQuestions[targetQIdx];
+    const qNo = q.questionNo || '';
+    const qText = q.questionText || '';
+    const qTextVn = q.questionText_vn || '';
+    const correctOpt = (q.correctAnswer || '').toUpperCase();
+    const meta = q.metadata as any;
+    let whyCorrect = "";
+    let parsedExpl: any = {};
+    try {
+      if (typeof q.explanation === 'string' && q.explanation.trim().startsWith('{')) {
+        parsedExpl = JSON.parse(q.explanation);
+      } else if (typeof q.explanation === 'object') {
+        parsedExpl = q.explanation || {};
       }
-      if (!whyCorrect) {
-        whyCorrect = parsedExpl?.why_correct || parsedExpl?.why || (typeof q.explanation === 'string' && !q.explanation.startsWith('{') ? q.explanation : "") || q.why_correct || "";
-      }
+    } catch {}
 
-      // CHỈ lấy đáp án đúng
-      const optText = q.options?.[correctOpt] || q[`option${correctOpt}`] || "";
-      const optVn = q.options_vn?.[correctOpt] || meta?.options_vn?.[correctOpt] || meta?.explanation_vn?.options_vn?.[correctOpt] || "";
+    if (meta?.explanation_vn) {
+      const ev = meta.explanation_vn;
+      whyCorrect = ev.why_correct || ev.why || "";
+    }
+    if (!whyCorrect) {
+      whyCorrect = parsedExpl?.why_correct || parsedExpl?.why || (typeof q.explanation === 'string' && !q.explanation.startsWith('{') ? q.explanation : "") || q.why_correct || "";
+    }
 
-      // Lấy evidence sids
-      const rawSids = q.evidence_sids || q.metadata?.evidence_sids || q.explanation?.evidence_sids || parsedExpl?.evidence_sids || [];
-      const sids: string[] = (Array.isArray(rawSids) ? rawSids : [rawSids]).filter(Boolean).map(s => String(s).trim());
+    // CHỈ lấy đáp án đúng
+    const optText = q.options?.[correctOpt] || q[`option${correctOpt}`] || "";
+    const optVn = q.options_vn?.[correctOpt] || meta?.options_vn?.[correctOpt] || meta?.explanation_vn?.options_vn?.[correctOpt] || "";
 
-      const evidenceCluesHtml = sids.map(sid => {
-        const { text: sentenceText, translation: viTranslation } = getSentenceTextBySid(groupPassages, sid);
-        return `
-          <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 8px 10px; margin-bottom: 6px;">
-            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
-              <span style="background: #059669; color: #ffffff; font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 4px; text-transform: uppercase;">Manh mối: ${escapeHtml(sid)}</span>
-            </div>
-            ${sentenceText ? `<div style="font-size: 12.5px; color: #0f172a; font-weight: 600; line-height: 1.45;">"${escapeHtml(sentenceText)}"</div>` : `<div style="font-size: 12px; color: #64748b; font-style: italic;">[Đoạn văn - ${escapeHtml(sid)}]</div>`}
-            ${viTranslation ? `<div style="font-size: 12px; color: #475569; font-style: italic; margin-top: 3px; border-top: 1px dashed #bbf7d0; padding-top: 2px;">↳ ${escapeHtml(viTranslation)}</div>` : ''}
-          </div>
-        `;
-      }).join('');
+    // Lấy evidence sids
+    const rawSids = q.evidence_sids || q.metadata?.evidence_sids || q.explanation?.evidence_sids || parsedExpl?.evidence_sids || [];
+    const sids: string[] = (Array.isArray(rawSids) ? rawSids : [rawSids]).filter(Boolean).map(s => String(s).trim());
 
+    const evidenceCluesHtml = sids.map(sid => {
+      const { text: sentenceText, translation: viTranslation } = getSentenceTextBySid(groupPassages, sid);
       return `
-        <div class="question-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #1e293b; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-              <span style="background: #4f46e5; color: #ffffff; font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 6px;">Câu ${qNo}</span>
-              ${qText ? `<span style="font-weight: 700;">${escapeHtml(qText)}</span>` : ''}
-            </div>
-            <div style="font-size: 12px; font-weight: 800; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 2px 8px; border-radius: 6px; flex-shrink: 0;">
-              Đáp án: <strong>${correctOpt}</strong>
-            </div>
+        <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 8px 10px; margin-bottom: 6px;">
+          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+            <span style="background: #059669; color: #ffffff; font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 4px; text-transform: uppercase;">Manh mối: ${escapeHtml(sid)}</span>
           </div>
-          ${qTextVn ? `<div style="font-size: 12px; color: #64748b; font-style: italic; margin-top: -4px; margin-bottom: 8px;">${escapeHtml(qTextVn)}</div>` : ''}
-
-          <!-- CHỈ HIỆN ĐÁP ÁN ĐÚNG -->
-          <div style="background: #ecfdf5; border: 1.5px solid #6ee7b7; border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; color: #065f46;">
-            <div style="font-size: 13px; font-weight: 700; line-height: 1.45; display: flex; align-items: flex-start; gap: 6px;">
-              <span style="display: inline-flex; align-items: center; justify-content: center; background: #059669; color: #ffffff; border-radius: 4px; min-width: 18px; height: 18px; font-size: 11px; font-weight: 900; flex-shrink: 0; margin-top: 1px;">${correctOpt}</span>
-              <span style="flex: 1;">${escapeHtml(optText)}</span>
-            </div>
-            ${optVn ? `<div style="font-size: 12px; color: #047857; font-weight: 500; font-style: italic; margin-top: 3px; padding-left: 24px;">(${escapeHtml(optVn)})</div>` : ''}
-          </div>
-
-          <!-- CÂU TIẾNG ANH EVIDENCE SID TƯƠNG ỨNG -->
-          ${evidenceCluesHtml ? `
-            <div style="margin-bottom: 8px;">
-              ${evidenceCluesHtml}
-            </div>
-          ` : ''}
-
-          <!-- GIẢI THÍCH VÌ SAO ĐÚNG -->
-          ${whyCorrect ? `
-            <div style="background: #f8fafc; border-left: 3px solid #6366f1; border-radius: 4px; padding: 8px 10px; font-size: 12.5px; line-height: 1.5; color: #334155;">
-              <div style="color: #4338ca; font-weight: 800; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">
-                💡 Vì sao đúng:
-              </div>
-              <div style="line-height: 1.55;">
-                ${formatExplanationToHtml(whyCorrect)}
-              </div>
-            </div>
-          ` : ''}
+          ${sentenceText ? `<div style="font-size: 12.5px; color: #0f172a; font-weight: 600; line-height: 1.45;">"${escapeHtml(sentenceText)}"</div>` : `<div style="font-size: 12px; color: #64748b; font-style: italic;">[Đoạn văn - ${escapeHtml(sid)}]</div>`}
+          ${viTranslation ? `<div style="font-size: 12px; color: #475569; font-style: italic; margin-top: 3px; border-top: 1px dashed #bbf7d0; padding-top: 2px;">↳ ${escapeHtml(viTranslation)}</div>` : ''}
         </div>
       `;
     }).join('');
 
+    const questionHtml = `
+      <div class="question-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px;">
+          <div style="font-weight: 800; font-size: 13.5px; color: #1e293b; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+            <span style="background: #4f46e5; color: #ffffff; font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 6px;">Câu ${qNo}</span>
+            ${qText ? `<span style="font-weight: 700;">${escapeHtml(qText)}</span>` : ''}
+          </div>
+          <div style="font-size: 12px; font-weight: 800; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 2px 8px; border-radius: 6px; flex-shrink: 0;">
+            Đáp án: <strong>${correctOpt}</strong>
+          </div>
+        </div>
+        ${qTextVn ? `<div style="font-size: 12px; color: #64748b; font-style: italic; margin-top: -4px; margin-bottom: 8px;">${escapeHtml(qTextVn)}</div>` : ''}
+
+        <!-- CHỈ HIỆN ĐÁP ÁN ĐÚNG -->
+        <div style="background: #ecfdf5; border: 1.5px solid #6ee7b7; border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; color: #065f46;">
+          <div style="font-size: 13px; font-weight: 700; line-height: 1.45; display: flex; align-items: flex-start; gap: 6px;">
+            <span style="display: inline-flex; align-items: center; justify-content: center; background: #059669; color: #ffffff; border-radius: 4px; min-width: 18px; height: 18px; font-size: 11px; font-weight: 900; flex-shrink: 0; margin-top: 1px;">${correctOpt}</span>
+            <span style="flex: 1;">${escapeHtml(optText)}</span>
+          </div>
+          ${optVn ? `<div style="font-size: 12px; color: #047857; font-weight: 500; font-style: italic; margin-top: 3px; padding-left: 24px;">(${escapeHtml(optVn)})</div>` : ''}
+        </div>
+
+        <!-- CÂU TIẾNG ANH EVIDENCE SID TƯƠNG ỨNG -->
+        ${evidenceCluesHtml ? `
+          <div style="margin-bottom: 8px;">
+            ${evidenceCluesHtml}
+          </div>
+        ` : ''}
+
+        <!-- GIẢI THÍCH VÌ SAO ĐÚNG -->
+        ${whyCorrect ? `
+          <div style="background: #f8fafc; border-left: 3px solid #6366f1; border-radius: 4px; padding: 8px 10px; font-size: 12.5px; line-height: 1.5; color: #334155;">
+            <div style="color: #4338ca; font-weight: 800; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">
+              💡 Vì sao đúng:
+            </div>
+            <div style="line-height: 1.55;">
+              ${formatExplanationToHtml(whyCorrect)}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
     const minQ = groupQuestions[0]?.questionNo || '';
     const maxQ = groupQuestions[groupQuestions.length - 1]?.questionNo || '';
-    const answerKeyText = groupQuestions.map((q: any) => `${q.questionNo}_${(q.correctAnswer || '').toUpperCase()}`).join(', ');
+
+    const navButtonsHtml = groupQuestions.map((gq: any, i: number) => {
+      const isSelected = i === targetQIdx;
+      const qNum = gq.questionNo || (i + 1);
+      const correct = (gq.correctAnswer || '').toUpperCase();
+      const label = `${qNum}_${correct}`;
+      return `
+        <button 
+          data-qindex="${i}" 
+          class="q-nav-btn ${isSelected ? 'active' : ''}"
+          style="
+            background: ${isSelected ? '#dc2626' : '#fef2f2'};
+            color: ${isSelected ? '#ffffff' : '#dc2626'};
+            border: ${isSelected ? '1.5px solid #991b1b' : '1px dashed #fca5a5'};
+            font-weight: 900;
+            font-size: 13.5px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: ${isSelected ? '0 2px 5px rgba(220, 38, 38, 0.4)' : 'none'};
+          "
+        >
+          ${escapeHtml(label)}
+        </button>
+      `;
+    }).join('');
 
     const width = 520;
     const height = 640;
@@ -778,14 +814,16 @@ export default function ToeicPart7Player({
           <div class="title">Đáp án & Giải thích Part 7</div>
           <div style="font-size: 11.5px; color: #64748b; margin-top: 3px;">Nhóm câu hỏi: ${minQ} - ${maxQ} (Đoạn ${index + 1} / ${data.length})</div>
         </div>
-        <div class="pagination-badge">${index + 1} / ${data.length}</div>
+        <div class="pagination-badge">Câu ${targetQIdx + 1} / ${groupQuestions.length}</div>
       </div>
       <div class="middle-scroll-container">
-        ${questionsHtml}
+        ${questionHtml}
       </div>
       <div class="footer-bar">
-        <span>Đáp án nhanh:</span>
-        <span class="answer-key-pill">${answerKeyText}</span>
+        <span style="font-size: 12.5px; font-weight: 700; color: #475569; flex-shrink: 0;">Đáp án nhanh:</span>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          ${navButtonsHtml}
+        </div>
       </div>
     `;
 
@@ -865,6 +903,7 @@ export default function ToeicPart7Player({
               font-size: 12.5px;
               color: #475569;
               flex-shrink: 0;
+              gap: 8px;
             }
             .answer-key-pill {
               color: #dc2626;
@@ -874,11 +913,28 @@ export default function ToeicPart7Player({
               padding: 2px 10px;
               border-radius: 6px;
               border: 1px dashed #fca5a5;
+              flex-shrink: 0;
+            }
+            .q-nav-btn:hover {
+              filter: brightness(0.95);
             }
           `;
           pipWindow.document.head.appendChild(style);
 
           const mainWindow = window;
+          pipWindow.document.addEventListener('click', (e: MouseEvent) => {
+            const btn = (e.target as HTMLElement)?.closest('[data-qindex]');
+            if (btn) {
+              const qIdxStr = btn.getAttribute('data-qindex');
+              if (qIdxStr !== null) {
+                const qIdx = parseInt(qIdxStr, 10);
+                if (!isNaN(qIdx)) {
+                  mainWindow.postMessage({ type: 'TOEIC_POPUP_SELECT_Q', qIndex: qIdx }, '*');
+                }
+              }
+            }
+          });
+
           pipWindow.document.addEventListener('keydown', (e: KeyboardEvent) => {
             const keyLower = e.key ? e.key.toLowerCase() : '';
             const isTargetKey = 
@@ -983,6 +1039,7 @@ export default function ToeicPart7Player({
                 font-size: 12.5px;
                 color: #475569;
                 flex-shrink: 0;
+                gap: 8px;
               }
               .answer-key-pill {
                 color: #dc2626;
@@ -992,12 +1049,28 @@ export default function ToeicPart7Player({
                 padding: 2px 10px;
                 border-radius: 6px;
                 border: 1px dashed #fca5a5;
+                flex-shrink: 0;
+              }
+              .q-nav-btn:hover {
+                filter: brightness(0.95);
               }
             </style>
           </head>
           <body>
             ${popupHtml}
             <script>
+              document.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-qindex]');
+                if (btn) {
+                  const qIdxStr = btn.getAttribute('data-qindex');
+                  if (qIdxStr !== null) {
+                    const qIdx = parseInt(qIdxStr, 10);
+                    if (!isNaN(qIdx) && window.opener) {
+                      window.opener.postMessage({ type: 'TOEIC_POPUP_SELECT_Q', qIndex: qIdx }, '*');
+                    }
+                  }
+                }
+              });
               document.addEventListener('keydown', (e) => {
                 const keyLower = e.key ? e.key.toLowerCase() : '';
                 const isTargetKey = 
@@ -1042,13 +1115,34 @@ export default function ToeicPart7Player({
 
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
-      if (e.data && e.data.type === 'TOEIC_HOTKEY') {
-        latestHandleKeyDownRef.current?.(e.data);
+      if (!isAdminMode && !canEdit) return;
+      if (!e.data) return;
+      if (e.data.type === 'TOEIC_HOTKEY') {
+        const key = e.data.key;
+        const keyLower = typeof key === 'string' ? key.toLowerCase() : '';
+        if (key === ',' || key === '[' || keyLower === 'ư') {
+          const curQIndex = popupQIndexRef.current;
+          const newQIdx = Math.max(0, curQIndex - 1);
+          setPopupQIndex(newQIdx);
+          updatePart7Popup(currentIndex, newQIdx);
+        } else if (key === '.' || key === ']' || keyLower === 'ơ') {
+          const curQIndex = popupQIndexRef.current;
+          const maxQIndex = (data[currentIndex]?.questions?.length || 1) - 1;
+          const newQIdx = Math.min(maxQIndex, curQIndex + 1);
+          setPopupQIndex(newQIdx);
+          updatePart7Popup(currentIndex, newQIdx);
+        } else {
+          latestHandleKeyDownRef.current?.(e.data);
+        }
+      } else if (e.data.type === 'TOEIC_POPUP_SELECT_Q') {
+        const qIdx = typeof e.data.qIndex === 'number' ? e.data.qIndex : 0;
+        setPopupQIndex(qIdx);
+        updatePart7Popup(currentIndex, qIdx);
       }
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, []);
+  }, [currentIndex, data, isAdminMode, canEdit]);
 
   useEffect(() => {
     const isPopupActive = (popupRef.current && !popupRef.current.closed) || (pipWindowRef.current && !pipWindowRef.current.closed);
@@ -1276,7 +1370,16 @@ export default function ToeicPart7Player({
       )) {
         lastVocabHotkeyTime.current = Date.now();
         e.preventDefault?.();
-        updatePart7Popup(currentIndex);
+        const curQIndex = popupQIndexRef.current;
+        const maxQIndex = (data[currentIndex]?.questions?.length || 1) - 1;
+        let newQIdx = curQIndex;
+        if (key === ',' || key === '[' || keyLower === 'ư') {
+          newQIdx = Math.max(0, curQIndex - 1);
+        } else {
+          newQIdx = Math.min(maxQIndex, curQIndex + 1);
+        }
+        setPopupQIndex(newQIdx);
+        updatePart7Popup(currentIndex, newQIdx);
       }
 
       // CTRL/CMD + SHIFT + S: Toggle Solution
@@ -1799,16 +1902,6 @@ export default function ToeicPart7Player({
           )}
         </div>
         <div className="flex items-center shrink-0" style={{ gap: 'clamp(3px,0.6vw,8px)' }}>
-          {(isAdminMode || canEdit) && (
-            <button
-              onClick={() => updatePart7Popup(currentIndex)}
-              title="Mở popup đáp án & giải thích (Phím tắt: , hoặc .)"
-              className="rounded-lg font-bold border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-all flex items-center"
-              style={{ padding: 'clamp(2px,0.3vh,4px) clamp(4px,0.8vw,8px)', fontSize: 'clamp(7px, 1.7vh, 10px)', gap: 'clamp(2px,0.4vw,4px)' }}
-            >
-              <span>👁️ <span className="portrait:hidden">POPUP ĐÁP ÁN</span><span className="hidden portrait:inline">POPUP</span></span>
-            </button>
-          )}
           <button
             id="split-view-btn"
             onClick={() => setIsSplitView(prev => !prev)}
