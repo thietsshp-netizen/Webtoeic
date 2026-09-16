@@ -75,14 +75,14 @@ export default function TeacherCertificateShowcase() {
     <div className="w-full space-y-4 select-none">
       {/* Main Certificate Frame (Khung viền vàng kim bo tròn chuẩn mẫu) */}
       <div
-        className="relative group max-w-3xl sm:max-w-4xl mx-auto rounded-[1.8rem] sm:rounded-[2.2rem] overflow-hidden border-2 border-amber-400 bg-white p-1 sm:p-1.5 shadow-sm cursor-zoom-in"
+        className="relative group max-w-4xl mx-auto rounded-[1.8rem] sm:rounded-[2.2rem] overflow-hidden border-2 border-amber-400 bg-white p-1 sm:p-1.5 shadow-sm cursor-zoom-in"
         onClick={() => setIsZoomOpen(true)}
         onMouseEnter={() => {
           if (timerRef.current) clearInterval(timerRef.current);
         }}
         onMouseLeave={() => resetTimer()}
       >
-        <div className="relative w-full aspect-[1.45/1] bg-white rounded-[1.4rem] sm:rounded-[1.8rem] flex items-center justify-center overflow-hidden">
+        <div className="relative w-full aspect-[1.95/1] bg-white rounded-[1.4rem] sm:rounded-[1.8rem] flex items-center justify-center overflow-hidden">
           {CERTIFICATES.map((cert, idx) => {
             const isCurrent = idx === activeIdx;
             const isLoaded = loadedImages[idx];
@@ -90,7 +90,7 @@ export default function TeacherCertificateShowcase() {
             return (
               <div
                 key={cert.id}
-                className={`absolute inset-0 w-full h-full p-0.5 sm:p-1 flex items-center justify-center transition-all duration-700 ${
+                className={`absolute inset-0 w-full h-full p-0 flex items-center justify-center transition-all duration-700 ${
                   isCurrent ? "opacity-100 scale-100 z-10 pointer-events-auto" : "opacity-0 scale-98 z-0 pointer-events-none"
                 }`}
               >
@@ -111,7 +111,7 @@ export default function TeacherCertificateShowcase() {
                   loading="eager"
                   decoding="async"
                   onLoad={() => setLoadedImages((prev) => ({ ...prev, [idx]: true }))}
-                  className={`w-full h-full object-contain rounded-lg sm:rounded-xl transition-transform duration-500 group-hover:scale-[1.015] shadow-sm ${
+                  className={`w-full h-full object-contain rounded-lg sm:rounded-xl transition-transform duration-500 group-hover:scale-[1.015] ${
                     isLoaded ? "opacity-100" : "opacity-0"
                   }`}
                 />
