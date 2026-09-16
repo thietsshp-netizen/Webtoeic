@@ -721,10 +721,54 @@ function HomeContent() {
                   </span>
                   <ArrowRight size={15} className="group-hover:translate-x-1.5 transition-transform text-white shrink-0" />
 
-                  <span className="absolute -bottom-2 -right-1 flex items-center justify-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 bg-amber-400 text-slate-900 rounded-full shadow-md text-[8px] sm:text-[9px] font-black tracking-tighter animate-bounce group-hover:scale-110 transition-transform select-none z-10">
-                    <MousePointerClick size={10} className="stroke-[2.5] sm:w-3 sm:h-3" />
-                    <span>CLICK NGAY</span>
-                  </span>
+                  {/* Animated Pure Code Click Effect (Con trỏ chuột nhấp nháy + Vòng sóng lan tỏa) */}
+                  <div className="absolute -bottom-2 -right-1 pointer-events-none select-none z-10 flex items-center justify-center">
+                    {/* Vòng sóng click 1 */}
+                    <motion.span
+                      className="absolute w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-amber-400 bg-amber-400/30"
+                      animate={{
+                        scale: [0.8, 2.2],
+                        opacity: [0.8, 0],
+                      }}
+                      transition={{
+                        duration: 1.6,
+                        repeat: Infinity,
+                        repeatDelay: 0.3,
+                        ease: "easeOut",
+                      }}
+                    />
+                    {/* Vòng sóng click 2 */}
+                    <motion.span
+                      className="absolute w-6 h-6 sm:w-8 sm:h-8 rounded-full border border-amber-300"
+                      animate={{
+                        scale: [0.8, 2.8],
+                        opacity: [0.6, 0],
+                      }}
+                      transition={{
+                        duration: 1.6,
+                        delay: 0.25,
+                        repeat: Infinity,
+                        repeatDelay: 0.3,
+                        ease: "easeOut",
+                      }}
+                    />
+                    {/* Icon con trỏ chuột tap click */}
+                    <motion.div
+                      className="relative w-6 h-6 sm:w-7 sm:h-7 bg-amber-400 text-slate-900 rounded-full flex items-center justify-center shadow-lg border-2 border-white"
+                      animate={{
+                        scale: [1, 1, 0.8, 1.15, 1],
+                        rotate: [0, -5, -12, 0, 0],
+                      }}
+                      transition={{
+                        duration: 1.6,
+                        repeat: Infinity,
+                        repeatDelay: 0.3,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <MousePointerClick size={13} className="stroke-[2.5] text-slate-900 sm:w-3.5 sm:h-3.5 -rotate-12" />
+                    </motion.div>
+                  </div>
                 </Link>
 
                 {/* Nút 2: Kiểm tra trình độ miễn phí */}
@@ -739,10 +783,54 @@ function HomeContent() {
                   </span>
                   <ArrowRight size={15} className="group-hover:translate-x-1.5 transition-transform shrink-0" />
                   
-                  <span className="absolute -bottom-2 -right-1 flex items-center justify-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 bg-amber-400 text-slate-900 rounded-full shadow-md text-[8px] sm:text-[9px] font-black tracking-tighter animate-bounce group-hover:scale-110 transition-transform select-none z-10">
-                    <MousePointerClick size={10} className="stroke-[2.5] sm:w-3 sm:h-3" />
-                    <span>CLICK NGAY</span>
-                  </span>
+                  {/* Animated Pure Code Click Effect (Con trỏ chuột nhấp nháy + Vòng sóng lan tỏa) */}
+                  <div className="absolute -bottom-2 -right-1 pointer-events-none select-none z-10 flex items-center justify-center">
+                    {/* Vòng sóng click 1 */}
+                    <motion.span
+                      className="absolute w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-amber-400 bg-amber-400/30"
+                      animate={{
+                        scale: [0.8, 2.2],
+                        opacity: [0.8, 0],
+                      }}
+                      transition={{
+                        duration: 1.6,
+                        repeat: Infinity,
+                        repeatDelay: 0.3,
+                        ease: "easeOut",
+                      }}
+                    />
+                    {/* Vòng sóng click 2 */}
+                    <motion.span
+                      className="absolute w-6 h-6 sm:w-8 sm:h-8 rounded-full border border-amber-300"
+                      animate={{
+                        scale: [0.8, 2.8],
+                        opacity: [0.6, 0],
+                      }}
+                      transition={{
+                        duration: 1.6,
+                        delay: 0.25,
+                        repeat: Infinity,
+                        repeatDelay: 0.3,
+                        ease: "easeOut",
+                      }}
+                    />
+                    {/* Icon con trỏ chuột tap click */}
+                    <motion.div
+                      className="relative w-6 h-6 sm:w-7 sm:h-7 bg-amber-400 text-slate-900 rounded-full flex items-center justify-center shadow-lg border-2 border-white"
+                      animate={{
+                        scale: [1, 1, 0.8, 1.15, 1],
+                        rotate: [0, -5, -12, 0, 0],
+                      }}
+                      transition={{
+                        duration: 1.6,
+                        repeat: Infinity,
+                        repeatDelay: 0.3,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <MousePointerClick size={13} className="stroke-[2.5] text-slate-900 sm:w-3.5 sm:h-3.5 -rotate-12" />
+                    </motion.div>
+                  </div>
                 </button>
               </div>
 
