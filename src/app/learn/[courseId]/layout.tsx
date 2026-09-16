@@ -150,25 +150,25 @@ export default function LearnLayout({
     <AdminEditProvider>
       <div className="flex flex-col h-screen bg-white overflow-hidden">
         {/* Top Navbar Học tập */}
-        <header className="h-14 border-b flex items-center justify-between px-6 bg-slate-900 text-white flex-shrink-0 relative z-[1000000005]" style={{ zIndex: 1000000005 }}>
-          <div className="flex items-center gap-4">
+        <header className="h-[clamp(32px,5vh,52px)] border-b flex items-center justify-between px-[clamp(8px,1.5vw,24px)] bg-slate-900 text-white flex-shrink-0 relative z-[1000000005]" style={{ zIndex: 1000000005 }}>
+          <div className="flex items-center gap-[clamp(4px,1vw,16px)]">
             {/* Nút Quay lại Dashboard */}
             <Link
               href="/?tab=dashboard"
-              className="p-2 hover:bg-white/10 rounded-full transition-colors text-slate-400 hover:text-white flex items-center gap-1 group"
+              className="p-1 hover:bg-white/10 rounded-full transition-colors text-slate-400 hover:text-white flex items-center gap-1 group"
               title="Quay lại Dashboard"
             >
-              <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-              <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">Dashboard</span>
+              <ChevronLeft className="group-hover:-translate-x-1 transition-transform w-[clamp(14px,2.2vh,20px)] h-[clamp(14px,2.2vh,20px)]" />
+              <span className="text-[clamp(8px,1.3vh,11px)] font-black uppercase tracking-widest hidden sm:block">Dashboard</span>
             </Link>
-            <div className="h-4 w-px bg-white/20 mx-1"></div>
-            <h1 className="text-sm font-black tracking-tight flex items-center gap-3">
-              <span id="learn-course-title" data-course-title={courseTitle} className="max-w-[150px] sm:max-w-sm truncate uppercase italic text-blue-400">{courseTitle}</span>
-              <span className="text-[10px] bg-blue-600 px-2 py-0.5 rounded text-white font-black uppercase tracking-widest">PRO</span>
+            <div className="h-[clamp(12px,2vh,20px)] w-px bg-white/20 mx-0.5 sm:mx-1"></div>
+            <h1 className="text-[clamp(10px,1.6vh,15px)] font-black tracking-tight flex items-center gap-[clamp(4px,1vw,12px)]">
+              <span id="learn-course-title" data-course-title={courseTitle} className="max-w-[120px] xs:max-w-[150px] sm:max-w-sm landscape:max-w-[140px] truncate uppercase italic text-blue-400">{courseTitle}</span>
+              <span className="text-[clamp(7px,1.2vh,10px)] bg-blue-600 px-1.5 py-0.5 rounded text-white font-black uppercase tracking-widest">PRO</span>
             </h1>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-[clamp(4px,1vw,12px)]">
             {/* Nút bật/tắt công cụ vẽ viết - CHỈ HIỂN THỊ CHO ADMIN */}
             {session?.user && (session.user as any).role === "ADMIN" && (
               <button
@@ -178,14 +178,14 @@ export default function LearnLayout({
                   window.dispatchEvent(new CustomEvent("webtoeic-toggle-global-draw", { detail: { active: nextActive } }));
                 }}
                 style={{ zIndex: 1000000010, position: "relative" }}
-                className={`cursor-pointer w-[38px] h-[38px] rounded-full transition-all flex items-center justify-center border ${
+                className={`cursor-pointer w-[clamp(22px,3.5vh,34px)] h-[clamp(22px,3.5vh,34px)] rounded-full transition-all flex items-center justify-center border ${
                   isDrawingActive 
                     ? "bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/20 scale-105" 
                     : "text-slate-300 border-white/20 hover:text-white hover:bg-white/10"
                 }`}
                 title={isDrawingActive ? "Tắt công cụ vẽ viết lên màn hình (Ctrl+Shift+B)" : "Bật công cụ vẽ viết lên màn hình (Ctrl+Shift+B)"}
               >
-                {isDrawingActive ? <X size={18} /> : <Pencil size={18} />}
+                {isDrawingActive ? <X className="w-[clamp(12px,2vh,18px)] h-[clamp(12px,2vh,18px)]" /> : <Pencil className="w-[clamp(12px,2vh,18px)] h-[clamp(12px,2vh,18px)]" />}
               </button>
             )}
 
@@ -193,12 +193,12 @@ export default function LearnLayout({
               href="https://m.me/101690955494114" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-white transition-colors border border-white/20 px-4 py-1.5 rounded-full hover:bg-white/10 transition-all"
+              className="flex items-center gap-1 text-[clamp(8px,1.3vh,11px)] font-bold text-slate-300 hover:text-white border border-white/20 px-[clamp(8px,1vw,14px)] py-[clamp(2px,0.5vh,6px)] rounded-full hover:bg-white/10 transition-all"
             >
-              <HelpCircle size={16} /> Hỗ trợ
+              <HelpCircle className="w-[clamp(12px,2vh,16px)] h-[clamp(12px,2vh,16px)]" /> Hỗ trợ
             </a>
             <div 
-              className={`w-8 h-8 rounded-full ${avatarColor} flex items-center justify-center font-black text-[10px] shadow-lg shadow-blue-500/20`}
+              className={`w-[clamp(22px,3.5vh,34px)] h-[clamp(22px,3.5vh,34px)] rounded-full ${avatarColor} flex items-center justify-center font-black text-[clamp(7px,1.3vh,10px)] shadow-lg shadow-blue-500/20`}
               title={session?.user?.email || "Người dùng"}
             >
               {userInitials}
@@ -214,26 +214,26 @@ export default function LearnLayout({
             className={`h-full bg-[#fbfcfd] flex-shrink-0 relative overflow-hidden flex flex-col ${
               isResizing ? "" : "transition-all duration-300 ease-in-out"
             } ${
-              sidebarOpen ? "border-r border-slate-100" : "w-0 sm:w-14 sm:border-r border-slate-100"
+              sidebarOpen ? "border-r border-slate-100" : "w-[clamp(24px,3.5vw,48px)] border-r border-slate-100"
             }`}
           >
             {/* Collapsed State Indicator */}
             {!sidebarOpen && (
-              <div className="absolute inset-0 flex flex-col items-center py-8 gap-10 animate-in fade-in duration-500">
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
-                    <Menu size={16} />
+              <div className="absolute inset-0 flex flex-col items-center py-[clamp(6px,1.5vh,24px)] gap-[clamp(8px,2vh,32px)] animate-in fade-in duration-500">
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-[clamp(18px,3vh,30px)] h-[clamp(18px,3vh,30px)] rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
+                    <Menu className="w-[clamp(10px,1.8vh,16px)] h-[clamp(10px,1.8vh,16px)]" />
                   </div>
                 </div>
                 <div 
-                  className="flex items-center gap-2 [writing-mode:vertical-lr] rotate-180 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] opacity-80"
+                  className="flex items-center gap-2 [writing-mode:vertical-lr] rotate-180 text-[clamp(7px,1.2vw,10px)] font-black text-slate-400 uppercase tracking-[0.15em] sm:tracking-[0.3em] opacity-80 whitespace-nowrap"
                 >
                   Nội dung khóa học
                 </div>
-                <div className="mt-auto mb-10 flex flex-col items-center gap-2">
-                   <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-                   <div className="w-1.5 h-1.5 rounded-full bg-indigo-300" />
-                   <div className="w-1.5 h-1.5 rounded-full bg-indigo-100" />
+                <div className="mt-auto mb-[clamp(8px,2vh,24px)] flex flex-col items-center gap-1">
+                   <div className="w-1 h-1 rounded-full bg-indigo-500 animate-pulse" />
+                   <div className="w-1 h-1 rounded-full bg-indigo-300" />
+                   <div className="w-1 h-1 rounded-full bg-indigo-100" />
                 </div>
               </div>
             )}
@@ -262,14 +262,18 @@ export default function LearnLayout({
               localStorage.setItem("toeic-sidebar-collapsed", String(!nextState));
             }}
             style={sidebarOpen ? { left: `${sidebarWidth}px` } : {}}
-            className={`absolute top-1/2 -translate-y-1/2 z-[60] w-6 h-14 bg-white border border-slate-200 shadow-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-slate-50 rounded-r-xl ${
+            className={`absolute top-1/2 -translate-y-1/2 z-[60] w-[clamp(14px,2.2vw,22px)] h-[clamp(28px,5vh,48px)] bg-white border border-slate-200 shadow-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-slate-50 rounded-r-lg sm:rounded-r-xl ${
               isResizing ? "" : "transition-all duration-300 ease-in-out"
             } ${
-              sidebarOpen ? "-ml-px" : "left-0 sm:left-14"
+              sidebarOpen ? "-ml-px" : "left-[clamp(24px,3.5vw,48px)]"
             }`}
             title={sidebarOpen ? "Thu gọn menu" : "Mở rộng menu"}
           >
-            {sidebarOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+            {sidebarOpen ? (
+              <ChevronLeft className="w-[clamp(10px,1.8vh,16px)] h-[clamp(10px,1.8vh,16px)]" />
+            ) : (
+              <ChevronRight className="w-[clamp(10px,1.8vh,16px)] h-[clamp(10px,1.8vh,16px)]" />
+            )}
           </button>
 
           {/* Nội dung bài học Bên Phải */}

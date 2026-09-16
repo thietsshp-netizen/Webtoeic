@@ -137,17 +137,21 @@ export default async function LessonDetailPage({
       )}
 
       {/* HEADER BÀI HỌC (LUÔN HIỂN THỊ) */}
-      <div id="lesson-sub-header" className={`py-3 pl-3 md:py-6 md:pl-6 bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${
+      <div id="lesson-sub-header" className={`h-[clamp(28px,4.5vh,44px)] px-[clamp(6px,1.2vw,20px)] bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${
         ["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC", "IELTS_READING"].includes(lesson.contentType as string)
-          ? "pr-2 sm:pr-6 md:pr-24"
-          : "pr-3 md:pr-6"
+          ? "pr-1 sm:pr-6 md:pr-24"
+          : "pr-2 md:pr-6"
       }`}>
-        <div className="flex items-center gap-2 md:gap-4 max-w-full overflow-hidden flex-1">
-          <div className="w-10 h-10 bg-blue-600 rounded-2xl items-center justify-center text-white shadow-lg shadow-blue-600/20 hidden sm:flex shrink-0">
-            {lesson.contentType === "VIDEO" ? <PlayCircle size={24} /> : <FileText size={24} />}
+        <div className="flex items-center gap-[clamp(4px,1vw,12px)] max-w-full overflow-hidden flex-1">
+          <div className="w-[clamp(18px,3.2vh,32px)] h-[clamp(18px,3.2vh,32px)] bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-md shadow-blue-600/20 shrink-0">
+            {lesson.contentType === "VIDEO" ? (
+              <PlayCircle className="w-[clamp(11px,2vh,18px)] h-[clamp(11px,2vh,18px)]" />
+            ) : (
+              <FileText className="w-[clamp(11px,2vh,18px)] h-[clamp(11px,2vh,18px)]" />
+            )}
           </div>
           <div className="shrink-0">
-            <h2 id="learn-lesson-title" data-lesson-title={lesson.title} className="text-xs md:text-sm font-bold text-slate-800 tracking-tight flex items-center gap-2 max-w-[100px] xs:max-w-[140px] sm:max-w-none truncate sm:whitespace-normal">
+            <h2 id="learn-lesson-title" data-lesson-title={lesson.title} className="text-[clamp(10px,1.5vh,14px)] font-bold text-slate-800 tracking-tight flex items-center gap-1 max-w-[120px] xs:max-w-[160px] sm:max-w-none truncate sm:whitespace-normal">
               {lesson.title}
             </h2>
           </div>
@@ -160,33 +164,33 @@ export default async function LessonDetailPage({
           {prevLesson ? (
             <Link
               href={`/learn/${courseId}/lesson/${prevLesson.id}`}
-              className="px-2 py-1 md:px-3 md:py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[9px] md:text-[10px] rounded-full transition-all flex items-center gap-1 md:gap-1.5 whitespace-nowrap"
+              className="px-[clamp(6px,1vw,12px)] py-[clamp(2px,0.5vh,6px)] bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[clamp(8px,1.2vh,11px)] rounded-full transition-all flex items-center gap-1 whitespace-nowrap"
             >
-              <ChevronLeft size={13} /> <span className="hidden xs:inline">BÀI TRƯỚC</span>
+              <ChevronLeft className="w-[clamp(10px,1.6vh,14px)] h-[clamp(10px,1.6vh,14px)]" /> <span className="hidden xs:inline">BÀI TRƯỚC</span>
             </Link>
           ) : (
-            <button disabled className="px-2 py-1 md:px-3 md:py-1.5 bg-slate-50 text-slate-300 font-bold text-[9px] md:text-[10px] rounded-full flex items-center gap-1 md:gap-1.5 whitespace-nowrap cursor-not-allowed">
-              <ChevronLeft size={13} /> <span className="hidden xs:inline">BÀI TRƯỚC</span>
+            <button disabled className="px-[clamp(6px,1vw,12px)] py-[clamp(2px,0.5vh,6px)] bg-slate-50 text-slate-300 font-bold text-[clamp(8px,1.2vh,11px)] rounded-full flex items-center gap-1 whitespace-nowrap cursor-not-allowed">
+              <ChevronLeft className="w-[clamp(10px,1.6vh,14px)] h-[clamp(10px,1.6vh,14px)]" /> <span className="hidden xs:inline">BÀI TRƯỚC</span>
             </button>
           )}
 
           {nextLesson ? (
             <Link
               href={`/learn/${courseId}/lesson/${nextLesson.id}`}
-              className="px-2 py-1 md:px-3 md:py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[9px] md:text-[10px] rounded-full transition-all flex items-center gap-1 md:gap-1.5 whitespace-nowrap shadow-md shadow-blue-600/20"
+              className="px-[clamp(6px,1vw,12px)] py-[clamp(2px,0.5vh,6px)] bg-blue-600 hover:bg-blue-700 text-white font-bold text-[clamp(8px,1.2vh,11px)] rounded-full transition-all flex items-center gap-1 whitespace-nowrap shadow-md shadow-blue-600/20"
             >
-              <span className="hidden xs:inline">BÀI TIẾP</span> <ChevronRight size={13} />
+              <span className="hidden xs:inline">BÀI TIẾP</span> <ChevronRight className="w-[clamp(10px,1.6vh,14px)] h-[clamp(10px,1.6vh,14px)]" />
             </Link>
           ) : (
-            <button disabled className="px-2 py-1 md:px-3 md:py-1.5 bg-blue-300 text-white font-bold text-[9px] md:text-[10px] rounded-full flex items-center gap-1 md:gap-1.5 whitespace-nowrap shadow-md shadow-blue-300/20 cursor-not-allowed">
-              <span className="hidden xs:inline">BÀI TIẾP</span> <ChevronRight size={13} />
+            <button disabled className="px-[clamp(6px,1vw,12px)] py-[clamp(2px,0.5vh,6px)] bg-blue-300 text-white font-bold text-[clamp(8px,1.2vh,11px)] rounded-full flex items-center gap-1 whitespace-nowrap shadow-md shadow-blue-300/20 cursor-not-allowed">
+              <span className="hidden xs:inline">BÀI TIẾP</span> <ChevronRight className="w-[clamp(10px,1.6vh,14px)] h-[clamp(10px,1.6vh,14px)]" />
             </button>
           )}
         </div>
       </div>
 
-      <div id="lesson-main-content" data-crop-target="lesson-content" className={`flex-1 ${lesson.contentType === "TOEIC_TEST" || lesson.contentType === "PART6_DYNAMIC" || lesson.contentType === "PART7_DYNAMIC" || lesson.contentType === "DYNAMIC_PART" || lesson.contentType === "IELTS_READING" ? "overflow-hidden pb-0 lg:pb-0" : "overflow-y-auto pb-4 lg:pb-10"} pt-4 px-4 lg:pt-0 lg:px-10 relative`}>
-        <div className={`mx-auto ${lesson.contentType === "TOEIC_TEST" || lesson.contentType === "PART6_DYNAMIC" || lesson.contentType === "PART7_DYNAMIC" || lesson.contentType === "DYNAMIC_PART" || lesson.contentType === "IELTS_READING" ? "h-full flex flex-col max-w-[1700px] overflow-hidden" : "max-w-[1200px]"}`}>
+      <div id="lesson-main-content" data-crop-target="lesson-content" className={`flex-1 ${["TOEIC_TEST", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC", "DYNAMIC_PART", "IELTS_READING"].includes(lesson.contentType as string) ? "overflow-hidden pb-0 lg:pb-0 pt-0 px-0 landscape:pt-0 landscape:px-0" : "overflow-y-auto pb-4 lg:pb-10 pt-4 px-4 lg:pt-0 lg:px-10"} relative`}>
+        <div className={`mx-auto w-full ${["TOEIC_TEST", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC", "DYNAMIC_PART", "IELTS_READING"].includes(lesson.contentType as string) ? "h-full flex flex-col max-w-[1700px] landscape:max-w-none overflow-hidden" : "max-w-[1200px]"}`}>
 
           {hasAccess ? (
             /* --- NẾU CÓ QUYỀN: HIỆN NỘI DUNG THẬT --- */

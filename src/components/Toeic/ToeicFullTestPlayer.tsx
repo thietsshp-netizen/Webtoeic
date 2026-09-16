@@ -761,15 +761,15 @@ export default function ToeicFullTestPlayer({
 
       {/* Portal for Timer in Top Header */}
       {mounted && document.getElementById("header-extra-portal") && createPortal(
-        <div id="full-test-part-timer-target" className="flex items-center gap-1.5 sm:gap-3 bg-slate-50/50 px-2 sm:px-4 py-1 sm:py-2 rounded-2xl border border-slate-200/50 backdrop-blur-md max-w-full overflow-x-auto scrollbar-none">
+        <div id="full-test-part-timer-target" className="flex items-center gap-1 sm:gap-3 bg-slate-50/50 px-1 sm:px-4 py-0.5 sm:py-2 rounded-2xl border border-slate-200/50 backdrop-blur-md max-w-full overflow-x-auto scrollbar-none landscape:py-0 landscape:h-[clamp(22px,5.5vh,36px)] landscape:gap-0.5 landscape:px-1">
           {/* Part tabs */}
-          <div className="flex items-center gap-1 shrink-0">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider whitespace-nowrap hidden sm:inline">CHỌN PART:</span>
+          <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider whitespace-nowrap hidden sm:inline landscape:hidden">CHỌN PART:</span>
             {[1, 2, 3, 4, 5, 6, 7].map(p => (
               <button
                 key={p}
                 onClick={() => setActivePart(p)}
-                className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition-all ${
+                className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[9px] sm:text-[10px] font-black transition-all landscape:px-1 landscape:py-0 landscape:text-[clamp(7px,1.8vh,9px)] ${
                   activePart === p
                     ? "bg-blue-600 text-white shadow-sm shadow-blue-600/30"
                     : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
@@ -780,23 +780,23 @@ export default function ToeicFullTestPlayer({
             ))}
           </div>
 
-          <div className="h-5 w-[1.5px] bg-slate-200"></div>
+          <div className="h-4 sm:h-5 w-[1.5px] bg-slate-200"></div>
 
           {/* Clock - inline editor */}
-          <div className="relative flex items-center gap-2">
+          <div className="relative flex items-center gap-1.5">
             {!showTimePicker ? (
               <button
                 onClick={() => { setShowTimePicker(true); setTimeInput(String(Math.ceil(timeLeft / 60))); }}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-xl transition-all group ${
+                className={`flex items-center gap-1 px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl transition-all group landscape:py-0 landscape:px-1 ${
                   timeLeft < 300 ? "bg-red-100 text-red-600 shadow-sm" : "bg-blue-50 hover:bg-blue-100 text-blue-600 shadow-sm border border-blue-100/50"
                 }`}
                 title="Click để đặt thời gian"
               >
-                <Clock size={14} className={timeLeft < 300 ? "animate-pulse" : ""} />
-                <span className={`text-sm font-black font-mono ${timeLeft < 300 ? "text-red-600" : "text-slate-700"}`}>
+                <Clock size={12} className={timeLeft < 300 ? "animate-pulse" : "sm:w-3.5 sm:h-3.5 landscape:w-3 landscape:h-3"} />
+                <span className={`text-xs sm:text-sm font-black font-mono landscape:text-[clamp(8px,2.1vh,11px)] ${timeLeft < 300 ? "text-red-600" : "text-slate-700"}`}>
                   {formatTime(timeLeft)}
                 </span>
-                <span className="text-[9px] text-slate-400 font-bold whitespace-nowrap ml-1.5">Đặt lại</span>
+                <span className="text-[8px] sm:text-[9px] landscape:text-[clamp(6.5px,1.6vh,8.5px)] text-slate-400 font-bold whitespace-nowrap ml-1 hidden xs:inline">Đặt lại</span>
               </button>
             ) : (
               <div className="flex items-center gap-1 bg-white border-2 border-blue-500 rounded-xl p-0.5 shadow-lg shadow-blue-500/10 animate-in zoom-in-95 duration-150">
@@ -921,9 +921,9 @@ export default function ToeicFullTestPlayer({
       <div className="flex flex-1 overflow-hidden relative">
         <div id="bottom-nav-portal-target" className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none xl:absolute xl:bottom-0 xl:left-0 xl:right-0"></div>
 
-        <div ref={mainScrollRef} className="flex-1 overflow-y-auto custom-scrollbar p-0 sm:p-4 lg:p-6">
-          <div className="max-w-[1400px] mx-auto pb-16 sm:pb-20 h-full">
-            <div className="relative w-full h-[calc(100vh-120px)] sm:min-h-[calc(100vh-250px)] sm:h-auto bg-white rounded-none sm:rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+        <div ref={mainScrollRef} className="flex-1 overflow-hidden p-0.5 sm:p-1 flex flex-col h-full min-h-0 w-full">
+          <div className="max-w-[1700px] w-full mx-auto h-full min-h-0 flex flex-col flex-1">
+            <div className="relative w-full h-full min-h-0 flex flex-col flex-1 bg-transparent rounded-none overflow-hidden">
               {activePart === 1 && (
                 <ToeicPart1Player
                   key="part1"

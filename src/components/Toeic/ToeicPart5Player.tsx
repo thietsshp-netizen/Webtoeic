@@ -212,6 +212,119 @@ export default function ToeicPart5Player({
 
   const [selectedCloudIndex, setSelectedCloudIndex] = useState<number>(-1);
 
+  const [splitRatio, setSplitRatio] = useState<number>(42);
+  const [landscapeSplitRatio, setLandscapeSplitRatio] = useState<number>(50);
+  const [isLandscape, setIsLandscape] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkLandscape = () => {
+      if (typeof window !== 'undefined') {
+        setIsLandscape(window.innerWidth > window.innerHeight);
+      }
+    };
+    checkLandscape();
+    window.addEventListener('resize', checkLandscape);
+    window.addEventListener('orientationchange', checkLandscape);
+    return () => {
+      window.removeEventListener('resize', checkLandscape);
+      window.removeEventListener('orientationchange', checkLandscape);
+    };
+  }, []);
+
+  const isResizingRef = useRef(false);
+  const resizeStartYRef = useRef(0);
+  const resizeStartRatioRef = useRef(42);
+
+  const handleResizeTouchStart = (e: React.TouchEvent) => {
+    isResizingRef.current = true;
+    resizeStartYRef.current = e.touches[0].clientY;
+    resizeStartRatioRef.current = splitRatio;
+  };
+
+  const handleResizeMouseDown = (e: React.MouseEvent) => {
+    isResizingRef.current = true;
+    resizeStartYRef.current = e.clientY;
+    resizeStartRatioRef.current = splitRatio;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      if (!isResizingRef.current) return;
+      const deltaY = moveEvent.clientY - resizeStartYRef.current;
+      const containerHeight = window.innerHeight || 800;
+      const deltaRatio = (deltaY / containerHeight) * 100;
+      const newRatio = Math.min(Math.max(resizeStartRatioRef.current + deltaRatio, 20), 75);
+      setSplitRatio(newRatio);
+    };
+
+    const handleMouseUp = () => {
+      isResizingRef.current = false;
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+  };
+
+  const handleResizeTouchMove = (e: React.TouchEvent) => {
+    if (!isResizingRef.current) return;
+    const deltaY = e.touches[0].clientY - resizeStartYRef.current;
+    const containerHeight = window.innerHeight || 800;
+    const deltaRatio = (deltaY / containerHeight) * 100;
+    const newRatio = Math.min(Math.max(resizeStartRatioRef.current + deltaRatio, 20), 75);
+    setSplitRatio(newRatio);
+  };
+
+  const isLandscapeResizingRef = useRef(false);
+  const landscapeResizeStartXRef = useRef(0);
+  const landscapeResizeStartRatioRef = useRef(50);
+
+  const handleLandscapeResizeTouchStart = (e: React.TouchEvent) => {
+    isLandscapeResizingRef.current = true;
+    landscapeResizeStartXRef.current = e.touches[0].clientX;
+    landscapeResizeStartRatioRef.current = landscapeSplitRatio;
+  };
+
+  const handleLandscapeResizeMouseDown = (e: React.MouseEvent) => {
+    isLandscapeResizingRef.current = true;
+    landscapeResizeStartXRef.current = e.clientX;
+    landscapeResizeStartRatioRef.current = landscapeSplitRatio;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      if (!isLandscapeResizingRef.current) return;
+      const deltaX = moveEvent.clientX - landscapeResizeStartXRef.current;
+      const containerWidth = window.innerWidth || 800;
+      const deltaRatio = (deltaX / containerWidth) * 100;
+      const newRatio = Math.min(Math.max(landscapeResizeStartRatioRef.current + deltaRatio, 20), 80);
+      setLandscapeSplitRatio(newRatio);
+    };
+
+    const handleMouseUp = () => {
+      isLandscapeResizingRef.current = false;
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+  };
+
+  const handleLandscapeResizeTouchMove = (e: React.TouchEvent) => {
+    if (!isLandscapeResizingRef.current) return;
+    const deltaX = e.touches[0].clientX - landscapeResizeStartXRef.current;
+    const containerWidth = window.innerWidth || 800;
+    const deltaRatio = (deltaX / containerWidth) * 100;
+    const newRatio = Math.min(Math.max(landscapeResizeStartRatioRef.current + deltaRatio, 20), 80);
+    setLandscapeSplitRatio(newRatio);
+  };
+
+  const handleLandscapeResizeTouchEnd = () => {
+    isLandscapeResizingRef.current = false;
+  };
+
+  const handleResizeTouchEnd = () => {
+    isResizingRef.current = false;
+  };
+
   const getMatchedFamiliesForQuestion = (index: number) => {
     const currentQ = questions[index];
     if (!currentQ) return [];
@@ -2376,7 +2489,7 @@ export default function ToeicPart5Player({
             <span className="border-b border-dashed border-emerald-400 pb-0.5">
               {seg.content}
             </span>
-            <rt className="text-[10px] text-emerald-600 font-extrabold tracking-wide select-none lowercase pb-0 text-center">
+            <rt className="text-[10px] landscape:text-[clamp(7px,1.9vh,10px)] text-emerald-600 font-extrabold tracking-wide select-none lowercase pb-0 text-center">
               <span className="inline-block max-w-[120px] whitespace-normal break-words text-center leading-tight">
                 {displayMeaning.split(',').map((part, index, arr) => (
                   <Fragment key={index}>
@@ -2414,7 +2527,7 @@ export default function ToeicPart5Player({
             <span className="border-b border-dashed border-purple-400 pb-0.5">
               {seg.content}
             </span>
-            <rt className="text-[10px] text-purple-600 font-extrabold tracking-wide select-none lowercase pb-0 text-center">
+            <rt className="text-[10px] landscape:text-[clamp(7px,1.9vh,10px)] text-purple-600 font-extrabold tracking-wide select-none lowercase pb-0 text-center">
               <span className="inline-block max-w-[280px] whitespace-normal break-words text-center leading-tight">
                 {displayMeaning.split(',').map((part, index, arr) => (
                   <Fragment key={index}>
@@ -2578,238 +2691,285 @@ export default function ToeicPart5Player({
   return (
     <div
       data-drawing-context={currentQ?.id ? `part5-${currentQ.id}` : undefined}
-      className="flex-1 flex flex-col font-sans bg-[#f8fafc] text-slate-900 overflow-hidden select-text relative"
+      className="flex-1 flex flex-col font-sans bg-[#f8fafc] text-slate-900 overflow-hidden select-text relative h-full"
     >
-      <div className="flex-1 flex overflow-hidden relative">
-        <div id="part5-scroll-container" className="flex-1 flex flex-col min-h-0 overflow-y-auto px-4 md:pl-8 md:pr-16 scroll-smooth webtoeic-scroll-container">
-          <div className="flex-1 flex flex-col w-full min-h-0 pb-10">
-            <div className="bg-white rounded-3xl shadow-md border border-blue-100 mt-4 shrink-0 flex flex-col relative z-20">
-              <div className="bg-slate-50/50 border-b border-slate-100 px-6 h-14 flex items-center justify-between shrink-0 rounded-t-3xl">
-                <div className="flex items-center gap-4"></div>
-                <div className="flex items-center gap-4">
-                  <FlagSelector
-                    isFlagged={!!flags[currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`]}
-                    flagColor={flags[currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`] || 'RED'}
-                    flagNote={flagNotes[currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`]}
-                    onToggle={(color, note) => {
-                      const qKey = currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`;
-                      handleUpdateFlag(qKey, color, note);
-                    }}
-                    onUnflag={(deleteNote) => {
-                      const qKey = currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`;
-                      handleUpdateFlag(qKey, null, undefined, deleteNote);
-                    }}
-                    compact={true}
-                    layout="horizontal"
-                  />
-                  <div className="h-6 w-[1px] bg-blue-100"></div>
-                  <button
-                    id="reveal-btn"
-                    onClick={() => setShowExplain(prev => ({ ...prev, [currentQ.id]: !prev[currentQ.id] }))}
-                    title="Ẩn/Hiện lời giải (Phím tắt: ctrl/cmd + shift + s)"
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase tracking-widest transition-all border ${showExplain[currentQ.id] ? 'bg-blue-600 text-white border-blue-700' : 'bg-white text-slate-600 border-blue-100 hover:border-blue-400'
-                      }`}
-                  >
-                    <InformationCircleIcon className="w-3.5 h-3.5" />
-                    {showExplain[currentQ.id] ? "Ẩn lời giải" : "Xem lời giải"}
-                  </button>
-                </div>
-              </div>
-              <div
-                ref={el => { if (currentQ.id) questionRefs.current[currentQ.id] = el; }}
-                className="p-4 space-y-4 flex-1 transition-all duration-1000 rounded-3xl"
-              >
-                <div className="flex items-start text-lg md:text-xl font-bold text-slate-900 leading-[2.2] tracking-normal mb-4">
-                  <span className="inline-flex items-center justify-center min-w-[32px] h-8 rounded-lg bg-slate-100 text-slate-400 font-bold text-sm mr-4 flex-shrink-0 mt-1 transition-colors group-hover:bg-slate-100 group-hover:text-slate-1000">
-                    {currentQ.questionNo}
-                  </span>
-                  <AdminInlineEditor
-                    target="question"
-                    id={currentQ.id}
-                    field="questionText"
-                    value={currentQ.questionText || (currentQ as any).question || (currentQ as any).passageText || ""}
-                    multiline
-                  >
-                    <span>{renderQuestionText(currentQ.questionText || (currentQ as any).question || (currentQ as any).passageText)}</span>
-                  </AdminInlineEditor>
-                </div>
-                <div className="w-full">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {['A', 'B', 'C', 'D'].map((opt) => {
-                      const qKey = currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`;
-                      const isSelected = answers[qKey] === opt;
-                      const isCorrect = currentQ.correctAnswer === opt;
-                      const breakdown = explainData.options_breakdown?.[opt] || {};
-                      const value = currentQ[`option${opt}`] || (currentQ as any)[`Option${opt}`] || (currentQ as any).options?.find((o: any) => o.label === opt)?.text || (currentQ as any).options?.find((o: any) => o.label === opt)?.vi;
-                      let btnClass = "border-slate-200 bg-white hover:border-blue-300 text-slate-900 shadow-sm";
-                      if (revealTrueAnswer) {
-                        if (isCorrect) btnClass = "border-emerald-500 bg-emerald-50 text-emerald-900 shadow-sm shadow-emerald-50";
-                        else if (isSelected) btnClass = "border-red-500 bg-red-100 text-red-900 shadow-sm shadow-red-50";
-                        else btnClass = "border-slate-300 bg-white shadow-none";
-                      }
-                      return (
-                        <div
-                          key={opt}
-                          onMouseDown={(e) => e.stopPropagation()}
-                          className={`relative py-1 px-3 rounded-xl border text-left text-[16px] font-semibold transition-all flex items-center gap-3 cursor-default select-text ${btnClass}`}
-                        >
-                          <div
-                            onClick={() => {
-                              const qKey = currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`;
-                              !revealTrueAnswer && handleSelect(qKey, opt);
-                            }}
-                            className={`w-6 h-6 rounded-full flex items-center justify-center text-xs border-2 transition-all shrink-0 cursor-pointer hover:scale-110 active:scale-95 ${revealTrueAnswer && isCorrect ? 'bg-emerald-500 text-white border-emerald-600' :
-                              revealTrueAnswer && isSelected ? 'bg-red-500 text-white border-red-600' :
-                                isSelected ? 'bg-indigo-600 text-white border-indigo-700' : 'bg-slate-50 text-slate-400 border-slate-100 hover:border-indigo-400'
-                              }`}>{opt}</div>
-                          <AdminInlineEditor
-                            target="question"
-                            id={currentQ.id}
-                            field={`option${opt}`}
-                            value={value}
-                          >
-                            <div className="flex flex-col flex-1 py-1">
-                              <div className="flex flex-wrap items-baseline gap-2">
-                                <span className="whitespace-normal font-bold">{value}</span>
-                                {hasAnyExplanation && breakdown.meaning && (
-                                  <span className="text-[12px] text-slate-500 font-medium leading-tight">
-                                    = {breakdown.meaning}
-                                  </span>
-                                )}
-                              </div>
-                              {hasAnyExplanation && (isValidData(breakdown.synonyms) || isValidData(breakdown.antonyms)) && (
-                                <div className="mt-0.5 flex flex-wrap gap-x-4 gap-y-1 text-[11px]">
-                                  {isValidData(breakdown.synonyms) && (
-                                    <div className="flex items-center gap-1 group/syn">
-                                      <span className="text-emerald-600 font-bold whitespace-nowrap">
-                                        ~ {breakdown.synonyms}
-                                      </span>
-                                      <button
-                                        onClick={(e) => { e.stopPropagation(); speak(breakdown.synonyms); }}
-                                        className="p-0.5 rounded hover:bg-emerald-50 text-emerald-400/60 hover:text-emerald-600 transition-colors"
-                                        title="Nghe từ đồng nghĩa"
-                                      >
-                                        <SpeakerWaveIcon className="w-3 h-3" />
-                                      </button>
-                                    </div>
-                                  )}
-                                  {isValidData(breakdown.antonyms) && (
-                                    <div className="flex items-center gap-1 group/ant">
-                                      <span className="text-red-500 font-bold whitespace-nowrap">
-                                        &gt;&lt; {breakdown.antonyms}
-                                      </span>
-                                      <button
-                                        onClick={(e) => { e.stopPropagation(); speak(breakdown.antonyms); }}
-                                        className="p-0.5 rounded hover:bg-red-50 text-red-400/60 hover:text-red-600 transition-colors"
-                                        title="Nghe từ trái nghĩa"
-                                      >
-                                        <SpeakerWaveIcon className="w-3 h-3" />
-                                      </button>
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </AdminInlineEditor>
-                          {isValidData(value) && (
-                            <button
-                              onClick={(e) => { e.stopPropagation(); speak(value); }}
-                              className="p-1.5 hover:bg-white/50 rounded-full transition-colors shrink-0"
-                              title="Phát âm"
-                            >
-                              <SpeakerWaveIcon className="w-4 h-4 text-slate-1000 opacity-60 hover:opacity-100" />
-                            </button>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* TRANSLATION SECTION - MOVED BELOW OPTIONS */}
-                {(revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id]) && (
-                  <div className="mt-6 p-5 bg-slate-50/50 rounded-2xl border border-blue-100/30 animate-in fade-in slide-in-from-top-2 duration-500">
-                    <div className="flex items-center gap-2 mb-2 text-slate-400">
-                      <BookOpenIcon className="w-4 h-4" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Bản dịch câu hỏi:</span>
+      <div className="flex-1 flex overflow-hidden relative h-full w-full">
+        <div id="part5-scroll-container" className="flex-1 flex flex-col min-h-0 overflow-hidden px-[clamp(6px,1.2vw,20px)] py-[clamp(2px,0.5vh,6px)] webtoeic-scroll-container h-full w-full max-w-full">
+          {(() => {
+            const isHoriz = isLandscape || (typeof window !== 'undefined' && window.innerWidth >= 640);
+            return (
+              <div className={`flex-1 flex w-full h-full min-h-0 ${hasAnyExplanation ? (isHoriz ? 'flex-row gap-0 overflow-hidden' : 'flex-col gap-0 overflow-hidden') : 'flex-col pb-2'}`}>
+                <div
+                  className={`bg-white rounded-xl shadow-md border border-blue-100 flex flex-col relative z-20 ${
+                    hasAnyExplanation
+                      ? (isHoriz ? 'h-full min-h-0 overflow-hidden shrink-0 mt-0' : 'w-full min-w-0 overflow-hidden shrink-0 mt-0')
+                      : 'shrink-0'
+                  }`}
+                  style={
+                    hasAnyExplanation
+                      ? (isHoriz
+                          ? { width: `${landscapeSplitRatio}%` }
+                          : { height: `${splitRatio}%` })
+                      : undefined
+                  }
+                >
+                  <div className="bg-slate-50/50 border-b border-slate-100 px-[clamp(8px,1.5vw,20px)] h-[clamp(28px,4vh,42px)] flex items-center justify-between shrink-0 rounded-t-xl">
+                    <div className="flex items-center gap-4"></div>
+                    <div className="flex items-center gap-[clamp(4px,1vw,16px)]">
+                      <FlagSelector
+                        isFlagged={!!flags[currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`]}
+                        flagColor={flags[currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`] || 'RED'}
+                        flagNote={flagNotes[currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`]}
+                        onToggle={(color, note) => {
+                          const qKey = currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`;
+                          handleUpdateFlag(qKey, color, note);
+                        }}
+                        onUnflag={(deleteNote) => {
+                          const qKey = currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`;
+                          handleUpdateFlag(qKey, null, undefined, deleteNote);
+                        }}
+                        compact={true}
+                        layout="horizontal"
+                      />
+                      <div className="h-[clamp(12px,2vh,20px)] w-[1px] bg-blue-100"></div>
+                      <button
+                        id="reveal-btn"
+                        onClick={() => setShowExplain(prev => ({ ...prev, [currentQ.id]: !prev[currentQ.id] }))}
+                        title="Ẩn/Hiện lời giải (Phím tắt: ctrl/cmd + shift + s)"
+                        className={`flex items-center gap-1 px-[clamp(6px,1vw,12px)] py-[clamp(2px,0.5vh,6px)] rounded-lg font-bold text-[clamp(8px,1.2vh,11px)] uppercase tracking-widest transition-all border ${showExplain[currentQ.id] ? 'bg-blue-600 text-white border-blue-700' : 'bg-white text-slate-600 border-blue-100 hover:border-blue-400'
+                          }`}
+                      >
+                        <InformationCircleIcon className="w-[clamp(11px,1.8vh,15px)] h-[clamp(11px,1.8vh,15px)]" />
+                        {showExplain[currentQ.id] ? "Ẩn lời giải" : "Xem lời giải"}
+                      </button>
                     </div>
-                    <p className="text-[15px] font-bold text-slate-700 leading-relaxed italic">
+                  </div>
+                  <div
+                    ref={el => { if (currentQ.id) questionRefs.current[currentQ.id] = el; }}
+                    className="p-[clamp(8px,1.5vh,16px)] space-y-[clamp(6px,1.2vh,12px)] flex-1 overflow-y-auto custom-scrollbar rounded-b-xl scroll-smooth"
+                  >
+                    <div className="flex items-start text-[clamp(11px,1.8vh,15px)] font-bold text-slate-900 leading-snug sm:leading-relaxed tracking-normal mb-1">
+                      <span className="inline-flex items-center justify-center min-w-[clamp(20px,3vh,28px)] h-[clamp(18px,2.8vh,26px)] rounded-lg bg-slate-100 text-slate-400 font-bold text-[clamp(9px,1.4vh,12px)] mr-2 flex-shrink-0 mt-0.5 transition-colors group-hover:bg-slate-100 group-hover:text-slate-1000">
+                        {currentQ.questionNo}
+                      </span>
                       <AdminInlineEditor
                         target="question"
                         id={currentQ.id}
-                        field="metadata.translation"
-                        value={currentQ.metadata?.translation || "Đang cập nhật bản dịch chi tiết..."}
+                        field="questionText"
+                        value={currentQ.questionText || (currentQ as any).question || (currentQ as any).passageText || ""}
                         multiline
                       >
-                        "{currentQ.metadata?.translation || "Đang cập nhật bản dịch chi tiết..."}"
+                        <span>{renderQuestionText(currentQ.questionText || (currentQ as any).question || (currentQ as any).passageText)}</span>
                       </AdminInlineEditor>
-                    </p>
+                    </div>
+                    <div className="w-full">
+                      <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                        {['A', 'B', 'C', 'D'].map((opt) => {
+                          const qKey = currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`;
+                          const isSelected = answers[qKey] === opt;
+                          const isCorrect = currentQ.correctAnswer === opt;
+                          const breakdown = explainData.options_breakdown?.[opt] || {};
+                          const value = currentQ[`option${opt}`] || (currentQ as any)[`Option${opt}`] || (currentQ as any).options?.find((o: any) => o.label === opt)?.text || (currentQ as any).options?.find((o: any) => o.label === opt)?.vi;
+                          let btnClass = "border-slate-200 bg-white hover:border-blue-300 text-slate-900 shadow-sm";
+                          if (revealTrueAnswer) {
+                            if (isCorrect) btnClass = "border-emerald-500 bg-emerald-50 text-emerald-900 shadow-sm shadow-emerald-50";
+                            else if (isSelected) btnClass = "border-red-500 bg-red-100 text-red-900 shadow-sm shadow-red-50";
+                            else btnClass = "border-slate-300 bg-white shadow-none";
+                          }
+                          return (
+                            <div
+                              key={opt}
+                              onMouseDown={(e) => e.stopPropagation()}
+                              className={`relative py-[clamp(3px,0.6vh,8px)] px-[clamp(6px,1vw,12px)] rounded-xl border text-left font-semibold transition-all flex items-start sm:items-center gap-1.5 cursor-default select-text overflow-hidden ${btnClass}`}
+                            >
+                              <div
+                                onClick={() => {
+                                  const qKey = currentQ.id || `${currentQ.groupId}_${currentQ.questionNo}`;
+                                  !revealTrueAnswer && handleSelect(qKey, opt);
+                                }}
+                                className={`w-[clamp(16px,2.6vh,22px)] h-[clamp(16px,2.6vh,22px)] rounded-full flex items-center justify-center text-[clamp(9px,1.4vh,12px)] border-2 transition-all shrink-0 cursor-pointer hover:scale-110 active:scale-95 ${revealTrueAnswer && isCorrect ? 'bg-emerald-500 text-white border-emerald-600' :
+                                  revealTrueAnswer && isSelected ? 'bg-red-500 text-white border-red-600' :
+                                    isSelected ? 'bg-indigo-600 text-white border-indigo-700' : 'bg-slate-50 text-slate-400 border-slate-100 hover:border-indigo-400'
+                                  }`}>{opt}</div>
+                              <AdminInlineEditor
+                                target="question"
+                                id={currentQ.id}
+                                field={`option${opt}`}
+                                value={value}
+                              >
+                                <div className="flex flex-col flex-1 py-0.5 min-w-0 overflow-hidden">
+                                  <div className="flex flex-wrap items-baseline gap-1">
+                                    <span className="whitespace-normal font-bold text-[clamp(10.5px,1.6vh,14px)] break-words">{value}</span>
+                                    {hasAnyExplanation && breakdown.meaning && (
+                                      <span className="text-[clamp(8px,1.2vh,11px)] text-slate-500 font-medium leading-tight break-words">
+                                        = {breakdown.meaning}
+                                      </span>
+                                    )}
+                                  </div>
+                                  {hasAnyExplanation && (isValidData(breakdown.synonyms) || isValidData(breakdown.antonyms)) && (
+                                    <div className="mt-0.5 flex flex-wrap gap-x-1.5 gap-y-0.5 text-[clamp(7.5px,1.1vh,10px)] min-w-0 overflow-hidden">
+                                      {isValidData(breakdown.synonyms) && (
+                                        <div className="flex items-center gap-0.5 group/syn min-w-0">
+                                          <span className="text-emerald-600 font-bold break-words min-w-0">
+                                            ~ {breakdown.synonyms}
+                                          </span>
+                                          <button
+                                            onClick={(e) => { e.stopPropagation(); speak(breakdown.synonyms); }}
+                                            className="p-0.5 rounded hover:bg-emerald-50 text-emerald-400/60 hover:text-emerald-600 transition-colors shrink-0"
+                                            title="Nghe từ đồng nghĩa"
+                                          >
+                                            <SpeakerWaveIcon className="w-[clamp(10px,1.5vh,14px)] h-[clamp(10px,1.5vh,14px)]" />
+                                          </button>
+                                        </div>
+                                      )}
+                                      {isValidData(breakdown.antonyms) && (
+                                        <div className="flex items-center gap-0.5 group/ant min-w-0">
+                                          <span className="text-red-500 font-bold break-words min-w-0">
+                                            &gt;&lt; {breakdown.antonyms}
+                                          </span>
+                                          <button
+                                            onClick={(e) => { e.stopPropagation(); speak(breakdown.antonyms); }}
+                                            className="p-0.5 rounded hover:bg-red-50 text-red-400/60 hover:text-red-600 transition-colors shrink-0"
+                                            title="Nghe từ trái nghĩa"
+                                          >
+                                            <SpeakerWaveIcon className="w-[clamp(10px,1.5vh,14px)] h-[clamp(10px,1.5vh,14px)]" />
+                                          </button>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              </AdminInlineEditor>
+                              {isValidData(value) && (
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); speak(value); }}
+                                  className="p-0.5 hover:bg-white/50 rounded-full transition-colors shrink-0"
+                                  title="Phát âm"
+                                >
+                                  <SpeakerWaveIcon className="w-[clamp(12px,1.8vh,16px)] h-[clamp(12px,1.8vh,16px)] text-slate-1000 opacity-60 hover:opacity-100" />
+                                </button>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* TRANSLATION SECTION - MOVED BELOW OPTIONS */}
+                    {(revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id]) && (
+                      <div className="mt-2 p-[clamp(8px,1.4vh,16px)] bg-slate-50/50 rounded-xl border border-blue-100/30 animate-in fade-in slide-in-from-top-2 duration-500">
+                        <div className="flex items-center gap-1.5 mb-1 text-slate-400">
+                          <BookOpenIcon className="w-[clamp(12px,1.8vh,16px)] h-[clamp(12px,1.8vh,16px)]" />
+                          <span className="text-[clamp(8px,1.2vh,11px)] font-black uppercase tracking-widest">Bản dịch câu hỏi:</span>
+                        </div>
+                        <p className="text-[clamp(11px,1.7vh,14px)] font-bold text-slate-700 leading-relaxed italic">
+                          <AdminInlineEditor
+                            target="question"
+                            id={currentQ.id}
+                            field="metadata.translation"
+                            value={currentQ.metadata?.translation || "Đang cập nhật bản dịch chi tiết..."}
+                            multiline
+                          >
+                            "{currentQ.metadata?.translation || "Đang cập nhật bản dịch chi tiết..."}"
+                          </AdminInlineEditor>
+                        </p>
+                      </div>
+                    )}
+
+                    {isReviewMode && answers[currentQ.id] && !revealMode && (
+                      <div className="mt-3 flex justify-center">
+                        <button
+                          onClick={async () => {
+                            setRevealMode(true);
+                            const isC = answers[currentQ.id] === currentQ.correctAnswer;
+                            if (isC && lessonId) {
+                              await fetch('/api/progress/questions', {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                  mode: 'batch',
+                                  attempts: [{
+                                    questionId: currentQ.id,
+                                    lessonId,
+                                    courseId,
+                                    userAnswer: answers[currentQ.id],
+                                    isCorrect: true,
+                                    isFlagged: !!flags[currentQ.id]
+                                  }]
+                                })
+                              });
+                              if (onResolved) onResolved();
+                            }
+                          }}
+                          className="px-[clamp(16px,2vw,32px)] py-[clamp(6px,1vh,12px)] rounded-xl bg-indigo-600 text-white font-bold text-[clamp(10px,1.5vh,14px)] uppercase tracking-widest shadow-xl shadow-indigo-200 hover:bg-indigo-700 transition-all animate-in zoom-in-90"
+                        >
+                          Kiểm Tra Đáp Án
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {hasAnyExplanation && !isHoriz && (
+                  <div
+                    onMouseDown={handleResizeMouseDown}
+                    onTouchStart={handleResizeTouchStart}
+                    onTouchMove={handleResizeTouchMove}
+                    onTouchEnd={handleResizeTouchEnd}
+                    className="py-0.5 flex items-center justify-center h-3 w-full cursor-row-resize touch-none select-none group/resizer my-0.5 relative z-30 bg-slate-100 hover:bg-blue-100 active:bg-blue-200 border-y border-slate-200 transition-colors shrink-0"
+                    title="Kéo thanh này để điều chỉnh độ cao 2 khung"
+                  >
+                    <div className="w-12 h-1 bg-slate-400 group-hover/resizer:bg-blue-600 active:bg-blue-700 rounded-full transition-colors shadow-sm" />
+                  </div>
+                )}
+                {hasAnyExplanation && isHoriz && (
+                  <div
+                    onMouseDown={handleLandscapeResizeMouseDown}
+                    onTouchStart={handleLandscapeResizeTouchStart}
+                    onTouchMove={handleLandscapeResizeTouchMove}
+                    onTouchEnd={handleLandscapeResizeTouchEnd}
+                    className="flex flex-col items-center justify-center w-3.5 h-full cursor-col-resize touch-none select-none group/hresizer shrink-0 z-30 relative bg-slate-100 hover:bg-blue-100 active:bg-blue-200 border-x border-slate-200 transition-colors"
+                    title="Kéo thanh này sang trái/phải để điều chỉnh độ rộng 2 khung"
+                  >
+                    <div className="w-1.5 h-16 bg-slate-400 group-hover/hresizer:bg-blue-600 active:bg-blue-700 rounded-full transition-colors shadow-sm flex flex-col items-center justify-center gap-1">
+                      <div className="w-0.5 h-0.5 rounded-full bg-white" />
+                      <div className="w-0.5 h-0.5 rounded-full bg-white" />
+                      <div className="w-0.5 h-0.5 rounded-full bg-white" />
+                    </div>
                   </div>
                 )}
 
-                {isReviewMode && answers[currentQ.id] && !revealMode && (
-                  <div className="mt-8 flex justify-center">
-                    <button
-                      onClick={async () => {
-                        setRevealMode(true);
-                        const isC = answers[currentQ.id] === currentQ.correctAnswer;
-                        if (isC && lessonId) {
-                          await fetch('/api/progress/questions', {
-                            method: 'POST',
-                            body: JSON.stringify({
-                              mode: 'batch',
-                              attempts: [{
-                                questionId: currentQ.id,
-                                lessonId,
-                                courseId,
-                                userAnswer: answers[currentQ.id],
-                                isCorrect: true,
-                                isFlagged: !!flags[currentQ.id]
-                              }]
-                            })
-                          });
-                          if (onResolved) onResolved();
-                        }
-                      }}
-                      className="px-10 py-4 rounded-2xl bg-indigo-600 text-white font-bold uppercase tracking-widest shadow-xl shadow-indigo-200 hover:bg-indigo-700 transition-all animate-in zoom-in-90"
-                    >
-                      Kiểm Tra Đáp Án
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-            {!(revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id]) && (
-              <div className="h-48 shrink-0" />
-            )}
-            {(revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id]) && (
-              <div className="mt-6 h-[700px] shrink-0 relative overflow-hidden bg-white rounded-3xl border border-blue-100 shadow-md flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="px-6 py-3 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between shrink-0">
-                  <div className="flex items-center gap-2">
-                    <BookOpenIcon className="w-4 h-4 text-slate-700" />
-                    <span className="text-sm font-black text-slate-900 uppercase tracking-tighter">LỜI GIẢI CHI TIẾT</span>
-                  </div>
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                </div>
-                <div ref={explainScrollRef} className="flex-1 overflow-y-auto pt-10 px-8 pb-40 scrollbar-thin scrollbar-thumb-blue-100 scrollbar-track-transparent">
-                  <div className="space-y-10 animate-in slide-in-from-bottom-4 duration-500">
+                {(revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id]) && (
+                  <div
+                    className={`relative overflow-hidden bg-white rounded-xl border border-blue-100 shadow-md flex flex-col z-20 ${
+                      isHoriz ? 'h-full flex-1 min-w-0 min-h-0' : 'w-full flex-1 min-w-0 min-h-0'
+                    }`}
+                  >
+                    <div className="px-[clamp(8px,1.5vw,20px)] h-[clamp(28px,4vh,42px)] bg-slate-50/50 border-b border-slate-100 flex items-center justify-between shrink-0">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <BookOpenIcon className="w-[clamp(12px,1.8vh,16px)] h-[clamp(12px,1.8vh,16px)] text-slate-700" />
+                        <span className="text-[clamp(9px,1.5vh,13px)] font-black text-slate-900 uppercase tracking-tighter">LỜI GIẢI CHI TIẾT</span>
+                      </div>
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                    </div>
+                    <div ref={explainScrollRef} className="flex-1 overflow-y-auto min-h-0 p-[clamp(8px,1.5vh,16px)] scrollbar-thin scrollbar-thumb-blue-100 scrollbar-track-transparent">
+                      <div className="space-y-[clamp(8px,1.5vh,20px)] animate-in slide-in-from-bottom-4 duration-500">
                     {revealTrueAnswer && (
-                      <section className="space-y-6">
-                        <div className="flex items-center gap-3">
-                          <div className="w-1.5 h-6 bg-blue-600 rounded-full"></div>
-                          <h3 className="text-xs font-bold uppercase tracking-widest text-slate-900">Đáp án đúng là:</h3>
+                      <section className="space-y-4 sm:space-y-6 landscape:space-y-1.5">
+                        <div className="flex items-center gap-2 sm:gap-3 landscape:gap-1.5">
+                          <div className="w-1.5 h-4 sm:h-6 landscape:h-3 bg-blue-600 rounded-full"></div>
+                          <h3 className="text-[10px] sm:text-xs landscape:text-[clamp(7.5px,1.9vh,10px)] font-bold uppercase tracking-widest text-slate-900">Đáp án đúng là:</h3>
                         </div>
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-4">
-                            <p className="text-2xl font-bold text-slate-900">
+                        <div className="space-y-2.5 sm:space-y-4 landscape:space-y-1">
+                          <div className="flex items-center gap-2 sm:gap-4 landscape:gap-1.5">
+                            <p className="text-sm sm:text-2xl landscape:text-[clamp(10px,2.7vh,16px)] font-bold text-slate-900">
                               {currentQ.correctAnswer}. {currentQ[`option${currentQ.correctAnswer}`]}
-                              <CheckCircleIcon className="w-7 h-7 text-emerald-500 inline-block ml-3 mb-1" />
+                              <CheckCircleIcon className="w-4 h-4 sm:w-7 sm:h-7 landscape:w-3.5 landscape:h-3.5 text-emerald-500 inline-block ml-1.5 sm:ml-3 landscape:ml-1 mb-0.5" />
                             </p>
-                            <button onClick={() => speak(currentQ[`option${currentQ.correctAnswer}`])} className="p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors">
-                              <SpeakerWaveIcon className="w-5 h-5 text-slate-600" />
+                            <button onClick={() => speak(currentQ[`option${currentQ.correctAnswer}`])} className="p-1 sm:p-2 landscape:p-0.5 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors">
+                              <SpeakerWaveIcon className="w-3.5 h-3.5 sm:w-5 sm:h-5 landscape:w-2.5 landscape:h-2.5 text-slate-600" />
                             </button>
                           </div>
-                          <div className="p-6 bg-slate-100/30 rounded-2xl border border-blue-100/30 italic font-bold text-slate-700 leading-relaxed text-lg">
+                          <div className="p-3 sm:p-6 landscape:p-[clamp(4px,1.2vh,10px)] bg-slate-100/30 rounded-xl sm:rounded-2xl border border-blue-100/30 italic font-bold text-slate-700 leading-relaxed text-xs sm:text-lg landscape:text-[clamp(8.5px,2.2vh,12px)] landscape:leading-tight">
                             <AdminInlineEditor
                               target="question"
                               id={currentQ.id}
@@ -2823,20 +2983,20 @@ export default function ToeicPart5Player({
                         </div>
                       </section>
                     )}
-                    <section className="space-y-6">
-                      <div className="flex items-center gap-3">
-                        <ListBulletIcon className="w-5 h-5 text-slate-300" />
-                        <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">Giải mã các phương án</span>
+                    <section className="space-y-4 sm:space-y-6 landscape:space-y-1.5">
+                      <div className="flex items-center gap-2 sm:gap-3 landscape:gap-1.5">
+                        <ListBulletIcon className="w-4 h-4 sm:w-5 sm:h-5 landscape:w-3 landscape:h-3 text-slate-300" />
+                        <span className="text-[10px] sm:text-xs landscape:text-[clamp(7.5px,1.9vh,10px)] font-bold text-slate-600 uppercase tracking-widest">Giải mã các phương án</span>
                       </div>
-                      <div className="overflow-x-auto -mx-4 sm:mx-0">
+                      <div className="overflow-x-auto -mx-3 sm:mx-0">
                         <div className="inline-block min-w-full align-middle">
                           <div className="overflow-hidden border border-slate-200 sm:rounded-2xl shadow-sm bg-white">
                             <table className="min-w-full divide-y divide-slate-200 border-collapse">
                               <thead className="bg-slate-100/80">
                                 <tr className="divide-x divide-slate-200">
-                                  <th scope="col" className="px-5 py-4 text-left text-[11px] font-black text-slate-700 uppercase tracking-widest w-16">Câu</th>
-                                  <th scope="col" className="px-5 py-4 text-left text-[11px] font-black text-slate-700 uppercase tracking-widest w-64">Từ vựng & Phát âm</th>
-                                  <th scope="col" className="px-5 py-4 text-left text-[11px] font-black text-slate-700 uppercase tracking-widest">Phân tích chi tiết</th>
+                                  <th scope="col" className="px-2 py-2 sm:px-5 sm:py-4 landscape:px-1 landscape:py-0.5 text-left text-[9px] sm:text-[11px] landscape:text-[clamp(7px,1.8vh,9.5px)] font-black text-slate-700 uppercase tracking-widest w-10 sm:w-16">Câu</th>
+                                  <th scope="col" className="px-2 py-2 sm:px-5 sm:py-4 landscape:px-1 landscape:py-0.5 text-left text-[9px] sm:text-[11px] landscape:text-[clamp(7px,1.8vh,9.5px)] font-black text-slate-700 uppercase tracking-widest w-32 sm:w-64">Từ vựng & Phát âm</th>
+                                  <th scope="col" className="px-2 py-2 sm:px-5 sm:py-4 landscape:px-1 landscape:py-0.5 text-left text-[9px] sm:text-[11px] landscape:text-[clamp(7px,1.8vh,9.5px)] font-black text-slate-700 uppercase tracking-widest">Phân tích chi tiết</th>
                                 </tr>
                               </thead>
                               <tbody className="bg-white divide-y divide-slate-200">
@@ -2847,60 +3007,60 @@ export default function ToeicPart5Player({
                                   const label = currentQ[`option${opt}`];
                                   return (
                                     <tr key={opt} className={`transition-colors divide-x divide-slate-100 ${showCorrectHighlight ? 'bg-emerald-50/30' : 'hover:bg-slate-50/50'}`}>
-                                      <td className="px-5 py-6 whitespace-nowrap">
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold border-2 transition-all shadow-sm ${showCorrectHighlight ? 'bg-emerald-500 text-white border-emerald-400' : 'bg-slate-50 text-slate-300 border-slate-100'}`}>
+                                      <td className="px-2 py-2.5 sm:px-5 sm:py-6 landscape:px-1 landscape:py-0.5 whitespace-nowrap">
+                                        <div className={`w-7 h-7 sm:w-10 sm:h-10 landscape:w-[clamp(15px,4vh,24px)] landscape:h-[clamp(15px,4vh,24px)] rounded-lg sm:rounded-xl flex items-center justify-center text-xs sm:text-base landscape:text-[clamp(7.5px,2vh,11px)] font-bold border-2 transition-all shadow-sm ${showCorrectHighlight ? 'bg-emerald-500 text-white border-emerald-400' : 'bg-slate-50 text-slate-300 border-slate-100'}`}>
                                           {opt}
                                         </div>
                                       </td>
-                                      <td className="px-5 py-6 align-top">
-                                        <div className="space-y-3">
-                                          <div className="flex items-center gap-2 group/word">
-                                            <span className={`text-lg font-bold tracking-tight ${showCorrectHighlight ? 'text-emerald-700' : 'text-slate-800'}`}>{label}</span>
-                                            <button onClick={() => speak(label)} className="p-1 px-1.5 bg-slate-100 rounded-md hover:bg-blue-600 hover:text-white transition-all text-slate-400" title="Phát âm">
-                                              <SpeakerWaveIcon className="w-3.5 h-3.5" />
+                                      <td className="px-2 py-2.5 sm:px-5 sm:py-6 landscape:px-1 landscape:py-0.5 align-top">
+                                        <div className="space-y-1.5 sm:space-y-3 landscape:space-y-0.5">
+                                          <div className="flex items-center gap-1.5 sm:gap-2 group/word">
+                                            <span className={`text-xs sm:text-lg landscape:text-[clamp(9px,2.4vh,13px)] font-bold tracking-tight ${showCorrectHighlight ? 'text-emerald-700' : 'text-slate-800'}`}>{label}</span>
+                                            <button onClick={() => speak(label)} className="p-0.5 sm:p-1 px-1 sm:px-1.5 landscape:p-0 bg-slate-100 rounded-md hover:bg-blue-600 hover:text-white transition-all text-slate-400" title="Phát âm">
+                                              <SpeakerWaveIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5 landscape:w-2 landscape:h-2" />
                                             </button>
                                           </div>
-                                          <div className="flex flex-col gap-1.5">
+                                          <div className="flex flex-col gap-1 sm:gap-1.5 landscape:gap-0.5">
                                             {isValidData(breakdown.ipa_uk) && (
-                                              <div className="flex items-center gap-2 text-[11px]">
-                                                <span className="font-bold text-slate-400 w-5">UK</span>
-                                                <div className="flex items-center gap-1.5">
-                                                  <span className="font-mono text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">{breakdown.ipa_uk}</span>
-                                                  <button onClick={() => speak(label, 'uk')} className="text-slate-300 hover:text-blue-500"><SpeakerWaveIcon className="w-3 h-3" /></button>
+                                              <div className="flex items-center gap-1 sm:gap-2 landscape:gap-1 text-[9px] sm:text-[11px] landscape:text-[clamp(7px,1.8vh,9.5px)]">
+                                                <span className="font-bold text-slate-400 w-4 sm:w-5 landscape:w-3">UK</span>
+                                                <div className="flex items-center gap-1 sm:gap-1.5">
+                                                  <span className="font-mono text-slate-600 bg-slate-100 px-1 sm:px-1.5 py-0.5 rounded">{breakdown.ipa_uk}</span>
+                                                  <button onClick={() => speak(label, 'uk')} className="text-slate-300 hover:text-blue-500"><SpeakerWaveIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 landscape:w-2 landscape:h-2" /></button>
                                                 </div>
                                               </div>
                                             )}
                                             {isValidData(breakdown.ipa_us) && (
-                                              <div className="flex items-center gap-2 text-[11px]">
-                                                <span className="font-bold text-slate-400 w-5">US</span>
-                                                <div className="flex items-center gap-1.5">
-                                                  <span className="font-mono text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">{breakdown.ipa_us}</span>
-                                                  <button onClick={() => speak(label, 'us')} className="text-slate-300 hover:text-blue-500"><SpeakerWaveIcon className="w-3 h-3" /></button>
+                                              <div className="flex items-center gap-1 sm:gap-2 landscape:gap-1 text-[9px] sm:text-[11px] landscape:text-[clamp(7px,1.8vh,9.5px)]">
+                                                <span className="font-bold text-slate-400 w-4 sm:w-5 landscape:w-3">US</span>
+                                                <div className="flex items-center gap-1 sm:gap-1.5">
+                                                  <span className="font-mono text-slate-600 bg-slate-100 px-1 sm:px-1.5 py-0.5 rounded">{breakdown.ipa_us}</span>
+                                                  <button onClick={() => speak(label, 'us')} className="text-slate-300 hover:text-blue-500"><SpeakerWaveIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 landscape:w-2 landscape:h-2" /></button>
                                                 </div>
                                               </div>
                                             )}
                                             {!isValidData(breakdown.ipa_uk) && !isValidData(breakdown.ipa_us) && isValidData(breakdown.ipa) && (
-                                              <div className="flex items-center gap-1.5">
-                                                <span className="text-xs font-mono text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded">[{breakdown.ipa}]</span>
-                                                <button onClick={() => speak(label)} className="text-slate-300 hover:text-blue-500"><SpeakerWaveIcon className="w-3 h-3" /></button>
+                                              <div className="flex items-center gap-1 sm:gap-1.5">
+                                                <span className="text-[9px] sm:text-xs landscape:text-[clamp(7px,1.8vh,9.5px)] font-mono text-slate-500 bg-slate-50 px-1 sm:px-1.5 py-0.5 rounded">[{breakdown.ipa}]</span>
+                                                <button onClick={() => speak(label)} className="text-slate-300 hover:text-blue-500"><SpeakerWaveIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 landscape:w-2 landscape:h-2" /></button>
                                               </div>
                                             )}
                                           </div>
                                         </div>
                                       </td>
-                                      <td className="px-5 py-6 align-top">
-                                        <div className="space-y-4">
+                                      <td className="px-2 py-2.5 sm:px-5 sm:py-6 landscape:px-1 landscape:py-0.5 align-top">
+                                        <div className="space-y-2 sm:space-y-4 landscape:space-y-1">
                                           <div>
-                                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Nghĩa phương án:</div>
-                                            <p className="font-bold text-slate-800 text-base leading-snug">
+                                            <div className="text-[8.5px] sm:text-[10px] landscape:text-[clamp(6.5px,1.7vh,9px)] font-bold text-slate-400 uppercase tracking-widest mb-1 sm:mb-1.5 landscape:mb-0.5">Nghĩa phương án:</div>
+                                            <p className="font-bold text-slate-800 text-xs sm:text-base landscape:text-[clamp(9px,2.3vh,12px)] leading-snug">
                                               <AdminInlineEditor target="question" id={currentQ.id} field={`metadata.explanation.options_breakdown.${opt}.meaning`} value={breakdown.meaning || ""}>
                                                 {formatText(breakdown.meaning) || "Nghĩa của từ này đang được cập nhật..."}
                                               </AdminInlineEditor>
                                             </p>
                                           </div>
                                           <div>
-                                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Phân tích:</div>
-                                            <div className="text-slate-700 leading-relaxed font-medium">
+                                            <div className="text-[8.5px] sm:text-[10px] landscape:text-[clamp(6.5px,1.7vh,9px)] font-bold text-slate-400 uppercase tracking-widest mb-1 sm:mb-1.5 landscape:mb-0.5">Phân tích:</div>
+                                            <div className="text-xs sm:text-sm landscape:text-[clamp(8px,2.1vh,11px)] text-slate-700 leading-relaxed font-medium">
                                               <AdminInlineEditor target="question" id={currentQ.id} field={`metadata.explanation.options_breakdown.${opt}.reason`} value={breakdown.reason || ""} multiline>
                                                 {formatText(breakdown.reason)}
                                               </AdminInlineEditor>
@@ -2908,30 +3068,30 @@ export default function ToeicPart5Player({
                                           </div>
 
                                           {(isValidData(breakdown.synonyms) || isValidData(breakdown.antonyms)) && (
-                                            <div className="flex flex-wrap gap-2 pt-2">
+                                            <div className="flex flex-wrap gap-1.5 sm:gap-2 landscape:gap-1 pt-1 sm:pt-2 landscape:pt-0.5">
                                               {isValidData(breakdown.synonyms) && (
-                                                <div className="flex items-center gap-1.5 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100 group/syn">
-                                                  <span className="text-[10px] font-black text-emerald-500 uppercase tracking-tighter">🔗 Syn</span>
-                                                  <span className="text-[13px] font-bold text-emerald-700">{breakdown.synonyms}</span>
+                                                <div className="flex items-center gap-1 sm:gap-1.5 bg-emerald-50 px-1.5 sm:px-2.5 py-0.5 sm:py-1 landscape:px-1 landscape:py-0 rounded-lg border border-emerald-100 group/syn">
+                                                  <span className="text-[8.5px] sm:text-[10px] landscape:text-[clamp(6.5px,1.7vh,9px)] font-black text-emerald-500 uppercase tracking-tighter">🔗 Syn</span>
+                                                  <span className="text-[11px] sm:text-[13px] landscape:text-[clamp(8px,2.1vh,11px)] font-bold text-emerald-700">{breakdown.synonyms}</span>
                                                   <button
                                                     onClick={() => speak(breakdown.synonyms)}
-                                                    className="p-1 rounded hover:bg-emerald-100 text-emerald-400 transition-colors"
+                                                    className="p-0.5 sm:p-1 rounded hover:bg-emerald-100 text-emerald-400 transition-colors"
                                                     title="Nghe tất cả từ đồng nghĩa"
                                                   >
-                                                    <SpeakerWaveIcon className="w-3 h-3" />
+                                                    <SpeakerWaveIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 landscape:w-2 landscape:h-2" />
                                                   </button>
                                                 </div>
                                               )}
                                               {isValidData(breakdown.antonyms) && (
-                                                <div className="flex items-center gap-1.5 bg-red-50 px-2.5 py-1 rounded-lg border border-red-100 group/ant">
-                                                  <span className="text-[10px] font-black text-red-400 uppercase tracking-tighter">↔️ Ant</span>
-                                                  <span className="text-[13px] font-bold text-red-600">{breakdown.antonyms}</span>
+                                                <div className="flex items-center gap-1 sm:gap-1.5 bg-red-50 px-1.5 sm:px-2.5 py-0.5 sm:py-1 landscape:px-1 landscape:py-0 rounded-lg border border-red-100 group/ant">
+                                                  <span className="text-[8.5px] sm:text-[10px] landscape:text-[clamp(6.5px,1.7vh,9px)] font-black text-red-400 uppercase tracking-tighter">↔️ Ant</span>
+                                                  <span className="text-[11px] sm:text-[13px] landscape:text-[clamp(8px,2.1vh,11px)] font-bold text-red-600">{breakdown.antonyms}</span>
                                                   <button
                                                     onClick={() => speak(breakdown.antonyms)}
-                                                    className="p-1 rounded hover:bg-red-100 text-red-300 transition-colors"
+                                                    className="p-0.5 sm:p-1 rounded hover:bg-red-100 text-red-300 transition-colors"
                                                     title="Nghe tất cả từ trái nghĩa"
                                                   >
-                                                    <SpeakerWaveIcon className="w-3 h-3" />
+                                                    <SpeakerWaveIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 landscape:w-2 landscape:h-2" />
                                                   </button>
                                                 </div>
                                               )}
@@ -2950,59 +3110,59 @@ export default function ToeicPart5Player({
                     </section>
 
                     {/* Expansion & Vocabulary Section - Unified Compact Table */}
-                    <section className="space-y-6">
-                      <div className="flex items-center gap-3">
-                        <BookOpenIcon className="w-5 h-5 text-indigo-400" />
-                        <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">Thư viện Từ vựng & Cấu trúc mở rộng</span>
+                    <section className="space-y-4 sm:space-y-6 landscape:space-y-1.5">
+                      <div className="flex items-center gap-2 sm:gap-3 landscape:gap-1.5">
+                        <BookOpenIcon className="w-4 h-4 sm:w-5 sm:h-5 landscape:w-3 landscape:h-3 text-indigo-400" />
+                        <span className="text-[10px] sm:text-xs landscape:text-[clamp(7.5px,1.9vh,10px)] font-bold text-slate-600 uppercase tracking-widest">Thư viện Từ vựng & Cấu trúc mở rộng</span>
                       </div>
 
-                      <div className="overflow-hidden border border-slate-200 rounded-2xl shadow-sm bg-white">
+                      <div className="overflow-hidden border border-slate-200 rounded-xl sm:rounded-2xl shadow-sm bg-white">
                         <table className="min-w-full divide-y divide-slate-200 border-collapse">
                           <thead className="bg-slate-100/80 border-b border-slate-200">
                             <tr className="divide-x divide-slate-200">
-                              <th scope="col" className="px-5 py-3 text-left text-[10px] font-black text-slate-700 uppercase tracking-widest w-1/4">Từ vựng / Cấu trúc</th>
-                              <th scope="col" className="px-5 py-3 text-left text-[10px] font-black text-slate-700 uppercase tracking-widest w-1/4">Phiên âm</th>
-                              <th scope="col" className="px-5 py-3 text-left text-[10px] font-black text-slate-700 uppercase tracking-widest">Ý nghĩa & Cách dùng</th>
+                              <th scope="col" className="px-2 py-2 sm:px-5 sm:py-3 landscape:px-1 landscape:py-0.5 text-left text-[8.5px] sm:text-[10px] landscape:text-[clamp(7px,1.8vh,9.5px)] font-black text-slate-700 uppercase tracking-widest w-1/4">Từ vựng / Cấu trúc</th>
+                              <th scope="col" className="px-2 py-2 sm:px-5 sm:py-3 landscape:px-1 landscape:py-0.5 text-left text-[8.5px] sm:text-[10px] landscape:text-[clamp(7px,1.8vh,9.5px)] font-black text-slate-700 uppercase tracking-widest w-1/4">Phiên âm</th>
+                              <th scope="col" className="px-2 py-2 sm:px-5 sm:py-3 landscape:px-1 landscape:py-0.5 text-left text-[8.5px] sm:text-[10px] landscape:text-[clamp(7px,1.8vh,9.5px)] font-black text-slate-700 uppercase tracking-widest">Ý nghĩa & Cách dùng</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-200">
                             {/* Expansion Items */}
                             {explainData.expansion?.map((item: any, idx: number) => (
                               <tr key={`exp-${idx}`} className="hover:bg-amber-50/30 transition-colors group divide-x divide-slate-100">
-                                <td className="px-5 py-4">
-                                  <div className="flex items-center gap-2">
+                                <td className="px-2 py-2 sm:px-5 sm:py-4 landscape:px-1 landscape:py-0.5">
+                                  <div className="flex items-center gap-1.5 sm:gap-2">
                                     <AdminInlineEditor
                                       target="question"
                                       id={currentQ.id}
                                       field={`metadata.explanation.expansion.${idx}.phrase`}
                                       value={item.phrase || ""}
                                     >
-                                      <span className="font-bold text-amber-900 text-base">{item.phrase}</span>
+                                      <span className="font-bold text-amber-900 text-xs sm:text-base landscape:text-[clamp(9px,2.3vh,12px)]">{item.phrase}</span>
                                     </AdminInlineEditor>
-                                    <button onClick={() => speak(item.phrase)} className="p-1.5 rounded-full hover:bg-amber-100 text-amber-400 transition-colors opacity-0 group-hover:opacity-100">
-                                      <SpeakerWaveIcon className="w-3.5 h-3.5" />
+                                    <button onClick={() => speak(item.phrase)} className="p-1 sm:p-1.5 landscape:p-0 rounded-full hover:bg-amber-100 text-amber-400 transition-colors opacity-0 group-hover:opacity-100">
+                                      <SpeakerWaveIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5 landscape:w-2 landscape:h-2" />
                                     </button>
                                   </div>
-                                  <span className="text-[9px] font-black text-amber-500/60 uppercase tracking-tighter">Phrasal Verb</span>
+                                  <span className="text-[8px] sm:text-[9px] landscape:text-[clamp(6px,1.6vh,8.5px)] font-black text-amber-500/60 uppercase tracking-tighter">Phrasal Verb</span>
                                 </td>
-                                <td className="px-5 py-4">
-                                  <div className="flex flex-col gap-1">
+                                <td className="px-2 py-2 sm:px-5 sm:py-4 landscape:px-1 landscape:py-0.5">
+                                  <div className="flex flex-col gap-0.5 sm:gap-1">
                                     {isValidData(item.ipa_uk) && (
-                                      <div className="flex items-center gap-1.5">
-                                        <span className="text-[9px] font-bold text-slate-400 w-4">UK</span>
-                                        <span className="text-[11px] font-mono text-slate-600 bg-slate-100 px-1 rounded">{item.ipa_uk}</span>
+                                      <div className="flex items-center gap-1 sm:gap-1.5">
+                                        <span className="text-[8px] sm:text-[9px] landscape:text-[clamp(6px,1.6vh,8.5px)] font-bold text-slate-400 w-3.5 sm:w-4">UK</span>
+                                        <span className="text-[9px] sm:text-[11px] landscape:text-[clamp(7px,1.8vh,9.5px)] font-mono text-slate-600 bg-slate-100 px-1 rounded">{item.ipa_uk}</span>
                                       </div>
                                     )}
                                     {isValidData(item.ipa_us) && (
-                                      <div className="flex items-center gap-1.5">
-                                        <span className="text-[9px] font-bold text-slate-400 w-4">US</span>
-                                        <span className="text-[11px] font-mono text-slate-600 bg-slate-100 px-1 rounded">{item.ipa_us}</span>
+                                      <div className="flex items-center gap-1 sm:gap-1.5">
+                                        <span className="text-[8px] sm:text-[9px] landscape:text-[clamp(6px,1.6vh,8.5px)] font-bold text-slate-400 w-3.5 sm:w-4">US</span>
+                                        <span className="text-[9px] sm:text-[11px] landscape:text-[clamp(7px,1.8vh,9.5px)] font-mono text-slate-600 bg-slate-100 px-1 rounded">{item.ipa_us}</span>
                                       </div>
                                     )}
                                   </div>
                                 </td>
-                                <td className="px-5 py-4">
-                                  <p className="text-sm font-bold text-slate-700 leading-relaxed italic">
+                                <td className="px-2 py-2 sm:px-5 sm:py-4 landscape:px-1 landscape:py-0.5">
+                                  <p className="text-xs sm:text-sm landscape:text-[clamp(8px,2.1vh,11px)] font-bold text-slate-700 leading-relaxed italic">
                                     <AdminInlineEditor
                                       target="question"
                                       id={currentQ.id}
@@ -3020,40 +3180,40 @@ export default function ToeicPart5Player({
                             {/* Vocabulary Items */}
                             {(richData?.vocabulary || explainData.vocabulary)?.map((v: any, vi: number) => (
                               <tr key={`voc-${vi}`} className="hover:bg-indigo-50/30 transition-colors group divide-x divide-slate-100">
-                                <td className="px-5 py-4">
-                                  <div className="flex items-center gap-2">
+                                <td className="px-2 py-2 sm:px-5 sm:py-4 landscape:px-1 landscape:py-0.5">
+                                  <div className="flex items-center gap-1.5 sm:gap-2">
                                     <AdminInlineEditor
                                       target="question"
                                       id={currentQ.id}
                                       field={`metadata.explanation.vocabulary.${vi}.word`}
                                       value={v.word || ""}
                                     >
-                                      <span className="font-bold text-indigo-900 text-base lowercase">{v.word}</span>
+                                      <span className="font-bold text-indigo-900 text-xs sm:text-base landscape:text-[clamp(9px,2.3vh,12px)] lowercase">{v.word}</span>
                                     </AdminInlineEditor>
-                                    <button onClick={() => speak(v.word)} className="p-1.5 rounded-full hover:bg-indigo-100 text-indigo-400 transition-colors opacity-0 group-hover:opacity-100">
-                                      <SpeakerWaveIcon className="w-3.5 h-3.5" />
+                                    <button onClick={() => speak(v.word)} className="p-1 sm:p-1.5 landscape:p-0 rounded-full hover:bg-indigo-100 text-indigo-400 transition-colors opacity-0 group-hover:opacity-100">
+                                      <SpeakerWaveIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5 landscape:w-2 landscape:h-2" />
                                     </button>
                                   </div>
-                                  <span className="text-[9px] font-black text-indigo-400/60 uppercase tracking-tighter">Vocabulary</span>
+                                  <span className="text-[8px] sm:text-[9px] landscape:text-[clamp(6px,1.6vh,8.5px)] font-black text-indigo-400/60 uppercase tracking-tighter">Vocabulary</span>
                                 </td>
-                                <td className="px-5 py-4">
-                                  <div className="flex flex-col gap-1">
+                                <td className="px-2 py-2 sm:px-5 sm:py-4 landscape:px-1 landscape:py-0.5">
+                                  <div className="flex flex-col gap-0.5 sm:gap-1">
                                     {isValidData(v.ipa_uk) && (
-                                      <div className="flex items-center gap-1.5">
-                                        <span className="text-[9px] font-bold text-slate-400 w-4">UK</span>
-                                        <span className="text-[11px] font-mono text-slate-600 bg-slate-100 px-1 rounded">{v.ipa_uk}</span>
+                                      <div className="flex items-center gap-1 sm:gap-1.5">
+                                        <span className="text-[8px] sm:text-[9px] landscape:text-[clamp(6px,1.6vh,8.5px)] font-bold text-slate-400 w-3.5 sm:w-4">UK</span>
+                                        <span className="text-[9px] sm:text-[11px] landscape:text-[clamp(7px,1.8vh,9.5px)] font-mono text-slate-600 bg-slate-100 px-1 rounded">{v.ipa_uk}</span>
                                       </div>
                                     )}
                                     {isValidData(v.ipa_us) && (
-                                      <div className="flex items-center gap-1.5">
-                                        <span className="text-[9px] font-bold text-slate-400 w-4">US</span>
-                                        <span className="text-[11px] font-mono text-slate-600 bg-slate-100 px-1 rounded">{v.ipa_us}</span>
+                                      <div className="flex items-center gap-1 sm:gap-1.5">
+                                        <span className="text-[8px] sm:text-[9px] landscape:text-[clamp(6px,1.6vh,8.5px)] font-bold text-slate-400 w-3.5 sm:w-4">US</span>
+                                        <span className="text-[9px] sm:text-[11px] landscape:text-[clamp(7px,1.8vh,9.5px)] font-mono text-slate-600 bg-slate-100 px-1 rounded">{v.ipa_us}</span>
                                       </div>
                                     )}
                                   </div>
                                 </td>
-                                <td className="px-5 py-4">
-                                  <p className="text-sm font-bold text-slate-700 leading-relaxed">
+                                <td className="px-2 py-2 sm:px-5 sm:py-4 landscape:px-1 landscape:py-0.5">
+                                  <p className="text-xs sm:text-sm landscape:text-[clamp(8px,2.1vh,11px)] font-bold text-slate-700 leading-relaxed">
                                     <AdminInlineEditor
                                       target="question"
                                       id={currentQ.id}
@@ -3074,9 +3234,13 @@ export default function ToeicPart5Player({
                   </div>
                 </div>
               </div>
-            )}
-          </div>
+                )}
+              </div>
+            );
+          })()}
         </div>
+      </div>
+
         {!isFullTest && mounted && createPortal(
           <div
             className={`questions-sidebar-portal fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer"}`}
@@ -3136,15 +3300,15 @@ export default function ToeicPart5Player({
           </div>,
           document.body
         )}
-      </div>
+
       {(() => {
         const navContent = (
-          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full p-1 sm:p-1.5 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-1 sm:gap-4">
+          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full p-0.5 sm:p-1.5 landscape:p-0.5 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-0.5 sm:gap-4 landscape:gap-0.5">
             <div className="relative group">
               <button
                 onClick={() => currentIndex === 0 ? onPrevPart?.() : setCurrentIndex(prev => prev - 1)}
                 disabled={currentIndex === 0 && !onPrevPart}
-                className="px-3 sm:px-8 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-400 uppercase tracking-widest"
+                className="px-2.5 sm:px-8 py-1 sm:py-3 landscape:px-[clamp(6px,1.5vh,16px)] landscape:py-0.5 rounded-full font-bold text-[10px] sm:text-[13px] landscape:text-[clamp(7.5px,2vh,11px)] transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-400 uppercase tracking-widest"
               >
                 {currentIndex === 0 && onPrevPart ? 'Về part trước' : 'Lùi'}
               </button>
@@ -3154,7 +3318,7 @@ export default function ToeicPart5Player({
               </div>
             </div>
 
-            <div className="px-2 sm:px-8 font-black text-slate-600 text-xs sm:text-sm border-x border-slate-100 whitespace-nowrap text-center">
+            <div className="px-1.5 sm:px-8 landscape:px-1 font-black text-slate-600 text-[10px] sm:text-sm landscape:text-[clamp(8px,2.1vh,11px)] border-x border-slate-100 whitespace-nowrap text-center">
               {isFullTest ? (
                 <>
                   {globalOffset + currentIndex + 1} <span className="mx-0.5 text-slate-300">/</span> {globalTotal || 200}
@@ -3171,15 +3335,15 @@ export default function ToeicPart5Player({
                 <div className="relative group">
                   <button
                     onClick={onNextPart}
-                    className="px-3 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-emerald-600 text-white shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-1 sm:gap-2 whitespace-nowrap"
+                    className="px-2.5 sm:px-10 py-1 sm:py-3 landscape:px-[clamp(8px,2vh,20px)] landscape:py-0.5 rounded-full font-bold text-[10px] sm:text-[13px] landscape:text-[clamp(7.5px,2vh,11px)] transition-all bg-emerald-600 text-white shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-1 sm:gap-2 whitespace-nowrap"
                   >
-                    <span>Tiếp Part 6</span> <ChevronRightIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span>Tiếp Part 6</span> <ChevronRightIcon className="w-3 h-3 sm:w-4 sm:h-4 landscape:w-2.5 landscape:h-2.5" />
                   </button>
                 </div>
               ) : !isSubmitted ? (
                 <button
                   onClick={handleFinish}
-                  className="px-3 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  className="px-2.5 sm:px-10 py-1 sm:py-3 landscape:px-[clamp(8px,2vh,20px)] landscape:py-0.5 rounded-full font-bold text-[10px] sm:text-[13px] landscape:text-[clamp(7.5px,2vh,11px)] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
                 >
                   Nộp bài
                 </button>
@@ -3188,7 +3352,7 @@ export default function ToeicPart5Player({
               <div className="relative group">
                 <button
                   onClick={() => setCurrentIndex(prev => Math.min(questions.length - 1, prev + 1))}
-                  className="px-4 sm:px-10 py-1.5 sm:py-3 rounded-full font-bold text-xs sm:text-[13px] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
+                  className="px-3 sm:px-10 py-1 sm:py-3 landscape:px-[clamp(10px,2.5vh,24px)] landscape:py-0.5 rounded-full font-bold text-[10px] sm:text-[13px] landscape:text-[clamp(7.5px,2vh,11px)] transition-all bg-indigo-600 text-white shadow-[0_8px_20px_rgba(79,70,229,0.3)] hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
                 >
                   Tiếp
                 </button>
@@ -3198,20 +3362,20 @@ export default function ToeicPart5Player({
         );
 
         const footerContent = (
-          <div className="relative flex-none h-14 sm:h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-6 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full">
+          <div className="relative flex-none h-[clamp(32px,5vh,52px)] bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-[clamp(6px,1.2vw,20px)] pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full">
             <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => startToeicPartTour(5, true)}
-                className="p-1.5 sm:px-3 sm:py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1.5 pointer-events-auto"
+                className="px-[clamp(6px,1vw,12px)] py-[clamp(2px,0.5vh,6px)] bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg sm:rounded-xl font-bold text-[clamp(8px,1.2vh,11px)] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1 pointer-events-auto"
                 title="Khởi động Tour hướng dẫn nhanh"
               >
-                <HelpCircle size={15} className="animate-pulse shrink-0" />
+                <HelpCircle className="w-[clamp(12px,1.8vh,16px)] h-[clamp(12px,1.8vh,16px)] animate-pulse shrink-0" />
                 <span className="hidden sm:inline">Hướng dẫn</span>
               </button>
               {videoExplanation && videoExplanation.videoUrl && (
                 <button
                   onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
-                  className="p-1.5 sm:px-3 sm:py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1.5 border border-[#05b169]/20"
+                  className="px-[clamp(6px,1vw,12px)] py-[clamp(2px,0.5vh,6px)] bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-lg sm:rounded-xl font-bold text-[clamp(8px,1.2vh,11px)] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1 border border-[#05b169]/20"
                   title="Xem video chữa đề / giải thích"
                 >
                   🎬 <span className="hidden sm:inline">{(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video" : "Xem video"}</span>
@@ -3224,10 +3388,10 @@ export default function ToeicPart5Player({
             <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent('toeic-toggle-sidebar'))}
-                className="px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full sm:rounded-xl font-extrabold text-[10px] sm:text-[11px] uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1 sm:gap-1.5 active:scale-95 border border-indigo-400/30 whitespace-nowrap"
+                className="px-[clamp(8px,1.2vw,14px)] py-[clamp(3px,0.6vh,8px)] bg-indigo-600 hover:bg-indigo-700 text-white rounded-full sm:rounded-xl font-extrabold text-[clamp(8px,1.2vh,11px)] uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1 active:scale-95 border border-indigo-400/30 whitespace-nowrap"
                 title="Mở Bảng câu hỏi"
               >
-                <LayoutDashboard size={14} className="shrink-0" />
+                <LayoutDashboard className="w-[clamp(11px,1.8vh,16px)] h-[clamp(11px,1.8vh,16px)] shrink-0" />
                 <span>BẢNG CÂU</span>
               </button>
             </div>
