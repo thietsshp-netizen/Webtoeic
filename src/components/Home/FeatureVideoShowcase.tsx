@@ -370,12 +370,13 @@ export default function FeatureVideoShowcase() {
         <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 text-blue-600 rounded-full text-[11px] font-bold uppercase tracking-widest mb-4 border border-blue-100 shadow-sm">
           <Sparkles size={16} fill="currentColor" /> WEB LUYỆN THI TOEIC ĐỘC QUYỀN
         </div>
-        <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-4">
+        <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-3">
           Khám Phá Các Tính Năng Của Web Luyện Thi TOEIC{" "}
           <span className="text-blue-600">
             Thông Minh Hàng Đầu
           </span>
         </h2>
+        <div className="w-24 h-1.5 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto rounded-full mb-4"></div>
         <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
           Xem video giới thiệu các tính năng độc đáo, nổi bật được tích hợp trên web luyện thi TOEIC của Mr. Thiệt.
         </p>

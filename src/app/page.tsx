@@ -67,6 +67,7 @@ import {
   Flag,
   Headphones,
   MessageSquare,
+  MessageSquareQuote,
   FileText,
   Languages,
   Play,
@@ -750,12 +751,12 @@ function HomeContent() {
             {/* Khung Video Giới Thiệu Tính Năng Đặc Biệt */}
             <FeatureVideoShowcase />
 
-            <section className="bg-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-slate-100 shadow-sm mb-10 sm:mb-16 relative overflow-hidden">
+            <section className="bg-gradient-to-b from-blue-50/60 via-indigo-50/30 to-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-blue-100/80 shadow-sm mb-10 sm:mb-16 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.03),transparent)] pointer-events-none"></div>
 
               <div className="relative z-10 max-w-5xl mx-auto space-y-8 sm:space-y-10">
                 {/* 1. Header & Giới thiệu căn giữa */}
-                <div className="text-center max-w-3xl mx-auto space-y-4 pb-6 border-b border-slate-100">
+                <div className="text-center max-w-3xl mx-auto space-y-4 pb-6 border-b border-blue-100/60">
                   <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 text-blue-600 rounded-full text-[11px] font-bold uppercase tracking-widest border border-blue-100 shadow-sm">
                     <Zap size={16} fill="currentColor" /> EXPERT INSTRUCTOR
                   </div>
@@ -764,6 +765,8 @@ function HomeContent() {
                     <span className="block mb-1">Học với chuyên gia</span>
                     <span className="text-blue-600">Mr. Thiệt 990/990</span>
                   </h2>
+
+                  <div className="w-24 h-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 mx-auto rounded-full my-3"></div>
 
                   <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed italic">
                     &ldquo;Học với người đạt 990 không chỉ là học kiến thức, mà là học phương pháp giải đề tối ưu và tâm thế làm chủ bài thi từ trải nghiệm thực tế.&rdquo;
@@ -800,11 +803,14 @@ function HomeContent() {
               </div>
             </section>
 
-            <section className="bg-slate-50 rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-6 sm:p-10 md:p-14 border border-slate-100 relative overflow-hidden mb-10 sm:mb-16">
+            <section className="bg-slate-50 rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-6 sm:p-10 md:p-14 border border-slate-200/60 relative overflow-hidden mb-10 sm:mb-16">
               <div className="relative z-10">
                 <div className="text-center mb-10 sm:mb-12">
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-6 uppercase tracking-tighter italic">Các giai đoạn học trọng tâm</h2>
-                  <div className="w-32 h-2 bg-emerald-500 mx-auto rounded-full"></div>
+                  <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold uppercase tracking-widest mb-4 border border-emerald-100 shadow-sm">
+                    <Target size={16} /> LỘ TRÌNH CHUẨN
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-3 uppercase tracking-tighter italic">Các giai đoạn học trọng tâm</h2>
+                  <div className="w-24 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full"></div>
                 </div>
 
                 <div className="grid lg:grid-cols-3 gap-10">
@@ -815,16 +821,19 @@ function HomeContent() {
               </div>
             </section>
 
-            <section className="bg-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-slate-100 shadow-sm mb-10 sm:mb-16 relative overflow-hidden">
+            <section className="bg-gradient-to-b from-emerald-50/50 via-teal-50/20 to-white rounded-3xl sm:rounded-[3rem] md:rounded-[4rem] p-5 sm:p-8 md:p-12 border border-emerald-100/80 shadow-sm mb-10 sm:mb-16 relative overflow-hidden">
               <div className="relative z-10 max-w-5xl mx-auto space-y-8 sm:space-y-10">
-                <div className="text-center max-w-3xl mx-auto space-y-3 pb-6 border-b border-slate-100">
-                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-3">
+                <div className="text-center max-w-3xl mx-auto space-y-3 pb-6 border-b border-emerald-100/60">
+                  <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold uppercase tracking-widest border border-emerald-100 shadow-sm">
+                    <Trophy size={16} fill="currentColor" /> HONOR ROLL
+                  </div>
+                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-2">
                     Vinh Danh <span className="text-emerald-600">Bảng Vàng</span>
                   </h2>
+                  <div className="w-24 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full mb-3"></div>
                   <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
                     Kết quả thật từ những nỗ lực không ngừng nghỉ của cộng đồng học viên hoctoeic.com.
                   </p>
-                  <div className="w-24 h-1.5 bg-emerald-500 mx-auto rounded-full mt-4"></div>
                 </div>
 
                 <div className="w-full">
@@ -837,9 +846,13 @@ function HomeContent() {
               <div className="relative z-10 max-w-5xl mx-auto space-y-8 sm:space-y-10">
                 {/* 1. Header & Thông tin căn giữa phía trên */}
                 <div className="text-center max-w-3xl mx-auto space-y-4 pb-6 border-b border-slate-100">
-                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-3">
+                  <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-50 text-amber-600 rounded-full text-[11px] font-bold uppercase tracking-widest border border-amber-100 shadow-sm">
+                    <MessageSquareQuote size={16} /> REVIEWS
+                  </div>
+                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-2">
                     Cảm nhận <span className="text-blue-600">học viên</span>
                   </h2>
+                  <div className="w-24 h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-amber-500 mx-auto rounded-full mb-3"></div>
                   <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
                     Những chia sẻ chân thực nhất về hành trình thay đổi điểm số tại hoctoeic.com.
                   </p>
