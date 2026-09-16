@@ -138,8 +138,8 @@ const SentenceItem = React.memo(({
         } else {
           const [textColor, bgColor, borderColor] = (p.styleClass || "").split(' ');
           return (
-            <span key={i} className={`${bgColor} ${borderColor} border-b font-bold px-1 py-0 rounded-sm mx-0.5 inline items-baseline gap-0.5`}>
-              <sup className={`text-[9px] ${textColor} opacity-70 inline-block align-top mt-1`}>{p.qId}</sup>
+            <span key={i} className={`${bgColor} ${borderColor} border-b font-bold rounded-sm mx-0.5 inline items-baseline gap-0.5`} style={{ padding: '0 clamp(3px,0.6vh,6px)' }}>
+              <sup className={`${textColor} opacity-70 inline-block align-top mt-1`} style={{ fontSize: 'clamp(6px,0.9vh,9px)' }}>{p.qId}</sup>
               <span className={`${textColor} inline`} dangerouslySetInnerHTML={{ __html: (p.content || "").trim() }} />
             </span>
           );
@@ -1607,8 +1607,11 @@ export default function ToeicPart6Player({
                                   if (!rationale?.why) return null;
 
                                   return (
-                                    <div className={`ml-14 p-4 rounded-r-2xl border-l-4 mt-2 text-[14px] font-medium italic animate-in slide-in-from-left-2 duration-300 ${isCorrect ? 'text-emerald-700 bg-emerald-50/50 border-emerald-400' : 'text-red-600 bg-red-50/50 border-red-200'}`}>
-                                      <span className="text-[10px] uppercase tracking-tighter opacity-50 block mb-1">
+                                    <div
+                                      className={`rounded-r-2xl border-l-4 mt-2 font-medium italic animate-in slide-in-from-left-2 duration-300 ${isCorrect ? 'text-emerald-700 bg-emerald-50/50 border-emerald-400' : 'text-red-600 bg-red-50/50 border-red-200'}`}
+                                      style={{ marginLeft: 'clamp(16px,3vh,56px)', padding: 'clamp(6px,1.2vh,16px)', fontSize: 'clamp(10px,1.8vh,14px)' }}
+                                    >
+                                      <span className="uppercase tracking-tighter opacity-50 block" style={{ fontSize: 'clamp(7px,1.1vh,10px)', marginBottom: 'clamp(2px,0.4vh,4px)' }}>
                                         {isCorrect ? "Vì sao đúng:" : "Tại sao sai:"}
                                       </span>
                                       <AdminInlineEditor
