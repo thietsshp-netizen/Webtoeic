@@ -564,24 +564,14 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
                 <div className="flex items-center gap-2 flex-wrap">
                   <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none shrink-0">{data.word}</h2>
 
-                  {/* Nút loa giọng Anh (UK) */}
+                  {/* Nút loa phát âm mặc định */}
                   <button 
-                    onClick={() => speak(data.word, 'uk')} 
-                    className="px-2 py-1 text-red-500 hover:bg-red-50 active:scale-95 rounded-lg flex items-center gap-1 transition-all border border-red-100/50 hover:border-red-200 shrink-0"
-                    title="Phát âm giọng Anh (UK)"
+                    onClick={() => speak(data.word)} 
+                    className="px-2.5 py-1 text-blue-600 bg-blue-50/80 hover:bg-blue-100 active:scale-95 rounded-lg flex items-center gap-1.5 transition-all border border-blue-200/60 hover:border-blue-300 shrink-0 shadow-xs"
+                    title="Phát âm"
                   >
-                    <Volume2 size={13} />
-                    <span className="text-[9px] font-black uppercase tracking-wider">uk</span>
-                  </button>
-
-                  {/* Nút loa giọng Mỹ (US) */}
-                  <button 
-                    onClick={() => speak(data.word, 'us')} 
-                    className="px-2 py-1 text-blue-600 hover:bg-blue-50 active:scale-95 rounded-lg flex items-center gap-1 transition-all border border-blue-100/50 hover:border-blue-200 shrink-0"
-                    title="Phát âm giọng Mỹ (US)"
-                  >
-                    <Volume2 size={13} />
-                    <span className="text-[9px] font-black uppercase tracking-wider">us</span>
+                    <Volume2 size={14} className="text-blue-600" />
+                    <span className="text-[10px] font-bold tracking-wide">Phát âm</span>
                   </button>
 
                   {/* Nút YouGlish (Video người bản xứ phát âm) */}
