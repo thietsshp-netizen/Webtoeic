@@ -147,8 +147,8 @@ export function DictionaryProvider({ children }: { children: React.ReactNode }) 
       }, 50);
     };
 
-    // Xử lý trên PC khi bôi đen hoặc Double Click
-    const handleMouseUp = (e: MouseEvent) => {
+    // Xử lý trên PC: CHỈ TRA TỪ KHI DOUBLE CLICK (NHẤP ĐÚP CHUỘT). KHÔNG TRA KHI KÉO QUÉT BÔI ĐEN.
+    const handleDblClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (
         target.tagName === 'INPUT' ||
@@ -161,10 +161,9 @@ export function DictionaryProvider({ children }: { children: React.ReactNode }) 
         return;
       }
 
-      setTimeout(() => {
-        const selection = window.getSelection();
-        if (!selection || selection.isCollapsed) return;
-
+      // 1. Kiểm tra từ được trình duyệt bôi đen khi double-click
+      const selection = window.getSelection();
+      if (selection && !selection.isCollapsed) {
         const text = selection.toString().trim().replace(/[.,!?;:()]/g, '');
         if (text && text.length >= 2 && /[a-zA-Z]/.test(text)) {
           try {
@@ -177,14 +176,19 @@ export function DictionaryProvider({ children }: { children: React.ReactNode }) 
                 top: rect.top,
                 bottom: rect.bottom,
               });
-            } else {
-              openDictionary(text);
+              return;
             }
-          } catch {
-            openDictionary(text);
-          }
+          } catch {}
+          openDictionary(text);
+          return;
         }
-      }, 10);
+      }
+
+      // 2. Fallback trích xuất từ tại tọa độ double click nếu trình duyệt chưa kịp chọn
+      const res = extractWordAtPoint(e.clientX, e.clientY);
+      if (res) {
+        openDictionary(res.word, res.pos);
+      }
     };
 
     const handleClickOutside = (e: MouseEvent) => {
@@ -209,14 +213,14 @@ export function DictionaryProvider({ children }: { children: React.ReactNode }) 
     };
 
     document.addEventListener('touchend', handleTouchEnd);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('dblclick', handleDblClick);
     document.addEventListener('click', handleClickOutside);
     window.addEventListener('dictionary-search', handleSearch);
     window.addEventListener('dictionary-close', handleClose);
 
     return () => {
       document.removeEventListener('touchend', handleTouchEnd);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('dblclick', handleDblClick);
       document.removeEventListener('click', handleClickOutside);
       window.removeEventListener('dictionary-search', handleSearch);
       window.removeEventListener('dictionary-close', handleClose);
