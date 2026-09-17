@@ -566,55 +566,55 @@ export default function LearnSidebar() {
         </AnimatePresence>
 
         {/* Sidebar Header Content */}
-        <div className="p-7 bg-white shrink-0 pb-2">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-[11px] font-black text-indigo-600 uppercase tracking-[0.2em] flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center">
-                <Layout size={16} />
+        <div className="p-3.5 sm:p-5 bg-white shrink-0 pb-2">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <h2 className="text-[clamp(9px,1.2vw,11px)] font-black text-indigo-600 uppercase tracking-[0.15em] sm:tracking-[0.2em] flex items-center gap-2">
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg sm:rounded-xl bg-indigo-50 flex items-center justify-center">
+                <Layout className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
               Nội dung khóa học
             </h2>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <button 
                 id="grammar-handbook-toggle-btn"
                 onClick={() => window.dispatchEvent(new CustomEvent("toggle-grammar-handbook"))}
-                className="p-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-lg transition-all active:scale-95 shadow-sm shadow-indigo-100"
+                className="p-1 sm:p-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-md sm:rounded-lg transition-all active:scale-95 shadow-xs shadow-indigo-100"
                 title="Mở sổ tay ngữ pháp ôn tập"
               >
-                <BookOpen size={16} />
+                <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
               <button 
                 id="review-center-toggle-btn"
                 onClick={() => setIsDrawerOpen(true)}
-                className="p-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-lg transition-all active:scale-95 shadow-sm shadow-indigo-100"
+                className="p-1 sm:p-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-md sm:rounded-lg transition-all active:scale-95 shadow-xs shadow-indigo-100"
                 title="Xem các câu gắn cờ/ghi chú trong khoá"
               >
-                <BookMarked size={16} />
+                <BookMarked className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
               <button 
                 onClick={handleToggleAll}
-                className="p-1.5 bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-lg transition-all active:scale-95"
+                className="p-1 sm:p-1.5 bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-md sm:rounded-lg transition-all active:scale-95"
                 title="Thu/mở toàn danh sách"
               >
-                <ChevronsUpDown size={16} />
+                <ChevronsUpDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
             </div>
           </div>
           
-          <div className="bg-indigo-50/30 p-3.5 px-4 rounded-2xl border border-indigo-100/30 mb-6 relative overflow-hidden group">
-            <div className="flex justify-between items-center mb-2.5 relative z-10">
-              <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-2">
-                <div className="w-1 h-3 bg-indigo-400 rounded-full" />
+          <div className="bg-indigo-50/30 p-2.5 sm:p-3 px-3 sm:px-3.5 rounded-xl sm:rounded-2xl border border-indigo-100/30 mb-3 sm:mb-4 relative overflow-hidden group">
+            <div className="flex justify-between items-center mb-1.5 sm:mb-2 relative z-10">
+              <span className="text-[8px] sm:text-[9px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
+                <div className="w-1 h-2.5 sm:h-3 bg-indigo-400 rounded-full" />
                 Tiến độ học tập
               </span>
-              <span className="text-[10px] font-black text-indigo-600">{progressPercentage}%</span>
+              <span className="text-[9px] sm:text-[10px] font-black text-indigo-600">{progressPercentage}%</span>
             </div>
             
-            <div className="bg-white/60 h-1.5 rounded-full overflow-hidden relative z-10 p-0.5 border border-indigo-100/20">
+            <div className="bg-white/60 h-1 sm:h-1.5 rounded-full overflow-hidden relative z-10 p-0.5 border border-indigo-100/20">
               <div className="bg-indigo-600 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(79,70,229,0.2)]" style={{ width: `${progressPercentage}%` }} />
             </div>
             
-            <div className="text-[8px] font-bold text-indigo-400/70 mt-2.5 flex items-center gap-1.5 relative z-10 uppercase tracking-tighter">
+            <div className="text-[7.5px] sm:text-[8px] font-bold text-indigo-400/70 mt-1.5 sm:mt-2 flex items-center gap-1 relative z-10 uppercase tracking-tighter">
               <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
               {isEnrolled ? "Chế độ học chính thức" : "Hội viên Pro"}
             </div>
@@ -622,7 +622,7 @@ export default function LearnSidebar() {
         </div>
 
         {/* Syllabus Tree */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 px-3">
+        <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 px-2 sm:px-3">
           {books.map((book, bIdx) => {
             const isBookExpanded = expandedBooks[book.id];
             const freeCount = book.sections.reduce((acc, section) => 
@@ -630,30 +630,30 @@ export default function LearnSidebar() {
             );
 
             return (
-              <div key={book.id} className="mb-4">
+              <div key={book.id} className="mb-2 sm:mb-3">
                 {/* LEVEL 1: BOOK */}
                 <button 
                   onClick={() => toggleBook(book.id)}
-                  className={`w-full flex items-center justify-between p-4 px-5 rounded-2xl transition-all duration-300 border mb-2 ${
-                    isBookExpanded ? "bg-white border-indigo-100 shadow-md ring-4 ring-indigo-50/30" : "bg-white border-slate-100 shadow-sm hover:border-slate-200 hover:shadow-md"
+                  className={`w-full flex items-center justify-between p-2.5 sm:p-3.5 px-3 sm:px-4 rounded-xl sm:rounded-2xl transition-all duration-300 border mb-1.5 ${
+                    isBookExpanded ? "bg-white border-indigo-100 shadow-sm ring-2 ring-indigo-50/30" : "bg-white border-slate-100 shadow-2xs hover:border-slate-200 hover:shadow-sm"
                   }`}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 ${
-                      isBookExpanded ? "bg-indigo-600 text-white shadow-lg shadow-indigo-100 rotate-[360deg]" : "bg-indigo-50 text-indigo-400"
+                  <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+                    <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 ${
+                      isBookExpanded ? "bg-indigo-600 text-white shadow-md shadow-indigo-100 rotate-[360deg]" : "bg-indigo-50 text-indigo-400"
                     }`}>
-                      <BookOpen size={20} className={isBookExpanded ? "animate-pulse" : ""} />
+                      <BookOpen className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isBookExpanded ? "animate-pulse" : ""}`} />
                     </div>
-                    <div className="text-left">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <p className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em]">Sách {bIdx + 1}</p>
+                    <div className="text-left min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <p className="text-[8px] sm:text-[9px] font-black text-indigo-400 uppercase tracking-[0.15em]">Sách {bIdx + 1}</p>
                         {!isEnrolled && freeCount > 0 && (
-                          <span className="bg-emerald-500/10 text-emerald-600 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border border-emerald-500/20 shadow-sm animate-pulse shrink-0">
+                          <span className="bg-emerald-500/10 text-emerald-600 text-[7px] sm:text-[8px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded-full border border-emerald-500/20 shrink-0">
                             Free {freeCount} bài
                           </span>
                         )}
                       </div>
-                      <h3 className={`text-[14px] font-black uppercase tracking-tight leading-tight line-clamp-1 transition-colors ${
+                      <h3 className={`text-[clamp(10.5px,1.3vw,13.5px)] font-black uppercase tracking-tight leading-tight line-clamp-1 transition-colors ${
                         isBookExpanded ? "text-slate-900" : "text-slate-600"
                       }`}>
                         {book.title}
@@ -661,47 +661,47 @@ export default function LearnSidebar() {
                     </div>
                   </div>
                   {isBookExpanded ? (
-                    <ChevronDown size={18} className="text-indigo-600" />
+                    <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600 shrink-0" />
                   ) : (
-                    <ChevronRight size={18} className="text-slate-300 group-hover:translate-x-0.5 transition-transform" />
+                    <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-300 group-hover:translate-x-0.5 transition-transform shrink-0" />
                   )}
                 </button>
 
                 {/* LEVEL 2: SECTIONS (CHAPTERS) */}
                 {isBookExpanded && (
-                  <div className="space-y-2 mt-2 ml-2 animate-in slide-in-from-top-4 duration-300">
+                  <div className="space-y-1.5 mt-1.5 ml-1 sm:ml-2 animate-in slide-in-from-top-4 duration-300">
                     {book.sections.map((section, sIdx) => {
                       const isExpanded = expandedSections[section.id];
                       return (
                         <div key={section.id} className="mb-1">
                           <button 
                             onClick={() => toggleSection(section.id)}
-                            className={`w-full flex items-center justify-between p-3.5 px-4 rounded-xl transition-all duration-300 group ${
-                              isExpanded ? "bg-slate-800/70 shadow-lg" : "bg-slate-50 hover:bg-slate-100"
+                            className={`w-full flex items-center justify-between p-2 sm:p-3 px-2.5 sm:px-3.5 rounded-lg sm:rounded-xl transition-all duration-300 group ${
+                              isExpanded ? "bg-slate-800/70 shadow-md" : "bg-slate-50 hover:bg-slate-100"
                             }`}
                           >
-                            <div className="flex items-center gap-3">
-                              <span className={`w-6 h-6 flex items-center justify-center rounded-lg text-[10px] font-black transition-all duration-300 ${
-                                isExpanded ? "bg-slate-600/50 text-white shadow-md shadow-slate-100" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <span className={`w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-md sm:rounded-lg text-[8.5px] sm:text-[10px] font-black shrink-0 transition-all duration-300 ${
+                                isExpanded ? "bg-slate-600/50 text-white shadow-xs" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
                               }`}>
                                 {sIdx + 1}
                               </span>
-                              <h4 className={`text-[12px] font-black uppercase tracking-tight text-left leading-tight line-clamp-1 transition-colors ${
+                              <h4 className={`text-[clamp(9.5px,1.15vw,11.5px)] font-black uppercase tracking-tight text-left leading-tight line-clamp-1 transition-colors ${
                                 isExpanded ? "text-white" : "text-slate-500"
                               }`}>
                                 {section.title}
                               </h4>
                             </div>
                             {isExpanded ? (
-                              <ChevronDown size={14} className="text-slate-400" />
+                              <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 shrink-0" />
                             ) : (
-                              <ChevronRight size={14} className="text-slate-300 group-hover:translate-x-0.5 transition-transform" />
+                              <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-300 group-hover:translate-x-0.5 transition-transform shrink-0" />
                             )}
                           </button>
 
                           {/* LEVEL 3: LESSONS */}
                           {isExpanded && (
-                            <div className="mt-1 ml-3 border-l-2 border-indigo-200/50 space-y-1 py-1 animate-in slide-in-from-left-2 duration-300">
+                            <div className="mt-1 ml-2 sm:ml-3 border-l-2 border-indigo-200/50 space-y-0.5 sm:space-y-1 py-0.5 animate-in slide-in-from-left-2 duration-300">
                               {section.lessons.map((lesson: any) => {
                                 const isActive = lesson.id === lessonId;
                                 const isLocked = !isEnrolled && !lesson.isPreview;
@@ -716,33 +716,33 @@ export default function LearnSidebar() {
                                         setIsAuthModalOpen(true);
                                       }
                                     }}
-                                    className={`group/item relative flex items-center gap-4 py-3 px-4 ml-2 rounded-xl transition-all duration-200 cursor-pointer ${
+                                    className={`group/item relative flex items-center gap-2 sm:gap-3 py-1.5 sm:py-2.5 px-2.5 sm:px-3.5 ml-1 sm:ml-2 rounded-lg sm:rounded-xl transition-all duration-200 cursor-pointer ${
                                       isActive 
-                                        ? "bg-indigo-50/80 text-indigo-700 shadow-sm" 
-                                        : "text-slate-500 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-100"
+                                        ? "bg-indigo-50/80 text-indigo-700 shadow-xs" 
+                                        : "text-slate-500 hover:bg-white hover:shadow-2xs border border-transparent hover:border-slate-100"
                                     } ${isLocked ? "opacity-60" : ""}`}
                                   >
                                     {isActive && (
-                                      <div className="absolute left-0 w-1 h-4 bg-indigo-600 rounded-full -translate-x-[15px]" />
+                                      <div className="absolute left-0 w-1 h-3.5 sm:h-4 bg-indigo-600 rounded-full -translate-x-[10px] sm:-translate-x-[15px]" />
                                     )}
                                     
                                     <div className="shrink-0">
                                       {isLocked ? (
-                                        <Lock size={12} className="text-slate-300" />
+                                        <Lock className="w-3 h-3 text-slate-300" />
                                       ) : isActive ? (
-                                        <div className="w-5 h-5 bg-indigo-600 rounded-lg flex items-center justify-center shadow-md shadow-indigo-100">
-                                           <PlayCircle size={12} className="text-white" />
+                                        <div className="w-4 h-4 sm:w-5 sm:h-5 bg-indigo-600 rounded-md sm:rounded-lg flex items-center justify-center shadow-xs shadow-indigo-100">
+                                           <PlayCircle className="w-3 h-3 text-white" />
                                         </div>
                                       ) : (
-                                        <div className="w-3.5 h-3.5 rounded-full border-2 border-slate-200 group-hover/item:border-slate-300 transition-colors" />
+                                        <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border-2 border-slate-200 group-hover/item:border-slate-300 transition-colors" />
                                       )}
                                     </div>
                                     
                                     <div className="flex-1 min-w-0">
-                                      <div className="flex items-center gap-1.5 min-w-0">
+                                      <div className="flex items-center gap-1 min-w-0">
                                         <p 
                                           data-active-lesson-title={isActive ? lesson.title : undefined}
-                                          className={`text-[11px] font-semibold leading-snug truncate ${
+                                          className={`text-[clamp(9px,1.1vw,11px)] font-semibold leading-snug truncate ${
                                             isActive ? "text-indigo-800 font-bold" : isLocked ? "text-slate-300" : "text-slate-600"
                                           }`}
                                         >
@@ -750,14 +750,14 @@ export default function LearnSidebar() {
                                         </p>
                                         {(lesson.contentType === "VIDEO" || !!lesson.videoUrl || (lesson.videoExplanation && (Array.isArray(lesson.videoExplanation) ? lesson.videoExplanation.length > 0 : Object.keys(lesson.videoExplanation as object).length > 0))) && (
                                           <span 
-                                            className="cursor-help text-xs shrink-0 select-none" 
+                                            className="cursor-help text-[10px] shrink-0 select-none" 
                                             title="Bài học có video bài giảng/chữa bài"
                                           >
                                             🎬
                                           </span>
                                         )}
                                         {!isEnrolled && lesson.isPreview && (
-                                          <span className="bg-emerald-500/10 text-emerald-600 text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 shadow-sm border border-emerald-500/10">
+                                          <span className="bg-emerald-500/10 text-emerald-600 text-[7px] sm:text-[8px] font-black px-1 py-0.2 rounded uppercase tracking-wider shrink-0 border border-emerald-500/10">
                                             Free
                                           </span>
                                         )}
@@ -766,10 +766,10 @@ export default function LearnSidebar() {
 
                                     <div className="flex items-center gap-1 shrink-0 scale-75 origin-right">
                                       {progressMap[lesson.id]?.isCompleted && (
-                                         <CheckCircle2 size={14} className="text-emerald-500" />
+                                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                                       )}
                                       {progressMap[lesson.id]?.totalCount > 0 && !progressMap[lesson.id]?.isCompleted && (
-                                         <div className="text-[10px] font-black text-slate-400 bg-white border border-slate-100 px-1.5 py-0.5 rounded-md">
+                                         <div className="text-[9px] font-black text-slate-400 bg-white border border-slate-100 px-1 py-0.2 rounded">
                                             <span className="text-indigo-500">{progressMap[lesson.id].correctCount}</span>
                                             <span className="mx-0.5 text-slate-200">/</span>
                                             {progressMap[lesson.id].totalCount}

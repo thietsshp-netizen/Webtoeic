@@ -210,30 +210,30 @@ export default function LearnLayout({
         <div id="learn-workspace-container" className="flex flex-1 overflow-hidden relative">
           {/* Sidebar Bên Trái (Collapsible & Resizable) */}
           <div 
-            style={sidebarOpen ? { width: `${sidebarWidth}px` } : {}}
+            style={sidebarOpen ? { width: `min(${sidebarWidth}px, 82vw)` } : {}}
             className={`h-full bg-[#fbfcfd] flex-shrink-0 relative overflow-hidden flex flex-col ${
               isResizing ? "" : "transition-all duration-300 ease-in-out"
             } ${
-              sidebarOpen ? "border-r border-slate-100" : "w-[clamp(24px,3.5vw,48px)] border-r border-slate-100"
+              sidebarOpen ? "border-r border-slate-100" : "w-[clamp(18px,2.2vw,32px)] sm:w-[clamp(24px,3vw,38px)] border-r border-slate-100"
             }`}
           >
             {/* Collapsed State Indicator */}
             {!sidebarOpen && (
-              <div className="absolute inset-0 flex flex-col items-center py-[clamp(6px,1.5vh,24px)] gap-[clamp(8px,2vh,32px)] animate-in fade-in duration-500">
+              <div className="absolute inset-0 flex flex-col items-center py-[clamp(4px,1vh,16px)] gap-[clamp(6px,1.5vh,20px)] animate-in fade-in duration-500">
                 <div className="flex flex-col items-center gap-1">
-                  <div className="w-[clamp(18px,3vh,30px)] h-[clamp(18px,3vh,30px)] rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
-                    <Menu className="w-[clamp(10px,1.8vh,16px)] h-[clamp(10px,1.8vh,16px)]" />
+                  <div className="w-[clamp(14px,2.2vh,22px)] h-[clamp(14px,2.2vh,22px)] rounded-md sm:rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-xs border border-indigo-100">
+                    <Menu className="w-[clamp(8px,1.3vh,12px)] h-[clamp(8px,1.3vh,12px)]" />
                   </div>
                 </div>
                 <div 
-                  className="flex items-center gap-2 [writing-mode:vertical-lr] rotate-180 text-[clamp(7px,1.2vw,10px)] font-black text-slate-400 uppercase tracking-[0.15em] sm:tracking-[0.3em] opacity-80 whitespace-nowrap"
+                  className="flex items-center gap-1.5 [writing-mode:vertical-lr] rotate-180 text-[clamp(5.5px,0.8vw,8.5px)] font-black text-slate-400 uppercase tracking-[0.1em] sm:tracking-[0.2em] opacity-80 whitespace-nowrap"
                 >
                   Nội dung khóa học
                 </div>
-                <div className="mt-auto mb-[clamp(8px,2vh,24px)] flex flex-col items-center gap-1">
-                   <div className="w-1 h-1 rounded-full bg-indigo-500 animate-pulse" />
-                   <div className="w-1 h-1 rounded-full bg-indigo-300" />
-                   <div className="w-1 h-1 rounded-full bg-indigo-100" />
+                <div className="mt-auto mb-[clamp(4px,1vh,16px)] flex flex-col items-center gap-0.5">
+                   <div className="w-0.5 h-0.5 sm:w-1 sm:h-1 rounded-full bg-indigo-500 animate-pulse" />
+                   <div className="w-0.5 h-0.5 sm:w-1 sm:h-1 rounded-full bg-indigo-300" />
+                   <div className="w-0.5 h-0.5 sm:w-1 sm:h-1 rounded-full bg-indigo-100" />
                 </div>
               </div>
             )}
@@ -261,18 +261,18 @@ export default function LearnLayout({
               setSidebarOpen(nextState);
               localStorage.setItem("toeic-sidebar-collapsed", String(!nextState));
             }}
-            style={sidebarOpen ? { left: `${sidebarWidth}px` } : {}}
-            className={`absolute top-1/2 -translate-y-1/2 z-[60] w-[clamp(14px,2.2vw,22px)] h-[clamp(28px,5vh,48px)] bg-white border border-slate-200 shadow-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-slate-50 rounded-r-lg sm:rounded-r-xl ${
+            style={sidebarOpen ? { left: `min(${sidebarWidth}px, 82vw)` } : {}}
+            className={`absolute top-1/2 -translate-y-1/2 z-[60] w-[clamp(11px,1.6vw,18px)] h-[clamp(20px,3.5vh,36px)] bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-slate-50 rounded-r-md sm:rounded-r-lg ${
               isResizing ? "" : "transition-all duration-300 ease-in-out"
             } ${
-              sidebarOpen ? "-ml-px" : "left-[clamp(24px,3.5vw,48px)]"
+              sidebarOpen ? "-ml-px" : "left-[clamp(18px,2.2vw,32px)] sm:left-[clamp(24px,3vw,38px)]"
             }`}
             title={sidebarOpen ? "Thu gọn menu" : "Mở rộng menu"}
           >
             {sidebarOpen ? (
-              <ChevronLeft className="w-[clamp(10px,1.8vh,16px)] h-[clamp(10px,1.8vh,16px)]" />
+              <ChevronLeft className="w-[clamp(8px,1.4vh,13px)] h-[clamp(8px,1.4vh,13px)]" />
             ) : (
-              <ChevronRight className="w-[clamp(10px,1.8vh,16px)] h-[clamp(10px,1.8vh,16px)]" />
+              <ChevronRight className="w-[clamp(8px,1.4vh,13px)] h-[clamp(8px,1.4vh,13px)]" />
             )}
           </button>
 
