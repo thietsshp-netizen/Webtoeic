@@ -633,47 +633,66 @@ function HomeContent() {
 
       {/* --- TOP NAVBAR --- */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2">
+        <div className="max-w-7xl mx-auto px-2.5 sm:px-6 h-14 sm:h-16 md:h-20 flex items-center justify-between gap-1.5 sm:gap-3">
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200 group-hover:rotate-6 transition-transform">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200 group-hover:rotate-6 transition-transform">
               <GraduationCap className="text-white" size={20} />
             </div>
-            <span className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight hidden sm:block">
+            <span className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight hidden md:block">
               hoctoeic
               <span className="text-blue-600 block text-[10px] uppercase tracking-[0.3em] font-bold -mt-1">E-LEARNING SYSTEM</span>
             </span>
           </Link>
 
-          <div className="flex items-center bg-slate-100/50 p-1 sm:p-1.5 rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-[calc(100vw-110px)] sm:max-w-none mx-auto sm:mx-0 mr-10 sm:mr-0">
+          <div className="flex items-center bg-slate-100/50 p-1 rounded-xl md:rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-[calc(100vw-110px)] md:max-w-none flex-shrink">
             <TabBtn href="/?tab=intro" id="intro" active={activeTab} label="GIỚI THIỆU" icon={<Star size={14} />} />
             <TabBtn href="/courses" id="courses" active={activeTab} label="KHÓA HỌC" icon={<BookOpen size={14} />} />
             <TabBtn href="/?tab=dashboard" id="dashboard" active={activeTab} label="DASHBOARD" icon={<Layout size={14} />} color="blue" />
           </div>
 
-          <div className="hidden md:flex items-center gap-4">
+          {/* Auth Area: Hiển thị ngoài cùng bên phải gọn gàng */}
+          <div className="flex items-center gap-1.5 sm:gap-4 flex-shrink-0">
             {status === "authenticated" ? (
-              <div className="flex items-center gap-4">
-                {isAdmin && (
-                  <Link href="/admin/courses" className="flex items-center gap-2 bg-slate-900 text-white hover:bg-slate-800 px-4 py-2.5 rounded-xl font-bold text-xs uppercase transition-all shadow-md">
-                    🛠️ QUẢN TRỊ
-                  </Link>
-                )}
-                <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
-                  <div className="text-right">
-                    <div className="text-sm font-bold text-slate-800 leading-none mb-1">
-                      {(session?.user as any)?.displayName || session?.user?.name || "User"}
+              <>
+                {/* Desktop view */}
+                <div className="hidden md:flex items-center gap-4">
+                  {isAdmin && (
+                    <Link href="/admin/courses" className="flex items-center gap-2 bg-slate-900 text-white hover:bg-slate-800 px-4 py-2.5 rounded-xl font-bold text-xs uppercase transition-all shadow-md">
+                      🛠️ QUẢN TRỊ
+                    </Link>
+                  )}
+                  <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
+                    <div className="text-right">
+                      <div className="text-sm font-bold text-slate-800 leading-none mb-1">
+                        {(session?.user as any)?.displayName || session?.user?.name || "User"}
+                      </div>
+                      <div className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Hội viên Pro</div>
                     </div>
-                    <div className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Hội viên Pro</div>
+                    <button onClick={() => signOut()} className="p-2.5 bg-slate-50 text-slate-400 hover:text-red-500 rounded-xl transition-all" title="Đăng xuất">
+                      <LogOut size={20} />
+                    </button>
                   </div>
-                  <button onClick={() => signOut()} className="p-2.5 bg-slate-50 text-slate-400 hover:text-red-500 rounded-xl transition-all">
-                    <LogOut size={20} />
+                </div>
+
+                {/* Mobile view */}
+                <div className="flex md:hidden items-center gap-1 sm:gap-1.5">
+                  {isAdmin && (
+                    <Link href="/admin/courses" className="p-1.5 bg-slate-900 text-white rounded-lg text-xs font-bold" title="Quản trị">
+                      🛠️
+                    </Link>
+                  )}
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-600 text-white font-black text-[10px] sm:text-xs flex items-center justify-center shadow-md shadow-blue-500/20">
+                    {(((session?.user as any)?.displayName || session?.user?.name || session?.user?.email || "U")[0]).toUpperCase()}
+                  </div>
+                  <button onClick={() => signOut()} className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Đăng xuất">
+                    <LogOut size={16} />
                   </button>
                 </div>
-              </div>
+              </>
             ) : (
               <Link
                 href="/auth/signin"
-                className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95"
+                className="bg-slate-900 hover:bg-slate-800 text-white px-2.5 py-1.5 md:px-7 md:py-3 rounded-lg md:rounded-2xl font-bold text-[10px] sm:text-[11px] md:text-xs uppercase tracking-normal md:tracking-widest shadow-md transition-all active:scale-95 flex-shrink-0 whitespace-nowrap"
               >
                 Đăng nhập
               </Link>

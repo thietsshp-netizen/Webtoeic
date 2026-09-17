@@ -83,81 +83,109 @@ export default function SiteHeader() {
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-2.5 sm:px-6 h-14 sm:h-16 md:h-20 flex items-center justify-between gap-1.5 sm:gap-3">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-            <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200 group-hover:rotate-6 transition-transform">
-              <GraduationCap className="text-white" size={24} />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200 group-hover:rotate-6 transition-transform">
+              <GraduationCap className="text-white" size={20} />
             </div>
-            <span className="text-xl font-bold text-slate-900 tracking-tight hidden sm:block">
+            <span className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight hidden md:block">
               hoctoeic
               <span className="text-blue-600 block text-[10px] uppercase tracking-[0.3em] font-bold -mt-1">E-LEARNING SYSTEM</span>
             </span>
           </Link>
 
-          {/* Tab Navigation (Hiển thị đầy đủ 3 tab trên cả di động & máy tính) */}
-          <div className="flex items-center bg-slate-100/50 p-1.5 rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-[290px] sm:max-w-none">
-            <NavTab href="/?tab=intro" active={activeTab === "intro"} label="GIỚI THIỆU" icon={<Star size={16} />} />
-            <NavTab href="/courses" active={activeTab === "courses"} label="KHÓA HỌC" icon={<BookOpen size={16} />} />
-            <NavTab href="/?tab=dashboard" active={false} label="DASHBOARD" icon={<Layout size={16} />} />
+          {/* Tab Navigation (Hiển thị đầy đủ 3 tab trên cả di động & máy tính, tự cuộn/co giãn) */}
+          <div className="flex items-center bg-slate-100/50 p-1 rounded-xl md:rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-[calc(100vw-110px)] md:max-w-none flex-shrink">
+            <NavTab href="/?tab=intro" active={activeTab === "intro"} label="GIỚI THIỆU" icon={<Star size={14} />} />
+            <NavTab href="/courses" active={activeTab === "courses"} label="KHÓA HỌC" icon={<BookOpen size={14} />} />
+            <NavTab href="/?tab=dashboard" active={false} label="DASHBOARD" icon={<Layout size={14} />} />
           </div>
 
-          {/* Auth Area */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Auth Area (Góc bên phải ngoài cùng trên cả di động & máy tính) */}
+          <div className="flex items-center gap-1.5 sm:gap-4 flex-shrink-0">
             {status === "authenticated" ? (
-              <div className="flex items-center gap-4">
-                {isAdmin && (
-                  <Link href="/admin/enrollments" className="flex items-center gap-2 bg-slate-900 text-white hover:bg-slate-800 px-4 py-2.5 rounded-xl font-black text-xs uppercase transition-all shadow-md">
-                    🛠️ Quản trị
-                  </Link>
-                )}
-                <div className="flex items-center gap-4">
-                  <div className="flex flex-col items-end">
-                    <span className="text-sm font-black text-slate-800 leading-none">
-                      {session?.user?.name || session?.user?.email?.split("@")[0]}
-                    </span>
-                    <span className="text-[10px] font-black uppercase tracking-widest mt-1">
-                      {isAdmin ? (
-                        <span className="text-blue-500">Quản trị viên</span>
-                      ) : (session?.user as any)?.daysLeft !== undefined ? (
-                        (() => {
-                          const days = (session?.user as any).daysLeft;
-                          if (days > 0) return <span className="text-emerald-500">Tài khoản Pro: Còn {days} ngày</span>;
-                          if (days === 0) return <span className="text-amber-500">Tài khoản Pro: Ngày cuối cùng</span>;
-                          return <span className="text-rose-500">Tài khoản Pro: Đã hết hạn (-1)</span>;
-                        })()
-                      ) : (
-                        <span className="text-emerald-500">Hội viên Pro</span>
-                      )}
-                    </span>
-                  </div>
+              <>
+                {/* Desktop View */}
+                <div className="hidden md:flex items-center gap-4">
+                  {isAdmin && (
+                    <Link href="/admin/enrollments" className="flex items-center gap-2 bg-slate-900 text-white hover:bg-slate-800 px-4 py-2.5 rounded-xl font-black text-xs uppercase transition-all shadow-md">
+                      🛠️ Quản trị
+                    </Link>
+                  )}
+                  <div className="flex items-center gap-4">
+                    <div className="flex flex-col items-end">
+                      <span className="text-sm font-black text-slate-800 leading-none">
+                        {session?.user?.name || session?.user?.email?.split("@")[0]}
+                      </span>
+                      <span className="text-[10px] font-black uppercase tracking-widest mt-1">
+                        {isAdmin ? (
+                          <span className="text-blue-500">Quản trị viên</span>
+                        ) : (session?.user as any)?.daysLeft !== undefined ? (
+                          (() => {
+                            const days = (session?.user as any).daysLeft;
+                            if (days > 0) return <span className="text-emerald-500">Tài khoản Pro: Còn {days} ngày</span>;
+                            if (days === 0) return <span className="text-amber-500">Tài khoản Pro: Ngày cuối cùng</span>;
+                            return <span className="text-rose-500">Tài khoản Pro: Đã hết hạn (-1)</span>;
+                          })()
+                        ) : (
+                          <span className="text-emerald-500">Hội viên Pro</span>
+                        )}
+                      </span>
+                    </div>
 
+                    <div
+                      onClick={() => setShowProfileModal(true)}
+                      className={`w-9 h-9 rounded-full ${avatarColor} flex items-center justify-center font-black text-[11px] text-white shadow-lg shadow-blue-500/20 cursor-pointer hover:scale-105 transition-transform`}
+                      title="Tài khoản"
+                    >
+                      {userInitials}
+                    </div>
+
+                    <div className="flex items-center gap-1 border-l border-slate-200 pl-4">
+                      <button
+                        onClick={() => setShowProfileModal(true)}
+                        className="p-2.5 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-blue-600 transition-all active:scale-90"
+                        title="Cài đặt tài khoản"
+                      >
+                        <Settings size={20} />
+                      </button>
+                      <button
+                        onClick={() => signOut({ callbackUrl: "/" })}
+                        className="p-2.5 hover:bg-red-50 rounded-xl text-slate-400 hover:text-red-500 transition-all active:scale-90"
+                        title="Đăng xuất"
+                      >
+                        <LogOut size={20} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mobile View */}
+                <div className="flex md:hidden items-center gap-1 sm:gap-1.5">
+                  {isAdmin && (
+                    <Link href="/admin/enrollments" className="p-1.5 bg-slate-900 text-white rounded-lg text-xs font-bold" title="Quản trị">
+                      🛠️
+                    </Link>
+                  )}
                   <div
-                    className={`w-9 h-9 rounded-full ${avatarColor} flex items-center justify-center font-black text-[11px] text-white shadow-lg shadow-blue-500/20`}
+                    onClick={() => setShowProfileModal(true)}
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full ${avatarColor} flex items-center justify-center font-bold text-[10px] sm:text-xs text-white shadow-md cursor-pointer active:scale-95`}
+                    title="Tài khoản"
                   >
                     {userInitials}
                   </div>
-
-                  <div className="flex items-center gap-1 border-l border-slate-200 pl-4">
-                    <button
-                      onClick={() => setShowProfileModal(true)}
-                      className="p-2.5 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-blue-600 transition-all active:scale-90"
-                      title="Cài đặt tài khoản"
-                    >
-                      <Settings size={20} />
-                    </button>
-                    <button
-                      onClick={() => signOut({ callbackUrl: "/" })}
-                      className="p-2.5 hover:bg-red-50 rounded-xl text-slate-400 hover:text-red-500 transition-all active:scale-90"
-                      title="Đăng xuất"
-                    >
-                      <LogOut size={20} />
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                    title="Đăng xuất"
+                  >
+                    <LogOut size={16} />
+                  </button>
                 </div>
-              </div>
+              </>
             ) : (
-              <Link href="/auth/signin" className="bg-slate-900 hover:bg-slate-800 text-white px-7 py-3 rounded-2xl font-black text-xs uppercase tracking-[0.15em] shadow-xl transition-all active:scale-95">
+              <Link href="/auth/signin" className="bg-slate-900 hover:bg-slate-800 text-white px-2.5 py-1.5 md:px-7 md:py-3 rounded-lg md:rounded-2xl font-black text-[10px] sm:text-[11px] md:text-xs uppercase tracking-normal md:tracking-[0.15em] shadow-md transition-all active:scale-95 flex-shrink-0 whitespace-nowrap">
                 Đăng nhập
               </Link>
             )}
