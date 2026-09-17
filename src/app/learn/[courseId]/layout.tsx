@@ -45,6 +45,16 @@ export default function LearnLayout({
     return () => window.removeEventListener("toeic-tour-course-sidebar", handleTourCourseSidebar);
   }, []);
 
+  // Tự động thu gọn thanh nội dung khóa học (LearnSidebar) khi mở Sổ tay ngữ pháp
+  useEffect(() => {
+    const handleGrammarHandbookToggle = () => {
+      setSidebarOpen(false);
+      localStorage.setItem("toeic-sidebar-collapsed", "true");
+    };
+    window.addEventListener("toggle-grammar-handbook", handleGrammarHandbookToggle);
+    return () => window.removeEventListener("toggle-grammar-handbook", handleGrammarHandbookToggle);
+  }, []);
+
   // Lắng nghe sự kiện đồng bộ trạng thái vẽ viết từ cọ vẽ toàn cục
   useEffect(() => {
     const handleGlobalDrawState = (e: Event) => {

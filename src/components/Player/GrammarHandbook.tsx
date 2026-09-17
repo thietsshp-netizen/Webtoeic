@@ -151,20 +151,48 @@ export default function GrammarHandbook() {
     fetchGrammar();
   }, [isOpen, lessons.length, courseId, hasAccess]);
 
-  // Khởi tạo vị trí tối ưu trên màn hình Client
+  // Khởi tạo vị trí tối ưu & tự động căn chỉnh khi xoay màn hình (Portrait / Landscape)
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const initialWidth = Math.min(1050, window.innerWidth - 60);
-    const initialHeight = Math.min(window.innerHeight * 0.8, 700);
 
-    // Đặt mặc định căn giữa/phải màn hình
-    const initialX = Math.max(20, window.innerWidth - initialWidth - 30);
-    const initialY = 85;
+    const adjustBounds = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const isLandscape = h < 520 || (w > h && h < 600);
+      const isMobile = w < 640 && !isLandscape;
+      const isTablet = w >= 640 && w < 1024 && !isLandscape;
 
-    setWidth(initialWidth);
-    setHeight(initialHeight);
-    setPosition({ x: initialX, y: initialY });
-    preMaximizeState.current = { width: initialWidth, height: initialHeight, x: initialX, y: initialY };
+      let initialWidth = Math.min(1050, w - 60);
+      let initialHeight = Math.min(h * 0.8, 700);
+      let initialX = Math.max(20, w - initialWidth - 30);
+      let initialY = 85;
+
+      if (isLandscape) {
+        initialWidth = Math.min(Math.floor(w * 0.62), 520); // Chiếm ~60% chiều rộng màn hình xoay ngang
+        initialHeight = Math.min(Math.floor(h * 0.68), 270); // Chiếm ~65% chiều cao màn hình xoay ngang
+        initialX = Math.max(12, Math.floor((w - initialWidth) / 2));
+        initialY = Math.max(46, Math.floor((h - initialHeight) / 2));
+      } else if (isMobile) {
+        initialWidth = Math.min(w - 16, 520);
+        initialHeight = Math.min(Math.floor(h * 0.48), 400); // Chiếm đúng 1/2 màn hình portrait
+        initialX = Math.max(8, Math.floor((w - initialWidth) / 2));
+        initialY = Math.max(52, Math.floor(h * 0.48)); // Nằm ở nửa dưới màn hình portrait
+      } else if (isTablet) {
+        initialWidth = Math.min(880, w - 24);
+        initialHeight = Math.min(h - 40, 720);
+        initialX = Math.max(12, Math.floor((w - initialWidth) / 2));
+        initialY = Math.max(48, Math.floor((h - initialHeight) / 2));
+      }
+
+      setWidth(initialWidth);
+      setHeight(initialHeight);
+      setPosition({ x: initialX, y: initialY });
+      preMaximizeState.current = { width: initialWidth, height: initialHeight, x: initialX, y: initialY };
+    };
+
+    adjustBounds();
+    window.addEventListener("resize", adjustBounds);
+    return () => window.removeEventListener("resize", adjustBounds);
   }, []);
 
   // Tự động tăng/giảm kích thước hình ảnh (img) tỉ lệ thuận theo mức zoom của Pane tương ứng
@@ -200,7 +228,7 @@ export default function GrammarHandbook() {
     return () => clearTimeout(timer);
   }, [activeLesson, zoom1, zoom2, pane1Tab, pane2Tab]);
 
-  // Xử lý kéo thả cửa sổ nổi
+  // Xử lý kéo thả cửa sổ nổi (Chuột & Touch cảm ứng)
   const handleDragStart = (e: React.MouseEvent) => {
     if (isMaximized) return;
     if (e.button !== 0) return; // Chỉ kéo bằng chuột trái
@@ -215,7 +243,20 @@ export default function GrammarHandbook() {
     e.preventDefault();
   };
 
-  // Xử lý co giãn kích thước cửa sổ nổi
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (isMaximized) return;
+    if (!e.touches[0]) return;
+
+    const target = e.target as HTMLElement;
+    if (target.closest("button") || target.closest(".lesson-tabs-container")) return;
+
+    setIsDragging(true);
+    const touch = e.touches[0];
+    dragStart.current = { x: touch.clientX, y: touch.clientY };
+    positionStart.current = { x: position.x, y: position.y };
+  };
+
+  // Xử lý co giãn kích thước cửa sổ nổi (Chuột & Touch)
   const handleResizeStart = (direction: string, e: React.MouseEvent) => {
     if (isMaximized) return;
     if (e.button !== 0) return;
@@ -227,6 +268,17 @@ export default function GrammarHandbook() {
 
     e.preventDefault();
     e.stopPropagation();
+  };
+
+  const handleTouchResizeStart = (direction: string, e: React.TouchEvent) => {
+    if (isMaximized) return;
+    if (!e.touches[0]) return;
+
+    setIsResizing(direction);
+    const touch = e.touches[0];
+    dragStart.current = { x: touch.clientX, y: touch.clientY };
+    sizeStart.current = { w: width, h: height };
+    positionStart.current = { x: position.x, y: position.y };
   };
 
   // Điều khiển phóng to / Thu nhỏ lại
@@ -289,7 +341,7 @@ export default function GrammarHandbook() {
         const deltaY = e.clientY - dragStart.current.y;
 
         const nextX = Math.max(0, Math.min(window.innerWidth - width, positionStart.current.x + deltaX));
-        const nextY = Math.max(56, Math.min(window.innerHeight - 100, positionStart.current.y + deltaY));
+        const nextY = Math.max(30, Math.min(window.innerHeight - 60, positionStart.current.y + deltaY));
 
         setPosition({ x: nextX, y: nextY });
       }
@@ -311,8 +363,36 @@ export default function GrammarHandbook() {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (isDraggingSplit && e.touches[0]) {
-        updateSplitRatio(e.touches[0].clientX, e.touches[0].clientY);
+      if (!e.touches[0]) return;
+      const touch = e.touches[0];
+
+      if (isDraggingSplit) {
+        updateSplitRatio(touch.clientX, touch.clientY);
+      }
+
+      if (isDragging) {
+        const deltaX = touch.clientX - dragStart.current.x;
+        const deltaY = touch.clientY - dragStart.current.y;
+
+        const nextX = Math.max(0, Math.min(window.innerWidth - width, positionStart.current.x + deltaX));
+        const nextY = Math.max(30, Math.min(window.innerHeight - 60, positionStart.current.y + deltaY));
+
+        setPosition({ x: nextX, y: nextY });
+      }
+
+      if (isResizing) {
+        const deltaX = touch.clientX - dragStart.current.x;
+        const deltaY = touch.clientY - dragStart.current.y;
+
+        if (isResizing === "r" || isResizing === "br") {
+          const nextW = Math.max(260, Math.min(window.innerWidth - position.x, sizeStart.current.w + deltaX));
+          setWidth(nextW);
+        }
+
+        if (isResizing === "b" || isResizing === "br") {
+          const nextH = Math.max(180, Math.min(window.innerHeight - position.y, sizeStart.current.h + deltaY));
+          setHeight(nextH);
+        }
       }
     };
 
@@ -361,7 +441,7 @@ export default function GrammarHandbook() {
     if (!currentPart) return null;
 
     return (
-      <div className="w-full flex flex-col gap-4 select-text" style={{ zoom: zoomValue / 100 }}>
+      <div className="w-full flex flex-col gap-3.5 select-text practice-container" style={{ zoom: zoomValue / 100 }}>
         {showSelector && (
           <div className="sticky top-0 bg-slate-50/95 backdrop-blur-md z-20 pt-4 pb-2 -mx-6 px-6 border-b border-slate-200/60 select-none flex flex-wrap gap-1.5">
             {lesson.practice.parts.map((part, idx) => {
@@ -389,7 +469,7 @@ export default function GrammarHandbook() {
         )}
 
         {/* Danh sách câu hỏi */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2.5 sm:gap-4">
           {currentPart.questions.map((q, qIdx) => {
             const answerKey = `${lesson.id}-${currentPartIdx}-${q.id}`;
             const chosenAnswer = userAnswers[answerKey];
@@ -398,12 +478,14 @@ export default function GrammarHandbook() {
             return (
               <div
                 key={q.id}
-                className="bg-white border border-slate-100 rounded-2xl p-5 shadow-[0_4px_12px_rgba(0,0,0,0.01)] hover:border-slate-200/80 transition-all flex flex-col gap-3.5"
+                className="bg-white border border-slate-100 rounded-2xl p-3 sm:p-5 shadow-xs hover:border-slate-200/80 transition-all flex flex-col gap-2.5 sm:gap-3.5"
               >
-                {/* Tiêu đề câu hỏi chính */}
-                <h4 className="text-[15px] font-black text-slate-800 leading-snug">
-                  {formatQuestionText(q.questionText || q.tenseName)}
-                </h4>
+                {/* Tiêu đề câu hỏi chính (chỉ hiện khi có text) */}
+                {(q.questionText || q.tenseName) && (
+                  <h4 className="text-[13px] sm:text-[15px] font-black text-slate-800 leading-snug">
+                    {formatQuestionText(q.questionText || q.tenseName)}
+                  </h4>
+                )}
 
                 {/* THỨ NHẤT: Nếu câu hỏi chứa các câu hỏi con nested (subQuestions) */}
                 {q.subQuestions && q.subQuestions.length > 0 && (
@@ -415,7 +497,7 @@ export default function GrammarHandbook() {
 
                       return (
                         <div key={subIdx} className="flex flex-col gap-3 pt-4 border-t border-slate-100 first:border-t-0 first:pt-0">
-                          <p className="text-[13px] font-black text-indigo-900 flex items-start gap-1.5 leading-relaxed bg-indigo-50/30 py-2 px-3 rounded-lg border border-indigo-50/50">
+                          <p className="text-[11.5px] sm:text-[13px] font-black text-indigo-900 flex items-start gap-1.5 leading-relaxed bg-indigo-50/30 py-1.5 px-2.5 rounded-lg border border-indigo-50/50">
                             <span className="text-indigo-600 font-extrabold shrink-0">Câu {subIdx + 1}:</span>
                             <span>{formatQuestionText(subQ.q)}</span>
                           </p>
@@ -446,11 +528,11 @@ export default function GrammarHandbook() {
                                 return (
                                   <div
                                     key={optKey}
-                                    className={`border rounded-xl p-3.5 text-[13px] font-bold flex items-center gap-2.5 ${optionStyle}`}
+                                    className={`border rounded-xl p-2.5 sm:p-3.5 text-[11.5px] sm:text-[13px] font-bold flex items-center gap-2 ${optionStyle}`}
                                   >
                                     <span
                                       onClick={() => !isSubAnswered && handleSelectOption(lesson.id, currentPartIdx, `${q.id}-${subIdx}`, optKey)}
-                                      className={`w-5.5 h-5.5 rounded-lg font-black text-[11px] flex items-center justify-center shrink-0 shadow-sm transition-all select-none ${
+                                      className={`w-4.5 h-4.5 sm:w-5.5 sm:h-5.5 rounded-lg font-black text-[9.5px] sm:text-[11px] flex items-center justify-center shrink-0 shadow-sm transition-all select-none ${
                                         !isSubAnswered ? "cursor-pointer hover:scale-110 active:scale-90" : "cursor-default"
                                       } ${badgeStyle}`}
                                     >
@@ -464,7 +546,7 @@ export default function GrammarHandbook() {
                           )}
 
                           {subChosenAnswer && (
-                            <div className="p-4 rounded-xl border bg-amber-50/40 border-amber-100/50 text-[12.5px] text-amber-950 leading-relaxed shadow-sm flex flex-col gap-2">
+                            <div className="p-2.5 sm:p-4 rounded-xl border bg-amber-50/40 border-amber-100/50 text-[11px] sm:text-[12.5px] text-amber-950 leading-relaxed shadow-sm flex flex-col gap-1.5">
                               <div>
                                 <div className="flex items-center gap-1.5 font-black text-amber-800 mb-1">
                                   <span>💡 ĐÁP ÁN ĐÚNG: {subQ.correctAnswer}</span>
@@ -528,11 +610,11 @@ export default function GrammarHandbook() {
                         return (
                           <div
                             key={optKey}
-                            className={`border rounded-xl p-4 text-[13px] font-bold flex items-center gap-3 ${optionStyle}`}
+                            className={`border rounded-xl p-2.5 sm:p-4 text-[11.5px] sm:text-[13px] font-bold flex items-center gap-2.5 ${optionStyle}`}
                           >
                             <span
                               onClick={() => !isAnswered && handleSelectOption(lesson.id, currentPartIdx, q.id, optKey)}
-                              className={`w-5.5 h-5.5 rounded-lg font-black text-[11px] flex items-center justify-center shrink-0 shadow-sm transition-all select-none ${
+                              className={`w-4.5 h-4.5 sm:w-5.5 sm:h-5.5 rounded-lg font-black text-[9.5px] sm:text-[11px] flex items-center justify-center shrink-0 shadow-sm transition-all select-none ${
                                 !isAnswered ? "cursor-pointer hover:scale-110 active:scale-90" : "cursor-default"
                               } ${badgeStyle}`}
                             >
@@ -545,7 +627,7 @@ export default function GrammarHandbook() {
                     </div>
 
                     {chosenAnswer && q.correctAnswer && (
-                      <div className="p-4 rounded-xl border bg-amber-50/40 border-amber-100/50 text-[12.5px] text-amber-950 leading-relaxed shadow-sm flex flex-col gap-2">
+                      <div className="p-2.5 sm:p-4 rounded-xl border bg-amber-50/40 border-amber-100/50 text-[11px] sm:text-[12.5px] text-amber-950 leading-relaxed shadow-sm flex flex-col gap-1.5">
                         <div>
                           <div className="flex items-center gap-1.5 font-black text-amber-800 mb-1">
                             <span>💡 ĐÁP ÁN ĐÚNG: {q.correctAnswer}</span>
@@ -1101,15 +1183,15 @@ export default function GrammarHandbook() {
 
     return (
       <div className="flex-1 relative flex flex-col overflow-hidden w-full h-full">
-        {/* Header bar cho từng Pane */}
-        <div className="flex items-center justify-between px-3 py-1.5 border-b border-slate-100 bg-slate-50/30 shrink-0 select-none gap-2">
+        {/* Header bar cho từng Pane - Hiển thị 1 hàng mượt mà không bị ẩn nút */}
+        <div className="flex items-center justify-between px-2.5 py-1 border-b border-slate-100 bg-slate-50/30 shrink-0 select-none gap-2 min-h-[36px] w-full">
           {/* Left: Lý thuyết / Bài tập toggle */}
-          <div className="flex p-0.5 bg-slate-100/80 rounded-lg border border-slate-200/30 gap-0.5 min-w-[140px] shrink-0">
+          <div className="flex p-0.5 bg-slate-100/80 rounded-lg border border-slate-200/30 gap-0.5 shrink-0 select-none">
             <button
               onClick={() => setTab("theory")}
-              className={`flex-1 py-0.5 rounded-md text-[10px] font-black transition-all ${
+              className={`px-1.5 sm:px-2.5 py-0.5 rounded-md text-[8.5px] sm:text-[10px] font-black transition-all whitespace-nowrap ${
                 tab === "theory"
-                  ? "bg-white text-indigo-600 shadow-sm"
+                  ? "bg-white text-indigo-600 shadow-xs"
                   : "text-slate-500 hover:text-slate-800"
               }`}
             >
@@ -1117,9 +1199,9 @@ export default function GrammarHandbook() {
             </button>
             <button
               onClick={() => setTab("practice")}
-              className={`flex-1 py-0.5 rounded-md text-[10px] font-black transition-all ${
+              className={`px-1.5 sm:px-2.5 py-0.5 rounded-md text-[8.5px] sm:text-[10px] font-black transition-all whitespace-nowrap ${
                 tab === "practice"
-                  ? "bg-white text-indigo-600 shadow-sm"
+                  ? "bg-white text-indigo-600 shadow-xs"
                   : "text-slate-500 hover:text-slate-800"
               }`}
             >
@@ -1127,23 +1209,26 @@ export default function GrammarHandbook() {
             </button>
           </div>
 
-          {/* Middle: BT Selector tabs - only shown when in practice tab and has parts */}
+          {/* Right: BT Selector tabs (Bài 1, Bài 2...) - Dùng ml-auto hiển thị đầy đủ */}
           {tab === "practice" && activeLesson.practice?.parts && activeLesson.practice.parts.length > 0 && (
-            <div className="flex flex-wrap gap-1 items-center justify-end overflow-hidden">
+            <div className="flex items-center gap-1 overflow-x-auto shrink min-w-0 ml-auto py-0.5 custom-horizontal-scrollbar">
               {activeLesson.practice.parts.map((part, idx) => {
                 const currentPartIdx = selectedPartIdx[activeLesson.id] || 0;
                 const isActive = currentPartIdx === idx;
+                const match = part.title.match(/^(Bài\s*\d+|BT\s*\d+|Part\s*\d+|Phần\s*\d+)/i);
+                const shortPartTitle = match ? match[0] : (part.title.length > 8 ? `Bài ${idx + 1}` : part.title);
                 return (
                   <button
                     key={idx}
                     onClick={() => setSelectedPartIdx(prev => ({ ...prev, [activeLesson.id]: idx }))}
-                    className={`px-2 py-0.5 rounded-lg text-[9px] font-bold border transition-all active:scale-95 shrink-0 ${
+                    className={`px-1.5 sm:px-2 py-0.5 rounded-md text-[8.5px] sm:text-[9.5px] font-bold border transition-all active:scale-95 shrink-0 whitespace-nowrap ${
                       isActive
-                        ? "bg-indigo-600 border-indigo-600 text-white shadow-sm"
+                        ? "bg-indigo-600 border-indigo-600 text-white shadow-xs font-black"
                         : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
                     }`}
+                    title={part.title}
                   >
-                    {part.title.replace("Bài tập", "BT")}
+                    {shortPartTitle}
                   </button>
                 );
               })}
@@ -1154,7 +1239,7 @@ export default function GrammarHandbook() {
         {/* Floating Zoom Control ở góc trên bên phải trong mỗi Pane */}
         <div className="absolute top-12 right-4 z-10 flex items-center gap-1 bg-slate-900/80 backdrop-blur-md border border-slate-700/50 px-1.5 py-0.5 rounded-lg shadow-md select-none">
           <button
-            onClick={() => setZoomValue(prev => Math.max(70, prev - 10))}
+            onClick={() => setZoomValue(prev => Math.max(40, prev - 10))}
             className="p-1 text-slate-300 hover:text-white rounded active:scale-95 transition-all"
             title="Thu nhỏ chữ"
           >
@@ -1173,7 +1258,7 @@ export default function GrammarHandbook() {
         </div>
 
         {/* Content area */}
-        <div className={`flex-1 overflow-y-auto p-6 custom-vertical-scrollbar w-full webtoeic-scroll-container ${tab === 'practice' ? 'bg-slate-50/50' : ''}`}>
+        <div className={`flex-1 overflow-y-auto p-3 sm:p-6 custom-vertical-scrollbar w-full webtoeic-scroll-container ${tab === 'practice' ? 'bg-slate-50/50' : ''}`}>
           {tab === "theory" ? (
             <>
               <div
@@ -1237,16 +1322,17 @@ export default function GrammarHandbook() {
           {/* DRAGGABLE HEADER ZONE */}
           <div
             onMouseDown={handleDragStart}
+            onTouchStart={handleTouchStart}
             onDoubleClick={handleHeaderDoubleClick}
-            className={`px-4 py-1.5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between gap-4 shrink-0 select-none ${isMaximized ? "cursor-default" : "cursor-move"
+            className={`px-2.5 sm:px-4 py-1.5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between gap-2 sm:gap-4 shrink-0 select-none touch-none ${isMaximized ? "cursor-default" : "cursor-move"
               }`}
           >
             {/* Cột trái: Tiêu đề */}
-            <div className="flex items-center gap-2 shrink-0">
-              <div className="w-5 h-5 rounded bg-indigo-600 text-white flex items-center justify-center shadow-sm">
-                <BookOpen size={11} />
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <div className="w-4 h-4 sm:w-5 sm:h-5 rounded bg-indigo-600 text-white flex items-center justify-center shadow-xs">
+                <BookOpen className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
               </div>
-              <h2 className="text-[10.5px] font-black text-indigo-600 uppercase tracking-[0.08em] whitespace-nowrap">
+              <h2 className="text-[9px] sm:text-[10.5px] font-black text-indigo-600 uppercase tracking-[0.05em] sm:tracking-[0.08em] whitespace-nowrap">
                 Sổ tay Ngữ pháp
               </h2>
             </div>
@@ -1271,8 +1357,8 @@ export default function GrammarHandbook() {
                       <button
                         key={lesson.id}
                         onClick={() => setActiveLesson(lesson)}
-                        className={`px-2 py-0.5 rounded text-[9px] font-bold shrink-0 transition-all active:scale-95 border ${isActive
-                          ? "bg-indigo-600 border-indigo-600 text-white shadow-sm font-black"
+                        className={`px-1.5 sm:px-2 py-0.5 rounded text-[8.5px] sm:text-[9px] font-bold shrink-0 transition-all active:scale-95 border ${isActive
+                          ? "bg-indigo-600 border-indigo-600 text-white shadow-xs font-black"
                           : "bg-white border-slate-150 text-slate-500 hover:bg-slate-100 hover:text-slate-700"
                           }`}
                         title={lesson.title}
@@ -1286,7 +1372,7 @@ export default function GrammarHandbook() {
             </div>
 
             {/* Cột phải: Các nút góc cửa sổ */}
-            <div className="flex items-center gap-1 shrink-0">
+            <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
               {/* Nút chia dọc */}
               <button
                 onClick={() => setSplitMode(prev => prev === "vertical" ? "none" : "vertical")}
@@ -1296,7 +1382,7 @@ export default function GrammarHandbook() {
                   }`}
                 title={splitMode === "vertical" ? "Đóng chia dọc" : "Chia dọc màn hình (Split Vertical)"}
               >
-                <Columns2 size={12} />
+                <Columns2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </button>
               {/* Nút chia ngang */}
               <button
@@ -1307,21 +1393,21 @@ export default function GrammarHandbook() {
                   }`}
                 title={splitMode === "horizontal" ? "Đóng chia ngang" : "Chia ngang màn hình (Split Horizontal)"}
               >
-                <Rows2 size={12} />
+                <Rows2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </button>
               <button
                 onClick={toggleMaximize}
                 className="p-0.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-all active:scale-90"
                 title={isMaximized ? "Thu nhỏ kích thước" : "Phóng to toàn màn hình"}
               >
-                {isMaximized ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
+                {isMaximized ? <Minimize2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> : <Maximize2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
               </button>
               <button
                 onClick={() => setIsOpen(false)}
                 className="p-0.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-all active:scale-90"
                 title="Đóng sổ tay"
               >
-                <X size={13} />
+                <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
             </div>
           </div>
@@ -1428,25 +1514,28 @@ export default function GrammarHandbook() {
               {/* Tay kéo bên phải */}
               <div
                 onMouseDown={e => handleResizeStart("r", e)}
-                className="absolute right-0 top-0 w-1.5 h-full cursor-col-resize hover:bg-indigo-400/20 active:bg-indigo-500/40 transition-colors z-50"
+                onTouchStart={e => handleTouchResizeStart("r", e)}
+                className="absolute right-0 top-0 w-3 h-full cursor-col-resize hover:bg-indigo-400/20 active:bg-indigo-500/40 transition-colors z-50 touch-none"
               />
               {/* Tay kéo ở dưới */}
               <div
                 onMouseDown={e => handleResizeStart("b", e)}
-                className="absolute bottom-0 left-0 w-full h-1.5 cursor-row-resize hover:bg-indigo-400/20 active:bg-indigo-500/40 transition-colors z-50"
+                onTouchStart={e => handleTouchResizeStart("b", e)}
+                className="absolute bottom-0 left-0 w-full h-3 cursor-row-resize hover:bg-indigo-400/20 active:bg-indigo-500/40 transition-colors z-50 touch-none"
               />
               {/* Góc co dãn kéo chéo */}
               <div
                 onMouseDown={e => handleResizeStart("br", e)}
-                className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize flex items-end justify-end p-0.5 z-[60]"
+                onTouchStart={e => handleTouchResizeStart("br", e)}
+                className="absolute bottom-0 right-0 w-7 h-7 cursor-se-resize flex items-end justify-end p-1 z-[60] touch-none"
               >
-                <div className="w-1.5 h-1.5 bg-slate-300 rounded-full border-r border-b border-slate-400 opacity-60 group-hover:opacity-100" />
+                <div className="w-2.5 h-2.5 bg-indigo-500/60 rounded-full border-r-2 border-b-2 border-indigo-600 opacity-80" />
               </div>
             </>
           )}
 
-          {/* CSS custom scrollbar ẩn thô kệch */}
-          <style jsx>{`
+          {/* CSS custom scrollbar ẩn thô kệch & responsive typography */}
+          <style dangerouslySetInnerHTML={{ __html: `
             .custom-horizontal-scrollbar::-webkit-scrollbar {
               height: 4px;
             }
@@ -1458,59 +1547,52 @@ export default function GrammarHandbook() {
               border-radius: 8px;
             }
 
-            .custom-vertical-scrollbar::-webkit-scrollbar {
-              width: 5px;
+            .grammar-handbook-content {
+              font-size: clamp(12px, 1.35vw, 15px);
+              line-height: 1.65;
             }
-            .custom-vertical-scrollbar::-webkit-scrollbar-track {
-              background: transparent;
-            }
-            .custom-vertical-scrollbar::-webkit-scrollbar-thumb {
-              background: #e2e8f0;
-              border-radius: 8px;
-            }
-          `}</style>
 
-          {/* CSS cấu trúc cây thụt đầu dòng + bảng căn giữa — global, áp dụng cho dangerouslySetInnerHTML */}
-          <style dangerouslySetInnerHTML={{
-            __html: `
-            /* ── Cấu trúc cây: thụt đầu dòng theo cấp ──
-               Vị trí visual (tính từ edge container):
-                 grammar-section-title →  0px
-                 h3                    → 20px
-                 .section-lv1 content  → 36px  (+16 so với h3) ✓
-                 h4 (trong lv1)        → 44px  (+8 so với lv1) ✓
-                 .section-lv2 content  → 60px  (+16 so với h4) ✓
-            */
-
-            .grammar-handbook-content h1.grammar-title {
-              padding-left: 0 !important;
-              margin-left: 0 !important;
-            }
+            .grammar-handbook-content h1,
+            .grammar-handbook-content h1.grammar-title,
+            .grammar-handbook-content h2,
             .grammar-handbook-content .grammar-section-title {
-              padding-left: 0 !important;
-              margin-left: 0 !important;
+              font-size: clamp(14px, 1.8vw, 20px) !important;
+              line-height: 1.3 !important;
+              margin-top: 0.6em !important;
+              margin-bottom: 0.4em !important;
             }
 
-            /* h3 là heading ngoài section-lv1 → 20px */
             .grammar-handbook-content h3 {
+              font-size: clamp(12.5px, 1.5vw, 16px) !important;
               padding-left: 20px !important;
               margin-left: 0 !important;
             }
 
-            /* section-lv1: bọc content sau h3 → indent 36px (> h3's 20px) */
             .grammar-handbook-content .section-lv1 {
               padding-left: 36px;
             }
 
-            /* h4 nằm TRONG section-lv1 (36px) → thêm 8px = 44px tổng */
-            .grammar-handbook-content .section-lv1 h4 {
+            .grammar-handbook-content .section-lv1 h4,
+            .grammar-handbook-content h4 {
+              font-size: clamp(11.5px, 1.35vw, 14px) !important;
               padding-left: 8px !important;
               margin-left: 0 !important;
             }
 
-            /* section-lv2 nằm TRONG section-lv1 (36px) → thêm 24px = 60px tổng */
             .grammar-handbook-content .section-lv2 {
               padding-left: 24px;
+            }
+
+            /* Co giãn hình ảnh & sơ đồ SVG nguyên bản */
+            .grammar-handbook-content img,
+            .grammar-handbook-content svg,
+            .grammar-handbook-content .grammar-svg-wrapper {
+              max-width: 100% !important;
+              height: auto !important;
+              object-fit: contain !important;
+              display: block;
+              margin-left: auto !important;
+              margin-right: auto !important;
             }
 
             /* ── Bảng: width tự nhiên, căn giữa ── */
@@ -1526,6 +1608,101 @@ export default function GrammarHandbook() {
             /* ── Khoảng cách dưới đoạn văn / text trước card hoặc bảng ── */
             .grammar-handbook-content p {
               margin-bottom: 16px;
+            }
+
+            @media (max-width: 640px) {
+              .grammar-handbook-content {
+                font-size: clamp(11px, 3.4vw, 13.5px);
+                line-height: 1.55;
+              }
+
+              .grammar-handbook-content h1,
+              .grammar-handbook-content h1.grammar-title,
+              .grammar-handbook-content h2,
+              .grammar-handbook-content .grammar-section-title {
+                font-size: clamp(12.5px, 3.8vw, 15px) !important;
+                line-height: 1.3 !important;
+              }
+
+              .grammar-handbook-content h3 {
+                font-size: clamp(11.5px, 3.4vw, 13.5px) !important;
+                padding-left: 10px !important;
+              }
+
+              .grammar-handbook-content .section-lv1 h4,
+              .grammar-handbook-content h4 {
+                font-size: clamp(11px, 3.1vw, 12.8px) !important;
+                padding-left: 4px !important;
+              }
+
+              .grammar-handbook-content .section-lv1 {
+                padding-left: 10px !important;
+              }
+
+              .grammar-handbook-content .section-lv2 {
+                padding-left: 8px !important;
+              }
+
+              .grammar-handbook-content img,
+              .grammar-handbook-content svg,
+              .grammar-handbook-content .grammar-svg-wrapper {
+                max-height: 170px !important;
+              }
+
+              .grammar-handbook-content table.grammar-table {
+                display: block !important;
+                width: 100% !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+              }
+
+              .practice-container {
+                font-size: clamp(10.5px, 3.2vw, 13px) !important;
+              }
+              .practice-container h4 {
+                font-size: clamp(11.5px, 3.5vw, 14px) !important;
+                line-height: 1.35 !important;
+              }
+              .practice-container p {
+                font-size: clamp(10.5px, 3.1vw, 12.5px) !important;
+              }
+            }
+
+            @media (max-height: 520px) {
+              .grammar-handbook-content {
+                font-size: clamp(10.5px, 2.5vh, 13px) !important;
+                line-height: 1.45 !important;
+              }
+
+              .grammar-handbook-content h1,
+              .grammar-handbook-content h1.grammar-title,
+              .grammar-handbook-content h2,
+              .grammar-handbook-content .grammar-section-title {
+                font-size: clamp(12px, 3vh, 14.5px) !important;
+                margin-top: 0.3em !important;
+                margin-bottom: 0.2em !important;
+              }
+
+              .grammar-handbook-content h3 {
+                font-size: clamp(11px, 2.6vh, 13px) !important;
+                padding-left: 8px !important;
+              }
+
+              .grammar-handbook-content .section-lv1 h4,
+              .grammar-handbook-content h4 {
+                font-size: clamp(10.5px, 2.4vh, 12px) !important;
+                padding-left: 4px !important;
+              }
+
+              .grammar-handbook-content img,
+              .grammar-handbook-content svg,
+              .grammar-handbook-content .grammar-svg-wrapper {
+                max-height: 120px !important;
+              }
+
+              .grammar-handbook-content p {
+                margin-bottom: 8px !important;
+              }
             }
 
             /* Mệnh đề quan hệ được đánh dấu bằng <span class="rc"> */
