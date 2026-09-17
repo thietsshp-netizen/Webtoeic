@@ -2398,15 +2398,22 @@ export default function ToeicPart7Player({
 
         {/* 3. Bảng điều hướng câu hỏi (Bên phải) - Hover để mở rộng */}
         {!isFullTest && mounted && createPortal(
-          <div
-            className={`questions-sidebar-portal
-              fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
-            ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer"}
-          `}
-            onMouseEnter={() => setIsSidebarHovered(true)}
-            onMouseLeave={() => setIsSidebarHovered(false)}
-            onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
-          >
+          <>
+            {isSidebarHovered && (
+              <div
+                className="fixed inset-0 bg-slate-900/50 z-[998] lg:hidden animate-in fade-in duration-200"
+                onClick={() => setIsSidebarHovered(false)}
+              />
+            )}
+            <div
+              className={`questions-sidebar-portal
+                fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
+              ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}
+            `}
+              onMouseEnter={() => setIsSidebarHovered(true)}
+              onMouseLeave={() => setIsSidebarHovered(false)}
+              onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
+            >
             <div className={`p-4 border-b border-white/10 flex items-center shrink-0 ${isSidebarHovered ? 'h-auto' : 'h-16 justify-center'}`}>
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-100 text-blue-600 rounded-xl shrink-0">
@@ -2535,7 +2542,7 @@ export default function ToeicPart7Player({
               )}
             </div>
           </div>
-          , document.body)}
+          </>, document.body)}
       </div>
 
       {/* BOTTOM NAVIGATION BAR (PORTAL HOẶC CỐ ĐỊNH TÙY NGỮ CẢNH) */}

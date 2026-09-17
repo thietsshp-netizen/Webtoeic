@@ -4,7 +4,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, X, ChevronRight, BookOpen, Layers, Hash, List, Star, Link2, Replace, Video } from 'lucide-react';
+import { Volume2, X, ChevronRight, BookOpen, Layers, Hash, List, Star, Link2, Replace, Video, ArrowRight, Search } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import VocabDeckSelector from '../Vocab/VocabDeckSelector';
@@ -75,41 +75,59 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
   const [isStarring, setIsStarring] = useState<string | null>(null);
   const [activeDeckSelector, setActiveDeckSelector] = useState<string | null>(null);
   const [showYouGlish, setShowYouGlish] = useState(false);
+  const [searchInput, setSearchInput] = useState(word);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState<{ top?: number; left: number; bottom?: number } | null>(null);
 
+  useEffect(() => {
+    setSearchInput(word);
+  }, [word]);
+
 
 
   useEffect(() => {
-    if (initialPosition) {
-      const width = dimensions.width;
-      const margin = 15;
-      const popupHeight = dimensions.height;
+    const updateLayout = () => {
+      const screenW = window.innerWidth;
+      const screenH = window.innerHeight;
 
-      let left = initialPosition.x - width / 2;
-      // Boundary checks
-      if (left < 20) left = 20;
-      if (left + width > window.innerWidth - 20) left = window.innerWidth - width - 20;
+      // Tính kích thước hiệu dụng
+      const effectiveW = Math.min(dimensions.width, screenW - 20);
+      const effectiveH = Math.min(dimensions.height, screenH - 30);
 
-      // Check if there's enough space above the selection top
-      if (initialPosition.top > popupHeight + 60) {
-        // Enough space above: position BOTTOM relative to the word's top
-        setCoords({
-          bottom: window.innerHeight - initialPosition.top + margin,
-          left
-        });
+      if (initialPosition) {
+        const margin = 12;
+        let left = initialPosition.x - effectiveW / 2;
+        if (left < 10) left = 10;
+        if (left + effectiveW > screenW - 10) left = screenW - effectiveW - 10;
+
+        if (initialPosition.top > effectiveH + 50) {
+          setCoords({
+            bottom: Math.max(10, screenH - initialPosition.top + margin),
+            left,
+          });
+        } else {
+          setCoords({
+            top: Math.min(initialPosition.bottom + margin, screenH - effectiveH - 10),
+            left,
+          });
+        }
       } else {
-        // Not enough space above: position TOP relative to the word's bottom
-        setCoords({
-          top: initialPosition.bottom + margin,
-          left
-        });
+        // Căn giữa khi không có điểm chạm ban đầu
+        const left = Math.max(10, (screenW - effectiveW) / 2);
+        const top = Math.max(10, (screenH - effectiveH) / 2);
+        setCoords({ top, left });
       }
-    } else {
-      // Default position: top-right
-      setCoords({ top: 64, left: window.innerWidth - dimensions.width - 32 });
-    }
+    };
+
+    updateLayout();
+    window.addEventListener('resize', updateLayout);
+    window.addEventListener('orientationchange', updateLayout);
+
+    return () => {
+      window.removeEventListener('resize', updateLayout);
+      window.removeEventListener('orientationchange', updateLayout);
+    };
   }, [initialPosition, dimensions.width, dimensions.height]);
 
   const handleResizeMouseDown = (e: React.MouseEvent) => {
@@ -468,9 +486,11 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
         className="pointer-events-auto absolute bg-white rounded-[2rem] shadow-[0_30px_70px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden border border-slate-200/50 dictionary-popup-container"
         style={{
           cursor: 'default',
-          top: coords.top,
-          bottom: coords.bottom,
-          left: coords.left,
+          top: coords?.top,
+          bottom: coords?.bottom,
+          left: coords?.left,
+          maxWidth: 'calc(100vw - 20px)',
+          maxHeight: 'calc(100vh - 24px)',
           width: dimensions.width,
           height: dimensions.height
         }}
@@ -491,24 +511,58 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
 
         {/* Main Layout Container */}
         <div className="flex flex-1 overflow-hidden">
-          {/* Left Sidebar (Super Compact) */}
-          <div className="w-[90px] bg-slate-50 border-r border-slate-100 flex flex-col shrink-0">
-            <div className="p-3 border-b border-slate-200/50 flex justify-center shrink-0">
-              <div className="w-6 h-6 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-blue-100">
-                <BookOpen size={12} />
+          {/* Left Sidebar (Chứa ô tìm kiếm Look up + Chỉ mục) */}
+          <div className="w-[105px] xs:w-[125px] sm:w-[170px] bg-slate-50 border-r border-slate-100 flex flex-col shrink-0">
+            <div className="p-2 sm:p-2.5 border-b border-slate-200/50 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-blue-100">
+                  <BookOpen size={11} className="sm:hidden" />
+                  <BookOpen size={12} className="hidden sm:block" />
+                </div>
+                <span className="text-[10px] sm:text-[11px] font-black text-slate-700 tracking-tight">Từ điển</span>
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto py-3 space-y-5 custom-scrollbar flex flex-col">
+            <div className="flex-1 overflow-y-auto py-2.5 space-y-4 custom-scrollbar flex flex-col">
+              {/* Ô tìm kiếm "Look up" nằm ngay trên CHỈ MỤC */}
+              <div className="px-1.5 sm:px-2">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const term = searchInput.trim();
+                    if (term) {
+                      setLoading(true);
+                      window.dispatchEvent(new CustomEvent('dictionary-search', { detail: term }));
+                    }
+                  }}
+                  className="relative flex items-center"
+                >
+                  <input
+                    type="text"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    placeholder="Look up..."
+                    className="w-full pl-2 pr-6 py-1 text-[10px] sm:text-[11px] font-bold bg-white text-slate-800 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-400 placeholder:text-slate-400 transition-all shadow-xs"
+                  />
+                  <button
+                    type="submit"
+                    title="Tra từ"
+                    className="absolute right-1 p-0.5 sm:p-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors flex items-center justify-center shrink-0 cursor-pointer"
+                  >
+                    <ArrowRight size={10} className="stroke-[2.5]" />
+                  </button>
+                </form>
+              </div>
+
               {/* Meaning Nav - Simple Links */}
-              <div className="space-y-1 w-full px-2">
-                <p className="text-[7px] font-black text-slate-300 uppercase tracking-widest text-center mb-1">CHỈ MỤC</p>
+              <div className="space-y-1 w-full px-1.5 sm:px-2">
+                <p className="text-[7px] sm:text-[8px] font-black text-slate-300 uppercase tracking-widest text-center mb-1">CHỈ MỤC</p>
                 {data.data?.meanings?.map((m, idx) => (
                   <button
                     key={`nav-m-${idx}`}
                     onClick={() => scrollToSection(`meaning-${idx + 1}`)}
                     className={cn(
-                      "w-full py-1 text-[10px] font-bold transition-all text-center rounded-md",
+                      "w-full py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-bold transition-all text-center rounded-md",
                       activeSection === `meaning-${idx + 1}` ? "text-blue-600 bg-blue-50/50" : "text-slate-400 hover:text-slate-600"
                     )}
                   >
@@ -519,25 +573,25 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
                 {/* Dynamic Extra Nav */}
                 <div className="pt-2 flex flex-col gap-1.5">
                   {allSynonyms.length > 0 && (
-                    <button onClick={() => scrollToSection('sec-synonyms')} className="text-[9px] font-bold text-slate-400 hover:text-green-600 text-center">Đồng nghĩa</button>
+                    <button onClick={() => scrollToSection('sec-synonyms')} className="text-[8px] sm:text-[9px] font-bold text-slate-400 hover:text-green-600 text-center">Đồng nghĩa</button>
                   )}
                   {allAntonyms.length > 0 && (
-                    <button onClick={() => scrollToSection('sec-antonyms')} className="text-[9px] font-bold text-slate-400 hover:text-red-600 text-center">Trái nghĩa</button>
+                    <button onClick={() => scrollToSection('sec-antonyms')} className="text-[8px] sm:text-[9px] font-bold text-slate-400 hover:text-red-600 text-center">Trái nghĩa</button>
                   )}
                   {allStructures.length > 0 && (
-                    <button onClick={() => scrollToSection('sec-structures')} className="text-[9px] font-bold text-slate-400 hover:text-blue-600 text-center">Từ/Cụm từ</button>
+                    <button onClick={() => scrollToSection('sec-structures')} className="text-[8px] sm:text-[9px] font-bold text-slate-400 hover:text-blue-600 text-center">Từ/Cụm từ</button>
                   )}
                   {allFamily.length > 0 && (
-                    <button onClick={() => scrollToSection('sec-family')} className="text-[9px] font-bold text-slate-400 hover:text-orange-600 text-center">Gia đình</button>
+                    <button onClick={() => scrollToSection('sec-family')} className="text-[8px] sm:text-[9px] font-bold text-slate-400 hover:text-orange-600 text-center">Gia đình</button>
                   )}
                 </div>
               </div>
 
               {/* Similar Words in Sidebar Box */}
               {data.similarWords && data.similarWords.length > 0 && (
-                <div className="mt-auto p-2 border-t border-slate-100">
-                  <p className="text-[7px] font-black text-slate-300 uppercase tracking-widest text-center mb-2">TƯƠNG TỰ</p>
-                  <div className="bg-white/50 rounded-lg p-1.5 border border-slate-200/50 space-y-1">
+                <div className="mt-auto p-1.5 sm:p-2 border-t border-slate-100">
+                  <p className="text-[7px] font-black text-slate-300 uppercase tracking-widest text-center mb-1.5">TƯƠNG TỰ</p>
+                  <div className="bg-white/50 rounded-lg p-1 sm:p-1.5 border border-slate-200/50 space-y-0.5 sm:space-y-1">
                     {data.similarWords.slice(0, 5).map((sw) => (
                       <button
                         key={sw}
@@ -545,7 +599,7 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
                           setLoading(true);
                           window.dispatchEvent(new CustomEvent('dictionary-search', { detail: sw }));
                         }}
-                        className="w-full text-[9px] font-medium text-blue-500 hover:underline transition-all truncate text-left"
+                        className="w-full text-[8px] sm:text-[9px] font-medium text-blue-500 hover:underline transition-all truncate text-left"
                       >
                         • {sw}
                       </button>
@@ -559,58 +613,59 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
           {/* Right Content Area */}
           <div className="flex-1 flex flex-col bg-white overflow-hidden">
             {/* Header - Draggable Area */}
-            <div className="px-5 py-3 border-b border-slate-50 flex items-center justify-between bg-white/80 backdrop-blur-md cursor-grab active:cursor-grabbing shrink-0 z-10">
-              <div className="min-w-0 flex-1 flex flex-col justify-center gap-1 pr-3">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none shrink-0">{data.word}</h2>
+            <div className="px-3 py-2 sm:px-5 sm:py-3 border-b border-slate-50 flex items-center justify-between bg-white/80 backdrop-blur-md cursor-grab active:cursor-grabbing shrink-0 z-10">
+              <div className="min-w-0 flex-1 flex flex-col justify-center gap-0.5 sm:gap-1 pr-2 sm:pr-3">
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                  <h2 className="text-base sm:text-xl font-black text-slate-900 tracking-tight leading-none shrink-0">{data.word}</h2>
 
                   {/* Nút loa phát âm mặc định */}
                   <button 
                     onClick={() => speak(data.word)} 
-                    className="px-2.5 py-1 text-blue-600 bg-blue-50/80 hover:bg-blue-100 active:scale-95 rounded-lg flex items-center gap-1.5 transition-all border border-blue-200/60 hover:border-blue-300 shrink-0 shadow-xs"
+                    className="px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-blue-600 bg-blue-50/80 hover:bg-blue-100 active:scale-95 rounded-lg flex items-center gap-1 sm:gap-1.5 transition-all border border-blue-200/60 hover:border-blue-300 shrink-0 shadow-xs"
                     title="Phát âm"
                   >
-                    <Volume2 size={14} className="text-blue-600" />
-                    <span className="text-[10px] font-bold tracking-wide">Phát âm</span>
+                    <Volume2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-600" />
+                    <span className="text-[8px] sm:text-[10px] font-bold tracking-wide">Phát âm</span>
                   </button>
 
                   {/* Nút YouGlish (Video người bản xứ phát âm) */}
                   <button
                     onClick={() => setShowYouGlish(true)}
-                    className="px-2 py-1 text-rose-600 bg-rose-50/80 hover:bg-rose-100 active:scale-95 rounded-lg flex items-center gap-1 transition-all border border-rose-200/60 hover:border-rose-300 shrink-0 shadow-xs"
+                    className="px-1.5 py-0.5 sm:px-2 sm:py-1 text-rose-600 bg-rose-50/80 hover:bg-rose-100 active:scale-95 rounded-lg flex items-center gap-1 transition-all border border-rose-200/60 hover:border-rose-300 shrink-0 shadow-xs"
                     title="Xem video người bản xứ phát âm thực tế trên YouGlish"
                   >
-                    <Video size={13} className="text-rose-500" />
-                    <span className="text-[9px] font-black tracking-wider">YouGlish</span>
+                    <Video className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-rose-500" />
+                    <span className="text-[8px] sm:text-[9px] font-black tracking-wider">YouGlish</span>
                   </button>
                 </div>
 
                 {data.data?.meanings?.[0]?.ipa && (
-                  <p className="text-[11px] text-slate-400 font-mono italic truncate">[{data.data.meanings[0].ipa}]</p>
+                  <p className="text-[9px] sm:text-[11px] text-slate-400 font-mono italic truncate">[{data.data.meanings[0].ipa}]</p>
                 )}
               </div>
 
               <div className="flex items-center shrink-0">
-                <button onClick={onClose} className="p-1.5 hover:bg-red-50 hover:text-red-500 rounded-lg text-slate-300 transition-all"><X size={18} /></button>
+                <button onClick={onClose} className="p-1 sm:p-1.5 hover:bg-red-50 hover:text-red-500 rounded-lg text-slate-300 transition-all"><X className="w-4 h-4 sm:w-4.5 sm:h-4.5" /></button>
               </div>
             </div>
 
             {/* Scrollable Body */}
-            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-8 custom-scrollbar">
+            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-3 py-2.5 sm:px-5 sm:py-4 space-y-4 sm:space-y-8 custom-scrollbar">
               {data.error ? (
-                <div className="py-10 flex flex-col items-center text-center gap-4">
-                  <div className="w-16 h-16 bg-slate-50 text-slate-300 rounded-2xl flex items-center justify-center">
-                    <BookOpen size={32} />
+                <div className="py-6 sm:py-10 flex flex-col items-center text-center gap-3 sm:gap-4">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-slate-50 text-slate-300 rounded-2xl flex items-center justify-center">
+                    <BookOpen size={24} className="sm:hidden" />
+                    <BookOpen size={32} className="hidden sm:block" />
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-slate-800 uppercase italic tracking-tight">Không tìm thấy từ</h3>
-                    <p className="text-slate-400 text-xs font-medium mt-1">
+                    <h3 className="text-sm sm:text-base font-black text-slate-800 uppercase italic tracking-tight">Không tìm thấy từ</h3>
+                    <p className="text-slate-400 text-[11px] sm:text-xs font-medium mt-1">
                       Rất tiếc, hệ thống chưa có dữ liệu cho <span className="text-blue-500 font-bold">"{word}"</span>.
                     </p>
                   </div>
-                  <div className="mt-4 p-4 bg-blue-50/50 rounded-2xl border border-blue-100/50 w-full">
-                    <p className="text-[10px] text-blue-600 font-black uppercase tracking-widest mb-3">Bạn có thể muốn tìm:</p>
-                    <div className="flex flex-wrap justify-center gap-2">
+                  <div className="mt-2 sm:mt-4 p-3 sm:p-4 bg-blue-50/50 rounded-2xl border border-blue-100/50 w-full">
+                    <p className="text-[9px] sm:text-[10px] text-blue-600 font-black uppercase tracking-widest mb-2 sm:mb-3">Bạn có thể muốn tìm:</p>
+                    <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
                       {data.similarWords?.map((sw) => (
                         <button
                           key={sw}
@@ -618,7 +673,7 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
                             setLoading(true);
                             window.dispatchEvent(new CustomEvent('dictionary-search', { detail: sw }));
                           }}
-                          className="px-3 py-1.5 bg-white text-blue-500 rounded-xl text-[11px] font-bold shadow-sm border border-blue-100 hover:bg-blue-600 hover:text-white transition-all"
+                          className="px-2.5 py-1 sm:px-3 sm:py-1.5 bg-white text-blue-500 rounded-xl text-[10px] sm:text-[11px] font-bold shadow-sm border border-blue-100 hover:bg-blue-600 hover:text-white transition-all"
                         >
                           {sw}
                         </button>
@@ -636,9 +691,9 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
                   const deckName = matchingVocab?.deck ? matchingVocab.deck.name : "Bộ thẻ tổng (mặc định)";
 
                   return (
-                    <section key={idx} id={`meaning-${idx + 1}`} className="space-y-2 group/section">
+                    <section key={idx} id={`meaning-${idx + 1}`} className="space-y-1.5 sm:space-y-2 group/section">
                       <div className="flex items-center justify-between">
-                        <span className="text-blue-500 text-[8px] font-black uppercase tracking-widest">{m.part_of_speech}</span>
+                        <span className="text-blue-500 text-[7px] sm:text-[8px] font-black uppercase tracking-widest">{m.part_of_speech}</span>
 
                         {/* Star Button */}
                         <div className="relative group/star">
@@ -649,11 +704,11 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
                               setActiveDeckSelector(prev => prev === m.definition ? null : m.definition);
                             }}
                             className={cn(
-                              "p-1.5 rounded-lg transition-all tour-dict-star-btn",
+                              "p-1 sm:p-1.5 rounded-lg transition-all tour-dict-star-btn",
                               isStarred ? "text-yellow-500 bg-yellow-50" : "text-slate-300 hover:bg-slate-50 hover:text-yellow-500"
                             )}
                           >
-                            <Star size={14} fill={isStarred ? "currentColor" : "none"} className={isStarring === m.definition ? "animate-pulse" : ""} />
+                            <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill={isStarred ? "currentColor" : "none"} />
                           </button>
 
                           <AnimatePresence>
@@ -670,34 +725,23 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
                               />
                             )}
                           </AnimatePresence>
-
-                          {/* Tooltip */}
-                          {activeDeckSelector !== m.definition && (
-                            <div className="absolute right-full top-1/2 -translate-y-1/2 mr-3 opacity-0 group-hover/star:opacity-100 transition-all pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[9px] font-bold px-3 py-1.5 rounded-lg shadow-xl z-50 translate-x-1 group-hover/star:translate-x-0">
-                              {isStarred 
-                                ? `Từ này đã được thêm vào bộ thẻ "${deckName}" của bạn`
-                                : "Lưu từ này vào từ vựng để học qua game"
-                              }
-                              <div className="absolute left-full top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-900 rotate-45 -translate-x-1"></div>
-                            </div>
-                          )}
                         </div>
                       </div>
 
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1 min-w-0 space-y-2">
-                          <div className="flex gap-2">
-                            <span className="text-slate-300 font-black text-xs mt-0.5 shrink-0">{idx + 1}.</span>
-                            <p className="text-sm text-slate-800 font-bold leading-relaxed">{m.definition}</p>
+                      <div className="flex items-start justify-between gap-2 sm:gap-3">
+                        <div className="flex-1 min-w-0 space-y-1.5 sm:space-y-2">
+                          <div className="flex gap-1.5 sm:gap-2">
+                            <span className="text-slate-300 font-black text-[10px] sm:text-xs mt-0.5 shrink-0">{idx + 1}.</span>
+                            <p className="text-xs sm:text-sm text-slate-800 font-bold leading-relaxed">{m.definition}</p>
                           </div>
 
                           {m.example && (
-                            <div className="ml-5 pl-3 border-l border-blue-100 py-0.5 space-y-1">
-                              <div className="flex items-start gap-1.5">
-                                <button onClick={() => speak(m.example)} className="mt-1 text-blue-300 hover:text-blue-500 shrink-0"><Volume2 size={10} /></button>
-                                <p className="text-slate-500 italic font-medium leading-relaxed text-[12px]">"{highlightText(m.example, data.word)}"</p>
+                            <div className="ml-3 sm:ml-5 pl-2 sm:pl-3 border-l border-blue-100 py-0.5 space-y-0.5 sm:space-y-1">
+                              <div className="flex items-start gap-1 sm:gap-1.5">
+                                <button onClick={() => speak(m.example)} className="mt-0.5 text-blue-300 hover:text-blue-500 shrink-0"><Volume2 className="w-2.5 h-2.5 sm:w-3 sm:h-3" /></button>
+                                <p className="text-slate-500 italic font-medium leading-relaxed text-[10px] sm:text-[12px]">"{highlightText(m.example, data.word)}"</p>
                               </div>
-                              <p className="text-slate-400 text-[10px] ml-4">→ {m.translation}</p>
+                              <p className="text-slate-400 text-[9px] sm:text-[10px] ml-3.5 sm:ml-4">→ {m.translation}</p>
                             </div>
                           )}
                         </div>

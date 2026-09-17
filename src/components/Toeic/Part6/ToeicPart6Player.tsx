@@ -1856,11 +1856,18 @@ export default function ToeicPart6Player({
 
         {/* 3. Bảng điều hướng câu hỏi (Bên phải) - Hover để mở rộng */}
         {!isFullTest && mounted && createPortal(
-          <div
-            className={`questions-sidebar-portal
-              fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
-            ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}
-          `}
+          <>
+            {isSidebarHovered && (
+              <div
+                className="fixed inset-0 bg-slate-900/50 z-[998] lg:hidden animate-in fade-in duration-200"
+                onClick={() => setIsSidebarHovered(false)}
+              />
+            )}
+            <div
+              className={`questions-sidebar-portal
+                fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
+              ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}
+            `}
             onMouseEnter={() => setIsSidebarHovered(true)}
             onMouseLeave={() => setIsSidebarHovered(false)}
             onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
@@ -2009,7 +2016,7 @@ export default function ToeicPart6Player({
               )}
             </div>
           </div>
-          , document.body)}
+          </>, document.body)}
       </div>
 
       {/* BOTTOM NAVIGATION BAR */}

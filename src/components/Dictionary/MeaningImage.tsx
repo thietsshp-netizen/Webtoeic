@@ -142,9 +142,9 @@ export default function MeaningImage({
   // If loading, show a neat compact skeleton placeholder
   if (loading) {
     return (
-      <div className={`w-28 h-20 bg-slate-100 dark:bg-slate-800/60 rounded-xl animate-pulse shrink-0 border border-slate-200/50 dark:border-slate-700/50 flex flex-col items-center justify-center text-slate-300 dark:text-slate-600 gap-1 ${className}`}>
-        <ImageIcon size={18} className="animate-bounce" />
-        <span className="text-[8px] font-medium">Tìm ảnh...</span>
+      <div className={`w-20 h-14 xs:w-24 xs:h-16 sm:w-32 sm:h-22 bg-slate-100 dark:bg-slate-800/60 rounded-xl animate-pulse shrink-0 border border-slate-200/50 dark:border-slate-700/50 flex flex-col items-center justify-center text-slate-300 dark:text-slate-600 gap-0.5 ${className}`}>
+        <ImageIcon size={14} className="animate-bounce" />
+        <span className="text-[7px] sm:text-[8px] font-medium">Tìm ảnh...</span>
       </div>
     );
   }
@@ -161,7 +161,7 @@ export default function MeaningImage({
         onClick={() => setZoomPreview(true)}
         title="Nhấn để xem ảnh lớn"
       >
-        <div className="w-28 h-20 sm:w-32 sm:h-22 rounded-xl overflow-hidden border border-slate-200/80 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800 shadow-sm relative group-hover/mimg:shadow-md transition-all">
+        <div className="w-20 h-14 xs:w-24 xs:h-16 sm:w-32 sm:h-22 rounded-xl overflow-hidden border border-slate-200/80 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800 shadow-sm relative group-hover/mimg:shadow-md transition-all">
           {!imgLoaded && (
             <div className="absolute inset-0 bg-slate-100 dark:bg-slate-800 animate-pulse flex items-center justify-center">
               <ImageIcon size={16} className="text-slate-300" />
