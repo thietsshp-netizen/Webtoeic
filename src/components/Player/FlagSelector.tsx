@@ -17,12 +17,41 @@ interface FlagSelectorProps {
   layout?: 'vertical' | 'horizontal';
 }
 
-const COLORS: { name: FlagColor; class: string; bg: string }[] = [
-  { name: 'RED', class: 'text-red-500 fill-red-500', bg: 'bg-red-500' },
-  { name: 'PURPLE', class: 'text-purple-500 fill-purple-500', bg: 'bg-purple-500' },
-  { name: 'BLUE', class: 'text-blue-500 fill-blue-500', bg: 'bg-blue-500' },
-  { name: 'YELLOW', class: 'text-yellow-500 fill-yellow-500', bg: 'bg-yellow-500' },
+const COLORS: { name: FlagColor; bg: string; hex: string }[] = [
+  { name: 'RED', bg: 'bg-red-500', hex: '#ef4444' },
+  { name: 'PURPLE', bg: 'bg-purple-500', hex: '#a855f7' },
+  { name: 'BLUE', bg: 'bg-blue-500', hex: '#3b82f6' },
+  { name: 'YELLOW', bg: 'bg-amber-500', hex: '#f59e0b' },
 ];
+
+const COLOR_MAP: Record<FlagColor, string> = {
+  RED: '#ef4444',
+  PURPLE: '#a855f7',
+  BLUE: '#3b82f6',
+  YELLOW: '#f59e0b'
+};
+
+const FlagIcon = ({ color, size = 16 }: { color?: string | null; size?: number }) => {
+  const fillColor = color || 'none';
+  const strokeColor = color || 'currentColor';
+
+  return (
+    <svg 
+      width={size} 
+      height={size} 
+      viewBox="0 0 24 24" 
+      fill={fillColor}
+      stroke={strokeColor} 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      className="transition-all duration-200 shrink-0"
+    >
+      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" fill={fillColor} />
+      <line x1="4" x2="4" y1="22" y2="15" />
+    </svg>
+  );
+};
 
 export default function FlagSelector({ 
   isFlagged, 
@@ -34,13 +63,15 @@ export default function FlagSelector({
   layout = 'vertical'
 }: FlagSelectorProps) {
   const [showColorPalette, setShowColorPalette] = useState(false);
+  const [palettePos, setPalettePos] = useState<{ top: number; left: number; isTop: boolean } | null>(null);
   const [isEditingNote, setIsEditingNote] = useState(false);
   const [tempNote, setTempNote] = useState(flagNote);
-  const [isHoveringFlag, setIsHoveringFlag] = useState(false);
   const [isHoveringNote, setIsHoveringNote] = useState(false);
   const [mounted, setMounted] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const flagButtonRef = useRef<HTMLDivElement>(null);
+  const paletteRef = useRef<HTMLDivElement>(null);
+  const leaveTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
     setTempNote(flagNote);
@@ -50,18 +81,75 @@ export default function FlagSelector({
     setMounted(true);
   }, []);
 
-  const activeColor = COLORS.find(c => c.name === flagColor) || COLORS[0];
+  // Tính toán vị trí hiển thị Portal của dải màu cờ
+  const updatePalettePos = () => {
+    if (flagButtonRef.current) {
+      const rect = flagButtonRef.current.getBoundingClientRect();
+      const isTopSpaceAvailable = rect.top > 45;
+      setPalettePos({
+        top: isTopSpaceAvailable ? rect.top - 34 : rect.bottom + 4,
+        left: rect.left + rect.width / 2,
+        isTop: isTopSpaceAvailable
+      });
+    }
+  };
+
+  const handleMouseEnter = () => {
+    if (leaveTimerRef.current) {
+      clearTimeout(leaveTimerRef.current);
+      leaveTimerRef.current = null;
+    }
+    updatePalettePos();
+    setShowColorPalette(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current);
+    leaveTimerRef.current = setTimeout(() => {
+      setShowColorPalette(false);
+    }, 200);
+  };
+
+  useEffect(() => {
+    if (showColorPalette) {
+      updatePalettePos();
+      window.addEventListener('resize', updatePalettePos);
+      window.addEventListener('scroll', updatePalettePos, true);
+    }
+    return () => {
+      window.removeEventListener('resize', updatePalettePos);
+      window.removeEventListener('scroll', updatePalettePos, true);
+    };
+  }, [showColorPalette]);
+
+  // Click outside listener kiểm tra chính xác cả flagButtonRef lẫn paletteRef
+  useEffect(() => {
+    if (!showColorPalette) return;
+    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+      const targetNode = e.target as Node;
+      const isInsideFlagBtn = flagButtonRef.current && flagButtonRef.current.contains(targetNode);
+      const isInsidePalette = paletteRef.current && paletteRef.current.contains(targetNode);
+      if (!isInsideFlagBtn && !isInsidePalette) {
+        setShowColorPalette(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    document.addEventListener('touchstart', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('touchstart', handleOutsideClick);
+    };
+  }, [showColorPalette]);
+
+  const currentColorHex = isFlagged && flagColor ? COLOR_MAP[flagColor] : null;
   const hasNote = flagNote && flagNote.trim().length > 0;
 
-  // 1-click Toggle gắn/gỡ nhanh cờ đỏ
+  // Toggle bật/tắt dải màu khi click/touch vào nút cờ
   const handleFlagClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isFlagged) {
-      onToggle(null, flagNote); // Gỡ cờ, giữ ghi chú
-    } else {
-      onToggle('RED', flagNote); // Gắn nhanh cờ đỏ, giữ ghi chú
-    }
+    updatePalettePos();
+    setShowColorPalette(prev => !prev);
   };
 
   const handleSaveNote = () => {
@@ -78,14 +166,8 @@ export default function FlagSelector({
       <div 
         ref={flagButtonRef}
         className="relative"
-        onMouseEnter={() => {
-          setIsHoveringFlag(true);
-          setShowColorPalette(true);
-        }}
-        onMouseLeave={() => {
-          setIsHoveringFlag(false);
-          setShowColorPalette(false);
-        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         <button
           onClick={handleFlagClick}
@@ -94,11 +176,11 @@ export default function FlagSelector({
               ? 'bg-slate-50 border-slate-200 shadow-sm' 
               : 'text-slate-400 hover:text-red-500 hover:bg-red-50 border-transparent'
           }`}
-          title="Gắn cờ"
+          title="Gắn cờ (Click để chọn màu cờ)"
         >
-          <Flag 
+          <FlagIcon 
             size={compact ? 16 : 18} 
-            className={`transition-colors ${isFlagged && flagColor ? activeColor.class : ''}`} 
+            color={currentColorHex}
           />
           {!compact && (
             <span className={`text-[10px] font-black uppercase tracking-widest ${isFlagged ? 'text-slate-700' : 'text-slate-400'}`}>
@@ -107,41 +189,53 @@ export default function FlagSelector({
           )}
         </button>
 
-        {/* Hover dải màu cờ mượt mà */}
-        <AnimatePresence>
-          {showColorPalette && (
+        {/* Render Dải màu cờ bằng React Portal lên document.body - Tuyệt đối không bao giờ bị cắt bớt/che khuất */}
+        {mounted && showColorPalette && palettePos && createPortal(
+          <div
+            ref={paletteRef}
+            className="fixed z-[999999] -translate-x-1/2 pointer-events-auto"
+            style={{ top: palettePos.top, left: palettePos.left }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onClick={(e) => e.stopPropagation()}
+          >
             <motion.div
-              initial={{ opacity: 0, y: isVertical ? -5 : 5, scale: 0.9 }}
+              initial={{ opacity: 0, y: palettePos.isTop ? 4 : -4, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: isVertical ? -5 : 5, scale: 0.9 }}
-              className={`absolute z-[110] ${
-                isVertical 
-                  ? 'left-full top-1/2 -translate-y-1/2 ml-2' 
-                  : 'bottom-full left-1/2 -translate-x-1/2 mb-2'
-              }`}
-              onClick={(e) => e.stopPropagation()}
+              exit={{ opacity: 0, y: palettePos.isTop ? 4 : -4, scale: 0.9 }}
+              transition={{ duration: 0.15 }}
+              className="bg-slate-900/95 backdrop-blur-md shadow-[0_6px_20px_rgba(0,0,0,0.25)] border border-slate-700/80 rounded-full px-1.5 py-1 flex flex-row items-center gap-1 sm:gap-1.5"
             >
-              <div className="bg-white shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-slate-100 rounded-full p-1 flex flex-row items-center gap-1.5">
-                {COLORS.map((c) => (
+              {COLORS.map((c) => {
+                const isSelected = isFlagged && flagColor === c.name;
+                return (
                   <button
                     key={c.name}
+                    type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onToggle(c.name, flagNote);
+                      e.preventDefault();
+                      if (isSelected) {
+                        onToggle(null, flagNote); // Click lại đúng màu đang chọn -> gỡ cờ
+                      } else {
+                        onToggle(c.name, flagNote); // Chọn màu mới!
+                      }
                       setShowColorPalette(false);
                     }}
-                    className={`w-4 h-4 rounded-full border-[1px] transition-all hover:scale-110 active:scale-90 ${
-                      isFlagged && flagColor === c.name 
-                        ? 'border-slate-800 scale-105 shadow-md' 
-                        : 'border-white shadow-sm'
-                    } ${c.bg}`}
-                    title={`Màu ${c.name}`}
+                    className={`w-3.5 h-3.5 sm:w-4 sm:h-4 max-lg:landscape:w-3 max-lg:landscape:h-3 rounded-full border transition-all hover:scale-125 active:scale-90 cursor-pointer ${
+                      isSelected 
+                        ? 'border-white ring-2 ring-white scale-110 shadow-md' 
+                        : 'border-white/80 shadow-xs opacity-85 hover:opacity-100'
+                    }`}
+                    style={{ backgroundColor: c.hex }}
+                    title={`Gắn cờ màu ${c.name}`}
                   />
-                ))}
-              </div>
+                );
+              })}
             </motion.div>
-          )}
-        </AnimatePresence>
+          </div>,
+          document.body
+        )}
       </div>
 
       {/* 2. NÚT GHI CHÚ (PEN) */}

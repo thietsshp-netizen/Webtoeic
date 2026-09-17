@@ -137,7 +137,7 @@ export default async function LessonDetailPage({
       )}
 
       {/* HEADER BÀI HỌC (LUÔN HIỂN THỊ) */}
-      <div id="lesson-sub-header" className={`h-[clamp(28px,4.5vh,44px)] px-[clamp(6px,1.2vw,20px)] bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${
+      <div id="lesson-sub-header" className={`h-[clamp(28px,4.5vh,44px)] max-lg:landscape:h-6 px-[clamp(6px,1.2vw,20px)] max-lg:landscape:px-2 bg-white border-b flex justify-between items-center shadow-sm relative z-[100] ${
         ["TOEIC_TEST", "DYNAMIC_PART", "PART5_DYNAMIC", "PART6_DYNAMIC", "PART7_DYNAMIC", "IELTS_READING"].includes(lesson.contentType as string)
           ? "pr-1 sm:pr-6 md:pr-24"
           : "pr-2 md:pr-6"

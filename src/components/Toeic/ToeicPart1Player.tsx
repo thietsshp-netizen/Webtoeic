@@ -2899,57 +2899,62 @@ export default function ToeicPart1Player({
     <div className="absolute inset-0 flex flex-col font-sans bg-[#f8fafc] text-slate-800 overflow-hidden pr-0 lg:pr-20">
       <div className="flex-1 flex overflow-hidden relative">
         <div className="flex-1 relative flex flex-col overflow-hidden">
-          <div className="flex-1 flex flex-col min-h-0 overflow-hidden px-2 sm:px-4 pt-2 sm:pt-4 pb-16 scrollbar-thin">
+          <div className="flex-1 flex flex-col min-h-0 overflow-hidden px-2 sm:px-4 pt-2 sm:pt-4 pb-12 sm:pb-16 max-lg:landscape:pb-9 max-lg:landscape:pt-1 scrollbar-thin">
 
-            <div className="flex flex-wrap justify-between items-center bg-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-xl shadow-sm border border-slate-100 mb-1 sm:mb-2 gap-1.5 shrink-0">
-              <div className="flex items-center gap-1.5">
-                <button id="dictation-mode-btn" onClick={() => setMode(mode === 'dictation' ? 'practice' : 'dictation')} className={`rounded-lg font-bold border-2 transition ${mode === 'dictation' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-[0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-200 text-slate-500 hover:border-slate-300'}`} style={{ fontSize: 'clamp(8.5px, 1.6vh, 12px)', padding: 'clamp(2px,0.3vh,4px) clamp(6px,1vw,12px)' }}>✏️ Chép chính tả</button>
-                <button id="hint-mode-btn" onClick={() => setIsHintMode(!isHintMode)} className={`rounded-lg font-bold border-2 transition ${isHintMode ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-[0_0_15px_rgba(99,102,241,0.3)]' : 'border-slate-200 text-slate-400 hover:bg-slate-50 hover:text-slate-500 hover:border-slate-300'}`} style={{ fontSize: 'clamp(8.5px, 1.6vh, 12px)', padding: 'clamp(2px,0.3vh,4px) clamp(6px,1vw,12px)' }}>💡 Gợi Ý</button>
+            {/* Responsive Main Layout: CSS Grid Areas cho 100% chuẩn PC & Mobile Portrait/Landscape */}
+            <div className="flex-1 min-h-0 grid grid-cols-1 max-lg:landscape:grid-cols-2 lg:grid-cols-2 gap-1.5 sm:gap-3 lg:gap-6 mb-1 sm:mb-2 max-lg:landscape:mb-0 max-w-full overflow-hidden [grid-template-areas:'dictation'_'waveform'_'image'_'options'] max-lg:landscape:[grid-template-areas:'waveform_dictation'_'image_options'] lg:[grid-template-areas:'dictation_dictation'_'waveform_waveform'_'image_options'] [grid-template-rows:auto_auto_auto_1fr] max-lg:landscape:[grid-template-rows:auto_1fr] lg:[grid-template-rows:auto_auto_1fr]">
+
+              {/* 1. Action buttons (Chép chính tả / Gợi Ý) */}
+              <div style={{ gridArea: 'dictation' }} className="flex flex-wrap justify-between items-center bg-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-xl shadow-xs border border-slate-100 gap-1.5 shrink-0 max-lg:landscape:py-0 max-lg:landscape:px-0 max-lg:landscape:bg-transparent max-lg:landscape:border-0 max-lg:landscape:shadow-none">
+                <div className="flex items-center gap-1.5">
+                  <button id="dictation-mode-btn" onClick={() => setMode(mode === 'dictation' ? 'practice' : 'dictation')} className={`rounded-lg font-bold border-2 transition ${mode === 'dictation' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-[0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-200 text-slate-500 hover:border-slate-300'}`} style={{ fontSize: 'clamp(8px, 1.4vh, 12px)', padding: 'clamp(1px,0.2vh,3px) clamp(5px,0.8vw,10px)' }}>✏️ Chép chính tả</button>
+                  <button id="hint-mode-btn" onClick={() => setIsHintMode(!isHintMode)} className={`rounded-lg font-bold border-2 transition ${isHintMode ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-[0_0_15px_rgba(99,102,241,0.3)]' : 'border-slate-200 text-slate-400 hover:bg-slate-50 hover:text-slate-500 hover:border-slate-300'}`} style={{ fontSize: 'clamp(8px, 1.4vh, 12px)', padding: 'clamp(1px,0.2vh,3px) clamp(5px,0.8vw,10px)' }}>💡 Gợi Ý</button>
+                </div>
               </div>
-            </div>
 
-            <div className="max-w-4xl w-full mx-auto mb-1 sm:mb-2 relative z-[250] shrink-0">
-              <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 px-2 sm:px-3 py-1 sm:py-1.5 flex items-center gap-1.5 sm:gap-3">
-                {/* Play/Pause Button */}
-                <div className="relative group shrink-0 pl-0.5">
-                  <button
-                    id="play-audio-btn"
-                    onClick={() => wavesurfer.current?.playPause()}
-                    className="w-7 h-7 sm:w-8 sm:h-8 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-md shadow-indigo-100 transition-all active:scale-95 ring-2 ring-indigo-50"
-                  >
-                    {isPlaying ? <PauseIcon className="w-3.5 h-3.5" /> : <PlayIcon className="w-3.5 h-3.5 pl-0.5" />}
-                  </button>
+              {/* 2. Audio Waveform Player */}
+              <div style={{ gridArea: 'waveform' }} className="w-full relative z-[250] shrink-0">
+                <div className="bg-white rounded-xl sm:rounded-2xl shadow-xs border border-slate-200 px-1.5 sm:px-3 py-0.5 sm:py-1.5 max-lg:landscape:py-0.5 max-lg:landscape:px-1.5 flex items-center gap-1 sm:gap-3">
+                  {/* Play/Pause Button */}
+                  <div className="relative group shrink-0 pl-0.5">
+                    <button
+                      id="play-audio-btn"
+                      onClick={() => wavesurfer.current?.playPause()}
+                      className="w-5 h-5 sm:w-8 sm:h-8 max-lg:landscape:w-5 max-lg:landscape:h-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-md shadow-indigo-100 transition-all active:scale-95 ring-2 ring-indigo-50"
+                    >
+                      {isPlaying ? <PauseIcon className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" /> : <PlayIcon className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 pl-0.5" />}
+                    </button>
 
-                  {/* Tooltip on Hover */}
-                  <div className="absolute left-0 top-full mt-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] -translate-y-2 group-hover:translate-y-0">
-                    {isPlaying ? 'DỪNG' : 'PHÁT'} (PHÍM ` DƯỚI ESC)
-                    <div className="absolute -top-1 left-5 w-2 h-2 bg-slate-900 rotate-45"></div>
+                    {/* Tooltip on Hover */}
+                    <div className="absolute left-0 top-full mt-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] -translate-y-2 group-hover:translate-y-0">
+                      {isPlaying ? 'DỪNG' : 'PHÁT'} (PHÍM ` DƯỚI ESC)
+                      <div className="absolute -top-1 left-5 w-2 h-2 bg-slate-900 rotate-45"></div>
+                    </div>
+                  </div>
+
+                  {/* Waveform Container */}
+                  <div className="flex-1 overflow-hidden rounded-lg" style={{ height: 'clamp(18px, 2.8vh, 48px)' }}>
+                    <div id="waveform-audio-container" ref={waveformRef} className="w-full h-full cursor-crosshair" />
+                  </div>
+
+                  {/* Speed Controls */}
+                  <div className="flex bg-white rounded-lg shadow-xs border border-slate-200 p-0.5 shrink-0">
+                    {[0.5, 0.75, 1, 1.25, 1.5].map(speed => (
+                      <button
+                        key={speed}
+                        onClick={() => changeSpeed(speed)}
+                        className={`rounded-md font-black transition-all ${playbackRate === speed ? 'bg-indigo-600 text-white shadow-xs shadow-indigo-200' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600'}`}
+                        style={{ fontSize: 'clamp(7.5px, 1.3vh, 10px)', padding: 'clamp(1px, 0.2vh, 3px) clamp(2px, 0.5vw, 6px)' }}
+                      >
+                        {speed}x
+                      </button>
+                    ))}
                   </div>
                 </div>
-
-                {/* Waveform Container */}
-                <div className="flex-1 overflow-hidden rounded-lg" style={{ height: 'clamp(32px, 4.5vh, 48px)' }}>
-                  <div id="waveform-audio-container" ref={waveformRef} className="w-full h-full cursor-crosshair" />
-                </div>
-
-                {/* Speed Controls */}
-                <div className="flex bg-white rounded-lg shadow-xs border border-slate-200 p-0.5 shrink-0">
-                  {[0.5, 0.75, 1, 1.25, 1.5].map(speed => (
-                    <button
-                      key={speed}
-                      onClick={() => changeSpeed(speed)}
-                      className={`rounded-md font-black transition-all ${playbackRate === speed ? 'bg-indigo-600 text-white shadow-xs shadow-indigo-200' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600'}`}
-                      style={{ fontSize: 'clamp(8px, 1.4vh, 10px)', padding: 'clamp(1px, 0.2vh, 3px) clamp(3px, 0.6vw, 6px)' }}
-                    >
-                      {speed}x
-                    </button>
-                  ))}
-                </div>
               </div>
-            </div>
 
-            <div className="flex-1 min-h-0 flex flex-col lg:grid lg:grid-cols-2 gap-2 sm:gap-3 lg:gap-6 mb-2 max-w-full overflow-hidden">
-              <div className="h-[42vh] landscape:h-[75vh] sm:h-[48vh] lg:h-auto lg:max-h-[55vh] bg-white rounded-2xl shadow-sm border border-slate-200 p-1.5 sm:p-2 relative shrink-0 lg:shrink flex justify-center items-center overflow-hidden z-[300]">
+              {/* 3. Question Image Box */}
+              <div style={{ gridArea: 'image' }} className="h-auto max-h-[38vh] sm:max-h-[44vh] max-lg:landscape:h-full max-lg:landscape:max-h-full lg:h-auto lg:max-h-[55vh] bg-white rounded-2xl shadow-xs border border-slate-200 p-1 sm:p-2 relative shrink-0 lg:shrink flex justify-center items-center overflow-hidden z-[300]">
                 <div className="rounded-xl overflow-hidden bg-slate-50 flex justify-center items-center relative w-full h-full p-1 sm:p-2">
                   {currentGroup.imageUrl ? (
                     <div className="relative w-full h-full flex justify-center items-center overflow-hidden">
@@ -2997,8 +3002,6 @@ export default function ToeicPart1Player({
                             />
                           )}
 
-
-
                           {localHotspots.map((hs, hidx) => {
                             const isHovered = hoveredHotspotIndex === hidx;
                             const isSelected = selectedHotspotIndex === hidx;
@@ -3006,12 +3009,11 @@ export default function ToeicPart1Player({
                               (hoveredHotspotIndex === null && selectedHotspotIndex !== null && selectedHotspotIndex + 1 === hidx);
                             const isFirstSuggested = selectedHotspotIndex === null && hoveredHotspotIndex === null && hidx === 0;
 
-                            // Tự động chuyển nhãn xuống dưới nếu nằm sát mép trên hoặc có hotspot khác ngay phía trên
                             const isNearTop = hs.y < 15;
                             const hasHotspotAbove = localHotspots.some((otherHs, oidx) => {
                               if (oidx === hidx) return false;
                               const xDiff = Math.abs(hs.x - otherHs.x);
-                              const yDiff = hs.y - otherHs.y; // > 0 nghĩa là otherHs nằm trên hs
+                              const yDiff = hs.y - otherHs.y;
                               return xDiff < 8 && yDiff > 0 && yDiff < 20;
                             });
                             const showBelow = isNearTop || hasHotspotAbove;
@@ -3027,7 +3029,7 @@ export default function ToeicPart1Player({
                                   top: `${hs.y}%`,
                                 }}
                               >
-                                {/* Tag từ vựng + phiên âm IPA nhỏ gọn, tự động hiển thị phía trên hoặc phía dưới chấm số */}
+                                {/* Tag từ vựng + phiên âm IPA nhỏ gọn */}
                                 <div
                                   className={`absolute px-2 py-1.5 rounded-lg border text-[9px] font-bold shadow-lg pointer-events-none transition-all duration-200 backdrop-blur-md flex flex-col items-center text-center min-w-[125px] max-w-[200px] gap-0.5 ${showBelow ? 'top-[16px]' : 'bottom-[16px]'
                                     } ${isHovered
@@ -3053,7 +3055,6 @@ export default function ToeicPart1Player({
                                   }}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    // Click lại chấm số đang chọn để tắt bubble, hoặc chọn số mới
                                     setSelectedHotspotIndex(isSelected ? null : hidx);
                                   }}
                                   className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center rounded-full border border-white shadow-md shrink-0 pointer-events-auto cursor-pointer transition-all duration-300 before:absolute before:-inset-3 sm:before:-inset-3.5 before:content-[''] before:rounded-full ${draggingIndex === hidx ? '' : 'transition-all duration-300'
@@ -3077,14 +3078,16 @@ export default function ToeicPart1Player({
                     </div>
                   </div>
                 ) : (
-                    <div className="text-slate-400 font-bold py-20">Image Missing</div>
-                  )}
+                  <div className="text-slate-400 font-bold py-20">Image Missing</div>
+                )}
                 </div>
               </div>
-              <div className="flex-1 min-h-0 overflow-y-auto bg-white lg:bg-transparent rounded-2xl p-2.5 sm:p-4 pb-12 border lg:border-0 border-slate-200 shadow-sm lg:shadow-none flex flex-col gap-1.5 w-full max-w-full tour-question-options-target">
+
+              {/* 4. Options Box */}
+              <div style={{ gridArea: 'options' }} className="flex-1 min-h-0 overflow-y-auto bg-white lg:bg-transparent rounded-2xl p-2 sm:p-4 pb-2 sm:pb-6 border lg:border-0 border-slate-200 shadow-xs lg:shadow-none flex flex-col gap-1.5 sm:gap-2 w-full max-w-full tour-question-options-target max-lg:landscape:p-1.5">
                 {/* Số câu — hiển thị ngay trên các phương án */}
-                <div className="flex items-center gap-2 mb-1 pl-1">
-                  <div className="bg-blue-600 text-white font-bold text-base rounded-lg px-3 py-1 shadow-md leading-none">{questionData?.questionNo}</div>
+                <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1 pl-1">
+                  <div className="bg-blue-600 text-white font-bold text-xs sm:text-base max-lg:landscape:text-[10px] rounded-lg px-2 sm:px-3 py-0.5 sm:py-1 max-lg:landscape:px-1.5 max-lg:landscape:py-0.5 shadow-md leading-none">{questionData?.questionNo}</div>
                   <FlagSelector
                     isFlagged={!!flags[currentQKey]}
                     flagColor={flags[currentQKey] || 'RED'}
@@ -3098,13 +3101,13 @@ export default function ToeicPart1Player({
                   <button
                     id="reveal-btn"
                     onClick={() => setRevealMode(!revealMode)}
-                    className={`w-8 h-8 flex items-center justify-center rounded-lg border-2 transition-all ${revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'
+                    className={`w-7 h-7 sm:w-8 sm:h-8 max-lg:landscape:w-5 max-lg:landscape:h-5 flex items-center justify-center rounded-lg border-2 transition-all ${revealMode ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-sm' : 'border-slate-200 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50'
                       }`}
                     title={`${revealMode ? 'Ẩn lời giải' : 'Hiện lời giải'} (Phím tắt: ctrl/cmd + shift + s)`}
                   >
-                    <span className="text-sm leading-none">{revealMode ? '👁️' : '👁️'}</span>
+                    <span className="text-xs sm:text-sm max-lg:landscape:text-[10px] leading-none">{revealMode ? '👁️' : '👁️'}</span>
                   </button>
-                  {mode === 'dictation' && <div className="text-xs font-bold text-pink-600 uppercase tracking-widest border-l-2 border-pink-500 pl-2">Thử thách điền từ: Gõ thay thế các dấu chấm</div>}
+                  {mode === 'dictation' && <div className="text-[10px] sm:text-xs font-bold text-pink-600 uppercase tracking-widest border-l-2 border-pink-500 pl-2">Thử thách điền từ: Gõ thay thế các dấu chấm</div>}
                 </div>
 
                 {/* Khung nội dung chi tiết Hotspot được chọn (Box 2) - hiển thị trong phần đáp án bên dưới */}
@@ -3325,143 +3328,143 @@ export default function ToeicPart1Player({
                     </div>
                   );
                 })()}
-                {['A', 'B', 'C', 'D'].map(opt => {
-                  const engPartFromParsed = engParts.find(p => p.label === opt);
-                  const targetEngText = engPartFromParsed?.text || (questionData as any)[`option${opt}`] || "";
-                  const viPart = vieParts.find(p => p.label === opt);
-                  const isCorrectTarget = correctAnswer === opt;
-                  const isSelected = selectedAnswer === opt;
+                <div className="grid gap-1 sm:gap-1.5 lg:gap-2.5 w-full grid-cols-1">
+                  {['A', 'B', 'C', 'D'].map(opt => {
+                    const engPartFromParsed = engParts.find(p => p.label === opt);
+                    const targetEngText = engPartFromParsed?.text || (questionData as any)[`option${opt}`] || "";
+                    const viPart = vieParts.find(p => p.label === opt);
+                    const isCorrectTarget = correctAnswer === opt;
+                    const isSelected = selectedAnswer === opt;
 
-                  const boxClasses = [
-                    "border py-0.5 px-2 rounded-xl flex gap-2 transition-all duration-300 outline-none text-left w-full relative cursor-pointer group",
-                    revealMode
-                      ? (isCorrectTarget ? "border-emerald-500 bg-emerald-50/50 shadow-sm" : isSelected ? "border-red-500 bg-red-50/50 shadow-sm" : "border-slate-200 bg-white shadow-none")
-                      : (isSelected ? "border-blue-500 bg-blue-50/50 shadow-lg shadow-blue-100 ring-1 ring-blue-500" : "border-slate-200 bg-white hover:border-blue-300 hover:shadow-md")
-                  ].join(" ");
+                    const boxClasses = [
+                      "border py-1 px-2 sm:py-1.5 sm:px-3 max-lg:landscape:py-0.5 max-lg:landscape:px-1.5 rounded-xl flex items-center gap-1.5 sm:gap-2 transition-all duration-300 outline-none text-left w-full relative cursor-pointer group min-h-[32px] sm:min-h-[36px] lg:min-h-[40px] max-lg:landscape:min-h-[26px]",
+                      revealMode
+                        ? (isCorrectTarget ? "border-emerald-500 bg-emerald-50/50 shadow-xs" : isSelected ? "border-red-500 bg-red-50/50 shadow-xs" : "border-slate-200 bg-white shadow-none")
+                        : (isSelected ? "border-blue-500 bg-blue-50/50 shadow-md shadow-blue-100 ring-1 ring-blue-500" : "border-slate-200 bg-white hover:border-blue-300 hover:shadow-xs")
+                    ].join(" ");
 
-                  let circleBorder = ""; let circleFill = "";
-                  if (revealMode) {
-                    if (isCorrectTarget) { circleBorder = "border-emerald-500"; circleFill = "bg-emerald-500"; }
-                    else if (isSelected) { circleBorder = "border-red-500"; circleFill = "bg-red-500"; }
-                    else { circleBorder = "border-slate-200"; }
-                  } else {
-                    if (isSelected) { circleBorder = "border-blue-500"; circleFill = "bg-blue-500"; }
-                    else { circleBorder = "border-slate-300"; }
-                  }
+                    let circleBorder = ""; let circleFill = "";
+                    if (revealMode) {
+                      if (isCorrectTarget) { circleBorder = "border-emerald-500"; circleFill = "bg-emerald-500"; }
+                      else if (isSelected) { circleBorder = "border-red-500"; circleFill = "bg-red-500"; }
+                      else { circleBorder = "border-slate-200"; }
+                    } else {
+                      if (isSelected) { circleBorder = "border-blue-500"; circleFill = "bg-blue-500"; }
+                      else { circleBorder = "border-slate-300"; }
+                    }
 
-                  const incorrectRationale = richData?.explanation?.incorrect?.find((i: any) => i.label === opt);
-                  const correctRationale = isCorrectTarget ? (richData?.explanation?.correct || richData?.explanation) : null;
+                    const incorrectRationale = richData?.explanation?.incorrect?.find((i: any) => i.label === opt);
+                    const correctRationale = isCorrectTarget ? (richData?.explanation?.correct || richData?.explanation) : null;
 
-                  return (
-                    <div
-                      key={opt}
-                      onMouseDown={(e) => e.stopPropagation()}
-                      className={`${boxClasses.replace('cursor-pointer', 'cursor-default')} ${mode === 'dictation' ? 'select-none' : 'select-text'}`}
-                    >
-                      <div className="shrink-0 pt-0.5">
-                        <div
-                          onClick={() => handleSelectAnswer(opt)}
-                          className={`w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-black border transition-all duration-300 cursor-pointer group/opt ${revealMode
-                            ? (isCorrectTarget ? 'bg-emerald-500 text-white border-emerald-600 shadow-sm shadow-emerald-500/20' : isSelected ? 'bg-red-500 text-white border-red-600 shadow-sm shadow-red-500/20' : 'bg-slate-50 text-slate-400 border-slate-200')
-                            : isSelected ? 'bg-blue-600 text-white border-blue-700 scale-105 shadow-sm shadow-blue-200' : 'bg-white text-slate-400 border-slate-200 hover:border-indigo-500 hover:scale-110'
-                            }`}
-                        >
-                          {opt}
-                        </div>
-                      </div>
-                      <div className="flex-1 w-full text-left">
-                        <div className={`font-bold text-[16px] leading-relaxed flex items-center gap-3 ${revealMode && isCorrectTarget ? 'text-emerald-700' : 'text-slate-900'}`}>
-                          <div className="flex items-center gap-1.5 shrink-0">
-                            {(currentGroup?.metadata as any)?.timestamps?.[opt] && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  playSegment(opt);
-                                }}
-                                className={`part1-option-audio-btn p-1 rounded-md transition-all duration-300 ${playingSegmentLabel === opt
-                                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
-                                  : 'hover:bg-slate-100 text-slate-400 hover:text-indigo-600'
-                                  }`}
-                                title={`Nghe phương án ${opt} (Phím tắt: phím số ${['A', 'B', 'C', 'D'].indexOf(opt) + 1})`}
-                              >
-                                <Volume2 size={14} fill={playingSegmentLabel === opt ? "currentColor" : "none"} />
-                              </button>
-                            )}
+                    return (
+                      <div
+                        key={opt}
+                        onMouseDown={(e) => e.stopPropagation()}
+                        className={`${boxClasses.replace('cursor-pointer', 'cursor-default')} ${mode === 'dictation' ? 'select-none' : 'select-text'}`}
+                      >
+                        <div className="shrink-0">
+                          <div
+                            onClick={() => handleSelectAnswer(opt)}
+                            className={`w-5 h-5 sm:w-5.5 sm:h-5.5 lg:w-6 lg:h-6 max-lg:landscape:w-4 max-lg:landscape:h-4 rounded-full flex items-center justify-center text-[10px] sm:text-[11px] lg:text-[12px] max-lg:landscape:text-[9px] font-black border transition-all duration-300 cursor-pointer group/opt ${revealMode
+                              ? (isCorrectTarget ? 'bg-emerald-500 text-white border-emerald-600 shadow-xs shadow-emerald-500/20' : isSelected ? 'bg-red-500 text-white border-red-600 shadow-xs shadow-red-500/20' : 'bg-slate-50 text-slate-400 border-slate-200')
+                              : isSelected ? 'bg-blue-600 text-white border-blue-700 scale-105 shadow-xs shadow-blue-200' : 'bg-white text-slate-400 border-slate-200 hover:border-indigo-500 hover:scale-110'
+                              }`}
+                          >
+                            {opt}
                           </div>
-                          <div className="flex-1">
-                            {mode === 'dictation' ? (<DictationSentence targetText={targetEngText} />) : (revealMode || isHintMode || revealEnglishMode) ? (
-                              <div className="space-y-2">
-                                <div className="font-semibold text-slate-800">
-                                  <AdminInlineEditor
-                                    target="question"
-                                    id={questionData.id}
-                                    field={`option${opt}`}
-                                    value={targetEngText}
-                                  >
-                                    <FormattedText
-                                      text={targetEngText}
-                                      revealed={revealMode || revealEnglishMode}
-                                      currentIndex={currentIndex}
-                                      hintMode={isHintMode}
-                                      wordsToMask={hintMasksMap[opt]}
-                                      startHintIndex={1 + (['A', 'B', 'C', 'D'].indexOf(opt) * 2)}
-                                      renderWordCloud={renderWordFamilyCloud}
-                                    />
-                                  </AdminInlineEditor>
-                                </div>
-                                {viPart?.text && revealMode && (
-                                  <div className={`text-[15px] italic mt-1 ${isCorrectTarget ? 'text-emerald-700/80 font-medium' : 'text-slate-500'}`}>
+                        </div>
+                        <div className="flex-1 w-full text-left">
+                          <div className={`font-bold text-xs sm:text-sm lg:text-base max-lg:landscape:text-[11px] leading-snug sm:leading-relaxed flex items-center gap-1.5 sm:gap-2.5 ${revealMode && isCorrectTarget ? 'text-emerald-700' : 'text-slate-900'}`}>
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              {(currentGroup?.metadata as any)?.timestamps?.[opt] && (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    playSegment(opt);
+                                  }}
+                                  className={`part1-option-audio-btn p-1 rounded-md transition-all duration-300 ${playingSegmentLabel === opt
+                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 animate-pulse'
+                                    : 'hover:bg-slate-100 text-slate-400 hover:text-indigo-600'
+                                    }`}
+                                  title={`Nghe phương án ${opt} (Phím tắt: phím số ${['A', 'B', 'C', 'D'].indexOf(opt) + 1})`}
+                                >
+                                  <Volume2 size={13} fill={playingSegmentLabel === opt ? "currentColor" : "none"} />
+                                </button>
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              {mode === 'dictation' ? (<DictationSentence targetText={targetEngText} />) : (revealMode || isHintMode || revealEnglishMode) ? (
+                                <div className="space-y-1 sm:space-y-1.5 lg:space-y-2 max-lg:landscape:space-y-0.5">
+                                  <div className="font-semibold text-slate-800">
                                     <AdminInlineEditor
                                       target="question"
                                       id={questionData.id}
-                                      field="explanation.vietText"
-                                      value={viPart.text}
-                                      multiline
+                                      field={`option${opt}`}
+                                      value={targetEngText}
                                     >
-                                      <StaticFormattedText text={viPart.text} />
+                                      <FormattedText
+                                        text={targetEngText}
+                                        revealed={revealMode || revealEnglishMode}
+                                        currentIndex={currentIndex}
+                                        hintMode={isHintMode}
+                                        wordsToMask={hintMasksMap[opt]}
+                                        startHintIndex={1 + (['A', 'B', 'C', 'D'].indexOf(opt) * 2)}
+                                        renderWordCloud={renderWordFamilyCloud}
+                                      />
                                     </AdminInlineEditor>
                                   </div>
-                                )}
-                                {revealMode && (incorrectRationale || (isCorrectTarget && correctRationale?.why)) && (
-                                  <div className={`mt-3 p-3.5 rounded-xl text-sm border ${isCorrectTarget ? 'bg-emerald-50 border-emerald-100 text-emerald-800' : 'bg-red-50 border-red-100 text-red-800'}`}>
-                                    <div className="font-bold mb-1.5 flex items-center gap-1.5 uppercase tracking-wider text-[10px]">
-                                      {isCorrectTarget ? (
-                                        <><CheckCircleIcon className="w-4 h-4" /> Tại sao đúng?</>
-                                      ) : (
-                                        <><FlagIcon className="w-4 h-4" /> Tại sao sai (Bẫy)?</>
-                                      )}
-                                    </div>
-                                    <div className="leading-relaxed opacity-90">
+                                  {viPart?.text && revealMode && (
+                                    <div className={`text-[11px] sm:text-xs lg:text-sm max-lg:landscape:text-[9.5px] italic mt-0.5 sm:mt-1 max-lg:landscape:mt-0.5 ${isCorrectTarget ? 'text-emerald-700/80 font-medium' : 'text-slate-500'}`}>
                                       <AdminInlineEditor
                                         target="question"
                                         id={questionData.id}
-                                        field={isCorrectTarget ? "explanation.why_correct" : `explanation.wrong_options.${opt}.why`}
-                                        value={incorrectRationale?.why || correctRationale?.why || correctRationale?.why_correct || ""}
+                                        field="explanation.vietText"
+                                        value={viPart.text}
                                         multiline
                                       >
-                                        <AutoBoldEnglish text={incorrectRationale?.why || correctRationale?.why || correctRationale?.why_correct || ""} />
+                                        <StaticFormattedText text={viPart.text} />
                                       </AdminInlineEditor>
                                     </div>
-
-                                    {incorrectRationale?.suggested_question && (
-                                      <div className="mt-2.5 pt-2.5 border-t border-red-200/50 italic opacity-80">
-                                        <p className="font-medium text-[11px] mb-1.5">{incorrectRationale.context_intro || "Câu này sẽ ĐÚNG nếu nội dung ảnh là:"}</p>
-                                        <p>• <strong className="font-bold text-slate-900 tracking-wide"><AutoBoldEnglish text={incorrectRationale.suggested_question.en} /></strong></p>
-                                        <p>→ {incorrectRationale.suggested_question.vi}</p>
+                                  )}
+                                  {revealMode && (incorrectRationale || (isCorrectTarget && correctRationale?.why)) && (
+                                    <div className={`mt-1.5 sm:mt-2.5 p-2 sm:p-3 rounded-xl text-[11px] sm:text-xs lg:text-sm border ${isCorrectTarget ? 'bg-emerald-50 border-emerald-100 text-emerald-800' : 'bg-red-50 border-red-100 text-red-800'}`}>
+                                      <div className="font-bold mb-1 flex items-center gap-1.5 uppercase tracking-wider text-[9px] sm:text-[10px]">
+                                        {isCorrectTarget ? (
+                                          <><CheckCircleIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Tại sao đúng?</>
+                                        ) : (
+                                          <><FlagIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Tại sao sai (Bẫy)?</>
+                                        )}
                                       </div>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            ) : (
-                              <span className="text-slate-300 opacity-20 font-medium tracking-widest italic text-sm">Vui lòng nghe và chọn đáp án...</span>
-                            )}
+                                      <div className="leading-relaxed opacity-90">
+                                        <AdminInlineEditor
+                                          target="question"
+                                          id={questionData.id}
+                                          field={isCorrectTarget ? "explanation.why_correct" : `explanation.wrong_options.${opt}.why`}
+                                          value={incorrectRationale?.why || correctRationale?.why || correctRationale?.why_correct || ""}
+                                          multiline
+                                        >
+                                          <AutoBoldEnglish text={incorrectRationale?.why || correctRationale?.why || correctRationale?.why_correct || ""} />
+                                        </AdminInlineEditor>
+                                      </div>
+
+                                      {incorrectRationale?.suggested_question && (
+                                        <div className="mt-2 pt-2 border-t border-red-200/50 italic opacity-80">
+                                          <p className="font-medium text-[10px] sm:text-[11px] mb-1">{incorrectRationale.context_intro || "Câu này sẽ ĐÚNG nếu nội dung ảnh là:"}</p>
+                                          <p>• <strong className="font-bold text-slate-900 tracking-wide"><AutoBoldEnglish text={incorrectRationale.suggested_question.en} /></strong></p>
+                                          <p>→ {incorrectRationale.suggested_question.vi}</p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              ) : null}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
@@ -3540,6 +3543,9 @@ export default function ToeicPart1Player({
                     const isDone = !!answers[qKey];
                     const isCurr = idx === currentIndex;
                     const isFlaged = flags[qKey];
+                    const flagHex = typeof isFlaged === 'string' 
+                      ? (isFlaged === 'PURPLE' ? '#a855f7' : isFlaged === 'BLUE' ? '#3b82f6' : isFlaged === 'YELLOW' ? '#f59e0b' : '#ef4444') 
+                      : '#ef4444';
                     const showResult = isSubmitted || isReviewMode;
                     const resultCorrect = showResult && answers[qKey] === q.correctAnswer;
 
@@ -3563,7 +3569,13 @@ export default function ToeicPart1Player({
                             ${btnClass}`}
                       >
                         {idx + 1}
-                        {isFlaged && <Flag size={10} className="absolute top-1 right-1 text-red-500 fill-red-500 shadow-sm" />}
+                        {isFlaged && (
+                          <Flag 
+                            size={10} 
+                            className="absolute top-1 right-1 shadow-xs" 
+                            style={{ color: flagHex, fill: flagHex }}
+                          />
+                        )}
                       </button>
                     );
                   })}
@@ -3697,20 +3709,20 @@ export default function ToeicPart1Player({
         );
 
         const footerContent = (
-          <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-6 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ height: 'clamp(38px, 5.5vh, 52px)' }}>
+          <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-6 max-lg:landscape:px-2 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ height: 'clamp(38px, 5.5vh, 52px)' }}>
             <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => startToeicPartTour(1, true)}
-                className="p-1.5 sm:px-3 sm:py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1.5 pointer-events-auto"
+                className="p-1 sm:px-3 sm:py-1.5 max-lg:landscape:p-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1 pointer-events-auto"
                 title="Khởi động Tour hướng dẫn nhanh"
               >
-                <HelpCircle size={15} className="animate-pulse shrink-0" />
+                <HelpCircle size={13} className="animate-pulse shrink-0" />
                 <span className="hidden sm:inline">Hướng dẫn</span>
               </button>
               {videoExplanation && videoExplanation.videoUrl && (
                 <button
                   onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
-                  className="p-1.5 sm:px-3 sm:py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1.5 border border-[#05b169]/20"
+                  className="p-1 sm:px-3 sm:py-1.5 max-lg:landscape:p-1 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1 border border-[#05b169]/20"
                   title="Xem video chữa đề / giải thích"
                 >
                   🎬 <span className="hidden sm:inline">{(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video" : "Xem video"}</span>
@@ -3723,10 +3735,10 @@ export default function ToeicPart1Player({
             <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent('toeic-toggle-sidebar'))}
-                className="px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full sm:rounded-xl font-extrabold text-[10px] sm:text-[11px] uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1 sm:gap-1.5 active:scale-95 border border-indigo-400/30 whitespace-nowrap"
+                className="px-2 py-1 sm:px-3.5 sm:py-2 max-lg:landscape:px-2 max-lg:landscape:py-0.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full sm:rounded-xl font-extrabold text-[9px] sm:text-[11px] uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1 sm:gap-1.5 active:scale-95 border border-indigo-400/30 whitespace-nowrap"
                 title="Mở Bảng câu hỏi"
               >
-                <LayoutDashboard size={14} className="shrink-0" />
+                <LayoutDashboard size={13} className="shrink-0" />
                 <span>BẢNG CÂU</span>
               </button>
             </div>
