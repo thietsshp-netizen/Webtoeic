@@ -1641,6 +1641,10 @@ function HomeContent() {
 
                           <form onSubmit={async (e) => {
                             e.preventDefault();
+                            if (viewAsUserId) {
+                              setSettingsMsg({ type: 'error', text: 'Không thể thay đổi thông tin khi đang ở chế độ xem hộ.' });
+                              return;
+                            }
                             if (settingsPassword && settingsPassword !== settingsConfirmPassword) {
                               setSettingsMsg({ type: 'error', text: 'Mật khẩu xác nhận không khớp.' });
                               return;
@@ -1653,7 +1657,8 @@ function HomeContent() {
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
                                   displayName: settingsDisplayName,
-                                  ...(settingsPassword ? { password: settingsPassword } : {})
+                                  ...(settingsPassword ? { password: settingsPassword } : {}),
+                                  ...(viewAsUserId ? { viewAsUserId } : {})
                                 })
                               });
                               if (res.ok) {

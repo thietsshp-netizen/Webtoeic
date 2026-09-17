@@ -24,7 +24,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Vui lòng đăng nhập" }, { status: 401 });
     }
 
-    const { displayName, password } = await req.json();
+    const { displayName, password, viewAsUserId } = await req.json();
+
+    // Chặn tuyệt đối việc cập nhật thông tin/mật khẩu khi đang ở phiên xem hộ (viewAsUserId)
+    const { searchParams } = new URL(req.url);
+    const targetUserId = viewAsUserId || searchParams.get("viewAsUser") || searchParams.get("userId");
+    if (targetUserId) {
+      return NextResponse.json(
+        { message: "Không thể thay đổi thông tin cá nhân khi đang ở chế độ xem hộ" },
+        { status: 403 }
+      );
+    }
 
     const updateData: any = {};
     if (displayName !== undefined) updateData.displayName = displayName;
