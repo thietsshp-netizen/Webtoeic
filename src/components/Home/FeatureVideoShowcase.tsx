@@ -421,7 +421,8 @@ export default function FeatureVideoShowcase() {
                       alt={currentVideo?.title || "Video tính năng"}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 flex items-center justify-center">
+                    {/* Lớp phủ tối nhẹ (25% opacity) để nhận biết là khung video */}
+                    <div className="absolute inset-0 bg-slate-950/25 group-hover/poster:bg-slate-950/35 transition-colors duration-300 flex items-center justify-center">
                       <div className="w-16 h-11 sm:w-18 sm:h-12 bg-[#ff0000] hover:bg-red-700 text-white rounded-2xl flex items-center justify-center shadow-2xl group-hover/poster:scale-110 transition-all duration-300">
                         <Play size={24} className="fill-white text-white ml-0.5" />
                       </div>

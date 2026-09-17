@@ -751,7 +751,7 @@ function HomeContent() {
                       }}
                       transition={{
                         duration: 1.6,
-                        repeat: Infinity,
+                        repeat: 3,
                         repeatDelay: 0.3,
                         ease: "easeOut",
                       }}
@@ -766,7 +766,7 @@ function HomeContent() {
                       transition={{
                         duration: 1.6,
                         delay: 0.25,
-                        repeat: Infinity,
+                        repeat: 3,
                         repeatDelay: 0.3,
                         ease: "easeOut",
                       }}
@@ -780,7 +780,7 @@ function HomeContent() {
                       }}
                       transition={{
                         duration: 1.6,
-                        repeat: Infinity,
+                        repeat: 3,
                         repeatDelay: 0.3,
                         ease: "easeInOut",
                       }}
@@ -813,7 +813,7 @@ function HomeContent() {
                       }}
                       transition={{
                         duration: 1.6,
-                        repeat: Infinity,
+                        repeat: 3,
                         repeatDelay: 0.3,
                         ease: "easeOut",
                       }}
@@ -828,7 +828,7 @@ function HomeContent() {
                       transition={{
                         duration: 1.6,
                         delay: 0.25,
-                        repeat: Infinity,
+                        repeat: 3,
                         repeatDelay: 0.3,
                         ease: "easeOut",
                       }}
@@ -842,7 +842,7 @@ function HomeContent() {
                       }}
                       transition={{
                         duration: 1.6,
-                        repeat: Infinity,
+                        repeat: 3,
                         repeatDelay: 0.3,
                         ease: "easeInOut",
                       }}
@@ -868,9 +868,9 @@ function HomeContent() {
                     <Zap size={16} fill="currentColor" /> EXPERT INSTRUCTOR
                   </div>
                   
-                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight">
-                    <span className="block mb-1">Học với chuyên gia</span>
-                    <span className="text-blue-600">Mr. Thiệt 990/990</span>
+                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+                    <span className="block mb-1 text-slate-700 font-bold">Học với chuyên gia</span>
+                    <span className="text-blue-600 uppercase italic">Mr. Thiệt 990/990</span>
                   </h2>
 
                   <div className="w-24 h-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 mx-auto rounded-full my-3"></div>
@@ -916,7 +916,7 @@ function HomeContent() {
                   <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold uppercase tracking-widest mb-4 border border-emerald-100 shadow-sm">
                     <Target size={16} /> LỘ TRÌNH CHUẨN
                   </div>
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-3 uppercase tracking-tighter italic">Các giai đoạn học trọng tâm</h2>
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-3 tracking-tight">Các giai đoạn học trọng tâm</h2>
                   <div className="w-24 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full"></div>
                 </div>
 
@@ -934,8 +934,8 @@ function HomeContent() {
                   <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold uppercase tracking-widest border border-emerald-100 shadow-sm">
                     <Trophy size={16} fill="currentColor" /> HONOR ROLL
                   </div>
-                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-2">
-                    Vinh Danh <span className="text-emerald-600">Bảng Vàng</span>
+                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight leading-tight mb-2">
+                    Vinh Danh <span className="text-emerald-600 italic">Bảng Vàng</span>
                   </h2>
                   <div className="w-24 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full mb-3"></div>
                   <p className="text-sm sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
@@ -956,8 +956,8 @@ function HomeContent() {
                   <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-50 text-amber-600 rounded-full text-[11px] font-bold uppercase tracking-widest border border-amber-100 shadow-sm">
                     <MessageSquareQuote size={16} /> REVIEWS
                   </div>
-                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-tight mb-2">
-                    Cảm nhận <span className="text-blue-600">học viên</span>
+                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight leading-tight mb-2">
+                    Cảm nhận từ <span className="text-blue-600 italic">Học Viên</span>
                   </h2>
                   <div className="w-24 h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-amber-500 mx-auto rounded-full mb-3"></div>
                   <p className="text-sm sm:text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium leading-relaxed">
