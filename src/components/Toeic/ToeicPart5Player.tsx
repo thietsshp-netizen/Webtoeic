@@ -2699,15 +2699,15 @@ export default function ToeicPart5Player({
           {(() => {
             const isHoriz = isLandscape || (typeof window !== 'undefined' && window.innerWidth >= 640);
             return (
-              <div className={`flex-1 flex w-full h-full min-h-0 ${hasAnyExplanation ? (isHoriz ? 'flex-row gap-0 overflow-hidden' : 'flex-col gap-0 overflow-hidden') : 'flex-col pb-2'}`}>
+              <div className={`flex-1 flex w-full h-full min-h-0 ${revealTrueAnswer ? (isHoriz ? 'flex-row gap-0 overflow-hidden' : 'flex-col gap-0 overflow-hidden') : 'flex-col pb-2'}`}>
                 <div
                   className={`bg-white rounded-xl shadow-md border border-blue-100 flex flex-col relative z-20 ${
-                    hasAnyExplanation
+                    revealTrueAnswer
                       ? (isHoriz ? 'h-full min-h-0 overflow-hidden shrink-0 mt-0' : 'w-full min-w-0 overflow-hidden shrink-0 mt-0')
-                      : 'shrink-0'
+                      : 'w-full flex-1 shrink-0'
                   }`}
                   style={
-                    hasAnyExplanation
+                    revealTrueAnswer
                       ? (isHoriz
                           ? { width: `${landscapeSplitRatio}%` }
                           : { height: `${splitRatio}%` })
@@ -2910,7 +2910,7 @@ export default function ToeicPart5Player({
                   </div>
                 </div>
 
-                {hasAnyExplanation && !isHoriz && (
+                {revealTrueAnswer && !isHoriz && (
                   <div
                     onMouseDown={handleResizeMouseDown}
                     onTouchStart={handleResizeTouchStart}
@@ -2922,7 +2922,7 @@ export default function ToeicPart5Player({
                     <div className="w-12 h-1 bg-slate-400 group-hover/resizer:bg-blue-600 active:bg-blue-700 rounded-full transition-colors shadow-sm" />
                   </div>
                 )}
-                {hasAnyExplanation && isHoriz && (
+                {revealTrueAnswer && isHoriz && (
                   <div
                     onMouseDown={handleLandscapeResizeMouseDown}
                     onTouchStart={handleLandscapeResizeTouchStart}
@@ -2939,7 +2939,7 @@ export default function ToeicPart5Player({
                   </div>
                 )}
 
-                {(revealMode || showExplain[currentQ.id] || showExplainPartial[currentQ.id]) && (
+                {revealTrueAnswer && (
                   <div
                     className={`relative overflow-hidden bg-white rounded-xl border border-blue-100 shadow-md flex flex-col z-20 ${
                       isHoriz ? 'h-full flex-1 min-w-0 min-h-0' : 'w-full flex-1 min-w-0 min-h-0'
