@@ -75,7 +75,7 @@ export default function DeviceManagement({ userId }: { userId?: string | null })
                <li>Mỗi tài khoản được dùng tối đa <b>1 Máy tính/Laptop</b> và <b>1 Điện thoại/Máy tính bảng</b>.</li>
               <li><b>Không được phép</b> học đồng thời trên 2 thiết bị cùng lúc.</li>
               <li>Bạn được quyền tự đổi thiết bị trong <b>30 ngày đầu tiên</b> kể từ lúc tạo tài khoản.</li>
-              <li>Sau 30 ngày, thiết bị sẽ bị <b>khóa cố định</b>. Mọi yêu cầu đổi máy sau đó vui lòng liên hệ Admin.</li>
+              <li>Sau 30 ngày, thiết bị sẽ bị <b>khóa cố định</b>.</li>
             </ul>
           </div>
         </div>

@@ -85,24 +85,23 @@ function UnifiedAdminToolbar() {
     >
       <div
         className={clsx(
-          "flex items-center gap-1.5 p-1 rounded-full border transition-all duration-300 shadow-xl backdrop-blur-xl",
+          "flex items-center transition-all duration-300 shadow-xl backdrop-blur-xl rounded-full border",
           isExpanded
-            ? "bg-slate-900/95 border-amber-400/50 px-2 py-1"
+            ? "bg-slate-900/95 border-amber-400/50 p-1 gap-1.5"
             : isAnyActive
-            ? "bg-slate-900/90 border-red-500/70 text-white animate-pulse"
-            : "bg-slate-900/80 hover:bg-slate-900 text-amber-400 border-white/15 hover:border-amber-400/40"
+            ? "bg-slate-900/90 border-red-500/70 text-white animate-pulse p-1"
+            : "bg-slate-900/80 hover:bg-slate-900 text-amber-400 border-white/15 hover:border-amber-400/40 p-1"
         )}
       >
-        {/* Nút thu gọn / khiên nhận diện */}
+        {/* Nút thu gọn / khiên nhận diện dạng chấm tròn nhỏ */}
         <button
           onClick={() => setIsClickedOpen(!isClickedOpen)}
-          className="flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-bold transition-colors cursor-pointer shrink-0"
+          className="relative flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-full transition-colors cursor-pointer shrink-0"
           title={isExpanded ? "Đóng thanh Admin" : "Rê chuột hoặc bấm để mở công cụ Admin"}
         >
-          <Shield size={16} className={clsx(isAnyActive ? "text-red-400 animate-bounce" : "text-amber-400")} />
-          {!isExpanded && <span className="text-[10px] uppercase tracking-wider hidden sm:inline">ADMIN</span>}
+          <Shield className={clsx("w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0", isAnyActive ? "text-red-400 animate-bounce" : "text-amber-400")} />
           {isAnyActive && !isExpanded && (
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 animate-ping" />
           )}
         </button>
 

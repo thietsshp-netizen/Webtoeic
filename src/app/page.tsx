@@ -1235,30 +1235,30 @@ function HomeContent() {
               <div className="flex flex-1 overflow-hidden">
                 <aside className={clsx(
                   "bg-white border-r border-slate-100 flex flex-col transition-all duration-500 shadow-xl shadow-slate-200/50 z-20 shrink-0",
-                  collapsed ? "w-12 md:w-24" : "w-64 md:w-72"
+                  collapsed ? "w-8 sm:w-10 md:w-20" : "w-52 sm:w-64 md:w-72"
                 )}>
-                <div className={clsx("border-b border-slate-50 flex items-center justify-between", collapsed ? "p-2 md:p-6 justify-center" : "p-6")}>
+                <div className={clsx("border-b border-slate-50 flex items-center justify-between", collapsed ? "p-1 sm:p-2 md:p-4 justify-center" : "p-3 sm:p-4 md:p-6")}>
                   {!collapsed && <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Học viên Pro</span>}
-                  <button onClick={() => setCollapsed(!collapsed)} className="p-2.5 hover:bg-slate-50 rounded-xl transition-colors">
-                    {collapsed ? <ChevronRight size={18} /> : <ArrowLeft size={18} />}
+                  <button onClick={() => setCollapsed(!collapsed)} className="p-1 sm:p-1.5 md:p-2.5 hover:bg-slate-50 rounded-lg transition-colors">
+                    {collapsed ? <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" /> : <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />}
                   </button>
                 </div>
 
-                <div className={clsx("flex-1 space-y-2 overflow-y-auto no-scrollbar", collapsed ? "p-1 md:p-4" : "p-4")}>
-                  <SideTabBtn id="courses" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<BookOpen size={20} />} label="Khóa học" />
-                  <SideTabBtn id="stats" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<BarChart3 size={20} />} label="Thống kê" />
-                  <SideTabBtn id="history" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Clock size={20} />} label="Lịch sử giải đề" />
-                  <SideTabBtn id="review" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Star size={20} />} label="Ôn tập" />
-                  <SideTabBtn id="vocab" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Languages size={20} />} label="Từ vựng" />
-                  <SideTabBtn id="attendance" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<CalendarCheck size={20} />} label="Điểm danh & Chuyên cần" />
-                  <SideTabBtn id="account" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Settings size={20} />} label="Cài đặt tài khoản" />
+                <div className={clsx("flex-1 space-y-1 sm:space-y-1.5 md:space-y-2 overflow-y-auto no-scrollbar", collapsed ? "p-0.5 sm:p-1 md:p-3" : "p-2 sm:p-3 md:p-4")}>
+                  <SideTabBtn id="courses" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />} label="Khóa học" />
+                  <SideTabBtn id="stats" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />} label="Thống kê" />
+                  <SideTabBtn id="history" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />} label="Lịch sử giải đề" />
+                  <SideTabBtn id="review" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />} label="Ôn tập" />
+                  <SideTabBtn id="vocab" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Languages className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />} label="Từ vựng" />
+                  <SideTabBtn id="attendance" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<CalendarCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />} label="Điểm danh & Chuyên cần" />
+                  <SideTabBtn id="account" active={dashTab} onClick={setDashTab} collapsed={collapsed} icon={<Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />} label="Cài đặt tài khoản" />
                 </div>
 
-                <div className={clsx("border-t border-slate-50 space-y-2", collapsed ? "p-1 md:p-4 text-center" : "p-4")}>
+                <div className={clsx("border-t border-slate-50 space-y-2", collapsed ? "p-0.5 sm:p-1 md:p-4 text-center" : "p-3 sm:p-4")}>
                   {!collapsed ? (
-                    <div className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.2em] px-4 py-2">Hỗ trợ 24/7</div>
+                    <div className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.2em] px-2 sm:px-4 py-1 sm:py-2">Hỗ trợ 24/7</div>
                   ) : (
-                    <div className="text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none py-1">24/7</div>
+                    <div className="text-[7px] sm:text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none py-0.5">24/7</div>
                   )}
                 </div>
               </aside>
@@ -2449,17 +2449,19 @@ function SideTabBtn({ id, active, onClick, collapsed, icon, label }: any) {
       onClick={() => onClick(id)}
       className={clsx(
         "w-full flex items-center transition-all duration-300 group",
-        collapsed ? "justify-center p-2.5 md:p-4 rounded-xl md:rounded-2xl" : "gap-4 p-4 rounded-2xl",
+        collapsed
+          ? "justify-center p-1 sm:p-1.5 md:p-3.5 rounded-lg md:rounded-2xl"
+          : "gap-2.5 sm:gap-4 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl",
         isActive
-          ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
+          ? "bg-blue-600 text-white shadow-sm sm:shadow-md shadow-blue-200"
           : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
       )}
     >
-      <div className={clsx("shrink-0 transition-transform duration-300", isActive ? "scale-110" : "group-hover:scale-110")}>
+      <div className={clsx("shrink-0 transition-transform duration-300", isActive ? "scale-105" : "group-hover:scale-105")}>
         {icon}
       </div>
       {!collapsed && (
-        <span className="font-bold text-xs uppercase tracking-widest truncate">{label}</span>
+        <span className="font-bold text-[10px] sm:text-xs uppercase tracking-wider truncate">{label}</span>
       )}
     </button>
   );

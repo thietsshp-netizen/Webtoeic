@@ -6,6 +6,8 @@ import {
   XCircle, 
   Flag, 
   ChevronRight, 
+  ChevronLeft,
+  X,
   ArrowLeft,
   Layout,
   BookOpen,
@@ -59,6 +61,7 @@ export default function ToeicReviewManager({
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'byPart'>('newest');
   const [jumpTo, setJumpTo] = useState<{ id: string; ts: number } | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -98,6 +101,22 @@ export default function ToeicReviewManager({
   }, [items, activeFilter, activeColorFilter, sortOrder]);
 
   const activeItem = items.find(it => it.questionId === activeQuestionId);
+
+  const currentIndex = useMemo(() => {
+    return filteredItems.findIndex(it => it.questionId === activeQuestionId);
+  }, [filteredItems, activeQuestionId]);
+
+  const handlePrevQuestion = () => {
+    if (currentIndex > 0) {
+      setActiveQuestionId(filteredItems[currentIndex - 1].questionId);
+    }
+  };
+
+  const handleNextQuestion = () => {
+    if (currentIndex !== -1 && currentIndex + 1 < filteredItems.length) {
+      setActiveQuestionId(filteredItems[currentIndex + 1].questionId);
+    }
+  };
 
   // Tự động chọn câu đầu tiên khi chuyển filter nếu câu cũ không còn trong list
   useEffect(() => {
@@ -213,244 +232,262 @@ export default function ToeicReviewManager({
     );
   }
 
-  return (
-    <div className="flex h-[calc(100vh-120px)] bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
-      
-      {/* SIDEBAR BÊN TRÁI: DANH SÁCH CÂU HỎI */}
-      <div className="w-80 border-r bg-slate-50/50 flex flex-col shrink-0">
-        <div className="p-6 border-b bg-white">
-          <h2 className="text-lg font-black text-slate-800 flex items-center gap-2">
-            <Layout size={20} className="text-blue-600" /> DANH SÁCH ÔN TẬP
+  const renderSidebarContent = (isMobileDrawer = false) => (
+    <div className="flex flex-col h-full">
+      <div className="p-4 lg:p-6 border-b bg-white">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm lg:text-lg font-black text-slate-800 flex items-center gap-2">
+            <Layout size={18} className="text-blue-600" /> DANH SÁCH ÔN TẬP
           </h2>
-          <div className="flex gap-2 mt-4">
-             <button 
-               onClick={() => setActiveFilter('all')}
-               className={`flex-1 py-2 text-[10px] font-black rounded-lg border transition ${activeFilter === 'all' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300'}`}
-             >
-               TẤT CẢ
-             </button>
-             <button 
-               onClick={() => setActiveFilter('incorrect')}
-               className={`flex-1 py-2 text-[10px] font-black rounded-lg border transition ${activeFilter === 'incorrect' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300'}`}
-             >
-               CÂU SAI
-             </button>
-             <button 
-               onClick={() => setActiveFilter('flagged')}
-               className={`flex-1 py-2 text-[10px] font-black rounded-lg border transition ${activeFilter === 'flagged' ? 'bg-orange-50 text-orange-600 border-orange-200' : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300'}`}
-             >
-               GẮN CỜ
-             </button>
-             <button 
-               onClick={() => setActiveFilter('note')}
-               className={`flex-1 py-2 text-[10px] font-black rounded-lg border transition ${activeFilter === 'note' ? 'bg-indigo-50 text-indigo-700 border-indigo-200 shadow-md shadow-indigo-50' : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300'}`}
-             >
-               GHI CHÚ
-             </button>
-           </div>
-
-           {/* Bộ lọc màu cờ (Hiện ở mọi mode để lọc nhanh) */}
-           <div className="flex gap-1.5 mt-3 p-1.5 bg-slate-100 rounded-xl">
-               <button
-                 onClick={() => setActiveColorFilter('ALL')}
-                 className={`flex-1 py-1 rounded-lg text-[9px] font-black transition ${activeColorFilter === 'ALL' ? 'bg-white text-slate-700 shadow-sm' : 'text-slate-400 hover:text-slate-500'}`}
-               >
-                 ALL
-               </button>
-               {(['RED', 'PURPLE', 'BLUE', 'YELLOW'] as const).map(color => (
-                 <button
-                   key={color}
-                   onClick={() => setActiveColorFilter(color)}
-                   className={`w-8 h-6 rounded-lg flex items-center justify-center transition-all ${
-                     activeColorFilter === color ? 'bg-white shadow-md scale-110' : 'hover:scale-105 opacity-60 hover:opacity-100'
-                   }`}
-                 >
-                   <Flag size={12} className={`fill-current ${
-                     color === 'RED' ? 'text-red-500' :
-                     color === 'PURPLE' ? 'text-purple-500' :
-                     color === 'BLUE' ? 'text-blue-500' :
-                     'text-yellow-500'
-                   }`} />
-                 </button>
-               ))}
-             </div>
-
-           {/* Sort toggle */}
-           <div className="mt-3 flex items-center gap-1 bg-slate-100 rounded-lg p-1">
-             <button
-               onClick={() => setSortOrder('newest')}
-               title="Mới nhất trước"
-               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-md text-[9px] font-black transition-all ${
-                 sortOrder === 'newest' ? 'bg-white text-slate-700 shadow-sm' : 'text-slate-400 hover:text-slate-600'
-               }`}
-             >
-               <Clock size={10} /> MỚI NHẤT
-             </button>
-             <button
-               onClick={() => setSortOrder('oldest')}
-               title="Cũ nhất trước"
-               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-md text-[9px] font-black transition-all ${
-                 sortOrder === 'oldest' ? 'bg-white text-slate-700 shadow-sm' : 'text-slate-400 hover:text-slate-600'
-               }`}
-             >
-               <ArrowDownUp size={10} /> CŨ NHẤT
-             </button>
-             <button
-               onClick={() => setSortOrder('byPart')}
-               title="Theo Part & số câu"
-               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-md text-[9px] font-black transition-all ${
-                 sortOrder === 'byPart' ? 'bg-white text-slate-700 shadow-sm' : 'text-slate-400 hover:text-slate-600'
-               }`}
-             >
-               <ListOrdered size={10} /> THEO PART
-             </button>
-           </div>
+          {isMobileDrawer && (
+            <button
+              onClick={() => setIsMobileDrawerOpen(false)}
+              className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors"
+            >
+              <X size={18} />
+            </button>
+          )}
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-2 no-scrollbar">
-          {filteredItems.map((item, idx) => {
-            const isSelected = activeQuestionId === item.questionId;
-            const fColor = item.flagColor?.toUpperCase();
-            
-            return (
-              <div
-                key={item.attemptId}
-                onClick={() => setActiveQuestionId(item.questionId)}
-                className={`w-full text-left p-4 rounded-2xl border transition-all flex items-center justify-between group cursor-pointer relative ${
-                  isSelected 
-                    ? activeFilter === 'flagged' ? 'bg-orange-50 border-orange-200 text-orange-700 shadow-sm ring-4 ring-orange-50/50' :
-                      activeFilter === 'note' ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm ring-4 ring-blue-50/50' :
-                      activeFilter === 'incorrect' ? 'bg-red-50 border-red-200 text-red-700 shadow-sm ring-4 ring-red-50/50' :
-                      'bg-indigo-50 border-indigo-200 text-indigo-700 shadow-sm ring-4 ring-indigo-50/50'
-                    : 'bg-white border-slate-100 text-slate-600 hover:border-blue-200 hover:shadow-sm'
-                }`}
-              >
-                {/* Nút tích tròn nhỏ dọn dẹp siêu tốc ở góc phải trên cùng */}
-                <div 
-                  className="absolute top-2 right-2 z-10" 
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    onClick={() => handleQuickResolve(item)}
-                    className={`p-1 rounded-md border transition-all active:scale-95 flex items-center justify-center shadow-sm ${
-                      isSelected
-                        ? 'bg-white/20 border-white/20 hover:bg-white text-emerald-500 hover:text-emerald-600'
-                        : 'bg-emerald-50 border-emerald-100 text-emerald-500 hover:bg-emerald-500 hover:text-white'
-                    }`}
-                    title="Xoá khỏi danh sách review, đồng thời xoá cờ và ghi chú"
-                  >
-                    <CheckCircle size={10} />
-                  </button>
-                </div>
+        <div className="flex gap-1.5 mt-3 sm:mt-4">
+          <button
+            onClick={() => { setActiveFilter('all'); if (isMobileDrawer) setIsMobileDrawerOpen(false); }}
+            className={`flex-1 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-black rounded-lg border transition ${activeFilter === 'all' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300'}`}
+          >
+            TẤT CẢ
+          </button>
+          <button
+            onClick={() => { setActiveFilter('incorrect'); if (isMobileDrawer) setIsMobileDrawerOpen(false); }}
+            className={`flex-1 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-black rounded-lg border transition ${activeFilter === 'incorrect' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300'}`}
+          >
+            CÂU SAI
+          </button>
+          <button
+            onClick={() => { setActiveFilter('flagged'); if (isMobileDrawer) setIsMobileDrawerOpen(false); }}
+            className={`flex-1 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-black rounded-lg border transition ${activeFilter === 'flagged' ? 'bg-orange-50 text-orange-600 border-orange-200' : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300'}`}
+          >
+            GẮN CỜ
+          </button>
+          <button
+            onClick={() => { setActiveFilter('note'); if (isMobileDrawer) setIsMobileDrawerOpen(false); }}
+            className={`flex-1 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-black rounded-lg border transition ${activeFilter === 'note' ? 'bg-indigo-50 text-indigo-700 border-indigo-200 shadow-md shadow-indigo-50' : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300'}`}
+          >
+            GHI CHÚ
+          </button>
+        </div>
 
-                <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black ${
-                    isSelected 
-                       ? activeFilter === 'flagged' ? 'bg-orange-500 text-white' :
-                         activeFilter === 'note' ? 'bg-blue-500 text-white' :
-                         activeFilter === 'incorrect' ? 'bg-red-500 text-white' :
-                         'bg-indigo-600 text-white'
-                       : resolvedIds.has(item.questionId) ? 'bg-emerald-50 text-emerald-500' : 'bg-slate-100 text-slate-400'
-                  }`}>
-                    {resolvedIds.has(item.questionId) ? '✓' : idx + 1}
-                  </div>
-                  <div>
-                    <div className={`text-[11px] font-black uppercase tracking-tight flex items-center gap-2 ${
-                        isSelected 
-                          ? activeFilter === 'flagged' ? 'text-orange-900' :
-                            activeFilter === 'note' ? 'text-blue-900' :
-                            activeFilter === 'incorrect' ? 'text-red-900' :
-                            'text-indigo-900'
-                          : 'text-slate-700'
-                     }`}>
-                      Part {item.partNumber} · Câu {item.question.questionNo}
-                      {item.flagNote && (
-                        <div className={`p-1 rounded-md ${isSelected ? 'bg-blue-200 text-blue-800' : 'bg-blue-50 text-blue-600'}`}>
-                          <PenLine size={10} />
-                        </div>
-                      )}
-                    </div>
-                    <div className={`text-[9px] font-bold ${isSelected ? 'text-blue-600/70' : 'text-slate-400'}`}>
-                       <div className="flex items-center gap-1.5 mb-1 opacity-80">
-                         <Clock size={8} />
-                         {new Date(item.updatedAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })} {new Date(item.updatedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
-                         {item.courseTitle && <span> · [{item.courseTitle}]</span>}
-                       </div>
-                       <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
-                       {item.isFlagged && (
-                         <div className="relative group/note">
-                           <span className="inline-flex items-center gap-1 cursor-help">
-                             <Flag size={8} className={`fill-current ${
-                               fColor === 'PURPLE' ? 'text-purple-500' : 
-                               fColor === 'BLUE' ? 'text-blue-500' : 
-                               fColor === 'YELLOW' ? 'text-yellow-500' : 
-                               'text-red-500'
-                             }`} /> 
-                             Gắn cờ
-                           </span>
-                           {item.flagNote && (
-                             <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover/note:opacity-100 transition-all duration-200 pointer-events-none z-[1000] min-w-[200px]">
-                               <div className="bg-slate-900/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl border border-white/10">
-                                 <div className="flex items-center gap-1.5 mb-1.5">
-                                   <PenLine size={10} className="text-blue-400" />
-                                   <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Ghi chú học tập</span>
-                                 </div>
-                                 <p className="text-[11px] leading-relaxed font-medium italic text-slate-100">
-                                   "{item.flagNote}"
-                                 </p>
-                                 <div className="absolute -bottom-1 right-4 w-2 h-2 bg-slate-900 rotate-45 border-r border-b border-white/10" />
-                               </div>
-                             </div>
-                           )}
-                         </div>
-                       )}
-                        {item.isFlagged && !item.isCorrect && ' · '}
-                        {!item.isCorrect && item.userAnswer && item.userAnswer.trim() !== '' && (
-                          <span className="inline-flex items-center gap-1">
-                            <span className="text-red-500">❌</span> Câu sai
-                          </span>
-                        )}
-                        {(!item.userAnswer || item.userAnswer.trim() === '') && !item.isCorrect && (
-                          <span className="inline-flex items-center gap-1 text-slate-500">
-                             <span className="text-slate-400">⚪</span> Chưa trả lời
-                          </span>
-                        )}
-                        {item.flagNote && item.flagNote.trim() !== '' && (
-                          <>
-                            {(item.isFlagged || !item.isCorrect || !item.userAnswer) && ' · '}
-                            <span className={`inline-flex items-center gap-1 font-black px-1.5 py-0.5 rounded ${
-                              isSelected 
-                                ? activeFilter === 'flagged' ? 'bg-orange-500 text-white' :
-                                  activeFilter === 'note' ? 'bg-blue-500 text-white' :
-                                  activeFilter === 'incorrect' ? 'bg-red-500 text-white' :
-                                  'bg-indigo-600 text-white'
-                                : 'bg-blue-50 text-blue-600'
-                            }`}>
-                              <PenLine size={10} /> GHI CHÚ
-                            </span>
-                          </>
-                        )}
-                        {resolvedIds.has(item.questionId) && ' · ✨ Đã xong'}
-                       </div>
-                    </div>
-                  </div>
-                </div>
-                <ChevronRight size={14} className={isSelected ? 'text-white' : 'text-slate-300 group-hover:text-blue-400'} />
-              </div>
-            );
-          })}
+        {/* Bộ lọc màu cờ */}
+        <div className="flex gap-1.5 mt-2.5 p-1 bg-slate-100 rounded-xl">
+          <button
+            onClick={() => { setActiveColorFilter('ALL'); if (isMobileDrawer) setIsMobileDrawerOpen(false); }}
+            className={`flex-1 py-1 rounded-lg text-[9px] font-black transition ${activeColorFilter === 'ALL' ? 'bg-white text-slate-700 shadow-sm' : 'text-slate-400 hover:text-slate-500'}`}
+          >
+            ALL
+          </button>
+          {(['RED', 'PURPLE', 'BLUE', 'YELLOW'] as const).map(color => (
+            <button
+              key={color}
+              onClick={() => { setActiveColorFilter(color); if (isMobileDrawer) setIsMobileDrawerOpen(false); }}
+              className={`w-7 sm:w-8 h-5 sm:h-6 rounded-lg flex items-center justify-center transition-all ${
+                activeColorFilter === color ? 'bg-white shadow-md scale-110' : 'hover:scale-105 opacity-60 hover:opacity-100'
+              }`}
+            >
+              <Flag size={11} className={`fill-current ${
+                color === 'RED' ? 'text-red-500' :
+                color === 'PURPLE' ? 'text-purple-500' :
+                color === 'BLUE' ? 'text-blue-500' :
+                'text-yellow-500'
+              }`} />
+            </button>
+          ))}
+        </div>
+
+        {/* Sort toggle */}
+        <div className="mt-2.5 flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+          <button
+            onClick={() => setSortOrder('newest')}
+            title="Mới nhất trước"
+            className={`flex-1 flex items-center justify-center gap-1 py-1 rounded-md text-[8px] sm:text-[9px] font-black transition-all ${
+              sortOrder === 'newest' ? 'bg-white text-slate-700 shadow-sm' : 'text-slate-400 hover:text-slate-600'
+            }`}
+          >
+            <Clock size={10} /> MỚI NHẤT
+          </button>
+          <button
+            onClick={() => setSortOrder('oldest')}
+            title="Cũ nhất trước"
+            className={`flex-1 flex items-center justify-center gap-1 py-1 rounded-md text-[8px] sm:text-[9px] font-black transition-all ${
+              sortOrder === 'oldest' ? 'bg-white text-slate-700 shadow-sm' : 'text-slate-400 hover:text-slate-600'
+            }`}
+          >
+            <ArrowDownUp size={10} /> CŨ NHẤT
+          </button>
+          <button
+            onClick={() => setSortOrder('byPart')}
+            title="Theo Part & số câu"
+            className={`flex-1 flex items-center justify-center gap-1 py-1 rounded-md text-[8px] sm:text-[9px] font-black transition-all ${
+              sortOrder === 'byPart' ? 'bg-white text-slate-700 shadow-sm' : 'text-slate-400 hover:text-slate-600'
+            }`}
+          >
+            <ListOrdered size={10} /> THEO PART
+          </button>
         </div>
       </div>
 
-      {/* PLAYER BÊN PHẢI: CHI TIẾT CÂU HỎI */}
-      <div className="flex-1 overflow-y-auto bg-slate-50 p-8 no-scrollbar relative">
-         <div className="max-w-4xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
+      {/* Danh sách các câu hỏi */}
+      <div className="flex-1 overflow-y-auto p-3 lg:p-4 space-y-2 no-scrollbar">
+        {filteredItems.map((item, idx) => {
+          const isSelected = activeQuestionId === item.questionId;
+          const isResolved = resolvedIds.has(item.questionId);
+
+          let badgeColor = "bg-slate-100 text-slate-400";
+          if (isSelected) {
+            if (activeFilter === 'flagged') badgeColor = 'bg-orange-500 text-white';
+            else if (activeFilter === 'note') badgeColor = 'bg-blue-500 text-white';
+            else if (activeFilter === 'incorrect') badgeColor = 'bg-red-500 text-white';
+            else badgeColor = 'bg-indigo-600 text-white';
+          } else if (isResolved) {
+            badgeColor = 'bg-emerald-50 text-emerald-500';
+          }
+
+          let titleColor = "text-slate-700";
+          if (isSelected) {
+            if (activeFilter === 'flagged') titleColor = 'text-orange-900';
+            else if (activeFilter === 'note') titleColor = 'text-blue-900';
+            else if (activeFilter === 'incorrect') titleColor = 'text-red-900';
+            else titleColor = 'text-indigo-900';
+          }
+
+          return (
+            <div
+              key={item.attemptId}
+              onClick={() => {
+                setActiveQuestionId(item.questionId);
+                if (isMobileDrawer) setIsMobileDrawerOpen(false);
+              }}
+              className={`w-full text-left p-3 sm:p-4 rounded-xl lg:rounded-2xl border transition-all flex items-center justify-between group cursor-pointer relative ${
+                isSelected 
+                  ? activeFilter === 'flagged' ? 'bg-orange-50 border-orange-200 text-orange-700 shadow-sm ring-2 ring-orange-50/50' :
+                    activeFilter === 'note' ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm ring-2 ring-blue-50/50' :
+                    activeFilter === 'incorrect' ? 'bg-red-50 border-red-200 text-red-700 shadow-sm ring-2 ring-red-50/50' :
+                    'bg-indigo-50 border-indigo-200 text-indigo-700 shadow-sm ring-2 ring-indigo-50/50'
+                  : 'bg-white border-slate-100 text-slate-600 hover:border-blue-200 hover:shadow-sm'
+              }`}
+            >
+              {/* Nút tích tròn nhỏ dọn dẹp siêu tốc ở góc phải trên cùng */}
+              <div 
+                className="absolute top-2 right-2 z-10" 
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => handleQuickResolve(item)}
+                  className={`p-1 rounded-md border transition-all active:scale-95 flex items-center justify-center shadow-sm ${
+                    isSelected
+                      ? 'bg-white/20 border-white/20 hover:bg-white text-emerald-500 hover:text-emerald-600'
+                      : 'bg-emerald-50 border-emerald-100 text-emerald-500 hover:bg-emerald-500 hover:text-white'
+                  }`}
+                  title="Xoá khỏi danh sách review"
+                >
+                  <CheckCircle size={10} />
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2.5 sm:gap-3">
+                <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-xs font-black shrink-0 ${badgeColor}`}>
+                  {isResolved ? '✓' : idx + 1}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className={`text-[10px] sm:text-[11px] font-black uppercase tracking-tight flex items-center gap-1.5 truncate ${titleColor}`}>
+                    Part {item.partNumber} · Câu {item.question.questionNo}
+                    {item.flagNote && (
+                      <div className={`p-0.5 rounded ${isSelected ? 'bg-blue-200 text-blue-800' : 'bg-blue-50 text-blue-600'}`}>
+                        <PenLine size={9} />
+                      </div>
+                    )}
+                  </div>
+                  <div className={`text-[8px] sm:text-[9px] font-bold ${isSelected ? 'text-blue-600/70' : 'text-slate-400'}`}>
+                     <div className="flex items-center gap-1 opacity-80 truncate">
+                       <Clock size={8} />
+                       {new Date(item.updatedAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}
+                       {item.courseTitle && <span> · [{item.courseTitle}]</span>}
+                     </div>
+                  </div>
+                </div>
+              </div>
+              <ChevronRight size={14} className={isSelected ? 'text-indigo-600' : 'text-slate-300 group-hover:text-blue-400'} />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col h-[calc(100vh-120px)] min-h-0">
+      
+      {/* MOBILE DRAWER (XUẤT HIỆN KHI BẤM NÚT TRÊN ĐIỆN THOẠI) */}
+      {isMobileDrawerOpen && (
+        <div className="fixed inset-0 z-[99999] md:hidden flex">
+          <div 
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200"
+            onClick={() => setIsMobileDrawerOpen(false)}
+          />
+          <div className="relative w-80 max-w-[85vw] bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-300">
+            {renderSidebarContent(true)}
+          </div>
+        </div>
+      )}
+
+      {/* THANH ĐIỀU HƯỚNG NHANH CHO MOBILE & TABLET (NẰM TRỰC TIẾP DƯỚI HEADER TRUNG TÂM ÔN TẬP) */}
+      <div className="flex md:hidden items-center justify-between gap-2 p-2 bg-white rounded-2xl border border-slate-200 shadow-sm mb-3 shrink-0 z-30">
+        <button
+          onClick={() => setIsMobileDrawerOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white hover:bg-blue-700 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-sm shadow-blue-500/20"
+        >
+          <Layout size={14} />
+          <span>Danh sách ({filteredItems.length})</span>
+        </button>
+
+        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+          <button
+            onClick={handlePrevQuestion}
+            disabled={currentIndex <= 0}
+            className="p-1.5 bg-white disabled:opacity-30 text-slate-700 rounded-lg text-xs font-bold active:scale-95 transition-all shadow-sm"
+            title="Câu trước"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <span className="text-xs font-black text-slate-800 px-2 min-w-[45px] text-center">
+            {currentIndex !== -1 ? currentIndex + 1 : 0} / {filteredItems.length}
+          </span>
+          <button
+            onClick={handleNextQuestion}
+            disabled={currentIndex === -1 || currentIndex >= filteredItems.length - 1}
+            className="p-1.5 bg-blue-600 disabled:opacity-30 text-white rounded-lg text-xs font-bold active:scale-95 transition-all shadow-md shadow-blue-500/20"
+            title="Câu tiếp theo"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+
+      {/* KHỐI NỘI DUNG CHÍNH (SIDEBAR + PLAYER) */}
+      <div className="flex-1 flex bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 relative min-h-0">
+        {/* SIDEBAR BÊN TRÁI: CHỈ HIỂN THỊ TRÊN DESKTOP (md:) */}
+        <div className="hidden md:flex md:w-72 lg:w-80 border-r bg-slate-50/50 flex-col shrink-0">
+          {renderSidebarContent(false)}
+        </div>
+
+        {/* PLAYER BÊN PHẢI: CHI TIẾT CÂU HỎI */}
+        <div className="flex-1 overflow-y-auto bg-slate-50 p-3 sm:p-6 lg:p-8 no-scrollbar relative w-full">
+           <div className="max-w-4xl mx-auto space-y-4">
+              
+              <div className="flex items-center justify-between mb-4 sm:mb-8">
               <Link href="/?tab=dashboard" className="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-blue-600 uppercase tracking-widest transition-colors">
-                <ArrowLeft size={16} /> Thoát chế độ ôn tập (Dashboard)
+                <ArrowLeft size={16} /> <span className="hidden sm:inline">Thoát chế độ ôn tập</span> (Dashboard)
               </Link>
               <div className="flex items-center gap-4">
-                 <span className="px-4 py-1.5 bg-white border border-slate-200 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                 <span className="px-3 py-1 sm:px-4 sm:py-1.5 bg-white border border-slate-200 rounded-full text-[9px] sm:text-[10px] font-black text-slate-500 uppercase tracking-widest">
                     Chế độ: {activeFilter === 'all' ? 'Tổng hợp' : activeFilter === 'incorrect' ? 'Sửa câu sai' : activeFilter === 'flagged' ? 'Xem câu gắn cờ' : 'Xem câu có ghi chú'}
                  </span>
               </div>
@@ -633,8 +670,9 @@ export default function ToeicReviewManager({
                 <p className="text-xl font-black">CHỌN CÂU HỎI ĐỂ BẮT ĐẦU</p>
               </div>
             )}
-         </div>
-      </div>
+          </div>
+       </div>
+     </div>
     </div>
   );
 }

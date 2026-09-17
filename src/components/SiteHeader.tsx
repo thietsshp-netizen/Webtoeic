@@ -89,32 +89,32 @@ export default function SiteHeader() {
             <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200 group-hover:rotate-6 transition-transform">
               <GraduationCap className="text-white" size={20} />
             </div>
-            <span className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight hidden md:block">
+            <span className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight hidden sm:block">
               hoctoeic
-              <span className="text-blue-600 block text-[10px] uppercase tracking-[0.3em] font-bold -mt-1">E-LEARNING SYSTEM</span>
+              <span className="text-blue-600 hidden xl:block text-[10px] uppercase tracking-[0.3em] font-bold -mt-1">E-LEARNING SYSTEM</span>
             </span>
           </Link>
 
-          {/* Tab Navigation (Hiển thị đầy đủ 3 tab trên cả di động & máy tính, tự cuộn/co giãn) */}
-          <div className="flex items-center bg-slate-100/50 p-1 rounded-xl md:rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-[calc(100vw-110px)] md:max-w-none flex-shrink">
-            <NavTab href="/?tab=intro" active={activeTab === "intro"} label="GIỚI THIỆU" icon={<Star size={14} />} />
-            <NavTab href="/courses" active={activeTab === "courses"} label="KHÓA HỌC" icon={<BookOpen size={14} />} />
-            <NavTab href="/?tab=dashboard" active={false} label="DASHBOARD" icon={<Layout size={14} />} />
+          {/* Tab Navigation (Hiển thị đầy đủ 3 tab trên cả di động & máy tính, tự cuộn/co giãn gọn gàng) */}
+          <div className="flex items-center bg-slate-100/50 p-0.5 sm:p-1 rounded-xl md:rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-[calc(100vw-120px)] sm:max-w-none flex-shrink min-w-0">
+            <NavTab href="/?tab=intro" active={activeTab === "intro"} label="GIỚI THIỆU" icon={<Star size={13} />} />
+            <NavTab href="/courses" active={activeTab === "courses"} label="KHÓA HỌC" icon={<BookOpen size={13} />} />
+            <NavTab href="/?tab=dashboard" active={false} label="DASHBOARD" icon={<Layout size={13} />} />
           </div>
 
           {/* Auth Area (Góc bên phải ngoài cùng trên cả di động & máy tính) */}
-          <div className="flex items-center gap-1.5 sm:gap-4 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 xl:gap-3 flex-shrink-0">
             {status === "authenticated" ? (
               <>
-                {/* Desktop View */}
-                <div className="hidden md:flex items-center gap-4">
+                {/* Desktop / Landscape View */}
+                <div className="hidden md:flex items-center gap-2 xl:gap-4">
                   {isAdmin && (
-                    <Link href="/admin/enrollments" className="flex items-center gap-2 bg-slate-900 text-white hover:bg-slate-800 px-4 py-2.5 rounded-xl font-black text-xs uppercase transition-all shadow-md">
-                      🛠️ Quản trị
+                    <Link href="/admin/enrollments" className="flex items-center gap-1.5 bg-slate-900 text-white hover:bg-slate-800 px-2.5 xl:px-4 py-2 rounded-xl font-black text-xs uppercase transition-all shadow-md shrink-0" title="Quản trị">
+                      🛠️ <span className="hidden xl:inline">Quản trị</span>
                     </Link>
                   )}
-                  <div className="flex items-center gap-4">
-                    <div className="flex flex-col items-end">
+                  <div className="flex items-center gap-2 xl:gap-4">
+                    <div className="hidden xl:flex flex-col items-end">
                       <span className="text-sm font-black text-slate-800 leading-none">
                         {session?.user?.name || session?.user?.email?.split("@")[0]}
                       </span>
@@ -136,48 +136,48 @@ export default function SiteHeader() {
 
                     <div
                       onClick={() => setShowProfileModal(true)}
-                      className={`w-9 h-9 rounded-full ${avatarColor} flex items-center justify-center font-black text-[11px] text-white shadow-lg shadow-blue-500/20 cursor-pointer hover:scale-105 transition-transform`}
+                      className={`w-8 h-8 xl:w-9 xl:h-9 rounded-full ${avatarColor} flex items-center justify-center font-black text-[11px] text-white shadow-lg shadow-blue-500/20 cursor-pointer hover:scale-105 transition-transform shrink-0`}
                       title="Tài khoản"
                     >
                       {userInitials}
                     </div>
 
-                    <div className="flex items-center gap-1 border-l border-slate-200 pl-4">
+                    <div className="flex items-center gap-0.5 border-l border-slate-200 pl-2 xl:pl-4">
                       <button
                         onClick={() => setShowProfileModal(true)}
-                        className="p-2.5 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-blue-600 transition-all active:scale-90"
+                        className="p-1.5 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-blue-600 transition-all active:scale-90"
                         title="Cài đặt tài khoản"
                       >
-                        <Settings size={20} />
+                        <Settings size={18} />
                       </button>
                       <button
                         onClick={() => signOut({ callbackUrl: "/" })}
-                        className="p-2.5 hover:bg-red-50 rounded-xl text-slate-400 hover:text-red-500 transition-all active:scale-90"
+                        className="p-1.5 hover:bg-red-50 rounded-xl text-slate-400 hover:text-red-500 transition-all active:scale-90"
                         title="Đăng xuất"
                       >
-                        <LogOut size={20} />
+                        <LogOut size={18} />
                       </button>
                     </div>
                   </div>
                 </div>
 
                 {/* Mobile View */}
-                <div className="flex md:hidden items-center gap-1 sm:gap-1.5">
+                <div className="flex md:hidden items-center gap-1 sm:gap-1.5 shrink-0">
                   {isAdmin && (
-                    <Link href="/admin/enrollments" className="p-1.5 bg-slate-900 text-white rounded-lg text-xs font-bold" title="Quản trị">
+                    <Link href="/admin/enrollments" className="p-1.5 bg-slate-900 text-white rounded-lg text-xs font-bold shrink-0" title="Quản trị">
                       🛠️
                     </Link>
                   )}
                   <div
                     onClick={() => setShowProfileModal(true)}
-                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full ${avatarColor} flex items-center justify-center font-bold text-[10px] sm:text-xs text-white shadow-md cursor-pointer active:scale-95`}
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full ${avatarColor} flex items-center justify-center font-bold text-[10px] sm:text-xs text-white shadow-md cursor-pointer active:scale-95 shrink-0`}
                     title="Tài khoản"
                   >
                     {userInitials}
                   </div>
                   <button
                     onClick={() => signOut({ callbackUrl: "/" })}
-                    className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                    className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all shrink-0"
                     title="Đăng xuất"
                   >
                     <LogOut size={16} />
@@ -272,7 +272,7 @@ function NavTab({ href, active, label, icon }: { href: string; active: boolean; 
     <Link
       href={href}
       className={clsx(
-        "flex items-center gap-1.5 px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all whitespace-nowrap",
+        "flex items-center gap-1 px-2 sm:px-4 py-1.5 sm:py-2 rounded-xl font-bold text-[11px] sm:text-xs uppercase tracking-wider transition-all whitespace-nowrap",
         active
           ? "bg-white text-slate-900 shadow-sm border border-slate-100"
           : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
