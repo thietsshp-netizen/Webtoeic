@@ -1106,34 +1106,43 @@ export default function ToeicFullTestPlayer({
 
             <div
               className={`questions-sidebar-portal
-                fixed right-0 top-14 bottom-0 z-[999] ${disableSidebarTransition ? "" : "transition-all duration-300 ease-out"} border-l border-white/10 shadow-2xl flex flex-col
-              ${isSidebarHovered ? "w-80 bg-slate-900/95 backdrop-blur-xl flex" : "w-[clamp(18px,2.2vw,32px)] bg-[#fbfcfd] border-l border-slate-100 cursor-pointer hidden lg:flex"}
+                fixed right-0 z-[999] ${disableSidebarTransition ? "" : "transition-all duration-300 ease-out"} border-l border-white/10 shadow-2xl flex flex-col overflow-hidden
+                top-0 lg:top-14 bottom-0 h-full lg:h-[calc(100vh-3.5rem)] max-h-[100dvh]
+              ${isSidebarHovered ? "w-72 sm:w-80 max-w-[85vw] bg-slate-900/95 backdrop-blur-xl flex" : "w-[clamp(18px,2.2vw,32px)] bg-[#fbfcfd] border-l border-slate-100 cursor-pointer hidden lg:flex"}
             `}
               onMouseEnter={() => setIsSidebarHovered(true)}
               onMouseLeave={() => setIsSidebarHovered(false)}
               onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
             >
-            <div className={`border-b border-slate-100 flex items-center shrink-0 ${isSidebarHovered ? 'p-4 border-white/10 h-auto' : 'py-2 px-0 h-12 justify-center'}`}>
-              <div className="flex items-center gap-3">
-                <div className={`${isSidebarHovered ? 'p-2 bg-blue-100 text-blue-600 rounded-xl' : 'w-[clamp(14px,2.2vh,22px)] h-[clamp(14px,2.2vh,22px)] rounded-[3px] sm:rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center'} shrink-0`}>
-                  <LayoutDashboard size={isSidebarHovered ? 18 : 12} />
+            <div className={`border-b border-slate-100 flex items-center justify-between shrink-0 ${isSidebarHovered ? 'px-3 py-2 sm:px-4 sm:py-3 border-white/10 h-auto' : 'py-2 px-0 h-12 justify-center'}`}>
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                <div className={`${isSidebarHovered ? 'p-1.5 sm:p-2 bg-blue-100 text-blue-600 rounded-lg sm:rounded-xl' : 'w-[clamp(14px,2.2vh,22px)] h-[clamp(14px,2.2vh,22px)] rounded-[3px] sm:rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center'} shrink-0`}>
+                  <LayoutDashboard size={isSidebarHovered ? 16 : 12} />
                 </div>
                 {isSidebarHovered && (
                   <div className="animate-in fade-in zoom-in duration-300 whitespace-nowrap overflow-hidden">
-                    <h3 className="font-black text-white mb-0.5">BẢNG CÂU HỎI</h3>
-                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Click để di chuyển nhanh</p>
+                    <h3 className="font-black text-white text-xs sm:text-sm mb-0.5">BẢNG CÂU HỎI</h3>
+                    <p className="text-[8px] sm:text-[9px] text-slate-400 font-bold uppercase tracking-widest">Click để di chuyển nhanh</p>
                   </div>
                 )}
               </div>
+              {isSidebarHovered && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); setIsSidebarHovered(false); }}
+                  className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                  title="Đóng bảng câu hỏi"
+                >
+                  <X size={16} />
+                </button>
+              )}
             </div>
 
             <div
               ref={sidebarScrollRef}
-              className={`flex-1 overflow-y-auto ${isSidebarHovered ? 'p-4 custom-scrollbar' : 'overflow-hidden flex flex-col items-center py-2'}`}
-              style={{ paddingBottom: isSidebarHovered ? '400px' : '0px' }}
+              className={`flex-1 min-h-0 overflow-y-auto ${isSidebarHovered ? 'p-2.5 sm:p-4 custom-scrollbar' : 'overflow-hidden flex flex-col items-center py-2'}`}
             >
               {isSidebarHovered ? (
-                <div className="grid grid-cols-5 gap-2 animate-in fade-in duration-500">
+                <div className="grid grid-cols-5 gap-1.5 sm:gap-2 animate-in fade-in duration-500">
                   {allQuestions.map((q) => {
                     const qKey = q.id;
                     const isAnswered = !!userProgress[qKey]?.userAnswer;
@@ -1157,7 +1166,7 @@ export default function ToeicFullTestPlayer({
                           setIsSidebarHovered(false);
                         }}
                         className={`
-                        aspect-square rounded-xl text-[13px] font-black transition-all flex items-center justify-center relative
+                        aspect-square rounded-lg sm:rounded-xl text-xs sm:text-[13px] font-black transition-all flex items-center justify-center relative
                         ${isActive ? 'ring-2 ring-blue-400 ring-offset-2 ring-offset-slate-900 z-20 scale-105 shadow-md shadow-blue-500/20' : ''}
                         ${isActiveGroup && !isActive ? 'ring-1 ring-white/40' : ''}
                         ${isSubmitted
@@ -1198,21 +1207,21 @@ export default function ToeicFullTestPlayer({
               )}
             </div>
 
-            <div className={`border-t border-slate-100 shrink-0 ${isSidebarHovered ? 'p-4 border-white/10 bg-slate-950/60' : 'py-2 px-0 bg-transparent flex justify-center'}`}>
+            <div className={`border-t border-slate-100 shrink-0 ${isSidebarHovered ? 'p-2.5 sm:p-4 border-white/10 bg-slate-950/80 backdrop-blur-md' : 'py-2 px-0 bg-transparent flex justify-center'}`}>
               {isSidebarHovered ? (
                 <div className="w-full animate-in fade-in duration-300">
-                  <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">
+                  <div className="flex justify-between text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 sm:mb-2 px-1">
                     <span>Tiến độ</span>
                     <span className="text-white/80">{stats.answered}/{stats.total}</span>
                   </div>
-                  <div className="w-full bg-white/10 rounded-full h-1.5 mb-4 overflow-hidden">
-                    <div className="bg-blue-500 h-1.5 rounded-full transition-all duration-500" style={{ width: `${(stats.answered / stats.total) * 100}%` }}></div>
+                  <div className="w-full bg-white/10 rounded-full h-1 sm:h-1.5 mb-2 sm:mb-3 overflow-hidden">
+                    <div className="bg-blue-500 h-full rounded-full transition-all duration-500" style={{ width: `${(stats.answered / stats.total) * 100}%` }}></div>
                   </div>
                   <button
                     onClick={handleSubmit}
-                    className="w-full flex items-center justify-center gap-2 py-3 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs rounded-xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 uppercase tracking-wider"
+                    className="w-full flex items-center justify-center gap-1.5 sm:gap-2 py-2 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs rounded-xl transition-all shadow-md shadow-blue-600/20 active:scale-95 uppercase tracking-wider whitespace-nowrap"
                   >
-                    <Send size={16} />
+                    <Send size={14} />
                     Nộp bài ngay
                   </button>
                 </div>
@@ -1233,101 +1242,144 @@ export default function ToeicFullTestPlayer({
       </div>
 
       {showResults && (
-        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-500 overflow-y-auto">
-          <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-4xl overflow-hidden animate-in zoom-in-95 duration-300 my-8">
-            <div className="bg-gradient-to-br from-indigo-600 via-blue-600 to-emerald-500 p-8 text-center text-white relative">
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-2 sm:p-4 md:p-6 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300 overflow-y-auto">
+          <div className="bg-white rounded-2xl sm:rounded-[2rem] lg:rounded-[2.5rem] shadow-2xl w-full max-w-4xl max-h-[96vh] sm:max-h-[92vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 my-auto border border-slate-100">
+            {/* Header Gradient */}
+            <div className="relative flex-none bg-gradient-to-br from-indigo-600 via-blue-600 to-emerald-500 px-4 py-4 sm:px-8 sm:py-6 text-center text-white overflow-hidden">
+              <button
+                onClick={() => setShowResults(false)}
+                className="absolute top-2.5 right-2.5 sm:top-4 sm:right-4 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-90 z-20"
+                title="Đóng bảng kết quả"
+              >
+                <X size={15} />
+              </button>
               <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none overflow-hidden">
                 <div className="absolute top-[-20%] left-[-10%] w-80 h-80 bg-white rounded-full blur-3xl"></div>
                 <div className="absolute bottom-[-20%] right-[-10%] w-80 h-80 bg-white rounded-full blur-3xl"></div>
               </div>
-              <div className="inline-flex p-4 bg-white/20 rounded-2xl backdrop-blur-xl mb-4 ring-4 ring-white/10">
-                <Trophy size={32} className="text-yellow-300 drop-shadow-lg" />
+              <div className="inline-flex p-2 sm:p-3 bg-white/20 rounded-xl sm:rounded-2xl backdrop-blur-xl mb-1.5 sm:mb-2 ring-2 sm:ring-4 ring-white/10">
+                <Trophy className="w-5 h-5 sm:w-7 sm:h-7 text-yellow-300 drop-shadow-md" />
               </div>
-              <h2 className="text-3xl font-black mb-1 tracking-tight">Kết quả thi TOEIC</h2>
-              <div className="mt-8 flex justify-center items-end gap-12">
+              <h2 className="text-lg sm:text-2xl md:text-3xl font-black mb-1 tracking-tight">Kết quả thi TOEIC</h2>
+              <div className="mt-3 sm:mt-5 flex justify-center items-center gap-3 sm:gap-6 md:gap-10">
                 <div className="flex flex-col items-center">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-6xl font-black text-white drop-shadow-md">{stats.totalScore}</span>
-                    <span className="text-xl font-bold text-white/50">/990</span>
+                  <div className="flex items-baseline gap-0.5 sm:gap-1">
+                    <span className="text-3xl sm:text-5xl md:text-6xl font-black text-white drop-shadow-md">{stats.totalScore}</span>
+                    <span className="text-xs sm:text-lg md:text-xl font-bold text-white/50">/990</span>
                   </div>
-                  <span className="text-[11px] font-black text-white/70 uppercase tracking-[0.3em] mt-2 ml-2">Tổng điểm</span>
+                  <span className="text-[9px] sm:text-[11px] font-black text-white/70 uppercase tracking-[0.2em] sm:tracking-[0.3em] mt-0.5 sm:mt-1">Tổng điểm</span>
                 </div>
-                <div className="h-16 w-px bg-white/20 mb-2"></div>
-                <div className="flex gap-10 mb-1">
+                <div className="h-8 sm:h-12 md:h-14 w-px bg-white/20"></div>
+                <div className="flex gap-4 sm:gap-8 md:gap-10">
                   <div className="flex flex-col items-center">
                     <div className="flex items-baseline gap-0.5">
-                      <span className="text-3xl font-black text-white">{stats.lcScore}</span>
-                      <span className="text-sm font-bold text-white/40">/495</span>
+                      <span className="text-xl sm:text-2xl md:text-3xl font-black text-white">{stats.lcScore}</span>
+                      <span className="text-[10px] sm:text-xs md:text-sm font-bold text-white/40">/495</span>
                     </div>
-                    <span className="text-[10px] text-white/60 font-black uppercase tracking-widest mt-1">Nghe</span>
+                    <span className="text-[9px] sm:text-[10px] text-white/70 font-black uppercase tracking-wider mt-0.5">Nghe</span>
                   </div>
                   <div className="flex flex-col items-center">
                     <div className="flex items-baseline gap-0.5">
-                      <span className="text-3xl font-black text-white">{stats.rcScore}</span>
-                      <span className="text-sm font-bold text-white/40">/495</span>
+                      <span className="text-xl sm:text-2xl md:text-3xl font-black text-white">{stats.rcScore}</span>
+                      <span className="text-[10px] sm:text-xs md:text-sm font-bold text-white/40">/495</span>
                     </div>
-                    <span className="text-[10px] text-white/60 font-black uppercase tracking-widest mt-1">Đọc</span>
+                    <span className="text-[9px] sm:text-[10px] text-white/70 font-black uppercase tracking-wider mt-0.5">Đọc</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="p-8 max-h-[70vh] overflow-y-auto">
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-                <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100 flex flex-col items-center justify-center">
-                  <div className="text-emerald-600 font-black text-2xl">
+
+            {/* Body Content with Fluid Scrolling */}
+            <div className="flex-1 overflow-y-auto p-3 sm:p-6 md:p-8 space-y-4 sm:space-y-6 scrollbar-thin">
+              {/* 5 Stats boxes */}
+              <div className="grid grid-cols-5 gap-1.5 sm:gap-3 md:gap-4">
+                <div className="bg-emerald-50/90 p-2 sm:p-3.5 rounded-xl sm:rounded-2xl border border-emerald-100 flex flex-col items-center justify-center text-center">
+                  <div className="text-emerald-600 font-black text-base sm:text-xl md:text-2xl">
                     {Object.values(stats.parts).reduce((sum: number, p: any) => sum + p.correct, 0)}
                   </div>
-                  <div className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mt-1">Câu đúng</div>
+                  <div className="text-[8px] sm:text-[9px] font-black text-emerald-600 uppercase tracking-wider mt-0.5 whitespace-nowrap">
+                    <span className="hidden sm:inline">Câu đúng</span>
+                    <span className="sm:hidden">Đúng</span>
+                  </div>
                 </div>
-                <div className="bg-red-50 p-4 rounded-2xl border border-red-100 flex flex-col items-center justify-center">
-                  <div className="text-red-600 font-black text-2xl">
+                <div className="bg-red-50/90 p-2 sm:p-3.5 rounded-xl sm:rounded-2xl border border-red-100 flex flex-col items-center justify-center text-center">
+                  <div className="text-red-600 font-black text-base sm:text-xl md:text-2xl">
                     {Object.values(stats.parts).reduce((sum: number, p: any) => sum + p.incorrect, 0)}
                   </div>
-                  <div className="text-[9px] font-black text-red-500 uppercase tracking-widest mt-1">Câu sai</div>
+                  <div className="text-[8px] sm:text-[9px] font-black text-red-600 uppercase tracking-wider mt-0.5 whitespace-nowrap">
+                    <span className="hidden sm:inline">Câu sai</span>
+                    <span className="sm:hidden">Sai</span>
+                  </div>
                 </div>
-                <div className="bg-slate-100 p-4 rounded-2xl border border-slate-200 flex flex-col items-center justify-center">
-                  <div className="text-slate-600 font-black text-2xl">
+                <div className="bg-slate-100/90 p-2 sm:p-3.5 rounded-xl sm:rounded-2xl border border-slate-200 flex flex-col items-center justify-center text-center">
+                  <div className="text-slate-600 font-black text-base sm:text-xl md:text-2xl">
                     {Object.values(stats.parts).reduce((sum: number, p: any) => sum + p.unanswered, 0)}
                   </div>
-                  <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1">Chưa làm</div>
+                  <div className="text-[8px] sm:text-[9px] font-black text-slate-500 uppercase tracking-wider mt-0.5 whitespace-nowrap">
+                    <span className="hidden sm:inline">Chưa làm</span>
+                    <span className="sm:hidden">Bỏ qua</span>
+                  </div>
                 </div>
-                <div className="bg-amber-50 p-4 rounded-2xl border border-amber-100 flex flex-col items-center justify-center">
-                  <div className="text-amber-600 font-black text-2xl">{Object.values(userProgress).filter((p: any) => p.isFlagged).length}</div>
-                  <div className="text-[9px] font-black text-amber-500 uppercase tracking-widest mt-1">Gắn cờ</div>
+                <div className="bg-amber-50/90 p-2 sm:p-3.5 rounded-xl sm:rounded-2xl border border-amber-100 flex flex-col items-center justify-center text-center">
+                  <div className="text-amber-600 font-black text-base sm:text-xl md:text-2xl">
+                    {Object.values(userProgress).filter((p: any) => p.isFlagged).length}
+                  </div>
+                  <div className="text-[8px] sm:text-[9px] font-black text-amber-600 uppercase tracking-wider mt-0.5 whitespace-nowrap">Gắn cờ</div>
                 </div>
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex flex-col items-center justify-center">
-                  <div className="text-slate-600 font-black text-2xl">{formatTime(stats.timeSpent)}</div>
-                  <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1">Thời gian</div>
+                <div className="bg-indigo-50/70 p-2 sm:p-3.5 rounded-xl sm:rounded-2xl border border-indigo-100 flex flex-col items-center justify-center text-center">
+                  <div className="text-indigo-600 font-black text-xs sm:text-base md:text-xl whitespace-nowrap">
+                    {formatTime(stats.timeSpent)}
+                  </div>
+                  <div className="text-[8px] sm:text-[9px] font-black text-indigo-600 uppercase tracking-wider mt-0.5 whitespace-nowrap">Thời gian</div>
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              {/* Parts list */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3.5">
                 {[1, 2, 3, 4, 5, 6, 7].map(p => {
                   const s = stats.parts[p];
                   const accuracy = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
                   return (
-                    <div key={p} className="p-5 rounded-2xl border border-slate-100 bg-white">
-                      <div className="flex justify-between items-start mb-3">
-                        <div>
-                          <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md uppercase tracking-wider mb-1 inline-block">Part {p}</span>
-                          <h4 className="font-bold text-slate-800">Phần {p}</h4>
+                    <div key={p} className="p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:shadow-xs transition-all">
+                      <div className="flex justify-between items-start mb-1.5 sm:mb-2">
+                        <div className="flex items-center gap-1.5 sm:gap-2">
+                          <span className="text-[9px] sm:text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-md uppercase tracking-wider">Part {p}</span>
+                          <h4 className="font-bold text-slate-800 text-xs sm:text-sm">Phần {p}</h4>
                         </div>
                         <div className="text-right">
-                          <div className="text-sm font-black text-slate-700">{s.correct}/{s.total}</div>
-                          <div className="text-[10px] text-slate-400 font-bold uppercase">{accuracy}%</div>
+                          <span className="text-xs sm:text-sm font-black text-slate-700">{s.correct}/{s.total}</span>
+                          <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase ml-1.5">({accuracy}%)</span>
                         </div>
                       </div>
-                      <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
-                        <div className={`h-full rounded-full ${accuracy > 70 ? 'bg-emerald-500' : accuracy > 40 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${accuracy}%` }}></div>
+                      <div className="w-full bg-slate-200/60 h-1.5 rounded-full overflow-hidden">
+                        <div className={`h-full rounded-full transition-all duration-500 ${accuracy > 70 ? 'bg-emerald-500' : accuracy > 40 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${accuracy}%` }}></div>
                       </div>
                     </div>
                   );
                 })}
               </div>
-              <div className="mt-10 flex flex-col sm:flex-row gap-4">
-                <button onClick={() => setShowResults(false)} className="flex-1 py-4 rounded-2xl bg-white border-2 border-slate-100 text-slate-600 font-black text-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-3 uppercase tracking-widest active:scale-95">👁️ Xem đáp án</button>
-                <button onClick={() => { setUserProgress({}); setIsSubmitted(false); setShowResults(false); setTimeLeft(7200); setActivePart(1); }} className="flex-1 py-4 rounded-2xl bg-indigo-600 text-white font-black text-sm hover:bg-indigo-700 transition-all flex items-center justify-center gap-3 uppercase tracking-widest shadow-lg shadow-indigo-600/20 active:scale-95"><RotateCcw size={18} /> Làm lại</button>
+
+              {/* Action Buttons */}
+              <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3.5">
+                <button
+                  onClick={() => setShowResults(false)}
+                  className="flex-1 py-2.5 sm:py-3.5 px-3 rounded-xl sm:rounded-2xl bg-white border-2 border-slate-200 text-slate-700 font-black text-xs sm:text-sm hover:bg-slate-50 active:scale-95 transition-all flex items-center justify-center gap-2 uppercase tracking-wider whitespace-nowrap shadow-xs"
+                >
+                  👁️ Xem đáp án
+                </button>
+                <button
+                  onClick={() => { setUserProgress({}); setIsSubmitted(false); setShowResults(false); setTimeLeft(7200); setActivePart(1); }}
+                  className="flex-1 py-2.5 sm:py-3.5 px-3 rounded-xl sm:rounded-2xl bg-indigo-600 text-white font-black text-xs sm:text-sm hover:bg-indigo-700 active:scale-95 transition-all flex items-center justify-center gap-2 uppercase tracking-wider shadow-md shadow-indigo-600/20 whitespace-nowrap"
+                >
+                  <RotateCcw size={15} /> Làm lại
+                </button>
                 {nextLessonId && courseId && (
-                  <Link href={`/learn/${courseId}/lesson/${nextLessonId}`} className="flex-1 py-4 rounded-2xl bg-emerald-600 text-white font-black text-sm hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 uppercase tracking-widest shadow-lg shadow-emerald-600/20 active:scale-95">Tiếp theo <ChevronRight size={18} /></Link>
+                  <Link
+                    href={`/learn/${courseId}/lesson/${nextLessonId}`}
+                    className="flex-1 py-2.5 sm:py-3.5 px-3 rounded-xl sm:rounded-2xl bg-emerald-600 text-white font-black text-xs sm:text-sm hover:bg-emerald-700 active:scale-95 transition-all flex items-center justify-center gap-2 uppercase tracking-wider shadow-md shadow-emerald-600/20 whitespace-nowrap"
+                  >
+                    Tiếp theo <ChevronRight size={15} />
+                  </Link>
                 )}
               </div>
             </div>

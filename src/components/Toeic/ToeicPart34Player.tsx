@@ -2475,8 +2475,8 @@ export default function ToeicPart34Player({
       {/* BOTTOM NAVIGATION BAR */}
       {(() => {
         const navContent = (
-          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full p-0.5 sm:p-1 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-1 sm:gap-4">
-            <div className="relative group">
+          <div id="toeic-navigation-container" className="flex items-center flex-nowrap whitespace-nowrap bg-white rounded-full p-0.5 sm:p-1 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-0.5 sm:gap-2 max-h-[clamp(26px,4.2vh,36px)]">
+            <div className="relative group shrink-0">
               <button
                 onClick={() => {
                   if (currentIndex === 0) {
@@ -2486,10 +2486,15 @@ export default function ToeicPart34Player({
                   }
                 }}
                 disabled={currentIndex === 0 && !onPrevPart}
-                className="rounded-full font-bold transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-400 uppercase tracking-widest"
-                style={{ padding: 'clamp(2px,0.4vh,6px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
+                className="rounded-full font-bold transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-500 uppercase tracking-widest whitespace-nowrap"
+                style={{ padding: 'clamp(2px,0.4vh,5px) clamp(5px,1.2vw,14px)', fontSize: 'clamp(8px, 1.4vh, 11px)' }}
               >
-                {currentIndex === 0 && onPrevPart ? 'Về part trước' : 'Lùi'}
+                {currentIndex === 0 && onPrevPart ? (
+                  <>
+                    <span className="hidden sm:inline">Về part trước</span>
+                    <span className="sm:hidden">Lùi</span>
+                  </>
+                ) : 'Lùi'}
               </button>
               <div className="hidden sm:block absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
                 Phím tắt: Mũi tên trái
@@ -2497,7 +2502,7 @@ export default function ToeicPart34Player({
               </div>
             </div>
 
-            <div className="font-black text-slate-600 border-x border-slate-100 whitespace-nowrap" style={{ padding: 'clamp(2px,0.4vh,6px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(9.5px, 1.8vh, 13px)' }}>
+            <div className="font-black text-slate-600 border-x border-slate-100 whitespace-nowrap text-center shrink-0" style={{ padding: 'clamp(2px,0.4vh,5px) clamp(5px,1vw,12px)', fontSize: 'clamp(8.5px, 1.5vh, 12px)' }}>
               {isFullTest ? (
                 <>
                   {currentGroup?.questions?.[0]?.questionNo || (globalOffset + currentIndex + 1)} <span className="mx-0.5 text-slate-300">/</span> {globalTotal || 200}
@@ -2511,31 +2516,34 @@ export default function ToeicPart34Player({
 
             {currentIndex === data.length - 1 ? (
               isFullTest ? (
-                <div className="relative group">
+                <div className="relative group shrink-0">
                   <button
                     onClick={onNextPart}
                     className="rounded-full font-bold transition-all bg-emerald-600 text-white shadow-md hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-1 whitespace-nowrap"
-                    style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
+                    style={{ padding: 'clamp(2px,0.4vh,5px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(8px, 1.4vh, 11px)' }}
                   >
-                    <span>Tiếp Part {targetPart === 3 ? '4' : '5'}</span> <ChevronRightIcon className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Tiếp Part {targetPart === 3 ? '4' : '5'}</span>
+                    <span className="sm:hidden">Part {targetPart === 3 ? '4' : '5'}</span>
+                    <ChevronRightIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   </button>
                 </div>
               ) : !isSubmittedInternal ? (
                 <button
                   onClick={handleFinishTest}
                   disabled={isSubmitting}
-                  className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
-                  style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
+                  className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 uppercase tracking-widest whitespace-nowrap shrink-0"
+                  style={{ padding: 'clamp(2px,0.4vh,5px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(8px, 1.4vh, 11px)' }}
                 >
-                  {isSubmitting ? '...' : 'Nộp bài'}
+                  <span className="hidden sm:inline">Hoàn thành & Nộp</span>
+                  <span className="sm:hidden">Nộp</span>
                 </button>
               ) : null
             ) : (
-              <div className="relative group">
+              <div className="relative group shrink-0">
                 <button
                   onClick={() => setCurrentIndex(prev => Math.min(data.length - 1, prev + 1))}
-                  className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
-                  style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
+                  className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 uppercase tracking-widest whitespace-nowrap"
+                  style={{ padding: 'clamp(2px,0.4vh,5px) clamp(6px,1.4vw,16px)', fontSize: 'clamp(8px, 1.4vh, 11px)' }}
                 >
                   Tiếp
                 </button>
@@ -2545,27 +2553,27 @@ export default function ToeicPart34Player({
         );
 
         const footerContent = (
-          <div className="relative flex-none h-14 sm:h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-6 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ paddingRight: 'clamp(12px, 3.5vw, 72px)' }}>
+          <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-4 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ height: 'clamp(40px, 5.2vh, 48px)', paddingRight: 'clamp(12px, 3.5vw, 72px)' }}>
             <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => startToeicPartTour(targetPart, true)}
-                className="p-1.5 sm:px-3 sm:py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1.5 pointer-events-auto"
+                className="p-1 sm:px-2.5 sm:py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1 pointer-events-auto"
                 title="Khởi động Tour hướng dẫn nhanh"
               >
-                <HelpCircle size={15} className="animate-pulse shrink-0" />
+                <HelpCircle size={13} className="animate-pulse shrink-0" />
                 <span className="hidden sm:inline">Hướng dẫn</span>
               </button>
               {videoExplanation && videoExplanation.videoUrl && (
                 <button
                   onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
-                  className="p-1.5 sm:px-3 sm:py-1.5 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1.5 border border-[#05b169]/20"
+                  className="p-1 sm:px-2.5 sm:py-1 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1 border border-[#05b169]/20"
                   title="Xem video chữa đề / giải thích"
                 >
                   🎬 <span className="hidden sm:inline">{(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video" : "Xem video"}</span>
                 </button>
               )}
             </div>
-            <div className="flex-1 flex justify-center px-1">
+            <div className="flex-1 flex justify-center px-1 min-w-0">
               {navContent}
             </div>
             <div className="flex items-center pointer-events-auto z-[80] shrink-0" style={{ gap: 'clamp(2px,0.5vw,6px)' }}>

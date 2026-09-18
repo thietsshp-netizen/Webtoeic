@@ -2565,8 +2565,8 @@ export default function ToeicPart7Player({
       {/* BOTTOM NAVIGATION BAR (PORTAL HOẶC CỐ ĐỊNH TÙY NGỮ CẢNH) */}
       {(() => {
         const navContent = (
-          <div id="toeic-navigation-container" className="flex items-center bg-slate-50/80 rounded-xl p-0.5 sm:p-1 border border-slate-200/50 shadow-sm pointer-events-auto">
-            <div className="relative group">
+          <div id="toeic-navigation-container" className="flex items-center flex-nowrap whitespace-nowrap bg-white rounded-full p-0.5 sm:p-1 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-0.5 sm:gap-2 max-h-[clamp(26px,4.2vh,36px)]">
+            <div className="relative group shrink-0">
               <button
                 onClick={() => {
                   if (currentIndex === 0) {
@@ -2576,43 +2576,50 @@ export default function ToeicPart7Player({
                   }
                 }}
                 disabled={currentIndex === 0 && !onPrevPart}
-                className="rounded-lg font-bold transition-all disabled:opacity-30 hover:bg-white text-slate-600 uppercase tracking-wider"
-                style={{ padding: 'clamp(2px,0.4vh,6px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
+                className="rounded-full font-bold transition-all disabled:opacity-30 hover:bg-slate-50 text-slate-500 uppercase tracking-wider whitespace-nowrap"
+                style={{ padding: 'clamp(2px,0.4vh,5px) clamp(5px,1.2vw,14px)', fontSize: 'clamp(8px, 1.4vh, 11px)' }}
               >
-                {currentIndex === 0 && onPrevPart ? 'Về part trước' : 'Lùi'}
+                {currentIndex === 0 && onPrevPart ? (
+                  <>
+                    <span className="hidden sm:inline">Về part trước</span>
+                    <span className="sm:hidden">Lùi</span>
+                  </>
+                ) : 'Lùi'}
               </button>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
+              <div className="hidden sm:block absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
                 Phím tắt: Mũi tên trái
                 <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
               </div>
             </div>
 
-            <div className="font-mono font-bold text-slate-600 border-x border-slate-200/50" style={{ padding: 'clamp(2px,0.4vh,6px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(9.5px, 1.8vh, 13px)' }}>
+            <div className="font-mono font-bold text-slate-600 border-x border-slate-200/60 whitespace-nowrap text-center shrink-0" style={{ padding: 'clamp(2px,0.4vh,5px) clamp(5px,1vw,12px)', fontSize: 'clamp(8.5px, 1.5vh, 12px)' }}>
               {isFullTest ? (
                 <>
-                  {currentGroup?.questions?.[0]?.questionNo || (globalOffset + currentIndex + 1)} <span className="mx-1 text-slate-300">/</span> {globalTotal || 200}
+                  {currentGroup?.questions?.[0]?.questionNo || (globalOffset + currentIndex + 1)} <span className="mx-0.5 text-slate-300">/</span> {globalTotal || 200}
                 </>
               ) : (
                 <>
-                  {currentIndex + 1} / {data.length}
+                  {currentIndex + 1} <span className="mx-0.5 text-slate-300">/</span> {data.length}
                 </>
               )}
             </div>
 
             {currentIndex === data.length - 1 ? (
               isFullTest ? (
-                <div className="relative group">
+                <div className="relative group shrink-0">
                   <button
                     onClick={() => {
                       const btn = document.getElementById('full-test-submit-btn');
                       if (btn) btn.click();
                     }}
-                    className="rounded-xl font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 ml-1 uppercase tracking-wider flex items-center gap-1.5"
-                    style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
+                    className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 active:scale-95 uppercase tracking-wider flex items-center gap-1 whitespace-nowrap"
+                    style={{ padding: 'clamp(2px,0.4vh,5px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(8px, 1.4vh, 11px)' }}
                   >
-                    Hoàn thành & Nộp bài <Send size={12} />
+                    <span className="hidden sm:inline">Hoàn thành & Nộp bài</span>
+                    <span className="sm:hidden">Nộp bài</span>
+                    <Send size={11} className="shrink-0" />
                   </button>
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
+                  <div className="hidden sm:block absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
                     Phím tắt: Mũi tên phải
                     <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
                   </div>
@@ -2621,22 +2628,22 @@ export default function ToeicPart7Player({
                 <button
                   onClick={handleFinishTest}
                   disabled={isSubmitting}
-                  className="rounded-xl font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 ml-1 uppercase tracking-wider"
-                  style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
+                  className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 active:scale-95 uppercase tracking-wider whitespace-nowrap shrink-0"
+                  style={{ padding: 'clamp(2px,0.4vh,5px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(8px, 1.4vh, 11px)' }}
                 >
                   {isSubmitting ? '...' : 'Nộp bài'}
                 </button>
               )
             ) : (
-              <div className="relative group">
+              <div className="relative group shrink-0">
                 <button
                   onClick={() => setCurrentIndex(prev => Math.min(data.length - 1, prev + 1))}
-                  className="rounded-lg font-bold transition-all bg-blue-600 text-white shadow-md hover:bg-blue-700 active:scale-95 ml-1 uppercase tracking-wider"
-                  style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
+                  className="rounded-full font-bold transition-all bg-blue-600 text-white shadow-sm hover:bg-blue-700 active:scale-95 uppercase tracking-wider whitespace-nowrap"
+                  style={{ padding: 'clamp(2px,0.4vh,5px) clamp(6px,1.4vw,16px)', fontSize: 'clamp(8px, 1.4vh, 11px)' }}
                 >
                   Tiếp
                 </button>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
+                <div className="hidden sm:block absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap bg-slate-900 text-white text-[10px] font-black tracking-widest px-3 py-2 rounded-xl shadow-2xl z-[100] translate-y-2 group-hover:translate-y-0">
                   Phím tắt: Mũi tên phải
                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
                 </div>
@@ -2645,79 +2652,29 @@ export default function ToeicPart7Player({
           </div>
         );
 
-        if (mounted) {
-          const target = document.getElementById("bottom-nav-portal-target");
-          if (target) {
-            return createPortal(
-              <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-4 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]" style={{ height: 'clamp(38px, 5.5vh, 56px)', paddingRight: 'clamp(12px, 3.5vw, 72px)' }}>
-                <div className="flex items-center gap-1.5 pointer-events-auto z-[80] shrink-0">
-                  <button
-                    onClick={() => startToeicPartTour(7, true)}
-                    className="hidden md:flex px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm items-center gap-1 pointer-events-auto"
-                    title="Khởi động Tour hướng dẫn nhanh"
-                  >
-                    <HelpCircle size={12} className="animate-pulse" />
-                    <span className="hidden lg:inline">Hướng dẫn nhanh</span>
-                  </button>
-                  {videoExplanation && videoExplanation.videoUrl && (
-                    <button
-                      onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
-                      className="px-2 py-1 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[9px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1 border border-[#05b169]/20"
-                      title="Xem video chữa đề / giải thích"
-                    >
-                      🎬 <span className="hidden sm:inline">{(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}</span>
-                    </button>
-                  )}
-                </div>
-
-                <div className="flex-1 flex justify-center px-1">
-                  {navContent}
-                </div>
-
-                <div className="flex items-center pointer-events-auto z-[80] shrink-0" style={{ gap: 'clamp(2px,0.5vw,6px)' }}>
-                  <button
-                    onClick={() => {
-                      window.dispatchEvent(new CustomEvent('toeic-toggle-sidebar'));
-                      if (onToggleSidebar) onToggleSidebar();
-                    }}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-extrabold uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center active:scale-95 border border-indigo-400/30 whitespace-nowrap"
-                    style={{ padding: 'clamp(2px,0.3vh,4px) clamp(5px,1.2vw,10px)', fontSize: 'clamp(7px, 2vw, 10px)', gap: 'clamp(2px,0.4vw,4px)' }}
-                    title="Mở Bảng câu hỏi"
-                  >
-                    <LayoutDashboard className="shrink-0" style={{ width: 'clamp(8.5px, 2.4vw, 12px)', height: 'clamp(8.5px, 2.4vw, 12px)' }} />
-                    <span className="portrait:hidden sm:inline">BẢNG CÂU HỎI</span>
-                    <span className="hidden portrait:inline">BẢNG CÂU</span>
-                  </button>
-                </div>
-              </div>,
-              target
-            );
-          }
-        }
-
-        return (
-          <div className="relative flex-none bg-white border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-4 pointer-events-auto" style={{ height: 'clamp(38px, 5.5vh, 56px)', paddingRight: 'clamp(12px, 3.5vw, 72px)' }}>
-            <div className="flex items-center gap-1.5 pointer-events-auto z-[80] shrink-0">
+        const footerContent = (
+          <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-4 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ height: 'clamp(40px, 5.2vh, 48px)', paddingRight: 'clamp(12px, 3.5vw, 72px)' }}>
+            <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => startToeicPartTour(7, true)}
-                className="hidden md:flex px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm items-center gap-1 pointer-events-auto"
+                className="p-1 sm:px-2.5 sm:py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1 pointer-events-auto"
                 title="Khởi động Tour hướng dẫn nhanh"
               >
-                <HelpCircle size={12} className="animate-pulse" />
-                <span className="hidden lg:inline">Hướng dẫn nhanh</span>
+                <HelpCircle size={13} className="animate-pulse shrink-0" />
+                <span className="hidden sm:inline">Hướng dẫn</span>
               </button>
               {videoExplanation && videoExplanation.videoUrl && (
                 <button
                   onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
-                  className="px-2 py-1 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[9px] uppercase tracking-wider transition-all shadow-sm flex items-center gap-1 border border-[#05b169]/20"
+                  className="p-1 sm:px-2.5 sm:py-1 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1 border border-[#05b169]/20"
                   title="Xem video chữa đề / giải thích"
                 >
-                  🎬 <span className="hidden sm:inline">{(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video chữa" : "Xem video chữa"}</span>
+                  🎬 <span className="hidden sm:inline">{(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video" : "Xem video"}</span>
                 </button>
               )}
             </div>
 
-            <div className="flex-1 flex justify-center px-1">
+            <div className="flex-1 flex justify-center px-1 min-w-0">
               {navContent}
             </div>
 
@@ -2738,6 +2695,15 @@ export default function ToeicPart7Player({
             </div>
           </div>
         );
+
+        if (mounted && typeof document !== "undefined" && document.getElementById("bottom-nav-portal-target")) {
+          return createPortal(
+            footerContent,
+            document.getElementById("bottom-nav-portal-target")!
+          );
+        }
+
+        return footerContent;
       })()}
 
       {!onToggleVideo && showVideo && videoExplanation && videoExplanation.videoUrl && (

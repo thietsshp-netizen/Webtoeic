@@ -2830,52 +2830,52 @@ export default function ToeicPart1Player({
 
   if (showCompletion) {
     return (
-      <div className="absolute inset-0 w-full h-full bg-[#f8fafc] z-[200] overflow-y-auto flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
-        <div className="w-full max-w-4xl bg-white rounded-[40px] p-8 md:p-12 text-center shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-100/50 relative overflow-hidden">
+      <div className="absolute inset-0 w-full h-full bg-[#f8fafc] z-[200] overflow-y-auto flex flex-col items-center justify-center p-3 sm:p-6 animate-in fade-in duration-300">
+        <div className="w-full max-w-4xl bg-white rounded-2xl sm:rounded-[32px] lg:rounded-[40px] p-4 sm:p-8 md:p-12 text-center shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-100/50 relative overflow-hidden my-auto">
           {/* Decorative background */}
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 via-blue-500 to-indigo-600"></div>
 
-          <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mb-8 mx-auto shadow-inner ring-8 ring-emerald-50/50">
-            <TrophyIcon className="w-12 h-12 text-emerald-500" />
+          <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-emerald-50 rounded-full flex items-center justify-center mb-3 sm:mb-6 md:mb-8 mx-auto shadow-inner ring-4 sm:ring-8 ring-emerald-50/50">
+            <TrophyIcon className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 text-emerald-500" />
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-black text-[#05b169] mb-4 tracking-tight uppercase">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#05b169] mb-1.5 sm:mb-4 tracking-tight uppercase">
             HOÀN THÀNH BÀI LÀM!
           </h2>
-          <p className="text-slate-400 mb-12 font-bold uppercase tracking-[0.2em] text-sm flex items-center justify-center gap-2">
-            <ClockIcon className="w-4 h-4" /> Thời gian hoàn thành: {formatTime(time)}
+          <p className="text-slate-400 mb-4 sm:mb-8 md:mb-12 font-bold uppercase tracking-[0.2em] text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2">
+            <ClockIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Thời gian hoàn thành: {formatTime(time)}
           </p>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 w-full mb-12">
-            <div className="bg-blue-50/50 p-6 rounded-[32px] border border-blue-100/50 flex flex-col items-center transition-transform hover:scale-105">
-              <div className="text-blue-600 font-black text-4xl mb-1">{testScore.total}</div>
-              <div className="text-blue-400 text-[10px] font-black uppercase tracking-wider">Tổng số câu</div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 w-full mb-6 sm:mb-12">
+            <div className="bg-blue-50/50 p-3 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl md:rounded-[32px] border border-blue-100/50 flex flex-col items-center transition-transform hover:scale-105">
+              <div className="text-blue-600 font-black text-2xl sm:text-3xl md:text-4xl mb-0.5 sm:mb-1">{testScore.total}</div>
+              <div className="text-blue-400 text-[9px] sm:text-[10px] font-black uppercase tracking-wider">Tổng số câu</div>
             </div>
-            <div className="bg-emerald-50/50 p-6 rounded-[32px] border border-emerald-100/50 flex flex-col items-center transition-transform hover:scale-105">
-              <div className="text-emerald-600 font-black text-4xl mb-1">{testScore.correct}</div>
-              <div className="text-emerald-500 text-[10px] font-black uppercase tracking-wider">Câu đúng</div>
+            <div className="bg-emerald-50/50 p-3 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl md:rounded-[32px] border border-emerald-100/50 flex flex-col items-center transition-transform hover:scale-105">
+              <div className="text-emerald-600 font-black text-2xl sm:text-3xl md:text-4xl mb-0.5 sm:mb-1">{testScore.correct}</div>
+              <div className="text-emerald-500 text-[9px] sm:text-[10px] font-black uppercase tracking-wider">Câu đúng</div>
             </div>
-            <div className="bg-red-50/50 p-6 rounded-[32px] border border-red-100/50 flex flex-col items-center transition-transform hover:scale-105">
-              <div className="text-red-600 font-black text-4xl mb-1">{testScore.incorrect}</div>
-              <div className="text-red-400 text-[10px] font-black uppercase tracking-wider">Câu sai</div>
+            <div className="bg-red-50/50 p-3 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl md:rounded-[32px] border border-red-100/50 flex flex-col items-center transition-transform hover:scale-105">
+              <div className="text-red-600 font-black text-2xl sm:text-3xl md:text-4xl mb-0.5 sm:mb-1">{testScore.incorrect}</div>
+              <div className="text-red-400 text-[9px] sm:text-[10px] font-black uppercase tracking-wider">Câu sai</div>
             </div>
-            <div className="bg-slate-50/50 p-6 rounded-[32px] border border-slate-200/50 flex flex-col items-center transition-transform hover:scale-105">
-              <div className="text-slate-600 font-black text-4xl mb-1">{testScore.total > 0 ? Math.round((testScore.correct / testScore.total) * 100) : 0}%</div>
-              <div className="text-slate-400 text-[10px] font-black uppercase tracking-wider">Tỷ lệ đúng</div>
+            <div className="bg-slate-50/50 p-3 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl md:rounded-[32px] border border-slate-200/50 flex flex-col items-center transition-transform hover:scale-105">
+              <div className="text-slate-600 font-black text-2xl sm:text-3xl md:text-4xl mb-0.5 sm:mb-1">{testScore.total > 0 ? Math.round((testScore.correct / testScore.total) * 100) : 0}%</div>
+              <div className="text-slate-400 text-[9px] sm:text-[10px] font-black uppercase tracking-wider">Tỷ lệ đúng</div>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-4 justify-center items-center">
             <button
               onClick={() => setShowCompletion(false)}
-              className="w-full sm:w-auto px-10 py-4 rounded-2xl bg-white border border-slate-200 shadow-sm text-slate-600 font-black text-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-2 uppercase tracking-wide"
+              className="w-full sm:w-auto px-6 sm:px-10 py-2.5 sm:py-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-xs text-slate-600 font-black text-xs sm:text-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-2 uppercase tracking-wide active:scale-95"
             >
               👁️ Xem lại bài
             </button>
 
             <button
               onClick={handleRetake}
-              className="w-full sm:w-auto px-10 py-4 rounded-2xl bg-indigo-600 text-white shadow-[0_10px_20px_rgba(79,70,229,0.2)] font-black text-sm hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 uppercase tracking-wide"
+              className="w-full sm:w-auto px-6 sm:px-10 py-2.5 sm:py-4 rounded-xl sm:rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-600/20 font-black text-xs sm:text-sm hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 uppercase tracking-wide active:scale-95"
             >
               🔄 Làm lại bài
             </button>
@@ -2883,7 +2883,7 @@ export default function ToeicPart1Player({
             {nextLessonId && (
               <Link
                 href={`/learn/${courseId}/lesson/${nextLessonId}`}
-                className="w-full sm:w-auto px-10 py-4 rounded-2xl bg-blue-600 text-white shadow-[0_10px_20px_rgba(37,99,235,0.2)] font-black text-sm hover:bg-blue-700 transition-all flex items-center justify-center gap-2 uppercase tracking-wide group"
+                className="w-full sm:w-auto px-6 sm:px-10 py-2.5 sm:py-4 rounded-xl sm:rounded-2xl bg-blue-600 text-white shadow-md shadow-blue-600/20 font-black text-xs sm:text-sm hover:bg-blue-700 transition-all flex items-center justify-center gap-2 uppercase tracking-wide group active:scale-95"
               >
                 Bài tiếp theo <ChevronRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
@@ -3655,13 +3655,12 @@ export default function ToeicPart1Player({
       {/* BOTTOM NAVIGATION BAR */}
       {(() => {
         const navContent = (
-          <div id="toeic-navigation-container" className="flex items-center bg-white rounded-full p-0.5 sm:p-1 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-1 sm:gap-4">
-            <div className="relative group">
+          <div id="toeic-navigation-container" className="flex items-center flex-nowrap whitespace-nowrap bg-white rounded-full p-0.5 sm:p-1 border border-slate-200/60 shadow-[0_8px_20px_rgba(0,0,0,0.06)] max-w-fit mx-auto justify-between pointer-events-auto gap-0.5 sm:gap-2 max-h-[clamp(26px,4.2vh,36px)]">
+            <div className="relative group shrink-0">
               <button
                 onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
                 disabled={currentIndex === 0}
-                className="rounded-full font-bold transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-400 uppercase tracking-widest"
-                style={{ padding: 'clamp(2px,0.4vh,6px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
+                className="px-2.5 sm:px-4 py-0.5 sm:py-1 rounded-full font-bold text-[10px] sm:text-xs transition-all disabled:opacity-20 hover:bg-slate-50 text-slate-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Lùi
               </button>
@@ -3671,7 +3670,7 @@ export default function ToeicPart1Player({
               </div>
             </div>
 
-            <div className="font-black text-slate-600 border-x border-slate-100 whitespace-nowrap" style={{ padding: 'clamp(2px,0.4vh,6px) clamp(6px,1.2vw,16px)', fontSize: 'clamp(9.5px, 1.8vh, 13px)' }}>
+            <div className="px-1.5 sm:px-3 font-black text-slate-600 text-[10px] sm:text-xs border-x border-slate-100 whitespace-nowrap text-center shrink-0">
               {isFullTest ? (
                 <>
                   {globalOffset + currentIndex + 1} <span className="mx-0.5 text-slate-300">/</span> {globalTotal || 200}
@@ -3685,31 +3684,31 @@ export default function ToeicPart1Player({
 
             {currentIndex === data.length - 1 ? (
               isFullTest ? (
-                <div className="relative group">
+                <div className="relative group shrink-0">
                   <button
                     onClick={onNextPart}
-                    className="rounded-full font-bold transition-all bg-emerald-600 text-white shadow-md hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-1 whitespace-nowrap"
-                    style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
+                    className="px-2.5 sm:px-4 py-0.5 sm:py-1 rounded-full font-bold text-[10px] sm:text-xs transition-all bg-emerald-600 text-white shadow-xs hover:bg-emerald-700 active:scale-95 uppercase tracking-widest flex items-center gap-1 whitespace-nowrap"
                   >
-                    <span>Tiếp Part 2</span> <ChevronRightIcon className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Tiếp Part 2</span>
+                    <span className="sm:hidden">Part 2</span>
+                    <ChevronRightIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   </button>
                 </div>
               ) : !isSubmitted ? (
                 <button
                   onClick={handleFinishTest}
                   disabled={isSubmitting}
-                  className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
-                  style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
+                  className="px-2.5 sm:px-4 py-0.5 sm:py-1 rounded-full font-bold text-[10px] sm:text-xs transition-all bg-indigo-600 text-white shadow-xs hover:bg-indigo-700 active:scale-95 uppercase tracking-widest whitespace-nowrap shrink-0"
                 >
-                  {isSubmitting ? '...' : 'Nộp bài'}
+                  <span className="hidden sm:inline">{isSubmitting ? 'Đang nộp...' : 'Nộp bài'}</span>
+                  <span className="sm:hidden">{isSubmitting ? '...' : 'Nộp'}</span>
                 </button>
               ) : null
             ) : (
-              <div className="relative group">
+              <div className="relative group shrink-0">
                 <button
                   onClick={() => setCurrentIndex(prev => Math.min(data.length - 1, prev + 1))}
-                  className="rounded-full font-bold transition-all bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
-                  style={{ padding: 'clamp(2px,0.4vh,6px) clamp(8px,1.5vw,20px)', fontSize: 'clamp(8.5px, 1.7vh, 12px)' }}
+                  className="px-3 sm:px-4 py-0.5 sm:py-1 rounded-full font-bold text-[10px] sm:text-xs transition-all bg-indigo-600 text-white shadow-xs hover:bg-indigo-700 active:scale-95 uppercase tracking-widest whitespace-nowrap shrink-0"
                 >
                   Tiếp
                 </button>
@@ -3719,11 +3718,11 @@ export default function ToeicPart1Player({
         );
 
         const footerContent = (
-          <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-6 max-lg:landscape:px-2 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ height: 'clamp(38px, 5.5vh, 52px)', paddingRight: 'clamp(12px, 3.5vw, 72px)' }}>
+          <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-4 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ height: 'clamp(40px, 5.2vh, 48px)', paddingRight: 'clamp(12px, 3.5vw, 72px)' }}>
             <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => startToeicPartTour(1, true)}
-                className="p-1 sm:px-3 sm:py-1.5 max-lg:landscape:p-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1 pointer-events-auto"
+                className="p-1 sm:px-2.5 sm:py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl font-bold text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1 pointer-events-auto"
                 title="Khởi động Tour hướng dẫn nhanh"
               >
                 <HelpCircle size={13} className="animate-pulse shrink-0" />
@@ -3732,14 +3731,14 @@ export default function ToeicPart1Player({
               {videoExplanation && videoExplanation.videoUrl && (
                 <button
                   onClick={() => onToggleVideo ? onToggleVideo() : setShowVideo(prev => !prev)}
-                  className="p-1 sm:px-3 sm:py-1.5 max-lg:landscape:p-1 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1 border border-[#05b169]/20"
+                  className="p-1 sm:px-2.5 sm:py-1 bg-[#05b169]/10 hover:bg-[#05b169]/20 text-[#05b169] rounded-xl font-bold text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-xs flex items-center gap-1 border border-[#05b169]/20"
                   title="Xem video chữa đề / giải thích"
                 >
                   🎬 <span className="hidden sm:inline">{(onToggleVideo ? videoOpen : showVideo) ? "Ẩn video" : "Xem video"}</span>
                 </button>
               )}
             </div>
-            <div className="flex-1 flex justify-center px-1">
+            <div className="flex-1 flex justify-center px-1 min-w-0">
               {navContent}
             </div>
             <div className="flex items-center pointer-events-auto z-[80] shrink-0" style={{ gap: 'clamp(2px,0.5vw,6px)' }}>
