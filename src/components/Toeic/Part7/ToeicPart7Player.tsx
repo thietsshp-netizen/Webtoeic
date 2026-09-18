@@ -2343,8 +2343,8 @@ export default function ToeicPart7Player({
                               else uiState = "FADED";
                             } else if (isSelected) uiState = "SELECTED";
 
-                            let style = "border-slate-200 bg-white hover:border-slate-300 hover:shadow-lg";
-                            if (isSelected) style = "border-indigo-600 bg-indigo-50/50 shadow-xl ring-1 ring-indigo-600";
+                            let style = "border-slate-200 bg-white";
+                            if (isSelected) style = "border-indigo-600 bg-indigo-50/50 shadow-sm ring-1 ring-indigo-600";
                             if (isRevealed) {
                               if (isCorrectLabel) style = "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-500 shadow-emerald-100";
                               else if (isSelected) style = "border-red-500 bg-red-50 ring-2 ring-red-500 shadow-red-100";
@@ -2355,13 +2355,32 @@ export default function ToeicPart7Player({
                             return (
                               <div key={label} className="space-y-1">
                                 <div
-                                  onClick={() => !isRevealed && setAnswers(prev => ({ ...prev, [qKey]: label }))}
-                                  className={`group/opt w-full flex items-center gap-2 py-0.5 px-2 rounded-xl border-2 transition-all cursor-pointer relative ${style}`}
+                                  className={`group/opt w-full flex items-center gap-2 py-0.5 px-2 rounded-xl border-2 transition-all cursor-default select-text relative ${style}`}
                                 >
-                                  <div className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shrink-0 border-2 transition-all ${isSelected ? 'bg-indigo-600 border-indigo-600 text-white' : isRevealed && isCorrectLabel ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-slate-50 border-slate-100 text-slate-400 group-hover/opt:border-indigo-300 group-hover/opt:bg-white'}`}>
+                                  <button
+                                    type="button"
+                                    disabled={isRevealed}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (!isRevealed) {
+                                        setAnswers(prev => ({ ...prev, [qKey]: label }));
+                                      }
+                                    }}
+                                    className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shrink-0 border-2 transition-all select-none touch-manipulation relative after:absolute after:-inset-1.5 after:content-[''] ${
+                                      !isRevealed ? 'cursor-pointer hover:scale-110 active:scale-95' : 'cursor-default'
+                                    } ${
+                                      isSelected
+                                        ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm'
+                                        : isRevealed && isCorrectLabel
+                                          ? 'bg-emerald-500 border-emerald-500 text-white'
+                                          : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-600'
+                                    }`}
+                                    title={`Chọn đáp án ${label}`}
+                                    aria-label={`Chọn đáp án ${label}`}
+                                  >
                                     {label}
-                                  </div>
-                                  <div className="flex-1 min-w-0 py-0.5">
+                                  </button>
+                                  <div className="flex-1 min-w-0 py-0.5 select-text">
                                     <div className={`font-bold leading-snug ${uiState === "CORRECT" ? 'text-emerald-900' : uiState === "SELECTED" ? 'text-indigo-900' : 'text-slate-900'}`} style={{ fontSize: 'clamp(10px, 1.45vh, 14px)' }}>
                                       <AdminInlineEditor target="question" id={q.id} field={`option${label}`} value={optText}>{optText}</AdminInlineEditor>
                                     </div>
@@ -2408,16 +2427,16 @@ export default function ToeicPart7Player({
             <div
               className={`questions-sidebar-portal
                 fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
-              ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}
+              ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl flex" : "w-[clamp(18px,2.2vw,32px)] bg-[#fbfcfd] border-l border-slate-100 cursor-pointer hidden lg:flex"}
             `}
               onMouseEnter={() => setIsSidebarHovered(true)}
               onMouseLeave={() => setIsSidebarHovered(false)}
               onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
             >
-            <div className={`p-4 border-b border-white/10 flex items-center shrink-0 ${isSidebarHovered ? 'h-auto' : 'h-16 justify-center'}`}>
+            <div className={`border-b border-slate-100 flex items-center shrink-0 ${isSidebarHovered ? 'p-4 border-white/10 h-auto' : 'py-2 px-0 h-12 justify-center'}`}>
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 text-blue-600 rounded-xl shrink-0">
-                  <LayoutDashboard size={18} />
+                <div className={`${isSidebarHovered ? 'p-2 bg-blue-100 text-blue-600 rounded-xl' : 'w-[clamp(14px,2.2vh,22px)] h-[clamp(14px,2.2vh,22px)] rounded-[3px] sm:rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center'} shrink-0`}>
+                  <LayoutDashboard size={isSidebarHovered ? 18 : 12} />
                 </div>
                 {isSidebarHovered && (
                   <div className="animate-in fade-in zoom-in duration-300 whitespace-nowrap overflow-hidden">
@@ -2428,7 +2447,7 @@ export default function ToeicPart7Player({
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
+            <div className={`flex-1 overflow-y-auto ${isSidebarHovered ? 'p-4 scrollbar-thin' : 'overflow-hidden flex flex-col items-center py-2'}`}>
               {isSidebarHovered ? (
                 <div className="grid grid-cols-4 gap-2 animate-in fade-in duration-500">
                   {data.flatMap((g, gIdx) => g.questions.map((q: any, qIdx: number) => {
@@ -2498,27 +2517,25 @@ export default function ToeicPart7Player({
                   }))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center gap-6 py-4 animate-in fade-in duration-300">
-                  <div className="flex flex-col items-center gap-1">
-                    <div className="text-[10px] font-black text-blue-500">{Math.round((answeredCount / totalQuestions) * 100)}%</div>
-                    <div className="w-1 h-12 bg-slate-200 rounded-full overflow-hidden flex flex-col justify-end">
+                <div className="flex flex-col items-center justify-between h-full py-1 select-none">
+                  <div 
+                    className="flex items-center gap-1 [writing-mode:vertical-lr] rotate-180 text-[clamp(4px,0.5vw,6.5px)] sm:text-[clamp(5.5px,0.8vw,8.5px)] font-black text-slate-400 uppercase tracking-[0.05em] sm:tracking-[0.1em] opacity-80 whitespace-nowrap mt-2"
+                  >
+                    Bảng câu hỏi
+                  </div>
+                  <div className="flex flex-col items-center gap-1 my-auto">
+                    <div className="text-[clamp(6px,0.9vh,9px)] font-black text-blue-600">
+                      {Math.round((answeredCount / totalQuestions) * 100)}%
+                    </div>
+                    <div className="w-1 h-8 sm:h-10 bg-slate-200 rounded-full overflow-hidden flex flex-col justify-end">
                       <div className="bg-blue-500 w-full transition-all duration-500" style={{ height: `${(answeredCount / totalQuestions) * 100}%` }}></div>
                     </div>
-                  </div>
-
-                  <div className="flex flex-col gap-3">
-                    {data.slice(0, 10).map((g, idx) => {
-                      const isDone = g.questions?.every((q: any) => answers[q.id || `${g.id}_${q.questionNo}`]);
-                      return (
-                        <div key={idx} className={`w-1.5 h-1.5 rounded-full ${isDone ? 'bg-blue-500' : 'bg-slate-300'}`}></div>
-                      );
-                    })}
                   </div>
                 </div>
               )}
             </div>
 
-            <div className={`p-4 border-t border-white/10 bg-black/20 shrink-0 ${!isSidebarHovered && 'flex justify-center'}`}>
+            <div className={`border-t border-slate-100 shrink-0 ${isSidebarHovered ? 'p-4 border-white/10 bg-black/20' : 'py-2 px-0 bg-transparent flex justify-center'}`}>
               {isSidebarHovered ? (
                 !isRevealed ? (
                   <button
@@ -2536,8 +2553,8 @@ export default function ToeicPart7Player({
                   </button>
                 )
               ) : (
-                <button onClick={handleFinishTest} className="p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-900/20">
-                  <Send size={16} />
+                <button onClick={handleFinishTest} className="w-[clamp(14px,2.2vh,22px)] h-[clamp(14px,2.2vh,22px)] bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-sm flex items-center justify-center" title="Nộp bài">
+                  <Send size={10} />
                 </button>
               )}
             </div>
@@ -2632,7 +2649,7 @@ export default function ToeicPart7Player({
           const target = document.getElementById("bottom-nav-portal-target");
           if (target) {
             return createPortal(
-              <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-4 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]" style={{ height: 'clamp(38px, 5.5vh, 56px)' }}>
+              <div className="relative flex-none bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-4 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)]" style={{ height: 'clamp(38px, 5.5vh, 56px)', paddingRight: 'clamp(12px, 3.5vw, 72px)' }}>
                 <div className="flex items-center gap-1.5 pointer-events-auto z-[80] shrink-0">
                   <button
                     onClick={() => startToeicPartTour(7, true)}
@@ -2679,7 +2696,7 @@ export default function ToeicPart7Player({
         }
 
         return (
-          <div className="relative flex-none bg-white border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-4 pointer-events-auto" style={{ height: 'clamp(38px, 5.5vh, 56px)' }}>
+          <div className="relative flex-none bg-white border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-4 pointer-events-auto" style={{ height: 'clamp(38px, 5.5vh, 56px)', paddingRight: 'clamp(12px, 3.5vw, 72px)' }}>
             <div className="flex items-center gap-1.5 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => startToeicPartTour(7, true)}

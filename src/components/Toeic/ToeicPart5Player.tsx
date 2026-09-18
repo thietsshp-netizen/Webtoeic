@@ -3251,15 +3251,15 @@ export default function ToeicPart5Player({
               />
             )}
             <div
-              className={`questions-sidebar-portal fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}`}
+              className={`questions-sidebar-portal fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col ${isSidebarHovered ? "w-72 bg-slate-900/90 backdrop-blur-xl flex" : "w-[clamp(18px,2.2vw,32px)] bg-[#fbfcfd] border-l border-slate-100 cursor-pointer hidden lg:flex"}`}
               onMouseEnter={() => setIsSidebarHovered(true)}
               onMouseLeave={() => setIsSidebarHovered(false)}
               onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
             >
-            <div className={`p-4 border-b border-white/10 flex items-center shrink-0 ${isSidebarHovered ? 'h-auto' : 'h-16 justify-center'}`}>
+            <div className={`border-b border-slate-100 flex items-center shrink-0 ${isSidebarHovered ? 'p-4 border-white/10 h-auto' : 'py-2 px-0 h-12 justify-center'}`}>
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 text-blue-600 rounded-xl shrink-0">
-                  <LayoutDashboard size={18} />
+                <div className={`${isSidebarHovered ? 'p-2 bg-blue-100 text-blue-600 rounded-xl' : 'w-[clamp(14px,2.2vh,22px)] h-[clamp(14px,2.2vh,22px)] rounded-[3px] sm:rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center'} shrink-0`}>
+                  <LayoutDashboard size={isSidebarHovered ? 18 : 12} />
                 </div>
                 {isSidebarHovered && (
                   <div>
@@ -3268,7 +3268,7 @@ export default function ToeicPart5Player({
                 )}
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
+            <div className={`flex-1 overflow-y-auto ${isSidebarHovered ? 'p-4 scrollbar-thin' : 'overflow-hidden flex flex-col items-center py-2'}`}>
               {isSidebarHovered ? (
                 <div className="grid grid-cols-4 gap-2">
                   {questions.map((q, idx) => {
@@ -3284,15 +3284,24 @@ export default function ToeicPart5Player({
                   })}
                 </div>
               ) : (
-                <div className="flex flex-col items-center gap-6 py-4">
-                  <div className="text-[10px] font-black text-blue-500">{Math.round((Object.keys(answers).length / questions.length) * 100)}%</div>
-                  <div className="w-1 h-12 bg-slate-200 rounded-full overflow-hidden flex flex-col justify-end">
-                    <div className="bg-blue-500 w-full" style={{ height: `${(Object.keys(answers).length / questions.length) * 100}%` }}></div>
+                <div className="flex flex-col items-center justify-between h-full py-1 select-none">
+                  <div 
+                    className="flex items-center gap-1 [writing-mode:vertical-lr] rotate-180 text-[clamp(4px,0.5vw,6.5px)] sm:text-[clamp(5.5px,0.8vw,8.5px)] font-black text-slate-400 uppercase tracking-[0.05em] sm:tracking-[0.1em] opacity-80 whitespace-nowrap mt-2"
+                  >
+                    Bảng câu hỏi
+                  </div>
+                  <div className="flex flex-col items-center gap-1 my-auto">
+                    <div className="text-[clamp(6px,0.9vh,9px)] font-black text-blue-600">
+                      {Math.round((Object.keys(answers).length / questions.length) * 100)}%
+                    </div>
+                    <div className="w-1 h-8 sm:h-10 bg-slate-200 rounded-full overflow-hidden flex flex-col justify-end">
+                      <div className="bg-blue-500 w-full" style={{ height: `${(Object.keys(answers).length / questions.length) * 100}%` }}></div>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
-            <div className={`p-4 border-t border-white/10 bg-black/20 shrink-0 ${!isSidebarHovered && 'flex justify-center'}`}>
+            <div className={`border-t border-slate-100 shrink-0 ${isSidebarHovered ? 'p-4 border-white/10 bg-black/20' : 'py-2 px-0 bg-transparent flex justify-center'}`}>
               {isSidebarHovered ? (
                 !isSubmitted ? (
                   <button onClick={handleFinish} className="w-full py-3.5 rounded-2xl bg-blue-600 text-white font-bold text-[13px] hover:bg-blue-700 transition-all uppercase flex items-center justify-center gap-2">
@@ -3302,7 +3311,9 @@ export default function ToeicPart5Player({
                   <button onClick={handleRetake} className="w-full py-3 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 font-bold text-xs hover:bg-slate-700 transition uppercase">🔄 Làm lại bài</button>
                 )
               ) : (
-                <button onClick={handleFinish} className="p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-lg"><Send size={16} /></button>
+                <button onClick={handleFinish} className="w-[clamp(14px,2.2vh,22px)] h-[clamp(14px,2.2vh,22px)] bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-sm flex items-center justify-center" title="Nộp bài">
+                  <Send size={10} />
+                </button>
               )}
             </div>
           </div>
@@ -3394,14 +3405,16 @@ export default function ToeicPart5Player({
             <div className="flex-1 flex justify-center px-1">
               {navContent}
             </div>
-            <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
+            <div className="flex items-center pointer-events-auto z-[80] shrink-0" style={{ gap: 'clamp(2px,0.5vw,6px)' }}>
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent('toeic-toggle-sidebar'))}
-                className="px-[clamp(8px,1.2vw,14px)] py-[clamp(3px,0.6vh,8px)] bg-indigo-600 hover:bg-indigo-700 text-white rounded-full sm:rounded-xl font-extrabold text-[clamp(8px,1.2vh,11px)] uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1 active:scale-95 border border-indigo-400/30 whitespace-nowrap"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-extrabold uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center active:scale-95 border border-indigo-400/30 whitespace-nowrap"
+                style={{ padding: 'clamp(2px,0.3vh,4px) clamp(5px,1.2vw,10px)', fontSize: 'clamp(7px, 2vw, 10px)', gap: 'clamp(2px,0.4vw,4px)' }}
                 title="Mở Bảng câu hỏi"
               >
-                <LayoutDashboard className="w-[clamp(11px,1.8vh,16px)] h-[clamp(11px,1.8vh,16px)] shrink-0" />
-                <span>BẢNG CÂU</span>
+                <LayoutDashboard className="shrink-0" style={{ width: 'clamp(8.5px, 2.4vw, 12px)', height: 'clamp(8.5px, 2.4vw, 12px)' }} />
+                <span className="portrait:hidden sm:inline">BẢNG CÂU HỎI</span>
+                <span className="hidden portrait:inline">BẢNG CÂU</span>
               </button>
             </div>
           </div>

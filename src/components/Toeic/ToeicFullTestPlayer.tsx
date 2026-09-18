@@ -1107,16 +1107,16 @@ export default function ToeicFullTestPlayer({
             <div
               className={`questions-sidebar-portal
                 fixed right-0 top-14 bottom-0 z-[999] ${disableSidebarTransition ? "" : "transition-all duration-300 ease-out"} border-l border-white/10 shadow-2xl flex flex-col
-              ${isSidebarHovered ? "w-80 bg-slate-900/95 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}
+              ${isSidebarHovered ? "w-80 bg-slate-900/95 backdrop-blur-xl flex" : "w-[clamp(18px,2.2vw,32px)] bg-[#fbfcfd] border-l border-slate-100 cursor-pointer hidden lg:flex"}
             `}
               onMouseEnter={() => setIsSidebarHovered(true)}
               onMouseLeave={() => setIsSidebarHovered(false)}
               onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
             >
-            <div className={`p-4 border-b border-white/10 flex items-center shrink-0 ${isSidebarHovered ? 'h-auto' : 'h-16 justify-center'}`}>
+            <div className={`border-b border-slate-100 flex items-center shrink-0 ${isSidebarHovered ? 'p-4 border-white/10 h-auto' : 'py-2 px-0 h-12 justify-center'}`}>
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 text-blue-600 rounded-xl shrink-0">
-                  <LayoutDashboard size={18} />
+                <div className={`${isSidebarHovered ? 'p-2 bg-blue-100 text-blue-600 rounded-xl' : 'w-[clamp(14px,2.2vh,22px)] h-[clamp(14px,2.2vh,22px)] rounded-[3px] sm:rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center'} shrink-0`}>
+                  <LayoutDashboard size={isSidebarHovered ? 18 : 12} />
                 </div>
                 {isSidebarHovered && (
                   <div className="animate-in fade-in zoom-in duration-300 whitespace-nowrap overflow-hidden">
@@ -1129,8 +1129,8 @@ export default function ToeicFullTestPlayer({
 
             <div
               ref={sidebarScrollRef}
-              className="flex-1 overflow-y-auto p-4 custom-scrollbar"
-              style={{ paddingBottom: '400px' }}
+              className={`flex-1 overflow-y-auto ${isSidebarHovered ? 'p-4 custom-scrollbar' : 'overflow-hidden flex flex-col items-center py-2'}`}
+              style={{ paddingBottom: isSidebarHovered ? '400px' : '0px' }}
             >
               {isSidebarHovered ? (
                 <div className="grid grid-cols-5 gap-2 animate-in fade-in duration-500">
@@ -1158,54 +1158,47 @@ export default function ToeicFullTestPlayer({
                         }}
                         className={`
                         aspect-square rounded-xl text-[13px] font-black transition-all flex items-center justify-center relative
-                        ${isActive
-                            ? isSubmitted
-                              ? isCorrect
-                                ? "bg-emerald-600 text-white scale-110 z-20 shadow-lg ring-2 ring-emerald-500 ring-offset-2 ring-offset-slate-900"
-                                : "bg-rose-600 text-white scale-110 z-20 shadow-lg ring-2 ring-rose-500 ring-offset-2 ring-offset-slate-900"
-                              : "bg-blue-600 text-white scale-110 z-20 shadow-lg ring-2 ring-white ring-offset-2 ring-offset-slate-900"
-                            : isActiveGroup
-                              ? isSubmitted
-                                ? isCorrect
-                                  ? "bg-emerald-500/20 text-emerald-300 border-2 border-emerald-500/50 z-10 scale-105"
-                                  : "bg-rose-500/20 text-rose-300 border-2 border-rose-500/50 z-10 scale-105"
-                                : "bg-blue-500/20 text-blue-300 border-2 border-blue-500/50 z-10 scale-105"
-                              : isSubmitted
-                                ? isAnswered
-                                  ? isCorrect
-                                    ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/25"
-                                    : "bg-rose-600 text-white shadow-md shadow-rose-600/25"
-                                  : "bg-rose-950/40 text-rose-400 border border-dashed border-rose-500/30"
-                                : isAnswered
-                                  ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
-                                  : "bg-white/10 text-white/70 hover:bg-white/20 hover:text-white border border-white/10"
-                          }
+                        ${isActive ? 'ring-2 ring-blue-400 ring-offset-2 ring-offset-slate-900 z-20 scale-105 shadow-md shadow-blue-500/20' : ''}
+                        ${isActiveGroup && !isActive ? 'ring-1 ring-white/40' : ''}
+                        ${isSubmitted
+                            ? isCorrect
+                              ? 'bg-emerald-500 text-white'
+                              : userAnswer
+                                ? 'bg-red-500 text-white'
+                                : 'bg-slate-800 text-slate-500'
+                            : isAnswered
+                              ? 'bg-blue-600 text-white shadow-sm'
+                              : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:text-white'}
                       `}
                       >
                         {q.questionNo}
                         {isFlagged && (
-                          <div className={`absolute -top-1.5 -right-1.5 p-0.5 rounded-full border border-white shadow-sm flex items-center justify-center animate-in zoom-in duration-300 ${
-                            userProgress[qKey]?.flagColor === 'PURPLE' ? 'bg-purple-500' :
-                            userProgress[qKey]?.flagColor === 'BLUE' ? 'bg-blue-500' :
-                            userProgress[qKey]?.flagColor === 'YELLOW' ? 'bg-yellow-500' : 'bg-red-500'
-                          }`}>
-                            <Flag size={8} className="text-white fill-current" />
-                          </div>
+                          <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-yellow-400" />
                         )}
                       </button>
                     );
                   })}
                 </div>
               ) : (
-                <div className="flex flex-col items-center gap-2 py-2 opacity-50">
-                  <div className="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
-                  <div className="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
-                  <div className="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
+                <div className="flex flex-col items-center justify-between h-full py-1 select-none">
+                  <div 
+                    className="flex items-center gap-1 [writing-mode:vertical-lr] rotate-180 text-[clamp(4px,0.5vw,6.5px)] sm:text-[clamp(5.5px,0.8vw,8.5px)] font-black text-slate-400 uppercase tracking-[0.05em] sm:tracking-[0.1em] opacity-80 whitespace-nowrap mt-2"
+                  >
+                    Bảng câu hỏi
+                  </div>
+                  <div className="flex flex-col items-center gap-1 my-auto">
+                    <div className="text-[clamp(6px,0.9vh,9px)] font-black text-blue-600">
+                      {Math.round((stats.answered / stats.total) * 100)}%
+                    </div>
+                    <div className="w-1 h-8 sm:h-10 bg-slate-200 rounded-full overflow-hidden flex flex-col justify-end">
+                      <div className="bg-blue-500 w-full transition-all duration-500" style={{ height: `${(stats.answered / stats.total) * 100}%` }}></div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
 
-            <div className={`p-4 border-t border-white/10 shrink-0 flex flex-col items-center justify-center gap-3 ${isSidebarHovered ? '' : 'h-32'}`}>
+            <div className={`border-t border-slate-100 shrink-0 ${isSidebarHovered ? 'p-4 border-white/10 bg-slate-950/60' : 'py-2 px-0 bg-transparent flex justify-center'}`}>
               {isSidebarHovered ? (
                 <div className="w-full animate-in fade-in duration-300">
                   <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">
@@ -1224,18 +1217,13 @@ export default function ToeicFullTestPlayer({
                   </button>
                 </div>
               ) : (
-                <div className="flex flex-col items-center gap-4">
-                  <div className="flex flex-col items-center justify-center font-black text-[10px] text-blue-600 bg-blue-50 w-10 h-10 rounded-full border border-blue-100 shadow-inner">
-                    {Math.round((stats.answered / stats.total) * 100)}%
-                  </div>
-                  <button
-                    onClick={handleSubmit}
-                    className="w-10 h-10 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-all shadow-lg shadow-blue-600/20 active:scale-95"
-                    title="Nộp bài"
-                  >
-                    <Send size={18} />
-                  </button>
-                </div>
+                <button
+                  onClick={handleSubmit}
+                  className="w-[clamp(14px,2.2vh,22px)] h-[clamp(14px,2.2vh,22px)] flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-all shadow-sm active:scale-95"
+                  title="Nộp bài"
+                >
+                  <Send size={10} />
+                </button>
               )}
             </div>
           </div>

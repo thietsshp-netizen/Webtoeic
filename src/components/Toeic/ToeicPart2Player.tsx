@@ -2601,16 +2601,16 @@ export default function ToeicPart2Player({
             <div
               className={`questions-sidebar-portal
                 fixed right-0 top-14 bottom-0 z-[999] transition-all duration-300 ease-out border-l border-white/10 shadow-2xl flex flex-col
-              ${isSidebarHovered ? "w-72 sm:w-80 bg-slate-900/95 backdrop-blur-xl flex" : "w-14 bg-white/50 backdrop-blur-sm hover:bg-white/60 cursor-pointer hidden lg:flex"}
+              ${isSidebarHovered ? "w-72 sm:w-80 bg-slate-900/95 backdrop-blur-xl flex" : "w-[clamp(18px,2.2vw,32px)] bg-[#fbfcfd] border-l border-slate-100 cursor-pointer hidden lg:flex"}
             `}
               onMouseEnter={() => setIsSidebarHovered(true)}
               onMouseLeave={() => setIsSidebarHovered(false)}
               onClick={() => !isSidebarHovered && setIsSidebarHovered(true)}
             >
-              <div className={`p-4 border-b border-white/10 flex items-center shrink-0 ${isSidebarHovered ? 'h-auto' : 'h-16 justify-center'}`}>
+              <div className={`border-b border-slate-100 flex items-center shrink-0 ${isSidebarHovered ? 'p-4 border-white/10 h-auto' : 'py-2 px-0 h-12 justify-center'}`}>
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 text-blue-600 rounded-xl shrink-0">
-                    <LayoutDashboard size={18} />
+                  <div className={`${isSidebarHovered ? 'p-2 bg-blue-100 text-blue-600 rounded-xl' : 'w-[clamp(14px,2.2vh,22px)] h-[clamp(14px,2.2vh,22px)] rounded-[3px] sm:rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center'} shrink-0`}>
+                    <LayoutDashboard size={isSidebarHovered ? 18 : 12} />
                   </div>
                   {isSidebarHovered && (
                     <div className="animate-in fade-in zoom-in duration-300 whitespace-nowrap overflow-hidden">
@@ -2621,7 +2621,7 @@ export default function ToeicPart2Player({
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
+              <div className={`flex-1 overflow-y-auto ${isSidebarHovered ? 'p-4 scrollbar-thin' : 'overflow-hidden flex flex-col items-center py-2'}`}>
                 {isSidebarHovered ? (
                   <div className="grid grid-cols-4 gap-2 animate-in fade-in duration-500">
                     {data.map((group, idx) => {
@@ -2646,30 +2646,23 @@ export default function ToeicPart2Player({
 
                       return (
                         <button
-                          key={idx}
+                          key={q.id}
                           onClick={() => setCurrentIndex(idx)}
                           className={`h-10 rounded-xl font-bold text-[11px] transition-all flex items-center justify-center relative 
-                              ${isCurr ? 'ring-2 ring-white z-20 scale-110 shadow-lg' : ''} 
-                              ${btnClass}`}
+                            ${isCurr ? 'ring-2 ring-white z-20 scale-110 shadow-lg' : ''} 
+                            ${btnClass}`}
                         >
-                          {idx + 1}
+                          {q.questionNo}
                           {isFlaged && (
                             <div className="absolute top-1 right-1 group/flag">
-                              <Flag size={10} className="text-red-500 fill-red-500 shadow-sm" />
-                              {flagNotes[qKey] && (
-                                <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover/flag:opacity-100 transition-all duration-200 pointer-events-none z-[1000]">
-                                  <div className="bg-slate-900/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl border border-white/10 w-48 text-left">
-                                    <div className="flex items-center gap-1.5 mb-1.5">
-                                      <PenLine size={10} className="text-blue-400" />
-                                      <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Ghi chú</span>
-                                    </div>
-                                    <p className="text-[10px] leading-relaxed font-medium line-clamp-4 italic text-slate-100">
-                                      "{flagNotes[qKey]}"
-                                    </p>
-                                    <div className="absolute -bottom-1 right-2 w-2 h-2 bg-slate-900 rotate-45 border-r border-b border-white/10" />
-                                  </div>
-                                </div>
-                              )}
+                              <Flag
+                                size={10}
+                                className={`shadow-sm ${flags[qKey] === 'RED' ? 'text-red-500 fill-red-500' :
+                                  flags[qKey] === 'PURPLE' ? 'text-purple-500 fill-purple-500' :
+                                    flags[qKey] === 'BLUE' ? 'text-blue-500 fill-blue-500' :
+                                      'text-yellow-500 fill-yellow-500'
+                                  }`}
+                              />
                             </div>
                           )}
                         </button>
@@ -2677,27 +2670,25 @@ export default function ToeicPart2Player({
                     })}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center gap-6 py-4 animate-in fade-in duration-300">
-                    <div className="flex flex-col items-center gap-1">
-                      <div className="text-[10px] font-black text-blue-500">{Math.round((Object.keys(answers).length / data.length) * 100)}%</div>
-                      <div className="w-1 h-12 bg-slate-200 rounded-full overflow-hidden flex flex-col justify-end">
+                  <div className="flex flex-col items-center justify-between h-full py-1 select-none">
+                    <div 
+                      className="flex items-center gap-1 [writing-mode:vertical-lr] rotate-180 text-[clamp(4px,0.5vw,6.5px)] sm:text-[clamp(5.5px,0.8vw,8.5px)] font-black text-slate-400 uppercase tracking-[0.05em] sm:tracking-[0.1em] opacity-80 whitespace-nowrap mt-2"
+                    >
+                      Bảng câu hỏi
+                    </div>
+                    <div className="flex flex-col items-center gap-1 my-auto">
+                      <div className="text-[clamp(6px,0.9vh,9px)] font-black text-blue-600">
+                        {Math.round((Object.keys(answers).length / data.length) * 100)}%
+                      </div>
+                      <div className="w-1 h-8 sm:h-10 bg-slate-200 rounded-full overflow-hidden flex flex-col justify-end">
                         <div className="bg-blue-500 w-full transition-all duration-500" style={{ height: `${(Object.keys(answers).length / data.length) * 100}%` }}></div>
                       </div>
-                    </div>
-
-                    <div className="flex flex-col gap-3">
-                      {data.slice(0, 10).map((g, idx) => {
-                        const isDone = !!answers[g.questions[0].id];
-                        return (
-                          <div key={idx} className={`w-1.5 h-1.5 rounded-full ${isDone ? 'bg-blue-500' : 'bg-slate-300'}`}></div>
-                        );
-                      })}
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className={`p-4 border-t border-white/10 bg-black/20 shrink-0 ${!isSidebarHovered && 'flex justify-center'}`}>
+              <div className={`border-t border-slate-100 shrink-0 ${isSidebarHovered ? 'p-4 border-white/10 bg-black/20' : 'py-2 px-0 bg-transparent flex justify-center'}`}>
                 {isSidebarHovered ? (
                   !isSubmitted ? (
                     <button
@@ -2728,8 +2719,8 @@ export default function ToeicPart2Player({
                     </div>
                   )
                 ) : (
-                  <button onClick={handleFinishTest} className="p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-900/20">
-                    <Send size={16} />
+                  <button onClick={handleFinishTest} className="w-[clamp(14px,2.2vh,22px)] h-[clamp(14px,2.2vh,22px)] bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-sm flex items-center justify-center" title="Nộp bài">
+                    <Send size={10} />
                   </button>
                 )}
               </div>
@@ -2808,7 +2799,7 @@ export default function ToeicPart2Player({
         );
 
         const footerContent = (
-          <div className="relative flex-none h-14 sm:h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-6 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full">
+          <div className="relative flex-none h-14 sm:h-20 bg-white/95 backdrop-blur-md border-t border-slate-200 z-[70] flex items-center justify-between px-2 sm:px-6 pointer-events-auto shadow-[0_-10px_30px_rgba(0,0,0,0.05)] w-full" style={{ paddingRight: 'clamp(12px, 3.5vw, 72px)' }}>
             <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
               <button
                 onClick={() => startToeicPartTour(2, true)}
@@ -2831,14 +2822,16 @@ export default function ToeicPart2Player({
             <div className="flex-1 flex justify-center px-1">
               {navContent}
             </div>
-            <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto z-[80] shrink-0">
+            <div className="flex items-center pointer-events-auto z-[80] shrink-0" style={{ gap: 'clamp(2px,0.5vw,6px)' }}>
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent('toeic-toggle-sidebar'))}
-                className="px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full sm:rounded-xl font-extrabold text-[10px] sm:text-[11px] uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1 sm:gap-1.5 active:scale-95 border border-indigo-400/30 whitespace-nowrap"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-extrabold uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 flex items-center active:scale-95 border border-indigo-400/30 whitespace-nowrap"
+                style={{ padding: 'clamp(2px,0.3vh,4px) clamp(5px,1.2vw,10px)', fontSize: 'clamp(7px, 2vw, 10px)', gap: 'clamp(2px,0.4vw,4px)' }}
                 title="Mở Bảng câu hỏi"
               >
-                <LayoutDashboard size={14} className="shrink-0" />
-                <span>BẢNG CÂU</span>
+                <LayoutDashboard className="shrink-0" style={{ width: 'clamp(8.5px, 2.4vw, 12px)', height: 'clamp(8.5px, 2.4vw, 12px)' }} />
+                <span className="portrait:hidden sm:inline">BẢNG CÂU HỎI</span>
+                <span className="hidden portrait:inline">BẢNG CÂU</span>
               </button>
             </div>
           </div>
