@@ -86,6 +86,23 @@ export async function GET(request: Request) {
       }
     }
 
+    // Tính số buổi điểm danh thực tế của học viên:
+    let attendedSessions = 0;
+    const isSpecialRole = dbUser.role === "ADMIN";
+
+    if (isSpecialRole) {
+      attendedSessions = 999; // Mở khóa toàn bộ cho Admin
+    } else if (dbUser.classCode) {
+      attendedSessions = await prisma.attendance.count({
+        where: {
+          userId: session.user.id,
+          session: { classCode: dbUser.classCode }
+        }
+      });
+    } else {
+      attendedSessions = 0; // Học viên tự do (không có classCode): xem được bài 0 và bài 1
+    }
+
     const dirPath = path.join(process.cwd(), "10 gramma lesson");
 
     if (!fs.existsSync(dirPath)) {
@@ -105,6 +122,12 @@ export async function GET(request: Request) {
       const match = filename.match(/\d+/);
       const index = match ? parseInt(match[0], 10) : 999;
 
+      // Tính số buổi yêu cầu để mở khóa:
+      // Bài 0 và Bài 1: 0 buổi (luôn mở)
+      // Bài K (K >= 2): K - 1 buổi (Bài 2: 1 buổi, Bài 3: 2 buổi, ..., Bài 9: 8 buổi)
+      const requiredSessions = index <= 1 ? 0 : index - 1;
+      const isLocked = !isSpecialRole && (attendedSessions < requiredSessions);
+
       const filePath = path.join(dirPath, filename);
       const contentRaw = fs.readFileSync(filePath, "utf-8");
       const data = JSON.parse(contentRaw);
@@ -114,22 +137,29 @@ export async function GET(request: Request) {
         const fMatch = f.match(/\d+/);
         return fMatch && parseInt(fMatch[0], 10) === index;
       });
-      const pdfUrl = pdfFile ? `/grammar/${encodeURIComponent(pdfFile)}` : null;
+      const pdfUrl = (!isLocked && pdfFile) ? `/grammar/${encodeURIComponent(pdfFile)}` : null;
 
       return {
         id: index,
         title: data.theory?.title || filename.replace(".json", ""),
-        htmlContent: data.theory?.htmlContent || "",
+        htmlContent: isLocked ? "" : (data.theory?.htmlContent || ""),
         pdfUrl: pdfUrl,
         filename: filename,
-        practice: data.practice || null
+        practice: isLocked ? null : (data.practice || null),
+        isLocked,
+        requiredSessions
       };
     });
 
     // Sắp xếp các bài học tăng dần theo số thứ tự của bài (Bài 0, Bài 1,...)
     lessons.sort((a, b) => a.id - b.id);
 
-    return NextResponse.json({ success: true, lessons });
+    return NextResponse.json({
+      success: true,
+      lessons,
+      attendedSessions,
+      hasNoClass: !dbUser.classCode && !isSpecialRole
+    });
   } catch (error: any) {
     console.error("[GET_GRAMMAR_ERROR]", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

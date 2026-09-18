@@ -46,6 +46,8 @@ interface Lesson {
   practice?: {
     parts: PracticePart[];
   };
+  isLocked?: boolean;
+  requiredSessions?: number;
 }
 
 export default function GrammarHandbook() {
@@ -54,6 +56,8 @@ export default function GrammarHandbook() {
   const [isOpen, setIsOpen] = useState(false);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
+  const [attendedSessions, setAttendedSessions] = useState<number>(0);
+  const [hasNoClass, setHasNoClass] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const [hasAccess, setHasAccess] = useState(true);
   const [accessErrorType, setAccessErrorType] = useState<"UNAUTHORIZED" | "EXPIRED" | "FORBIDDEN" | null>(null);
@@ -134,8 +138,11 @@ export default function GrammarHandbook() {
           setAccessErrorType(data.error === "EXPIRED" ? "EXPIRED" : "FORBIDDEN");
         } else if (data.success) {
           setLessons(data.lessons);
+          setAttendedSessions(data.attendedSessions || 0);
+          setHasNoClass(!!data.hasNoClass);
           if (data.lessons.length > 0) {
-            setActiveLesson(data.lessons[0]);
+            const firstUnlocked = data.lessons.find((l: Lesson) => !l.isLocked) || data.lessons[0];
+            setActiveLesson(firstUnlocked);
           }
           setHasAccess(true);
         } else {
@@ -1181,6 +1188,36 @@ export default function GrammarHandbook() {
       );
     }
 
+    if (activeLesson.isLocked) {
+      return (
+        <div className="flex flex-col items-center justify-center h-full p-6 text-center select-none bg-slate-50/50">
+          <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-center justify-center mb-3 shadow-xs">
+            <Lock size={26} />
+          </div>
+          <h4 className="text-sm sm:text-base font-black text-slate-800 mb-1.5">
+            Bài học đang tạm khóa
+          </h4>
+          <p className="text-xs text-slate-500 max-w-md leading-relaxed mb-4">
+            {hasNoClass ? (
+              <>Bài học này dành riêng cho học viên tham gia lớp học có điểm danh. Tài khoản của bạn hiện chưa được xếp vào lớp học nào.</>
+            ) : (
+              <>
+                Bạn cần tham gia tối thiểu <strong className="text-amber-600 font-black">{activeLesson.requiredSessions || 0} buổi học</strong> tại lớp để mở khóa bài này.
+                <br />
+                Số buổi bạn đã tham gia hiện tại: <strong className="text-indigo-600 font-black">{attendedSessions} buổi</strong>.
+              </>
+            )}
+          </p>
+          {!hasNoClass && (
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-[11px] font-bold text-slate-600 shadow-2xs">
+              <span>Tiến độ mở khóa:</span>
+              <span className="text-indigo-600 font-black">{attendedSessions} / {activeLesson.requiredSessions || 0} buổi</span>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     return (
       <div className="flex-1 relative flex flex-col overflow-hidden w-full h-full">
         {/* Header bar cho từng Pane - Hiển thị 1 hàng mượt mà không bị ẩn nút */}
@@ -1353,17 +1390,26 @@ export default function GrammarHandbook() {
                 ) : (
                   lessons.map(lesson => {
                     const isActive = activeLesson?.id === lesson.id;
+                    const isLocked = !!lesson.isLocked;
                     return (
                       <button
                         key={lesson.id}
                         onClick={() => setActiveLesson(lesson)}
-                        className={`px-1.5 sm:px-2 py-0.5 rounded text-[8.5px] sm:text-[9px] font-bold shrink-0 transition-all active:scale-95 border ${isActive
-                          ? "bg-indigo-600 border-indigo-600 text-white shadow-xs font-black"
-                          : "bg-white border-slate-150 text-slate-500 hover:bg-slate-100 hover:text-slate-700"
-                          }`}
-                        title={lesson.title}
+                        className={`px-1.5 sm:px-2 py-0.5 rounded text-[8.5px] sm:text-[9px] font-bold shrink-0 transition-all active:scale-95 border flex items-center gap-1 ${
+                          isActive
+                            ? "bg-indigo-600 border-indigo-600 text-white shadow-xs font-black"
+                            : isLocked
+                              ? "bg-slate-100/70 border-slate-200 text-slate-400 hover:bg-slate-200/70"
+                              : "bg-white border-slate-150 text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                        }`}
+                        title={
+                          isLocked
+                            ? `Bài khóa: Yêu cầu tham gia tối thiểu ${lesson.requiredSessions || 0} buổi học (Hiện tại: ${attendedSessions} buổi)`
+                            : lesson.title
+                        }
                       >
-                        {getShortTitle(lesson.title)}
+                        <span>{getShortTitle(lesson.title)}</span>
+                        {isLocked && <Lock size={8.5} className="opacity-70 shrink-0 text-amber-500" />}
                       </button>
                     );
                   })
