@@ -1601,6 +1601,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
   // Quản lý kéo thả Toolbar và Vị trí mặc định thông minh
   const [toolbarPos, setToolbarPos] = useState({ x: 200, y: 120 }); // Giá trị khởi tạo tạm thời
+  const toolbarRef = useRef<HTMLDivElement>(null);
   const [isDraggingToolbar, setIsDraggingToolbar] = useState(false);
   const dragStartRef = useRef({ x: 0, y: 0, posX: 0, posY: 0 });
 
@@ -1989,6 +1990,23 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     }
   }, [isActive]);
 
+  // Hàm giới hạn vị trí Toolbar luôn nằm trọn vẹn trong màn hình
+  const clampToolbarPos = (pos: { x: number; y: number }, customW?: number, customH?: number) => {
+    if (typeof window === 'undefined') return pos;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const tbWidth = customW || toolbarRef.current?.offsetWidth || 540;
+    const tbHeight = customH || toolbarRef.current?.offsetHeight || 50;
+
+    const maxX = Math.max(10, w - tbWidth - 10);
+    const maxY = Math.max(8, h - tbHeight - 16);
+
+    return {
+      x: Math.max(10, Math.min(maxX, pos.x)),
+      y: Math.max(8, Math.min(maxY, pos.y))
+    };
+  };
+
   // Đặt vị trí mặc định thông minh khi thay đổi trang học tập hoặc trang ngoài
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -1999,29 +2017,38 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
       if (storedToolbarPos) {
         try {
-          setToolbarPos(JSON.parse(storedToolbarPos));
+          const parsed = JSON.parse(storedToolbarPos);
+          setToolbarPos(clampToolbarPos(parsed));
         } catch (e) {
           // bỏ qua
         }
       } else {
         const width = window.innerWidth;
         const height = window.innerHeight;
-        const toolbarWidth = 480; // Chiều rộng ước lượng của toolbar
+        const toolbarWidth = 540;
 
         if (isLearnPage) {
           // 1. Vào khóa học: mặc định nằm ở TRÊN CÙNG, ở giữa (dưới thanh đen topbar 8px)
-          setToolbarPos({
+          setToolbarPos(clampToolbarPos({
             x: Math.max(10, (width - toolbarWidth) / 2),
             y: 8
-          });
+          }));
         } else {
           // 2. Ngoài khóa học: mặc định nằm ở DƯỚI CÙNG, ở giữa (cách đáy màn hình 70px)
-          setToolbarPos({
+          setToolbarPos(clampToolbarPos({
             x: Math.max(10, (width - toolbarWidth) / 2),
             y: Math.max(10, height - 70)
-          });
+          }));
         }
       }
+
+      // Tự động kéo thanh công cụ vào trong nếu cửa sổ trình duyệt bị co nhỏ
+      const handleWindowResize = () => {
+        setToolbarPos(prev => clampToolbarPos(prev));
+      };
+
+      window.addEventListener("resize", handleWindowResize);
+      return () => window.removeEventListener("resize", handleWindowResize);
     }
   }, [isLearnPage]);
 
@@ -4351,16 +4378,38 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     };
   };
 
+  const handleToolbarTouchStart = (e: React.TouchEvent) => {
+    if (!e.touches[0]) return;
+    setIsDraggingToolbar(true);
+    dragStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+      posX: toolbarPos.x,
+      posY: toolbarPos.y
+    };
+  };
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDraggingToolbar) return;
       const dx = e.clientX - dragStartRef.current.x;
       const dy = e.clientY - dragStartRef.current.y;
 
-      setToolbarPos({
-        x: Math.max(10, Math.min(window.innerWidth - 460, dragStartRef.current.posX + dx)),
-        y: Math.max(10, Math.min(window.innerHeight - 80, dragStartRef.current.posY + dy))
-      });
+      setToolbarPos(clampToolbarPos({
+        x: dragStartRef.current.posX + dx,
+        y: dragStartRef.current.posY + dy
+      }));
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isDraggingToolbar || !e.touches[0]) return;
+      const dx = e.touches[0].clientX - dragStartRef.current.x;
+      const dy = e.touches[0].clientY - dragStartRef.current.y;
+
+      setToolbarPos(clampToolbarPos({
+        x: dragStartRef.current.posX + dx,
+        y: dragStartRef.current.posY + dy
+      }));
     };
 
     const handleMouseUp = () => {
@@ -4374,11 +4423,15 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
     if (isDraggingToolbar) {
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);
+      window.addEventListener("touchmove", handleTouchMove, { passive: true });
+      window.addEventListener("touchend", handleMouseUp);
     }
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleMouseUp);
     };
   }, [isDraggingToolbar]);
 
@@ -6230,6 +6283,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
       {/* 3. Floating Toolbar (2 hàng dọc mờ mịn, icon siêu nhỏ gọn bằng 1/2) */}
       <div
+        ref={toolbarRef}
         className={styles.toolbar}
         style={{
           left: `${toolbarPos.x}px`,
@@ -6239,15 +6293,17 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
           borderRadius: '16px',
           padding: '8px 10px',
           gap: '8px',
-          width: 'fit-content'
+          width: 'fit-content',
+          maxWidth: 'calc(100vw - 20px)'
         }}
       >
         {/* Hàng 1: Công cụ vẽ cơ bản (Các icon size=12 nhỏ gọn bằng ~1/2 cũ) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', overflowX: 'auto', maxWidth: '100%', scrollbarWidth: 'none' }}>
           {/* Nắm kéo di chuyển toolbar */}
           <div
             className={styles.dragHandle}
             onMouseDown={handleToolbarMouseDown}
+            onTouchStart={handleToolbarTouchStart}
             title="Kéo thả di chuyển thanh công cụ"
             style={{ padding: '0 2px', marginRight: '2px' }}
           >
