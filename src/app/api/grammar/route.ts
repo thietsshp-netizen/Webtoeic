@@ -119,30 +119,54 @@ export async function GET(request: Request) {
     const pdfFiles = fs.existsSync(pdfDir) ? fs.readdirSync(pdfDir).filter(f => f.endsWith(".pdf")) : [];
 
     const lessons = files.map(filename => {
-      const match = filename.match(/\d+/);
-      const index = match ? parseInt(match[0], 10) : 999;
+      const lowerName = filename.toLowerCase();
+      const isNoiAm = lowerName.includes("noi am") || lowerName.includes("nối âm");
 
-      // Tính số buổi yêu cầu để mở khóa:
-      // Bài 0 và Bài 1: 0 buổi (luôn mở)
-      // Bài K (K >= 2): K - 1 buổi (Bài 2: 1 buổi, Bài 3: 2 buổi, ..., Bài 9: 8 buổi)
-      const requiredSessions = index <= 1 ? 0 : index - 1;
+      let index: number;
+      let requiredSessions: number;
+
+      if (isNoiAm) {
+        // Bài Nối âm - Nuốt âm: xếp sau Bài 9 (id = 10), yêu cầu 1 buổi học để mở khóa
+        index = 10;
+        requiredSessions = 1;
+      } else {
+        const match = filename.match(/\d+/);
+        index = match ? parseInt(match[0], 10) : 999;
+        // Tính số buổi yêu cầu để mở khóa:
+        // Bài 0 và Bài 1: 0 buổi (luôn mở)
+        // Bài K (K >= 2): K - 1 buổi (Bài 2: 1 buổi, Bài 3: 2 buổi, ..., Bài 9: 8 buổi)
+        requiredSessions = index <= 1 ? 0 : index - 1;
+      }
+
       const isLocked = !isSpecialRole && (attendedSessions < requiredSessions);
 
       const filePath = path.join(dirPath, filename);
       const contentRaw = fs.readFileSync(filePath, "utf-8");
       const data = JSON.parse(contentRaw);
 
-      // Tìm file PDF có số thứ tự tương ứng
-      const pdfFile = pdfFiles.find(f => {
-        const fMatch = f.match(/\d+/);
-        return fMatch && parseInt(fMatch[0], 10) === index;
-      });
+      // Nếu có file .html kèm theo (đã tách ra riêng cho dễ sửa), ưu tiên đọc từ file .html
+      const htmlFilePath = filePath.replace(/\.json$/, ".html");
+      let htmlContent = data.theory?.htmlContent || "";
+      if (fs.existsSync(htmlFilePath)) {
+        htmlContent = fs.readFileSync(htmlFilePath, "utf-8");
+      }
+
+      // Tìm file PDF có số thứ tự tương ứng hoặc theo tên Nối âm
+      const pdfFile = isNoiAm
+        ? pdfFiles.find(f => {
+            const fLow = f.toLowerCase();
+            return fLow.includes("noi am") || fLow.includes("nối âm");
+          })
+        : pdfFiles.find(f => {
+            const fMatch = f.match(/\d+/);
+            return fMatch && parseInt(fMatch[0], 10) === index;
+          });
       const pdfUrl = (!isLocked && pdfFile) ? `/grammar/${encodeURIComponent(pdfFile)}` : null;
 
       return {
         id: index,
         title: data.theory?.title || filename.replace(".json", ""),
-        htmlContent: isLocked ? "" : (data.theory?.htmlContent || ""),
+        htmlContent: isLocked ? "" : htmlContent,
         pdfUrl: pdfUrl,
         filename: filename,
         practice: isLocked ? null : (data.practice || null),
@@ -151,7 +175,7 @@ export async function GET(request: Request) {
       };
     });
 
-    // Sắp xếp các bài học tăng dần theo số thứ tự của bài (Bài 0, Bài 1,...)
+    // Sắp xếp các bài học tăng dần theo số thứ tự của bài (Bài 0, Bài 1, ..., Bài 9, Nối âm - Nuốt âm)
     lessons.sort((a, b) => a.id - b.id);
 
     return NextResponse.json({

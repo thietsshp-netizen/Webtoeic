@@ -1,0 +1,1274 @@
+<div class="grammar-container" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1e293b; font-size: 14.5px; line-height: 1.65; padding: 6px 2px;">
+<style>
+  .grammar-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #dc2626;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+    border-bottom: 3px solid #dc2626;
+    padding-bottom: 8px;
+  }
+  .grammar-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+  .grammar-section-title {
+    font-size: 15.5px;
+    font-weight: 800;
+    color: #dc2626 !important;
+    margin-top: 64px !important;
+    margin-bottom: 16px !important;
+    padding-top: 28px !important;
+    border-top: 1.5px dashed #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #fecaca;
+  }
+  .grammar-section-title:first-of-type {
+    margin-top: 20px !important;
+    padding-top: 0 !important;
+    border-top: none !important;
+  }
+  .section-badge {
+    background: #dc2626;
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .tip-box {
+    background: #f8fafc;
+    border-left: 4px solid #dc2626;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.6;
+  }
+  .audio-item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .audio-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 9px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .audio-card:hover {
+    border-color: #f87171;
+    background: #fffafa;
+    box-shadow: 0 3px 8px rgba(220, 38, 38, 0.08);
+    transform: translateY(-1px);
+  }
+  .audio-card:active {
+    transform: scale(0.98);
+  }
+  .play-icon-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .audio-card:hover .play-icon-btn, .dialogue-row:hover .play-icon-btn {
+    background: #dc2626;
+    color: #ffffff;
+  }
+  .word-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .word-en {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.25;
+  }
+  .word-ipa {
+    font-size: 13.5px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: #2563eb;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.25;
+  }
+  .word-ipa-flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 3px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+  .word-ipa-raw {
+    font-size: 13.5px;
+    color: #475569;
+    font-weight: 600;
+  }
+  .ipa-arrow {
+    color: #94a3b8;
+    font-size: 11.5px;
+    font-weight: 800;
+  }
+  .word-ipa-linked {
+    font-size: 13.5px;
+    color: #2563eb;
+    font-weight: 700;
+    background: #eff6ff;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  .word-desc {
+    font-size: 12.5px;
+    color: #64748b;
+    margin-top: 2px;
+  }
+  .dialogue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .dialogue-item {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  }
+  .dialogue-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 8px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.15s;
+    font-size: 14.5px;
+  }
+  .dialogue-row:hover {
+    background: #f8fafc;
+  }
+  .dialogue-badge {
+    font-size: 11px;
+    font-weight: 800;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .badge-a { background: #fee2e2; color: #dc2626; }
+  .badge-b { background: #e0e7ff; color: #4338ca; }
+  .rule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 24px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .rule-table th {
+    background: #f8fafc;
+    color: #1e293b;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 11px 14px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .rule-table td {
+    padding: 12px 14px;
+    font-size: 14px;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  .rule-table tr:last-child td {
+    border-bottom: none;
+  }
+  .badge-sound {
+    display: inline-block;
+    background: #fef3c7;
+    color: #b45309;
+    font-weight: 800;
+    font-size: 13.5px;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-family: ui-monospace, monospace;
+  }
+  .mnemonic-tag {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 13px;
+    display: inline-block;
+  }
+  .sub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+  }
+</style>
+
+<h1 class="grammar-title">NỐI ÂM - NUỐT ÂM</h1>
+<p class="grammar-subtitle">Bảng tổng hợp các quy tắc nối âm, nuốt âm thực tế của người bản xứ và nguyên tắc phát âm đuôi <strong>-s/-es, -ed</strong> chuẩn giọng Anh-Mỹ (General American). Hãy nhấp vào từng mục hoặc nút loa để nghe âm thanh mẫu.</p>
+
+<div class="grammar-section-title">
+  <span class="section-badge">Phần 1</span>
+  <span>PHỤ ÂM – NGUYÊN ÂM (Consonant to Vowel Linking)</span>
+</div>
+<div class="tip-box">
+  Quy tắc: Khi một từ kết thúc bằng <strong>phụ âm</strong> và từ đứng liền sau bắt đầu bằng <strong>nguyên âm</strong>, phụ âm cuối của từ trước sẽ nối liền mạch sang nguyên âm đầu của từ sau: <span style="font-family:monospace; font-weight:700;">/Phiên âm gốc/ ➔ [Phiên âm nối]</span>. Các âm nối được <span style="color:#dc2626; font-weight:800;">tô đỏ</span> để bạn dễ dàng quan sát.
+</div>
+<div class="dialogue-list">
+  <div class="dialogue-item">
+    <div style="font-weight: 800; font-size: 13.5px; color: #475569; margin-bottom: 6px;">Đoạn 1:</div>
+<div class="dialogue-row" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-1-a.mp3">
+      <span class="dialogue-badge badge-a">A</span>
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-1-a.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-1-a.mp3').play();" title="Bấm để nghe phát âm">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block" style="flex: 1;">
+        <div class="word-en">Ca<span style="color: #dc2626; font-weight: 800;">n</span> <span style="color: #dc2626; font-weight: 800;">I</span> co<span style="color: #dc2626; font-weight: 800;">m</span>e <span style="color: #dc2626; font-weight: 800;">in</span>?</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/kæ<span style="color: #dc2626; font-weight: 800;">n</span> <span style="color: #dc2626; font-weight: 800;">aɪ</span> kʌ<span style="color: #dc2626; font-weight: 800;">m</span> <span style="color: #dc2626; font-weight: 800;">ɪ</span>n/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[kæ.<span style="color: #dc2626; font-weight: 800;">naɪ</span> kʌ.<span style="color: #dc2626; font-weight: 800;">mɪn</span>]</span>
+        </div>
+        <div class="word-desc">➔ /n/ nối vào /aɪ/ thành [naɪ], /m/ nối vào /ɪn/ thành [mɪn]</div>
+      </div>
+    </div><div class="dialogue-row" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-1-b.mp3">
+      <span class="dialogue-badge badge-b">B</span>
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-1-b.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-1-b.mp3').play();" title="Bấm để nghe phát âm">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block" style="flex: 1;">
+        <div class="word-en">Yes, co<span style="color: #dc2626; font-weight: 800;">m</span>e <span style="color: #dc2626; font-weight: 800;">o</span><span style="color: #dc2626; font-weight: 800;">n</span> <span style="color: #dc2626; font-weight: 800;">i</span>n. The doo<span style="color: #dc2626; font-weight: 800;">r</span> <span style="color: #dc2626; font-weight: 800;">i</span><span style="color: #dc2626; font-weight: 800;">s</span> <span style="color: #dc2626; font-weight: 800;">o</span>pen.</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/jes kʌ<span style="color: #dc2626; font-weight: 800;">m</span> <span style="color: #dc2626; font-weight: 800;">ɑː</span><span style="color: #dc2626; font-weight: 800;">n</span> <span style="color: #dc2626; font-weight: 800;">ɪ</span>n. ðə dɔː<span style="color: #dc2626; font-weight: 800;">r</span> <span style="color: #dc2626; font-weight: 800;">ɪ</span><span style="color: #dc2626; font-weight: 800;">z</span> <span style="color: #dc2626; font-weight: 800;">oʊ</span>.pən/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[kʌ.<span style="color: #dc2626; font-weight: 800;">mɑː</span>.<span style="color: #dc2626; font-weight: 800;">nɪn</span>] ... [dɔː.<span style="color: #dc2626; font-weight: 800;">rɪ</span>.<span style="color: #dc2626; font-weight: 800;">zoʊ</span>.pən]</span>
+        </div>
+        <div class="word-desc">➔ Nối m-on [mɑː], n-in [nɪn], r-is [rɪ], s-open [zoʊ]</div>
+      </div>
+    </div>  </div>
+  <div class="dialogue-item">
+    <div style="font-weight: 800; font-size: 13.5px; color: #475569; margin-bottom: 6px;">Đoạn 2:</div>
+<div class="dialogue-row" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-2-a.mp3">
+      <span class="dialogue-badge badge-a">A</span>
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-2-a.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-2-a.mp3').play();" title="Bấm để nghe phát âm">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block" style="flex: 1;">
+        <div class="word-en">Shoul<span style="color: #dc2626; font-weight: 800;">d</span> <span style="color: #dc2626; font-weight: 800;">I</span> leav<span style="color: #dc2626; font-weight: 800;">e</span> <span style="color: #dc2626; font-weight: 800;">i</span><span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">o</span>n?</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/ʃʊ<span style="color: #dc2626; font-weight: 800;">d</span> <span style="color: #dc2626; font-weight: 800;">aɪ</span> liː<span style="color: #dc2626; font-weight: 800;">v</span> <span style="color: #dc2626; font-weight: 800;">ɪ</span><span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">ɑː</span>n/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[ʃʊ.<span style="color: #dc2626; font-weight: 800;">daɪ</span> liː.<span style="color: #dc2626; font-weight: 800;">vɪ</span>.<span style="color: #dc2626; font-weight: 800;">tɑːn</span>]</span>
+        </div>
+        <div class="word-desc">➔ Nối d-I [daɪ], v-it [vɪ], t-on [tɑːn]</div>
+      </div>
+    </div><div class="dialogue-row" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-2-b.mp3">
+      <span class="dialogue-badge badge-b">B</span>
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-2-b.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-2-b.mp3').play();" title="Bấm để nghe phát âm">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block" style="flex: 1;">
+        <div class="word-en">No, tur<span style="color: #dc2626; font-weight: 800;">n</span> <span style="color: #dc2626; font-weight: 800;">i</span><span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">o</span>ff.</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/noʊ tɜːr<span style="color: #dc2626; font-weight: 800;">n</span> <span style="color: #dc2626; font-weight: 800;">ɪ</span><span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">ɔː</span>f/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[tɜːr.<span style="color: #dc2626; font-weight: 800;">nɪ</span>.<span style="color: #dc2626; font-weight: 800;">tɔːf</span>]</span>
+        </div>
+        <div class="word-desc">➔ Nối n-it [nɪ], t-off [tɔːf]</div>
+      </div>
+    </div>  </div>
+  <div class="dialogue-item">
+    <div style="font-weight: 800; font-size: 13.5px; color: #475569; margin-bottom: 6px;">Đoạn 3:</div>
+<div class="dialogue-row" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-3-a.mp3">
+      <span class="dialogue-badge badge-a">A</span>
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-3-a.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-3-a.mp3').play();" title="Bấm để nghe phát âm">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block" style="flex: 1;">
+        <div class="word-en">What tim<span style="color: #dc2626; font-weight: 800;">e</span> <span style="color: #dc2626; font-weight: 800;">i</span><span style="color: #dc2626; font-weight: 800;">s</span> <span style="color: #dc2626; font-weight: 800;">i</span>t?</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/wʌt taɪ<span style="color: #dc2626; font-weight: 800;">m</span> <span style="color: #dc2626; font-weight: 800;">ɪ</span><span style="color: #dc2626; font-weight: 800;">z</span> <span style="color: #dc2626; font-weight: 800;">ɪ</span>t/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[taɪ.<span style="color: #dc2626; font-weight: 800;">mɪ</span>.<span style="color: #dc2626; font-weight: 800;">zɪt</span>]</span>
+        </div>
+        <div class="word-desc">➔ Nối m-is [mɪ], z-it [zɪt]</div>
+      </div>
+    </div><div class="dialogue-row" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-3-b.mp3">
+      <span class="dialogue-badge badge-b">B</span>
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-3-b.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/1-3-b.mp3').play();" title="Bấm để nghe phát âm">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block" style="flex: 1;">
+        <div class="word-en">It’s already fiv<span style="color: #dc2626; font-weight: 800;">e</span> <span style="color: #dc2626; font-weight: 800;">o</span>’clock.</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/ɪts ɔːlˈred.i faɪ<span style="color: #dc2626; font-weight: 800;">v</span> <span style="color: #dc2626; font-weight: 800;">ə</span>ˈklɑːk/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[faɪ.<span style="color: #dc2626; font-weight: 800;">və</span>ˈklɑːk]</span>
+        </div>
+        <div class="word-desc">➔ Nối v-o'clock [və]</div>
+      </div>
+    </div>  </div>
+</div>
+
+<div class="grammar-section-title">
+  <span class="section-badge">Phần 2</span>
+  <span>PHỤ ÂM – PHỤ ÂM (Consonant to Consonant Linking / Held Consonants)</span>
+</div>
+<div class="tip-box">
+  Quy tắc: Khi âm kết thúc của từ trước trùng hoặc tương tự vị trí phát âm với âm bắt đầu của từ sau, ta <span style="color:#dc2626; font-weight:800;">giữ khẩu hình âm thứ nhất</span> (không bật ra ngoài) và chỉ bật phát âm âm thứ hai để nói liền mạch không bị ngắt. Các âm trùng nhau được tô đỏ trong cả tiếng Anh lẫn phiên âm IPA.
+</div>
+<div class="audio-item-grid">
+<div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-1.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-1.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-1.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">bi<span style="color: #dc2626; font-weight: 800;">g</span> <span style="color: #dc2626; font-weight: 800;">g</span>ame</div>
+        <div class="word-ipa">/bɪ<span style="color: #dc2626; font-weight: 800;">ɡ</span> <span style="color: #dc2626; font-weight: 800;">ɡ</span>eɪm/</div>
+        <div class="word-desc">Giữ âm /ɡ/, bật âm /ɡ/ sau</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-2.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-2.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-2.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">wel<span style="color: #dc2626; font-weight: 800;">l</span> <span style="color: #dc2626; font-weight: 800;">l</span>it</div>
+        <div class="word-ipa">/we<span style="color: #dc2626; font-weight: 800;">l</span> <span style="color: #dc2626; font-weight: 800;">l</span>ɪt/</div>
+        <div class="word-desc">Kéo dài âm /l/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-3.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-3.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-3.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">ca<span style="color: #dc2626; font-weight: 800;">n</span> <span style="color: #dc2626; font-weight: 800;">n</span>ever</div>
+        <div class="word-ipa">/kæ<span style="color: #dc2626; font-weight: 800;">n</span> <span style="color: #dc2626; font-weight: 800;">ˈn</span>ev.ɚ/</div>
+        <div class="word-desc">Nối âm /n/ mượt mà</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-4.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-4.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-4.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">goo<span style="color: #dc2626; font-weight: 800;">d</span> <span style="color: #dc2626; font-weight: 800;">d</span>ay</div>
+        <div class="word-ipa">/ɡʊ<span style="color: #dc2626; font-weight: 800;">d</span> <span style="color: #dc2626; font-weight: 800;">d</span>eɪ/</div>
+        <div class="word-desc">Giữ âm /d/, bật ngày /deɪ/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-5.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-5.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-5.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">thi<span style="color: #dc2626; font-weight: 800;">s</span> <span style="color: #dc2626; font-weight: 800;">S</span>aturday</div>
+        <div class="word-ipa">/ðɪ<span style="color: #dc2626; font-weight: 800;">s</span> <span style="color: #dc2626; font-weight: 800;">ˈs</span>æt̬.ɚ.deɪ/</div>
+        <div class="word-desc">Kéo dài âm gió /s/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-6.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-6.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-6.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">fa<span style="color: #dc2626; font-weight: 800;">r</span> <span style="color: #dc2626; font-weight: 800;">r</span>ight</div>
+        <div class="word-ipa">/fɑː<span style="color: #dc2626; font-weight: 800;">r</span> <span style="color: #dc2626; font-weight: 800;">r</span>aɪt/</div>
+        <div class="word-desc">Nối liền âm /r/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-7.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-7.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-7.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">sto<span style="color: #dc2626; font-weight: 800;">p</span> <span style="color: #dc2626; font-weight: 800;">p</span>laying</div>
+        <div class="word-ipa">/stɑː<span style="color: #dc2626; font-weight: 800;">p</span> <span style="color: #dc2626; font-weight: 800;">ˈp</span>leɪ.ɪŋ/</div>
+        <div class="word-desc">Ngậm môi /p/, bật /p/ playing</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-8.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-8.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-8.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">To<span style="color: #dc2626; font-weight: 800;">m</span> <span style="color: #dc2626; font-weight: 800;">m</span>ight</div>
+        <div class="word-ipa">/tɑː<span style="color: #dc2626; font-weight: 800;">m</span> <span style="color: #dc2626; font-weight: 800;">m</span>aɪt/</div>
+        <div class="word-desc">Ngậm môi /m/ kéo dài</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-9.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-9.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-9.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">boo<span style="color: #dc2626; font-weight: 800;">k</span> <span style="color: #dc2626; font-weight: 800;">c</span>lub</div>
+        <div class="word-ipa">/bʊ<span style="color: #dc2626; font-weight: 800;">k</span> <span style="color: #dc2626; font-weight: 800;">k</span>lʌb/</div>
+        <div class="word-desc">Khóa họng /k/, bật /k/ club</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-10.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-10.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/2-10.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">wha<span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">t</span>ime</div>
+        <div class="word-ipa">/wʌ<span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">t</span>aɪm/</div>
+        <div class="word-desc">Chạm lưỡi /t/, bật /t/ time</div>
+      </div>
+    </div></div>
+<div class="grammar-section-title">
+  <span class="section-badge">Phần 3</span>
+  <span>NGUYÊN ÂM – NGUYÊN ÂM (Vowel to Vowel Linking)</span>
+</div>
+<div class="tip-box">
+  Quy tắc: Giữa 2 nguyên âm đứng cạnh nhau, người bản xứ tự động chèn một bán nguyên âm lướt nhẹ:<br>
+  • <strong>Nguyên âm tròn môi</strong> (u, o, /uː/, /oʊ/, /aʊ/): chèn bán nguyên âm lướt <strong>/w/</strong>.<br>
+  • <strong>Nguyên âm dẹt môi</strong> (i, e, /iː/, /eɪ/, /aɪ/, /ɔɪ/): chèn bán nguyên âm lướt <strong>/j/</strong> (như âm "y").<br>
+  Dưới đây hiển thị theo dạng: <span style="font-family:monospace; font-weight:700;">/Phiên âm gốc/ ➔ [Phiên âm nối]</span> để bạn dễ dàng so sánh:
+</div>
+<div style="font-weight: 700; font-size: 14.5px; color: #dc2626; margin-top: 14px; margin-bottom: 10px;">1. Nguyên âm tròn môi (Chèn âm lướt /w/):</div>
+<div class="audio-item-grid" style="margin-bottom: 14px;">
+<div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/3-a.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/3-a.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/3-a.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">g<span style="color: #dc2626; font-weight: 800;">o</span> <span style="color: #dc2626; font-weight: 800;">o</span>ut</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/ɡ<span style="color: #dc2626; font-weight: 800;">oʊ</span> <span style="color: #dc2626; font-weight: 800;">aʊ</span>t/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[ɡoʊ.<span style="color: #dc2626; font-weight: 800;">w</span>aʊt]</span>
+        </div>
+        <div class="word-desc">Chèn âm lướt /w/ giữa go và out</div>
+      </div>
+    </div></div>
+<div style="font-weight: 700; font-size: 14.5px; color: #dc2626; margin-top: 14px; margin-bottom: 10px;">2. Nguyên âm dẹt môi (Chèn âm lướt /j/ - "y"):</div>
+<div class="audio-item-grid">
+<div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/3-c.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/3-c.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/3-c.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en"><span style="color: #dc2626; font-weight: 800;">I</span> <span style="color: #dc2626; font-weight: 800;">a</span>m</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/<span style="color: #dc2626; font-weight: 800;">aɪ</span> <span style="color: #dc2626; font-weight: 800;">æ</span>m/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[aɪ.<span style="color: #dc2626; font-weight: 800;">j</span>æm]</span>
+        </div>
+        <div class="word-desc">Chèn âm lướt /j/ giữa I và am</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/3-d.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/3-d.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/3-d.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">the<span style="color: #dc2626; font-weight: 800;">y</span> <span style="color: #dc2626; font-weight: 800;">a</span>re</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/ðe<span style="color: #dc2626; font-weight: 800;">ɪ</span> <span style="color: #dc2626; font-weight: 800;">ɑː</span>r/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[ðeɪ.<span style="color: #dc2626; font-weight: 800;">j</span>ɑːr]</span>
+        </div>
+        <div class="word-desc">Chèn âm lướt /j/ giữa they và are</div>
+      </div>
+    </div></div>
+<div class="grammar-section-title">
+  <span class="section-badge">Phần 4</span>
+  <span>ÂM T NGẮT (Held T / Glottal Stop)</span>
+</div>
+<div class="tip-box">
+  Quy tắc: Khi âm /t/ đứng trước một phụ âm khác hoặc ở cuối cụm từ, người Mỹ thường <strong>không bật hơi /t/ ra ngoài</strong> mà giữ cuống lưỡi/khẩu hình chạm nướu răng trên để ngắt hơi lại đột ngột (Held T / Âm ngắt).
+</div>
+<div style="font-weight: 700; font-size: 14.5px; color: #dc2626; margin-top: 14px; margin-bottom: 10px;">VD1: Âm T ngắt trong cụm từ:</div>
+<div class="audio-item-grid" style="margin-bottom: 16px;">
+<div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-1.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-1.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-1.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">i<span style="color: #dc2626; font-weight: 800;">t</span> was</div>
+        <div class="word-ipa">/ɪ<span style="color: #dc2626; font-weight: 800;">t</span> wʌz/</div>
+        <div class="word-desc">Ngắt hơi âm /t/ trước /w/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-2.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-2.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-2.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">migh<span style="color: #dc2626; font-weight: 800;">t</span> do</div>
+        <div class="word-ipa">/maɪ<span style="color: #dc2626; font-weight: 800;">t</span> duː/</div>
+        <div class="word-desc">Ngắt hơi âm /t/ trước /d/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-3.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-3.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-3.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">can’<span style="color: #dc2626; font-weight: 800;">t</span> go</div>
+        <div class="word-ipa">/kæn<span style="color: #dc2626; font-weight: 800;">t</span> ɡoʊ/</div>
+        <div class="word-desc">Ngắt hơi âm /t/ trước /ɡ/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-4.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-4.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-4.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">a<span style="color: #dc2626; font-weight: 800;">t</span> work</div>
+        <div class="word-ipa">/æ<span style="color: #dc2626; font-weight: 800;">t</span> wɜːrk/</div>
+        <div class="word-desc">Ngắt hơi âm /t/ trước /w/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-5.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-5.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-5.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">didn’<span style="color: #dc2626; font-weight: 800;">t</span> like</div>
+        <div class="word-ipa">/ˈdɪd.ən<span style="color: #dc2626; font-weight: 800;">t</span> laɪk/</div>
+        <div class="word-desc">Ngắt hơi âm /t/ trước /l/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-6.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-6.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-6.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">won’<span style="color: #dc2626; font-weight: 800;">t</span> need</div>
+        <div class="word-ipa">/woʊn<span style="color: #dc2626; font-weight: 800;">t</span> niːd/</div>
+        <div class="word-desc">Ngắt hơi âm /t/ trước /n/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-7.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-7.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-7.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">eigh<span style="color: #dc2626; font-weight: 800;">t</span> weeks</div>
+        <div class="word-ipa">/eɪ<span style="color: #dc2626; font-weight: 800;">t</span> wiːks/</div>
+        <div class="word-desc">Ngắt hơi âm /t/ trước /w/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-8.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-8.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd1-8.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">budge<span style="color: #dc2626; font-weight: 800;">t</span> cut</div>
+        <div class="word-ipa">/ˈbʌdʒ.ɪ<span style="color: #dc2626; font-weight: 800;">t</span> kʌt/</div>
+        <div class="word-desc">Ngắt hơi âm /t/ trước /k/</div>
+      </div>
+    </div></div>
+<div style="font-weight: 700; font-size: 14.5px; color: #dc2626; margin-top: 14px; margin-bottom: 10px;">VD2: Âm T ngắt ngay bên trong từ:</div>
+<div class="audio-item-grid">
+<div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-1.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-1.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-1.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">foo<span style="color: #dc2626; font-weight: 800;">t</span>ball</div>
+        <div class="word-ipa">/ˈfʊ<span style="color: #dc2626; font-weight: 800;">t</span>.bɑːl/</div>
+        <div class="word-desc">Âm /t/ trước âm /b/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-2.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-2.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-2.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">ou<span style="color: #dc2626; font-weight: 800;">t</span>side</div>
+        <div class="word-ipa">/ˌaʊ<span style="color: #dc2626; font-weight: 800;">t</span>ˈsaɪd/</div>
+        <div class="word-desc">Âm /t/ trước âm /s/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-3.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-3.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-3.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">la<span style="color: #dc2626; font-weight: 800;">t</span>ely</div>
+        <div class="word-ipa">/ˈleɪ<span style="color: #dc2626; font-weight: 800;">t</span>.li/</div>
+        <div class="word-desc">Âm /t/ trước âm /l/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-4.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-4.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-4.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">nigh<span style="color: #dc2626; font-weight: 800;">t</span>mare</div>
+        <div class="word-ipa">/ˈnaɪ<span style="color: #dc2626; font-weight: 800;">t</span>.mer/</div>
+        <div class="word-desc">Âm /t/ trước âm /m/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-5.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-5.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-5.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">a<span style="color: #dc2626; font-weight: 800;">t</span>mosphere</div>
+        <div class="word-ipa">/ˈæ<span style="color: #dc2626; font-weight: 800;">t</span>.məs.fɪr/</div>
+        <div class="word-desc">Âm /t/ trước âm /m/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-6.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-6.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-6.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">a<span style="color: #dc2626; font-weight: 800;">t</span>las</div>
+        <div class="word-ipa">/ˈæ<span style="color: #dc2626; font-weight: 800;">t</span>.ləs/</div>
+        <div class="word-desc">Âm /t/ trước âm /l/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-7.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-7.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-7.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">A<span style="color: #dc2626; font-weight: 800;">t</span>lanta</div>
+        <div class="word-ipa">/æ<span style="color: #dc2626; font-weight: 800;">t</span>ˈlæn.t̬ə/</div>
+        <div class="word-desc">Âm /t/ ngắt trước /l/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-8.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-8.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/4-vd2-8.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">bu<span style="color: #dc2626; font-weight: 800;">t</span>ler</div>
+        <div class="word-ipa">/ˈbʌ<span style="color: #dc2626; font-weight: 800;">t</span>.lɚ/</div>
+        <div class="word-desc">Âm /t/ ngắt trước /l/</div>
+      </div>
+    </div></div>
+<div class="grammar-section-title">
+  <span class="section-badge">Phần 5</span>
+  <span>NỐI D + Y (/d/ + /j/ ➔ /dʒ/)</span>
+</div>
+<div class="tip-box">
+  Quy tắc: Khi âm <strong>/d/</strong> kết hợp với bán nguyên âm <strong>/j/</strong> (âm "y"), hai âm này sẽ hòa lẫn và biến đổi thành âm <strong>/dʒ/</strong> (giống âm "ch nhẹ" có rung cổ họng).
+</div>
+<div style="font-weight: 700; font-size: 14.5px; color: #dc2626; margin-top: 14px; margin-bottom: 10px;">VD1: Biến đổi âm trong từ:</div>
+<div class="audio-item-grid" style="margin-bottom: 16px;">
+<div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-1.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-1.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-1.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">gra<span style="color: #dc2626; font-weight: 800;">du</span>al</div>
+        <div class="word-ipa">/ˈɡræ<span style="color: #dc2626; font-weight: 800;">dʒ</span>.u.əl/</div>
+        <div class="word-desc">d + u ➔ /dʒu/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-2.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-2.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-2.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">sche<span style="color: #dc2626; font-weight: 800;">du</span>le</div>
+        <div class="word-ipa">/ˈske<span style="color: #dc2626; font-weight: 800;">dʒ</span>.uːl/</div>
+        <div class="word-desc">d + u ➔ /dʒu/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-3.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-3.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-3.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">gra<span style="color: #dc2626; font-weight: 800;">du</span>ation</div>
+        <div class="word-ipa">/ˌɡræ<span style="color: #dc2626; font-weight: 800;">dʒ</span>.uˈeɪ.ʃən/</div>
+        <div class="word-desc">d + u ➔ /dʒu/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-4.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-4.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-4.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">e<span style="color: #dc2626; font-weight: 800;">du</span>cation</div>
+        <div class="word-ipa">/ˌe<span style="color: #dc2626; font-weight: 800;">dʒ</span>.uˈkeɪ.ʃən/</div>
+        <div class="word-desc">d + u ➔ /dʒu/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-5.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-5.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-5.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">proce<span style="color: #dc2626; font-weight: 800;">du</span>re</div>
+        <div class="word-ipa">/prəˈsiː.<span style="color: #dc2626; font-weight: 800;">dʒ</span>ɚ/</div>
+        <div class="word-desc">d + u ➔ /dʒɚ/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-6.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-6.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd1-6.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">indivi<span style="color: #dc2626; font-weight: 800;">du</span>al</div>
+        <div class="word-ipa">/ˌɪn.dəˈvɪ<span style="color: #dc2626; font-weight: 800;">dʒ</span>.u.əl/</div>
+        <div class="word-desc">d + u ➔ /dʒu/</div>
+      </div>
+    </div></div>
+<div style="font-weight: 700; font-size: 14.5px; color: #dc2626; margin-top: 14px; margin-bottom: 10px;">VD2: Biến đổi khi nối với đại từ "you":</div>
+<div class="audio-item-grid">
+<div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd2-1.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd2-1.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd2-1.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">Di<span style="color: #dc2626; font-weight: 800;">d</span> <span style="color: #dc2626; font-weight: 800;">y</span>ou?</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/dɪ<span style="color: #dc2626; font-weight: 800;">d</span> <span style="color: #dc2626; font-weight: 800;">j</span>uː/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[ˈdɪ<span style="color: #dc2626; font-weight: 800;">dʒ</span>.u]</span>
+        </div>
+        <div class="word-desc">/d/ + /j/ ➔ /dʒ/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd2-2.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd2-2.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd2-2.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">Woul<span style="color: #dc2626; font-weight: 800;">d</span> <span style="color: #dc2626; font-weight: 800;">y</span>ou?</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/wʊ<span style="color: #dc2626; font-weight: 800;">d</span> <span style="color: #dc2626; font-weight: 800;">j</span>uː/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[ˈwʊ<span style="color: #dc2626; font-weight: 800;">dʒ</span>.u]</span>
+        </div>
+        <div class="word-desc">/d/ + /j/ ➔ /dʒ/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd2-3.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd2-3.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd2-3.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">Coul<span style="color: #dc2626; font-weight: 800;">d</span> <span style="color: #dc2626; font-weight: 800;">y</span>ou?</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/kʊ<span style="color: #dc2626; font-weight: 800;">d</span> <span style="color: #dc2626; font-weight: 800;">j</span>uː/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[ˈkʊ<span style="color: #dc2626; font-weight: 800;">dʒ</span>.u]</span>
+        </div>
+        <div class="word-desc">/d/ + /j/ ➔ /dʒ/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd2-4.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd2-4.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/5-vd2-4.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">Shoul<span style="color: #dc2626; font-weight: 800;">d</span> <span style="color: #dc2626; font-weight: 800;">y</span>ou?</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/ʃʊ<span style="color: #dc2626; font-weight: 800;">d</span> <span style="color: #dc2626; font-weight: 800;">j</span>uː/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[ˈʃʊ<span style="color: #dc2626; font-weight: 800;">dʒ</span>.u]</span>
+        </div>
+        <div class="word-desc">/d/ + /j/ ➔ /dʒ/</div>
+      </div>
+    </div></div>
+<div class="grammar-section-title">
+  <span class="section-badge">Phần 6</span>
+  <span>NỐI T + Y (/t/ + /j/ ➔ /tʃ/)</span>
+</div>
+<div class="tip-box">
+  Quy tắc: Khi âm <strong>/t/</strong> kết hợp với bán nguyên âm <strong>/j/</strong> (âm "y"), hai âm này sẽ hòa lẫn và biến đổi thành âm <strong>/tʃ/</strong> (như âm "ch" bật hơi mạnh không rung).
+</div>
+<div style="font-weight: 700; font-size: 14.5px; color: #dc2626; margin-top: 14px; margin-bottom: 10px;">VD1: Biến đổi âm trong từ:</div>
+<div class="audio-item-grid" style="margin-bottom: 16px;">
+<div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-1.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-1.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-1.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">ac<span style="color: #dc2626; font-weight: 800;">tu</span>ally</div>
+        <div class="word-ipa">/ˈæk.<span style="color: #dc2626; font-weight: 800;">tʃ</span>u.ə.li/</div>
+        <div class="word-desc">t + u ➔ /tʃu/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-2.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-2.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-2.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">si<span style="color: #dc2626; font-weight: 800;">tu</span>ation</div>
+        <div class="word-ipa">/ˌsɪ<span style="color: #dc2626; font-weight: 800;">tʃ</span>.uˈeɪ.ʃən/</div>
+        <div class="word-desc">t + u ➔ /tʃu/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-3.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-3.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-3.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">ri<span style="color: #dc2626; font-weight: 800;">tu</span>al</div>
+        <div class="word-ipa">/ˈrɪ<span style="color: #dc2626; font-weight: 800;">tʃ</span>.u.əl/</div>
+        <div class="word-desc">t + u ➔ /tʃu/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-4.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-4.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-4.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">adven<span style="color: #dc2626; font-weight: 800;">tu</span>re</div>
+        <div class="word-ipa">/ədˈven.<span style="color: #dc2626; font-weight: 800;">tʃ</span>ɚ/</div>
+        <div class="word-desc">t + u ➔ /tʃɚ/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-5.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-5.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-5.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">vir<span style="color: #dc2626; font-weight: 800;">tu</span>al</div>
+        <div class="word-ipa">/ˈvɝː.<span style="color: #dc2626; font-weight: 800;">tʃ</span>u.əl/</div>
+        <div class="word-desc">t + u ➔ /tʃu/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-6.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-6.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd1-6.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">for<span style="color: #dc2626; font-weight: 800;">tu</span>nate</div>
+        <div class="word-ipa">/ˈfɔːr.<span style="color: #dc2626; font-weight: 800;">tʃ</span>ən.ət/</div>
+        <div class="word-desc">t + u ➔ /tʃən/</div>
+      </div>
+    </div></div>
+<div style="font-weight: 700; font-size: 14.5px; color: #dc2626; margin-top: 14px; margin-bottom: 10px;">VD2: Biến đổi khi nối với đại từ "you":</div>
+<div class="audio-item-grid">
+<div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd2-1.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd2-1.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd2-1.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">Don’<span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">y</span>ou?</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/doʊn<span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">j</span>uː/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[ˈdoʊn.<span style="color: #dc2626; font-weight: 800;">tʃ</span>u]</span>
+        </div>
+        <div class="word-desc">/t/ + /j/ ➔ /tʃ/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd2-2.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd2-2.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd2-2.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">Won’<span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">y</span>ou?</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/woʊn<span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">j</span>uː/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[ˈwoʊn.<span style="color: #dc2626; font-weight: 800;">tʃ</span>u]</span>
+        </div>
+        <div class="word-desc">/t/ + /j/ ➔ /tʃ/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd2-3.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd2-3.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd2-3.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">Can’<span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">y</span>ou?</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/kæn<span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">j</span>uː/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[ˈkæn.<span style="color: #dc2626; font-weight: 800;">tʃ</span>u]</span>
+        </div>
+        <div class="word-desc">/t/ + /j/ ➔ /tʃ/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd2-4.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd2-4.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/6-vd2-4.mp3').play();" title="Bấm để nghe âm thanh">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">Aren’<span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">y</span>ou?</div>
+        <div class="word-ipa-flow">
+          <span class="word-ipa-raw">/ɑːrn<span style="color: #dc2626; font-weight: 800;">t</span> <span style="color: #dc2626; font-weight: 800;">j</span>uː/</span>
+          <span class="ipa-arrow">➔</span>
+          <span class="word-ipa-linked">[ˈɑːrn.<span style="color: #dc2626; font-weight: 800;">tʃ</span>u]</span>
+        </div>
+        <div class="word-desc">/t/ + /j/ ➔ /tʃ/</div>
+      </div>
+    </div></div>
+<div class="grammar-section-title">
+  <span class="section-badge">Phần 7</span>
+  <span>QUY TẮC PHÁT ÂM ĐUÔI -S VÀ -ES</span>
+</div>
+<div class="tip-box">
+  Đuôi <strong>-s / -es</strong> khi thêm vào danh từ số nhiều hoặc động từ ngôi thứ 3 số ít có <strong>3 cách phát âm</strong> chính: <strong>/s/</strong>, <strong>/ɪz/</strong>, và <strong>/z/</strong>.
+</div>
+
+<table class="rule-table">
+  <thead>
+    <tr>
+      <th style="width: 14%;">Phát âm</th>
+      <th style="width: 38%;">Điều kiện & Mẹo ghi nhớ</th>
+      <th style="width: 48%;">Ví dụ minh họa & Phát âm</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="badge-sound">/s/</span></td>
+      <td>
+        <div>Kết thúc bằng âm <strong>vô thanh</strong>:</div>
+        <div style="font-family: monospace; font-weight: 700; color: #dc2626; margin: 3px 0 6px 0;">/p/, /k/, /f/, /t/, /θ/</div>
+        <div style="margin-top: 6px; font-size: 13.5px;">
+          <strong style="color: #047857;">Mẹo nhớ:</strong> <span class="mnemonic-tag">Thời phong kiến phương tây</span>
+          <div style="color: #64748b; font-size: 12.5px; margin-top: 3px;">(th- / p / k / ph / t)</div>
+        </div>
+      </td>
+      <td>
+        <div class="sub-grid">
+<div class="audio-card" data-sound-url="/api/tts?text=stops&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=stops&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=stops&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">stop<span style="color: #dc2626; font-weight: 800;">s</span></div>
+        <div class="word-ipa">/stɑːp<span style="color: #dc2626; font-weight: 800;">s</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="/api/tts?text=books&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=books&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=books&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">book<span style="color: #dc2626; font-weight: 800;">s</span></div>
+        <div class="word-ipa">/bʊk<span style="color: #dc2626; font-weight: 800;">s</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="/api/tts?text=cats&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=cats&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=cats&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">cat<span style="color: #dc2626; font-weight: 800;">s</span></div>
+        <div class="word-ipa">/kæt<span style="color: #dc2626; font-weight: 800;">s</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="/api/tts?text=laughs&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=laughs&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=laughs&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">laugh<span style="color: #dc2626; font-weight: 800;">s</span></div>
+        <div class="word-ipa">/læf<span style="color: #dc2626; font-weight: 800;">s</span>/</div>
+      </div>
+    </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td><span class="badge-sound">/ɪz/</span></td>
+      <td>
+        <div>Kết thúc bằng <strong>âm gió (sibilants)</strong>:</div>
+        <div style="font-family: monospace; font-weight: 700; color: #2563eb; margin: 3px 0 6px 0;">/s/, /z/, /ʃ/, /tʃ/, /ʒ/, /dʒ/</div>
+        <div style="margin-top: 6px; font-size: 13.5px;">
+          <strong style="color: #047857;">Mẹo nhớ:</strong> <span class="mnemonic-tag">Sóng zó chẳng sợ gió giông</span>
+          <div style="color: #64748b; font-size: 12.5px; margin-top: 3px;">(s / z / ch / sh / ge / ce)</div>
+        </div>
+      </td>
+      <td>
+        <div class="sub-grid">
+<div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/kisses.mp3" data-volume="0.7">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/kisses.mp3" data-volume="0.7" onclick="event.stopPropagation(); const a = new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/kisses.mp3'); a.volume = 0.7; a.play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">kiss<span style="color: #dc2626; font-weight: 800;">es</span></div>
+        <div class="word-ipa">/ˈkɪs.<span style="color: #dc2626; font-weight: 800;">ɪz</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/boxes.mp3" data-volume="0.7">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/boxes.mp3" data-volume="0.7" onclick="event.stopPropagation(); const a = new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/boxes.mp3'); a.volume = 0.7; a.play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">box<span style="color: #dc2626; font-weight: 800;">es</span></div>
+        <div class="word-ipa">/ˈbɑːk.<span style="color: #dc2626; font-weight: 800;">sɪz</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/watches.mp3" data-volume="0.7">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/watches.mp3" data-volume="0.7" onclick="event.stopPropagation(); const a = new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/watches.mp3'); a.volume = 0.7; a.play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">watch<span style="color: #dc2626; font-weight: 800;">es</span></div>
+        <div class="word-ipa">/ˈwɑː.<span style="color: #dc2626; font-weight: 800;">tʃɪz</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/changes.mp3" data-volume="0.7">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/changes.mp3" data-volume="0.7" onclick="event.stopPropagation(); const a = new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/changes.mp3'); a.volume = 0.7; a.play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">chang<span style="color: #dc2626; font-weight: 800;">es</span></div>
+        <div class="word-ipa">/ˈtʃeɪn.<span style="color: #dc2626; font-weight: 800;">dʒɪz</span>/</div>
+      </div>
+    </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td><span class="badge-sound">/z/</span></td>
+      <td>
+        <div>Kết thúc bằng <strong>nguyên âm</strong> hoặc <strong>phụ âm hữu thanh</strong> còn lại:</div>
+        <div style="font-family: monospace; font-weight: 700; color: #16a34a; margin: 3px 0 6px 0;">/b/, /d/, /ɡ/, /v/, /m/, /n/, /ŋ/, /l/, /r/...</div>
+        <div style="margin-top: 6px; font-size: 13px; color: #475569;">
+          👉 <span class="mnemonic-tag" style="background:#f1f5f9; color:#475569; border-color:#cbd5e1;">Các trường hợp còn lại</span>
+        </div>
+      </td>
+      <td>
+        <div class="sub-grid">
+<div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/plays.mp3" data-volume="0.7">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/plays.mp3" data-volume="0.7" onclick="event.stopPropagation(); const a = new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/plays.mp3'); a.volume = 0.7; a.play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">play<span style="color: #dc2626; font-weight: 800;">s</span></div>
+        <div class="word-ipa">/pleɪ<span style="color: #dc2626; font-weight: 800;">z</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/dogs.mp3" data-volume="0.7">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/dogs.mp3" data-volume="0.7" onclick="event.stopPropagation(); const a = new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/dogs.mp3'); a.volume = 0.7; a.play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">dog<span style="color: #dc2626; font-weight: 800;">s</span></div>
+        <div class="word-ipa">/dɔːɡ<span style="color: #dc2626; font-weight: 800;">z</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/cleans.mp3" data-volume="0.7">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/cleans.mp3" data-volume="0.7" onclick="event.stopPropagation(); const a = new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/cleans.mp3'); a.volume = 0.7; a.play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">clean<span style="color: #dc2626; font-weight: 800;">s</span></div>
+        <div class="word-ipa">/kliːn<span style="color: #dc2626; font-weight: 800;">z</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/loves.mp3" data-volume="0.7">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/loves.mp3" data-volume="0.7" onclick="event.stopPropagation(); const a = new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/loves.mp3'); a.volume = 0.7; a.play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">love<span style="color: #dc2626; font-weight: 800;">s</span></div>
+        <div class="word-ipa">/lʌv<span style="color: #dc2626; font-weight: 800;">z</span>/</div>
+      </div>
+    </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="grammar-section-title">
+  <span class="section-badge">Phần 8</span>
+  <span>QUY TẮC PHÁT ÂM ĐUÔI -ED</span>
+</div>
+<div class="tip-box">
+  Đuôi <strong>-ed</strong> của động từ quá khứ (V-ed) hoặc tính từ có <strong>3 cách phát âm</strong>: <strong>/ɪd/</strong>, <strong>/t/</strong>, và <strong>/d/</strong>.
+</div>
+
+<table class="rule-table">
+  <thead>
+    <tr>
+      <th style="width: 14%;">Phát âm</th>
+      <th style="width: 38%;">Điều kiện & Mẹo ghi nhớ</th>
+      <th style="width: 48%;">Ví dụ minh họa & Phát âm</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="badge-sound">/ɪd/</span></td>
+      <td>
+        <div>Kết thúc bằng âm:</div>
+        <div style="font-family: monospace; font-weight: 700; color: #dc2626; margin: 3px 0 6px 0;">/t/ hoặc /d/</div>
+        <div style="margin-top: 6px; font-size: 13.5px;">
+          <strong style="color: #047857;">Mẹo nhớ:</strong> <span class="mnemonic-tag">Tiền đô</span>
+          <div style="color: #64748b; font-size: 12.5px; margin-top: 3px;">(T / D)</div>
+        </div>
+      </td>
+      <td>
+        <div class="sub-grid">
+<div class="audio-card" data-sound-url="/api/tts?text=wanted&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=wanted&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=wanted&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">want<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/ˈwɑːn.<span style="color: #dc2626; font-weight: 800;">t̬ɪd</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="/api/tts?text=needed&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=needed&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=needed&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">need<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/ˈniː.<span style="color: #dc2626; font-weight: 800;">dɪd</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="/api/tts?text=decided&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=decided&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=decided&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">decid<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/dɪˈsaɪ.<span style="color: #dc2626; font-weight: 800;">dɪd</span>/</div>
+      </div>
+    </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td><span class="badge-sound">/t/</span></td>
+      <td>
+        <div>Kết thúc bằng âm <strong>vô thanh</strong>:</div>
+        <div style="font-family: monospace; font-weight: 700; color: #2563eb; margin: 3px 0 6px 0;">/p/, /k/, /f/, /s/, /ʃ/, /tʃ/, /θ/</div>
+        <div style="margin-top: 6px; font-size: 13.5px;">
+          <strong style="color: #047857;">Mẹo nhớ:</strong> <span class="mnemonic-tag">Sáng sớm chạy phà thăm phố cổ</span>
+          <div style="color: #64748b; font-size: 12.5px; margin-top: 3px;">(s / s / ch / p / th / ph / c)</div>
+        </div>
+      </td>
+      <td>
+        <div class="sub-grid">
+<div class="audio-card" data-sound-url="/api/tts?text=stopped&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=stopped&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=stopped&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">stopp<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/stɑːp<span style="color: #dc2626; font-weight: 800;">t</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="/api/tts?text=looked&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=looked&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=looked&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">look<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/lʊk<span style="color: #dc2626; font-weight: 800;">t</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="/api/tts?text=washed&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=washed&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=washed&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">wash<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/wɑːʃ<span style="color: #dc2626; font-weight: 800;">t</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="/api/tts?text=watched&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=watched&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=watched&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">watch<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/wɑːtʃ<span style="color: #dc2626; font-weight: 800;">t</span>/</div>
+      </div>
+    </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td><span class="badge-sound">/d/</span></td>
+      <td>
+        <div>Kết thúc bằng <strong>nguyên âm</strong> và <strong>phụ âm hữu thanh</strong> còn lại:</div>
+        <div style="font-family: monospace; font-weight: 700; color: #16a34a; margin: 3px 0 6px 0;">/b/, /ɡ/, /v/, /z/, /m/, /n/, /l/, /r/...</div>
+        <div style="margin-top: 6px; font-size: 13px; color: #475569;">
+          👉 <span class="mnemonic-tag" style="background:#f1f5f9; color:#475569; border-color:#cbd5e1;">Các trường hợp còn lại</span>
+        </div>
+      </td>
+      <td>
+        <div class="sub-grid">
+<div class="audio-card" data-sound-url="/api/tts?text=played&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=played&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=played&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">play<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/pleɪ<span style="color: #dc2626; font-weight: 800;">d</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="/api/tts?text=cleaned&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=cleaned&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=cleaned&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">clean<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/kliːn<span style="color: #dc2626; font-weight: 800;">d</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="/api/tts?text=loved&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=loved&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=loved&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">lov<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/lʌv<span style="color: #dc2626; font-weight: 800;">d</span>/</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="/api/tts?text=called&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=called&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=called&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">call<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/kɔːl<span style="color: #dc2626; font-weight: 800;">d</span>/</div>
+      </div>
+    </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div style="background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 10px; padding: 12px 14px; margin-top: 18px; margin-bottom: 24px;">
+  <div style="font-weight: 800; font-size: 15px; color: #b45309; display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+    <span>⚠️ LƯU Ý ĐẶC BIỆT VỚI ĐUÔI -ED</span>
+  </div>
+  <p style="font-size: 14px; color: #78350f; margin-bottom: 10px;">
+    Một số <strong>tính từ</strong> tận cùng bằng <strong>-ed</strong> luôn luôn được phát âm là <strong>/ɪd/</strong> bất kể âm cuối của từ gốc là gì:
+  </p>
+  <div class="sub-grid">
+<div class="audio-card" data-sound-url="/api/tts?text=naked&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=naked&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=naked&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">nak<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/ˈneɪ.<span style="color: #dc2626; font-weight: 800;">kɪd</span>/</div>
+        <div class="word-desc">khỏa thân (Adj)</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="/api/tts?text=wicked&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=wicked&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=wicked&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">wick<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/ˈwɪk.<span style="color: #dc2626; font-weight: 800;">ɪd</span>/</div>
+        <div class="word-desc">độc ác (Adj)</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/learned.mp3">
+      <button type="button" class="play-icon-btn" data-sound-url="https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/learned.mp3" onclick="event.stopPropagation(); new Audio('https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/sound-connection/learned.mp3').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">learn<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/ˈlɜːr.<span style="color: #dc2626; font-weight: 800;">nɪd</span>/</div>
+        <div class="word-desc">có học thức (Adj)</div>
+      </div>
+    </div><div class="audio-card" data-sound-url="/api/tts?text=beloved&type=us">
+      <button type="button" class="play-icon-btn" data-sound-url="/api/tts?text=beloved&type=us" onclick="event.stopPropagation(); new Audio('/api/tts?text=beloved&type=us').play();" title="Bấm để nghe phát âm chuẩn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="word-block">
+        <div class="word-en">belov<span style="color: #dc2626; font-weight: 800;">ed</span></div>
+        <div class="word-ipa">/bɪˈlʌv.<span style="color: #dc2626; font-weight: 800;">ɪd</span>/</div>
+        <div class="word-desc">yêu quý (Adj)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>

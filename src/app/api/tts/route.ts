@@ -1,15 +1,17 @@
 /* src/app/api/tts/route.ts */
 
 import { NextResponse } from 'next/server';
-import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
+import { MsEdgeTTS, OUTPUT_FORMAT, ProsodyOptions } from 'msedge-tts';
+import fs from 'fs';
+import path from 'path';
 
 // In-memory cache for generated TTS audio buffers
 const ttsCache = new Map<string, Buffer>();
 
-async function generateEdgeTtsAudio(text: string, voice: string): Promise<Buffer> {
+async function generateEdgeTtsAudio(text: string, voice: string, options?: ProsodyOptions): Promise<Buffer> {
   const tts = new MsEdgeTTS();
   await tts.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
-  const { audioStream } = tts.toStream(text);
+  const { audioStream } = tts.toStream(text, options);
 
   return new Promise<Buffer>((resolve, reject) => {
     const chunks: Buffer[] = [];
@@ -76,12 +78,60 @@ function normalizeTextForTts(text: string): string {
     return `${replacement} ${suffix}`;
   });
 
+  // 4. Pronunciation enhancements for -es words with /ɪz/:
+  const esIzWords: Record<string, string> = {
+    kisses: 'kiss-iz',
+    boxes: 'box-iz',
+    watches: 'watch-iz',
+    changes: 'change-iz',
+    wishes: 'wish-iz',
+    matches: 'match-iz',
+    judges: 'judge-iz',
+    buzzes: 'buzz-iz',
+    misses: 'miss-iz',
+    passes: 'pass-iz',
+    buses: 'bus-iz',
+    fixes: 'fix-iz',
+  };
+  const lowerTrim = text.trim().toLowerCase();
+  if (esIzWords[lowerTrim]) {
+    return esIzWords[lowerTrim];
+  }
+
   return normalized;
 }
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+
+    // Batch generator helper: generate sample audio files and save to public/grammar/
+    if (searchParams.get('generate_samples') === '1') {
+      const sampleWords = [
+        'kisses', 'boxes', 'watches', 'changes',
+        'plays', 'dogs', 'cleans', 'loves'
+      ];
+      const grammarDir = path.join(process.cwd(), 'public/grammar');
+      if (!fs.existsSync(grammarDir)) {
+        fs.mkdirSync(grammarDir, { recursive: true });
+      }
+
+      const results: Record<string, string> = {};
+      for (const word of sampleWords) {
+        const ttsText = normalizeTextForTts(word);
+        const voice = 'en-US-JennyNeural';
+        try {
+          const buf = await generateEdgeTtsAudio(ttsText, voice, { rate: '-15%' });
+          const filePath = path.join(grammarDir, `${word}.mp3`);
+          fs.writeFileSync(filePath, buf);
+          results[word] = `/grammar/${word}.mp3`;
+        } catch (err) {
+          console.warn(`[TTS Batch] Failed for ${word}:`, err);
+        }
+      }
+      return NextResponse.json({ success: true, files: results });
+    }
+
     const rawText = searchParams.get('text') || '';
     const type = (searchParams.get('type') || 'us').toLowerCase();
 
@@ -93,7 +143,10 @@ export async function GET(request: Request) {
     const voice = type === 'uk' ? 'en-GB-SoniaNeural' : 'en-US-JennyNeural';
     const ttsText = normalizeTextForTts(cleanText);
 
-    const cacheKey = `${type}_${ttsText}`;
+    const isSingleWord = !cleanText.includes(' ');
+    const prosodyOptions: ProsodyOptions | undefined = isSingleWord ? { rate: '-15%' } : undefined;
+
+    const cacheKey = `${type}_${ttsText}_${isSingleWord ? 'slow' : 'norm'}`;
     if (ttsCache.has(cacheKey)) {
       const cached = ttsCache.get(cacheKey)!;
       return new Response(new Uint8Array(cached), {
@@ -107,8 +160,19 @@ export async function GET(request: Request) {
     }
 
     try {
-      const audioBuffer = await generateEdgeTtsAudio(ttsText, voice);
+      const audioBuffer = await generateEdgeTtsAudio(ttsText, voice, prosodyOptions);
       
+      // Also cache to public/grammar if it's a single word
+      if (isSingleWord && cleanText.length < 30) {
+        try {
+          const grammarDir = path.join(process.cwd(), 'public/grammar');
+          if (fs.existsSync(grammarDir)) {
+            const staticFilePath = path.join(grammarDir, `${cleanText.toLowerCase()}.mp3`);
+            fs.writeFileSync(staticFilePath, audioBuffer);
+          }
+        } catch {}
+      }
+
       // Limit in-memory cache size to ~1,000 items
       if (ttsCache.size > 1000) {
         const firstKey = ttsCache.keys().next().value;

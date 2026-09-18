@@ -235,6 +235,17 @@ export default function GrammarHandbook() {
     return () => clearTimeout(timer);
   }, [activeLesson, zoom1, zoom2, pane1Tab, pane2Tab]);
 
+  // Tự động chuyển các Pane về tab "Lý thuyết" nếu bài học không có phần bài tập
+  useEffect(() => {
+    if (activeLesson) {
+      const hasPrac = !!(activeLesson.practice?.parts && activeLesson.practice.parts.length > 0);
+      if (!hasPrac) {
+        setPane1Tab("theory");
+        setPane2Tab("theory");
+      }
+    }
+  }, [activeLesson?.id]);
+
   // Xử lý kéo thả cửa sổ nổi (Chuột & Touch cảm ứng)
   const handleDragStart = (e: React.MouseEvent) => {
     if (isMaximized) return;
@@ -1218,6 +1229,8 @@ export default function GrammarHandbook() {
       );
     }
 
+    const hasPractice = !!(activeLesson.practice?.parts && activeLesson.practice.parts.length > 0);
+
     return (
       <div className="flex-1 relative flex flex-col overflow-hidden w-full h-full">
         {/* Header bar cho từng Pane - Hiển thị 1 hàng mượt mà không bị ẩn nút */}
@@ -1227,23 +1240,25 @@ export default function GrammarHandbook() {
             <button
               onClick={() => setTab("theory")}
               className={`px-1.5 sm:px-2.5 py-0.5 rounded-md text-[8.5px] sm:text-[10px] font-black transition-all whitespace-nowrap ${
-                tab === "theory"
+                tab === "theory" || !hasPractice
                   ? "bg-white text-indigo-600 shadow-xs"
                   : "text-slate-500 hover:text-slate-800"
               }`}
             >
               Lý thuyết
             </button>
-            <button
-              onClick={() => setTab("practice")}
-              className={`px-1.5 sm:px-2.5 py-0.5 rounded-md text-[8.5px] sm:text-[10px] font-black transition-all whitespace-nowrap ${
-                tab === "practice"
-                  ? "bg-white text-indigo-600 shadow-xs"
-                  : "text-slate-500 hover:text-slate-800"
-              }`}
-            >
-              Bài tập
-            </button>
+            {hasPractice && (
+              <button
+                onClick={() => setTab("practice")}
+                className={`px-1.5 sm:px-2.5 py-0.5 rounded-md text-[8.5px] sm:text-[10px] font-black transition-all whitespace-nowrap ${
+                  tab === "practice"
+                    ? "bg-white text-indigo-600 shadow-xs"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                Bài tập
+              </button>
+            )}
           </div>
 
           {/* Right: BT Selector tabs (Bài 1, Bài 2...) - Dùng ml-auto hiển thị đầy đủ */}
@@ -1295,8 +1310,8 @@ export default function GrammarHandbook() {
         </div>
 
         {/* Content area */}
-        <div className={`flex-1 overflow-y-auto p-3 sm:p-6 custom-vertical-scrollbar w-full webtoeic-scroll-container ${tab === 'practice' ? 'bg-slate-50/50' : ''}`}>
-          {tab === "theory" ? (
+        <div className={`flex-1 overflow-y-auto p-3 sm:p-6 custom-vertical-scrollbar w-full webtoeic-scroll-container ${(tab === 'practice' && hasPractice) ? 'bg-slate-50/50' : ''}`}>
+          {tab === "theory" || !hasPractice ? (
             <>
               <div
                 className="grammar-handbook-content select-text text-slate-700 w-full"
@@ -1304,6 +1319,25 @@ export default function GrammarHandbook() {
                 dangerouslySetInnerHTML={{ __html: activeLesson.htmlContent }}
                 onClick={(e) => {
                   const target = e.target as HTMLElement;
+
+                  // Hỗ trợ phát âm thanh khi click vào bất kỳ item hoặc icon loa nào có data-sound-url
+                  const soundEl = target.closest('[data-sound-url]');
+                  if (soundEl) {
+                    const soundUrl = soundEl.getAttribute('data-sound-url');
+                    if (soundUrl) {
+                      const audio = new Audio(soundUrl);
+                      const vol = soundEl.getAttribute('data-volume');
+                      if (vol) {
+                        const parsedVol = parseFloat(vol);
+                        if (!isNaN(parsedVol)) {
+                          audio.volume = Math.max(0, Math.min(1, parsedVol));
+                        }
+                      }
+                      audio.play().catch((err) => console.warn('Audio playback error:', err));
+                      return;
+                    }
+                  }
+
                   if (target.closest(".svg-click-det")) {
                     setDetPopoverPos({
                       x: position.x + (width - 600) / 2,
@@ -1600,12 +1634,26 @@ export default function GrammarHandbook() {
 
             .grammar-handbook-content h1,
             .grammar-handbook-content h1.grammar-title,
-            .grammar-handbook-content h2,
-            .grammar-handbook-content .grammar-section-title {
+            .grammar-handbook-content h2 {
               font-size: clamp(14px, 1.8vw, 20px) !important;
               line-height: 1.3 !important;
               margin-top: 0.6em !important;
               margin-bottom: 0.4em !important;
+            }
+
+            .grammar-handbook-content .grammar-section-title {
+              font-size: 15.5px !important;
+              line-height: 1.35 !important;
+              margin-top: 60px !important;
+              margin-bottom: 16px !important;
+              padding-top: 24px !important;
+              border-top: 1px dashed #e2e8f0;
+            }
+
+            .grammar-handbook-content .grammar-section-title:first-of-type {
+              margin-top: 20px !important;
+              padding-top: 0 !important;
+              border-top: none !important;
             }
 
             .grammar-handbook-content h3 {
@@ -1722,8 +1770,7 @@ export default function GrammarHandbook() {
 
               .grammar-handbook-content h1,
               .grammar-handbook-content h1.grammar-title,
-              .grammar-handbook-content h2,
-              .grammar-handbook-content .grammar-section-title {
+              .grammar-handbook-content h2 {
                 font-size: clamp(12px, 3vh, 14.5px) !important;
                 margin-top: 0.3em !important;
                 margin-bottom: 0.2em !important;
