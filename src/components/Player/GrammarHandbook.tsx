@@ -41,11 +41,13 @@ interface PracticePart {
 interface Lesson {
   id: number;
   title: string;
-  htmlContent: string;
-  filename: string;
+  htmlContent?: string;
+  filename?: string;
   practice?: {
     parts: PracticePart[];
   };
+  hasPractice?: boolean;
+  pdfUrl?: string | null;
   isLocked?: boolean;
   requiredSessions?: number;
 }
@@ -56,6 +58,8 @@ export default function GrammarHandbook() {
   const [isOpen, setIsOpen] = useState(false);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
+  const [lessonCache, setLessonCache] = useState<Record<number, Lesson>>({});
+  const [loadingContent, setLoadingContent] = useState<boolean>(false);
   const [attendedSessions, setAttendedSessions] = useState<number>(0);
   const [hasNoClass, setHasNoClass] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
@@ -120,7 +124,50 @@ export default function GrammarHandbook() {
     return () => window.removeEventListener("toggle-grammar-handbook", handleToggle);
   }, []);
 
-  // Gọi API tải dữ liệu 10 bài ngữ pháp khi mở lần đầu
+  // Nạp nội dung chi tiết theo yêu cầu (On-Demand Loading) của đúng 1 bài học
+  const loadLessonContent = async (lesson: Lesson) => {
+    if (lesson.isLocked) {
+      setActiveLesson(lesson);
+      return;
+    }
+
+    // Nếu bài đã có trong cache
+    if (lessonCache[lesson.id]?.htmlContent) {
+      setActiveLesson(lessonCache[lesson.id]);
+      return;
+    }
+
+    // Nếu bài truyền vào đã có sẵn htmlContent
+    if (lesson.htmlContent) {
+      setLessonCache(prev => ({ ...prev, [lesson.id]: lesson }));
+      setActiveLesson(lesson);
+      return;
+    }
+
+    // Hiển thị bài ngay và tải nội dung
+    setActiveLesson(lesson);
+    setLoadingContent(true);
+
+    try {
+      const res = await fetch(`/api/grammar?courseId=${courseId || ""}&lessonId=${lesson.id}&t=${Date.now()}`);
+      const data = await res.json();
+      if (data.success && data.lesson) {
+        const fullLesson: Lesson = {
+          ...lesson,
+          ...data.lesson,
+          hasPractice: data.lesson.hasPractice ?? lesson.hasPractice ?? !!(data.lesson.practice?.parts && data.lesson.practice.parts.length > 0)
+        };
+        setLessonCache(prev => ({ ...prev, [lesson.id]: fullLesson }));
+        setActiveLesson(fullLesson);
+      }
+    } catch (err) {
+      console.error("Lỗi tải nội dung chi tiết bài học:", err);
+    } finally {
+      setLoadingContent(false);
+    }
+  };
+
+  // Gọi API tải danh sách bài ngữ pháp (metadata siêu nhẹ) khi mở lần đầu
   useEffect(() => {
     if (!isOpen || (lessons.length > 0 && hasAccess)) return;
 
@@ -142,7 +189,7 @@ export default function GrammarHandbook() {
           setHasNoClass(!!data.hasNoClass);
           if (data.lessons.length > 0) {
             const firstUnlocked = data.lessons.find((l: Lesson) => !l.isLocked) || data.lessons[0];
-            setActiveLesson(firstUnlocked);
+            loadLessonContent(firstUnlocked);
           }
           setHasAccess(true);
         } else {
@@ -238,13 +285,13 @@ export default function GrammarHandbook() {
   // Tự động chuyển các Pane về tab "Lý thuyết" nếu bài học không có phần bài tập
   useEffect(() => {
     if (activeLesson) {
-      const hasPrac = !!(activeLesson.practice?.parts && activeLesson.practice.parts.length > 0);
+      const hasPrac = activeLesson.hasPractice ?? !!(activeLesson.practice?.parts && activeLesson.practice.parts.length > 0);
       if (!hasPrac) {
         setPane1Tab("theory");
         setPane2Tab("theory");
       }
     }
-  }, [activeLesson?.id]);
+  }, [activeLesson?.id, activeLesson?.hasPractice, activeLesson?.practice]);
 
   // Xử lý kéo thả cửa sổ nổi (Chuột & Touch cảm ứng)
   const handleDragStart = (e: React.MouseEvent) => {
@@ -367,15 +414,39 @@ export default function GrammarHandbook() {
       if (isResizing) {
         const deltaX = e.clientX - dragStart.current.x;
         const deltaY = e.clientY - dragStart.current.y;
+        const minW = 360;
+        const minH = 260;
 
-        if (isResizing === "r" || isResizing === "br") {
-          const nextW = Math.max(400, Math.min(window.innerWidth - position.x, sizeStart.current.w + deltaX));
+        let nextW = sizeStart.current.w;
+        let nextH = sizeStart.current.h;
+        let nextX = positionStart.current.x;
+        let nextY = positionStart.current.y;
+        let posChanged = false;
+
+        if (isResizing.includes("r")) {
+          nextW = Math.max(minW, Math.min(window.innerWidth - positionStart.current.x, sizeStart.current.w + deltaX));
           setWidth(nextW);
+        } else if (isResizing.includes("l")) {
+          const rightEdge = positionStart.current.x + sizeStart.current.w;
+          nextX = Math.max(0, Math.min(rightEdge - minW, positionStart.current.x + deltaX));
+          nextW = rightEdge - nextX;
+          setWidth(nextW);
+          posChanged = true;
         }
 
-        if (isResizing === "b" || isResizing === "br") {
-          const nextH = Math.max(300, Math.min(window.innerHeight - position.y, sizeStart.current.h + deltaY));
+        if (isResizing.includes("b")) {
+          nextH = Math.max(minH, Math.min(window.innerHeight - positionStart.current.y, sizeStart.current.h + deltaY));
           setHeight(nextH);
+        } else if (isResizing.includes("t")) {
+          const bottomEdge = positionStart.current.y + sizeStart.current.h;
+          nextY = Math.max(30, Math.min(bottomEdge - minH, positionStart.current.y + deltaY));
+          nextH = bottomEdge - nextY;
+          setHeight(nextH);
+          posChanged = true;
+        }
+
+        if (posChanged) {
+          setPosition({ x: nextX, y: nextY });
         }
       }
     };
@@ -401,15 +472,39 @@ export default function GrammarHandbook() {
       if (isResizing) {
         const deltaX = touch.clientX - dragStart.current.x;
         const deltaY = touch.clientY - dragStart.current.y;
+        const minW = 260;
+        const minH = 180;
 
-        if (isResizing === "r" || isResizing === "br") {
-          const nextW = Math.max(260, Math.min(window.innerWidth - position.x, sizeStart.current.w + deltaX));
+        let nextW = sizeStart.current.w;
+        let nextH = sizeStart.current.h;
+        let nextX = positionStart.current.x;
+        let nextY = positionStart.current.y;
+        let posChanged = false;
+
+        if (isResizing.includes("r")) {
+          nextW = Math.max(minW, Math.min(window.innerWidth - positionStart.current.x, sizeStart.current.w + deltaX));
           setWidth(nextW);
+        } else if (isResizing.includes("l")) {
+          const rightEdge = positionStart.current.x + sizeStart.current.w;
+          nextX = Math.max(0, Math.min(rightEdge - minW, positionStart.current.x + deltaX));
+          nextW = rightEdge - nextX;
+          setWidth(nextW);
+          posChanged = true;
         }
 
-        if (isResizing === "b" || isResizing === "br") {
-          const nextH = Math.max(180, Math.min(window.innerHeight - position.y, sizeStart.current.h + deltaY));
+        if (isResizing.includes("b")) {
+          nextH = Math.max(minH, Math.min(window.innerHeight - positionStart.current.y, sizeStart.current.h + deltaY));
           setHeight(nextH);
+        } else if (isResizing.includes("t")) {
+          const bottomEdge = positionStart.current.y + sizeStart.current.h;
+          nextY = Math.max(30, Math.min(bottomEdge - minH, positionStart.current.y + deltaY));
+          nextH = bottomEdge - nextY;
+          setHeight(nextH);
+          posChanged = true;
+        }
+
+        if (posChanged) {
+          setPosition({ x: nextX, y: nextY });
         }
       }
     };
@@ -1229,7 +1324,7 @@ export default function GrammarHandbook() {
       );
     }
 
-    const hasPractice = !!(activeLesson.practice?.parts && activeLesson.practice.parts.length > 0);
+    const hasPractice = activeLesson.hasPractice ?? !!(activeLesson.practice?.parts && activeLesson.practice.parts.length > 0);
 
     return (
       <div className="flex-1 relative flex flex-col overflow-hidden w-full h-full">
@@ -1311,12 +1406,17 @@ export default function GrammarHandbook() {
 
         {/* Content area */}
         <div className={`flex-1 overflow-y-auto p-3 sm:p-6 custom-vertical-scrollbar w-full webtoeic-scroll-container ${(tab === 'practice' && hasPractice) ? 'bg-slate-50/50' : ''}`}>
-          {tab === "theory" || !hasPractice ? (
+          {loadingContent && !activeLesson.htmlContent ? (
+            <div className="flex-1 flex flex-col items-center justify-center py-24 text-slate-400">
+              <Loader2 size={24} className="animate-spin text-indigo-600 mb-3" />
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Đang tải nội dung bài học...</p>
+            </div>
+          ) : tab === "theory" || !hasPractice ? (
             <>
               <div
                 className="grammar-handbook-content select-text text-slate-700 w-full"
                 style={{ zoom: zoomValue / 100 }}
-                dangerouslySetInnerHTML={{ __html: activeLesson.htmlContent }}
+                dangerouslySetInnerHTML={{ __html: activeLesson.htmlContent || "" }}
                 onClick={(e) => {
                   const target = e.target as HTMLElement;
 
@@ -1428,7 +1528,7 @@ export default function GrammarHandbook() {
                     return (
                       <button
                         key={lesson.id}
-                        onClick={() => setActiveLesson(lesson)}
+                        onClick={() => loadLessonContent(lesson)}
                         className={`px-1.5 sm:px-2 py-0.5 rounded text-[8.5px] sm:text-[9px] font-bold shrink-0 transition-all active:scale-95 border flex items-center gap-1 ${
                           isActive
                             ? "bg-indigo-600 border-indigo-600 text-white shadow-xs font-black"
@@ -1588,28 +1688,74 @@ export default function GrammarHandbook() {
             )}
           </div>
 
-          {/* RESIZE HANDLES (Chỉ hiện khi không phóng to) */}
+          {/* RESIZE HANDLES - Hỗ trợ cả 4 góc và 4 cạnh (Chỉ hiện khi không phóng to) */}
           {!isMaximized && (
             <>
-              {/* Tay kéo bên phải */}
+              {/* 4 Cạnh viền */}
+              {/* Cạnh trên */}
               <div
-                onMouseDown={e => handleResizeStart("r", e)}
-                onTouchStart={e => handleTouchResizeStart("r", e)}
-                className="absolute right-0 top-0 w-3 h-full cursor-col-resize hover:bg-indigo-400/20 active:bg-indigo-500/40 transition-colors z-50 touch-none"
+                onMouseDown={e => handleResizeStart("t", e)}
+                onTouchStart={e => handleTouchResizeStart("t", e)}
+                className="absolute top-0 left-3 w-[calc(100%-24px)] h-2.5 cursor-row-resize hover:bg-indigo-400/20 active:bg-indigo-500/40 transition-colors z-50 touch-none"
               />
-              {/* Tay kéo ở dưới */}
+              {/* Cạnh dưới */}
               <div
                 onMouseDown={e => handleResizeStart("b", e)}
                 onTouchStart={e => handleTouchResizeStart("b", e)}
-                className="absolute bottom-0 left-0 w-full h-3 cursor-row-resize hover:bg-indigo-400/20 active:bg-indigo-500/40 transition-colors z-50 touch-none"
+                className="absolute bottom-0 left-3 w-[calc(100%-24px)] h-2.5 cursor-row-resize hover:bg-indigo-400/20 active:bg-indigo-500/40 transition-colors z-50 touch-none"
               />
-              {/* Góc co dãn kéo chéo */}
+              {/* Cạnh trái */}
+              <div
+                onMouseDown={e => handleResizeStart("l", e)}
+                onTouchStart={e => handleTouchResizeStart("l", e)}
+                className="absolute left-0 top-3 w-2.5 h-[calc(100%-24px)] cursor-col-resize hover:bg-indigo-400/20 active:bg-indigo-500/40 transition-colors z-50 touch-none"
+              />
+              {/* Cạnh phải */}
+              <div
+                onMouseDown={e => handleResizeStart("r", e)}
+                onTouchStart={e => handleTouchResizeStart("r", e)}
+                className="absolute right-0 top-3 w-2.5 h-[calc(100%-24px)] cursor-col-resize hover:bg-indigo-400/20 active:bg-indigo-500/40 transition-colors z-50 touch-none"
+              />
+
+              {/* 4 Núm ở 4 góc */}
+              {/* Góc trên - trái */}
+              <div
+                onMouseDown={e => handleResizeStart("tl", e)}
+                onTouchStart={e => handleTouchResizeStart("tl", e)}
+                className="absolute top-0 left-0 w-6 h-6 cursor-nwse-resize flex items-start justify-start p-1 z-[60] touch-none group"
+                title="Thay đổi kích thước"
+              >
+                <div className="w-2.5 h-2.5 bg-indigo-500/70 rounded-tl-sm border-l-2 border-t-2 border-indigo-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all shadow-sm" />
+              </div>
+
+              {/* Góc trên - phải */}
+              <div
+                onMouseDown={e => handleResizeStart("tr", e)}
+                onTouchStart={e => handleTouchResizeStart("tr", e)}
+                className="absolute top-0 right-0 w-6 h-6 cursor-nesw-resize flex items-start justify-end p-1 z-[60] touch-none group"
+                title="Thay đổi kích thước"
+              >
+                <div className="w-2.5 h-2.5 bg-indigo-500/70 rounded-tr-sm border-r-2 border-t-2 border-indigo-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all shadow-sm" />
+              </div>
+
+              {/* Góc dưới - trái */}
+              <div
+                onMouseDown={e => handleResizeStart("bl", e)}
+                onTouchStart={e => handleTouchResizeStart("bl", e)}
+                className="absolute bottom-0 left-0 w-6 h-6 cursor-nesw-resize flex items-end justify-start p-1 z-[60] touch-none group"
+                title="Thay đổi kích thước"
+              >
+                <div className="w-2.5 h-2.5 bg-indigo-500/70 rounded-bl-sm border-l-2 border-b-2 border-indigo-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all shadow-sm" />
+              </div>
+
+              {/* Góc dưới - phải */}
               <div
                 onMouseDown={e => handleResizeStart("br", e)}
                 onTouchStart={e => handleTouchResizeStart("br", e)}
-                className="absolute bottom-0 right-0 w-7 h-7 cursor-se-resize flex items-end justify-end p-1 z-[60] touch-none"
+                className="absolute bottom-0 right-0 w-6 h-6 cursor-nwse-resize flex items-end justify-end p-1 z-[60] touch-none group"
+                title="Thay đổi kích thước"
               >
-                <div className="w-2.5 h-2.5 bg-indigo-500/60 rounded-full border-r-2 border-b-2 border-indigo-600 opacity-80" />
+                <div className="w-2.5 h-2.5 bg-indigo-500/70 rounded-br-sm border-r-2 border-b-2 border-indigo-600 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all shadow-sm" />
               </div>
             </>
           )}

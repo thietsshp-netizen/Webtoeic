@@ -103,6 +103,8 @@ export async function GET(request: Request) {
       attendedSessions = 0; // Học viên tự do (không có classCode): xem được bài 0 và bài 1
     }
 
+    const lessonIdParam = searchParams.get("lessonId");
+
     const dirPath = path.join(process.cwd(), "10 gramma lesson");
 
     if (!fs.existsSync(dirPath)) {
@@ -118,45 +120,92 @@ export async function GET(request: Request) {
     const pdfDir = path.join(process.cwd(), "public/grammar");
     const pdfFiles = fs.existsSync(pdfDir) ? fs.readdirSync(pdfDir).filter(f => f.endsWith(".pdf")) : [];
 
-    const lessons = files.map(filename => {
+    // Helper tính toán metadata bài học
+    const getLessonMeta = (filename: string) => {
       const lowerName = filename.toLowerCase();
       const isNoiAm = lowerName.includes("noi am") || lowerName.includes("nối âm");
-
       let index: number;
       let requiredSessions: number;
 
       if (isNoiAm) {
-        // Bài Nối âm - Nuốt âm: xếp sau Bài 9 (id = 10), yêu cầu 1 buổi học để mở khóa
         index = 10;
         requiredSessions = 1;
       } else {
         const match = filename.match(/\d+/);
         index = match ? parseInt(match[0], 10) : 999;
-        // Tính số buổi yêu cầu để mở khóa:
-        // Bài 0 và Bài 1: 0 buổi (luôn mở)
-        // Bài K (K >= 2): K - 1 buổi (Bài 2: 1 buổi, Bài 3: 2 buổi, ..., Bài 9: 8 buổi)
         requiredSessions = index <= 1 ? 0 : index - 1;
       }
 
       const isLocked = !isSpecialRole && (attendedSessions < requiredSessions);
+      return { index, isNoiAm, requiredSessions, isLocked };
+    };
 
-      const filePath = path.join(dirPath, filename);
+    // TRƯỜNG HỢP 1: Yêu cầu nội dung của một bài học cụ thể (On-Demand Loading)
+    if (lessonIdParam !== null) {
+      const requestedId = parseInt(lessonIdParam, 10);
+      const targetFile = files.find(f => getLessonMeta(f).index === requestedId);
+
+      if (!targetFile) {
+        return NextResponse.json(
+          { success: false, error: "Không tìm thấy bài học." },
+          { status: 404 }
+        );
+      }
+
+      const { isNoiAm, requiredSessions, isLocked } = getLessonMeta(targetFile);
+
+      if (isLocked) {
+        return NextResponse.json(
+          { success: false, error: "Bài học đang bị khóa.", isLocked: true, requiredSessions },
+          { status: 403 }
+        );
+      }
+
+      const filePath = path.join(dirPath, targetFile);
       const contentRaw = fs.readFileSync(filePath, "utf-8");
       const data = JSON.parse(contentRaw);
 
-      // Nếu có file .html kèm theo (đã tách ra riêng cho dễ sửa), ưu tiên đọc từ file .html
+      // Nếu có file .html kèm theo (ưu tiên đọc từ .html)
       const htmlFilePath = filePath.replace(/\.json$/, ".html");
       let htmlContent = data.theory?.htmlContent || "";
       if (fs.existsSync(htmlFilePath)) {
         htmlContent = fs.readFileSync(htmlFilePath, "utf-8");
       }
 
-      // Tìm file PDF có số thứ tự tương ứng hoặc theo tên Nối âm
       const pdfFile = isNoiAm
-        ? pdfFiles.find(f => {
-            const fLow = f.toLowerCase();
-            return fLow.includes("noi am") || fLow.includes("nối âm");
-          })
+        ? pdfFiles.find(f => f.toLowerCase().includes("noi am") || f.toLowerCase().includes("nối âm"))
+        : pdfFiles.find(f => {
+            const fMatch = f.match(/\d+/);
+            return fMatch && parseInt(fMatch[0], 10) === requestedId;
+          });
+      const pdfUrl = pdfFile ? `/grammar/${encodeURIComponent(pdfFile)}` : null;
+
+      return NextResponse.json({
+        success: true,
+        lesson: {
+          id: requestedId,
+          title: data.theory?.title || targetFile.replace(".json", ""),
+          htmlContent,
+          pdfUrl,
+          filename: targetFile,
+          practice: data.practice || null,
+          hasPractice: Boolean(data.practice?.parts && data.practice.parts.length > 0),
+          isLocked: false,
+          requiredSessions
+        }
+      });
+    }
+
+    // TRƯỜNG HỢP 2: Lấy danh sách tổng quan các bài học (Siêu nhẹ, không chứa chuỗi HTML khổng lồ)
+    const lessons = files.map(filename => {
+      const { index, isNoiAm, requiredSessions, isLocked } = getLessonMeta(filename);
+
+      const filePath = path.join(dirPath, filename);
+      const contentRaw = fs.readFileSync(filePath, "utf-8");
+      const data = JSON.parse(contentRaw);
+
+      const pdfFile = isNoiAm
+        ? pdfFiles.find(f => f.toLowerCase().includes("noi am") || f.toLowerCase().includes("nối âm"))
         : pdfFiles.find(f => {
             const fMatch = f.match(/\d+/);
             return fMatch && parseInt(fMatch[0], 10) === index;
@@ -166,10 +215,9 @@ export async function GET(request: Request) {
       return {
         id: index,
         title: data.theory?.title || filename.replace(".json", ""),
-        htmlContent: isLocked ? "" : htmlContent,
         pdfUrl: pdfUrl,
         filename: filename,
-        practice: isLocked ? null : (data.practice || null),
+        hasPractice: Boolean(data.practice?.parts && data.practice.parts.length > 0),
         isLocked,
         requiredSessions
       };
