@@ -645,7 +645,23 @@ export default function DictionaryPopup({ word, onClose, initialPosition, dimens
               </div>
 
               <div className="flex items-center shrink-0">
-                <button onClick={onClose} className="p-1 sm:p-1.5 hover:bg-red-50 hover:text-red-500 rounded-lg text-slate-300 transition-all"><X className="w-4 h-4 sm:w-4.5 sm:h-4.5" /></button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                  }}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onClose();
+                  }}
+                  title="Đóng từ điển (X)"
+                  aria-label="Đóng từ điển"
+                  className="p-1 sm:p-1.5 hover:bg-red-50 hover:text-red-500 rounded-lg text-slate-400 hover:text-red-500 active:scale-90 transition-all cursor-pointer"
+                >
+                  <X className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                </button>
               </div>
             </div>
 

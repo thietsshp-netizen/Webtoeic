@@ -18,7 +18,12 @@ export default function LearnLayout({
   const router = useRouter();
   const params = useParams();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isDrawingActive, setIsDrawingActive] = useState(false);
+  const [isDrawingActive, setIsDrawingActive] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("webtoeic_screendraw_active") === "true";
+    }
+    return false;
+  });
   const [courseTitle, setCourseTitle] = useState("Đang tải...");
   const [sidebarWidth, setSidebarWidth] = useState(340);
   const [isResizing, setIsResizing] = useState(false);
@@ -185,6 +190,9 @@ export default function LearnLayout({
                 onClick={() => {
                   const nextActive = !isDrawingActive;
                   setIsDrawingActive(nextActive);
+                  if (typeof window !== "undefined") {
+                    localStorage.setItem("webtoeic_screendraw_active", String(nextActive));
+                  }
                   window.dispatchEvent(new CustomEvent("webtoeic-toggle-global-draw", { detail: { active: nextActive } }));
                 }}
                 style={{ zIndex: 1000000010, position: "relative" }}

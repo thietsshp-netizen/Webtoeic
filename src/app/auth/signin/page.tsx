@@ -18,8 +18,8 @@ export function getFriendlyErrorMessage(
 
   // 1. Device limit locked (> 30 days & reached device limit)
   if (errStr.includes("DeviceLimitLocked")) {
-    const deviceLabel = deviceType === "MOBILE" ? "Điện thoại" : deviceType === "PC" ? "Máy tính" : "thiết bị";
-    return `Tài khoản đã tạo hơn 30 ngày và đã đạt giới hạn 1 ${deviceLabel} đăng nhập. Vui lòng đăng nhập bằng đúng ${deviceLabel} bạn đã dùng trước đó hoặc liên hệ Admin để xử lý!`;
+    const deviceLabel = deviceType === "MOBILE" ? "điện thoại" : deviceType === "PC" ? "máy tính" : "thiết bị";
+    return `Tài khoản đã tạo hơn 30 ngày và đạt giới hạn 1 ${deviceLabel} đăng nhập, hiện không thể đổi thiết bị. Vui lòng đăng nhập bằng đúng ${deviceLabel} bạn đã dùng trước đó để sử dụng web`;
   }
 
   // 2. Device limit trial (reached device limit during trial)

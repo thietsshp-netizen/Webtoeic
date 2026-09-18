@@ -27,7 +27,12 @@ function UnifiedAdminToolbar() {
   const [isClickedOpen, setIsClickedOpen] = useState(false);
 
   // States theo dõi xem chức năng nào đang BẬT
-  const [isDrawActive, setIsDrawActive] = useState(false);
+  const [isDrawActive, setIsDrawActive] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("webtoeic_screendraw_active") === "true";
+    }
+    return false;
+  });
   const [isCallingActive, setIsCallingActive] = useState(false);
   const [isRecorderActive, setIsRecorderActive] = useState(false);
 

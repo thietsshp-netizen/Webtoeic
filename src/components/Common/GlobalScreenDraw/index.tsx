@@ -11,13 +11,21 @@ import styles from "./styles.module.css";
 export const GlobalScreenDraw: React.FC = () => {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("webtoeic_screendraw_active") === "true";
+    }
+    return false;
+  });
 
   // Chỉ hiển thị và cho phép chạy nếu người dùng đăng nhập là ADMIN
   const isAdmin = session?.user && (session.user as any).role === "ADMIN";
 
-  // Phát sự kiện đồng bộ trạng thái cọ vẽ ra toàn hệ thống mỗi khi isActive thay đổi
+  // Phát sự kiện đồng bộ trạng thái cọ vẽ ra toàn hệ thống mỗi khi isActive thay đổi và lưu vào localStorage
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("webtoeic_screendraw_active", String(isActive));
+    }
     window.dispatchEvent(new CustomEvent("webtoeic-toggle-global-draw-state", { detail: { active: isActive } }));
   }, [isActive]);
 

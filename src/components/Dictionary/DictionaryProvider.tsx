@@ -191,16 +191,6 @@ export function DictionaryProvider({ children }: { children: React.ReactNode }) 
       }
     };
 
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
-
-      const isInsidePopup = target.closest('.dictionary-popup-container');
-      if (!isInsidePopup && selectedWord) {
-        closeDictionary();
-      }
-    };
-
     // Custom event cho việc tra từ nội bộ trong popup
     const handleSearch = (e: any) => {
       if (e.detail) {
@@ -214,14 +204,12 @@ export function DictionaryProvider({ children }: { children: React.ReactNode }) 
 
     document.addEventListener('touchend', handleTouchEnd);
     document.addEventListener('dblclick', handleDblClick);
-    document.addEventListener('click', handleClickOutside);
     window.addEventListener('dictionary-search', handleSearch);
     window.addEventListener('dictionary-close', handleClose);
 
     return () => {
       document.removeEventListener('touchend', handleTouchEnd);
       document.removeEventListener('dblclick', handleDblClick);
-      document.removeEventListener('click', handleClickOutside);
       window.removeEventListener('dictionary-search', handleSearch);
       window.removeEventListener('dictionary-close', handleClose);
     };
