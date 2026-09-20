@@ -2460,13 +2460,19 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   // --- Detect video type ---
   const isDirectVideo = !!(videoUrl && !videoUrl.includes("youtube.com") && !videoUrl.includes("youtu.be"));
 
-  // Convert Google Drive view link to direct stream link
+  // Convert Google Drive view/share/download link to internal video proxy stream
   const getDirectVideoUrl = (url: string): string => {
     if (!url) return "";
-    // Google Drive: https://drive.google.com/file/d/FILE_ID/view
-    const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
-    if (driveMatch) {
-      return `https://drive.google.com/uc?export=download&id=${driveMatch[1]}`;
+    if (url.includes("drive.google.com") || url.includes("drive.usercontent.google.com")) {
+      let fileId = "";
+      const dMatch = url.match(/\/d\/([^/&?]+)/);
+      const idMatch = url.match(/[?&]id=([^/&?]+)/);
+      if (dMatch) fileId = dMatch[1];
+      else if (idMatch) fileId = idMatch[1];
+
+      if (fileId) {
+        return `/api/video-proxy?id=${fileId}`;
+      }
     }
     return url; // Return as-is for Supabase, Cloudflare R2, etc.
   };
