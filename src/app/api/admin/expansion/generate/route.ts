@@ -23,11 +23,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const expansionData = await generateMovieExpansionForSub(text.trim(), (vietnamese || "").trim());
+    const result = await generateMovieExpansionForSub(text.trim(), (vietnamese || "").trim());
 
     return NextResponse.json({
       success: true,
-      data: expansionData
+      data: result.data,
+      keysStatus: result.keysStatus,
+      activeModel: result.activeModel
     });
   } catch (error: any) {
     console.error("[GEMINI_EXPANSION_API_ERROR]", error);
@@ -46,7 +48,8 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        error: friendlyError
+        error: friendlyError,
+        keysStatus: error?.keysStatus || []
       },
       { status: 500 }
     );

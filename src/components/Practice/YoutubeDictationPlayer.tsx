@@ -2207,7 +2207,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         currentProcessingIndex: targetSubIdx,
         completedCount,
         totalToProcess,
-        statusMessage: `Đang phân tích câu ${targetSubIdx + 1}/${latestSubs.length}: "${targetText.length > 30 ? targetText.substring(0, 30) + '...' : targetText}"`
+        statusMessage: `Đang phân tích câu ${targetSubIdx + 1}/${latestSubs.length}: "${targetText.length > 30 ? targetText.substring(0, 30) + '...' : targetText}"`,
+        keysStatus: autoBatchProgressRef.current?.keysStatus,
+        activeModel: autoBatchProgressRef.current?.activeModel
       };
       autoBatchProgressRef.current = progressState;
       setAutoBatchProgress(progressState);
@@ -2229,6 +2231,12 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           });
 
           const data = await res.json();
+
+          // Cập nhật trạng thái các API Key nhận từ server
+          if (data?.keysStatus && autoBatchProgressRef.current) {
+            autoBatchProgressRef.current.keysStatus = data.keysStatus;
+            autoBatchProgressRef.current.activeModel = data.activeModel;
+          }
 
           if (!res.ok || !data.success) {
             throw new Error(data.error || 'Lỗi Gemini API');

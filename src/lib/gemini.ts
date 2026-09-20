@@ -1,10 +1,19 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+export interface ApiKeyStatus {
+  index: number;
+  label: string;
+  status: 'active' | 'quota_exceeded' | 'ready';
+  lastModel?: string;
+  error?: string;
+}
+
 const GEMINI_CANDIDATE_MODELS = [
-  "gemini-3.6-flash",
-  "gemini-3.5-flash",
-  "gemini-3.5-flash-lite",
   "gemini-3.7-flash",
+  "gemini-3.5-flash",
+  "gemini-flash-lite-latest",
+  "gemini-3.5-flash-lite",
+  "gemini-3.6-flash",
   "gemini-flash-latest"
 ];
 
@@ -22,22 +31,36 @@ export function getAllGeminiApiKeys(): string[] {
   return Array.from(new Set(keys));
 }
 
-let currentKeyIndex = 0;
+export function getKeyLabel(key: string, idx: number): string {
+  const suffix = key.length > 4 ? key.slice(-4) : key;
+  return `Key ${idx + 1} (...${suffix})`;
+}
+
+// Lưu vết các key đã cạn quota trong bộ nhớ serverless
+const exhaustedKeyMap = new Map<string, number>();
+const QUOTA_EXPIRE_MS = 60 * 60 * 1000; // 1 giờ
 
 export function getOrderedGeminiApiKeys(): string[] {
-  const keys = getAllGeminiApiKeys();
-  if (keys.length === 0) return [];
+  const allKeys = getAllGeminiApiKeys();
+  if (allKeys.length === 0) return [];
 
-  const startIndex = currentKeyIndex % keys.length;
-  currentKeyIndex = (currentKeyIndex + 1) % keys.length;
+  const now = Date.now();
+  const availableKeys = allKeys.filter(k => {
+    const expiredAt = exhaustedKeyMap.get(k);
+    return !expiredAt || (now - expiredAt > QUOTA_EXPIRE_MS);
+  });
+
+  const pool = availableKeys.length > 0 ? availableKeys : allKeys;
+  const startIndex = Math.floor(Math.random() * pool.length);
 
   return [
-    ...keys.slice(startIndex),
-    ...keys.slice(0, startIndex)
+    ...pool.slice(startIndex),
+    ...pool.slice(0, startIndex),
+    ...allKeys.filter(k => !pool.includes(k))
   ];
 }
 
-function getModel(modelName: string = "gemini-3.6-flash", apiKey?: string) {
+function getModel(modelName: string = "gemini-3.7-flash", apiKey?: string) {
   const key = apiKey || getAllGeminiApiKeys()[0] || process.env.GEMINI_API_KEY || "";
   const genAI = new GoogleGenerativeAI(key);
   return genAI.getGenerativeModel({
@@ -140,9 +163,7 @@ async function analyzePart5Question(questionText: string) {
       } catch (error: any) {
         lastError = error;
         const errStr = error?.message || String(error);
-        const isQuota = errStr.includes("429") || errStr.includes("RESOURCE_EXHAUSTED") || errStr.includes("quota");
         console.warn(`[Part 5 Gemini] Model ${modelName} with Key ${apiKey.substring(0, 12)}... failed:`, errStr);
-        if (isQuota) break;
       }
     }
   }
@@ -348,13 +369,16 @@ ${cleanVi ? `Bản dịch tham khảo: "${cleanVi}"` : ""}`;
 
 
 
+  const allKeys = getAllGeminiApiKeys();
   const apiKeys = getOrderedGeminiApiKeys();
   if (apiKeys.length === 0) {
     throw new Error("Chưa cấu hình GEMINI_API_KEY hoặc GEMINI_API_KEYS trong file .env");
   }
 
-  let lastError;
+  let lastError: any;
   for (const apiKey of apiKeys) {
+    let allModelsHitQuota = true;
+
     for (const modelName of GEMINI_CANDIDATE_MODELS) {
       try {
         const model = getModel(modelName, apiKey);
@@ -374,20 +398,49 @@ ${cleanVi ? `Bản dịch tham khảo: "${cleanVi}"` : ""}`;
         }
 
         const data = JSON.parse(responseText);
-        return data;
+
+        // Gọi thành công -> gỡ khỏi danh sách hết quota nếu có
+        exhaustedKeyMap.delete(apiKey);
+
+        const keysStatus: ApiKeyStatus[] = allKeys.map((k, idx) => ({
+          index: idx,
+          label: getKeyLabel(k, idx),
+          status: k === apiKey ? 'active' : (exhaustedKeyMap.has(k) ? 'quota_exceeded' : 'ready'),
+          lastModel: k === apiKey ? modelName : undefined
+        }));
+
+        return {
+          data,
+          keysStatus,
+          activeModel: modelName
+        };
       } catch (error: any) {
         lastError = error;
         const errStr = error?.message || String(error);
         const isQuota = errStr.includes("429") || errStr.includes("RESOURCE_EXHAUSTED") || errStr.includes("quota");
         console.warn(`[Gemini Expansion] Model ${modelName} with Key ${apiKey.substring(0, 12)}... failed:`, errStr);
-        if (isQuota) {
-          // Key này đã chạm quota, chuyển ngay sang Key tiếp theo mà không thử các model khác trên cùng key này
-          break;
+        if (!isQuota) {
+          allModelsHitQuota = false;
         }
+        // Thử tiếp model tiếp theo trên cùng key này, không break!
       }
     }
+
+    // Nếu tất cả candidate models trên key này đều dính lỗi quota -> đánh dấu key này cạn quota
+    if (allModelsHitQuota) {
+      exhaustedKeyMap.set(apiKey, Date.now());
+    }
   }
-  throw lastError;
+
+  const keysStatus: ApiKeyStatus[] = allKeys.map((k, idx) => ({
+    index: idx,
+    label: getKeyLabel(k, idx),
+    status: exhaustedKeyMap.has(k) ? 'quota_exceeded' : 'ready'
+  }));
+
+  const finalError: any = lastError || new Error("Tất cả API Keys đều hết quota hoặc gặp sự cố.");
+  finalError.keysStatus = keysStatus;
+  throw finalError;
 }
 
 

@@ -75,12 +75,21 @@ export interface FlattenedExpansionItem {
   semantic_field_expansion?: SemanticFieldItem[];
 }
 
+export interface ApiKeyStatus {
+  index: number;
+  label: string;
+  status: 'active' | 'quota_exceeded' | 'ready';
+  lastModel?: string;
+}
+
 export interface AutoBatchProgress {
   isRunning: boolean;
   currentProcessingIndex: number;
   completedCount: number;
   totalToProcess: number;
   statusMessage: string;
+  keysStatus?: ApiKeyStatus[];
+  activeModel?: string;
 }
 
 export interface ExpansionPopupParams {
@@ -1131,6 +1140,51 @@ export const generateMovieExpansionPopupStyles = () => `
   }
   .btn-batch-mini-stop:hover {
     background: #fecaca;
+  }
+  .auto-batch-keys {
+    margin-top: 6px;
+    padding-top: 5px;
+    border-top: 1px dashed rgba(22, 101, 52, 0.25);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .badge-key {
+    padding: 2px 7px;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid transparent;
+  }
+  .badge-key-active {
+    background: #dcfce7;
+    color: #15803d;
+    border-color: #86efac;
+    font-weight: 700;
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.25);
+  }
+  .badge-key-quota_exceeded {
+    background: #fee2e2;
+    color: #dc2626;
+    border-color: #fca5a5;
+  }
+  .badge-key-ready {
+    background: #f1f5f9;
+    color: #64748b;
+    border-color: #cbd5e1;
+  }
+  .active-model-tag {
+    margin-left: auto;
+    font-size: 9.5px;
+    font-family: monospace;
+    background: rgba(22, 101, 52, 0.1);
+    color: #166534;
+    padding: 1px 5px;
+    border-radius: 3px;
   }
   .scroll-content {
     flex: 1;
@@ -2281,6 +2335,19 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
       <div class="auto-batch-bar-fill" style="width: ${autoBatch.totalToProcess > 0 ? Math.min(100, Math.round((autoBatch.completedCount / autoBatch.totalToProcess) * 100)) : 0}%"></div>
     </div>
     <div class="auto-batch-status">${escapeHtml(autoBatch.statusMessage || 'Đang phân tích...')}</div>
+    ${autoBatch.keysStatus && autoBatch.keysStatus.length > 0 ? `
+    <div class="auto-batch-keys">
+      <span style="font-weight: 700; color: #166534;">🔑 Trạng thái API Keys:</span>
+      ${autoBatch.keysStatus.map(k => `
+        <span class="badge-key badge-key-${k.status}">
+          ${k.status === 'quota_exceeded' ? '🔴 Hết quota' : k.status === 'active' ? '🟢 Đang dùng' : '⚪ Sẵn sàng'}: ${escapeHtml(k.label)}
+        </span>
+      `).join('')}
+      ${autoBatch.activeModel ? `
+        <span class="active-model-tag">⚡ ${escapeHtml(autoBatch.activeModel)}</span>
+      ` : ''}
+    </div>
+    ` : ''}
   </div>
   ` : ''}
 
