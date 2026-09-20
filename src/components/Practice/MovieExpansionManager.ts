@@ -1618,7 +1618,7 @@ export const generateMovieExpansionPopupStyles = () => `
     vertical-align: middle;
     transition: all 0.15s ease;
     user-select: none;
-    margin-left: 4px;
+    margin-right: 4px;
     opacity: 0.75;
   }
   .btn-tts-sm:hover {
@@ -2166,8 +2166,8 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
       return `
         <div class="header-sentences-box">
           <div class="original-sub-text">
-            <span>"${escapeHtml(sub.text || '')}"</span>
             <button type="button" class="btn-tts-sm" title="Nghe câu gốc" data-speak-text="${encodeURIComponent((sub.text || '').replace(/<[^>]*>/g, '').trim())}">🔊</button>
+            <span>"${escapeHtml(sub.text || '')}"</span>
           </div>
           ${sub.vietnamese ? `<div class="original-sub-vi">${escapeHtml(sub.vietnamese)}</div>` : ''}
           ${paraphraseList.length > 0 ? `
@@ -2179,8 +2179,8 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
                 return `
                   <div class="paraphrase-line" style="cursor: pointer;" title="Nhấp để nghe phát âm" data-speak-text="${encodeURIComponent(rawParaText)}">
                     <span class="paraphrase-badge">${escapeHtml(pMethod)}</span>
-                    <span class="paraphrase-val">"${pHtml}"</span>
                     <button type="button" class="btn-tts-sm" title="Nghe câu diễn giải" data-speak-text="${encodeURIComponent(rawParaText)}">🔊</button>
+                    <span class="paraphrase-val">"${pHtml}"</span>
                   </div>
                 `;
               }).join('')}
@@ -2256,8 +2256,9 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
                 return `
                 <div class="example-item">
                   <div class="ex-en" style="cursor: pointer;" title="Nhấp để nghe đọc câu ví dụ này" data-speak-text="${encodeURIComponent(rawEn)}">
-                    <span>${exIdx + 1}. ${renderMarkupText(ex.en || '')}</span>
-                    <button type="button" class="btn-tts-sm" title="Phát âm câu ví dụ" data-speak-text="${encodeURIComponent(rawEn)}">🔊</button>
+                    <span>${exIdx + 1}. </span>
+                    <button type="button" class="btn-tts-sm" title="Phát âm câu ví dụ" data-speak-text="${encodeURIComponent(rawEn)}">📢</button>
+                    <span>${renderMarkupText(ex.en || '')}</span>
                   </div>
                   <div class="ex-vi">${escapeHtml(ex.vi || '')}</div>
                 </div>
@@ -2290,8 +2291,8 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
                       ${sf.example_en ? `
                         <div class="semantic-example">
                           <div class="semantic-ex-en" style="cursor: pointer;" title="Nhấp để nghe đọc câu ví dụ này" data-speak-text="${encodeURIComponent(rawExEn)}">
-                            <span>💬 ${renderMarkupText(sf.example_en)}</span>
-                            <button type="button" class="btn-tts-sm" title="Phát âm câu ví dụ" data-speak-text="${encodeURIComponent(rawExEn)}">🔊</button>
+                            <button type="button" class="btn-tts-sm" title="Phát âm câu ví dụ" data-speak-text="${encodeURIComponent(rawExEn)}">📢</button>
+                            <span>${renderMarkupText(sf.example_en)}</span>
                           </div>
                           ${sf.example_vi ? `<div class="semantic-ex-vi">${escapeHtml(sf.example_vi)}</div>` : ''}
                         </div>

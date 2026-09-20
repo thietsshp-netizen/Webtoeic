@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Play, Pause, RotateCcw, Volume2, Video, Settings, Edit, Check, X, CheckCircle, ChevronLeft, ChevronRight, HelpCircle, Maximize2, Minimize2 } from "lucide-react";
+import { Play, Pause, RotateCcw, Volume2, Megaphone, Video, Settings, Edit, Check, X, CheckCircle, ChevronLeft, ChevronRight, HelpCircle, Maximize2, Minimize2 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
 import { useSession } from "next-auth/react";
@@ -1163,12 +1163,7 @@ const renderAutoStudyOverlayContent = (
                         <div className="text-[7.5px] sm:text-[10px] md:text-xs leading-tight pl-1 sm:pl-2.5 pt-0.2 sm:pt-0.5 space-y-0.2 sm:space-y-0.5 pointer-events-none">
                           {(sfItem.visibleExEn || sfItem.isTypingExEn) && (
                             <div className="inline-flex items-center flex-wrap gap-0.5 sm:gap-1 font-mono text-cyan-200 p-0.2 sm:p-0.5 rounded select-none pointer-events-none">
-                              <span className="text-cyan-400 shrink-0 select-none text-[7.5px] sm:text-[11px]">💬</span>
-                              <span className="italic">
-                                {sfItem.visibleExEn}
-                                {sfItem.isTypingExEn && <span className="inline-block w-0.5 h-2 sm:h-3 bg-cyan-300 ml-0.5 animate-pulse align-middle" />}
-                              </span>
-                              {/* Nút Loa đặt NGAY SAU câu tiếng Anh - chỉ bấm riêng nút loa */}
+                              {/* Nút Loa câu ví dụ (Megaphone loa nằm ngang phân biệt với Volume2 của từ chính) */}
                               <button
                                 type="button"
                                 onClick={(e) => {
@@ -1178,8 +1173,12 @@ const renderAutoStudyOverlayContent = (
                                 className={`p-0.5 rounded text-cyan-300 hover:text-amber-300 hover:bg-white/10 transition-all cursor-pointer shrink-0 pointer-events-auto ${speakingText === sfItem.rawExEn ? "animate-pulse text-amber-300" : ""}`}
                                 title={`Nghe đọc câu ví dụ: "${sfItem.rawExEn}"`}
                               >
-                                <Volume2 size={8} className="sm:w-2.5 sm:h-2.5" />
+                                <Megaphone size={8} className="sm:w-2.5 sm:h-2.5" />
                               </button>
+                              <span className="italic">
+                                {sfItem.visibleExEn}
+                                {sfItem.isTypingExEn && <span className="inline-block w-0.5 h-2 sm:h-3 bg-cyan-300 ml-0.5 animate-pulse align-middle" />}
+                              </span>
                             </div>
                           )}
                           {(sfItem.visibleExVi || sfItem.isTypingExVi) && (
@@ -1243,12 +1242,7 @@ const renderAutoStudyOverlayContent = (
                 <div className="text-[7.5px] sm:text-[10.5px] md:text-xs leading-tight pl-1 sm:pl-2.5 pt-0.2 sm:pt-0.5 border-t border-white/5 space-y-0.2 sm:space-y-0.5 pointer-events-none">
                   {(fallbackData.visibleExEn || fallbackData.isTypingExEn) && (
                     <div className="inline-flex items-center flex-wrap gap-0.5 sm:gap-1 font-mono text-cyan-200 p-0.2 sm:p-0.5 rounded select-none pointer-events-none">
-                      <span className="text-cyan-400 shrink-0 select-none text-[7.5px] sm:text-[11px]">💬</span>
-                      <span className="italic">
-                        {fallbackData.visibleExEn}
-                        {fallbackData.isTypingExEn && <span className="inline-block w-0.5 h-2 sm:h-3 bg-cyan-300 ml-0.5 animate-pulse align-middle" />}
-                      </span>
-                      {/* Loa đặt NGAY SAU câu tiếng Anh - chỉ bấm riêng nút loa */}
+                      {/* Loa câu ví dụ (Megaphone loa nằm ngang) */}
                       <button
                         type="button"
                         onClick={(e) => {
@@ -1258,8 +1252,12 @@ const renderAutoStudyOverlayContent = (
                         className={`p-0.5 rounded text-cyan-300 hover:text-amber-300 hover:bg-white/10 transition-all cursor-pointer shrink-0 pointer-events-auto ${speakingText === fallbackData.rawExEn ? "animate-pulse text-amber-300" : ""}`}
                         title={`Nghe đọc câu ví dụ: "${fallbackData.rawExEn}"`}
                       >
-                        <Volume2 size={8} className={`sm:w-2.5 sm:h-2.5`} />
+                        <Megaphone size={8} className={`sm:w-2.5 sm:h-2.5`} />
                       </button>
+                      <span className="italic">
+                        {fallbackData.visibleExEn}
+                        {fallbackData.isTypingExEn && <span className="inline-block w-0.5 h-2 sm:h-3 bg-cyan-300 ml-0.5 animate-pulse align-middle" />}
+                      </span>
                     </div>
                   )}
                   {(fallbackData.visibleExVi || fallbackData.isTypingExVi) && (
