@@ -75,6 +75,14 @@ export interface FlattenedExpansionItem {
   semantic_field_expansion?: SemanticFieldItem[];
 }
 
+export interface AutoBatchProgress {
+  isRunning: boolean;
+  currentProcessingIndex: number;
+  completedCount: number;
+  totalToProcess: number;
+  statusMessage: string;
+}
+
 export interface ExpansionPopupParams {
   subIndex: number;
   totalSubtitles: number;
@@ -84,6 +92,7 @@ export interface ExpansionPopupParams {
   isJsonMode?: boolean;
   isSaving?: boolean;
   addType?: 'vocabulary' | 'structure' | null;
+  autoBatch?: AutoBatchProgress | null;
 }
 
 export interface ExpansionPopupCallbacks {
@@ -94,6 +103,8 @@ export interface ExpansionPopupCallbacks {
   onCycle: (key: string) => void;
   onSeek: (key: string) => void;
   onSelectIndex?: (index: number) => void;
+  onStartAutoBatch?: (mode: 'unprocessed' | 'from_current' | 'all') => void;
+  onStopAutoBatch?: () => void;
 }
 
 const normalizeExamplesList = (rawExamples: any, singleEn?: any, singleVi?: any): ExampleItem[] => {
@@ -1013,6 +1024,74 @@ export const generateMovieExpansionPopupStyles = () => `
     background: #4338ca;
     color: #ffffff;
     border-color: #4338ca;
+  }
+  .btn-header-auto {
+    background: #059669;
+    color: #ffffff;
+    border-color: #059669;
+  }
+  .btn-header-auto:hover {
+    background: #047857;
+    color: #ffffff;
+    border-color: #047857;
+  }
+  .btn-header-stop-batch {
+    background: #dc2626;
+    color: #ffffff;
+    border-color: #dc2626;
+  }
+  .btn-header-stop-batch:hover {
+    background: #b91c1c;
+    color: #ffffff;
+    border-color: #b91c1c;
+  }
+  .auto-batch-banner {
+    background: #f0fdf4;
+    border-bottom: 1px solid #bbf7d0;
+    padding: 7px 12px;
+    font-size: 11px;
+    color: #166534;
+    flex-shrink: 0;
+  }
+  .auto-batch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    font-size: 11.5px;
+  }
+  .auto-batch-bar-bg {
+    background: #dcfce7;
+    border-radius: 4px;
+    height: 5px;
+    overflow: hidden;
+    margin-bottom: 3px;
+  }
+  .auto-batch-bar-fill {
+    background: #16a34a;
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+  .auto-batch-status {
+    font-size: 10px;
+    color: #15803d;
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .btn-batch-mini-stop {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .btn-batch-mini-stop:hover {
+    background: #fecaca;
   }
   .scroll-content {
     flex: 1;
@@ -2116,7 +2195,7 @@ export const generateMovieExpansionPopupStyles = () => `
 `;
 
 export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): string => {
-  const { subIndex, totalSubtitles, sub, activeItemIndex, isEditMode = false, isJsonMode = false, isSaving = false, addType = null } = params;
+  const { subIndex, totalSubtitles, sub, activeItemIndex, isEditMode = false, isJsonMode = false, isSaving = false, addType = null, autoBatch = null } = params;
   const items = getFlattenedExpansionItems(sub);
   const totalItems = items.length;
   const currentItem: FlattenedExpansionItem | null =
@@ -2140,12 +2219,31 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
         <span class="badge-q">CÂU ${subIndex + 1} / ${totalSubtitles}</span>
       </div>
       <div style="display: flex; align-items: center; gap: 5px;">
+        ${autoBatch?.isRunning ? `
+          <button type="button" class="btn-header btn-header-stop-batch" id="btnStopAutoBatch" onclick="window.handleStopAutoBatch && window.handleStopAutoBatch()" title="Bấm để dừng tiến trình tự động">⏹ Dừng (${autoBatch.completedCount}/${autoBatch.totalToProcess})</button>
+        ` : `
+          <button type="button" class="btn-header btn-header-auto" id="btnStartAutoBatch" onclick="window.handleStartAutoBatch && window.handleStartAutoBatch()" title="Tự động phân tích từng câu chưa có dữ liệu từ từ lên Gemini">🚀 Tự động chạy</button>
+        `}
         <button type="button" class="btn-header btn-header-ai" id="btnSendGemini" onclick="window.handleSendGemini && window.handleSendGemini()" title="Gửi trực tiếp câu này sang Gemini AI để tự động tạo và lưu kiến thức mở rộng">⚡ Gửi Gemini</button>
         <button type="button" class="btn-header" id="btnCopyPrompt" onclick="window.handleCopyPrompt && window.handleCopyPrompt()" title="Sao chép prompt câu này để gửi Gemini">📋 Copy Prompt</button>
         <button type="button" class="btn-header ${isJsonMode ? 'btn-header-active' : ''}" onclick="window.toggleJsonMode && window.toggleJsonMode()" title="Dán mã JSON trả về từ Gemini">📥 Dán JSON</button>
       </div>
     </div>
   </div>
+
+  <!-- Auto Batch Progress Banner (Hiển thị khi đang chạy tự động) -->
+  ${autoBatch?.isRunning ? `
+  <div class="auto-batch-banner">
+    <div class="auto-batch-header">
+      <span>🤖 <strong>Tự động xử lý:</strong> Đang câu ${autoBatch.currentProcessingIndex + 1}/${totalSubtitles} (Đã xong: ${autoBatch.completedCount}/${autoBatch.totalToProcess})</span>
+      <button type="button" class="btn-batch-mini-stop" onclick="window.handleStopAutoBatch && window.handleStopAutoBatch()">Dừng ✕</button>
+    </div>
+    <div class="auto-batch-bar-bg">
+      <div class="auto-batch-bar-fill" style="width: ${autoBatch.totalToProcess > 0 ? Math.min(100, Math.round((autoBatch.completedCount / autoBatch.totalToProcess) * 100)) : 0}%"></div>
+    </div>
+    <div class="auto-batch-status">${escapeHtml(autoBatch.statusMessage || 'Đang phân tích...')}</div>
+  </div>
+  ` : ''}
 
   <!-- Main Scrollable Body -->
   <div class="scroll-content" id="scrollContent">
@@ -2376,6 +2474,11 @@ export const renderMovieExpansionPopupContent = (params: ExpansionPopupParams): 
               ${sub.vietnamese ? `<div class="empty-sub-vi">${escapeHtml(sub.vietnamese)}</div>` : ''}
             </div>
             <div class="empty-actions">
+              ${autoBatch?.isRunning ? `
+                <button type="button" class="btn btn-header-stop-batch" onclick="window.handleStopAutoBatch && window.handleStopAutoBatch()">⏹ Dừng tự động (${autoBatch.completedCount}/${autoBatch.totalToProcess})</button>
+              ` : `
+                <button type="button" class="btn btn-header-auto" onclick="window.handleStartAutoBatch && window.handleStartAutoBatch()">🚀 Tự động chạy hàng loạt</button>
+              `}
               <button type="button" class="btn btn-ai" id="btnEmptySendGemini" onclick="window.handleSendGemini && window.handleSendGemini()">⚡ Gửi Gemini</button>
               <button type="button" class="btn btn-primary" onclick="window.handleCopyPrompt && window.handleCopyPrompt()">📋 Copy Prompt Gemini</button>
               <button type="button" class="btn btn-edit" onclick="window.toggleJsonMode && window.toggleJsonMode()">📥 Dán JSON từ Gemini</button>
@@ -3038,6 +3141,21 @@ const ensureYouGlishScript = (doc: Document, win: any): Promise<void> => {
         window.alert(`❌ ${errMsg}`);
       }
       setButtonsLoading(false);
+    }
+  };
+
+  targetWin.handleStartAutoBatch = () => {
+    const isConfirmed = typeof targetWin.confirm === 'function'
+      ? targetWin.confirm('Bắt đầu tự động phân tích các câu thoại chưa có dữ liệu?\n\n• Hệ thống sẽ gửi từng câu một lên Gemini AI và tự động lưu vào bài.\n• Nghỉ an toàn 4.5s giữa các câu để chống quá tải (Rate Limit).\n• Đảm bảo lưu đúng kết quả vào từng câu 100%.\n• Bạn có thể bấm [Dừng lại] bất kỳ lúc nào.')
+      : true;
+    if (isConfirmed && callbacks.onStartAutoBatch) {
+      callbacks.onStartAutoBatch('unprocessed');
+    }
+  };
+
+  targetWin.handleStopAutoBatch = () => {
+    if (callbacks.onStopAutoBatch) {
+      callbacks.onStopAutoBatch();
     }
   };
 

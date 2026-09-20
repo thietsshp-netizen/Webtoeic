@@ -22,7 +22,9 @@ import {
   buildWordRegexPattern,
   buildFlexiblePhraseRegex,
   sortExpansionItemsByOccurrence,
-  getItemFirstOccurrenceIndex
+  getItemFirstOccurrenceIndex,
+  ExpansionPopupParams,
+  AutoBatchProgress
 } from "./MovieExpansionManager";
 
 // Multi-buffer sound pool for realistic, warm, soft mechanical keyboard acoustics (ASMR thock)
@@ -1285,6 +1287,13 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   const [youglishTarget, setYouglishTarget] = useState<{ word: string; ipa?: string; mean?: string } | null>(null);
   const [speakingText, setSpeakingText] = useState<string | null>(null);
 
+  // Auto Batch Gemini Generation States
+  const isAutoBatchRunningRef = useRef<boolean>(false);
+  const autoBatchProgressRef = useRef<AutoBatchProgress | null>(null);
+  const [autoBatchProgress, setAutoBatchProgress] = useState<AutoBatchProgress | null>(null);
+  const startAutoExpansionBatchRef = useRef<((mode?: any) => void) | null>(null);
+  const stopAutoExpansionBatchRef = useRef<(() => void) | null>(null);
+
   const handleSpeak = (text: string) => {
     const clean = text.replace(/<[^>]*>/g, '').trim();
     if (!clean) return;
@@ -1832,7 +1841,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     setIsExpansionJsonMode(isJsonMode);
     setExpansionAddType(addType);
 
-    const popupParams = {
+    const popupParams: ExpansionPopupParams = {
       subIndex: subIdx,
       totalSubtitles: currentSubs.length,
       sub,
@@ -1840,7 +1849,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       isEditMode: isEdit,
       isJsonMode: isJsonMode,
       isSaving: isSavingExpansion,
-      addType
+      addType,
+      autoBatch: autoBatchProgressRef.current
     };
 
     const callbacks: ExpansionPopupCallbacks = {
@@ -2050,6 +2060,12 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       },
       onSelectIndex: (targetIdx: number) => {
         updateExpansionPopup(currentIndexRef.current, targetIdx, false, null, false);
+      },
+      onStartAutoBatch: (batchMode) => {
+        startAutoExpansionBatchRef.current?.(batchMode);
+      },
+      onStopAutoBatch: () => {
+        stopAutoExpansionBatchRef.current?.();
       }
     };
 
@@ -2106,9 +2122,180 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     }
   };
 
-  // Tự động đóng popup khi unmount
+  const stopAutoExpansionBatch = () => {
+    isAutoBatchRunningRef.current = false;
+    autoBatchProgressRef.current = null;
+    setAutoBatchProgress(null);
+    showToast("Đã dừng tiến trình tự động!", "info");
+    updateExpansionPopup(currentIndexRef.current, selectedExpansionIndexRef.current, false, null, false);
+  };
+  stopAutoExpansionBatchRef.current = stopAutoExpansionBatch;
+
+  const startAutoExpansionBatch = async (mode: 'unprocessed' | 'from_current' | 'all' = 'unprocessed') => {
+    if (isAutoBatchRunningRef.current) return;
+    isAutoBatchRunningRef.current = true;
+
+    const latestSubs = subtitlesRef.current.length > 0 ? subtitlesRef.current : subtitles;
+    if (!latestSubs || latestSubs.length === 0) {
+      showToast("Không có câu thoại nào để xử lý!", "error");
+      isAutoBatchRunningRef.current = false;
+      return;
+    }
+
+    // 1. Xác định danh sách các subIndex cần xử lý
+    let queueIndices: number[] = [];
+    if (mode === 'unprocessed') {
+      queueIndices = latestSubs
+        .map((s, idx) => ({ s, idx }))
+        .filter(({ s }) => {
+          const text = (s.text || '').trim();
+          if (!text) return false;
+          const exp = s.expansion;
+          if (!exp) return true;
+          const hasVocab = Array.isArray(exp.vocabulary) && exp.vocabulary.length > 0;
+          const hasParaphrase = Boolean(exp.paraphrase && exp.paraphrase.trim()) || (Array.isArray(exp.paraphrases) && exp.paraphrases.length > 0);
+          const hasStruct = Array.isArray(exp.structures) && exp.structures.length > 0;
+          return !hasVocab && !hasParaphrase && !hasStruct;
+        })
+        .map(({ idx }) => idx);
+    } else if (mode === 'from_current') {
+      for (let i = currentIndexRef.current; i < latestSubs.length; i++) {
+        if ((latestSubs[i].text || '').trim()) queueIndices.push(i);
+      }
+    } else {
+      queueIndices = latestSubs.map((_, idx) => idx).filter(idx => (latestSubs[idx].text || '').trim());
+    }
+
+    if (queueIndices.length === 0) {
+      showToast("Tất cả các câu đều đã có dữ liệu mở rộng!", "success");
+      isAutoBatchRunningRef.current = false;
+      return;
+    }
+
+    showToast(`Bắt đầu xử lý tự động ${queueIndices.length} câu thoại...`, "info");
+
+    let completedCount = 0;
+    const totalToProcess = queueIndices.length;
+
+    for (let i = 0; i < queueIndices.length; i++) {
+      if (!isAutoBatchRunningRef.current) break;
+
+      const targetSubIdx = queueIndices[i];
+      const currentSubsSnapshot = subtitlesRef.current.length > 0 ? subtitlesRef.current : subtitles;
+      const currentTargetSub = currentSubsSnapshot[targetSubIdx];
+      if (!currentTargetSub || !currentTargetSub.text?.trim()) continue;
+
+      const targetText = currentTargetSub.text.trim();
+      const targetVi = (currentTargetSub.vietnamese || '').trim();
+
+      // Cập nhật trạng thái tiến trình
+      const progressState: AutoBatchProgress = {
+        isRunning: true,
+        currentProcessingIndex: targetSubIdx,
+        completedCount,
+        totalToProcess,
+        statusMessage: `Đang phân tích câu ${targetSubIdx + 1}/${latestSubs.length}: "${targetText.length > 30 ? targetText.substring(0, 30) + '...' : targetText}"`
+      };
+      autoBatchProgressRef.current = progressState;
+      setAutoBatchProgress(progressState);
+
+      // Cập nhật popup để người dùng nhìn thấy tiến trình
+      updateExpansionPopup(targetSubIdx, 0, false, null, false);
+
+      // Gửi sang Gemini với cơ chế Retry nếu quá tải
+      let success = false;
+      let retryCount = 0;
+      const maxRetries = 2;
+
+      while (!success && retryCount <= maxRetries && isAutoBatchRunningRef.current) {
+        try {
+          const res = await fetch('/api/admin/expansion/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: targetText, vietnamese: targetVi })
+          });
+
+          const data = await res.json();
+
+          if (!res.ok || !data.success) {
+            throw new Error(data.error || 'Lỗi Gemini API');
+          }
+
+          // Kiểm tra khớp tuyệt đối trước khi ghi vào CSDL
+          const liveSubs = subtitlesRef.current.length > 0 ? subtitlesRef.current : subtitles;
+          if (liveSubs[targetSubIdx] && liveSubs[targetSubIdx].text?.trim() === targetText) {
+            const sanitized = sanitizeExpansionJson(data.data);
+            const updatedSubtitles = liveSubs.map((s, idx) => {
+              if (idx === targetSubIdx) {
+                return { ...s, expansion: sanitized };
+              }
+              return { ...s };
+            });
+
+            setSubtitles(updatedSubtitles);
+            subtitlesRef.current = updatedSubtitles;
+
+            // Lưu ngay vào CSDL (lưu cuốn chiếu từng câu)
+            await fetch(`/api/lessons/${lessonId}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ content: JSON.stringify(updatedSubtitles) })
+            });
+
+            completedCount++;
+            success = true;
+
+            // Cập nhật lại popup với dữ liệu mới vừa sinh ra
+            updateExpansionPopup(targetSubIdx, 0, false, null, false);
+          } else {
+            console.warn(`[AutoBatch] Cảnh báo lệch index tại câu ${targetSubIdx}. Đã bỏ qua để đảm bảo an toàn.`);
+            success = true; // Bỏ qua câu này để không lưu nhầm
+          }
+        } catch (err: any) {
+          retryCount++;
+          console.error(`[AutoBatch] Lỗi câu ${targetSubIdx + 1} (thử lần ${retryCount}):`, err);
+          const errMsg = String(err?.message || '');
+          const isQuota = errMsg.includes("429") || errMsg.includes("quota") || errMsg.includes("RESOURCE_EXHAUSTED");
+
+          if (retryCount <= maxRetries && isAutoBatchRunningRef.current) {
+            const waitSec = isQuota ? 12 : 5;
+            if (autoBatchProgressRef.current) {
+              autoBatchProgressRef.current.statusMessage = `⚠️ ${isQuota ? 'Hết quota tạm thời' : 'Lỗi kết nối'}, đang nghỉ ${waitSec}s rồi thử lại câu ${targetSubIdx + 1}...`;
+              updateExpansionPopup(targetSubIdx, 0, false, null, false);
+            }
+            await new Promise(r => setTimeout(r, waitSec * 1000));
+          } else {
+            console.warn(`[AutoBatch] Bỏ qua câu ${targetSubIdx + 1} sau ${maxRetries} lần thử thất bại.`);
+          }
+        }
+      }
+
+      // Khoảng nghỉ an toàn (Delay) giữa các câu: 4.5 giây (luôn dưới ngưỡng 15 RPM của Gemini)
+      if (i < queueIndices.length - 1 && isAutoBatchRunningRef.current) {
+        for (let countdown = 4; countdown > 0; countdown--) {
+          if (!isAutoBatchRunningRef.current) break;
+          if (autoBatchProgressRef.current) {
+            autoBatchProgressRef.current.statusMessage = `✅ Đã lưu câu ${targetSubIdx + 1}. Đang nghỉ ${countdown}s trước câu tiếp theo để tránh quá tải...`;
+            updateExpansionPopup(targetSubIdx, 0, false, null, false);
+          }
+          await new Promise(r => setTimeout(r, 1000));
+        }
+      }
+    }
+
+    isAutoBatchRunningRef.current = false;
+    const finalMessage = `Đã hoàn tất tự động phân tích: ${completedCount}/${totalToProcess} câu thành công!`;
+    showToast(finalMessage, "success");
+    autoBatchProgressRef.current = null;
+    setAutoBatchProgress(null);
+    updateExpansionPopup(currentIndexRef.current, selectedExpansionIndexRef.current, false, null, false);
+  };
+  startAutoExpansionBatchRef.current = startAutoExpansionBatch;
+
+  // Tự động đóng popup khi unmount và dừng tiến trình tự động
   useEffect(() => {
     return () => {
+      isAutoBatchRunningRef.current = false;
       if (popupRef.current && !popupRef.current.closed) {
         popupRef.current.close();
       }
