@@ -1296,11 +1296,20 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   };
 
   const handleOpenYouGlish = (word: string, ipa?: string, mean?: string) => {
-    if (playerRef.current && typeof playerRef.current.pauseVideo === "function") {
-      try {
-        playerRef.current.pauseVideo();
-        setIsPlaying(false);
-      } catch {}
+    if (isDirectVideo) {
+      if (videoRef.current) {
+        try {
+          videoRef.current.pause();
+          setIsPlaying(false);
+        } catch {}
+      }
+    } else {
+      if (playerRef.current && typeof playerRef.current.pauseVideo === "function") {
+        try {
+          playerRef.current.pauseVideo();
+          setIsPlaying(false);
+        } catch {}
+      }
     }
     // Clean target search keyword (e.g. remove parenthesized notes like (someone))
     let cleanWord = word.replace(/\([^)]*\)/g, '').trim();
@@ -3133,10 +3142,12 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           ref={videoContainerRef}
           tabIndex={-1}
           onMouseLeave={() => videoContainerRef.current?.focus()}
-          className={`w-full bg-black relative flex items-center justify-center group/video transition-all outline-none ${
+          className={`w-full bg-black relative flex items-center justify-center group/video transition-all duration-300 outline-none overflow-hidden ${
             isFullscreen 
               ? "max-w-none h-full rounded-none border-0 shadow-none" 
-              : "max-w-5xl aspect-video rounded-none border-2 md:border-4 border-black shadow-2xl"
+              : youglishTarget
+                ? "max-w-5xl min-h-[500px] md:min-h-[620px] aspect-auto rounded-none border-2 md:border-4 border-black shadow-2xl"
+                : "max-w-5xl aspect-video rounded-none border-2 md:border-4 border-black shadow-2xl"
           }`}
         >
           {isDirectVideo ? (
@@ -3436,6 +3447,16 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               </div>
             </div>
           )}
+
+          {/* YouGlish Native Pronunciation Video Modal - Nằm trọn trong khung video */}
+          <YouGlishModal
+            isOpen={!!youglishTarget}
+            onClose={() => setYouglishTarget(null)}
+            word={youglishTarget?.word || ""}
+            ipa={youglishTarget?.ipa}
+            mean={youglishTarget?.mean}
+            embedded={true}
+          />
         </div>
       </div>
 
@@ -4437,15 +4458,6 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           )}
         </div>
       </div>
-
-      {/* YouGlish Native Pronunciation Video Modal */}
-      <YouGlishModal
-        isOpen={!!youglishTarget}
-        onClose={() => setYouglishTarget(null)}
-        word={youglishTarget?.word || ""}
-        ipa={youglishTarget?.ipa}
-        mean={youglishTarget?.mean}
-      />
     </div>
   );
 }
