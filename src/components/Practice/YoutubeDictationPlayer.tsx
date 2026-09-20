@@ -1697,7 +1697,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             if (isInfiniteLoop || totalLoops > 0) {
               startAutoStudyReplay(targetIdx, totalLoops);
             } else {
-              stopAutoStudy();
+              setAutoStudyPhase("showing");
+              autoStudyPhaseRef.current = "showing";
               if (isDirectVideo) {
                 if (videoRef.current) videoRef.current.play().catch(() => {});
               } else {
@@ -1730,7 +1731,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       if (isInfiniteLoop || totalLoops > 0) {
         startAutoStudyReplay(targetIdx, totalLoops);
       } else {
-        stopAutoStudy();
+        setAutoStudyPhase("showing");
+        autoStudyPhaseRef.current = "showing";
       }
     }
   };
@@ -2819,7 +2821,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             }
           }
 
-          // Auto-Study Vocab check (Mode 1: Typewriter at end / Mode 2: Slide-in after 1s)
+          // Auto-Study Vocab check (Hiện cùng lúc từ đầu câu sub)
           if (isAutoStudyModeRef.current && mode === "listen" && subtitles.length > 0) {
             const currentSub = subtitles[currentIndex];
             if (currentSub && currentSub.expansion) {
@@ -2831,19 +2833,20 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               if (originalExpItems.length > 0) {
                 const displayMode = autoStudyDisplayModeRef.current;
                 if (displayMode === "instant") {
-                  // Mode 2: Trượt vào sau khi sub đã chạy được 1s (hoặc 40% sub nếu sub ngắn)
-                  const subDuration = currentSub.end - currentSub.start;
-                  const triggerTime = currentSub.start + Math.min(1.0, Math.max(0.1, subDuration * 0.4));
-                  if (autoStudyPhaseRef.current === "idle" && time >= triggerTime && hasTriggeredAutoStudyRef.current !== currentIndex) {
+                  // Hiện cùng sub từ đầu luôn (ngay khi time >= currentSub.start)
+                  if (autoStudyPhaseRef.current === "idle" && time >= currentSub.start && hasTriggeredAutoStudyRef.current !== currentIndex) {
                     hasTriggeredAutoStudyRef.current = currentIndex;
                     startAutoStudyInstant(currentIndex, originalExpItems);
+                    const totalLoops = isLoopingCurrentSubRef.current ? 999999 : autoStudyLoopsRef.current;
+                    autoStudyLoopRemainingRef.current = totalLoops;
+                    setAutoStudyLoopRemaining(totalLoops);
                   } else if (autoStudyPhaseRef.current === "showing" && time >= (currentSub.end + 0.15)) {
                     if (isLoopingCurrentSubRef.current || autoStudyLoopsRef.current > 0) {
                       startAutoStudyReplay(currentIndex, isLoopingCurrentSubRef.current ? 999999 : autoStudyLoopsRef.current);
-                    } else {
-                      stopAutoStudy();
+                      return;
                     }
-                    return;
+                    // Nếu autoStudyLoops === 0: KHÔNG gọi stopAutoStudy() ở đây!
+                    // Bảng tiếp tục giữ nguyên cho đến khi phát hiện sang câu thoại mới!
                   }
                 } else {
                   // Mode 1: Đánh chữ (Typewriter) tại cuối sub
@@ -2882,7 +2885,11 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   setIsPlaying(true);
                 }
               } else {
-                stopAutoStudy();
+                // Đã lặp đủ số lần: chuyển sang trạng thái "showing" để bảng tiếp tục hiện cho đến khi sang câu mới
+                setAutoStudyPhase("showing");
+                autoStudyPhaseRef.current = "showing";
+                autoStudyLoopRemainingRef.current = 0;
+                setAutoStudyLoopRemaining(0);
                 if (currentIndex < subtitles.length - 1) {
                   playSubtitleRow(currentIndex + 1);
                 }
@@ -2901,8 +2908,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             }
           }
 
-          // Find and update active subtitle based on time (only in listening mode when NOT looping and NOT in auto-study)
-          if (mode === "listen" && !isLoopingCurrentSub && autoStudyPhaseRef.current === "idle" && subtitles.length > 0) {
+          // Find and update active subtitle based on time (chỉ khi không loop câu và không đang gõ máy)
+          const canTrackSub = mode === "listen" && !isLoopingCurrentSub && autoStudyPhaseRef.current !== "typing" && autoStudyPhaseRef.current !== "replaying";
+          if (canTrackSub && subtitles.length > 0) {
             // Scan backwards to find the latest matching subtitle (prioritizes newer segments when times overlap)
             let foundIndex = -1;
             for (let i = subtitles.length - 1; i >= 0; i--) {
@@ -2914,6 +2922,31 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             }
             if (foundIndex !== -1 && foundIndex !== currentIndex) {
               setCurrentIndex(foundIndex);
+
+              // Tự động đồng bộ bảng từ vựng sang câu mới ngay từ đầu:
+              if (isAutoStudyModeRef.current) {
+                const nextSub = subtitles[foundIndex];
+                if (nextSub && nextSub.expansion) {
+                  const allItems = getFlattenedExpansionItems(nextSub);
+                  const originalExpItems = sortExpansionItemsByOccurrence(
+                    allItems.filter(it => isItemFromOriginal(it, nextSub.text) && it.type === "vocabulary"),
+                    nextSub.text
+                  );
+                  if (originalExpItems.length > 0) {
+                    hasTriggeredAutoStudyRef.current = foundIndex;
+                    startAutoStudyInstant(foundIndex, originalExpItems);
+                    const totalLoops = isLoopingCurrentSubRef.current ? 999999 : autoStudyLoopsRef.current;
+                    autoStudyLoopRemainingRef.current = totalLoops;
+                    setAutoStudyLoopRemaining(totalLoops);
+                  } else {
+                    stopAutoStudy();
+                    hasTriggeredAutoStudyRef.current = -1;
+                  }
+                } else {
+                  stopAutoStudy();
+                  hasTriggeredAutoStudyRef.current = -1;
+                }
+              }
             }
           }
         } catch (e) {}
@@ -2979,13 +3012,41 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   // Handle seeking & playing a specific subtitle row
   const playSubtitleRow = (index: number) => {
     if (index < 0 || index >= subtitles.length) return;
-    if (autoStudyPhaseRef.current !== "idle" || index !== currentIndexRef.current) {
-      stopAutoStudy();
-      hasTriggeredAutoStudyRef.current = -1;
-    }
     lastSeekTimeRef.current = Date.now();
     setCurrentIndex(index);
     const sub = subtitles[index];
+
+    // Khi người học tua/chuyển câu (bằng v, b, n hoặc click dòng sub):
+    // Nếu chế độ tự học từ vựng đang bật, hiện ngay bảng từ vựng từ đầu tới cuối câu đó
+    if (isAutoStudyModeRef.current && mode === "listen") {
+      clearAutoStudyTimers();
+      if (sub && sub.expansion) {
+        const allItems = getFlattenedExpansionItems(sub);
+        const originalExpItems = sortExpansionItemsByOccurrence(
+          allItems.filter(it => isItemFromOriginal(it, sub.text) && it.type === "vocabulary"),
+          sub.text
+        );
+        if (originalExpItems.length > 0) {
+          hasTriggeredAutoStudyRef.current = index;
+          startAutoStudyInstant(index, originalExpItems);
+          const totalLoops = isLoopingCurrentSubRef.current ? 999999 : autoStudyLoopsRef.current;
+          autoStudyLoopRemainingRef.current = totalLoops;
+          setAutoStudyLoopRemaining(totalLoops);
+        } else {
+          stopAutoStudy();
+          hasTriggeredAutoStudyRef.current = -1;
+        }
+      } else {
+        stopAutoStudy();
+        hasTriggeredAutoStudyRef.current = -1;
+      }
+    } else {
+      if (autoStudyPhaseRef.current !== "idle") {
+        stopAutoStudy();
+        hasTriggeredAutoStudyRef.current = -1;
+      }
+    }
+
     if (isDirectVideo) {
       if (videoRef.current) {
         videoRef.current.currentTime = sub.start;
@@ -3370,7 +3431,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   tracks[i].mode = "disabled";
                 }
 
-                // Auto-Study Vocab check (Mode 1: Typewriter at end / Mode 2: Slide-in after 1s)
+                // Auto-Study Vocab check (Hiện cùng lúc từ đầu câu sub)
                 if (isAutoStudyModeRef.current && mode === "listen" && subtitles.length > 0) {
                   const currentSub = subtitles[currentIndex];
                   if (currentSub && currentSub.expansion) {
@@ -3382,19 +3443,20 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                     if (originalExpItems.length > 0) {
                       const displayMode = autoStudyDisplayModeRef.current;
                       if (displayMode === "instant") {
-                        // Mode 2: Trượt vào sau khi sub đã chạy được 1s (hoặc 40% sub nếu sub ngắn)
-                        const subDuration = currentSub.end - currentSub.start;
-                        const triggerTime = currentSub.start + Math.min(1.0, Math.max(0.1, subDuration * 0.4));
-                        if (autoStudyPhaseRef.current === "idle" && time >= triggerTime && hasTriggeredAutoStudyRef.current !== currentIndex) {
+                        // Hiện cùng sub từ đầu luôn (ngay khi time >= currentSub.start)
+                        if (autoStudyPhaseRef.current === "idle" && time >= currentSub.start && hasTriggeredAutoStudyRef.current !== currentIndex) {
                           hasTriggeredAutoStudyRef.current = currentIndex;
                           startAutoStudyInstant(currentIndex, originalExpItems);
+                          const totalLoops = isLoopingCurrentSubRef.current ? 999999 : autoStudyLoopsRef.current;
+                          autoStudyLoopRemainingRef.current = totalLoops;
+                          setAutoStudyLoopRemaining(totalLoops);
                         } else if (autoStudyPhaseRef.current === "showing" && time >= (currentSub.end + 0.15)) {
                           if (isLoopingCurrentSubRef.current || autoStudyLoopsRef.current > 0) {
                             startAutoStudyReplay(currentIndex, isLoopingCurrentSubRef.current ? 999999 : autoStudyLoopsRef.current);
-                          } else {
-                            stopAutoStudy();
+                            return;
                           }
-                          return;
+                          // Nếu autoStudyLoops === 0: KHÔNG gọi stopAutoStudy() ở đây!
+                          // Bảng tiếp tục giữ nguyên cho đến khi phát hiện sang câu thoại mới!
                         }
                       } else {
                         // Mode 1: Đánh chữ (Typewriter) tại cuối sub
@@ -3433,7 +3495,11 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                         setIsPlaying(true);
                       }
                     } else {
-                      stopAutoStudy();
+                      // Đã lặp đủ số lần: chuyển sang trạng thái "showing" để bảng tiếp tục hiện cho đến khi sang câu mới
+                      setAutoStudyPhase("showing");
+                      autoStudyPhaseRef.current = "showing";
+                      autoStudyLoopRemainingRef.current = 0;
+                      setAutoStudyLoopRemaining(0);
                       if (currentIndex < subtitles.length - 1) {
                         playSubtitleRow(currentIndex + 1);
                       }
@@ -3452,8 +3518,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   }
                 }
 
-                // Find and update active subtitle based on time (only in listen mode when NOT looping and NOT in auto-study)
-                if (mode === "listen" && !isLoopingCurrentSub && autoStudyPhaseRef.current === "idle" && subtitles.length > 0) {
+                // Find and update active subtitle based on time (chỉ khi không loop câu và không đang gõ máy)
+                const canTrackSub = mode === "listen" && !isLoopingCurrentSub && autoStudyPhaseRef.current !== "typing" && autoStudyPhaseRef.current !== "replaying";
+                if (canTrackSub && subtitles.length > 0) {
                   let foundIndex = -1;
                   for (let i = subtitles.length - 1; i >= 0; i--) {
                     const sub = subtitles[i];
@@ -3464,6 +3531,31 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   }
                   if (foundIndex !== -1 && foundIndex !== currentIndex) {
                     setCurrentIndex(foundIndex);
+
+                    // Tự động đồng bộ bảng từ vựng sang câu mới ngay từ đầu:
+                    if (isAutoStudyModeRef.current) {
+                      const nextSub = subtitles[foundIndex];
+                      if (nextSub && nextSub.expansion) {
+                        const allItems = getFlattenedExpansionItems(nextSub);
+                        const originalExpItems = sortExpansionItemsByOccurrence(
+                          allItems.filter(it => isItemFromOriginal(it, nextSub.text) && it.type === "vocabulary"),
+                          nextSub.text
+                        );
+                        if (originalExpItems.length > 0) {
+                          hasTriggeredAutoStudyRef.current = foundIndex;
+                          startAutoStudyInstant(foundIndex, originalExpItems);
+                          const totalLoops = isLoopingCurrentSubRef.current ? 999999 : autoStudyLoopsRef.current;
+                          autoStudyLoopRemainingRef.current = totalLoops;
+                          setAutoStudyLoopRemaining(totalLoops);
+                        } else {
+                          stopAutoStudy();
+                          hasTriggeredAutoStudyRef.current = -1;
+                        }
+                      } else {
+                        stopAutoStudy();
+                        hasTriggeredAutoStudyRef.current = -1;
+                      }
+                    }
                   }
                 }
               }}
@@ -3955,7 +4047,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                               <span>⚡</span> Trượt vào
                             </div>
                             <div className="text-[9.5px] opacity-75 leading-tight mt-0.5">
-                              Hiện sau 1s (video vẫn chạy)
+                              Hiện cùng sub từ đầu (video vẫn chạy)
                             </div>
                           </button>
                         </div>
@@ -4028,7 +4120,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                       {autoStudyDisplayMode === "instant" && (
                         <div className="py-2 border-b border-slate-100">
                           <div className="text-[10px] text-indigo-700 bg-indigo-50/80 p-2 rounded-xl border border-indigo-100 leading-relaxed">
-                            💡 Sau khi sub chạy được 1s, khung từ vựng sẽ trượt vào mượt mà trong lúc video vẫn đang phát.
+                            💡 Khung từ vựng xuất hiện đồng thời từ đầu câu thoại và hiển thị liên tục cho đến khi chuyển sang câu mới.
                           </div>
                         </div>
                       )}
@@ -4059,7 +4151,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                           ))}
                         </div>
                         <div className="text-[9.5px] text-slate-400 mt-1">
-                          {autoStudyLoops === 0 ? "0: Phát qua một lần duy nhất rồi sang câu tiếp" : `Lặp lại dòng sub ${autoStudyLoops} lần`}
+                          {autoStudyLoops === 0 ? "0: Không lặp (bảng giữ nguyên cho đến khi sang câu mới)" : `Lặp lại dòng sub ${autoStudyLoops} lần`}
                         </div>
                       </div>
 
