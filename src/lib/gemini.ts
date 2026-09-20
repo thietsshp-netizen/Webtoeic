@@ -8,9 +8,38 @@ const GEMINI_CANDIDATE_MODELS = [
   "gemini-flash-latest"
 ];
 
-function getModel(modelName: string = "gemini-3.6-flash") {
-  const apiKey = process.env.GEMINI_API_KEY || "";
-  const genAI = new GoogleGenerativeAI(apiKey);
+export function getAllGeminiApiKeys(): string[] {
+  const rawMulti = process.env.GEMINI_API_KEYS || "";
+  const rawSingle = process.env.GEMINI_API_KEY || "";
+
+  const keys = [
+    ...rawMulti.split(/[,\n]+/),
+    rawSingle
+  ]
+    .map(k => k.trim().replace(/['"]/g, ''))
+    .filter(Boolean);
+
+  return Array.from(new Set(keys));
+}
+
+let currentKeyIndex = 0;
+
+export function getOrderedGeminiApiKeys(): string[] {
+  const keys = getAllGeminiApiKeys();
+  if (keys.length === 0) return [];
+
+  const startIndex = currentKeyIndex % keys.length;
+  currentKeyIndex = (currentKeyIndex + 1) % keys.length;
+
+  return [
+    ...keys.slice(startIndex),
+    ...keys.slice(0, startIndex)
+  ];
+}
+
+function getModel(modelName: string = "gemini-3.6-flash", apiKey?: string) {
+  const key = apiKey || getAllGeminiApiKeys()[0] || process.env.GEMINI_API_KEY || "";
+  const genAI = new GoogleGenerativeAI(key);
   return genAI.getGenerativeModel({
     model: modelName,
     generationConfig: {
@@ -81,30 +110,40 @@ async function analyzePart5Question(questionText: string) {
     ${questionText}
   `;
 
+  const apiKeys = getOrderedGeminiApiKeys();
+  if (apiKeys.length === 0) {
+    throw new Error("Chưa cấu hình GEMINI_API_KEY hoặc GEMINI_API_KEYS trong file .env");
+  }
+
   let lastError;
-  for (const modelName of GEMINI_CANDIDATE_MODELS) {
-    try {
-      const model = getModel(modelName);
-      const result = await model.generateContent(prompt);
-      let responseText = result.response.text().trim();
+  for (const apiKey of apiKeys) {
+    for (const modelName of GEMINI_CANDIDATE_MODELS) {
+      try {
+        const model = getModel(modelName, apiKey);
+        const result = await model.generateContent(prompt);
+        let responseText = result.response.text().trim();
 
-      if (responseText.startsWith("```json")) {
-        responseText = responseText.replace(/^```json/, "").replace(/```$/, "").trim();
-      } else if (responseText.startsWith("```")) {
-        responseText = responseText.replace(/^```/, "").replace(/```$/, "").trim();
+        if (responseText.startsWith("```json")) {
+          responseText = responseText.replace(/^```json/, "").replace(/```$/, "").trim();
+        } else if (responseText.startsWith("```")) {
+          responseText = responseText.replace(/^```/, "").replace(/```$/, "").trim();
+        }
+
+        const data = JSON.parse(responseText);
+        
+        // Kiểm tra tính đầy đủ của dữ liệu cơ bản
+        if (!data.questionText || !data.explanation?.options_breakdown) {
+          throw new Error("AI returned incomplete JSON structure");
+        }
+
+        return data;
+      } catch (error: any) {
+        lastError = error;
+        const errStr = error?.message || String(error);
+        const isQuota = errStr.includes("429") || errStr.includes("RESOURCE_EXHAUSTED") || errStr.includes("quota");
+        console.warn(`[Part 5 Gemini] Model ${modelName} with Key ${apiKey.substring(0, 12)}... failed:`, errStr);
+        if (isQuota) break;
       }
-
-      const data = JSON.parse(responseText);
-      
-      // Kiểm tra tính đầy đủ của dữ liệu cơ bản
-      if (!data.questionText || !data.explanation?.options_breakdown) {
-        throw new Error("AI returned incomplete JSON structure");
-      }
-
-      return data;
-    } catch (error: any) {
-      lastError = error;
-      console.warn(`[Part 5 Gemini] Model ${modelName} failed:`, error?.message || error);
     }
   }
   throw lastError;
@@ -309,30 +348,43 @@ ${cleanVi ? `Bản dịch tham khảo: "${cleanVi}"` : ""}`;
 
 
 
+  const apiKeys = getOrderedGeminiApiKeys();
+  if (apiKeys.length === 0) {
+    throw new Error("Chưa cấu hình GEMINI_API_KEY hoặc GEMINI_API_KEYS trong file .env");
+  }
+
   let lastError;
-  for (const modelName of GEMINI_CANDIDATE_MODELS) {
-    try {
-      const model = getModel(modelName);
-      const result = await model.generateContent(prompt);
-      let responseText = result.response.text().trim();
+  for (const apiKey of apiKeys) {
+    for (const modelName of GEMINI_CANDIDATE_MODELS) {
+      try {
+        const model = getModel(modelName, apiKey);
+        const result = await model.generateContent(prompt);
+        let responseText = result.response.text().trim();
 
-      if (responseText.startsWith("```json")) {
-        responseText = responseText.replace(/^```json\s*/, "").replace(/\s*```$/, "").trim();
-      } else if (responseText.startsWith("```")) {
-        responseText = responseText.replace(/^```\s*/, "").replace(/\s*```$/, "").trim();
+        if (responseText.startsWith("```json")) {
+          responseText = responseText.replace(/^```json\s*/, "").replace(/\s*```$/, "").trim();
+        } else if (responseText.startsWith("```")) {
+          responseText = responseText.replace(/^```\s*/, "").replace(/\s*```$/, "").trim();
+        }
+
+        const jsonStart = responseText.indexOf('{');
+        const jsonEnd = responseText.lastIndexOf('}');
+        if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+          responseText = responseText.substring(jsonStart, jsonEnd + 1);
+        }
+
+        const data = JSON.parse(responseText);
+        return data;
+      } catch (error: any) {
+        lastError = error;
+        const errStr = error?.message || String(error);
+        const isQuota = errStr.includes("429") || errStr.includes("RESOURCE_EXHAUSTED") || errStr.includes("quota");
+        console.warn(`[Gemini Expansion] Model ${modelName} with Key ${apiKey.substring(0, 12)}... failed:`, errStr);
+        if (isQuota) {
+          // Key này đã chạm quota, chuyển ngay sang Key tiếp theo mà không thử các model khác trên cùng key này
+          break;
+        }
       }
-
-      const jsonStart = responseText.indexOf('{');
-      const jsonEnd = responseText.lastIndexOf('}');
-      if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
-        responseText = responseText.substring(jsonStart, jsonEnd + 1);
-      }
-
-      const data = JSON.parse(responseText);
-      return data;
-    } catch (error: any) {
-      lastError = error;
-      console.warn(`[Gemini Expansion] Model ${modelName} failed:`, error?.message || error);
     }
   }
   throw lastError;

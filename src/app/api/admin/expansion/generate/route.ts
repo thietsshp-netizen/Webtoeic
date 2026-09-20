@@ -3,11 +3,11 @@ import { generateMovieExpansionForSub } from "@/lib/gemini";
 
 export async function POST(request: Request) {
   try {
-    if (!process.env.GEMINI_API_KEY) {
+    if (!process.env.GEMINI_API_KEY && !process.env.GEMINI_API_KEYS) {
       return NextResponse.json(
         {
           success: false,
-          error: "Chưa cấu hình GEMINI_API_KEY trong file .env. Vui lòng thêm API Key hoặc sử dụng tính năng Copy Prompt/Dán JSON thủ công."
+          error: "Chưa cấu hình GEMINI_API_KEY hoặc GEMINI_API_KEYS trong file .env. Vui lòng thêm API Key hoặc sử dụng tính năng Copy Prompt/Dán JSON thủ công."
         },
         { status: 400 }
       );
