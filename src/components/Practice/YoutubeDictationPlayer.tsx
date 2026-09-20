@@ -470,11 +470,17 @@ const renderHighlightedSubtitle = (
     const isActive = isReplaying || interval.itemIdx === activeItemIdx;
     const badgeNumber = interval.itemIdx + 1;
 
+    // Tự động kiểm tra nếu từ nằm ở đầu câu hoặc ngay phía sau là dấu câu (., ?, !, phẩy...)
+    const nextChar = rawText[interval.end];
+    const isPunctuationNext = Boolean(nextChar && /^[,\.!?;:'"’”\)\]]/.test(nextChar));
+    const isStartOfSentence = interval.start === 0 || /^\s*$/.test(rawText.slice(0, interval.start));
+    const marginClass = `${isStartOfSentence ? 'ml-0' : 'ml-0.5 sm:ml-1'} ${isPunctuationNext ? 'mr-0' : 'mr-0.5 sm:mr-1'}`;
+
     if (isLightMode) {
       nodes.push(
         <span
           key={`match-${idx}`}
-          className={`inline-flex items-center gap-0.5 sm:gap-1 mx-0.5 sm:mx-1 px-1 sm:px-1.5 py-0.2 sm:py-0.5 rounded sm:rounded-md transition-all duration-300 align-baseline ${
+          className={`inline-flex items-center gap-0.5 sm:gap-1 ${marginClass} px-1 sm:px-1.5 py-[1px] sm:py-0.5 rounded sm:rounded-md transition-all duration-300 align-middle leading-none ${
             isActive
               ? "bg-amber-100 border border-amber-400 text-amber-900 font-extrabold shadow-sm animate-pulse"
               : "bg-amber-50 border border-amber-300 text-amber-900 font-bold"
@@ -487,14 +493,14 @@ const renderHighlightedSubtitle = (
           >
             {badgeNumber}
           </span>
-          <span>{matchedText}</span>
+          <span className="leading-tight">{matchedText}</span>
         </span>
       );
     } else {
       nodes.push(
         <span
           key={`match-${idx}`}
-          className={`inline-flex items-center gap-0.5 sm:gap-1 mx-0.5 sm:mx-1 px-1 sm:px-1.5 py-0.2 sm:py-0.5 rounded md:rounded-lg transition-all duration-300 align-baseline ${
+          className={`inline-flex items-center gap-0.5 sm:gap-1 ${marginClass} px-1 sm:px-1.5 py-[1px] sm:py-0.5 rounded md:rounded-lg transition-all duration-300 align-middle leading-none ${
             isActive
               ? "bg-amber-400/30 border border-amber-300 text-amber-200 font-extrabold shadow-[0_0_12px_rgba(251,191,36,0.85)] animate-pulse"
               : "bg-amber-950/60 border border-amber-400/50 text-amber-200 font-bold"
@@ -507,7 +513,7 @@ const renderHighlightedSubtitle = (
           >
             {badgeNumber}
           </span>
-          <span className={isActive ? "text-amber-200 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]" : "text-amber-200"}>
+          <span className={`leading-tight ${isActive ? "text-amber-200 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]" : "text-amber-200"}`}>
             {matchedText}
           </span>
         </span>
