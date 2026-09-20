@@ -111,6 +111,42 @@ async function analyzePart5Question(questionText: string) {
 }
 
 
+export function shouldSkipSubtitleForExpansion(rawText?: string): boolean {
+  if (!rawText) return true;
+  const clean = rawText.trim();
+  if (!clean) return true;
+
+  // 1. Toàn bộ câu là chú thích âm thanh/bối cảnh trong ngoặc vuông hoặc ngoặc tròn
+  const withoutBrackets = clean.replace(/\[[^\]]*\]|\([^\)]*\)/g, '').trim();
+  if (withoutBrackets.length === 0) return true;
+
+  // 2. Không chứa chữ cái tiếng Anh nào (toàn dấu câu, số, ký tự đặc biệt)
+  const lettersOnly = withoutBrackets.replace(/[^a-zA-Z]/g, '');
+  if (lettersOnly.length === 0) return true;
+
+  // 3. Toàn bộ các từ trong câu đều là thán từ vô nghĩa không có giá trị học từ vựng
+  const NOISE_INTERJECTIONS = new Set([
+    'oh', 'ah', 'uh', 'um', 'umm', 'uhh', 'ahh', 'ooh', 'wow',
+    'ha', 'haha', 'hahaha', 'huh', 'hmm', 'hm', 'mhm', 'mm', 'yeah',
+    'yea', 'yep', 'nope', 'nah', 'ok', 'okay', 'hey', 'hi',
+    'ouch', 'oops', 'whoa', 'shh', 'shhh', 'ugh', 'eh', 'duh', 'psst',
+    'whew', 'gee', 'gosh', 'yay'
+  ]);
+
+  const words = withoutBrackets
+    .toLowerCase()
+    .replace(/[^a-z\s]/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (words.length > 0 && words.every(w => NOISE_INTERJECTIONS.has(w))) {
+    return true;
+  }
+
+  return false;
+}
+
 /**
  * Phân tích kiến thức mở rộng (Paraphrase, Vocabulary, Structures) cho một câu thoại phim/video
  */
@@ -120,6 +156,15 @@ async function generateMovieExpansionForSub(subText: string, subVi?: string) {
 
   if (!cleanText) {
     throw new Error("Không có nội dung câu thoại để phân tích");
+  }
+
+  // Tự động bỏ qua các câu chú thích âm thanh [GRUNTS], [MUSIC] hoặc thán từ ngắn oh, ah...
+  if (shouldSkipSubtitleForExpansion(cleanText)) {
+    return {
+      paraphrases: [],
+      vocabulary: [],
+      structures: []
+    };
   }
 
   const prompt = `# VAI TRÒ

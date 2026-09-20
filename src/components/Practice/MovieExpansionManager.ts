@@ -386,6 +386,45 @@ export const buildFlexiblePhraseRegex = (phrase: string): RegExp => {
   return new RegExp(`\\b${regexParts.join("[\\s\\-\\–',]+")}\\b`, 'gi');
 };
 
+// Helper: Kiểm tra xem một câu phụ đề có nên bỏ qua không gửi lên Gemini hay không
+// (Bỏ qua câu rỗng, chú thích âm thanh [GRUNTS], [MUSIC], (SIGHS)... hoặc toàn thán từ oh, ah, um...)
+export const shouldSkipSubtitleForExpansion = (rawText?: string): boolean => {
+  if (!rawText) return true;
+  const clean = rawText.trim();
+  if (!clean) return true;
+
+  // 1. Toàn bộ câu là chú thích âm thanh/bối cảnh trong ngoặc vuông hoặc ngoặc tròn:
+  // Ví dụ: [GRUNTS], [LAUGHS], [MUSIC], (SCREAMS), [CHUCKLES], [SIGHS], [Ư Ứ], [THỞ DÀI]...
+  const withoutBrackets = clean.replace(/\[[^\]]*\]|\([^\)]*\)/g, '').trim();
+  if (withoutBrackets.length === 0) return true;
+
+  // 2. Không chứa chữ cái tiếng Anh nào (toàn dấu câu, số, ký tự đặc biệt)
+  const lettersOnly = withoutBrackets.replace(/[^a-zA-Z]/g, '');
+  if (lettersOnly.length === 0) return true;
+
+  // 3. Toàn bộ các từ trong câu đều là từ cảm thán / thán từ vô nghĩa không có giá trị học từ vựng
+  const NOISE_INTERJECTIONS = new Set([
+    'oh', 'ah', 'uh', 'um', 'umm', 'uhh', 'ahh', 'ooh', 'wow',
+    'ha', 'haha', 'hahaha', 'huh', 'hmm', 'hm', 'mhm', 'mm', 'yeah',
+    'yea', 'yep', 'nope', 'nah', 'ok', 'okay', 'hey', 'hi',
+    'ouch', 'oops', 'whoa', 'shh', 'shhh', 'ugh', 'eh', 'duh', 'psst',
+    'whew', 'gee', 'gosh', 'yay'
+  ]);
+
+  const words = withoutBrackets
+    .toLowerCase()
+    .replace(/[^a-z\s]/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (words.length > 0 && words.every(w => NOISE_INTERJECTIONS.has(w))) {
+    return true;
+  }
+
+  return false;
+};
+
 // Helper: Tìm vị trí ký tự xuất hiện đầu tiên của 1 mục từ vựng trong câu thoại (start index)
 export const getItemFirstOccurrenceIndex = (it: FlattenedExpansionItem, rawText: string): number => {
   if (!rawText) return Infinity;
@@ -3098,6 +3137,13 @@ const ensureYouGlishScript = (doc: Document, win: any): Promise<void> => {
         targetWin.alert('Không có nội dung câu thoại để gửi Gemini!');
       }
       return;
+    }
+
+    if (shouldSkipSubtitleForExpansion(subText)) {
+      const confirmSend = typeof targetWin.confirm === 'function'
+        ? targetWin.confirm('⚠️ Câu thoại này chỉ là chú thích âm thanh hoặc thán từ ngắn (ví dụ: [GRUNTS], [MUSIC], "oh", "ah"...), thường không có từ vựng cần phân tích.\n\nBạn có chắc chắn vẫn muốn gửi lên Gemini không?')
+        : false;
+      if (!confirmSend) return;
     }
 
     const btnHeader = targetDoc.getElementById('btnSendGemini') as HTMLButtonElement | null;

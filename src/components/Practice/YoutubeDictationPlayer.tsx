@@ -24,7 +24,8 @@ import {
   sortExpansionItemsByOccurrence,
   getItemFirstOccurrenceIndex,
   ExpansionPopupParams,
-  AutoBatchProgress
+  AutoBatchProgress,
+  shouldSkipSubtitleForExpansion
 } from "./MovieExpansionManager";
 
 // Multi-buffer sound pool for realistic, warm, soft mechanical keyboard acoustics (ASMR thock)
@@ -2144,14 +2145,14 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       return;
     }
 
-    // 1. Xác định danh sách các subIndex cần xử lý
+    // 1. Xác định danh sách các subIndex cần xử lý (tự động bỏ qua câu rỗng, chú thích âm thanh và thán từ)
     let queueIndices: number[] = [];
     if (mode === 'unprocessed') {
       queueIndices = latestSubs
         .map((s, idx) => ({ s, idx }))
         .filter(({ s }) => {
           const text = (s.text || '').trim();
-          if (!text) return false;
+          if (!text || shouldSkipSubtitleForExpansion(text)) return false;
           const exp = s.expansion;
           if (!exp) return true;
           const hasVocab = Array.isArray(exp.vocabulary) && exp.vocabulary.length > 0;
@@ -2162,14 +2163,20 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         .map(({ idx }) => idx);
     } else if (mode === 'from_current') {
       for (let i = currentIndexRef.current; i < latestSubs.length; i++) {
-        if ((latestSubs[i].text || '').trim()) queueIndices.push(i);
+        const text = (latestSubs[i].text || '').trim();
+        if (text && !shouldSkipSubtitleForExpansion(text)) queueIndices.push(i);
       }
     } else {
-      queueIndices = latestSubs.map((_, idx) => idx).filter(idx => (latestSubs[idx].text || '').trim());
+      queueIndices = latestSubs
+        .map((_, idx) => idx)
+        .filter(idx => {
+          const text = (latestSubs[idx].text || '').trim();
+          return text && !shouldSkipSubtitleForExpansion(text);
+        });
     }
 
     if (queueIndices.length === 0) {
-      showToast("Tất cả các câu đều đã có dữ liệu mở rộng!", "success");
+      showToast("Tất cả các câu đều đã có dữ liệu mở rộng (hoặc chỉ là chú thích âm thanh)!", "success");
       isAutoBatchRunningRef.current = false;
       return;
     }
@@ -2188,6 +2195,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       if (!currentTargetSub || !currentTargetSub.text?.trim()) continue;
 
       const targetText = currentTargetSub.text.trim();
+      if (shouldSkipSubtitleForExpansion(targetText)) {
+        completedCount++;
+        continue;
+      }
       const targetVi = (currentTargetSub.vietnamese || '').trim();
 
       // Cập nhật trạng thái tiến trình
