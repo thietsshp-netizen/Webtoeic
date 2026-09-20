@@ -236,12 +236,234 @@ export const isItemFromOriginal = (item: FlattenedExpansionItem, subText?: strin
   return true;
 };
 
+// Bảng từ điển các biến thể động từ thông dụng & bất quy tắc (Irregular Verbs & Common Verb Inflections)
+export const VERB_STEMS_MAP: Record<string, string[]> = {
+  move: ["move", "moves", "moved", "moving"],
+  pack: ["pack", "packs", "packed", "packing"],
+  pick: ["pick", "picks", "picked", "picking"],
+  clean: ["clean", "cleans", "cleaned", "cleaning"],
+  pass: ["pass", "passes", "passed", "passing"],
+  carry: ["carry", "carries", "carried", "carrying"],
+  tear: ["tear", "tears", "tore", "torn", "tearing"],
+  show: ["show", "shows", "showed", "shown", "showing"],
+  fill: ["fill", "fills", "filled", "filling"],
+  call: ["call", "calls", "called", "calling"],
+  point: ["point", "points", "pointed", "pointing"],
+  shut: ["shut", "shuts", "shutting"],
+  lock: ["lock", "locks", "locked", "locking"],
+  kick: ["kick", "kicks", "kicked", "kicking"],
+  cheer: ["cheer", "cheers", "cheered", "cheering"],
+  figure: ["figure", "figures", "figured", "figuring"],
+  wake: ["wake", "wakes", "woke", "woken", "waking"],
+  dress: ["dress", "dresses", "dressed", "dressing"],
+  cross: ["cross", "crosses", "crossed", "crossing"],
+  cut: ["cut", "cuts", "cutting"],
+  burn: ["burn", "burns", "burned", "burnt", "burning"],
+  hand: ["hand", "hands", "handed", "handing"],
+  let: ["let", "lets", "letting"],
+  pay: ["pay", "pays", "paid", "paying"],
+  check: ["check", "checks", "checked", "checking"],
+  drop: ["drop", "drops", "dropped", "dropping"],
+  pull: ["pull", "pulls", "pulled", "pulling"],
+  push: ["push", "pushes", "pushed", "pushing"],
+  step: ["step", "steps", "stepped", "stepping"],
+  grow: ["grow", "grows", "grew", "grown", "growing"],
+  go: ["go", "goes", "went", "gone", "going"],
+  take: ["take", "takes", "took", "taken", "taking"],
+  get: ["get", "gets", "got", "gotten", "getting"],
+  make: ["make", "makes", "made", "making"],
+  have: ["have", "has", "had", "having"],
+  see: ["see", "sees", "saw", "seen", "seeing"],
+  know: ["know", "knows", "knew", "known", "knowing"],
+  say: ["say", "says", "said", "saying"],
+  come: ["come", "comes", "came", "coming"],
+  give: ["give", "gives", "gave", "given", "giving"],
+  keep: ["keep", "keeps", "kept", "keeping"],
+  feel: ["feel", "feels", "felt", "feeling"],
+  leave: ["leave", "leaves", "left", "leaving"],
+  find: ["find", "finds", "found", "finding"],
+  think: ["think", "thinks", "thought", "thinking"],
+  tell: ["tell", "tells", "told", "telling"],
+  lose: ["lose", "loses", "lost", "losing"],
+  put: ["put", "puts", "putting"],
+  run: ["run", "runs", "ran", "running"],
+  bring: ["bring", "brings", "brought", "bringing"],
+  buy: ["buy", "buys", "bought", "buying"],
+  catch: ["catch", "catches", "caught", "catching"],
+  fall: ["fall", "falls", "fell", "fallen", "falling"],
+  hear: ["hear", "hears", "heard", "hearing"],
+  hold: ["hold", "holds", "held", "holding"],
+  lead: ["lead", "leads", "led", "leading"],
+  meet: ["meet", "meets", "met", "meeting"],
+  read: ["read", "reads", "reading"],
+  set: ["set", "sets", "setting"],
+  sit: ["sit", "sits", "sat", "sitting"],
+  speak: ["speak", "speaks", "spoke", "spoken", "speaking"],
+  stand: ["stand", "stands", "stood", "standing"],
+  understand: ["understand", "understands", "understood", "understanding"],
+  win: ["win", "wins", "won", "winning"],
+  write: ["write", "writes", "wrote", "written", "writing"],
+  kill: ["kill", "kills", "killed", "killing"],
+  die: ["die", "dies", "died", "dying"],
+  drive: ["drive", "drives", "drove", "driven", "driving"],
+  hang: ["hang", "hangs", "hung", "hanging"],
+  blow: ["blow", "blows", "blew", "blown", "blowing"],
+  break: ["break", "breaks", "broke", "broken", "breaking"],
+  hit: ["hit", "hits", "hitting"],
+  throw: ["throw", "throws", "threw", "thrown", "throwing"],
+  turn: ["turn", "turns", "turned", "turning"],
+  walk: ["walk", "walks", "walked", "walking"],
+  work: ["work", "works", "worked", "working"],
+  look: ["look", "looks", "looked", "looking"],
+  watch: ["watch", "watches", "watched", "watching"]
+};
+
+// Helper: Xây dựng Regex pattern cho 1 từ đơn (xử lý chia thì, đuôi e, gấp đôi phụ âm, bất quy tắc)
+export const buildWordRegexPattern = (w: string): string => {
+  const clean = w.toLowerCase().replace(/[^a-z0-9']/g, '');
+  if (!clean) return "";
+
+  // 1. Placeholder pronouns / object placeholders
+  if (["someone", "somebody", "sb", "one's", "oneself", "myself", "yourself", "himself", "herself", "themselves", "ourselves"].includes(clean)) {
+    return `(?:someone|somebody|sb|myself|yourself|himself|herself|themselves|ourselves|me|you|him|her|them|us|one's|my|your|his|their|our|\\w+(?:'s)?)`;
+  }
+  if (["something", "sth"].includes(clean)) {
+    return `(?:something|sth|it|this|that|\\w+)`;
+  }
+
+  // 2. Irregular & common verb stems
+  for (const [, forms] of Object.entries(VERB_STEMS_MAP)) {
+    if (forms.includes(clean)) {
+      return `(?:${forms.join("|")})`;
+    }
+  }
+
+  // 3. Verbs ending in -e (move -> move, moves, moved, moving; hope, store, save...)
+  if (clean.endsWith('e') && clean.length >= 3) {
+    const stem = clean.slice(0, -1);
+    return `(?:${clean}|${clean}s|${clean}d|${stem}ing)`;
+  }
+
+  // 4. Verbs ending in consonant doubling (stop -> stopped, stopping; drop, plan, run, hit...)
+  if (clean.length >= 3 && /[bcdfghjklmnpqrstvwxyz][aeiou][bcdfghjklmnpqrstvwxyz]$/i.test(clean) && !/[wxy]$/i.test(clean)) {
+    const lastChar = clean.slice(-1);
+    return `(?:${clean}|${clean}s|${clean}es|${clean}ed|${clean}${lastChar}ed|${clean}ing|${clean}${lastChar}ing)`;
+  }
+
+  // 5. Regular verb / noun inflection (-s, -es, -ed, -ing)
+  const escaped = clean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  if (clean.length > 3) {
+    const base = clean.replace(/(?:ing|ed|es|s)$/, '');
+    if (base.length >= 3) {
+      return `(?:${escaped}|${base}(?:ing|ed|es|s|d)?)`;
+    }
+  }
+
+  return escaped;
+};
+
+// Helper: Xây dựng Regex thông minh cho cụm từ liền kề
+export const buildFlexiblePhraseRegex = (phrase: string): RegExp => {
+  const words = phrase.trim().split(/\s+/);
+  const regexParts = words.map(w => buildWordRegexPattern(w)).filter(Boolean);
+
+  if (regexParts.length === 0) {
+    const fallbackEscaped = phrase.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`\\b${fallbackEscaped}\\b`, 'gi');
+  }
+
+  return new RegExp(`\\b${regexParts.join("[\\s\\-\\–',]+")}\\b`, 'gi');
+};
+
+// Helper: Tìm vị trí ký tự xuất hiện đầu tiên của 1 mục từ vựng trong câu thoại (start index)
+export const getItemFirstOccurrenceIndex = (it: FlattenedExpansionItem, rawText: string): number => {
+  if (!rawText) return Infinity;
+
+  // 0. Ưu tiên 1 (Tuyệt đối chính xác): matched_text nguyên văn do Gemini gắn cờ trực tiếp
+  const exactMatchedText = (it.matched_text || "").trim();
+  if (exactMatchedText) {
+    const splitParts = exactMatchedText.split(/\s*(?:\.\.\.|\.\.|\/|~)\s*/).filter(Boolean);
+    if (splitParts.length > 0) {
+      try {
+        const escapedPart = splitParts[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regexPart = new RegExp(`\\b${escapedPart}\\b`, 'i');
+        const matchPart = regexPart.exec(rawText);
+        if (matchPart) return matchPart.index;
+      } catch {}
+    }
+
+    try {
+      const escaped = exactMatchedText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      let regex = new RegExp(`\\b${escaped}\\b`, 'i');
+      let match = regex.exec(rawText);
+      if (!match) {
+        regex = new RegExp(escaped, 'i');
+        match = regex.exec(rawText);
+      }
+      if (match) return match.index;
+    } catch {}
+  }
+
+  const word = (it.word || it.pattern || "").trim();
+  if (!word) return Infinity;
+
+  // 1. Khớp thông minh nguyên cụm liền kề (Contiguous matching with irregular & inflections)
+  try {
+    const smartRegex = buildFlexiblePhraseRegex(word);
+    const match = smartRegex.exec(rawText);
+    if (match) return match.index;
+  } catch {}
+
+  // 2. Khớp cụm động từ tách rời (Separable Phrasal Verbs, e.g. "move out" -> "moved her stuff out")
+  try {
+    const words = word.split(/\s+/).filter(Boolean);
+    if (words.length >= 2) {
+      const firstPattern = buildWordRegexPattern(words[0]);
+      const lastPattern = buildWordRegexPattern(words[words.length - 1]);
+      if (firstPattern && lastPattern) {
+        const separableRegex = new RegExp(`\\b(${firstPattern})\\b(\\s+(?:[\\w'’\\-]+\\s+){0,4}?)\\b(${lastPattern})\\b`, 'i');
+        const sepMatch = separableRegex.exec(rawText);
+        if (sepMatch) return sepMatch.index;
+      }
+    }
+  } catch {}
+
+  // 3. Fallback: Khớp nguyên văn case-insensitive có word boundary
+  try {
+    const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    let regex = new RegExp(`\\b${escaped}\\b`, 'i');
+    let match = regex.exec(rawText);
+    if (match) return match.index;
+
+    // 4. Fallback: Khớp chuỗi con không cần word boundary
+    const idx = rawText.toLowerCase().indexOf(word.toLowerCase());
+    if (idx !== -1) return idx;
+  } catch {}
+
+  return Infinity;
+};
+
+// Helper: Sắp xếp danh sách từ vựng/mục mở rộng theo đúng thứ tự xuất hiện từ trái sang phải trong câu thoại
+export const sortExpansionItemsByOccurrence = (
+  items: FlattenedExpansionItem[],
+  rawText?: string
+): FlattenedExpansionItem[] => {
+  if (!items || items.length <= 1 || !rawText) return items;
+  return [...items].sort((a, b) => {
+    const idxA = getItemFirstOccurrenceIndex(a, rawText);
+    const idxB = getItemFirstOccurrenceIndex(b, rawText);
+    if (idxA !== idxB) return idxA - idxB;
+    return (a.rawIndex ?? 0) - (b.rawIndex ?? 0);
+  });
+};
+
 export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionItem[] => {
   if (!sub || !sub.expansion) return [];
   const items: FlattenedExpansionItem[] = [];
   const paraphrase = sub.expansion.paraphrase || '';
   const paraphrases = Array.isArray(sub.expansion.paraphrases) ? sub.expansion.paraphrases : [];
 
+  const rawVocabItems: FlattenedExpansionItem[] = [];
   if (Array.isArray(sub.expansion.vocabulary)) {
     sub.expansion.vocabulary.forEach((v: any, idx) => {
       if (v && (v.word || v.meaning || v.meaning_vi)) {
@@ -278,7 +500,7 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
         const rawSource = String(v.source || '').toLowerCase().trim();
         const source = rawSource === 'paraphrase' ? 'paraphrase' : (rawSource === 'original' ? 'original' : undefined);
 
-        items.push({
+        rawVocabItems.push({
           type: 'vocabulary',
           rawIndex: idx,
           source,
@@ -299,6 +521,13 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
     });
   }
 
+  // Tự động sắp xếp các từ vựng theo đúng thứ tự xuất hiện từ trái sang phải trong câu thoại sub.text
+  const sortedVocab = sub.text
+    ? sortExpansionItemsByOccurrence(rawVocabItems, sub.text)
+    : rawVocabItems;
+  items.push(...sortedVocab);
+
+  const rawStructureItems: FlattenedExpansionItem[] = [];
   if (Array.isArray(sub.expansion.structures)) {
     sub.expansion.structures.forEach((s: any, idx) => {
       if (s && (s.pattern || s.meaning)) {
@@ -306,7 +535,7 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
         const rawSource = String(s.source || '').toLowerCase().trim();
         const source = rawSource === 'paraphrase' ? 'paraphrase' : (rawSource === 'original' ? 'original' : undefined);
 
-        items.push({
+        rawStructureItems.push({
           type: 'structure',
           rawIndex: idx,
           source,
@@ -320,6 +549,11 @@ export const getFlattenedExpansionItems = (sub?: Subtitle): FlattenedExpansionIt
       }
     });
   }
+
+  const sortedStructures = sub.text
+    ? sortExpansionItemsByOccurrence(rawStructureItems, sub.text)
+    : rawStructureItems;
+  items.push(...sortedStructures);
 
   return items;
 };

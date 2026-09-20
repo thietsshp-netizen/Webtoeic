@@ -18,7 +18,11 @@ import {
   getFlattenedExpansionItems, 
   isItemFromOriginal,
   updateMovieExpansionPopupDom,
-  sanitizeExpansionJson
+  sanitizeExpansionJson,
+  buildWordRegexPattern,
+  buildFlexiblePhraseRegex,
+  sortExpansionItemsByOccurrence,
+  getItemFirstOccurrenceIndex
 } from "./MovieExpansionManager";
 
 // Multi-buffer sound pool for realistic, warm, soft mechanical keyboard acoustics (ASMR thock)
@@ -271,144 +275,8 @@ const getAutoStudyItemText = (it: FlattenedExpansionItem): string => {
   }
 };
 
-// Bảng từ điển các biến thể động từ thông dụng & bất quy tắc (Irregular Verbs & Common Verb Inflections)
-const VERB_STEMS_MAP: Record<string, string[]> = {
-  move: ["move", "moves", "moved", "moving"],
-  pack: ["pack", "packs", "packed", "packing"],
-  pick: ["pick", "picks", "picked", "picking"],
-  clean: ["clean", "cleans", "cleaned", "cleaning"],
-  pass: ["pass", "passes", "passed", "passing"],
-  carry: ["carry", "carries", "carried", "carrying"],
-  tear: ["tear", "tears", "tore", "torn", "tearing"],
-  show: ["show", "shows", "showed", "shown", "showing"],
-  fill: ["fill", "fills", "filled", "filling"],
-  call: ["call", "calls", "called", "calling"],
-  point: ["point", "points", "pointed", "pointing"],
-  shut: ["shut", "shuts", "shutting"],
-  lock: ["lock", "locks", "locked", "locking"],
-  kick: ["kick", "kicks", "kicked", "kicking"],
-  cheer: ["cheer", "cheers", "cheered", "cheering"],
-  figure: ["figure", "figures", "figured", "figuring"],
-  wake: ["wake", "wakes", "woke", "woken", "waking"],
-  dress: ["dress", "dresses", "dressed", "dressing"],
-  cross: ["cross", "crosses", "crossed", "crossing"],
-  cut: ["cut", "cuts", "cutting"],
-  burn: ["burn", "burns", "burned", "burnt", "burning"],
-  hand: ["hand", "hands", "handed", "handing"],
-  let: ["let", "lets", "letting"],
-  pay: ["pay", "pays", "paid", "paying"],
-  check: ["check", "checks", "checked", "checking"],
-  drop: ["drop", "drops", "dropped", "dropping"],
-  pull: ["pull", "pulls", "pulled", "pulling"],
-  push: ["push", "pushes", "pushed", "pushing"],
-  step: ["step", "steps", "stepped", "stepping"],
-  grow: ["grow", "grows", "grew", "grown", "growing"],
-  go: ["go", "goes", "went", "gone", "going"],
-  take: ["take", "takes", "took", "taken", "taking"],
-  get: ["get", "gets", "got", "gotten", "getting"],
-  make: ["make", "makes", "made", "making"],
-  have: ["have", "has", "had", "having"],
-  see: ["see", "sees", "saw", "seen", "seeing"],
-  know: ["know", "knows", "knew", "known", "knowing"],
-  say: ["say", "says", "said", "saying"],
-  come: ["come", "comes", "came", "coming"],
-  give: ["give", "gives", "gave", "given", "giving"],
-  keep: ["keep", "keeps", "kept", "keeping"],
-  feel: ["feel", "feels", "felt", "feeling"],
-  leave: ["leave", "leaves", "left", "leaving"],
-  find: ["find", "finds", "found", "finding"],
-  think: ["think", "thinks", "thought", "thinking"],
-  tell: ["tell", "tells", "told", "telling"],
-  lose: ["lose", "loses", "lost", "losing"],
-  put: ["put", "puts", "putting"],
-  run: ["run", "runs", "ran", "running"],
-  bring: ["bring", "brings", "brought", "bringing"],
-  buy: ["buy", "buys", "bought", "buying"],
-  catch: ["catch", "catches", "caught", "catching"],
-  fall: ["fall", "falls", "fell", "fallen", "falling"],
-  hear: ["hear", "hears", "heard", "hearing"],
-  hold: ["hold", "holds", "held", "holding"],
-  lead: ["lead", "leads", "led", "leading"],
-  meet: ["meet", "meets", "met", "meeting"],
-  read: ["read", "reads", "reading"],
-  set: ["set", "sets", "setting"],
-  sit: ["sit", "sits", "sat", "sitting"],
-  speak: ["speak", "speaks", "spoke", "spoken", "speaking"],
-  stand: ["stand", "stands", "stood", "standing"],
-  understand: ["understand", "understands", "understood", "understanding"],
-  win: ["win", "wins", "won", "winning"],
-  write: ["write", "writes", "wrote", "written", "writing"],
-  kill: ["kill", "kills", "killed", "killing"],
-  die: ["die", "dies", "died", "dying"],
-  drive: ["drive", "drives", "drove", "driven", "driving"],
-  hang: ["hang", "hangs", "hung", "hanging"],
-  blow: ["blow", "blows", "blew", "blown", "blowing"],
-  break: ["break", "breaks", "broke", "broken", "breaking"],
-  hit: ["hit", "hits", "hitting"],
-  throw: ["throw", "throws", "threw", "thrown", "throwing"],
-  turn: ["turn", "turns", "turned", "turning"],
-  walk: ["walk", "walks", "walked", "walking"],
-  work: ["work", "works", "worked", "working"],
-  look: ["look", "looks", "looked", "looking"],
-  watch: ["watch", "watches", "watched", "watching"]
-};
-
-// Helper: Xây dựng Regex pattern cho 1 từ đơn (xử lý chia thì, đuôi e, gấp đôi phụ âm, bất quy tắc)
-const buildWordRegexPattern = (w: string): string => {
-  const clean = w.toLowerCase().replace(/[^a-z0-9']/g, '');
-  if (!clean) return "";
-
-  // 1. Placeholder pronouns / object placeholders
-  if (["someone", "somebody", "sb", "one's", "oneself", "myself", "yourself", "himself", "herself", "themselves", "ourselves"].includes(clean)) {
-    return `(?:someone|somebody|sb|myself|yourself|himself|herself|themselves|ourselves|me|you|him|her|them|us|one's|my|your|his|their|our|\\w+(?:'s)?)`;
-  }
-  if (["something", "sth"].includes(clean)) {
-    return `(?:something|sth|it|this|that|\\w+)`;
-  }
-
-  // 2. Irregular & common verb stems
-  for (const [, forms] of Object.entries(VERB_STEMS_MAP)) {
-    if (forms.includes(clean)) {
-      return `(?:${forms.join("|")})`;
-    }
-  }
-
-  // 3. Verbs ending in -e (move -> move, moves, moved, moving; hope, store, save...)
-  if (clean.endsWith('e') && clean.length >= 3) {
-    const stem = clean.slice(0, -1);
-    return `(?:${clean}|${clean}s|${clean}d|${stem}ing)`;
-  }
-
-  // 4. Verbs ending in consonant doubling (stop -> stopped, stopping; drop, plan, run, hit...)
-  if (clean.length >= 3 && /[bcdfghjklmnpqrstvwxyz][aeiou][bcdfghjklmnpqrstvwxyz]$/i.test(clean) && !/[wxy]$/i.test(clean)) {
-    const lastChar = clean.slice(-1);
-    return `(?:${clean}|${clean}s|${clean}es|${clean}ed|${clean}${lastChar}ed|${clean}ing|${clean}${lastChar}ing)`;
-  }
-
-  // 5. Regular verb / noun inflection (-s, -es, -ed, -ing)
-  const escaped = clean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  if (clean.length > 3) {
-    const base = clean.replace(/(?:ing|ed|es|s)$/, '');
-    if (base.length >= 3) {
-      return `(?:${escaped}|${base}(?:ing|ed|es|s|d)?)`;
-    }
-  }
-
-  return escaped;
-};
-
-// Helper: Xây dựng Regex thông minh cho cụm từ liền kề
-const buildFlexiblePhraseRegex = (phrase: string): RegExp => {
-  const words = phrase.trim().split(/\s+/);
-  const regexParts = words.map(w => buildWordRegexPattern(w)).filter(Boolean);
-
-  if (regexParts.length === 0) {
-    const fallbackEscaped = phrase.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return new RegExp(`\\b${fallbackEscaped}\\b`, 'gi');
-  }
-
-  return new RegExp(`\\b${regexParts.join("[\\s\\-\\–',]+")}\\b`, 'gi');
-};
+// Ghi chú: Các hàm helper buildWordRegexPattern, buildFlexiblePhraseRegex, 
+// getItemFirstOccurrenceIndex, sortExpansionItemsByOccurrence được import từ MovieExpansionManager.ts
 
 const renderHighlightedSubtitle = (
   rawText: string,
@@ -1740,7 +1608,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
     setIsAutoStudyPaused(false);
     isAutoStudyPausedRef.current = false;
 
-    const vocabItems = items.filter(it => it.type === "vocabulary");
+    const currentSubText = subtitles[targetIdx]?.text || "";
+    const sortedItems = sortExpansionItemsByOccurrence(items, currentSubText);
+    const vocabItems = sortedItems.filter(it => it.type === "vocabulary");
     if (vocabItems.length === 0) return;
 
     const fullStreamText = vocabItems.map(getAutoStudyItemText).join("");
@@ -1871,7 +1741,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       isProgrammaticPauseRef.current = false;
     }, 300);
 
-    const vocabItems = items.filter(it => it.type === "vocabulary");
+    const currentSubText = subtitles[targetIdx]?.text || "";
+    const sortedItems = sortExpansionItemsByOccurrence(items, currentSubText);
+    const vocabItems = sortedItems.filter(it => it.type === "vocabulary");
     if (vocabItems.length === 0) {
       return;
     }
@@ -2756,7 +2628,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             const currentSub = subtitles[currentIndex];
             if (currentSub && currentSub.expansion) {
               const allItems = getFlattenedExpansionItems(currentSub);
-              const originalExpItems = allItems.filter(it => isItemFromOriginal(it, currentSub.text) && it.type === "vocabulary");
+              const originalExpItems = sortExpansionItemsByOccurrence(
+                allItems.filter(it => isItemFromOriginal(it, currentSub.text) && it.type === "vocabulary"),
+                currentSub.text
+              );
               if (originalExpItems.length > 0) {
                 const displayMode = autoStudyDisplayModeRef.current;
                 if (displayMode === "instant") {
@@ -3302,7 +3177,10 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                   const currentSub = subtitles[currentIndex];
                   if (currentSub && currentSub.expansion) {
                     const allItems = getFlattenedExpansionItems(currentSub);
-                    const originalExpItems = allItems.filter(it => isItemFromOriginal(it, currentSub.text) && it.type === "vocabulary");
+                    const originalExpItems = sortExpansionItemsByOccurrence(
+                      allItems.filter(it => isItemFromOriginal(it, currentSub.text) && it.type === "vocabulary"),
+                      currentSub.text
+                    );
                     if (originalExpItems.length > 0) {
                       const displayMode = autoStudyDisplayModeRef.current;
                       if (displayMode === "instant") {
@@ -3806,10 +3684,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
 
                       {/* Toggle Mode */}
                       <div className="flex items-center justify-between py-1.5 border-b border-slate-100">
-                        <div>
-                          <div className="font-bold text-slate-700">Tự động dừng & học từ</div>
-                          <div className="text-[10px] text-slate-500">Dừng ở cuối sub có từ vựng</div>
-                        </div>
+                        <div className="font-bold text-slate-700">Bật/Tắt chế độ này</div>
                         <button
                           type="button"
                           onClick={() => {
