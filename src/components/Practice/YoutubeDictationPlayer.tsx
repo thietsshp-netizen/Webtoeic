@@ -2562,9 +2562,15 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   // --- Detect video type ---
   const isDirectVideo = !!(videoUrl && !videoUrl.includes("youtube.com") && !videoUrl.includes("youtu.be"));
 
-  // Convert Google Drive view/share/download link to internal video proxy stream
+  // Convert Google Drive view/share/download link to Cloudflare Worker video proxy stream
   const getDirectVideoUrl = (url: string): string => {
     if (!url) return "";
+    const workerProxy = process.env.NEXT_PUBLIC_CLOUDFLARE_VIDEO_PROXY || "https://toeic-video-proxy.thietsshp.workers.dev";
+
+    if (url.startsWith("/api/video-proxy?id=")) {
+      return url.replace("/api/video-proxy", workerProxy);
+    }
+
     if (url.includes("drive.google.com") || url.includes("drive.usercontent.google.com")) {
       let fileId = "";
       const dMatch = url.match(/\/d\/([^/&?]+)/);
@@ -2573,7 +2579,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       else if (idMatch) fileId = idMatch[1];
 
       if (fileId) {
-        return `/api/video-proxy?id=${fileId}`;
+        return `${workerProxy}?id=${fileId}`;
       }
     }
     return url; // Return as-is for Supabase, Cloudflare R2, etc.
