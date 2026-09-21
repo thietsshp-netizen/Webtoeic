@@ -469,6 +469,7 @@ const renderHighlightedSubtitle = (
     const matchedText = rawText.slice(interval.start, interval.end);
     const isActive = isReplaying || interval.itemIdx === activeItemIdx;
     const badgeNumber = interval.itemIdx + 1;
+    const showNumberBadge = vocabItems.length > 1;
 
     // Tự động kiểm tra nếu từ nằm ở đầu câu hoặc ngay phía sau là dấu câu (., ?, !, phẩy...)
     const nextChar = rawText[interval.end];
@@ -486,13 +487,15 @@ const renderHighlightedSubtitle = (
               : "bg-amber-50 border border-amber-300 text-amber-900 font-bold"
           }`}
         >
-          <span
-            className={`inline-flex items-center justify-center w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full text-[8px] sm:text-[9px] font-black shrink-0 select-none ${
-              isActive ? "bg-amber-500 text-white" : "bg-amber-600 text-white"
-            }`}
-          >
-            {badgeNumber}
-          </span>
+          {showNumberBadge && (
+            <span
+              className={`inline-flex items-center justify-center w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full text-[8px] sm:text-[9px] font-black shrink-0 select-none ${
+                isActive ? "bg-amber-500 text-white" : "bg-amber-600 text-white"
+              }`}
+            >
+              {badgeNumber}
+            </span>
+          )}
           <span className="leading-tight">{matchedText}</span>
         </span>
       );
@@ -506,13 +509,15 @@ const renderHighlightedSubtitle = (
               : "bg-amber-950/60 border border-amber-400/50 text-amber-200 font-bold"
           }`}
         >
-          <span
-            className={`inline-flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full text-[8.5px] sm:text-[10px] font-black shrink-0 select-none shadow-xs ${
-              isActive ? "bg-amber-400 text-slate-950 font-black" : "bg-amber-500 text-white font-bold"
-            }`}
-          >
-            {badgeNumber}
-          </span>
+          {showNumberBadge && (
+            <span
+              className={`inline-flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full text-[8.5px] sm:text-[10px] font-black shrink-0 select-none shadow-xs ${
+                isActive ? "bg-amber-400 text-slate-950 font-black" : "bg-amber-500 text-white font-bold"
+              }`}
+            >
+              {badgeNumber}
+            </span>
+          )}
           <span className={`leading-tight ${isActive ? "text-amber-200 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]" : "text-amber-200"}`}>
             {matchedText}
           </span>
@@ -879,9 +884,11 @@ const renderAutoStudyOverlayContent = (
         <div key={itIdx} className={`space-y-0.5 sm:space-y-1 ${itIdx > 0 ? "pt-0.5 sm:pt-1.5 border-t border-white/10" : ""}`}>
           {/* Row 1: Word/Pattern + Item Number Badge + Loa trước từ + IPA + Badges viết tắt + YouGlish */}
           <div className="flex flex-wrap items-center gap-0.5 sm:gap-1.5 leading-none">
-            <span className="inline-flex items-center justify-center w-3 h-3 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 rounded-full bg-amber-500 text-white text-[7.5px] sm:text-[10px] md:text-[11px] font-black shrink-0 shadow-sm mr-0.5">
-              {itemNumber}
-            </span>
+            {vocabItems.length > 1 && (
+              <span className="inline-flex items-center justify-center w-3 h-3 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 rounded-full bg-amber-500 text-white text-[7.5px] sm:text-[10px] md:text-[11px] font-black shrink-0 shadow-sm mr-0.5">
+                {itemNumber}
+              </span>
+            )}
 
             {/* Nút TTS phát âm đặt NGAY TRƯỚC từ vựng chính */}
             <button
@@ -1194,7 +1201,7 @@ const renderAutoStudyOverlayContent = (
           className="w-full max-w-[90%] sm:max-w-md md:max-w-[44%] lg:max-w-[39%] max-h-[62%] sm:max-h-[72%] overflow-y-auto no-scrollbar rounded-md sm:rounded-xl p-1 sm:p-2.5 transition-all flex flex-col justify-start relative shadow-lg pointer-events-none select-none"
           style={cardBgStyle}
         >
-          {renderHeaderBar("TỪ VỰNG ①", "💎", isTyping)}
+          {renderHeaderBar("TỪ VỰNG", "💎", isTyping)}
           <div className="space-y-0.5 sm:space-y-1.5 pointer-events-none">
             {renderSectionItems(vocabItems, revealedChars, isTyping, 0)}
           </div>
