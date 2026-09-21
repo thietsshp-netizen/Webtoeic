@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useSession } from "next-auth/react";
 import { motion, AnimatePresence, useMotionValue } from "framer-motion";
 import { X, Minimize2, Maximize2, Move, Tv, Play, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { buildSecureStreamUrl } from "@/lib/video-token";
 
 // ─── Kiểu kích thước ────────────────────────────────────────────────────────
 type SizeMode = "pip" | "modal-1" | "modal-2" | "modal-3" | "collapsed";
@@ -76,6 +78,25 @@ export default function FloatingVideoExplanationPlayer({
   const [isResizingActive, setIsResizingActive] = useState(false);
   const dragX = useMotionValue(0);
   const dragY = useMotionValue(0);
+
+  // Lấy thông tin học viên để hiển thị Watermark mờ chống quay lén
+  const { data: session } = useSession();
+  const watermarkText = (session?.user as any)?.email || session?.user?.name || "";
+  const [watermarkPos, setWatermarkPos] = useState({ top: 25, left: 35 });
+
+  useEffect(() => {
+    if (!watermarkText) return;
+    const interval = setInterval(() => {
+      const top = Math.floor(Math.random() * 65) + 15;
+      const left = Math.floor(Math.random() * 65) + 15;
+      setWatermarkPos({ top, left });
+    }, 20000);
+    return () => clearInterval(interval);
+  }, [watermarkText]);
+
+  const isGoogleDrive = videoType === "google-drive" || videoUrl.includes("drive.google.com") || videoUrl.includes("drive.usercontent.google.com");
+  const isDirectOrDrive = videoType === "direct" || isGoogleDrive;
+  const directOrDriveUrl = isGoogleDrive ? buildSecureStreamUrl(videoUrl) : videoUrl;
 
   // Gộp tất cả timestamps từ tất cả video và sắp xếp theo targetIndex
   const allTimestamps: FlatTimestamp[] = [];
@@ -225,14 +246,12 @@ export default function FloatingVideoExplanationPlayer({
       
       const targetVideo = videos[targetVideoIndex];
       const targetVideoType = targetVideo?.videoType || "youtube";
+      const targetUrl = targetVideo?.videoUrl || "";
+      const targetIsDirectOrDrive = targetVideoType === "direct" || targetVideoType === "google-drive" || targetUrl.includes("drive.google.com");
       
       if (targetVideoType === "youtube") {
         setYtStartParam(`&start=${seconds}`);
-      } else if (targetVideoType === "google-drive") {
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        setDriveTimeParam(`&t=${m}m${s}s`);
-      } else if (targetVideoType === "direct") {
+      } else if (targetIsDirectOrDrive) {
         pendingDirectSeekRef.current = seconds;
       }
     } else {
@@ -246,11 +265,7 @@ export default function FloatingVideoExplanationPlayer({
             JSON.stringify({ event: "command", func: "playVideo", args: [] }), "*"
           );
         }
-      } else if (videoType === "google-drive") {
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        setDriveTimeParam(`&t=${m}m${s}s`);
-      } else if (videoType === "direct" && videoRef.current) {
+      } else if (isDirectOrDrive && videoRef.current) {
         videoRef.current.currentTime = seconds;
         videoRef.current.play().catch(() => {});
       }
@@ -261,9 +276,9 @@ export default function FloatingVideoExplanationPlayer({
     }
   };
 
-  // Hỗ trợ tự động tua đối với direct video khi đổi video
+  // Hỗ trợ tự động tua đối với direct / google-drive video khi đổi video
   useEffect(() => {
-    if (videoType === "direct" && videoRef.current && pendingDirectSeekRef.current !== null) {
+    if (isDirectOrDrive && videoRef.current && pendingDirectSeekRef.current !== null) {
       const targetTime = pendingDirectSeekRef.current;
       pendingDirectSeekRef.current = null;
       
@@ -275,9 +290,14 @@ export default function FloatingVideoExplanationPlayer({
         }
       };
       
-      videoRef.current.addEventListener("canplay", handleCanPlay);
+      if (videoRef.current.readyState >= 2) {
+        videoRef.current.currentTime = targetTime;
+        videoRef.current.play().catch(() => {});
+      } else {
+        videoRef.current.addEventListener("canplay", handleCanPlay);
+      }
     }
-  }, [videoUrl, videoType]);
+  }, [activeVideoIndex, isDirectOrDrive, directOrDriveUrl]);
 
   // Tự động chuyển video và mốc thời gian phù hợp khi câu hỏi hiện tại thay đổi
   useEffect(() => {
@@ -405,15 +425,32 @@ export default function FloatingVideoExplanationPlayer({
           {videoType === "youtube" && ytId && (
             <iframe ref={iframeRef} src={ytEmbedUrl} className="w-full h-full" allowFullScreen allow="autoplay" title="YouTube Explanations"></iframe>
           )}
-          {videoType === "google-drive" && driveId && (
-            <div className="relative w-full h-full">
-              <iframe src={driveEmbedUrl} className="w-full h-full" allow="autoplay" allowFullScreen title="Google Drive Explanations"></iframe>
-              {/* Overlay che nút pop-out của Google Drive (góc trên-phải) */}
-              <div className="absolute top-0 right-0 w-20 h-14 z-10 cursor-default" style={{ backdropFilter: "blur(6px)", background: "rgba(0,0,0,0.01)", pointerEvents: "auto" }} />
+          {isDirectOrDrive && (
+            <div className="relative w-full h-full bg-black flex items-center justify-center overflow-hidden">
+              <video
+                ref={videoRef}
+                src={directOrDriveUrl}
+                className="w-full h-full object-contain"
+                controls
+                autoPlay
+                playsInline
+                controlsList="nodownload"
+                onContextMenu={(e) => e.preventDefault()}
+                onEnded={handleVideoEnded}
+              />
+              {watermarkText && (
+                <div
+                  className="absolute pointer-events-none select-none font-mono font-bold text-[10px] sm:text-[11px] text-white/20 tracking-wider transition-all duration-1000 z-20"
+                  style={{
+                    top: `${watermarkPos.top}%`,
+                    left: `${watermarkPos.left}%`,
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  {watermarkText}
+                </div>
+              )}
             </div>
-          )}
-          {videoType === "direct" && (
-            <video ref={videoRef} src={videoUrl} className="w-full h-full" controls autoPlay onEnded={handleVideoEnded}></video>
           )}
         </div>
 
@@ -590,21 +627,32 @@ export default function FloatingVideoExplanationPlayer({
               title="YouTube Explanations"
             ></iframe>
           )}
-          {videoType === "google-drive" && driveId && (
-            <div className="relative w-full h-full">
-              <iframe
-                src={driveEmbedUrl}
-                className="w-full h-full border-none"
-                allow="autoplay"
-                allowFullScreen
-                title="Google Drive Explanations"
-              ></iframe>
-              {/* Overlay che nút pop-out của Google Drive (góc trên-phải) */}
-              <div className="absolute top-0 right-0 w-20 h-14 z-10 cursor-default" style={{ backdropFilter: "blur(6px)", background: "rgba(0,0,0,0.01)", pointerEvents: "auto" }} />
+          {isDirectOrDrive && (
+            <div className="relative w-full h-full bg-black flex items-center justify-center overflow-hidden">
+              <video
+                ref={videoRef}
+                src={directOrDriveUrl}
+                className="w-full h-full object-contain"
+                controls
+                autoPlay
+                playsInline
+                controlsList="nodownload"
+                onContextMenu={(e) => e.preventDefault()}
+                onEnded={handleVideoEnded}
+              />
+              {watermarkText && (
+                <div
+                  className="absolute pointer-events-none select-none font-mono font-bold text-[10px] sm:text-[11px] text-white/20 tracking-wider transition-all duration-1000 z-20"
+                  style={{
+                    top: `${watermarkPos.top}%`,
+                    left: `${watermarkPos.left}%`,
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  {watermarkText}
+                </div>
+              )}
             </div>
-          )}
-          {videoType === "direct" && (
-            <video ref={videoRef} src={videoUrl} className="w-full h-full" controls autoPlay onEnded={handleVideoEnded}></video>
           )}
         </div>
 
