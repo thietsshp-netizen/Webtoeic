@@ -1,6 +1,7 @@
 "use client";
-
+import AuthModal from "@/components/Auth/AuthModal";
 import React, { useState, useEffect, useRef } from "react";
+
 import { Play, Pause, RotateCcw, Volume2, Megaphone, Video, Settings, Edit, Check, X, CheckCircle, ChevronLeft, ChevronRight, HelpCircle, Maximize2, Minimize2 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useAdminEdit } from "@/components/Admin/AdminEditProvider";
@@ -2572,6 +2573,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   // Signed URL cho R2 videos (thay thế public URL đã bị private)
   const [signedVideoUrl, setSignedVideoUrl] = useState<string | null>(null);
   const [isSigningVideo, setIsSigningVideo] = useState(true);
+  const [isVideoAuthError, setIsVideoAuthError] = useState(false);
 
   const isR2VideoUrl = (url: string) =>
     url.includes(".r2.dev/") || url.includes("r2.cloudflarestorage.com");
@@ -2582,19 +2584,24 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       return;
     }
     if (!isR2VideoUrl(directVideoUrl)) {
-      // Không phải R2 (Google Drive proxy, v.v.) → dùng thẳng
       setSignedVideoUrl(directVideoUrl);
       setIsSigningVideo(false);
       return;
     }
     setIsSigningVideo(true);
+    setIsVideoAuthError(false);
     fetch(`/api/video/sign?url=${encodeURIComponent(directVideoUrl)}`)
-      .then((res) => res.ok ? res.json() : Promise.reject(res.status))
-      .then((data) => setSignedVideoUrl(data.signedUrl))
-      .catch(() => setSignedVideoUrl(directVideoUrl))
+      .then((res) => {
+        if (res.ok) return res.json();
+        if (res.status === 401) { setIsVideoAuthError(true); return null; }
+        return null;
+      })
+      .then((data) => { if (data) setSignedVideoUrl(data.signedUrl); })
+      .catch(() => {/* network error — không fallback */})
       .finally(() => setIsSigningVideo(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [directVideoUrl, isDirectVideo]);
+
 
 
   // Handle fullscreen change events (e.g. user presses ESC)
@@ -3448,7 +3455,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           }`}
         >
           {isDirectVideo ? (
-            isSigningVideo || !signedVideoUrl ? (
+            (isSigningVideo || !signedVideoUrl) && !isVideoAuthError ? (
               <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-white/60 bg-black">
                 <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 <span className="text-xs">Đang tải video...</span>
@@ -3456,7 +3463,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             ) : (
             <video
               ref={videoRef}
-              src={signedVideoUrl}
+              src={signedVideoUrl ?? undefined}
               className="w-full h-full object-contain bg-black cursor-pointer"
               controlsList="nodownload"
               onContextMenu={(e) => e.preventDefault()}
@@ -4798,6 +4805,8 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           )}
         </div>
       </div>
+      <AuthModal isOpen={isVideoAuthError} onClose={() => setIsVideoAuthError(false)} />
     </div>
   );
+
 }

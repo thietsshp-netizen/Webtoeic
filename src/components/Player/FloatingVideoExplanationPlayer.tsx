@@ -1,4 +1,6 @@
 "use client";
+import AuthModal from "@/components/Auth/AuthModal";
+
 
 import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
@@ -100,7 +102,8 @@ export default function FloatingVideoExplanationPlayer({
 
   // Signed URL state — fetch presigned URL từ /api/video/sign cho R2 videos
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
-  const [isSigningUrl, setIsSigningUrl] = useState(false);
+  const [isSigningUrl, setIsSigningUrl] = useState(true);
+  const [isVideoAuthError, setIsVideoAuthError] = useState(false);
 
   const isR2Url = (url: string) =>
     url.includes(".r2.dev/") || url.includes("r2.cloudflarestorage.com");
@@ -108,20 +111,25 @@ export default function FloatingVideoExplanationPlayer({
   const fetchSignedUrl = async (rawUrl: string) => {
     if (!rawUrl || !isR2Url(rawUrl)) {
       setSignedUrl(rawUrl);
+      setIsSigningUrl(false);
       return;
     }
     setIsSigningUrl(true);
+    setIsVideoAuthError(false);
     try {
       const res = await fetch(`/api/video/sign?url=${encodeURIComponent(rawUrl)}`);
       if (res.ok) {
         const data = await res.json();
         setSignedUrl(data.signedUrl);
+      } else if (res.status === 401) {
+        // Chưa đăng nhập → hiện UI yêu cầu đăng nhập
+        setIsVideoAuthError(true);
       } else {
-        // Fallback về URL gốc nếu API lỗi
-        setSignedUrl(rawUrl);
+        // Lỗi khác → báo lỗi nhưng không fallback sang URL private
+        setIsVideoAuthError(false);
       }
     } catch {
-      setSignedUrl(rawUrl);
+      // Network error — không fallback
     } finally {
       setIsSigningUrl(false);
     }
@@ -463,7 +471,7 @@ export default function FloatingVideoExplanationPlayer({
           )}
           {isDirectOrDrive && (
             <div className="relative w-full h-full bg-black flex items-center justify-center overflow-hidden">
-              {isSigningUrl ? (
+              {isVideoAuthError ? null : (isSigningUrl || !signedUrl) ? (
                 <div className="flex flex-col items-center gap-2 text-white/60">
                   <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   <span className="text-[10px]">Đang tải video...</span>
@@ -678,7 +686,7 @@ export default function FloatingVideoExplanationPlayer({
           )}
           {isDirectOrDrive && (
             <div className="relative w-full h-full bg-black flex items-center justify-center overflow-hidden">
-              {isSigningUrl ? (
+              {isVideoAuthError ? null : (isSigningUrl || !signedUrl) ? (
                 <div className="flex flex-col items-center gap-2 text-white/60">
                   <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   <span className="text-[10px]">Đang tải video...</span>
@@ -773,6 +781,8 @@ export default function FloatingVideoExplanationPlayer({
           </svg>
         </div>
       </motion.div>
+      <AuthModal isOpen={isVideoAuthError} onClose={() => setIsVideoAuthError(false)} />
     </div>
   );
+
 }
