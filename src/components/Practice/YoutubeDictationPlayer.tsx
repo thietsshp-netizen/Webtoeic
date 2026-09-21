@@ -2569,6 +2569,34 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   };
   const directVideoUrl = getDirectVideoUrl(videoUrl);
 
+  // Signed URL cho R2 videos (thay thế public URL đã bị private)
+  const [signedVideoUrl, setSignedVideoUrl] = useState<string | null>(null);
+  const [isSigningVideo, setIsSigningVideo] = useState(true);
+
+  const isR2VideoUrl = (url: string) =>
+    url.includes(".r2.dev/") || url.includes("r2.cloudflarestorage.com");
+
+  useEffect(() => {
+    if (!isDirectVideo || !directVideoUrl) {
+      setIsSigningVideo(false);
+      return;
+    }
+    if (!isR2VideoUrl(directVideoUrl)) {
+      // Không phải R2 (Google Drive proxy, v.v.) → dùng thẳng
+      setSignedVideoUrl(directVideoUrl);
+      setIsSigningVideo(false);
+      return;
+    }
+    setIsSigningVideo(true);
+    fetch(`/api/video/sign?url=${encodeURIComponent(directVideoUrl)}`)
+      .then((res) => res.ok ? res.json() : Promise.reject(res.status))
+      .then((data) => setSignedVideoUrl(data.signedUrl))
+      .catch(() => setSignedVideoUrl(directVideoUrl))
+      .finally(() => setIsSigningVideo(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [directVideoUrl, isDirectVideo]);
+
+
   // Handle fullscreen change events (e.g. user presses ESC)
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -3420,9 +3448,15 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
           }`}
         >
           {isDirectVideo ? (
+            isSigningVideo || !signedVideoUrl ? (
+              <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-white/60 bg-black">
+                <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span className="text-xs">Đang tải video...</span>
+              </div>
+            ) : (
             <video
               ref={videoRef}
-              src={directVideoUrl}
+              src={signedVideoUrl}
               className="w-full h-full object-contain bg-black cursor-pointer"
               controlsList="nodownload"
               onContextMenu={(e) => e.preventDefault()}
@@ -3433,15 +3467,17 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
                 const vid = e.currentTarget;
                 const errCode = vid.error?.code;
                 const errMsg = vid.error?.message || "Unknown error";
-                const codeMap: Record<number, string> = {
-                  1: "MEDIA_ERR_ABORTED - Người dùng hủy tải",
-                  2: "MEDIA_ERR_NETWORK - Lỗi mạng khi tải video",
-                  3: "MEDIA_ERR_DECODE - Lỗi giải mã (codec không hỗ trợ?)",
-                  4: "MEDIA_ERR_SRC_NOT_SUPPORTED - URL không hợp lệ hoặc bị chặn CORS",
-                };
-                const desc = errCode ? codeMap[errCode] : "Lỗi không xác định";
-                console.error("[Video Error]", errCode, errMsg, directVideoUrl);
-                alert(`❌ Lỗi tải video:\n${desc}\n\nURL: ${directVideoUrl}\n\nKiểm tra:\n• Bucket Supabase đã đặt Public chưa?\n• URL có dạng .../object/public/... không?\n• Có CORS Policy cho domain này chưa?`);
+                console.error("[Video Error]", errCode, errMsg, signedVideoUrl);
+                // Tự động refresh signed URL khi hết hạn
+                if (directVideoUrl && isR2VideoUrl(directVideoUrl)) {
+                  setSignedVideoUrl(null);
+                  setIsSigningVideo(true);
+                  fetch(`/api/video/sign?url=${encodeURIComponent(directVideoUrl)}`)
+                    .then((res) => res.ok ? res.json() : Promise.reject(res.status))
+                    .then((data) => setSignedVideoUrl(data.signedUrl))
+                    .catch(() => setSignedVideoUrl(directVideoUrl))
+                    .finally(() => setIsSigningVideo(false));
+                }
               }}
               onTimeUpdate={() => {
                 if (!videoRef.current) return;
@@ -3608,7 +3644,9 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
               playsInline
               preload="metadata"
             />
+            )
           ) : videoId ? (
+
             <iframe
               id="youtube-dictation-iframe"
               src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&version=3&rel=0&controls=1&cc_load_policy=0&iv_load_policy=3&modestbranding=1&playsinline=1`}

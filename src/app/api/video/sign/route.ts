@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
+export const dynamic = "force-dynamic";
+
 // Map public R2 bucket URLs → bucket names
 const BUCKET_MAP: Record<string, string> = {
   "pub-d60184ec6eae4e6299cd4882b5d212dc.r2.dev": process.env.R2_BUCKET_FRIENDS || "friends-videos",
