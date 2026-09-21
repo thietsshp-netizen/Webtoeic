@@ -98,6 +98,42 @@ export default function FloatingVideoExplanationPlayer({
   const isDirectOrDrive = videoType === "direct" || isGoogleDrive;
   const directOrDriveUrl = isGoogleDrive ? buildSecureStreamUrl(videoUrl) : videoUrl;
 
+  // Signed URL state — fetch presigned URL từ /api/video/sign cho R2 videos
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
+  const [isSigningUrl, setIsSigningUrl] = useState(false);
+
+  const isR2Url = (url: string) =>
+    url.includes(".r2.dev/") || url.includes("r2.cloudflarestorage.com");
+
+  const fetchSignedUrl = async (rawUrl: string) => {
+    if (!rawUrl || !isR2Url(rawUrl)) {
+      setSignedUrl(rawUrl);
+      return;
+    }
+    setIsSigningUrl(true);
+    try {
+      const res = await fetch(`/api/video/sign?url=${encodeURIComponent(rawUrl)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setSignedUrl(data.signedUrl);
+      } else {
+        // Fallback về URL gốc nếu API lỗi
+        setSignedUrl(rawUrl);
+      }
+    } catch {
+      setSignedUrl(rawUrl);
+    } finally {
+      setIsSigningUrl(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isDirectOrDrive && directOrDriveUrl) {
+      fetchSignedUrl(directOrDriveUrl);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [directOrDriveUrl, isDirectOrDrive]);
+
   // Gộp tất cả timestamps từ tất cả video và sắp xếp theo targetIndex
   const allTimestamps: FlatTimestamp[] = [];
   videos.forEach((video, videoIndex) => {
@@ -427,24 +463,37 @@ export default function FloatingVideoExplanationPlayer({
           )}
           {isDirectOrDrive && (
             <div className="relative w-full h-full bg-black flex items-center justify-center overflow-hidden">
-              <video
-                ref={videoRef}
-                src={directOrDriveUrl}
-                className="w-full h-full object-contain"
-                controls
-                autoPlay
-                playsInline
-                controlsList="nodownload"
-                onContextMenu={(e) => e.preventDefault()}
-                onEnded={handleVideoEnded}
-              />
+              {isSigningUrl ? (
+                <div className="flex flex-col items-center gap-2 text-white/60">
+                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="text-[10px]">Đang tải video...</span>
+                </div>
+              ) : (
+                <video
+                  ref={videoRef}
+                  src={signedUrl || directOrDriveUrl}
+                  className="w-full h-full object-contain"
+                  controls
+                  autoPlay
+                  playsInline
+                  controlsList="nodownload"
+                  onContextMenu={(e) => e.preventDefault()}
+                  onEnded={handleVideoEnded}
+                  onError={() => {
+                    if (directOrDriveUrl) fetchSignedUrl(directOrDriveUrl);
+                  }}
+                />
+              )}
               {watermarkText && (
                 <div
-                  className="absolute pointer-events-none select-none font-mono font-bold text-[10px] sm:text-[11px] text-white/20 tracking-wider transition-all duration-1000 z-20"
+                  className="absolute pointer-events-none select-none font-mono font-bold text-[10px] sm:text-[11px] tracking-wider transition-all duration-1000 z-20"
                   style={{
                     top: `${watermarkPos.top}%`,
                     left: `${watermarkPos.left}%`,
                     transform: "translate(-50%, -50%)",
+                    color: "white",
+                    mixBlendMode: "difference",
+                    opacity: 0.3,
                   }}
                 >
                   {watermarkText}
@@ -629,24 +678,38 @@ export default function FloatingVideoExplanationPlayer({
           )}
           {isDirectOrDrive && (
             <div className="relative w-full h-full bg-black flex items-center justify-center overflow-hidden">
-              <video
-                ref={videoRef}
-                src={directOrDriveUrl}
-                className="w-full h-full object-contain"
-                controls
-                autoPlay
-                playsInline
-                controlsList="nodownload"
-                onContextMenu={(e) => e.preventDefault()}
-                onEnded={handleVideoEnded}
-              />
+              {isSigningUrl ? (
+                <div className="flex flex-col items-center gap-2 text-white/60">
+                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="text-[10px]">Đang tải video...</span>
+                </div>
+              ) : (
+                <video
+                  ref={videoRef}
+                  src={signedUrl || directOrDriveUrl}
+                  className="w-full h-full object-contain"
+                  controls
+                  autoPlay
+                  playsInline
+                  controlsList="nodownload"
+                  onContextMenu={(e) => e.preventDefault()}
+                  onEnded={handleVideoEnded}
+                  onError={() => {
+                    // URL hết hạn → tự động refresh signed URL
+                    if (directOrDriveUrl) fetchSignedUrl(directOrDriveUrl);
+                  }}
+                />
+              )}
               {watermarkText && (
                 <div
-                  className="absolute pointer-events-none select-none font-mono font-bold text-[10px] sm:text-[11px] text-white/20 tracking-wider transition-all duration-1000 z-20"
+                  className="absolute pointer-events-none select-none font-mono font-bold text-[10px] sm:text-[11px] tracking-wider transition-all duration-1000 z-20"
                   style={{
                     top: `${watermarkPos.top}%`,
                     left: `${watermarkPos.left}%`,
                     transform: "translate(-50%, -50%)",
+                    color: "white",
+                    mixBlendMode: "difference",
+                    opacity: 0.3,
                   }}
                 >
                   {watermarkText}
