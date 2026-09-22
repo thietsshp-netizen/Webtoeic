@@ -483,7 +483,7 @@ const renderHighlightedSubtitle = (
       nodes.push(
         <span
           key={`match-${idx}`}
-          className={`inline-flex items-center gap-0.5 sm:gap-1 ${marginClass} px-1 sm:px-1.5 py-[1px] sm:py-0.5 rounded sm:rounded-md transition-all duration-300 align-middle leading-none ${
+          className={`inline-block align-baseline ${marginClass} px-1 sm:px-1.5 py-[1px] sm:py-0.5 rounded sm:rounded-md transition-all duration-300 leading-none ${
             isActive
               ? "bg-amber-100 border border-amber-400 text-amber-900 font-extrabold shadow-sm animate-pulse"
               : "bg-amber-50 border border-amber-300 text-amber-900 font-bold"
@@ -491,21 +491,21 @@ const renderHighlightedSubtitle = (
         >
           {showNumberBadge && (
             <span
-              className={`inline-flex items-center justify-center w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full text-[8px] sm:text-[9px] font-black shrink-0 select-none ${
+              className={`inline-flex items-center justify-center w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full text-[8px] sm:text-[9px] font-black shrink-0 select-none align-middle mr-0.5 sm:mr-1 ${
                 isActive ? "bg-amber-500 text-white" : "bg-amber-600 text-white"
               }`}
             >
               {badgeNumber}
             </span>
           )}
-          <span className="leading-tight">{matchedText}</span>
+          <span className="align-baseline leading-tight">{matchedText}</span>
         </span>
       );
     } else {
       nodes.push(
         <span
           key={`match-${idx}`}
-          className={`inline-flex items-center gap-0.5 sm:gap-1 ${marginClass} px-1 sm:px-1.5 py-[1px] sm:py-0.5 rounded md:rounded-lg transition-all duration-300 align-middle leading-none ${
+          className={`inline-block align-baseline ${marginClass} px-1 sm:px-1.5 py-[1px] sm:py-0.5 rounded md:rounded-lg transition-all duration-300 leading-none ${
             isActive
               ? "bg-amber-400/30 border border-amber-300 text-amber-200 font-extrabold shadow-[0_0_12px_rgba(251,191,36,0.85)] animate-pulse"
               : "bg-amber-950/60 border border-amber-400/50 text-amber-200 font-bold"
@@ -513,14 +513,14 @@ const renderHighlightedSubtitle = (
         >
           {showNumberBadge && (
             <span
-              className={`inline-flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full text-[8.5px] sm:text-[10px] font-black shrink-0 select-none shadow-xs ${
+              className={`inline-flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full text-[8.5px] sm:text-[10px] font-black shrink-0 select-none shadow-xs align-middle mr-0.5 sm:mr-1 ${
                 isActive ? "bg-amber-400 text-slate-950 font-black" : "bg-amber-500 text-white font-bold"
               }`}
             >
               {badgeNumber}
             </span>
           )}
-          <span className={`leading-tight ${isActive ? "text-amber-200 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]" : "text-amber-200"}`}>
+          <span className={`align-baseline leading-tight ${isActive ? "text-amber-200 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]" : "text-amber-200"}`}>
             {matchedText}
           </span>
         </span>
