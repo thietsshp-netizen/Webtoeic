@@ -272,7 +272,7 @@ function HomeContent() {
       } else if (e.key === "ArrowRight") {
         e.preventDefault();
         setDashCardIndex(prev => Math.min(filteredVocab.length - 1, prev + 1));
-      } else if (e.key === " " || e.key === "Spacebar") {
+      } else if (e.key === "Enter") {
         e.preventDefault();
         setDashFlipTrigger(prev => prev + 1);
       }
@@ -2207,7 +2207,7 @@ function HomeContent() {
                                         <button
                                           onClick={() => setDashFlipTrigger(prev => prev + 1)}
                                           className="flex-[1.3] sm:flex-1 flex items-center justify-center gap-1.5 px-3 sm:px-6 py-2 sm:py-3.5 bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-sm transition-all active:scale-95"
-                                          title="Lật thẻ (phím Space)"
+                                          title="Lật thẻ (phím Enter)"
                                         >
                                           <RotateCcw size={14} />
                                           <span>Lật thẻ</span>
@@ -2525,19 +2525,28 @@ function DashVocabCard({ vocab, index, onUpdate, globalFlip, flipTrigger, onOpen
   const [loading, setLoading] = useState(false);
   const [showDeckSelector, setShowDeckSelector] = useState(false);
 
+  // Luôn bắt đầu bằng mặt trước khi từ vựng hoặc chỉ số thẻ thay đổi
+  useEffect(() => {
+    setFlipped(false);
+  }, [vocab?.word, vocab?.id, index]);
+
   // Sync with global flip command
   useEffect(() => {
     if (globalFlip === "front") setFlipped(false);
     if (globalFlip === "back") setFlipped(true);
   }, [globalFlip]);
 
+  const lastTriggerRef = useRef(flipTrigger);
   // Flip trigger for single card mode
   useEffect(() => {
-    if (flipTrigger !== undefined && flipTrigger > 0) {
-      setFlipped(prev => !prev);
-      speak(vocab.word);
+    if (lastTriggerRef.current !== flipTrigger) {
+      lastTriggerRef.current = flipTrigger;
+      if (flipTrigger !== undefined && flipTrigger > 0) {
+        setFlipped(prev => !prev);
+        speak(vocab.word);
+      }
     }
-  }, [flipTrigger]);
+  }, [flipTrigger, vocab?.word]);
 
   const speak = (text: string) => {
     speakVocab(text, 'us');
