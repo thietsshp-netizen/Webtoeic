@@ -2596,8 +2596,16 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         if (res.status === 401) { setIsVideoAuthError(true); return null; }
         return null;
       })
-      .then((data) => { if (data) setSignedVideoUrl(data.signedUrl); })
-      .catch(() => {/* network error — không fallback */})
+      .then((data) => {
+        if (data?.signedUrl) {
+          setSignedVideoUrl(data.signedUrl);
+        } else {
+          setSignedVideoUrl(directVideoUrl);
+        }
+      })
+      .catch(() => {
+        setSignedVideoUrl(directVideoUrl);
+      })
       .finally(() => setIsSigningVideo(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [directVideoUrl, isDirectVideo]);

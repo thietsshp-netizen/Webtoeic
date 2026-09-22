@@ -45,17 +45,23 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ signedUrl: videoUrl });
   }
 
-  // 4. Tạo S3 client trỏ vào Cloudflare R2
+  // 4. Kiểm tra biến môi trường R2, nếu thiếu thì fallback trả về videoUrl gốc
+  if (!process.env.R2_ACCOUNT_ID || !process.env.R2_ACCESS_KEY_ID || !process.env.R2_SECRET_ACCESS_KEY) {
+    console.warn("[video/sign] Missing R2 credentials in environment variables. Falling back to original video URL.");
+    return NextResponse.json({ signedUrl: videoUrl });
+  }
+
+  // 5. Tạo S3 client trỏ vào Cloudflare R2
   const s3 = new S3Client({
     region: "auto",
     endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
     credentials: {
-      accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+      accessKeyId: process.env.R2_ACCESS_KEY_ID,
+      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
     },
   });
 
-  // 5. Tạo Presigned URL hết hạn sau 6 giờ
+  // 6. Tạo Presigned URL hết hạn sau 6 giờ
   try {
     const command = new GetObjectCommand({
       Bucket: parsed.bucket,
@@ -65,9 +71,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ signedUrl });
   } catch (err) {
     console.error("[video/sign] Error generating presigned URL:", err);
-    return NextResponse.json(
-      { error: "Failed to generate signed URL" },
-      { status: 500 }
-    );
+    // Fallback trả về URL gốc thay vì văng 500
+    return NextResponse.json({ signedUrl: videoUrl });
   }
 }
