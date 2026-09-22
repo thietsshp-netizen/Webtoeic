@@ -6,6 +6,8 @@ import { useSession } from "next-auth/react";
 import { Shield, Video, CalendarCheck, Pencil, X, Sparkles } from "lucide-react";
 import { clsx } from "clsx";
 
+import { usePathname } from "next/navigation";
+
 const GlobalScreenDraw = dynamic(
   () => import("@/components/Common/GlobalScreenDraw").then((m) => m.GlobalScreenDraw),
   { ssr: false }
@@ -21,8 +23,9 @@ const AdminScreenRecorder = dynamic(
   { ssr: false }
 );
 
-function UnifiedAdminToolbar() {
+export function UnifiedAdminToolbar({ embedded = false }: { embedded?: boolean }) {
   const { data: session } = useSession();
+  const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
   const [isClickedOpen, setIsClickedOpen] = useState(false);
 
@@ -68,6 +71,9 @@ function UnifiedAdminToolbar() {
 
   if (!isAdmin) return null;
 
+  // Nếu là toolbar cố định toàn cục và đang ở trang /learn (đã có embedded toolbar trong header) thì ẩn bản fixed
+  if (!embedded && pathname?.startsWith("/learn")) return null;
+
   const isAnyActive = isDrawActive || isCallingActive || isRecorderActive;
   const isExpanded = isHovered || isClickedOpen;
 
@@ -84,7 +90,12 @@ function UnifiedAdminToolbar() {
 
   return (
     <div
-      className="fixed top-2.5 right-2 sm:right-6 z-[1000000010] select-none"
+      className={clsx(
+        "select-none transition-all duration-300",
+        embedded
+          ? "relative z-[1000000010] flex items-center"
+          : "fixed top-2.5 right-14 sm:right-20 z-[1000000010]"
+      )}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -100,9 +111,10 @@ function UnifiedAdminToolbar() {
       >
         {/* Nút thu gọn / khiên nhận diện dạng chấm tròn nhỏ */}
         <button
+          type="button"
           onClick={() => setIsClickedOpen(!isClickedOpen)}
-          className="relative flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-full transition-colors cursor-pointer shrink-0"
-          title={isExpanded ? "Đóng thanh Admin" : "Rê chuột hoặc bấm để mở công cụ Admin"}
+          className="relative flex items-center justify-center w-[clamp(20px,3vh,28px)] h-[clamp(20px,3vh,28px)] rounded-full transition-colors cursor-pointer shrink-0"
+          title={isExpanded ? "Đóng thanh Admin" : "Công cụ Admin (Quay video, Điểm danh, Viết nháp)"}
         >
           <Shield className={clsx("w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0", isAnyActive ? "text-red-400 animate-bounce" : "text-amber-400")} />
           {isAnyActive && !isExpanded && (

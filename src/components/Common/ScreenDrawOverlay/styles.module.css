@@ -31,6 +31,7 @@
               0 0 0 1px rgba(255, 255, 255, 0.05);
   transition: border-color 0.2s, box-shadow 0.2s;
   user-select: none;
+  overflow: visible;
 }
 
 .toolbar:hover {
@@ -158,33 +159,33 @@
   color: #ef4444;
 }
 
-/* Tooltip Premium tự thiết kế */
+/* Tooltip Premium tự thiết kế — hiện phía dưới vì toolbar thường ở đầu màn hình */
 .btn[data-tooltip]::before,
 .btnClone[data-tooltip]::before {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: 125%;
+  top: 125%;
   left: 50%;
-  transform: translateX(-50%) scale(0.9);
-  background: rgba(15, 23, 42, 0.95);
+  transform: translateX(-50%) translateY(-4px) scale(0.9);
+  background: rgba(15, 23, 42, 0.97);
   color: #fff;
   font-size: 10px;
   font-weight: 600;
-  padding: 4px 8px;
+  padding: 5px 10px;
   border-radius: 6px;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   z-index: 1000000035;
 }
 
 .btn[data-tooltip]:hover::before,
 .btnClone[data-tooltip]:hover::before {
   opacity: 1;
-  transform: translateX(-50%) scale(1);
+  transform: translateX(-50%) translateY(0) scale(1);
 }
 
 /* CSS cho Textarea tạm thời khi gõ text */
@@ -544,11 +545,12 @@
   font-family: monospace;
   padding: 6px 12px;
   border-radius: 6px;
-  min-width: 110px;
+  min-width: 160px;
   text-align: center;
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 

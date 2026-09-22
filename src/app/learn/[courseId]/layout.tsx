@@ -6,9 +6,10 @@ import GrammarHandbook from "@/components/Player/GrammarHandbook";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { ChevronLeft, Share2, HelpCircle, ChevronRight, Menu, Pencil, X } from "lucide-react";
+import { ChevronLeft, Share2, HelpCircle, ChevronRight, Menu } from "lucide-react";
 import { AdminEditProvider } from "@/components/Admin/AdminEditProvider";
 import { ScreenDrawOverlay } from "@/components/Common/ScreenDrawOverlay";
+import { UnifiedAdminToolbar } from "@/components/Common/ClientBackgroundTools";
 
 export default function LearnLayout({
   children,
@@ -18,12 +19,6 @@ export default function LearnLayout({
   const router = useRouter();
   const params = useParams();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isDrawingActive, setIsDrawingActive] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("webtoeic_screendraw_active") === "true";
-    }
-    return false;
-  });
   const [courseTitle, setCourseTitle] = useState("Đang tải...");
   const [sidebarWidth, setSidebarWidth] = useState(340);
   const [isResizing, setIsResizing] = useState(false);
@@ -58,16 +53,6 @@ export default function LearnLayout({
     };
     window.addEventListener("toggle-grammar-handbook", handleGrammarHandbookToggle);
     return () => window.removeEventListener("toggle-grammar-handbook", handleGrammarHandbookToggle);
-  }, []);
-
-  // Lắng nghe sự kiện đồng bộ trạng thái vẽ viết từ cọ vẽ toàn cục
-  useEffect(() => {
-    const handleGlobalDrawState = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      setIsDrawingActive(customEvent.detail.active);
-    };
-    window.addEventListener("webtoeic-toggle-global-draw-state", handleGlobalDrawState);
-    return () => window.removeEventListener("webtoeic-toggle-global-draw-state", handleGlobalDrawState);
   }, []);
 
   // Tự động ẩn sidebar khi màn hình nhỏ (< 1280px) và ghi nhớ lựa chọn ẩn của học viên
@@ -184,27 +169,9 @@ export default function LearnLayout({
           </div>
 
           <div className="flex items-center gap-[clamp(4px,1vw,12px)]">
-            {/* Nút bật/tắt công cụ vẽ viết - CHỈ HIỂN THỊ CHO ADMIN */}
+            {/* Thanh công cụ Admin: Quay video, Điểm danh, Viết nháp */}
             {session?.user && (session.user as any).role === "ADMIN" && (
-              <button
-                onClick={() => {
-                  const nextActive = !isDrawingActive;
-                  setIsDrawingActive(nextActive);
-                  if (typeof window !== "undefined") {
-                    localStorage.setItem("webtoeic_screendraw_active", String(nextActive));
-                  }
-                  window.dispatchEvent(new CustomEvent("webtoeic-toggle-global-draw", { detail: { active: nextActive } }));
-                }}
-                style={{ zIndex: 1000000010, position: "relative" }}
-                className={`cursor-pointer w-[clamp(22px,3.5vh,34px)] h-[clamp(22px,3.5vh,34px)] rounded-full transition-all flex items-center justify-center border ${
-                  isDrawingActive 
-                    ? "bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/20 scale-105" 
-                    : "text-slate-300 border-white/20 hover:text-white hover:bg-white/10"
-                }`}
-                title={isDrawingActive ? "Tắt công cụ vẽ viết lên màn hình (Ctrl+Shift+B)" : "Bật công cụ vẽ viết lên màn hình (Ctrl+Shift+B)"}
-              >
-                {isDrawingActive ? <X className="w-[clamp(12px,2vh,18px)] h-[clamp(12px,2vh,18px)]" /> : <Pencil className="w-[clamp(12px,2vh,18px)] h-[clamp(12px,2vh,18px)]" />}
-              </button>
+              <UnifiedAdminToolbar embedded />
             )}
 
             <a 

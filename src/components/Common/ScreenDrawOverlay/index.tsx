@@ -2316,9 +2316,11 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
 
     const getEventHotkeyString = (ev: KeyboardEvent): string => {
       const parts: string[] = [];
-      if (ev.ctrlKey || ev.metaKey) parts.push('ctrl');
+      // Phân biệt Cmd (Mac metaKey) và Ctrl (ctrlKey) — không gộp chung
+      if (ev.metaKey) parts.push('cmd');
+      if (ev.ctrlKey) parts.push('ctrl');
       if (ev.shiftKey && ev.key !== 'Shift') parts.push('shift');
-      if (ev.altKey) parts.push('alt');
+      if (ev.altKey && ev.key !== 'Alt') parts.push('alt');
 
       let k = ev.key.toLowerCase();
       // IME Telex/VNI fallback using physical code
@@ -2333,10 +2335,13 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         }
       }
 
-      if (k !== 'control' && k !== 'meta' && k !== 'shift' && k !== 'alt') {
-        if (ev.code === 'Space' || k === 'space') parts.push('space');
-        else parts.push(k);
+      // Nếu key nhấn chỉ là modifier đơn thuần → chưa đủ tổ hợp, trả về rỗng để chờ thêm
+      if (k === 'control' || k === 'meta' || k === 'shift' || k === 'alt') {
+        return '';
       }
+
+      if (ev.code === 'Space' || k === 'space') parts.push('space');
+      else parts.push(k);
       return parts.join('+');
     };
 
@@ -4045,7 +4050,9 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
       }
 
       const parts: string[] = [];
-      if (ev.ctrlKey || ev.metaKey) parts.push('ctrl');
+      // Phân biệt Cmd (Mac) và Ctrl để khớp với chuỗi đã lưu khi gán phím tắt
+      if (ev.metaKey) parts.push('cmd');
+      if (ev.ctrlKey) parts.push('ctrl');
       if (ev.shiftKey) parts.push('shift');
       if (ev.altKey) parts.push('alt');
 
@@ -6298,7 +6305,7 @@ export const ScreenDrawOverlay: React.FC<ScreenDrawOverlayProps> = ({
         }}
       >
         {/* Hàng 1: Công cụ vẽ cơ bản (Các icon size=12 nhỏ gọn bằng ~1/2 cũ) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', overflowX: 'auto', maxWidth: '100%', scrollbarWidth: 'none' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', overflow: 'visible', maxWidth: '100%', scrollbarWidth: 'none' }}>
           {/* Nắm kéo di chuyển toolbar */}
           <div
             className={styles.dragHandle}
