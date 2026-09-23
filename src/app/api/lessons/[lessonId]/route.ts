@@ -50,6 +50,11 @@ export async function PUT(
         order,
         toeicTestId,
         vocabDayId,
+      },
+      select: {
+        id: true,
+        title: true,
+        updatedAt: true
       }
     });
 

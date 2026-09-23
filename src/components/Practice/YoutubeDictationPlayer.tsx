@@ -2271,12 +2271,12 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             setSubtitles(updatedSubtitles);
             subtitlesRef.current = updatedSubtitles;
 
-            // Lưu ngay vào CSDL (lưu cuốn chiếu từng câu)
-            await fetch(`/api/lessons/${lessonId}`, {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ content: JSON.stringify(updatedSubtitles) })
-            });
+            // Ghi nháp ngay lập tức vào localStorage máy local (0% Egress Supabase)
+            try {
+              if (typeof window !== "undefined") {
+                localStorage.setItem(`draft_dictation_expansion_${lessonId}`, JSON.stringify(updatedSubtitles));
+              }
+            } catch (e) {}
 
             completedCount++;
             success = true;
@@ -2311,7 +2311,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
         for (let countdown = 4; countdown > 0; countdown--) {
           if (!isAutoBatchRunningRef.current) break;
           if (autoBatchProgressRef.current) {
-            autoBatchProgressRef.current.statusMessage = `✅ Đã lưu câu ${targetSubIdx + 1}. Đang nghỉ ${countdown}s trước câu tiếp theo để tránh quá tải...`;
+            autoBatchProgressRef.current.statusMessage = `✅ Đã xử lý câu ${targetSubIdx + 1}. Đang nghỉ ${countdown}s trước câu tiếp theo...`;
             updateExpansionPopup(targetSubIdx, 0, false, null, false);
           }
           await new Promise(r => setTimeout(r, 1000));
@@ -2319,9 +2319,35 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
       }
     }
 
+    // Đẩy ĐÚNG 1 LẦN duy nhất lên Supabase CSDL khi hoàn thành hoặc dừng lại
+    const finalSubs = subtitlesRef.current.length > 0 ? subtitlesRef.current : subtitles;
+    if (completedCount > 0) {
+      try {
+        showToast("Đang đồng bộ dữ liệu hoàn chỉnh lên CSDL...", "info");
+        const saveRes = await fetch(`/api/lessons/${lessonId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: JSON.stringify(finalSubs) })
+        });
+        if (saveRes.ok) {
+          try {
+            if (typeof window !== "undefined") {
+              localStorage.removeItem(`draft_dictation_expansion_${lessonId}`);
+            }
+          } catch (e) {}
+          showToast(`🎉 Đã phân tích xong ${completedCount}/${totalToProcess} câu và lưu 100% dữ liệu vào CSDL!`, "success");
+        } else {
+          showToast("⚠️ Đã lưu nháp trên máy local. Lỗi đồng bộ CSDL, bạn có thể bấm lưu lại sau!", "info");
+        }
+      } catch (err) {
+        console.error("Lỗi đồng bộ CSDL:", err);
+        showToast("⚠️ Đã lưu nháp trên máy local. Vui lòng kiểm tra lại kết nối mạng!", "info");
+      }
+    } else {
+      showToast("Không có câu mới nào cần đồng bộ lên CSDL.", "info");
+    }
+
     isAutoBatchRunningRef.current = false;
-    const finalMessage = `Đã hoàn tất tự động phân tích: ${completedCount}/${totalToProcess} câu thành công!`;
-    showToast(finalMessage, "success");
     autoBatchProgressRef.current = null;
     setAutoBatchProgress(null);
     updateExpansionPopup(currentIndexRef.current, selectedExpansionIndexRef.current, false, null, false);
@@ -2683,17 +2709,32 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
   };
   const videoId = getYouTubeId(videoUrl);
 
-  // Parse Subtitles JSON
+  // Parse Subtitles JSON & Khôi phục bản nháp local nếu có
   useEffect(() => {
     try {
       const parsed = JSON.parse(content || "[]");
       if (Array.isArray(parsed)) {
+        if (typeof window !== "undefined" && lessonId) {
+          try {
+            const draft = localStorage.getItem(`draft_dictation_expansion_${lessonId}`);
+            if (draft) {
+              const draftParsed = JSON.parse(draft);
+              if (Array.isArray(draftParsed) && draftParsed.length === parsed.length) {
+                setSubtitles(draftParsed);
+                subtitlesRef.current = draftParsed;
+                showToast("⚡ Đã tự động khôi phục bản nháp chưa lưu từ máy local!", "info");
+                return;
+              }
+            }
+          } catch (e) {}
+        }
         setSubtitles(parsed);
+        subtitlesRef.current = parsed;
       }
     } catch (e) {
       console.error("Failed to parse subtitles JSON:", e);
     }
-  }, [content]);
+  }, [content, lessonId]);
 
   // Load YouTube Player API and Initialize Player
   useEffect(() => {

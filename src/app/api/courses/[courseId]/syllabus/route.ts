@@ -21,7 +21,18 @@ export async function GET(
           orderBy: { order: 'asc' },
           include: {
             lessons: {
-              orderBy: { order: 'asc' }
+              orderBy: { order: 'asc' },
+              select: {
+                id: true,
+                title: true,
+                contentType: true,
+                order: true,
+                isPreview: true,
+                vocabDayId: true,
+                toeicTestId: true,
+                sectionId: true,
+                videoUrl: true
+              }
             }
           }
         }
