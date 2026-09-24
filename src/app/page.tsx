@@ -16,6 +16,7 @@ import HomeSkeleton from "@/components/Home/HomeSkeleton";
 import { speakVocab } from "@/lib/vocab-audio";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail } from "lucide-react";
+import marketingGallery from "@/data/marketing-gallery.json";
 
 
 
@@ -310,66 +311,17 @@ function HomeContent() {
     }
   }, [session, viewAsUserId, myStats?.viewedUser]);
 
-  // --- QUẢN LÝ ẢNH & MOUNTED ---
-  const [scoreImages, setScoreImages] = useState<any[]>([]);
-  const [feedbackImages, setFeedbackImages] = useState<any[]>([]);
+  // --- QUẢN LÝ ẢNH & MOUNTED (TỐI ƯU 0MB SUPABASE EGRESS) ---
+  const [scoreImages] = useState<any[]>(marketingGallery.scoreImages || []);
+  const [feedbackImages] = useState<any[]>(marketingGallery.feedbackImages || []);
   const [mounted, setMounted] = useState(false);
 
-  // 1. useEffect KHỞI TẠO & FETCH GALLERY (SUPABASE)
+  // 1. useEffect KHỞI TẠO LAYOUT
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined" && window.innerWidth < 768) {
       setCollapsed(true);
     }
-
-    const fetchGallery = async () => {
-      try {
-        const { createClient } = await import("@supabase/supabase-js");
-        const supabaseUrl = "https://lvbdcqoagtrzvnaeeznm.supabase.co";
-        const supabaseKey =
-          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2YmRjcW9hZ3RyenZuYWVlem5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzODUwMzgsImV4cCI6MjA5MDk2MTAzOH0.vJ2BdsnGvKZSCUW4oU4kF88aFozDWLzmRTIbBCAKEkk";
-
-        const supabase = createClient(supabaseUrl, supabaseKey);
-
-        const bucket = 'marketing';
-
-        // Lấy danh sách folder thực tế trong bucket marketing để lấy chính xác case-sensitive name
-        const { data: rootItems } = await supabase.storage.from(bucket).list();
-        const scoreFolder = rootItems?.find((x: any) => x.name.toLowerCase() === 'bang-diem')?.name || 'bang-diem';
-        const feedbackFolder = rootItems?.find((x: any) => x.name.toLowerCase() === 'cam-nhan')?.name || 'Cam-nhan';
-
-        // 1. Quét bảng điểm
-        const { data: scoreData } = await supabase.storage.from(bucket).list(scoreFolder);
-        if (scoreData && scoreData.length > 0) {
-          const sortedScores = scoreData
-            .filter((f: any) => f.name && !f.name.startsWith('.') && f.name !== '.emptyKeep')
-            .sort((a: any, b: any) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }))
-            .map((f: any) => ({
-              id: f.id || f.name,
-              url: supabase.storage.from(bucket).getPublicUrl(`${scoreFolder}/${f.name}`).data.publicUrl
-            }));
-          setScoreImages(sortedScores);
-        }
-
-        // 2. Quét cảm nhận học viên
-        const { data: feedbackData } = await supabase.storage.from(bucket).list(feedbackFolder);
-        if (feedbackData && feedbackData.length > 0) {
-          const sortedFeedback = feedbackData
-            .filter((f: any) => f.name && !f.name.startsWith('.') && f.name !== '.emptyKeep')
-            .sort((a: any, b: any) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }))
-            .map((f: any) => ({
-              id: f.id || f.name,
-              url: supabase.storage.from(bucket).getPublicUrl(`${feedbackFolder}/${f.name}`).data.publicUrl
-            }));
-          setFeedbackImages(sortedFeedback);
-        }
-      } catch (error) {
-        console.error("Lỗi lấy ảnh từ Supabase:", error);
-      }
-    };
-
-    fetchGallery();
   }, []);
 
   // 2. useEffect ĐỒNG BỘ TAB THEO URL

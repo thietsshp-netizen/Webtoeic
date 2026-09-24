@@ -14,7 +14,7 @@ const CERTIFICATES = [
     date: "03/03/2023",
     badge: "Official ETS 2023",
     accentColor: "from-blue-600 to-indigo-600",
-    url: "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/marketing/teacher-info/teacher2.webp",
+    url: "https://pub-782c667287d44330a0ef7102499176cf.r2.dev/teacher-info/teacher2.webp",
     alt: "Chứng chỉ TOEIC 990/990 Phạm Văn Thiệt - Năm 2023",
   },
   {
@@ -27,7 +27,7 @@ const CERTIFICATES = [
     date: "2018",
     badge: "Official ETS 2018",
     accentColor: "from-emerald-600 to-teal-600",
-    url: "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/marketing/teacher-info/teacher1.webp",
+    url: "https://pub-782c667287d44330a0ef7102499176cf.r2.dev/teacher-info/teacher1.webp",
     alt: "Chứng chỉ TOEIC 990/990 Phạm Văn Thiệt - Năm 2018",
   },
 ];

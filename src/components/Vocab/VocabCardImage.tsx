@@ -23,15 +23,18 @@ function getInitialVocabImage(vocab: any): string | null {
     (wordLower === 'resume' && (defLower.includes('sơ yếu lý lịch') || defLower.includes('cv') || exLower.includes('cover letter') || exLower.includes('cv')));
 
   if (isResumeCv) {
-    return 'https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/resume_cv.webp';
+    return 'https://pub-e95fccbfbc094caa85b411f970497494.r2.dev/resume_cv.webp';
   }
 
-  const rawImg = vocab.image;
+  let rawImg = vocab.image;
   if (rawImg) {
+    if (typeof rawImg === 'string' && rawImg.includes('supabase.co/storage/v1/object/public/Vocab_course_pics/')) {
+      return rawImg.replace(/https:\/\/[^/]+\/storage\/v1\/object\/public\/Vocab_course_pics\//, 'https://pub-e95fccbfbc094caa85b411f970497494.r2.dev/');
+    }
     if (rawImg.startsWith('http://') || rawImg.startsWith('https://') || rawImg.startsWith('/') || rawImg.startsWith('data:')) {
       return rawImg;
     }
-    return `https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/Vocab_course_pics/${rawImg}`;
+    return `https://pub-e95fccbfbc094caa85b411f970497494.r2.dev/${rawImg}`;
   }
 
   return null;
