@@ -1,8 +1,8 @@
 [
   {
     "part": 1,
-    "audioUrl": "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/lessons/toeic_part1/ETS2026_01_01.mp3",
-    "imageUrl": "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/lessons/toeic_part1/ETS2026_01_01.webp",
+    "audioUrl": "https://pub-a270e288fced4421a7e23ed68853d699.r2.dev/toeic_part1/ETS2026_01_01.mp3",
+    "imageUrl": "https://pub-a270e288fced4421a7e23ed68853d699.r2.dev/toeic_part1/ETS2026_01_01.webp",
     "transcript": "(A) The woman is carrying a tray of food.\r\n\r\n(B) The woman is wearing a jacket.\r\n\r\n(C) The woman is tying up her hair.\r\n\r\n(D) The woman is removing her hat.",
     "passageText": null,
     "questions": [
@@ -21,8 +21,8 @@
   },
   {
     "part": 1,
-    "audioUrl": "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/lessons/toeic_part1/ETS2026_01_02.mp3",
-    "imageUrl": "https://lvbdcqoagtrzvnaeeznm.supabase.co/storage/v1/object/public/lessons/toeic_part1/ETS2026_01_02.webp",
+    "audioUrl": "https://pub-a270e288fced4421a7e23ed68853d699.r2.dev/toeic_part1/ETS2026_01_02.mp3",
+    "imageUrl": "https://pub-a270e288fced4421a7e23ed68853d699.r2.dev/toeic_part1/ETS2026_01_02.webp",
     "transcript": "(A) Some people are standing next to a filing cabinet.\r\n\r\n(B) Some people are searching through a desk.\r\n\r\n(C) Some people are watching a presentation.\r\n\r\n(D) Some people are looking at a book.",
     "passageText": null,
     "questions": [

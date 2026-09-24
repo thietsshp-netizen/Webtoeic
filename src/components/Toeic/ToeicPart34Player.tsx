@@ -1263,6 +1263,7 @@ export default function ToeicPart34Player({
       if (nextGroup) {
         if (nextGroup.audioUrl) {
           const audio = new Audio();
+          audio.crossOrigin = "anonymous";
           audio.src = nextGroup.audioUrl;
           audio.preload = "auto";
         }

@@ -2565,7 +2565,11 @@ export default function ToeicPart1Player({
   useEffect(() => {
     const nextGroup = data[currentIndex + 1];
     if (nextGroup) {
-      if (nextGroup.audioUrl) { const audio = new Audio(); audio.src = nextGroup.audioUrl; }
+      if (nextGroup.audioUrl) {
+        const audio = new Audio();
+        audio.crossOrigin = "anonymous";
+        audio.src = nextGroup.audioUrl;
+      }
       if (nextGroup.imageUrl) { const img = new Image(); img.src = nextGroup.imageUrl; }
     }
   }, [currentIndex, data]);
