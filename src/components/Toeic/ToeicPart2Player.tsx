@@ -1932,7 +1932,7 @@ export default function ToeicPart2Player({
     const wsRegions = RegionsPlugin.create(); regionsPlugin.current = wsRegions;
     const ws = WaveSurfer.create({
       container: waveformRef.current, waveColor: '#cbd5e1', progressColor: '#3b82f6', cursorColor: '#1d4ed8',
-      barWidth: 2, barGap: 2, barRadius: 2, height: 'auto', plugins: [wsRegions], fetchParams: { mode: "cors" }
+      barWidth: 2, barGap: 2, barRadius: 2, height: 'auto', plugins: [wsRegions], fetchParams: { mode: "cors", cache: "no-cache" }
     });
     ws.load(currentGroup.audioUrl).catch(() => { }); wavesurfer.current = ws;
     ws.on('play', () => setIsPlaying(true)); ws.on('pause', () => setIsPlaying(false));

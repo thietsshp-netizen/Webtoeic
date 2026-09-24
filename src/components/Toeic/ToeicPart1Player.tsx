@@ -2579,9 +2579,12 @@ export default function ToeicPart1Player({
     regionsPlugin.current = wsRegions;
     const ws = WaveSurfer.create({
       container: waveformRef.current, waveColor: '#cbd5e1', progressColor: '#3b82f6', cursorColor: '#1d4ed8',
-      barWidth: 2, barGap: 2, barRadius: 2, height: 'auto', plugins: [wsRegions], fetchParams: { mode: "cors" }
+      barWidth: 2, barGap: 2, barRadius: 2, height: 'auto', plugins: [wsRegions], fetchParams: { mode: "cors", cache: "no-cache" }
     });
-    ws.load(currentGroup.audioUrl).catch((err) => { console.error("Lỗi load audio WaveSurfer:", err); });
+    ws.load(currentGroup.audioUrl).catch((err) => {
+      if (err?.name === 'AbortError' || String(err?.message || err).includes('aborted')) return;
+      console.warn("WaveSurfer load warning, fallback HTML5 audio:", err);
+    });
     wavesurfer.current = ws;
     ws.on('play', () => setIsPlaying(true));
     ws.on('pause', () => setIsPlaying(false));
@@ -2687,7 +2690,9 @@ export default function ToeicPart1Player({
 
     return () => {
       document.removeEventListener('mouseup', handleMouseUp);
-      ws.destroy();
+      try {
+        ws.destroy();
+      } catch (e) {}
     };
   }, [currentGroup?.audioUrl]);
 
