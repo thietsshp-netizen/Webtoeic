@@ -1039,7 +1039,8 @@ export default function ToeicPart34Player({
       barWidth: 2,
       cursorWidth: 1,
       normalize: true,
-      plugins: [wsRegions]
+      plugins: [wsRegions],
+      fetchParams: { mode: "cors" }
     });
 
     ws.load(currentGroup.audioUrl).catch(() => { });

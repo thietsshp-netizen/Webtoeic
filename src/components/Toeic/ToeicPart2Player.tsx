@@ -1920,12 +1920,19 @@ export default function ToeicPart2Player({
   }, [currentIndex, isSubmitted, isReviewMode]);
 
   useEffect(() => {
+    const nextGroup = data[currentIndex + 1];
+    if (nextGroup && nextGroup.audioUrl) {
+      fetch(nextGroup.audioUrl, { mode: 'cors' }).catch(() => {});
+    }
+  }, [currentIndex, data]);
+
+  useEffect(() => {
     if (!waveformRef.current || !currentGroup?.audioUrl) return;
     if (wavesurfer.current) wavesurfer.current.destroy();
     const wsRegions = RegionsPlugin.create(); regionsPlugin.current = wsRegions;
     const ws = WaveSurfer.create({
       container: waveformRef.current, waveColor: '#cbd5e1', progressColor: '#3b82f6', cursorColor: '#1d4ed8',
-      barWidth: 2, barGap: 2, barRadius: 2, height: 'auto', plugins: [wsRegions], fetchParams: { cache: "default" }
+      barWidth: 2, barGap: 2, barRadius: 2, height: 'auto', plugins: [wsRegions], fetchParams: { mode: "cors" }
     });
     ws.load(currentGroup.audioUrl).catch(() => { }); wavesurfer.current = ws;
     ws.on('play', () => setIsPlaying(true)); ws.on('pause', () => setIsPlaying(false));
