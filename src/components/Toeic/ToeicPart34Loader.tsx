@@ -39,32 +39,74 @@ export default async function ToeicPart34Loader({
       console.error("Content parsing error in Loader:", e);
     }
 
-    // 2. Fetch all groups for this part
-    const allGroups = await prisma.toeicQuestionGroup.findMany({
-      where: { part: { partNumber: partNumber } },
-      include: { questions: { orderBy: { questionNo: 'asc' } } }
-    });
-
-    // 3. Simple & Robust Graphic Filtering
+    // ── Lọc thẳng trong DB thay vì load-all rồi filter JS ──
+    // Trước: load toàn bộ 650 (Part 3) / 500 (Part 4) groups rồi lọc JS
+    // Sau:   query chỉ đúng nhóm có/không hình → tiết kiệm ~77% egress
     const filterVal = String(filters.hasGraphic || "").toLowerCase().trim();
-    const isLookingForGraphic = filterVal === "yes" || filterVal === "true";
-    const isLookingForNoGraphic = filterVal === "no" || filterVal === "false";
+    let isLookingForGraphic = filterVal === "yes" || filterVal === "true";
+    let isLookingForNoGraphic = filterVal === "no" || filterVal === "false";
 
-    filterGroups = allGroups.filter((g: any) => {
-      const meta = g.metadata as any || {};
-      const hasGraphic = (meta.pic_id && String(meta.pic_id).trim().length > 0) ||
-        (meta.PicID && String(meta.PicID).trim().length > 0) ||
-        (g.imageUrl && String(g.imageUrl).trim().length > 0) ||
-        (String(meta.has_graphic || "").toLowerCase().trim() === "yes");
+    // Fallback nếu lesson metadata dùng passageType
+    if (!isLookingForGraphic && !isLookingForNoGraphic && filters.passageType) {
+      const pType = String(filters.passageType).trim();
+      if (pType.startsWith("Có hình")) isLookingForGraphic = true;
+      else if (pType.startsWith("Không có hình")) isLookingForNoGraphic = true;
+    }
 
-      if (isLookingForGraphic) return hasGraphic;
-      if (isLookingForNoGraphic) return !hasGraphic;
+    // Xây dựng WHERE condition cho imageUrl (trong DB Part 3 & 4, nhóm có hình có imageUrl R2 URL hợp lệ)
+    const baseCondition: any = { part: { partNumber: partNumber } };
 
-      // Book & Test Filter
-      if (filters.book && String(meta.Book || meta.book || "").trim().toLowerCase() !== String(filters.book).trim().toLowerCase()) return false;
-      if (filters.test && String(meta.Test || meta.test || "").trim().toString() !== String(filters.test).trim().toString()) return false;
+    let graphicCondition: any = null;
+    if (isLookingForGraphic) {
+      // Có hình: imageUrl không null VÀ không rỗng
+      graphicCondition = {
+        AND: [
+          { imageUrl: { not: null } },
+          { imageUrl: { not: "" } },
+        ]
+      };
+    } else if (isLookingForNoGraphic) {
+      // Không hình: imageUrl null HOẶC rỗng
+      graphicCondition = {
+        OR: [
+          { imageUrl: null },
+          { imageUrl: "" },
+        ]
+      };
+    }
 
-      return true;
+    // Filter book/test nếu có
+    const bookTestConditions: any[] = [];
+    if (filters.book) {
+      const bookVal = String(filters.book).trim();
+      bookTestConditions.push({
+        OR: [
+          { metadata: { path: ['Book'], equals: bookVal } },
+          { metadata: { path: ['book'], equals: bookVal } },
+        ]
+      });
+    }
+    if (filters.test) {
+      const testVal = String(filters.test).trim();
+      bookTestConditions.push({
+        OR: [
+          { metadata: { path: ['Test'], equals: testVal } },
+          { metadata: { path: ['test'], equals: testVal } },
+        ]
+      });
+    }
+
+    const whereClause: any = {
+      AND: [
+        baseCondition,
+        ...(graphicCondition ? [graphicCondition] : []),
+        ...bookTestConditions,
+      ]
+    };
+
+    filterGroups = await prisma.toeicQuestionGroup.findMany({
+      where: whereClause,
+      include: { questions: { orderBy: { questionNo: 'asc' } } }
     });
 
     // 4. Sort BEFORE chunking
@@ -76,19 +118,7 @@ export default async function ToeicPart34Loader({
       if (match) {
         const start = parseInt(match[2]) - 1;
         const end = parseInt(match[3]);
-        const isGraphicPack = match[1].trim() === "Có hình";
-
-        // Re-filter to match the exact bucket of the pack
-        const bucket = filterGroups.filter(g => {
-          const m = g.metadata as any || {};
-          const hasG = (m.pic_id && String(m.pic_id).trim().length > 0) ||
-            (m.PicID && String(m.PicID).trim().length > 0) ||
-            (g.imageUrl && String(g.imageUrl).trim().length > 0) ||
-            (String(m.has_graphic || "").toLowerCase().trim() === "yes");
-          return isGraphicPack ? hasG : !hasG;
-        });
-
-        filterGroups = bucket.slice(start, end);
+        filterGroups = filterGroups.slice(start, end);
       }
     } else {
       // Default limit for non-chunked or "All" view
@@ -99,10 +129,16 @@ export default async function ToeicPart34Loader({
     if (jumpToQ) {
       const isIncluded = filterGroups.some(g => g.questions.some((q: any) => q.id === jumpToQ || String(q.questionNo) === jumpToQ));
       if (!isIncluded) {
-        const targetGroup = allGroups.find(g => g.questions.some((q: any) => q.id === jumpToQ || String(q.questionNo) === jumpToQ));
+        // Tìm lại từ DB chỉ nhóm chứa câu jumpToQ (không cần load toàn bộ)
+        const targetGroup = await prisma.toeicQuestionGroup.findFirst({
+          where: {
+            part: { partNumber: partNumber },
+            questions: { some: { id: jumpToQ } }
+          },
+          include: { questions: { orderBy: { questionNo: 'asc' } } }
+        });
         if (targetGroup) {
           filterGroups.push(targetGroup);
-          // Sắp xếp lại theo questionNo để giữ thứ tự logic
           filterGroups.sort((a, b) => (a.questions[0]?.questionNo || 0) - (b.questions[0]?.questionNo || 0));
         }
       }

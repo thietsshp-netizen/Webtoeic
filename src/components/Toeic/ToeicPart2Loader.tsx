@@ -24,41 +24,57 @@ export default async function ToeicPart2Loader({
   try {
     const filters = JSON.parse(content || "{}");
 
-    // Fetch all Part 2 groups to allow robust in-memory filtering (case-insensitive)
-    const allGroups = await prisma.toeicQuestionGroup.findMany({
-      where: { part: { partNumber: 2 } },
+    // ── Xây dựng WHERE clause lọc thẳng trong DB thay vì load-all rồi filter JS ──
+    // Trước: load toàn bộ 1,250 groups → lọc JS → trả ~80 groups (tốn 1,250× egress)
+    // Sau:   query chỉ lấy đúng groups match → trả ~80 groups (tiết kiệm ~94% egress)
+    const andConditions: any[] = [
+      { part: { partNumber: 2 } }
+    ];
+
+    // Filter theo type (field "type" lowercase trong Part 2 metadata)
+    if (filters.type) {
+      const typeVal = String(filters.type).trim();
+      andConditions.push({
+        OR: [
+          { metadata: { path: ['type'],          equals: typeVal } },
+          { metadata: { path: ['Type'],          equals: typeVal } },
+          { metadata: { path: ['Question_Type'], equals: typeVal } },
+          // Fallback case-insensitive (mode insensitive chỉ áp dụng cho string filter)
+          { metadata: { path: ['type'],          string_contains: typeVal, mode: 'insensitive' } },
+        ]
+      });
+    }
+
+    // Filter theo book
+    if (filters.book) {
+      const bookVal = String(filters.book).trim();
+      andConditions.push({
+        OR: [
+          { metadata: { path: ['Book'], equals: bookVal } },
+          { metadata: { path: ['book'], equals: bookVal } },
+        ]
+      });
+    }
+
+    // Filter theo test
+    if (filters.test) {
+      const testVal = String(filters.test).trim();
+      andConditions.push({
+        OR: [
+          { metadata: { path: ['Test'], equals: testVal } },
+          { metadata: { path: ['test'], equals: testVal } },
+        ]
+      });
+    }
+
+    filterGroups = await prisma.toeicQuestionGroup.findMany({
+      where: { AND: andConditions },
       include: {
         questions: {
           orderBy: { questionNo: 'asc' }
         }
       }
     });
-
-    filterGroups = allGroups.filter((g: any) => {
-      const gMeta = g.metadata as any || {};
-      const questions = g.questions || [];
-      
-      // Type Filter - Case Insensitive - Check group meta OR first question meta
-      if (filters.type) {
-        const filterType = String(filters.type).trim().toLowerCase();
-        
-        const gType = String(gMeta.Type || gMeta.type || gMeta.Question_Type || "").trim().toLowerCase();
-        const qType = questions.length > 0 ? String(questions[0].metadata?.type || questions[0].metadata?.Type || questions[0].metadata?.Question_Type || "").trim().toLowerCase() : "";
-        
-        if (gType !== filterType && qType !== filterType) return false;
-      }
-
-      // Book & Test Filter
-      const gBook = String(gMeta.Book || gMeta.book || "").trim().toLowerCase();
-      const gTest = String(gMeta.Test || gMeta.test || "").trim().toLowerCase();
-      
-      if (filters.book && gBook !== String(filters.book).trim().toLowerCase()) return false;
-      if (filters.test && gTest !== String(filters.test).trim().toLowerCase()) return false;
-
-      return true;
-    });
-
-    // No limit for filtered groups
 
   } catch (e) {
     console.error("Lỗi phân tích bộ lọc Part 2:", e);

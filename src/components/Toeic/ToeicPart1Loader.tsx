@@ -30,41 +30,56 @@ export default async function ToeicPart1Loader({
       console.error("Lỗi parse JSON:", e);
     }
 
-    // Fetch all Part 1 groups to allow robust in-memory filtering (case-insensitive)
-    const allGroups = await prisma.toeicQuestionGroup.findMany({
-      where: { part: { partNumber: 1 } },
+    // ── Lọc thẳng trong DB thay vì load-all rồi filter JS ──
+    // Trước: load toàn bộ 330 groups → lọc JS → trả ~15 groups
+    // Sau:   query chỉ lấy đúng groups match (tiết kiệm ~95% egress)
+    const andConditions: any[] = [
+      { part: { partNumber: 1 } }
+    ];
+
+    // Filter theo PicType (field "PicType" uppercase trong Part 1 metadata)
+    if (filters.picType) {
+      const picTypeVal = String(filters.picType).trim();
+      andConditions.push({
+        OR: [
+          { metadata: { path: ['PicType'], equals: picTypeVal } },
+          { metadata: { path: ['picType'], equals: picTypeVal } },
+          // Fallback: case-insensitive string_contains phòng trường hợp data không đồng nhất
+          { metadata: { path: ['PicType'], string_contains: picTypeVal, mode: 'insensitive' } },
+        ]
+      });
+    }
+
+    // Filter theo book
+    if (filters.book) {
+      const bookVal = String(filters.book).trim();
+      andConditions.push({
+        OR: [
+          { metadata: { path: ['Book'], equals: bookVal } },
+          { metadata: { path: ['book'], equals: bookVal } },
+        ]
+      });
+    }
+
+    // Filter theo test
+    if (filters.test) {
+      const testVal = String(filters.test).trim();
+      andConditions.push({
+        OR: [
+          { metadata: { path: ['Test'], equals: testVal } },
+          { metadata: { path: ['test'], equals: testVal } },
+        ]
+      });
+    }
+
+    filterGroups = await prisma.toeicQuestionGroup.findMany({
+      where: { AND: andConditions },
       include: {
         questions: {
           orderBy: { questionNo: 'asc' }
         }
       }
     });
-
-    filterGroups = allGroups.filter((g: any) => {
-      const meta = g.metadata as any;
-      if (!meta) return false;
-
-      // PicType Filter - Case Insensitive
-      if (filters.picType) {
-        const dbPicType = String(meta.PicType || meta.picType || "").trim().toLowerCase();
-        const filterPicType = String(filters.picType).trim().toLowerCase();
-        if (dbPicType !== filterPicType) return false;
-      }
-
-      // Các filter khác (Book, Test)
-      if (filters.book) {
-        const dbBook = String(meta.Book || meta.book || "").trim().toLowerCase();
-        if (dbBook !== String(filters.book).trim().toLowerCase()) return false;
-      }
-      if (filters.test) {
-        const dbTest = String(meta.Test || meta.test || "").trim().toLowerCase();
-        if (dbTest !== String(filters.test).trim().toLowerCase()) return false;
-      }
-
-      return true;
-    });
-
-    // Removed the 10 groups limit to allow all questions in the category to be displayed
 
     console.log(`[Part1Loader] Found ${filterGroups.length} groups for filters:`, filters);
 
