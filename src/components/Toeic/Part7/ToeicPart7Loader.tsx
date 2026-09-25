@@ -68,8 +68,12 @@ export default async function ToeicPart7LoaderV2({
       let targetQuestions: any[] = [];
 
       if (chunk.base === "Câu hỏi Cross-reference") {
+        // Chỉ tìm trong các đoạn đôi và đoạn ba (Q176 - Q200)
         const allGroups = await prisma.toeicQuestionGroup.findMany({
-          where: { part: { partNumber: 7 } },
+          where: {
+            part: { partNumber: 7 },
+            questions: { some: { questionNo: { gte: 176 } } }
+          },
           include: { questions: true }
         });
 
@@ -93,10 +97,11 @@ export default async function ToeicPart7LoaderV2({
         });
         targetQuestions.sort((a, b) => a.questionNo - b.questionNo);
       } else {
+        // Các dạng bài 1-8: Chỉ tìm trong các đoạn đơn (Q147-175)
         const allQ = await prisma.toeicQuestion.findMany({
           where: {
             group: { part: { partNumber: 7 } },
-            questionNo: { gte: 147, lte: 171 }
+            questionNo: { gte: 147, lte: 175 }
           },
           include: { group: { include: { questions: true } } }
         });
@@ -157,8 +162,70 @@ export default async function ToeicPart7LoaderV2({
     }
     // 3. CHẾ ĐỘ ĐOẠN VĂN
     else {
-      // Lấy tất cả nhóm, lọc Part 7 trong JS
+      // Tối ưu DB Query theo Passage Type / Complexity
+      const baseConditions: any[] = [{ part: { partNumber: 7 } }];
+
+      if (filters.passageType) {
+        const chunk = parseChunk(filters.passageType);
+        const label = chunk.base;
+
+        if (label.startsWith("Đoạn đôi") || label === "Bài 12 - Đoạn đôi") {
+          baseConditions.push({
+            OR: [
+              { metadata: { path: ["complexity"], equals: "Double" } },
+              { metadata: { path: ["complexity"], equals: "double" } },
+              { metadata: { path: ["passage_count"], equals: 2 } },
+            ]
+          });
+        } else if (label.startsWith("Đoạn ba") || label === "Bài 13 - Đoạn ba") {
+          baseConditions.push({
+            OR: [
+              { metadata: { path: ["complexity"], equals: "Triple" } },
+              { metadata: { path: ["complexity"], equals: "triple" } },
+              { metadata: { path: ["passage_count"], equals: 3 } },
+            ]
+          });
+        } else {
+          // Bài 1-11: Các bài thuộc đoạn đơn
+          baseConditions.push({
+            OR: [
+              { metadata: { path: ["complexity"], equals: "Single" } },
+              { metadata: { path: ["complexity"], equals: "single" } },
+              { metadata: { path: ["passage_count"], equals: 1 } },
+            ]
+          });
+        }
+      } else if (filters.complexity) {
+        const comp = String(filters.complexity).trim().toLowerCase();
+        if (comp === "double") {
+          baseConditions.push({
+            OR: [
+              { metadata: { path: ["complexity"], equals: "Double" } },
+              { metadata: { path: ["complexity"], equals: "double" } },
+              { metadata: { path: ["passage_count"], equals: 2 } },
+            ]
+          });
+        } else if (comp === "triple") {
+          baseConditions.push({
+            OR: [
+              { metadata: { path: ["complexity"], equals: "Triple" } },
+              { metadata: { path: ["complexity"], equals: "triple" } },
+              { metadata: { path: ["passage_count"], equals: 3 } },
+            ]
+          });
+        } else if (comp === "single") {
+          baseConditions.push({
+            OR: [
+              { metadata: { path: ["complexity"], equals: "Single" } },
+              { metadata: { path: ["complexity"], equals: "single" } },
+              { metadata: { path: ["passage_count"], equals: 1 } },
+            ]
+          });
+        }
+      }
+
       const allGroups = await prisma.toeicQuestionGroup.findMany({
+        where: { AND: baseConditions },
         include: {
           part: true,
           questions: { orderBy: { questionNo: 'asc' } }

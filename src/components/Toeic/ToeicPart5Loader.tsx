@@ -21,47 +21,81 @@ export default async function ToeicPart5Loader({
   // 1. Lấy thông tin phiên đăng nhập
   const session = await getServerSession(authOptions) as any;
 
-  // 2. Phân tích bộ lọc từ content
+  // 2. Phân tích bộ lọc từ content và query trực tiếp từ DB
   let questions: any[] = [];
+  let filters: any = {};
   try {
-    const filters = JSON.parse(content);
+    let parsed: any;
+    if (typeof content === "string") {
+      parsed = JSON.parse(content || "{}");
+    } else {
+      parsed = content || {};
+    }
+    filters = parsed.filters || (parsed.part ? parsed.filters : parsed) || parsed;
+    if (Array.isArray(parsed)) filters = parsed[0]?.filters || {};
 
-    // Ghi chú: Vì Prisma không hỗ trợ lọc JSON linh hoạt bằng các trường động trong metadata
-    // Chúng ta sẽ lấy danh sách câu hỏi thông qua API nội bộ hoặc fetch trực tiếp nếu có thể.
-    // Để an toàn và đồng bộ, tôi sẽ fetch trực tiếp từ DB bằng Prisma.
+    // ── Lọc trực tiếp trong DB ──
+    const whereConditions: any[] = [
+      { group: { part: { partNumber: 5 } } }
+    ];
 
-    const allBankQuestions = await prisma.toeicQuestion.findMany({
+    if (filters.type) {
+      const typeVal = String(filters.type).trim();
+      whereConditions.push({
+        OR: [
+          { metadata: { path: ['Question_Type'], equals: typeVal } },
+          { metadata: { path: ['type'], equals: typeVal } },
+        ]
+      });
+    }
+
+    if (filters.book) {
+      const bookVal = String(filters.book).trim();
+      whereConditions.push({
+        OR: [
+          { metadata: { path: ['book'], equals: bookVal } },
+          { metadata: { path: ['Book'], equals: bookVal } },
+          { group: { metadata: { path: ['book'], equals: bookVal } } },
+          { group: { metadata: { path: ['Book'], equals: bookVal } } },
+        ]
+      });
+    }
+
+    if (filters.test) {
+      const testVal = String(filters.test).trim();
+      const testNum = isNaN(Number(testVal)) ? testVal : Number(testVal);
+      whereConditions.push({
+        OR: [
+          { metadata: { path: ['test'], equals: testVal } },
+          { metadata: { path: ['Test'], equals: testVal } },
+          { metadata: { path: ['test'], equals: testNum } },
+          { metadata: { path: ['Test'], equals: testNum } },
+          { group: { metadata: { path: ['test'], equals: testVal } } },
+          { group: { metadata: { path: ['Test'], equals: testVal } } },
+          { group: { metadata: { path: ['test'], equals: testNum } } },
+          { group: { metadata: { path: ['Test'], equals: testNum } } },
+        ]
+      });
+    }
+
+    if (filters.day) {
+      const dayVal = String(filters.day).trim();
+      whereConditions.push({
+        metadata: { path: ['day'], equals: dayVal }
+      });
+    }
+
+    questions = await prisma.toeicQuestion.findMany({
       where: {
-        group: {
-          part: {
-            partNumber: 5
-          }
-        }
+        AND: whereConditions
       },
       include: {
         group: true
+      },
+      orderBy: {
+        questionNo: 'asc'
       }
     });
-
-    // Lọc thủ công trên Server để đảm bảo chính xác theo metadata Book/Test/Type
-    questions = allBankQuestions.filter((q: any) => {
-      const qMeta = q.metadata as any;
-      const gMeta = q.group.metadata as any;
-      let match = true;
-      
-      // Support old 'day' and new 'book/test'
-      if (filters.day && String(qMeta.day || "").toLowerCase() !== String(filters.day).toLowerCase()) match = false;
-      if (filters.book && String(gMeta.book || gMeta.Book || "").trim().toLowerCase() !== String(filters.book).trim().toLowerCase()) match = false;
-      if (filters.test && String(gMeta.test || gMeta.Test || "").trim().toString() !== String(filters.test).trim().toString()) match = false;
-      
-      // Support old 'type' and new 'Question_Type'
-      if (filters.type) {
-        const qType = String(qMeta.Question_Type || qMeta.type || "").trim().toLowerCase();
-        if (qType !== String(filters.type).trim().toLowerCase()) match = false;
-      }
-      
-      return match;
-    }).sort((a, b) => (a.questionNo || 0) - (b.questionNo || 0));
 
   } catch (e) {
     console.error("Lỗi phân tích bộ lọc Part 5:", e);

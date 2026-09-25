@@ -25,9 +25,46 @@ export default async function ToeicPart6Loader({
 
   try {
     filters = JSON.parse(content || "{}");
-    
-    allGroups = await prisma.toeicQuestionGroup.findMany({
-      where: { part: { partNumber: 6 } },
+
+    // ── Lọc trực tiếp trong DB ──
+    const baseCondition: any = { part: { partNumber: 6 } };
+    const whereConditions: any[] = [baseCondition];
+
+    if (filters.book && filters.book.trim() !== "") {
+      const bookVal = filters.book.trim();
+      whereConditions.push({
+        OR: [
+          { metadata: { path: ['Book'], equals: bookVal } },
+          { metadata: { path: ['book'], equals: bookVal } },
+        ]
+      });
+    }
+
+    if (filters.test && String(filters.test).trim() !== "") {
+      const testVal = String(filters.test).trim();
+      const testNum = isNaN(Number(testVal)) ? testVal : Number(testVal);
+      whereConditions.push({
+        OR: [
+          { metadata: { path: ['Test'], equals: testVal } },
+          { metadata: { path: ['test'], equals: testVal } },
+          { metadata: { path: ['Test'], equals: testNum } },
+          { metadata: { path: ['test'], equals: testNum } },
+        ]
+      });
+    }
+
+    if (filters.passageType && filters.passageType.trim() !== "") {
+      const pType = filters.passageType.trim();
+      whereConditions.push({
+        OR: [
+          { metadata: { path: ['PassageType'], equals: pType } },
+          { metadata: { path: ['passageType'], equals: pType } },
+        ]
+      });
+    }
+
+    filterGroups = await prisma.toeicQuestionGroup.findMany({
+      where: { AND: whereConditions },
       include: {
         questions: {
           orderBy: { questionNo: 'asc' }
@@ -35,33 +72,8 @@ export default async function ToeicPart6Loader({
       }
     });
 
-    console.log(`\n\n==========================================`);
     console.log(`[Part6Loader] FETCHING FOR LESSON: ${lessonId}`);
-    console.log(`[Part6Loader] Total groups in DB: ${allGroups.length}`);
-    console.log(`[Part6Loader] Filters:`, JSON.stringify(filters));
-    console.log(`==========================================\n\n`);
-
-    // Lọc thủ công trên Server để đảm bảo chính xác theo metadata Book/Test/PassageType
-    filterGroups = allGroups.filter((g: any) => {
-      const meta = g.metadata as any;
-      if (!meta) return false;
-      
-      let match = true;
-      if (filters.book && filters.book.trim() !== "" && String(meta.Book || meta.book || "").trim().toLowerCase() !== filters.book.trim().toLowerCase()) match = false;
-      if (filters.test && filters.test.toString().trim() !== "" && String(meta.Test || meta.test || "").trim().toString() !== filters.test.toString().trim()) match = false;
-      
-      if (filters.passageType && filters.passageType.trim() !== "") {
-        const pType = String(meta.PassageType || meta.passageType || "").trim().toLowerCase();
-        const fType = filters.passageType.trim().toLowerCase();
-        if (pType !== fType) {
-           match = false;
-        }
-      }
-      
-      return match;
-    }).slice(0, 20); // Lấy tối đa 20 nhóm (80 câu) cho một bài học
-
-    console.log(`[Part6Loader] Groups after filter: ${filterGroups.length}`);
+    console.log(`[Part6Loader] Groups found in DB: ${filterGroups.length}`);
 
     // Đảm bảo nhóm chứa jumpToQ luôn được bao gồm nếu nó nằm ngoài slice
     if (jumpToQ) {
