@@ -158,11 +158,26 @@ export default async function ToeicFullTestLoader({
         return { AND: conditions };
       };
 
+      const testFilterConditions: any[] = [];
+      if (targetTestNum) {
+        testFilterConditions.push(
+          { metadata: { path: ['Test'], equals: targetTestNum } },
+          { metadata: { path: ['Test'], equals: targetTestNumInt } },
+          { metadata: { path: ['test'], equals: targetTestNum } },
+          { metadata: { path: ['test'], equals: targetTestNumInt } }
+        );
+      }
+
       const allGroups = await prisma.toeicQuestionGroup.findMany({
         where: {
-          OR: [
-            bookFilter('Book'),
-            bookFilter('book')
+          AND: [
+            {
+              OR: [
+                bookFilter('Book'),
+                bookFilter('book')
+              ]
+            },
+            ...(testFilterConditions.length > 0 ? [{ OR: testFilterConditions }] : [])
           ]
         },
         include: {
