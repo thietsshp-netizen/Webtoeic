@@ -60,6 +60,7 @@ export async function PUT(
 
     try {
       revalidateTag("lesson", "max");
+      revalidateTag(`lesson-${lessonId}`, "max");
       revalidateTag("syllabus", "max");
     } catch (e) {}
 

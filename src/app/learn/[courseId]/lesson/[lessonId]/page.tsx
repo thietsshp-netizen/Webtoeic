@@ -20,15 +20,15 @@ import LogProgress from "@/components/Course/LogProgress";
 import { unstable_cache } from "next/cache";
 
 // Cache thông tin chi tiết của bài học tĩnh trong 24 giờ
-export const getCachedLesson = unstable_cache(
-  async (lessonId: string) => {
+export const getCachedLesson = (lessonId: string) => unstable_cache(
+  async () => {
     return prisma.lesson.findUnique({
       where: { id: lessonId }
     });
   },
-  ["lesson-detail"],
-  { revalidate: 86400, tags: ["lesson"] }
-);
+  ["lesson-detail", lessonId],
+  { revalidate: 86400, tags: ["lesson", `lesson-${lessonId}`] }
+)();
 
 // Cache syllabus (giáo trình) của khóa học trong 24 giờ để tránh query lại các section/lesson
 export const getCachedSyllabus = unstable_cache(

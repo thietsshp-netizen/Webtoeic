@@ -2719,7 +2719,7 @@ export default function YoutubeDictationPlayer({ lessonId, videoUrl, content, co
             const draft = localStorage.getItem(`draft_dictation_expansion_${lessonId}`);
             if (draft) {
               const draftParsed = JSON.parse(draft);
-              if (Array.isArray(draftParsed) && draftParsed.length === parsed.length) {
+              if (Array.isArray(draftParsed) && draftParsed.length > 0 && (parsed.length === 0 || draftParsed.length === parsed.length)) {
                 setSubtitles(draftParsed);
                 subtitlesRef.current = draftParsed;
                 showToast("⚡ Đã tự động khôi phục bản nháp chưa lưu từ máy local!", "info");
